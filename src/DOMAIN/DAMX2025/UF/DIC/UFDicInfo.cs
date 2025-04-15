@@ -164,4 +164,6 @@ public static partial class DBUFDicInfo
         NomesCamposTabela.UfVisto => UfVisto,
         _ => null
     };
+
+     
 }

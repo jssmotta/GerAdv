@@ -91,19 +91,6 @@ const EditarCellOponentesRepLegal = (props: any) => {
       </>
     );
 }; 
-const openConsultaParteOponente = (id: number) => {     
-    router.push(`/pages/parteoponente/?oponentes=${id}`);    
-};
-
-const EditarCellParteOponente = (props: any) => {
-    return (
-      <>
-        <td>
-            <div onClick={() => openConsultaParteOponente(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Parte Oponente' />&nbsp;</div>
-        </td>
-      </>
-    );
-}; 
 const openConsultaProcessos = (id: number) => {     
     router.push(`/pages/processos/?oponentes=${id}`);    
 };
@@ -166,14 +153,6 @@ const EditarCellProcessos = (props: any) => {
         width={'65px'}
         title="Oponentes Rep Legal"
         cells={{ data: EditarCellOponentesRepLegal }}
-      />
- <GridColumn
-        field="id"
-        filterable={false}
-        sortable={false}
-        width={'65px'}
-        title="Parte Oponente"
-        cells={{ data: EditarCellParteOponente }}
       />
  <GridColumn
         field="id"

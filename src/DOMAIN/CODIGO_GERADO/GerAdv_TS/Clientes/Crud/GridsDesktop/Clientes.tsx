@@ -299,19 +299,6 @@ const EditarCellOperadores = (props: any) => {
       </>
     );
 }; 
-const openConsultaParteCliente = (id: number) => {     
-    router.push(`/pages/partecliente/?clientes=${id}`);    
-};
-
-const EditarCellParteCliente = (props: any) => {
-    return (
-      <>
-        <td>
-            <div onClick={() => openConsultaParteCliente(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Parte Cliente' />&nbsp;</div>
-        </td>
-      </>
-    );
-}; 
 const openConsultaPreClientes = (id: number) => {     
     router.push(`/pages/preclientes/?clientes=${id}`);    
 };
@@ -567,14 +554,6 @@ const EditarCellAgendaSemana = (props: any) => {
         width={'65px'}
         title="Operadores"
         cells={{ data: EditarCellOperadores }}
-      />
- <GridColumn
-        field="id"
-        filterable={false}
-        sortable={false}
-        width={'65px'}
-        title="Parte Cliente"
-        cells={{ data: EditarCellParteCliente }}
       />
  <GridColumn
         field="id"

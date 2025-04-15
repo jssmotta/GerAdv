@@ -25,8 +25,7 @@ public class Operadores : IOperadoresWriter
         if (operadores.Senha.Length > 0)
             dbRec.FSenha = operadores.Senha.Encrypt();
         dbRec.FAtivado = operadores.Ativado;
-        if (operadores.AtualizarSenha.Length > 0)
-            dbRec.FAtualizarSenha = operadores.AtualizarSenha.Encrypt();
+        dbRec.FAtualizarSenha = operadores.AtualizarSenha;
         if (operadores.Senha256.Length > 0)
             dbRec.FSenha256 = operadores.Senha256.Encrypt();
         if (operadores.SuporteSenha256.Length > 0)

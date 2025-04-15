@@ -5,48 +5,11 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IAgendaSemanaReader
 {
-    AgendaSemanaResponse? Read(string where, SqlConnection oCnn);
-    AgendaSemanaResponse? Read(Entity.DBAgendaSemana dbRec);
     AgendaSemanaResponse? Read(DBAgendaSemana dbRec);
 }
 
 public partial class AgendaSemana : IAgendaSemanaReader
 {
-    public AgendaSemanaResponse? Read(string where, SqlConnection oCnn)
-    {
-        using var dbRec = new Entity.DBAgendaSemana(sqlWhere: where, oCnn: oCnn);
-        return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
-    }
-
-    public AgendaSemanaResponse? Read(Entity.DBAgendaSemana dbRec)
-    {
-        if (dbRec == null)
-        {
-            return null;
-        }
-
-        var agendasemana = new AgendaSemanaResponse
-        {
-            Id = dbRec.ID,
-            ParaNome = dbRec.FParaNome ?? string.Empty,
-            Data = dbRec.FData,
-            Funcionario = dbRec.FFuncionario,
-            Advogado = dbRec.FAdvogado,
-            Hora = dbRec.FHora,
-            TipoCompromisso = dbRec.FTipoCompromisso,
-            Compromisso = dbRec.FCompromisso ?? string.Empty,
-            Concluido = dbRec.FConcluido,
-            Liberado = dbRec.FLiberado,
-            Importante = dbRec.FImportante,
-            HoraFinal = dbRec.FHoraFinal,
-            Nome = dbRec.FNome ?? string.Empty,
-            Cliente = dbRec.FCliente,
-            NomeCliente = dbRec.FNomeCliente ?? string.Empty,
-            Tipo = dbRec.FTipo ?? string.Empty,
-        };
-        return agendasemana;
-    }
-
     public AgendaSemanaResponse? Read(DBAgendaSemana dbRec)
     {
         if (dbRec == null)
@@ -58,16 +21,16 @@ public partial class AgendaSemana : IAgendaSemanaReader
         {
             Id = dbRec.ID,
             ParaNome = dbRec.FParaNome ?? string.Empty,
-            Data = dbRec.FData,
+            Data = dbRec.FData ?? string.Empty,
             Funcionario = dbRec.FFuncionario,
             Advogado = dbRec.FAdvogado,
-            Hora = dbRec.FHora,
+            Hora = dbRec.FHora ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             Concluido = dbRec.FConcluido,
             Liberado = dbRec.FLiberado,
             Importante = dbRec.FImportante,
-            HoraFinal = dbRec.FHoraFinal,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Cliente = dbRec.FCliente,
             NomeCliente = dbRec.FNomeCliente ?? string.Empty,

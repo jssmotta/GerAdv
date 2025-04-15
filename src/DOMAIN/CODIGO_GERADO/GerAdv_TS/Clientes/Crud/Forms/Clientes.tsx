@@ -460,7 +460,6 @@ onChange={onChange}
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/ligacoes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Ligacoes</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/livrocaixaclientes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Livro Caixa Clientes</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/operadores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Operadores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/partecliente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Parte Cliente</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/preclientes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Pre Clientes</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Processos</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prodespesas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Pro Despesas</div>

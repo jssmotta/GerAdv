@@ -14,9 +14,7 @@ public class AgendaRelatorioValidation : IAgendaRelatorioValidation
     {
         if (reg == null)
             return "Objeto está nulo";
-        if (string.IsNullOrWhiteSpace(reg.Nome))
-            return "Nome é obrigatório";
-        // Processos
+      
         if (reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);

@@ -289,7 +289,6 @@ onChange={onChange}
 <Checkbox label="Top" name="top" checked={oponentesData.top} onChange={onChange} />
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gruposempresas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Grupos Empresas</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/oponentesreplegal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Oponentes Rep Legal</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parteoponente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Parte Oponente</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Processos</div>
 
           </div>

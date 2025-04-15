@@ -94,9 +94,7 @@ public static class AddServices
         builder.Services.AddScoped<IOutrasPartesClienteReader, OutrasPartesCliente>();
         builder.Services.AddScoped<IPaisesReader, Paises>();
         builder.Services.AddScoped<IParceriaProcReader, ParceriaProc>();
-        builder.Services.AddScoped<IParteClienteReader, ParteCliente>();
         builder.Services.AddScoped<IParteClienteOutrasReader, ParteClienteOutras>();
-        builder.Services.AddScoped<IParteOponenteReader, ParteOponente>();
         builder.Services.AddScoped<IPenhoraReader, Penhora>();
         builder.Services.AddScoped<IPenhoraStatusReader, PenhoraStatus>();
         builder.Services.AddScoped<IPoderJudiciarioAssociadoReader, PoderJudiciarioAssociado>();
@@ -106,7 +104,6 @@ public static class AddServices
         builder.Services.AddScoped<IPrecatoriaReader, Precatoria>();
         builder.Services.AddScoped<IPreClientesReader, PreClientes>();
         builder.Services.AddScoped<IPrepostosReader, Prepostos>();
-        builder.Services.AddScoped<IProBarCODEReader, ProBarCODE>();
         builder.Services.AddScoped<IProCDAReader, ProCDA>();
         builder.Services.AddScoped<IProcessosReader, Processos>();
         builder.Services.AddScoped<IProcessosObsReportReader, ProcessosObsReport>();

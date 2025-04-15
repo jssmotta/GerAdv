@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using DBAdvogados = MenphisSI.GerAdv.DBAdvogados;
 namespace MenphisSI.BaseCommon;
 
 public partial class UserService : IUserService, IDisposable
@@ -63,13 +64,13 @@ public partial class UserService : IUserService, IDisposable
 
             try
             {
-                var dbMed = new DBProfissional(
-                    sqlWhere: DBProfissionalDicInfo.EMailSql(user.EMailNet),
+                var dbMed = new DBAdvogados(
+                    sqlWhere: DBAdvogadosDicInfo.EMailSql(user.EMailNet),
                     oCnn: oCnn);
 
-                var tipo = dbMed.ID == 0 ? "Funcionario" : "Medico";
+                var tipo = dbMed.ID == 0 ? "Funcionario" : "Advogado";
 #if (DEBUG)
-                tipo = "Medico";
+                tipo = "Advogado";
 #endif
                 var token = await GenerateJwtToken(user).ConfigureAwait(false);
                 var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));

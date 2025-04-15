@@ -67,5 +67,7 @@ public static partial class DevourerOne
     public static string MaskCpf(this string dado) => MaskCpf2(dado);
     public static bool IsCpf(this string documento) => DevourerOne.CPFValido(documento);
 
+    public static string MaskCnpj(this string cnpj) => DevourerOne.MaskCnpj(cnpj);
+
 }
 

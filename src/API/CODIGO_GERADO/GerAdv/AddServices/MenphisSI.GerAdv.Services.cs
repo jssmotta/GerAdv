@@ -183,12 +183,8 @@ public static class AddServices
         builder.Services.AddScoped<PaisesService>();
         builder.Services.AddScoped<IParceriaProcService, ParceriaProcService>();
         builder.Services.AddScoped<ParceriaProcService>();
-        builder.Services.AddScoped<IParteClienteService, ParteClienteService>();
-        builder.Services.AddScoped<ParteClienteService>();
         builder.Services.AddScoped<IParteClienteOutrasService, ParteClienteOutrasService>();
         builder.Services.AddScoped<ParteClienteOutrasService>();
-        builder.Services.AddScoped<IParteOponenteService, ParteOponenteService>();
-        builder.Services.AddScoped<ParteOponenteService>();
         builder.Services.AddScoped<IPenhoraService, PenhoraService>();
         builder.Services.AddScoped<PenhoraService>();
         builder.Services.AddScoped<IPenhoraStatusService, PenhoraStatusService>();
@@ -207,8 +203,6 @@ public static class AddServices
         builder.Services.AddScoped<PreClientesService>();
         builder.Services.AddScoped<IPrepostosService, PrepostosService>();
         builder.Services.AddScoped<PrepostosService>();
-        builder.Services.AddScoped<IProBarCODEService, ProBarCODEService>();
-        builder.Services.AddScoped<ProBarCODEService>();
         builder.Services.AddScoped<IProCDAService, ProCDAService>();
         builder.Services.AddScoped<ProCDAService>();
         builder.Services.AddScoped<IProcessosService, ProcessosService>();

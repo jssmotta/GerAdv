@@ -96,9 +96,7 @@ public static class AddServices
         builder.Services.AddScoped<IOutrasPartesClienteValidation, OutrasPartesClienteValidation>();
         builder.Services.AddScoped<IPaisesValidation, PaisesValidation>();
         builder.Services.AddScoped<IParceriaProcValidation, ParceriaProcValidation>();
-        builder.Services.AddScoped<IParteClienteValidation, ParteClienteValidation>();
         builder.Services.AddScoped<IParteClienteOutrasValidation, ParteClienteOutrasValidation>();
-        builder.Services.AddScoped<IParteOponenteValidation, ParteOponenteValidation>();
         builder.Services.AddScoped<IPenhoraValidation, PenhoraValidation>();
         builder.Services.AddScoped<IPenhoraStatusValidation, PenhoraStatusValidation>();
         builder.Services.AddScoped<IPoderJudiciarioAssociadoValidation, PoderJudiciarioAssociadoValidation>();
@@ -108,7 +106,6 @@ public static class AddServices
         builder.Services.AddScoped<IPrecatoriaValidation, PrecatoriaValidation>();
         builder.Services.AddScoped<IPreClientesValidation, PreClientesValidation>();
         builder.Services.AddScoped<IPrepostosValidation, PrepostosValidation>();
-        builder.Services.AddScoped<IProBarCODEValidation, ProBarCODEValidation>();
         builder.Services.AddScoped<IProCDAValidation, ProCDAValidation>();
         builder.Services.AddScoped<IProcessosValidation, ProcessosValidation>();
         builder.Services.AddScoped<IProcessosObsReportValidation, ProcessosObsReportValidation>();

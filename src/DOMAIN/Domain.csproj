@@ -50,14 +50,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CODIGO_GERADO\GerAdv_TS\**" />
     <Compile Remove="CODIGO_GERADO\GerMDS_TS\**" />
     <Compile Remove="Crypto\**" />
     <Compile Remove="DA2024\MMXX_2024MenphisSI.GerMDS.CIDADES\**" />
     <Compile Remove="DA2024\MMXX_2024MenphisSI.GerMDS.RELATIONS\**" />
+    <EmbeddedResource Remove="CODIGO_GERADO\GerAdv_TS\**" />
     <EmbeddedResource Remove="CODIGO_GERADO\GerMDS_TS\**" />
     <EmbeddedResource Remove="Crypto\**" />
     <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerMDS.CIDADES\**" />
     <EmbeddedResource Remove="DA2024\MMXX_2024MenphisSI.GerMDS.RELATIONS\**" />
+    <None Remove="CODIGO_GERADO\GerAdv_TS\**" />
     <None Remove="CODIGO_GERADO\GerMDS_TS\**" />
     <None Remove="Crypto\**" />
     <None Remove="DA2024\MMXX_2024MenphisSI.GerMDS.CIDADES\**" />

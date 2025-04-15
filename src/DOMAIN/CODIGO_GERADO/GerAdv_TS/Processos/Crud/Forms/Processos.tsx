@@ -742,12 +742,9 @@ onChange={onChange}
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/livrocaixa${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Livro Caixa</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/nenotas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>N E Notas</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parceriaproc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Parceria Proc</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/partecliente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Parte Cliente</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parteclienteoutras${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Parte Cliente Outras</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parteoponente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Parte Oponente</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/penhora${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Penhora</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/precatoria${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Precatoria</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/probarcode${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Bar C O D E</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/procda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro C D A</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processosobsreport${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Processos Obs Report</div>
 							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processosparados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Processos Parados</div>

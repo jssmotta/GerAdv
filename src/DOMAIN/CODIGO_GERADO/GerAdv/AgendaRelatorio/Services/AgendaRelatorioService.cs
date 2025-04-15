@@ -1,6 +1,5 @@
 ﻿#pragma warning disable IDE0130 // Namespace does not match folder structure
 
-
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
@@ -14,8 +13,6 @@ public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, I
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
-   
 
     protected virtual void Dispose(bool disposing)
     {

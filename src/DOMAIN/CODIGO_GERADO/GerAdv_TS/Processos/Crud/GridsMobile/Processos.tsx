@@ -309,19 +309,6 @@ const EditarCellParceriaProc = (props: any) => {
       </>
     );
 }; 
-const openConsultaParteCliente = (id: number) => {     
-    router.push(`/pages/partecliente/?processos=${id}`);    
-};
-
-const EditarCellParteCliente = (props: any) => {
-    return (
-      <>
-        <td>
-            <div onClick={() => openConsultaParteCliente(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Parte Cliente' />&nbsp;</div>
-        </td>
-      </>
-    );
-}; 
 const openConsultaParteClienteOutras = (id: number) => {     
     router.push(`/pages/parteclienteoutras/?processos=${id}`);    
 };
@@ -331,19 +318,6 @@ const EditarCellParteClienteOutras = (props: any) => {
       <>
         <td>
             <div onClick={() => openConsultaParteClienteOutras(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Parte Cliente Outras' />&nbsp;</div>
-        </td>
-      </>
-    );
-}; 
-const openConsultaParteOponente = (id: number) => {     
-    router.push(`/pages/parteoponente/?processos=${id}`);    
-};
-
-const EditarCellParteOponente = (props: any) => {
-    return (
-      <>
-        <td>
-            <div onClick={() => openConsultaParteOponente(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Parte Oponente' />&nbsp;</div>
         </td>
       </>
     );
@@ -370,19 +344,6 @@ const EditarCellPrecatoria = (props: any) => {
       <>
         <td>
             <div onClick={() => openConsultaPrecatoria(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Precatoria' />&nbsp;</div>
-        </td>
-      </>
-    );
-}; 
-const openConsultaProBarCODE = (id: number) => {     
-    router.push(`/pages/probarcode/?processos=${id}`);    
-};
-
-const EditarCellProBarCODE = (props: any) => {
-    return (
-      <>
-        <td>
-            <div onClick={() => openConsultaProBarCODE(props.dataItem.id)}><img width='16' height='16' src='https://cdn.menphis.com.br/msi/v20/editar.webp' title='Editar Pro Bar C O D E' />&nbsp;</div>
         </td>
       </>
     );
@@ -785,24 +746,8 @@ const EditarCellAgendaRelatorio = (props: any) => {
         filterable={false}
         sortable={false}
         width={'65px'}
-        title="Parte Cliente"
-        cells={{ data: EditarCellParteCliente }}
-      />
- <GridColumn
-        field="id"
-        filterable={false}
-        sortable={false}
-        width={'65px'}
         title="Parte Cliente Outras"
         cells={{ data: EditarCellParteClienteOutras }}
-      />
- <GridColumn
-        field="id"
-        filterable={false}
-        sortable={false}
-        width={'65px'}
-        title="Parte Oponente"
-        cells={{ data: EditarCellParteOponente }}
       />
  <GridColumn
         field="id"
@@ -819,14 +764,6 @@ const EditarCellAgendaRelatorio = (props: any) => {
         width={'65px'}
         title="Precatoria"
         cells={{ data: EditarCellPrecatoria }}
-      />
- <GridColumn
-        field="id"
-        filterable={false}
-        sortable={false}
-        width={'65px'}
-        title="Pro Bar C O D E"
-        cells={{ data: EditarCellProBarCODE }}
       />
  <GridColumn
         field="id"

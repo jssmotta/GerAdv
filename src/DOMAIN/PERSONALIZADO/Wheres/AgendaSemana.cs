@@ -20,8 +20,7 @@ public static partial class AgendaSemana
                 Compromisso = dbRec.FCompromisso,
                 Concluido = dbRec.FConcluido,
                 Liberado = dbRec.FLiberado,
-                Cancelou = dbRec.FCancelou,
-                NaoCompareceu = dbRec.FNaoCompareceu,
+ 
                 Importante = dbRec.FImportante,
                 HoraFinal = dbRec.FHoraFinal,
                 Nome = dbRec.FNome ?? string.Empty,
@@ -74,8 +73,7 @@ public static partial class AgendaSemana
                 FCompromisso = row["xxxCompromisso"] != DBNull.Value ? row["xxxCompromisso"]?.ToString() ?? "": "",
                 FConcluido = row["xxxConcluido"] != DBNull.Value && Convert.ToBoolean(row["xxxConcluido"]),
                 FLiberado = row["xxxLiberado"] != DBNull.Value && Convert.ToBoolean(row["xxxLiberado"]),
-                FCancelou = row["xxxCancelou"] != DBNull.Value && Convert.ToBoolean(row["xxxCancelou"]),
-                FNaoCompareceu = row["xxxNaoCompareceu"] != DBNull.Value && Convert.ToBoolean(row["xxxNaoCompareceu"]),
+ 
                 FImportante = row["xxxImportante"] != DBNull.Value && Convert.ToBoolean(row["xxxImportante"]),
                 FNome = row["xxxNome"] != DBNull.Value ? row["xxxNome"].ToString() : "",
                 FData = row["xxxData"] != DBNull.Value ? DateTime.Parse(row["xxxData"]?.ToString() ?? "").ToString("dd/MM/yyyy HH:mm:ss") : "",

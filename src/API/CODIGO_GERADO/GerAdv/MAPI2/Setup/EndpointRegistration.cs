@@ -94,9 +94,7 @@ public static class EndpointRegistration
         _ = OutrasPartesClienteEndpoints.MapOutrasPartesClienteEndpoints(app);
         _ = PaisesEndpoints.MapPaisesEndpoints(app);
         _ = ParceriaProcEndpoints.MapParceriaProcEndpoints(app);
-        _ = ParteClienteEndpoints.MapParteClienteEndpoints(app);
         _ = ParteClienteOutrasEndpoints.MapParteClienteOutrasEndpoints(app);
-        _ = ParteOponenteEndpoints.MapParteOponenteEndpoints(app);
         _ = PenhoraEndpoints.MapPenhoraEndpoints(app);
         _ = PenhoraStatusEndpoints.MapPenhoraStatusEndpoints(app);
         _ = PoderJudiciarioAssociadoEndpoints.MapPoderJudiciarioAssociadoEndpoints(app);
@@ -106,7 +104,6 @@ public static class EndpointRegistration
         _ = PrecatoriaEndpoints.MapPrecatoriaEndpoints(app);
         _ = PreClientesEndpoints.MapPreClientesEndpoints(app);
         _ = PrepostosEndpoints.MapPrepostosEndpoints(app);
-        _ = ProBarCODEEndpoints.MapProBarCODEEndpoints(app);
         _ = ProCDAEndpoints.MapProCDAEndpoints(app);
         _ = ProcessosEndpoints.MapProcessosEndpoints(app);
         _ = ProcessosObsReportEndpoints.MapProcessosObsReportEndpoints(app);
