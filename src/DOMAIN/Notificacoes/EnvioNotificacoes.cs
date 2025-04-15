@@ -79,6 +79,12 @@ END;
 
         try
         {
+            var nDaysAhead = 5;
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+            {
+                nDaysAhead = 8;
+            }
+
             string sql = $@"
 SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile] 
   FROM [dbo].[AgendaRelatorio]
@@ -86,7 +92,7 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
   LEFT JOIN [dbo].[Agenda] a on vqaCodigo = a.ageCodigo
 
   WHERE ageConcluido = 0 
-        AND vqaData >= DATEADD(DAY, -1, GETDATE()) and vqaData <=DATEADD(DAY, 8, GETDATE())   
+        AND vqaData >= DATEADD(DAY, -1, GETDATE()) and vqaData <=DATEADD(DAY, {nDaysAhead}, GETDATE())   
         AND xxxParaNome like '{operador.Replace("'", "''")}'
   
   ORDER BY vqaData;
@@ -117,7 +123,7 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
         // Adiciona o cabeçalho da tabela
         builder.AppendLine("<table class='tabComrpomissos'><thead>");
         builder.AppendLine("<tr>");
-        builder.AppendLine($"<th width=\"100%\"><h1>{total} compromisso{(total==1?"":"s")} para {nome}</h1></th>");
+        builder.AppendLine($"<th width=\"100%\"><h1>{total} compromisso{(total == 1 ? "" : "s")} para {nome}</h1></th>");
 
         builder.AppendLine("</tr>");
         builder.AppendLine("</thead>");
@@ -139,7 +145,7 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
         }
 
         builder.AppendLine("</table>");
-        return builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"","\"");
+        return builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"", "\"");
     }
 
     private string ObterEstiloTabelaCss()
@@ -296,8 +302,6 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
 
     public int EnviarEmailsParaOperadores(string uri, SqlConnection oCnn)
     {
-        
-
         string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
         var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
         var servicoEmail = new SendEmailApi();
@@ -324,7 +328,7 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.FEMailNet.Contains("@") ? "motta@menphis.com.br" : operador.FEMailNet,
+                ParaEmail = operador.FEMailNet,
                 ParaNome = cNome,
                 Assunto = assunto + cNome,
                 Mensagem = conteudoHtml,
@@ -334,8 +338,27 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
 
             _ = servicoEmail.Send(email);
 
+            if (count == 0)
+            {
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday) // DIA DE TESTES
+                {
+                    var email2 = new MenphisSI.Api.Models.SendEmail
+                    {
+                        ParaEmail = "suporte@menphis.com.br",
+                        ParaNome = "SUPORTE MENPHIS",
+                        Assunto = assunto + cNome,
+                        Mensagem = conteudoHtml,
+                        NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                        Time2Live = 24
+                    };
+                    _ = servicoEmail.Send(email2);
+                }
+
+            }
+
             count++;
         }
+
         return count;
     }
 }

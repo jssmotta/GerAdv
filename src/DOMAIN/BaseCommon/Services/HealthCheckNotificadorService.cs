@@ -8,26 +8,28 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
     private bool _disposed;
     private readonly string _uri = uri;
 
-#if (!DEBUG)
-    private const int PHoraParaLembrar = 12; // Definido pela Magnanima Dra. Aliçar Ibrahim
-#else
- private int PHoraParaLembrar = DateTime.Now.Hour; // Definido pela Magnanima Dra. Aliçar Ibrahim
-#endif
+//#if (!DEBUG)
+    private const int PHoraParaLembrar = 19;
+//#else
+//    private int PHoraParaLembrar = DateTime.Now.Hour; // Definido pela Magnanima Dra. Aliçar Ibrahim
+//#endif
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {       
         try
-        {          
-
-            if (DateTime.Now.Hour == PHoraParaLembrar)
+        {
+            if (DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
             {
-                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
-                if (oCnn is null)
+                if (DateTime.Now.Hour == PHoraParaLembrar)
                 {
-                    return CreateUnhealthyResult("Conexão não disponível");
-                }
+                    using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                    if (oCnn is null)
+                    {
+                        return CreateUnhealthyResult("Conexão não disponível");
+                    }
 
-                _ = await SendNotificationsAndGetResult(oCnn);
+                    _ = await SendNotificationsAndGetResult(oCnn);
+                }
             }
 
             return CreateHealthyResult("Notificador operacional");

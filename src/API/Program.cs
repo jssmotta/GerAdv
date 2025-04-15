@@ -88,13 +88,13 @@ try
 
     builder.Services.AddHybridCache();
 
-    //builder.WebHost.ConfigureKestrel(options =>
-    //{
-    //    options.ConfigureHttpsDefaults(httpsOptions =>
-    //    {
-    //        httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-    //    });
-    //});
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ConfigureHttpsDefaults(httpsOptions =>
+        {
+            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+        });
+    });
 
 
     builder.Services.AddControllers()
@@ -238,7 +238,7 @@ try
 #if (!DEBUG)
             logger.Info($"Redirecionado para Menphis - IP: {ipAddress}");
 #endif
-            context.Response.Redirect("https://menphis.com.br/?ur=aaj");
+            context.Response.Redirect("https://menphis.com.br/?ur=apiadv");
             return Task.CompletedTask;
         }
   ).ShortCircuit(200);
@@ -250,91 +250,10 @@ try
 #if (!DEBUG)
             logger.Info($"Redirecionado para Menphis - IP: {ipAddress}");
 #endif
-              context.Response.Redirect("https://menphis.com.br/?ur=aajpi");
+              context.Response.Redirect("https://menphis.com.br/?urapiadvi");
               return Task.CompletedTask;
           }
-  ).ShortCircuit(200);
-    /*
-     p
-    async Task LoadCfgTest()
-    {
-        const int PId = 1;
-        const string PName = "MenphisSI.WebApi";
-        const string PKey1 = "key1";
-        const string PKey2 = "key2";
-
-        {
-            var serviceProvider = app.Services;
-            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-            var tokenService = serviceProvider.GetRequiredService<MenphisSI.DB.ITokenService>();
-            var logger = serviceProvider.GetRequiredService<ILogger<WCfgApi>>();
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
-            var cfg = new MenphisSI.GerEntityTools.Entity.WCfgApi(httpClientFactory, tokenService, logger, configuration);
-
-            //var cfg = new MenphisSI.GerEntityTools.Entity.WCfgApi();
-
-            for (var n = 0; n < 100; n++)
-            {
-                var read1 = await cfg.WCfgReadC("IBRADV", PKey1);
-                var read2 = await cfg.WCfgReadC("IBRADV", PKey2);
-
-                await cfg.WCfgWriteCfg("IBRADV", PKey1, PId + n);
-                await cfg.WCfgWriteC("IBRADV", PKey2, PName + n);
-
-
-                Console.WriteLine($"PKey2: {read2}");
-            }
-        }
-    }
-
-    
-       await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-    //await Task.Run(LoadCfgTest);
-
-   
-    */
-
-    /*
-    var sql2 = @"
-CREATE OR ALTER TRIGGER trg_Agenda_Update
-ON dbo.Agenda
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    -- Atualiza a quantidade de desistências no cliente
-    UPDATE dbo.Clientes
-		SET cliQtdeDesistencia = COALESCE(cliQtdeDesistencia, 0) + 1,
-		cliQuemAtu = ageQuemAtu,
-		cliDtAtu = ageDtAtu,
-		cliVisto = 0
-
-    FROM dbo.Clientes c
-    INNER JOIN inserted i ON c.cliCodigo = i.ageCliente
-    WHERE i.ageNaoCampareceu = 1 AND i.ageCliente <> 0;  -- Verifica se ageCliente é diferente de zero
-END;
-
-
-";
-
-   
-
-    using var oCnn = Configuracoes.GetConnectionByUriRw("MDS");
- 
-    MenphisSI.DB.ConfiguracoesDBT.ExecuteSqlCreate(sql2, oCnn);
- 
-    */
+  ).ShortCircuit(200);    
 
 
     app.Run();
