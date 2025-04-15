@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using DBOperador = MenphisSI.GerAdv.DBOperador;
 namespace MenphisSI.BaseCommon;
 
 public partial class UserService : IUserService, IDisposable

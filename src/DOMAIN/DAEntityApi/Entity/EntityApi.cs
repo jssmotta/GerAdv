@@ -6,7 +6,7 @@ using static System.Net.WebRequestMethods;
 using AuthenticateRequest = MenphisSI.BaseCommon.AuthenticateRequest;
 using AuthenticateResponse = MenphisSI.BaseCommon.AuthenticateResponse;
 
-namespace MenphisSI.GerMDS.Client;
+namespace MenphisSI.GerAdv.Client;
 public static class EntityApi
 {
 #if (DEBUG)

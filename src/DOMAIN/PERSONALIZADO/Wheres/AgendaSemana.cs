@@ -1,6 +1,6 @@
 ﻿using MenphisSI.DB;
 
-namespace MenphisSI.GerMDS.Wheres;
+namespace MenphisSI.GerAdv.Wheres;
 public static partial class AgendaSemana
 {
     public static List<AgendaSemanaResponse> ReadList(string where, SqlConnection oCnn)

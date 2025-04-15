@@ -1,4 +1,4 @@
-﻿namespace MenphisSI.GerMDS;
+﻿namespace MenphisSI.GerAdv;
 
 public class ResetPasswordRequest
 {

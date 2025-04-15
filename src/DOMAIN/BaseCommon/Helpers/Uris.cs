@@ -6,7 +6,7 @@ public static class Uris
 #if (DEBUG)
         "http://localhost:3000",
 #endif
-        $"https://{MenphisSI.GerMDS.Client.EntityApi.BaseUrlApi}",
+        $"https://{MenphisSI.GerAdv.Client.EntityApi.BaseUrlApi}",
         "ajfanibrahim.com.br", "www.ajfanibrahim.com.br"];
 
     public static bool ValidaUri(string? uri, string uris)

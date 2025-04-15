@@ -1,0 +1,17 @@
+﻿export enum FieldsTerceiros
+{	processo = `Processo`,
+	situacao = `Situacao`,
+	cidade = `Cidade`,
+	nome = `Nome`,
+	endereco = `Endereco`,
+	bairro = `Bairro`,
+	cep = `CEP`,
+	fone = `Fone`,
+	fax = `Fax`,
+	obs = `OBS`,
+	email = `EMail`,
+	class = `Class`,
+	varaforocomarca = `VaraForoComarca`,
+	sexo = `Sexo`,
+	bold = `Bold`,
+}

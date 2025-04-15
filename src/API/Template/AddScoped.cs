@@ -1,6 +1,6 @@
-﻿//using GerMDS.Services;
+﻿//using GerAdv.Services;
 
-//namespace MenphisSI.GerMDS.Scopped;
+//namespace MenphisSI.GerAdv.Scopped;
 
 //public static class AddScoped
 //{

@@ -1,0 +1,17 @@
+﻿export enum FieldsOponentesRepLegal
+{	oponente = `Oponente`,
+	cidade = `Cidade`,
+	nome = `Nome`,
+	fone = `Fone`,
+	sexo = `Sexo`,
+	cpf = `CPF`,
+	rg = `RG`,
+	endereco = `Endereco`,
+	bairro = `Bairro`,
+	cep = `CEP`,
+	fax = `Fax`,
+	email = `EMail`,
+	site = `Site`,
+	observacao = `Observacao`,
+	bold = `Bold`,
+}

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace MenphisSI.GerMDS.Services;
+namespace MenphisSI.GerAdv.Services;
 public partial class AgendaSemanaService
 {
     public Task<AgendaSemanaResponse?> GetById(int id, [FromRoute] string uri, CancellationToken token)
@@ -32,7 +32,7 @@ public partial class AgendaSemanaService
                     cWhere += DevourerOne.AppendDataSqlBetween(diaPrimeiroDosUltimos365Dias, ((DateTime)data), $"[xxxData]");
                 }
 
-                var result = GerMDS.Wheres.AgendaSemana.ReadList(cWhere, oCnn);
+                var result = GerAdv.Wheres.AgendaSemana.ReadList(cWhere, oCnn);
 
                 return result;
             });

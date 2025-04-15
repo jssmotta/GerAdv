@@ -1,7 +1,7 @@
 //using Microsoft.Extensions.Options;
 //using System.Security.Claims;
 
-//namespace GerMDS.Services
+//namespace GerAdv.Services
 //{
 //    public class CidadeService : ICidadeService
 //    {
@@ -34,7 +34,7 @@
 //                foreach (var item in lista)
 //                {
 //                    if (item == null) continue;
-//                    result.Add(MenphisSI.GerMDS.Readers.Cidade.Read(item)!);
+//                    result.Add(MenphisSI.GerAdv.Readers.Cidade.Read(item)!);
 //                }
 
 //                return result;
@@ -84,7 +84,7 @@
 //            });
 //        }
 
-//        public async Task<IEnumerable<Cidade>> Filter(MenphisSI.GerMDS.Filters.Cidade filtro)
+//        public async Task<IEnumerable<Cidade>> Filter(MenphisSI.GerAdv.Filters.Cidade filtro)
 //        {
 //            return await Task.Run(() =>
 //            {
@@ -95,7 +95,7 @@
 //                }
 //                var cidades = new List<Cidade>();
 //                var cWhere = DBCidadeDicInfo.UFSql(filtro.UF); // Cada propriedade tem seu DB[tabela]DicInfo.[campo]Sql // Se for o Caso, concactena com filtro.Operador
-//                var result = MenphisSI.GerMDS.Wheres.Cidade.Read(cWhere, oCnn);
+//                var result = MenphisSI.GerAdv.Wheres.Cidade.Read(cWhere, oCnn);
 //                if (result != null)
 //                {
 //                    cidades.AddRange(result);
@@ -113,7 +113,7 @@
 //                {
 //                    return null;
 //                }
-//                return MenphisSI.GerMDS.Readers.Cidade.Read(id, oCnn);
+//                return MenphisSI.GerAdv.Readers.Cidade.Read(id, oCnn);
 //            });
 //        }
 
@@ -127,7 +127,7 @@
 //                    return null;
 //                }
 //                var cWhere = $"{DBCidadeDicInfo.CampoNome}='{name.PreparaParaSql()}'";
-//                return MenphisSI.GerMDS.Readers.Cidade.Read(cWhere, oCnn);
+//                return MenphisSI.GerAdv.Readers.Cidade.Read(cWhere, oCnn);
 //            });
 //        }
 
@@ -140,7 +140,7 @@
 //                {
 //                    return null;
 //                }
-//                MenphisSI.GerMDS.Writers.Cidade.Write(regCidade, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+//                MenphisSI.GerAdv.Writers.Cidade.Write(regCidade, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
 //                return regCidade;
 //            });
 //        }
@@ -154,7 +154,7 @@
 //                {
 //                    return null;
 //                }
-//                var cidade = MenphisSI.GerMDS.Readers.Cidade.Read(id, oCnn);
+//                var cidade = MenphisSI.GerAdv.Readers.Cidade.Read(id, oCnn);
 //                if (cidade != null)
 //                {
 //                    DBCidade.DeletarItem(cidade.Id, oCnn, null);

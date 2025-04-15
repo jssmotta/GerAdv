@@ -1,4 +1,4 @@
-﻿namespace MenphisSI.GerMDS.HealthCheck;
+﻿namespace MenphisSI.GerAdv.HealthCheck;
 
 public class HealthCheckMemoryService() : IHealthCheck, IDisposable
 {

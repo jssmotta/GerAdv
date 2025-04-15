@@ -1,6 +1,6 @@
 ﻿
 
-namespace MenphisSI.GerMDS.Interface;
+namespace MenphisSI.GerAdv.Interface;
 public partial interface IAgendaSemanaService
 {
     Task<IEnumerable<MenuAgendaSemana>?>? Monta(DateTime dataInicial, bool isMobile, string uri);

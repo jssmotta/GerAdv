@@ -1,7 +1,7 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
-namespace MenphisSI.GerMDS.HealthCheck;
+namespace MenphisSI.GerAdv.HealthCheck;
 public partial class AppSettingsHealthCheck
 {
     public static Logger ConfigureNLog() => 

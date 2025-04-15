@@ -1,6 +1,6 @@
-using MenphisSI.GerMDS.HealthCheck;
-using MenphisSI.GerMDS.Services;
-using MenphisSI.GerMDS.Setup;
+using MenphisSI.GerAdv.HealthCheck;
+using MenphisSI.GerAdv.Services;
+using MenphisSI.GerAdv.Setup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -52,11 +52,11 @@ try
         options.Providers.Add<GzipCompressionProvider>();
     });
 
-    MenphisSI.GerMDS.Services.AddServices.Add(builder);
+    MenphisSI.GerAdv.Services.AddServices.Add(builder);
 
-    MenphisSI.GerMDS.Validations.AddServices.Add(builder);
-    MenphisSI.GerMDS.Readers.AddServices.Add(builder);
-    MenphisSI.GerMDS.Writers.AddServices.Add(builder);
+    MenphisSI.GerAdv.Validations.AddServices.Add(builder);
+    MenphisSI.GerAdv.Readers.AddServices.Add(builder);
+    MenphisSI.GerAdv.Writers.AddServices.Add(builder);
 
     // AppSettingsMediator.AddMediatorConfig(builder);
 

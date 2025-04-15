@@ -1,4 +1,4 @@
-﻿namespace MenphisSI.GerMDS.Controller;
+﻿namespace MenphisSI.GerAdv.Controller;
 
 public partial class AgendaSemanaController : ControllerBase
 {
