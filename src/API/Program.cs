@@ -11,20 +11,32 @@ using System.Security.Authentication;
 
 
 var logger = MenphisSI.WebApi.BaseCommon.Helpers.ProgramNLog.ConfigureNLog();
- 
+
 
 try
 {
- 
+
     logger.Info("Iniciado WebApi");
- 
+
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory()) 
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) 
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true) 
-    .AddEnvironmentVariables();
+
+
+    if (builder.Environment.IsDevelopment())
+    {
+        builder.Configuration
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables(); 
+    }
+    else
+    {
+        builder.Configuration
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables(); ;
+    }
 
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
@@ -34,7 +46,7 @@ try
         throw new Exception("AppSettings:ValidUris não configurado");
     }
 
-    builder.Host.UseNLog(); 
+    builder.Host.UseNLog();
 
     // Add services to the container.
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -60,9 +72,9 @@ try
 
     // AppSettingsMediator.AddMediatorConfig(builder);
 
-
+    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
     AppSettingsHealthCheck.Add(builder); // Add HealthCheck
-    AppSettingsHealthCheck.Add(builder, logger); // Add HealthCheck
+    AppSettingsHealthCheck.Add(builder, logger, settings); // Add HealthCheck
     //AppSettingsHealthCheck.AddHealthCheck(builder);
 
     builder.Services.AddControllers();
@@ -74,8 +86,8 @@ try
         options.DefaultApiVersion = new ApiVersion(1, 0);
     });
 
-     builder.Services.AddHybridCache();
- 
+    builder.Services.AddHybridCache();
+
     //builder.WebHost.ConfigureKestrel(options =>
     //{
     //    options.ConfigureHttpsDefaults(httpsOptions =>
@@ -329,9 +341,9 @@ END;
 }
 catch (Exception exception)
 {
- 
+
     logger.Error(exception, "Stopped program because of exception");
- 
+
     throw;
 }
 finally

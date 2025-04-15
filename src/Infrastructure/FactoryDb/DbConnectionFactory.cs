@@ -44,7 +44,7 @@ public static class DbConnectionFactory
                     _connectionPools.TryAdd(connectionString, pool);
                 }
             }
-            catch (Exception ex) { var err = ex.Message; }
+            catch (Exception ex) { throw new Exception($"Erro conexão: " + ex.Message); }
             await InitializePoolAsync(connectionString, pool);
         }
 

@@ -47,9 +47,9 @@ public static partial class Configuracoes
             var connectionString = GetCachedConnectionString(uri, false);
             return DbConnectionFactory.GetConnection(connectionString);
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
+            throw new Exception("Erro conexão BD: " + ex.Message);
         }
     }
      

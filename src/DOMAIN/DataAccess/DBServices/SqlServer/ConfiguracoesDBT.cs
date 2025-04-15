@@ -266,6 +266,26 @@ public class ConfiguracoesDBT
             connection: oCnn);
         return cmd.ExecuteScalar()?.ToString() ?? string.Empty;
     }
+
+    internal static async Task<string> GetScalarAsync(string cSql, SqlConnection oCnn)
+    {
+        if (oCnn is null)
+            throw new ArgumentNullException(nameof(oCnn), "A conexão não pode ser nula.");
+
+        if (string.IsNullOrWhiteSpace(cSql))
+            throw new ArgumentException("O comando SQL não pode ser nulo ou vazio.", nameof(cSql));
+
+        using var cmd = new SqlCommand($"{SQLNoCount}{cSql}", oCnn);
+        try
+        {
+            var result = await cmd.ExecuteScalarAsync();
+            return result?.ToString() ?? string.Empty; // Retorna o valor como string ou vazio se for nulo
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao executar GetScalarAsync: {ex.Message}. SQL: {cSql}", ex);
+        }
+    }
 }
 
  

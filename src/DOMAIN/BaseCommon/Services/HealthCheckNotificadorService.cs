@@ -1,6 +1,6 @@
-﻿using Domain.BaseCommon.Helpers;
+﻿using Domain.BaseCommon.Helpers; 
 
-namespace MenphisSI.GerBOL.HealthCheck;
+namespace MenphisSI.GerAdv.HealthCheck;
 
 public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck, IDisposable
 {
@@ -8,22 +8,26 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
     private bool _disposed;
     private readonly string _uri = uri;
 
+#if (!DEBUG)
     private const int PHoraParaLembrar = 12; // Definido pela Magnanima Dra. Aliçar Ibrahim
+#else
+ private int PHoraParaLembrar = DateTime.Now.Hour; // Definido pela Magnanima Dra. Aliçar Ibrahim
+#endif
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {       
         try
-        {
-            using var oCnn = Configuracoes.GetConnectionByUri(_uri);
-            if (oCnn is null)
-            {
-                return CreateUnhealthyResult("Conexão não disponível");
-            }
+        {          
 
-            if (await ShouldSendNotificationsNow(oCnn))
+            if (DateTime.Now.Hour == PHoraParaLembrar)
             {
-                var notificationsResult = await SendNotificationsAndGetResult(oCnn);
-                return notificationsResult;
+                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                if (oCnn is null)
+                {
+                    return CreateUnhealthyResult("Conexão não disponível");
+                }
+
+                _ = await SendNotificationsAndGetResult(oCnn);
             }
 
             return CreateHealthyResult("Notificador operacional");
@@ -35,61 +39,11 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
         }
     }
 
-    private async Task<bool> ShouldSendNotificationsNow(SqlConnection oCnn)
-    {
-        var dbOperator = new DBOperador { ID = 1 };
-
-        if (DateTime.Now.Hour > PHoraParaLembrar && DateTime.Now.Hour <= 21) // envia novos booletos somente em horário comercial.
-        {
-            var pendingNotificationKey = await GetPendingNotificationKey(oCnn);
-            if (!string.IsNullOrEmpty(pendingNotificationKey))
-            {
-                if (dbOperator.ReadCfgBool(pendingNotificationKey, oCnn))
-                {
-                    return false;
-                }
-
-                // Mesmo sem ter a certeza do envio já marca como enviado para evitar erros
-                using var oCnnRw = Configuracoes.GetConnectionByUriRw(_uri);
-                dbOperator.WriteCfgBool(pendingNotificationKey, true, oCnn);
-
-                return true;
-            }
-        }
-
-        if (DateTime.Now.Hour == PHoraParaLembrar)
-        {            
-            var scheduleKey = GetScheduleKey();
-            return !dbOperator.ReadCfgBool(scheduleKey, oCnn);
-        }
-        return false;
-    }
-
-    private async Task<string> GetPendingNotificationKey(SqlConnection oCnn)
-    {
-        const string PendingNotificationQuery = @"
-        SELECT TOP 1 d.data FROM (
-            SELECT 
-                CASE WHEN ageDtAtu IS NULL OR ageDtCad > ageDtAtu 
-                THEN ageDtCad ELSE ageDtAtu END AS data 
-            FROM dbo.Agenda a 
-            WHERE (a.ageConcluido IS NULL OR a.ageConcluido = 0) 
-            AND a.ageCompromisso LIKE '%Valor%' 
-            AND (a.ageData >= DATEADD(DAY, -3, GETDATE()) 
-            AND a.ageData <= DATEADD(DAY, 2, GETDATE()))
-        ) d;";
-
-        var dataKey = await ConfiguracoesDBT.GetScalarAsync(PendingNotificationQuery, oCnn);
-        return dataKey?.ToString() ?? string.Empty;
-    }
+ 
 
     private string GetScheduleKey()
     {
-        string key = $"boletos-send-time-{DateTime.Now:dd/MM/yyyy}-{_uri}";
-
-        //#if DEBUG
-        //        key = $"boletos-send-time-{DateTime.Now}";
-        //#endif
+        string key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now:dd/MM/yyyy}";        
 
         return key;
     }
@@ -98,14 +52,22 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
     {
         string key = GetScheduleKey();
 
-        // Marca como processado para evitar reprocessamento
-        using var writeConnection = Configuracoes.GetConnectionByUriRw(_uri);
         var dbOperator = new DBOperador { ID = 1 };
+
+
+        if (dbOperator.ReadCfgBool(key, oCnn))
+        {
+            // Se já foi processado, não faz nada
+            return CreateHealthyResult("Notificador já processado", null);
+        }
+
+        // Marca como processado para evitar reprocessamento
+        using var writeConnection = await Configuracoes.GetConnectionByUriRwAsync(_uri); 
         dbOperator.WriteCfgBool(key, true, writeConnection);
 
         // Envia as notificações
         var notificationService = new EnvioNotificacoes();
-        int sentCount = notificationService.EnviarNotificacoesDeBoletos(_uri, oCnn);
+        int sentCount = notificationService.EnviarEmailsParaOperadores(uri, oCnn);
 
         var data = new Dictionary<string, object>
     {

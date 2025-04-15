@@ -7,11 +7,17 @@ public partial class AppSettingsHealthCheck
     public static Logger ConfigureNLog() => 
         WebApi.BaseCommon.Helpers.ProgramNLog.ConfigureHealthCheckNLog();
      
-    public static void Add(WebApplicationBuilder builder, Logger logger)
+    public static void Add(WebApplicationBuilder builder, Logger logger, AppSettings settings)
     {
         builder.Services.AddHealthChecks().AddCheck<HealthCheckMemoryService>("Memory", failureStatus: HealthStatus.Degraded, tags: ["Memory"]);
 
-       
+      
+        foreach (var uri in settings.ValidUris.Split(";"))
+        {
+            builder.Services.AddHealthChecks()
+                .AddCheck($"Notificador - {uri}", new HealthCheckNotificadorService(uri), failureStatus: HealthStatus.Degraded, tags: ["Notificador"]);
+        }
+
     }
     public static void Add(WebApplicationBuilder builder)
     {

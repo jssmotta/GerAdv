@@ -35,7 +35,7 @@ public static partial class Configuracoes
             throw new InvalidEnumArgumentException("dbRec is null");
         }
 
-        var cacheMe = $"Packet Size=512;encrypt=true;Data Source=tcp:{dbRec.DataSource};Initial Catalog={dbRec.InitialCatalog};User Id={dbRec.UserID};Password=Marisa#2025;Max Pool Size=100;Pooling=true;Integrated Security=false;Connect Timeout=30;Persist Security Info=True;TrustServerCertificate=True;";
+        var cacheMe = $"Packet Size=512;encrypt=true;Data Source=tcp:{dbRec.DataSource};Initial Catalog={dbRec.InitialCatalog};User Id={dbRec.UserID};Password={dbRec.Pwd256.Decrypt()};Max Pool Size=100;Pooling=true;Integrated Security=false;Connect Timeout=30;Persist Security Info=True;TrustServerCertificate=True;";
         return cacheMe;
     }
 
