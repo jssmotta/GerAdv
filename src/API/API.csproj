@@ -1,0 +1,263 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Platforms>AnyCPU;x86</Platforms>
+		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+		<LangVersion>13.0</LangVersion>
+		<Configurations>Debug;Release;TESTE_PROD;Development</Configurations>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+<ItemGroup>
+<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.13.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
+</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="BaseCommon\Web\**" />
+		<Compile Remove="CODIGO_GERADO\GerMDS_TS\**" />
+		<Compile Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<Compile Remove="Devourer\**" />
+		<Compile Remove="GerMDS_AngularReact\**" />
+		<Compile Remove="ReactCode\**" />
+		<Content Remove="BaseCommon\Web\**" />
+		<Content Remove="CODIGO_GERADO\GerMDS_TS\**" />
+		<Content Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<Content Remove="Devourer\**" />
+		<Content Remove="GerMDS_AngularReact\**" />
+		<Content Remove="ReactCode\**" />
+		<EmbeddedResource Remove="BaseCommon\Web\**" />
+		<EmbeddedResource Remove="CODIGO_GERADO\GerMDS_TS\**" />
+		<EmbeddedResource Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<EmbeddedResource Remove="Devourer\**" />
+		<EmbeddedResource Remove="GerMDS_AngularReact\**" />
+		<EmbeddedResource Remove="ReactCode\**" />
+		<None Remove="BaseCommon\Web\**" />
+		<None Remove="CODIGO_GERADO\GerMDS_TS\**" />
+		<None Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<None Remove="Devourer\**" />
+		<None Remove="GerMDS_AngularReact\**" />
+		<None Remove="ReactCode\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="BaseCommon\JwtMiddleware.cs" />
+		<Compile Remove="BaseCommon\Models\User.cs" />
+	</ItemGroup>
+	<PropertyGroup>
+		<SourceLinkCreate>false</SourceLinkCreate>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\cs\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\de\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\es\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\fr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\it\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\ja\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\ko\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.Bcl.AsyncInterfaces.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.Build.Locator.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe.config" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.IO.Redist.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Newtonsoft.Json.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\pl\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\ru\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Buffers.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Collections.Immutable.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Memory.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Numerics.Vectors.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Runtime.CompilerServices.Unsafe.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Text.Json.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Threading.Tasks.Extensions.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.ValueTuple.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\tr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\zh-Hans\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\zh-Hant\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\cs\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\de\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\es\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\fr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\it\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\ja\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\ko\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.Build.Locator.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.deps.json" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll.config" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.runtimeconfig.json" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Newtonsoft.Json.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\pl\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\ru\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.Collections.Immutable.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.Text.Json.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\tr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\zh-Hans\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\Jefferson\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\zh-Hant\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\cs\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\de\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\es\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\fr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\it\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\ja\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\ko\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.Bcl.AsyncInterfaces.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.Build.Locator.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe.config" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Microsoft.IO.Redist.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\Newtonsoft.Json.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\pl\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\ru\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Buffers.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Collections.Immutable.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Memory.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Numerics.Vectors.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Runtime.CompilerServices.Unsafe.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Text.Json.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.Threading.Tasks.Extensions.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\System.ValueTuple.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\tr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\zh-Hans\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-net472\zh-Hant\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\cs\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\de\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\es\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\fr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\it\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\ja\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\ko\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.Build.Locator.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.deps.json" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll.config" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.runtimeconfig.json" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\Newtonsoft.Json.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\pl\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\ru\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.Collections.Immutable.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\System.Text.Json.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\tr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\zh-Hans\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.12.0\contentFiles\any\any\BuildHost-netcore\zh-Hant\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\cs\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\de\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\es\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\fr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\it\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\ja\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\ko\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\Microsoft.Build.Locator.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.exe.config" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\Microsoft.IO.Redist.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\Newtonsoft.Json.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\pl\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\ru\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.Buffers.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.Collections.Immutable.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.Memory.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.Numerics.Vectors.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.Runtime.CompilerServices.Unsafe.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\System.Threading.Tasks.Extensions.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\tr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\zh-Hans\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-net472\zh-Hant\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\cs\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\de\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\es\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\fr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\it\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\ja\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\ko\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\Microsoft.Build.Locator.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.deps.json" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll.config" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.runtimeconfig.json" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\Newtonsoft.Json.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\pl\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\ru\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\System.Collections.Immutable.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\tr\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\zh-Hans\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.13.0\contentFiles\any\any\BuildHost-netcore\zh-Hant\System.CommandLine.resources.dll" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
+
+
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.13.0">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+ 
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="9.4.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.4" />
+		<PackageReference Include="NLog" Version="5.4.0" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.1" />
+		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="CODIGO_GERADO\" />
+		<Folder Include="wwwRoot\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DOMAIN\Domain.csproj" />
+		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="NLog.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>

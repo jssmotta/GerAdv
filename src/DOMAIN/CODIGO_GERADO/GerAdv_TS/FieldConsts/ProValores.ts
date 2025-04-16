@@ -1,0 +1,16 @@
+﻿export enum FieldsProValores
+{	processo = `Processo`,
+	tipovalorprocesso = `TipoValorProcesso`,
+	indice = `Indice`,
+	ignorar = `Ignorar`,
+	data = `Data`,
+	valororiginal = `ValorOriginal`,
+	percmulta = `PercMulta`,
+	valormulta = `ValorMulta`,
+	percjuros = `PercJuros`,
+	valororiginalcorrigidoindice = `ValorOriginalCorrigidoIndice`,
+	valormultacorrigido = `ValorMultaCorrigido`,
+	valorjuroscorrigido = `ValorJurosCorrigido`,
+	valorfinal = `ValorFinal`,
+	dataultimacorrecao = `DataUltimaCorrecao`,
+}

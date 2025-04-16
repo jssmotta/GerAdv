@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "9f8c829f-e400-4ed6-967d-92ba934a9750",
+		"name": "TestNameCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19066130"
+	},
+	"item": [
+		{
+			"name": "Formulas/GetAll",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ0aXBvIjoiRnVuY2lvbmFyaW8iLCJuYmYiOjE3MjkyNTYyMzIsImV4cCI6MTcyOTg2MTAzMSwiaWF0IjoxNzI5MjU2MjMyfQ.tK_gHaH2hsh3bqUzFh6N3Gsgw0B0DzVaDsOb0mYCfB4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7179/api/v1/formulas/getall",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7179",
+					"path": [
+						"api",
+						"v1",
+						"formulas",
+						"getall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Formulas/GetListN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ0aXBvIjoiTWVkaWNvIiwibmJmIjoxNzI5MjcyMDE1LCJleHAiOjE3Mjk4NzY4MTUsImlhdCI6MTcyOTI3MjAxNX0.TNu4UA5YakW8AUdruX8ShgZmoXClg7sqewSoDukN3zM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7179/api/v1/Formulas/GetListN/listN",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7179",
+					"path": [
+						"api",
+						"v1",
+						"Formulas",
+						"GetListN",
+						"listN"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Formulas/Filter",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ0aXBvIjoiTWVkaWNvIiwibmJmIjoxNzI5MjcyMDE1LCJleHAiOjE3Mjk4NzY4MTUsImlhdCI6MTcyOTI3MjAxNX0.TNu4UA5YakW8AUdruX8ShgZmoXClg7sqewSoDukN3zM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"operator\": \" AND \",\r\n    \"posologia\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7179/api/v1/Formulas/Filter/filter",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7179",
+					"path": [
+						"api",
+						"v1",
+						"Formulas",
+						"Filter",
+						"filter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Formulas/GetByName",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ0aXBvIjoiRnVuY2lvbmFyaW8iLCJuYmYiOjE3MjkyNTYyMzIsImV4cCI6MTcyOTg2MTAzMSwiaWF0IjoxNzI5MjU2MjMyfQ.tK_gHaH2hsh3bqUzFh6N3Gsgw0B0DzVaDsOb0mYCfB4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7179/api/v1/formulas/getbyname?name=VALUE_NAME",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7179",
+					"path": [
+						"api",
+						"v1",
+						"formulas",
+						"getbyname"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "VALUE_NAME",
+							"description": "DESCRIÇÃO"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
