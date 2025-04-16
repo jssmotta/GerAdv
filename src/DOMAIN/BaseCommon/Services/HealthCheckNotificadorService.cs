@@ -20,7 +20,9 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
         {
             if (DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
             {
+                #if (!DEBUG)
                 if (DateTime.Now.Hour == PHoraParaLembrar)
+                #endif
                 {
                     using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
                     if (oCnn is null)
@@ -45,8 +47,10 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
 
     private string GetScheduleKey()
     {
-        string key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now:dd/MM/yyyy}";        
-
+        string key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now:dd/MM/yyyy}";
+#if (DEBUG)
+        key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now}";
+#endif
         return key;
     }
 

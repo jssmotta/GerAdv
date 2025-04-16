@@ -336,19 +336,22 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
                 Time2Live = 24
             };
 
+#if (!DEBUG)
             _ = servicoEmail.Send(email);
-
+#endif
             if (count == 0)
             {
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday) // DIA DE TESTES
+                #if (!DEBUG)
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday) // DIA DE TESTES
+                #endif
                 {
                     var email2 = new MenphisSI.Api.Models.SendEmail
                     {
-                        ParaEmail = "suporte@menphis.com.br",
-                        ParaNome = "SUPORTE MENPHIS",
+                        ParaEmail = "motta@menphis.com.br",
+                        ParaNome = "Jefferson S. Motta",
                         Assunto = assunto + cNome,
                         Mensagem = conteudoHtml,
-                        NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                        NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                         Time2Live = 24
                     };
                     _ = servicoEmail.Send(email2);
