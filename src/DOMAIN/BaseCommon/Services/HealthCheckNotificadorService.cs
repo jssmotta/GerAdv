@@ -47,7 +47,7 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
 
     private string GetScheduleKey()
     {
-        string key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now:dd/MM/yyyy}";
+        string key = $"agenda-adv.net-sender-time-{_uri}-{DateTime.Now:dd/MM/yyyy}";
 #if (DEBUG)
         key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now}";
 #endif
