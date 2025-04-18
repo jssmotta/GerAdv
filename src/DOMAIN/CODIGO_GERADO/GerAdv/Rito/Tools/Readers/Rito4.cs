@@ -8,6 +8,7 @@ public partial interface IRitoReader
     RitoResponse? Read(int id, SqlConnection oCnn);
     RitoResponse? Read(string where, SqlConnection oCnn);
     RitoResponse? Read(Entity.DBRito dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     RitoResponse? Read(DBRito dbRec);
 }
 

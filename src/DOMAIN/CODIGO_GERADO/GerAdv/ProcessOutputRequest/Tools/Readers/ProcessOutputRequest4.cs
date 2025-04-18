@@ -8,6 +8,7 @@ public partial interface IProcessOutputRequestReader
     ProcessOutputRequestResponse? Read(int id, SqlConnection oCnn);
     ProcessOutputRequestResponse? Read(string where, SqlConnection oCnn);
     ProcessOutputRequestResponse? Read(Entity.DBProcessOutputRequest dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProcessOutputRequestResponse? Read(DBProcessOutputRequest dbRec);
 }
 

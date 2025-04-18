@@ -8,6 +8,7 @@ public partial interface IFaseReader
     FaseResponse? Read(int id, SqlConnection oCnn);
     FaseResponse? Read(string where, SqlConnection oCnn);
     FaseResponse? Read(Entity.DBFase dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     FaseResponse? Read(DBFase dbRec);
 }
 

@@ -19,7 +19,7 @@ public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
         if (await IsDuplicado(reg, service, uri))
             return $"OperadorGruposAgenda '{reg.Nome}' já cadastrado.";
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

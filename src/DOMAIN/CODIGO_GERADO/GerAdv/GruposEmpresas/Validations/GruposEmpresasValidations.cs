@@ -17,7 +17,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         // Oponentes
-        if (reg.Oponente.IsEmptyIDNumber())
+        if (!reg.Oponente.IsEmptyIDNumber())
         {
             var regOponentes = oponentesReader.Read(reg.Oponente, oCnn);
             if (regOponentes == null || regOponentes.Id != reg.Oponente)
@@ -27,7 +27,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

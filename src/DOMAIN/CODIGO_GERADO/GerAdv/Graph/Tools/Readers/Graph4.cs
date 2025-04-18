@@ -8,6 +8,7 @@ public partial interface IGraphReader
     GraphResponse? Read(int id, SqlConnection oCnn);
     GraphResponse? Read(string where, SqlConnection oCnn);
     GraphResponse? Read(Entity.DBGraph dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GraphResponse? Read(DBGraph dbRec);
 }
 

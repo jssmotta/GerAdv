@@ -15,7 +15,7 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

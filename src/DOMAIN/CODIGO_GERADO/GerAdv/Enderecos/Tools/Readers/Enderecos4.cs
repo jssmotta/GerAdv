@@ -8,6 +8,7 @@ public partial interface IEnderecosReader
     EnderecosResponse? Read(int id, SqlConnection oCnn);
     EnderecosResponse? Read(string where, SqlConnection oCnn);
     EnderecosResponse? Read(Entity.DBEnderecos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EnderecosResponse? Read(DBEnderecos dbRec);
 }
 

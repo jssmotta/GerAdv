@@ -8,6 +8,7 @@ public partial interface IGUTAtividadesReader
     GUTAtividadesResponse? Read(int id, SqlConnection oCnn);
     GUTAtividadesResponse? Read(string where, SqlConnection oCnn);
     GUTAtividadesResponse? Read(Entity.DBGUTAtividades dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTAtividadesResponse? Read(DBGUTAtividades dbRec);
 }
 

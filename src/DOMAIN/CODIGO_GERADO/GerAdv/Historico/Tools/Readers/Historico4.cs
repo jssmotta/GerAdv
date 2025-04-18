@@ -8,6 +8,7 @@ public partial interface IHistoricoReader
     HistoricoResponse? Read(int id, SqlConnection oCnn);
     HistoricoResponse? Read(string where, SqlConnection oCnn);
     HistoricoResponse? Read(Entity.DBHistorico dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     HistoricoResponse? Read(DBHistorico dbRec);
 }
 

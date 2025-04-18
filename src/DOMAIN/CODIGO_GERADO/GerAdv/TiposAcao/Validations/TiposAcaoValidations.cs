@@ -16,6 +16,14 @@ public class TiposAcaoValidation : ITiposAcaoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"TiposAcao '{reg.Nome}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.TiposAcao reg, ITiposAcaoService service, string uri)
+    {
+        var existingTiposAcao = (await service.Filter(new Filters.FilterTiposAcao { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingTiposAcao != null && existingTiposAcao.Id > 0 && existingTiposAcao.Id != reg.Id;
     }
 }

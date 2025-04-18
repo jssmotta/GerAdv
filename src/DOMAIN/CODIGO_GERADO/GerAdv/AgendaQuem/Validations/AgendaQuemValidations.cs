@@ -15,7 +15,7 @@ public class AgendaQuemValidation : IAgendaQuemValidation
         if (reg == null)
             return "Objeto está nulo";
         // Advogados
-        if (reg.Advogado.IsEmptyIDNumber())
+        if (!reg.Advogado.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
@@ -25,7 +25,7 @@ public class AgendaQuemValidation : IAgendaQuemValidation
         }
 
         // Funcionarios
-        if (reg.Funcionario.IsEmptyIDNumber())
+        if (!reg.Funcionario.IsEmptyIDNumber())
         {
             var regFuncionarios = funcionariosReader.Read(reg.Funcionario, oCnn);
             if (regFuncionarios == null || regFuncionarios.Id != reg.Funcionario)
@@ -35,7 +35,7 @@ public class AgendaQuemValidation : IAgendaQuemValidation
         }
 
         // Prepostos
-        if (reg.Preposto.IsEmptyIDNumber())
+        if (!reg.Preposto.IsEmptyIDNumber())
         {
             var regPrepostos = prepostosReader.Read(reg.Preposto, oCnn);
             if (regPrepostos == null || regPrepostos.Id != reg.Preposto)

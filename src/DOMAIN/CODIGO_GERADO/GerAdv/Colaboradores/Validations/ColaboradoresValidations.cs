@@ -21,7 +21,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
         if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
             return $"'Colaboradores' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
         // Cargos
-        if (reg.Cargo.IsEmptyIDNumber())
+        if (!reg.Cargo.IsEmptyIDNumber())
         {
             var regCargos = cargosReader.Read(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
@@ -31,7 +31,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

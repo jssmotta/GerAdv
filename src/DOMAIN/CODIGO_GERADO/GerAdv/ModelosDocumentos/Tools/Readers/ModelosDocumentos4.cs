@@ -8,6 +8,7 @@ public partial interface IModelosDocumentosReader
     ModelosDocumentosResponse? Read(int id, SqlConnection oCnn);
     ModelosDocumentosResponse? Read(string where, SqlConnection oCnn);
     ModelosDocumentosResponse? Read(Entity.DBModelosDocumentos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ModelosDocumentosResponse? Read(DBModelosDocumentos dbRec);
 }
 

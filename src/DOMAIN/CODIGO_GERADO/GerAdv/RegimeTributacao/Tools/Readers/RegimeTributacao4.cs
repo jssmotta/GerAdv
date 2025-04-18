@@ -8,6 +8,7 @@ public partial interface IRegimeTributacaoReader
     RegimeTributacaoResponse? Read(int id, SqlConnection oCnn);
     RegimeTributacaoResponse? Read(string where, SqlConnection oCnn);
     RegimeTributacaoResponse? Read(Entity.DBRegimeTributacao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     RegimeTributacaoResponse? Read(DBRegimeTributacao dbRec);
 }
 

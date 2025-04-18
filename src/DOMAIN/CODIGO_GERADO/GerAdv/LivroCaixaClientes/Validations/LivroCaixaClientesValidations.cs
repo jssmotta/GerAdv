@@ -15,7 +15,7 @@ public class LivroCaixaClientesValidation : ILivroCaixaClientesValidation
         if (reg == null)
             return "Objeto está nulo";
         // LivroCaixa
-        if (reg.LivroCaixa.IsEmptyIDNumber())
+        if (!reg.LivroCaixa.IsEmptyIDNumber())
         {
             var regLivroCaixa = livrocaixaReader.Read(reg.LivroCaixa, oCnn);
             if (regLivroCaixa == null || regLivroCaixa.Id != reg.LivroCaixa)
@@ -25,7 +25,7 @@ public class LivroCaixaClientesValidation : ILivroCaixaClientesValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

@@ -8,6 +8,7 @@ public partial interface IPrecatoriaReader
     PrecatoriaResponse? Read(int id, SqlConnection oCnn);
     PrecatoriaResponse? Read(string where, SqlConnection oCnn);
     PrecatoriaResponse? Read(Entity.DBPrecatoria dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PrecatoriaResponse? Read(DBPrecatoria dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface IPenhoraStatusReader
     PenhoraStatusResponse? Read(int id, SqlConnection oCnn);
     PenhoraStatusResponse? Read(string where, SqlConnection oCnn);
     PenhoraStatusResponse? Read(Entity.DBPenhoraStatus dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PenhoraStatusResponse? Read(DBPenhoraStatus dbRec);
 }
 

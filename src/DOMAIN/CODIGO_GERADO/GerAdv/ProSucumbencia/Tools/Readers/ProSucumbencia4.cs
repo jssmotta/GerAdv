@@ -8,6 +8,7 @@ public partial interface IProSucumbenciaReader
     ProSucumbenciaResponse? Read(int id, SqlConnection oCnn);
     ProSucumbenciaResponse? Read(string where, SqlConnection oCnn);
     ProSucumbenciaResponse? Read(Entity.DBProSucumbencia dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProSucumbenciaResponse? Read(DBProSucumbencia dbRec);
 }
 

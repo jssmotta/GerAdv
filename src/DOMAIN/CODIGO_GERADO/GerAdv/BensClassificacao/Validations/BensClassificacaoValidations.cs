@@ -16,6 +16,14 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"BensClassificacao '{reg.Nome}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.BensClassificacao reg, IBensClassificacaoService service, string uri)
+    {
+        var existingBensClassificacao = (await service.Filter(new Filters.FilterBensClassificacao { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingBensClassificacao != null && existingBensClassificacao.Id > 0 && existingBensClassificacao.Id != reg.Id;
     }
 }

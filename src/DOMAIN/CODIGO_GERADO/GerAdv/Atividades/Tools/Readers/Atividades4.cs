@@ -8,6 +8,7 @@ public partial interface IAtividadesReader
     AtividadesResponse? Read(int id, SqlConnection oCnn);
     AtividadesResponse? Read(string where, SqlConnection oCnn);
     AtividadesResponse? Read(Entity.DBAtividades dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AtividadesResponse? Read(DBAtividades dbRec);
 }
 

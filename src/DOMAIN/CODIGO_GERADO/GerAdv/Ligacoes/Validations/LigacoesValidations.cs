@@ -17,7 +17,7 @@ public class LigacoesValidation : ILigacoesValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -27,7 +27,7 @@ public class LigacoesValidation : ILigacoesValidation
         }
 
         // Ramal
-        if (reg.Ramal.IsEmptyIDNumber())
+        if (!reg.Ramal.IsEmptyIDNumber())
         {
             var regRamal = ramalReader.Read(reg.Ramal, oCnn);
             if (regRamal == null || regRamal.Id != reg.Ramal)
@@ -37,7 +37,7 @@ public class LigacoesValidation : ILigacoesValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

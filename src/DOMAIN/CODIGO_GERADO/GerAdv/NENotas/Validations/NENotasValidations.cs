@@ -17,7 +17,7 @@ public class NENotasValidation : INENotasValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // Apenso
-        if (reg.Apenso.IsEmptyIDNumber())
+        if (!reg.Apenso.IsEmptyIDNumber())
         {
             var regApenso = apensoReader.Read(reg.Apenso, oCnn);
             if (regApenso == null || regApenso.Id != reg.Apenso)
@@ -27,7 +27,7 @@ public class NENotasValidation : INENotasValidation
         }
 
         // Precatoria
-        if (reg.Precatoria.IsEmptyIDNumber())
+        if (!reg.Precatoria.IsEmptyIDNumber())
         {
             var regPrecatoria = precatoriaReader.Read(reg.Precatoria, oCnn);
             if (regPrecatoria == null || regPrecatoria.Id != reg.Precatoria)
@@ -37,7 +37,7 @@ public class NENotasValidation : INENotasValidation
         }
 
         // Instancia
-        if (reg.Instancia.IsEmptyIDNumber())
+        if (!reg.Instancia.IsEmptyIDNumber())
         {
             var regInstancia = instanciaReader.Read(reg.Instancia, oCnn);
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
@@ -47,7 +47,7 @@ public class NENotasValidation : INENotasValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

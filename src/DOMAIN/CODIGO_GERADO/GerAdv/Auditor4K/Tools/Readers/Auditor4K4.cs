@@ -8,6 +8,7 @@ public partial interface IAuditor4KReader
     Auditor4KResponse? Read(int id, SqlConnection oCnn);
     Auditor4KResponse? Read(string where, SqlConnection oCnn);
     Auditor4KResponse? Read(Entity.DBAuditor4K dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     Auditor4KResponse? Read(DBAuditor4K dbRec);
 }
 

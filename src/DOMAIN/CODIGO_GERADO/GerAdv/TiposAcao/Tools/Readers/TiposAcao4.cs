@@ -8,6 +8,7 @@ public partial interface ITiposAcaoReader
     TiposAcaoResponse? Read(int id, SqlConnection oCnn);
     TiposAcaoResponse? Read(string where, SqlConnection oCnn);
     TiposAcaoResponse? Read(Entity.DBTiposAcao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TiposAcaoResponse? Read(DBTiposAcao dbRec);
 }
 

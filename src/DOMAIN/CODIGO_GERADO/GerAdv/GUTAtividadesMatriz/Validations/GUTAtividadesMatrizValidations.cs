@@ -15,7 +15,7 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
         if (reg == null)
             return "Objeto está nulo";
         // GUTMatriz
-        if (reg.GUTMatriz.IsEmptyIDNumber())
+        if (!reg.GUTMatriz.IsEmptyIDNumber())
         {
             var regGUTMatriz = gutmatrizReader.Read(reg.GUTMatriz, oCnn);
             if (regGUTMatriz == null || regGUTMatriz.Id != reg.GUTMatriz)
@@ -25,7 +25,7 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
         }
 
         // GUTAtividades
-        if (reg.GUTAtividade.IsEmptyIDNumber())
+        if (!reg.GUTAtividade.IsEmptyIDNumber())
         {
             var regGUTAtividades = gutatividadesReader.Read(reg.GUTAtividade, oCnn);
             if (regGUTAtividades == null || regGUTAtividades.Id != reg.GUTAtividade)

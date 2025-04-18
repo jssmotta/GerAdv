@@ -8,6 +8,7 @@ public partial interface ISMSAliceReader
     SMSAliceResponse? Read(int id, SqlConnection oCnn);
     SMSAliceResponse? Read(string where, SqlConnection oCnn);
     SMSAliceResponse? Read(Entity.DBSMSAlice dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     SMSAliceResponse? Read(DBSMSAlice dbRec);
 }
 

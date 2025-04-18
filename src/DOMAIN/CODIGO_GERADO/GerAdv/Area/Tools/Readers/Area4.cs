@@ -8,6 +8,7 @@ public partial interface IAreaReader
     AreaResponse? Read(int id, SqlConnection oCnn);
     AreaResponse? Read(string where, SqlConnection oCnn);
     AreaResponse? Read(Entity.DBArea dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AreaResponse? Read(DBArea dbRec);
 }
 

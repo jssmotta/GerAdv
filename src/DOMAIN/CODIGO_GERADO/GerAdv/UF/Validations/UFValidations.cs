@@ -19,7 +19,7 @@ public class UFValidation : IUFValidation
         if (await IsDuplicado(reg, service, uri))
             return $"UF '{reg.IdUF}' já cadastrado.";
         // Paises
-        if (reg.Pais.IsEmptyIDNumber())
+        if (!reg.Pais.IsEmptyIDNumber())
         {
             var regPaises = paisesReader.Read(reg.Pais, oCnn);
             if (regPaises == null || regPaises.Id != reg.Pais)

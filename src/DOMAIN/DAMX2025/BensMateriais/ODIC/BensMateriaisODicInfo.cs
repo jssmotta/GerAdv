@@ -69,7 +69,9 @@ public partial class DBBensMateriaisODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "bmtCodigo"
+            "bmtCodigo",
+            "bmtFornecedor",
+            "bmtNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBBensMateriaisDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

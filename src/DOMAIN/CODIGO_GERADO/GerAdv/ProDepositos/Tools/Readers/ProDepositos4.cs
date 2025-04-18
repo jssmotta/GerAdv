@@ -8,6 +8,7 @@ public partial interface IProDepositosReader
     ProDepositosResponse? Read(int id, SqlConnection oCnn);
     ProDepositosResponse? Read(string where, SqlConnection oCnn);
     ProDepositosResponse? Read(Entity.DBProDepositos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProDepositosResponse? Read(DBProDepositos dbRec);
 }
 

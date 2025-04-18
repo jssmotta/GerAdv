@@ -15,7 +15,7 @@ public class EnderecoSistemaValidation : IEnderecoSistemaValidation
         if (reg == null)
             return "Objeto está nulo";
         // TipoEnderecoSistema
-        if (reg.TipoEnderecoSistema.IsEmptyIDNumber())
+        if (!reg.TipoEnderecoSistema.IsEmptyIDNumber())
         {
             var regTipoEnderecoSistema = tipoenderecosistemaReader.Read(reg.TipoEnderecoSistema, oCnn);
             if (regTipoEnderecoSistema == null || regTipoEnderecoSistema.Id != reg.TipoEnderecoSistema)
@@ -25,7 +25,7 @@ public class EnderecoSistemaValidation : IEnderecoSistemaValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

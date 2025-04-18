@@ -8,6 +8,7 @@ public partial interface IGUTPeriodicidadeReader
     GUTPeriodicidadeResponse? Read(int id, SqlConnection oCnn);
     GUTPeriodicidadeResponse? Read(string where, SqlConnection oCnn);
     GUTPeriodicidadeResponse? Read(Entity.DBGUTPeriodicidade dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTPeriodicidadeResponse? Read(DBGUTPeriodicidade dbRec);
 }
 

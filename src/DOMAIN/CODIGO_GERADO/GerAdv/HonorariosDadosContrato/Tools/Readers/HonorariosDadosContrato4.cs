@@ -8,6 +8,7 @@ public partial interface IHonorariosDadosContratoReader
     HonorariosDadosContratoResponse? Read(int id, SqlConnection oCnn);
     HonorariosDadosContratoResponse? Read(string where, SqlConnection oCnn);
     HonorariosDadosContratoResponse? Read(Entity.DBHonorariosDadosContrato dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     HonorariosDadosContratoResponse? Read(DBHonorariosDadosContrato dbRec);
 }
 

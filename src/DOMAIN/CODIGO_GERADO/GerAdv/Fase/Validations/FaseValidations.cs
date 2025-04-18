@@ -17,7 +17,7 @@ public class FaseValidation : IFaseValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -27,7 +27,7 @@ public class FaseValidation : IFaseValidation
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)

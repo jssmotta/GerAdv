@@ -19,7 +19,7 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
         if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
             return $"'Oponentes Rep Legal' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
         // Oponentes
-        if (reg.Oponente.IsEmptyIDNumber())
+        if (!reg.Oponente.IsEmptyIDNumber())
         {
             var regOponentes = oponentesReader.Read(reg.Oponente, oCnn);
             if (regOponentes == null || regOponentes.Id != reg.Oponente)

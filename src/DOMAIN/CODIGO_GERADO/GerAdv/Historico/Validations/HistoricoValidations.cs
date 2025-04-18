@@ -15,7 +15,7 @@ public class HistoricoValidation : IHistoricoValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class HistoricoValidation : IHistoricoValidation
         }
 
         // Precatoria
-        if (reg.Precatoria.IsEmptyIDNumber())
+        if (!reg.Precatoria.IsEmptyIDNumber())
         {
             var regPrecatoria = precatoriaReader.Read(reg.Precatoria, oCnn);
             if (regPrecatoria == null || regPrecatoria.Id != reg.Precatoria)
@@ -35,7 +35,7 @@ public class HistoricoValidation : IHistoricoValidation
         }
 
         // Apenso
-        if (reg.Apenso.IsEmptyIDNumber())
+        if (!reg.Apenso.IsEmptyIDNumber())
         {
             var regApenso = apensoReader.Read(reg.Apenso, oCnn);
             if (regApenso == null || regApenso.Id != reg.Apenso)
@@ -45,7 +45,7 @@ public class HistoricoValidation : IHistoricoValidation
         }
 
         // Fase
-        if (reg.Fase.IsEmptyIDNumber())
+        if (!reg.Fase.IsEmptyIDNumber())
         {
             var regFase = faseReader.Read(reg.Fase, oCnn);
             if (regFase == null || regFase.Id != reg.Fase)
@@ -55,7 +55,7 @@ public class HistoricoValidation : IHistoricoValidation
         }
 
         // StatusAndamento
-        if (reg.StatusAndamento.IsEmptyIDNumber())
+        if (!reg.StatusAndamento.IsEmptyIDNumber())
         {
             var regStatusAndamento = statusandamentoReader.Read(reg.StatusAndamento, oCnn);
             if (regStatusAndamento == null || regStatusAndamento.Id != reg.StatusAndamento)

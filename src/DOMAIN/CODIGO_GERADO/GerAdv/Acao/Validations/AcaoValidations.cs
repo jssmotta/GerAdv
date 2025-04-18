@@ -16,8 +16,10 @@ public class AcaoValidation : IAcaoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Acao '{reg.Descricao}' já cadastrado.";
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -27,7 +29,7 @@ public class AcaoValidation : IAcaoValidation
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -37,5 +39,11 @@ public class AcaoValidation : IAcaoValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Acao reg, IAcaoService service, string uri)
+    {
+        var existingAcao = (await service.Filter(new Filters.FilterAcao { Area = reg.Area, Descricao = reg.Descricao, Justica = reg.Justica }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingAcao != null && existingAcao.Id > 0 && existingAcao.Id != reg.Id;
     }
 }

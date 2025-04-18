@@ -81,7 +81,10 @@ public partial class DBInstanciaODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "insCodigo"
+            "insCodigo",
+            "insDivisao",
+            "insNroProcesso",
+            "insSubDivisao"
         };
         var result = campos.Where(campo => !campo.Equals(DBInstanciaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

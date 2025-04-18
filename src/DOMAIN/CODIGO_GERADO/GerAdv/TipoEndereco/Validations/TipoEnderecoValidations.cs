@@ -16,6 +16,14 @@ public class TipoEnderecoValidation : ITipoEnderecoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"TipoEndereco '{reg.Descricao}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.TipoEndereco reg, ITipoEnderecoService service, string uri)
+    {
+        var existingTipoEndereco = (await service.Filter(new Filters.FilterTipoEndereco { Descricao = reg.Descricao }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingTipoEndereco != null && existingTipoEndereco.Id > 0 && existingTipoEndereco.Id != reg.Id;
     }
 }

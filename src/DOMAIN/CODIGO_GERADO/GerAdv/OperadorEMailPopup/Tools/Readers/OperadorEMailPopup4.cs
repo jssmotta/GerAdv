@@ -8,6 +8,7 @@ public partial interface IOperadorEMailPopupReader
     OperadorEMailPopupResponse? Read(int id, SqlConnection oCnn);
     OperadorEMailPopupResponse? Read(string where, SqlConnection oCnn);
     OperadorEMailPopupResponse? Read(Entity.DBOperadorEMailPopup dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OperadorEMailPopupResponse? Read(DBOperadorEMailPopup dbRec);
 }
 

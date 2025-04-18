@@ -8,6 +8,7 @@ public partial interface IRamalReader
     RamalResponse? Read(int id, SqlConnection oCnn);
     RamalResponse? Read(string where, SqlConnection oCnn);
     RamalResponse? Read(Entity.DBRamal dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     RamalResponse? Read(DBRamal dbRec);
 }
 

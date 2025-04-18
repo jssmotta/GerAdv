@@ -8,6 +8,7 @@ public partial interface IAgendaFinanceiroReader
     AgendaFinanceiroResponse? Read(int id, SqlConnection oCnn);
     AgendaFinanceiroResponse? Read(string where, SqlConnection oCnn);
     AgendaFinanceiroResponse? Read(Entity.DBAgendaFinanceiro dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AgendaFinanceiroResponse? Read(DBAgendaFinanceiro dbRec);
 }
 

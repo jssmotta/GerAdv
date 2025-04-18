@@ -15,7 +15,7 @@ public class ProDepositosValidation : IProDepositosValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class ProDepositosValidation : IProDepositosValidation
         }
 
         // Fase
-        if (reg.Fase.IsEmptyIDNumber())
+        if (!reg.Fase.IsEmptyIDNumber())
         {
             var regFase = faseReader.Read(reg.Fase, oCnn);
             if (regFase == null || regFase.Id != reg.Fase)
@@ -35,7 +35,7 @@ public class ProDepositosValidation : IProDepositosValidation
         }
 
         // TipoProDesposito
-        if (reg.TipoProDesposito.IsEmptyIDNumber())
+        if (!reg.TipoProDesposito.IsEmptyIDNumber())
         {
             var regTipoProDesposito = tipoprodespositoReader.Read(reg.TipoProDesposito, oCnn);
             if (regTipoProDesposito == null || regTipoProDesposito.Id != reg.TipoProDesposito)

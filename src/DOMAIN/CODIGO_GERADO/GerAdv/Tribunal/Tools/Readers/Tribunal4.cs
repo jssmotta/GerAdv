@@ -8,6 +8,7 @@ public partial interface ITribunalReader
     TribunalResponse? Read(int id, SqlConnection oCnn);
     TribunalResponse? Read(string where, SqlConnection oCnn);
     TribunalResponse? Read(Entity.DBTribunal dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TribunalResponse? Read(DBTribunal dbRec);
 }
 

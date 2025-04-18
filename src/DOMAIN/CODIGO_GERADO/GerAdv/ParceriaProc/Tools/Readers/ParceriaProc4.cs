@@ -8,6 +8,7 @@ public partial interface IParceriaProcReader
     ParceriaProcResponse? Read(int id, SqlConnection oCnn);
     ParceriaProcResponse? Read(string where, SqlConnection oCnn);
     ParceriaProcResponse? Read(Entity.DBParceriaProc dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ParceriaProcResponse? Read(DBParceriaProc dbRec);
 }
 

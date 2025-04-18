@@ -15,7 +15,7 @@ public class ProValoresValidation : IProValoresValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class ProValoresValidation : IProValoresValidation
         }
 
         // TipoValorProcesso
-        if (reg.TipoValorProcesso.IsEmptyIDNumber())
+        if (!reg.TipoValorProcesso.IsEmptyIDNumber())
         {
             var regTipoValorProcesso = tipovalorprocessoReader.Read(reg.TipoValorProcesso, oCnn);
             if (regTipoValorProcesso == null || regTipoValorProcesso.Id != reg.TipoValorProcesso)

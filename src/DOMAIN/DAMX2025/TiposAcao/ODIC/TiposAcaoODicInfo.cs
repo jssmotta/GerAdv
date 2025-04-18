@@ -57,7 +57,8 @@ public partial class DBTiposAcaoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "tacCodigo"
+            "tacCodigo",
+            "tacNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBTiposAcaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

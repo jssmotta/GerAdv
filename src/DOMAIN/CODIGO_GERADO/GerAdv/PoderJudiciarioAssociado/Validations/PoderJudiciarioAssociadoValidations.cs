@@ -15,7 +15,7 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
         if (reg == null)
             return "Objeto está nulo";
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -25,7 +25,7 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -35,7 +35,7 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
         }
 
         // Tribunal
-        if (reg.Tribunal.IsEmptyIDNumber())
+        if (!reg.Tribunal.IsEmptyIDNumber())
         {
             var regTribunal = tribunalReader.Read(reg.Tribunal, oCnn);
             if (regTribunal == null || regTribunal.Id != reg.Tribunal)
@@ -45,7 +45,7 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
         }
 
         // Foro
-        if (reg.Foro.IsEmptyIDNumber())
+        if (!reg.Foro.IsEmptyIDNumber())
         {
             var regForo = foroReader.Read(reg.Foro, oCnn);
             if (regForo == null || regForo.Id != reg.Foro)

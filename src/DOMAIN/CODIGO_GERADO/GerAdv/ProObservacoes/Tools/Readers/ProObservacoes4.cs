@@ -8,6 +8,7 @@ public partial interface IProObservacoesReader
     ProObservacoesResponse? Read(int id, SqlConnection oCnn);
     ProObservacoesResponse? Read(string where, SqlConnection oCnn);
     ProObservacoesResponse? Read(Entity.DBProObservacoes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProObservacoesResponse? Read(DBProObservacoes dbRec);
 }
 

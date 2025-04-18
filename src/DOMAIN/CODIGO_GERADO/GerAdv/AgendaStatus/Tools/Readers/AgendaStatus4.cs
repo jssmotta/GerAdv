@@ -8,6 +8,7 @@ public partial interface IAgendaStatusReader
     AgendaStatusResponse? Read(int id, SqlConnection oCnn);
     AgendaStatusResponse? Read(string where, SqlConnection oCnn);
     AgendaStatusResponse? Read(Entity.DBAgendaStatus dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AgendaStatusResponse? Read(DBAgendaStatus dbRec);
 }
 

@@ -15,7 +15,7 @@ public class NECompromissosValidation : INECompromissosValidation
         if (reg == null)
             return "Objeto está nulo";
         // TipoCompromisso
-        if (reg.TipoCompromisso.IsEmptyIDNumber())
+        if (!reg.TipoCompromisso.IsEmptyIDNumber())
         {
             var regTipoCompromisso = tipocompromissoReader.Read(reg.TipoCompromisso, oCnn);
             if (regTipoCompromisso == null || regTipoCompromisso.Id != reg.TipoCompromisso)

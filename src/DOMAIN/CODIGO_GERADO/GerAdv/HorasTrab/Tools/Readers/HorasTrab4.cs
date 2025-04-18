@@ -8,6 +8,7 @@ public partial interface IHorasTrabReader
     HorasTrabResponse? Read(int id, SqlConnection oCnn);
     HorasTrabResponse? Read(string where, SqlConnection oCnn);
     HorasTrabResponse? Read(Entity.DBHorasTrab dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     HorasTrabResponse? Read(DBHorasTrab dbRec);
 }
 

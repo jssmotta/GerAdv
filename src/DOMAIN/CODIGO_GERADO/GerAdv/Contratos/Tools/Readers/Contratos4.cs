@@ -8,6 +8,7 @@ public partial interface IContratosReader
     ContratosResponse? Read(int id, SqlConnection oCnn);
     ContratosResponse? Read(string where, SqlConnection oCnn);
     ContratosResponse? Read(Entity.DBContratos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ContratosResponse? Read(DBContratos dbRec);
 }
 

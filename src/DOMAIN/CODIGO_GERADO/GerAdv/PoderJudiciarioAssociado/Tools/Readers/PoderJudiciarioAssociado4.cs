@@ -8,6 +8,7 @@ public partial interface IPoderJudiciarioAssociadoReader
     PoderJudiciarioAssociadoResponse? Read(int id, SqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(string where, SqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(Entity.DBPoderJudiciarioAssociado dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(DBPoderJudiciarioAssociado dbRec);
 }
 

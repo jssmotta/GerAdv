@@ -8,6 +8,7 @@ public partial interface IContaCorrenteReader
     ContaCorrenteResponse? Read(int id, SqlConnection oCnn);
     ContaCorrenteResponse? Read(string where, SqlConnection oCnn);
     ContaCorrenteResponse? Read(Entity.DBContaCorrente dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ContaCorrenteResponse? Read(DBContaCorrente dbRec);
 }
 

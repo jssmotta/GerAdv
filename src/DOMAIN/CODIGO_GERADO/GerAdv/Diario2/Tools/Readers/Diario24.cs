@@ -8,6 +8,7 @@ public partial interface IDiario2Reader
     Diario2Response? Read(int id, SqlConnection oCnn);
     Diario2Response? Read(string where, SqlConnection oCnn);
     Diario2Response? Read(Entity.DBDiario2 dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     Diario2Response? Read(DBDiario2 dbRec);
 }
 

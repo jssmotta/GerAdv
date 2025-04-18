@@ -8,6 +8,7 @@ public partial interface IBensMateriaisReader
     BensMateriaisResponse? Read(int id, SqlConnection oCnn);
     BensMateriaisResponse? Read(string where, SqlConnection oCnn);
     BensMateriaisResponse? Read(Entity.DBBensMateriais dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     BensMateriaisResponse? Read(DBBensMateriais dbRec);
 }
 

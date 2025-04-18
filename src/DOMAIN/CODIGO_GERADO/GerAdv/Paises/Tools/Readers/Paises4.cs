@@ -8,6 +8,7 @@ public partial interface IPaisesReader
     PaisesResponse? Read(int id, SqlConnection oCnn);
     PaisesResponse? Read(string where, SqlConnection oCnn);
     PaisesResponse? Read(Entity.DBPaises dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PaisesResponse? Read(DBPaises dbRec);
 }
 

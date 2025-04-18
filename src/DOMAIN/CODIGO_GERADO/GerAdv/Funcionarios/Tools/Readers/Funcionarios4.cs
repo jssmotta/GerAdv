@@ -8,6 +8,7 @@ public partial interface IFuncionariosReader
     FuncionariosResponse? Read(int id, SqlConnection oCnn);
     FuncionariosResponse? Read(string where, SqlConnection oCnn);
     FuncionariosResponse? Read(Entity.DBFuncionarios dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     FuncionariosResponse? Read(DBFuncionarios dbRec);
 }
 

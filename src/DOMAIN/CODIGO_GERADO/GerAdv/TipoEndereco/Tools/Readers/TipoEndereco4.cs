@@ -8,6 +8,7 @@ public partial interface ITipoEnderecoReader
     TipoEnderecoResponse? Read(int id, SqlConnection oCnn);
     TipoEnderecoResponse? Read(string where, SqlConnection oCnn);
     TipoEnderecoResponse? Read(Entity.DBTipoEndereco dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoEnderecoResponse? Read(DBTipoEndereco dbRec);
 }
 

@@ -19,7 +19,7 @@ public class ProCDAValidation : IProCDAValidation
         if (await IsDuplicado(reg, service, uri))
             return $"ProCDA '{reg.Nome}' já cadastrado.";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

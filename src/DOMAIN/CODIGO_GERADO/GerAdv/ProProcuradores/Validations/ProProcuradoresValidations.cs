@@ -19,7 +19,7 @@ public class ProProcuradoresValidation : IProProcuradoresValidation
         if (await IsDuplicado(reg, service, uri))
             return $"ProProcuradores '{reg.Nome}' já cadastrado.";
         // Advogados
-        if (reg.Advogado.IsEmptyIDNumber())
+        if (!reg.Advogado.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
@@ -29,7 +29,7 @@ public class ProProcuradoresValidation : IProProcuradoresValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

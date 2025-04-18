@@ -19,7 +19,7 @@ public class ObjetosValidation : IObjetosValidation
         if (await IsDuplicado(reg, service, uri))
             return $"Objetos '{reg.Nome}' já cadastrado.";
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -29,7 +29,7 @@ public class ObjetosValidation : IObjetosValidation
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)

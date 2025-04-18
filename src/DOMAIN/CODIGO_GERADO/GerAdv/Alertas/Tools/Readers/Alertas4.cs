@@ -8,6 +8,7 @@ public partial interface IAlertasReader
     AlertasResponse? Read(int id, SqlConnection oCnn);
     AlertasResponse? Read(string where, SqlConnection oCnn);
     AlertasResponse? Read(Entity.DBAlertas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AlertasResponse? Read(DBAlertas dbRec);
 }
 

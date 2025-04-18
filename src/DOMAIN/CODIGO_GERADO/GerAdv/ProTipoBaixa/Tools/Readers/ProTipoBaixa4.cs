@@ -8,6 +8,7 @@ public partial interface IProTipoBaixaReader
     ProTipoBaixaResponse? Read(int id, SqlConnection oCnn);
     ProTipoBaixaResponse? Read(string where, SqlConnection oCnn);
     ProTipoBaixaResponse? Read(Entity.DBProTipoBaixa dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProTipoBaixaResponse? Read(DBProTipoBaixa dbRec);
 }
 

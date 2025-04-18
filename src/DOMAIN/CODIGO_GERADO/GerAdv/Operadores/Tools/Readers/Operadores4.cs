@@ -8,6 +8,7 @@ public partial interface IOperadoresReader
     OperadoresResponse? Read(int id, SqlConnection oCnn);
     OperadoresResponse? Read(string where, SqlConnection oCnn);
     OperadoresResponse? Read(Entity.DBOperadores dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OperadoresResponse? Read(DBOperadores dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface IPreClientesReader
     PreClientesResponse? Read(int id, SqlConnection oCnn);
     PreClientesResponse? Read(string where, SqlConnection oCnn);
     PreClientesResponse? Read(Entity.DBPreClientes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PreClientesResponse? Read(DBPreClientes dbRec);
 }
 

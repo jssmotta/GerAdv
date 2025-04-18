@@ -19,7 +19,7 @@ public class TerceirosValidation : ITerceirosValidation
         if (await IsDuplicado(reg, service, uri))
             return $"Terceiros '{reg.Nome}' já cadastrado.";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -29,7 +29,7 @@ public class TerceirosValidation : ITerceirosValidation
         }
 
         // PosicaoOutrasPartes
-        if (reg.Situacao.IsEmptyIDNumber())
+        if (!reg.Situacao.IsEmptyIDNumber())
         {
             var regPosicaoOutrasPartes = posicaooutraspartesReader.Read(reg.Situacao, oCnn);
             if (regPosicaoOutrasPartes == null || regPosicaoOutrasPartes.Id != reg.Situacao)

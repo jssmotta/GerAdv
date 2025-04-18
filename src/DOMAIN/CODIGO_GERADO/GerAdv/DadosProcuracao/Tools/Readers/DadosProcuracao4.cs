@@ -8,6 +8,7 @@ public partial interface IDadosProcuracaoReader
     DadosProcuracaoResponse? Read(int id, SqlConnection oCnn);
     DadosProcuracaoResponse? Read(string where, SqlConnection oCnn);
     DadosProcuracaoResponse? Read(Entity.DBDadosProcuracao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     DadosProcuracaoResponse? Read(DBDadosProcuracao dbRec);
 }
 

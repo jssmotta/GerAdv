@@ -8,6 +8,7 @@ public partial interface IFornecedoresReader
     FornecedoresResponse? Read(int id, SqlConnection oCnn);
     FornecedoresResponse? Read(string where, SqlConnection oCnn);
     FornecedoresResponse? Read(Entity.DBFornecedores dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     FornecedoresResponse? Read(DBFornecedores dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface IOponentesRepLegalReader
     OponentesRepLegalResponse? Read(int id, SqlConnection oCnn);
     OponentesRepLegalResponse? Read(string where, SqlConnection oCnn);
     OponentesRepLegalResponse? Read(Entity.DBOponentesRepLegal dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OponentesRepLegalResponse? Read(DBOponentesRepLegal dbRec);
 }
 

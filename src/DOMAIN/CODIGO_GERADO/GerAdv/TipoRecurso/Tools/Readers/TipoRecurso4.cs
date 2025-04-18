@@ -8,6 +8,7 @@ public partial interface ITipoRecursoReader
     TipoRecursoResponse? Read(int id, SqlConnection oCnn);
     TipoRecursoResponse? Read(string where, SqlConnection oCnn);
     TipoRecursoResponse? Read(Entity.DBTipoRecurso dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoRecursoResponse? Read(DBTipoRecurso dbRec);
 }
 

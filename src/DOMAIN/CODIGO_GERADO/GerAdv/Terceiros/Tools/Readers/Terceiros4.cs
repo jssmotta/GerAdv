@@ -8,6 +8,7 @@ public partial interface ITerceirosReader
     TerceirosResponse? Read(int id, SqlConnection oCnn);
     TerceirosResponse? Read(string where, SqlConnection oCnn);
     TerceirosResponse? Read(Entity.DBTerceiros dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TerceirosResponse? Read(DBTerceiros dbRec);
 }
 

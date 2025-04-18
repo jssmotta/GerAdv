@@ -8,6 +8,7 @@ public partial interface IColaboradoresReader
     ColaboradoresResponse? Read(int id, SqlConnection oCnn);
     ColaboradoresResponse? Read(string where, SqlConnection oCnn);
     ColaboradoresResponse? Read(Entity.DBColaboradores dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ColaboradoresResponse? Read(DBColaboradores dbRec);
 }
 

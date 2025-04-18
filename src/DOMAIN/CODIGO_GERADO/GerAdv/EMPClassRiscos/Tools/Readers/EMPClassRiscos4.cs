@@ -8,6 +8,7 @@ public partial interface IEMPClassRiscosReader
     EMPClassRiscosResponse? Read(int id, SqlConnection oCnn);
     EMPClassRiscosResponse? Read(string where, SqlConnection oCnn);
     EMPClassRiscosResponse? Read(Entity.DBEMPClassRiscos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EMPClassRiscosResponse? Read(DBEMPClassRiscos dbRec);
 }
 

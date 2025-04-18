@@ -8,6 +8,7 @@ public partial interface IStatusTarefasReader
     StatusTarefasResponse? Read(int id, SqlConnection oCnn);
     StatusTarefasResponse? Read(string where, SqlConnection oCnn);
     StatusTarefasResponse? Read(Entity.DBStatusTarefas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     StatusTarefasResponse? Read(DBStatusTarefas dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface IProcessosReader
     ProcessosResponse? Read(int id, SqlConnection oCnn);
     ProcessosResponse? Read(string where, SqlConnection oCnn);
     ProcessosResponse? Read(Entity.DBProcessos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProcessosResponse? Read(DBProcessos dbRec);
 }
 

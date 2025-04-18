@@ -8,6 +8,7 @@ public partial interface ITipoContatoCRMReader
     TipoContatoCRMResponse? Read(int id, SqlConnection oCnn);
     TipoContatoCRMResponse? Read(string where, SqlConnection oCnn);
     TipoContatoCRMResponse? Read(Entity.DBTipoContatoCRM dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoContatoCRMResponse? Read(DBTipoContatoCRM dbRec);
 }
 

@@ -50,7 +50,9 @@ public partial class DBAreasJusticaODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "arjCodigo"
+            "arjArea",
+            "arjCodigo",
+            "arjJustica"
         };
         var result = campos.Where(campo => !campo.Equals(DBAreasJusticaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

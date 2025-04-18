@@ -68,7 +68,8 @@ public partial class DBOperadoresODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "operCodigo"
+            "operCodigo",
+            "operNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBOperadoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

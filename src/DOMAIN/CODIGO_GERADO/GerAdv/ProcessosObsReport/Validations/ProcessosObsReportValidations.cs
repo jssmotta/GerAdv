@@ -15,7 +15,7 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
         }
 
         // Historico
-        if (reg.Historico.IsEmptyIDNumber())
+        if (!reg.Historico.IsEmptyIDNumber())
         {
             var regHistorico = historicoReader.Read(reg.Historico, oCnn);
             if (regHistorico == null || regHistorico.Id != reg.Historico)

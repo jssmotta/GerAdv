@@ -15,7 +15,7 @@ public class RecadosValidation : IRecadosValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class RecadosValidation : IRecadosValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -35,7 +35,7 @@ public class RecadosValidation : IRecadosValidation
         }
 
         // Historico
-        if (reg.Historico.IsEmptyIDNumber())
+        if (!reg.Historico.IsEmptyIDNumber())
         {
             var regHistorico = historicoReader.Read(reg.Historico, oCnn);
             if (regHistorico == null || regHistorico.Id != reg.Historico)
@@ -45,7 +45,7 @@ public class RecadosValidation : IRecadosValidation
         }
 
         // ContatoCRM
-        if (reg.ContatoCRM.IsEmptyIDNumber())
+        if (!reg.ContatoCRM.IsEmptyIDNumber())
         {
             var regContatoCRM = contatocrmReader.Read(reg.ContatoCRM, oCnn);
             if (regContatoCRM == null || regContatoCRM.Id != reg.ContatoCRM)
@@ -55,7 +55,7 @@ public class RecadosValidation : IRecadosValidation
         }
 
         // Ligacoes
-        if (reg.Ligacoes.IsEmptyIDNumber())
+        if (!reg.Ligacoes.IsEmptyIDNumber())
         {
             var regLigacoes = ligacoesReader.Read(reg.Ligacoes, oCnn);
             if (regLigacoes == null || regLigacoes.Id != reg.Ligacoes)
@@ -65,7 +65,7 @@ public class RecadosValidation : IRecadosValidation
         }
 
         // Agenda
-        if (reg.Agenda.IsEmptyIDNumber())
+        if (!reg.Agenda.IsEmptyIDNumber())
         {
             var regAgenda = agendaReader.Read(reg.Agenda, oCnn);
             if (regAgenda == null || regAgenda.Id != reg.Agenda)

@@ -15,7 +15,7 @@ public class Agenda2AgendaValidation : IAgenda2AgendaValidation
         if (reg == null)
             return "Objeto está nulo";
         // Agenda
-        if (reg.Agenda.IsEmptyIDNumber())
+        if (!reg.Agenda.IsEmptyIDNumber())
         {
             var regAgenda = agendaReader.Read(reg.Agenda, oCnn);
             if (regAgenda == null || regAgenda.Id != reg.Agenda)

@@ -58,7 +58,8 @@ public partial class DBTipoCompromissoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "tipCodigo"
+            "tipCodigo",
+            "tipDescricao"
         };
         var result = campos.Where(campo => !campo.Equals(DBTipoCompromissoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

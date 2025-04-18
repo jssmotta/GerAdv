@@ -15,7 +15,7 @@ public class GruposEmpresasCliValidation : IGruposEmpresasCliValidation
         if (reg == null)
             return "Objeto está nulo";
         // GruposEmpresas
-        if (reg.Grupo.IsEmptyIDNumber())
+        if (!reg.Grupo.IsEmptyIDNumber())
         {
             var regGruposEmpresas = gruposempresasReader.Read(reg.Grupo, oCnn);
             if (regGruposEmpresas == null || regGruposEmpresas.Id != reg.Grupo)
@@ -25,7 +25,7 @@ public class GruposEmpresasCliValidation : IGruposEmpresasCliValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

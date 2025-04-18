@@ -15,7 +15,7 @@ public class AgendaValidation : IAgendaValidation
         if (reg == null)
             return "Objeto está nulo";
         // Advogados
-        if (reg.Advogado.IsEmptyIDNumber())
+        if (!reg.Advogado.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
@@ -25,7 +25,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Funcionarios
-        if (reg.Funcionario.IsEmptyIDNumber())
+        if (!reg.Funcionario.IsEmptyIDNumber())
         {
             var regFuncionarios = funcionariosReader.Read(reg.Funcionario, oCnn);
             if (regFuncionarios == null || regFuncionarios.Id != reg.Funcionario)
@@ -35,7 +35,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // TipoCompromisso
-        if (reg.TipoCompromisso.IsEmptyIDNumber())
+        if (!reg.TipoCompromisso.IsEmptyIDNumber())
         {
             var regTipoCompromisso = tipocompromissoReader.Read(reg.TipoCompromisso, oCnn);
             if (regTipoCompromisso == null || regTipoCompromisso.Id != reg.TipoCompromisso)
@@ -45,7 +45,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -55,7 +55,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -65,7 +65,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -75,7 +75,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -85,7 +85,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Operador
-        if (reg.Usuario.IsEmptyIDNumber())
+        if (!reg.Usuario.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Usuario, oCnn);
             if (regOperador == null || regOperador.Id != reg.Usuario)
@@ -95,7 +95,7 @@ public class AgendaValidation : IAgendaValidation
         }
 
         // Prepostos
-        if (reg.Preposto.IsEmptyIDNumber())
+        if (!reg.Preposto.IsEmptyIDNumber())
         {
             var regPrepostos = prepostosReader.Read(reg.Preposto, oCnn);
             if (regPrepostos == null || regPrepostos.Id != reg.Preposto)

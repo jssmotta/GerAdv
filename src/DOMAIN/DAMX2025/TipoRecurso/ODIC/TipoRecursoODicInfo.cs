@@ -57,7 +57,10 @@ public partial class DBTipoRecursoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "trcCodigo"
+            "trcArea",
+            "trcCodigo",
+            "trcDescricao",
+            "trcJustica"
         };
         var result = campos.Where(campo => !campo.Equals(DBTipoRecursoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

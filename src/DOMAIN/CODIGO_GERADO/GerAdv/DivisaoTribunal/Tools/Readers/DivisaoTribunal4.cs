@@ -8,6 +8,7 @@ public partial interface IDivisaoTribunalReader
     DivisaoTribunalResponse? Read(int id, SqlConnection oCnn);
     DivisaoTribunalResponse? Read(string where, SqlConnection oCnn);
     DivisaoTribunalResponse? Read(Entity.DBDivisaoTribunal dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     DivisaoTribunalResponse? Read(DBDivisaoTribunal dbRec);
 }
 

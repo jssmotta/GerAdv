@@ -15,7 +15,7 @@ public class ContratosValidation : IContratosValidation
         if (reg == null)
             return "Objeto está nulo";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -25,7 +25,7 @@ public class ContratosValidation : IContratosValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -35,7 +35,7 @@ public class ContratosValidation : IContratosValidation
         }
 
         // Advogados
-        if (reg.Advogado.IsEmptyIDNumber())
+        if (!reg.Advogado.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)

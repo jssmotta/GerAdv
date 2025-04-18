@@ -41,21 +41,12 @@ public partial class DBSetorODicInfo : IODicInfo
     public static List<DBInfoSystem> List => [DBSetorDicInfo.SetDescricao, DBSetorDicInfo.SetGUID, DBSetorDicInfo.SetQuemCad, DBSetorDicInfo.SetDtCad, DBSetorDicInfo.SetQuemAtu, DBSetorDicInfo.SetDtAtu, DBSetorDicInfo.SetVisto];
     public static List<DBInfoSystem> ListWithoutAuditor => [DBSetorDicInfo.SetDescricao];
 
-    public static List<DBInfoSystem> ListPk()
-    {
-        string[] campos =
-        {
-            "setCodigo"
-        };
-        var result = campos.Where(campo => !campo.Equals(DBSetorDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
-    }
-
+    public static List<DBInfoSystem> ListPk() => [];
     public static List<DBInfoSystem> ListPkIndices()
     {
         string[] campos =
         {
-            "setCodigo"
+            "setDescricao"
         };
         var result = campos.Where(campo => !campo.Equals(DBSetorDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

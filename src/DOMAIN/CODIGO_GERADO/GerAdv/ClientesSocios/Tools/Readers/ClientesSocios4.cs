@@ -8,6 +8,7 @@ public partial interface IClientesSociosReader
     ClientesSociosResponse? Read(int id, SqlConnection oCnn);
     ClientesSociosResponse? Read(string where, SqlConnection oCnn);
     ClientesSociosResponse? Read(Entity.DBClientesSocios dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ClientesSociosResponse? Read(DBClientesSocios dbRec);
 }
 

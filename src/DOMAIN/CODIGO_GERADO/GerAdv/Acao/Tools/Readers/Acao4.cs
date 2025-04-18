@@ -8,6 +8,7 @@ public partial interface IAcaoReader
     AcaoResponse? Read(int id, SqlConnection oCnn);
     AcaoResponse? Read(string where, SqlConnection oCnn);
     AcaoResponse? Read(Entity.DBAcao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AcaoResponse? Read(DBAcao dbRec);
 }
 

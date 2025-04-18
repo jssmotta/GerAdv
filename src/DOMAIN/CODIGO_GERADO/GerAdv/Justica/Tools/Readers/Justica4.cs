@@ -8,6 +8,7 @@ public partial interface IJusticaReader
     JusticaResponse? Read(int id, SqlConnection oCnn);
     JusticaResponse? Read(string where, SqlConnection oCnn);
     JusticaResponse? Read(Entity.DBJustica dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     JusticaResponse? Read(DBJustica dbRec);
 }
 

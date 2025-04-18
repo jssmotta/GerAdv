@@ -8,6 +8,7 @@ public partial interface IUFReader
     UFResponse? Read(int id, SqlConnection oCnn);
     UFResponse? Read(string where, SqlConnection oCnn);
     UFResponse? Read(Entity.DBUF dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     UFResponse? Read(DBUF dbRec);
 }
 

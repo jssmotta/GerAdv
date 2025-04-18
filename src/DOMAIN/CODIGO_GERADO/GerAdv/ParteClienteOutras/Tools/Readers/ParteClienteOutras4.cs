@@ -8,6 +8,7 @@ public partial interface IParteClienteOutrasReader
     ParteClienteOutrasResponse? Read(int id, SqlConnection oCnn);
     ParteClienteOutrasResponse? Read(string where, SqlConnection oCnn);
     ParteClienteOutrasResponse? Read(Entity.DBParteClienteOutras dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ParteClienteOutrasResponse? Read(DBParteClienteOutras dbRec);
 }
 

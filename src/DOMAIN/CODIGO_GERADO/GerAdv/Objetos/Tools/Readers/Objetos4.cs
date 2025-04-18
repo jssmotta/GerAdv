@@ -8,6 +8,7 @@ public partial interface IObjetosReader
     ObjetosResponse? Read(int id, SqlConnection oCnn);
     ObjetosResponse? Read(string where, SqlConnection oCnn);
     ObjetosResponse? Read(Entity.DBObjetos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ObjetosResponse? Read(DBObjetos dbRec);
 }
 

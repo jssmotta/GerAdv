@@ -8,6 +8,7 @@ public partial interface IStatusAndamentoReader
     StatusAndamentoResponse? Read(int id, SqlConnection oCnn);
     StatusAndamentoResponse? Read(string where, SqlConnection oCnn);
     StatusAndamentoResponse? Read(Entity.DBStatusAndamento dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     StatusAndamentoResponse? Read(DBStatusAndamento dbRec);
 }
 

@@ -15,7 +15,7 @@ public class AgendaRecordsValidation : IAgendaRecordsValidation
         if (reg == null)
             return "Objeto está nulo";
         // Agenda
-        if (reg.Agenda.IsEmptyIDNumber())
+        if (!reg.Agenda.IsEmptyIDNumber())
         {
             var regAgenda = agendaReader.Read(reg.Agenda, oCnn);
             if (regAgenda == null || regAgenda.Id != reg.Agenda)
@@ -25,7 +25,7 @@ public class AgendaRecordsValidation : IAgendaRecordsValidation
         }
 
         // ClientesSocios
-        if (reg.ClientesSocios.IsEmptyIDNumber())
+        if (!reg.ClientesSocios.IsEmptyIDNumber())
         {
             var regClientesSocios = clientessociosReader.Read(reg.ClientesSocios, oCnn);
             if (regClientesSocios == null || regClientesSocios.Id != reg.ClientesSocios)
@@ -35,7 +35,7 @@ public class AgendaRecordsValidation : IAgendaRecordsValidation
         }
 
         // Colaboradores
-        if (reg.Colaborador.IsEmptyIDNumber())
+        if (!reg.Colaborador.IsEmptyIDNumber())
         {
             var regColaboradores = colaboradoresReader.Read(reg.Colaborador, oCnn);
             if (regColaboradores == null || regColaboradores.Id != reg.Colaborador)
@@ -45,7 +45,7 @@ public class AgendaRecordsValidation : IAgendaRecordsValidation
         }
 
         // Foro
-        if (reg.Foro.IsEmptyIDNumber())
+        if (!reg.Foro.IsEmptyIDNumber())
         {
             var regForo = foroReader.Read(reg.Foro, oCnn);
             if (regForo == null || regForo.Id != reg.Foro)

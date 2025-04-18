@@ -8,6 +8,7 @@ public partial interface IFuncaoReader
     FuncaoResponse? Read(int id, SqlConnection oCnn);
     FuncaoResponse? Read(string where, SqlConnection oCnn);
     FuncaoResponse? Read(Entity.DBFuncao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     FuncaoResponse? Read(DBFuncao dbRec);
 }
 

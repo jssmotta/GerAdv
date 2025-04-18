@@ -37,6 +37,15 @@ public partial class DBParteOponenteODicInfo : IODicInfo
     public static List<DBInfoSystem> ListWithoutAuditor => [DBParteOponenteDicInfo.OpoOponente, DBParteOponenteDicInfo.OpoProcesso];
 
     public static List<DBInfoSystem> ListPk() => [];
-    public static List<DBInfoSystem> ListPkIndices() => [];
+    public static List<DBInfoSystem> ListPkIndices()
+    {
+        string[] campos =
+        {
+            "opoOponente",
+            "opoProcesso"
+        };
+        var result = campos.Where(campo => !campo.Equals(DBParteOponenteDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
+        return result ?? [];
+    }
 }
 #endif

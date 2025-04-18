@@ -8,6 +8,7 @@ public partial interface IProProcuradoresReader
     ProProcuradoresResponse? Read(int id, SqlConnection oCnn);
     ProProcuradoresResponse? Read(string where, SqlConnection oCnn);
     ProProcuradoresResponse? Read(Entity.DBProProcuradores dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProProcuradoresResponse? Read(DBProProcuradores dbRec);
 }
 

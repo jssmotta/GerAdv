@@ -8,6 +8,7 @@ public partial interface IRecadosReader
     RecadosResponse? Read(int id, SqlConnection oCnn);
     RecadosResponse? Read(string where, SqlConnection oCnn);
     RecadosResponse? Read(Entity.DBRecados dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     RecadosResponse? Read(DBRecados dbRec);
 }
 

@@ -56,7 +56,8 @@ public partial class DBBensClassificacaoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "bcsCodigo"
+            "bcsCodigo",
+            "bcsNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBBensClassificacaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

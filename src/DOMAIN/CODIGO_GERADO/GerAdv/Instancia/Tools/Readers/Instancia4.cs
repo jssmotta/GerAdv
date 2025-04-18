@@ -8,6 +8,7 @@ public partial interface IInstanciaReader
     InstanciaResponse? Read(int id, SqlConnection oCnn);
     InstanciaResponse? Read(string where, SqlConnection oCnn);
     InstanciaResponse? Read(Entity.DBInstancia dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     InstanciaResponse? Read(DBInstancia dbRec);
 }
 

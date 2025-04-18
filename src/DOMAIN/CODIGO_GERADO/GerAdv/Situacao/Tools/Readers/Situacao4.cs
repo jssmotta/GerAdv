@@ -8,6 +8,7 @@ public partial interface ISituacaoReader
     SituacaoResponse? Read(int id, SqlConnection oCnn);
     SituacaoResponse? Read(string where, SqlConnection oCnn);
     SituacaoResponse? Read(Entity.DBSituacao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     SituacaoResponse? Read(DBSituacao dbRec);
 }
 

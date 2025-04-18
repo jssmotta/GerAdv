@@ -98,7 +98,10 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, ILivro
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-LivroCaixa-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            using var scope = Configuracoes.CreateConnectionScope(uri);
+            var oCnn = scope.Connection;
+            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{uri}-LivroCaixa-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)

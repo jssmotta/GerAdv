@@ -8,6 +8,7 @@ public partial interface IPrepostosReader
     PrepostosResponse? Read(int id, SqlConnection oCnn);
     PrepostosResponse? Read(string where, SqlConnection oCnn);
     PrepostosResponse? Read(Entity.DBPrepostos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PrepostosResponse? Read(DBPrepostos dbRec);
 }
 

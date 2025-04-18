@@ -6,11 +6,17 @@ using DBOperador = MenphisSI.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 
+public enum E_TIPO_ENVIO
+{
+    NOVOS = 1,
+    DIA = 2
+}
+
 public class EnvioNotificacoes
 {
-    private string ConteudoHtml(string operador, string uri, SqlConnection oCnn)
+    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
     {
-        var ds = ObterCompromissos(oCnn, uri, operador);
+        var ds = ObterCompromissos(oCnn, tipo, uri, operador);
         if (ds.Rows.Count == 0)
         {
             return "";
@@ -70,49 +76,55 @@ END;
         using var conexao = Configuracoes.GetConnectionByUriRw(uri);
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript2, conexao);
-
     }
 
-    private DataTable ObterCompromissos(SqlConnection conexao, string uri, string operador)
+    private DataTable ObterCompromissos(
+        SqlConnection conexao,
+        E_TIPO_ENVIO tipo,
+        string uri,
+        string operador,
+        int nTry = 0)
     {
-        var nTry = 0;
-
         try
         {
-            var nDaysAhead = 5;
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
-            {
-                nDaysAhead = 8;
-            }
+            string whereClause = ConstruirCondicaoFiltro(tipo);
+            string operadorSanitizado = operador.Replace("'", "''");
 
             string sql = $@"
-SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile] 
-  FROM [dbo].[AgendaRelatorio]
+SELECT [vqaData], [xxxBoxAudienciaMobile] 
+FROM [dbo].[AgendaRelatorio]
+LEFT JOIN [dbo].[Agenda] a ON vqaCodigo = a.ageCodigo
+WHERE a.ageConcluido = 0 
+     {whereClause}
+     AND xxxParaNome LIKE '{operadorSanitizado}'
+ORDER BY vqaData;";
 
-  LEFT JOIN [dbo].[Agenda] a on vqaCodigo = a.ageCodigo
-
-  WHERE ageConcluido = 0 
-        AND vqaData >= DATEADD(DAY, -1, GETDATE()) and vqaData <=DATEADD(DAY, {nDaysAhead}, GETDATE())   
-        AND xxxParaNome like '{operador.Replace("'", "''")}'
-  
-  ORDER BY vqaData;
-
-";
-
-            var result = ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
-
-            return result;
+            return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            nTry++;
-            if (nTry > 3)
+            if (++nTry > 3)
             {
                 throw;
             }
+
             TestaViews(uri);
-            return ObterCompromissos(conexao, uri, operador);
+            return ObterCompromissos(conexao, tipo, uri, operador, nTry);
         }
+    }
+    
+    private string ConstruirCondicaoFiltro(E_TIPO_ENVIO tipo)
+    {
+        if (tipo == E_TIPO_ENVIO.NOVOS)
+        {
+            return @"  AND (CAST(a.ageDtCad AS DATE) = CAST(GETDATE() AS DATE) 
+                    OR CAST(a.ageDtAtu AS DATE) = CAST(GETDATE() AS DATE))";
+        }
+
+        int diasAFrente = (DateTime.Now.DayOfWeek == DayOfWeek.Monday) ? 8 : 5;
+
+        return $@" AND vqaData >= DATEADD(DAY, -1, GETDATE()) 
+                AND vqaData <= DATEADD(DAY, {diasAFrente}, GETDATE())";
     }
 
     private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total)
@@ -132,7 +144,6 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
         int contador = 0;
         foreach (DataRow linha in compromissos.Rows)
         {
-
             contador++;
 
             builder.AppendLine("<tr>");
@@ -146,6 +157,72 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
 
         builder.AppendLine("</table>");
         return builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"", "\"");
+    }
+
+    
+    public int EnviarEmailsParaOperadores(E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
+    {
+        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
+        var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
+        var servicoEmail = new SendEmailApi();
+        var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
+        var count = 0;
+
+        foreach (var operador in operadores)
+        {
+            if (string.IsNullOrEmpty(operador.FEMailNet) || string.IsNullOrEmpty(operador.FNome))
+            {
+                continue;
+            }
+
+            var cNome = operador.FCadID == 1 ? DBAdvogados.ListarN(operador.FCadCod, oCnn).FNome
+                                             : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
+            if (cNome == null || cNome.Equals("")) continue;
+
+            var conteudoHtml = ConteudoHtml(cNome, tipo, uri, oCnn);
+
+            if (string.IsNullOrEmpty(conteudoHtml))
+            {
+                continue;
+            }
+
+            var email = new MenphisSI.Api.Models.SendEmail
+            {
+                ParaEmail = operador.FEMailNet,
+                ParaNome = cNome,
+                Assunto = assunto + cNome,
+                Mensagem = conteudoHtml,
+                NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                Time2Live = 24
+            };
+
+#if (!DEBUG)
+            _ = servicoEmail.Send(email);
+#endif
+            if (count == 0)
+            {
+#if (!DEBUG)
+                if (uri.ToUpper().Equals("IBRADV"))
+#endif
+                {
+                    var email2 = new MenphisSI.Api.Models.SendEmail
+                    {
+                        ParaEmail = "motta@menphis.com.br",
+                        ParaNome = "Jefferson S. Motta",
+                        Assunto = assunto + cNome,
+                        Mensagem = conteudoHtml,
+                        NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                        Time2Live = 24
+                    };
+                    _ = servicoEmail.Send(email2);
+                }
+
+            }
+
+            count++;
+        }
+
+        return count;
     }
 
     private string ObterEstiloTabelaCss()
@@ -300,68 +377,4 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
    </style> ";
     }
 
-    public int EnviarEmailsParaOperadores(string uri, SqlConnection oCnn)
-    {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
-        var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
-        var servicoEmail = new SendEmailApi();
-        var assunto = "Compromissos da Agenda do Advocati.NET para ";
-        var count = 0;
-
-        foreach (var operador in operadores)
-        {
-            if (string.IsNullOrEmpty(operador.FEMailNet) || string.IsNullOrEmpty(operador.FNome))
-            {
-                continue;
-            }
-
-            var cNome = operador.FCadID == 1 ? DBAdvogados.ListarN(operador.FCadCod, oCnn).FNome
-                                             : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
-            if (cNome == null || cNome.Equals("")) continue;
-
-            var conteudoHtml = ConteudoHtml(cNome, uri, oCnn);
-
-            if (string.IsNullOrEmpty(conteudoHtml))
-            {
-                continue;
-            }
-
-            var email = new MenphisSI.Api.Models.SendEmail
-            {
-                ParaEmail = operador.FEMailNet,
-                ParaNome = cNome,
-                Assunto = assunto + cNome,
-                Mensagem = conteudoHtml,
-                NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                Time2Live = 24
-            };
-
-#if (!DEBUG)
-            _ = servicoEmail.Send(email);
-#endif
-            if (count == 0)
-            {
-                #if (!DEBUG)
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday) // DIA DE TESTES
-                #endif
-                {
-                    var email2 = new MenphisSI.Api.Models.SendEmail
-                    {
-                        ParaEmail = "motta@menphis.com.br",
-                        ParaNome = "Jefferson S. Motta",
-                        Assunto = assunto + cNome,
-                        Mensagem = conteudoHtml,
-                        NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
-                        Time2Live = 24
-                    };
-                    _ = servicoEmail.Send(email2);
-                }
-
-            }
-
-            count++;
-        }
-
-        return count;
-    }
 }

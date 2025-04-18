@@ -16,6 +16,14 @@ public class RitoValidation : IRitoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Rito '{reg.Descricao}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Rito reg, IRitoService service, string uri)
+    {
+        var existingRito = (await service.Filter(new Filters.FilterRito { Descricao = reg.Descricao }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingRito != null && existingRito.Id > 0 && existingRito.Id != reg.Id;
     }
 }

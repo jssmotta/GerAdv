@@ -55,7 +55,8 @@ public partial class DBPaisesODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "paiCodigo"
+            "paiCodigo",
+            "paiNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBPaisesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

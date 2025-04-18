@@ -8,6 +8,7 @@ public partial interface ICidadeReader
     CidadeResponse? Read(int id, SqlConnection oCnn);
     CidadeResponse? Read(string where, SqlConnection oCnn);
     CidadeResponse? Read(Entity.DBCidade dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     CidadeResponse? Read(DBCidade dbRec);
 }
 

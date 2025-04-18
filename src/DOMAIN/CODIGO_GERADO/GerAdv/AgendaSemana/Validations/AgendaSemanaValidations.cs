@@ -14,10 +14,8 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
     {
         if (reg == null)
             return "Objeto está nulo";
-        if (string.IsNullOrWhiteSpace(reg.ParaNome))
-            return "ParaNome é obrigatório";
         // Funcionarios
-        if (reg.Funcionario.IsEmptyIDNumber())
+        if (!reg.Funcionario.IsEmptyIDNumber())
         {
             var regFuncionarios = funcionariosReader.Read(reg.Funcionario, oCnn);
             if (regFuncionarios == null || regFuncionarios.Id != reg.Funcionario)
@@ -27,7 +25,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         }
 
         // Advogados
-        if (reg.Advogado.IsEmptyIDNumber())
+        if (!reg.Advogado.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
@@ -37,7 +35,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         }
 
         // TipoCompromisso
-        if (reg.TipoCompromisso.IsEmptyIDNumber())
+        if (!reg.TipoCompromisso.IsEmptyIDNumber())
         {
             var regTipoCompromisso = tipocompromissoReader.Read(reg.TipoCompromisso, oCnn);
             if (regTipoCompromisso == null || regTipoCompromisso.Id != reg.TipoCompromisso)
@@ -47,7 +45,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

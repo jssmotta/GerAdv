@@ -19,7 +19,7 @@ public class FuncionariosValidation : IFuncionariosValidation
         if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
             return $"'Colaborador' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
         // Cargos
-        if (reg.Cargo.IsEmptyIDNumber())
+        if (!reg.Cargo.IsEmptyIDNumber())
         {
             var regCargos = cargosReader.Read(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
@@ -29,7 +29,7 @@ public class FuncionariosValidation : IFuncionariosValidation
         }
 
         // Funcao
-        if (reg.Funcao.IsEmptyIDNumber())
+        if (!reg.Funcao.IsEmptyIDNumber())
         {
             var regFuncao = funcaoReader.Read(reg.Funcao, oCnn);
             if (regFuncao == null || regFuncao.Id != reg.Funcao)

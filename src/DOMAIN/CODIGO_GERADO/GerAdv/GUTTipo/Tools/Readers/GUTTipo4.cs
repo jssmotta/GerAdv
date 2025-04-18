@@ -8,6 +8,7 @@ public partial interface IGUTTipoReader
     GUTTipoResponse? Read(int id, SqlConnection oCnn);
     GUTTipoResponse? Read(string where, SqlConnection oCnn);
     GUTTipoResponse? Read(Entity.DBGUTTipo dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTTipoResponse? Read(DBGUTTipo dbRec);
 }
 

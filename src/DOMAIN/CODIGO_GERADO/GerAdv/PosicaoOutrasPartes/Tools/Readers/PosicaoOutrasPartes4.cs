@@ -8,6 +8,7 @@ public partial interface IPosicaoOutrasPartesReader
     PosicaoOutrasPartesResponse? Read(int id, SqlConnection oCnn);
     PosicaoOutrasPartesResponse? Read(string where, SqlConnection oCnn);
     PosicaoOutrasPartesResponse? Read(Entity.DBPosicaoOutrasPartes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PosicaoOutrasPartesResponse? Read(DBPosicaoOutrasPartes dbRec);
 }
 

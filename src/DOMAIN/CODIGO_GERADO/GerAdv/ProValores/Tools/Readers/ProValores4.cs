@@ -8,6 +8,7 @@ public partial interface IProValoresReader
     ProValoresResponse? Read(int id, SqlConnection oCnn);
     ProValoresResponse? Read(string where, SqlConnection oCnn);
     ProValoresResponse? Read(Entity.DBProValores dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProValoresResponse? Read(DBProValores dbRec);
 }
 

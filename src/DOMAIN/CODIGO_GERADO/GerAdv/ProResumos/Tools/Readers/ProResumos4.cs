@@ -8,6 +8,7 @@ public partial interface IProResumosReader
     ProResumosResponse? Read(int id, SqlConnection oCnn);
     ProResumosResponse? Read(string where, SqlConnection oCnn);
     ProResumosResponse? Read(Entity.DBProResumos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProResumosResponse? Read(DBProResumos dbRec);
 }
 

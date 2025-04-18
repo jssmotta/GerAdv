@@ -16,12 +16,14 @@ public class ClientesSociosValidation : IClientesSociosValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"ClientesSocios '{reg.Nome}' já cadastrado.";
         if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
             return $"'Clientes Socios' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Clientes Socios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -31,6 +33,12 @@ public class ClientesSociosValidation : IClientesSociosValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.ClientesSocios reg, IClientesSociosService service, string uri)
+    {
+        var existingClientesSocios = (await service.Filter(new Filters.FilterClientesSocios { Cliente = reg.Cliente, Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingClientesSocios != null && existingClientesSocios.Id > 0 && existingClientesSocios.Id != reg.Id;
     }
 
     private async Task<bool> IsCnpjDuplicado(Models.ClientesSocios reg, IClientesSociosService service, string uri)

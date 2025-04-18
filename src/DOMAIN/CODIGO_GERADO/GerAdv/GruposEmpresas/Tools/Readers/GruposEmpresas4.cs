@@ -8,6 +8,7 @@ public partial interface IGruposEmpresasReader
     GruposEmpresasResponse? Read(int id, SqlConnection oCnn);
     GruposEmpresasResponse? Read(string where, SqlConnection oCnn);
     GruposEmpresasResponse? Read(Entity.DBGruposEmpresas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GruposEmpresasResponse? Read(DBGruposEmpresas dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface INENotasReader
     NENotasResponse? Read(int id, SqlConnection oCnn);
     NENotasResponse? Read(string where, SqlConnection oCnn);
     NENotasResponse? Read(Entity.DBNENotas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     NENotasResponse? Read(DBNENotas dbRec);
 }
 

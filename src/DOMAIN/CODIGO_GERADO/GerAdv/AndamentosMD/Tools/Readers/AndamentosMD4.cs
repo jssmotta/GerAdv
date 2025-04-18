@@ -8,6 +8,7 @@ public partial interface IAndamentosMDReader
     AndamentosMDResponse? Read(int id, SqlConnection oCnn);
     AndamentosMDResponse? Read(string where, SqlConnection oCnn);
     AndamentosMDResponse? Read(Entity.DBAndamentosMD dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AndamentosMDResponse? Read(DBAndamentosMD dbRec);
 }
 

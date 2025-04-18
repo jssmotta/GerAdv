@@ -8,6 +8,7 @@ public partial interface IEnquadramentoEmpresaReader
     EnquadramentoEmpresaResponse? Read(int id, SqlConnection oCnn);
     EnquadramentoEmpresaResponse? Read(string where, SqlConnection oCnn);
     EnquadramentoEmpresaResponse? Read(Entity.DBEnquadramentoEmpresa dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EnquadramentoEmpresaResponse? Read(DBEnquadramentoEmpresa dbRec);
 }
 

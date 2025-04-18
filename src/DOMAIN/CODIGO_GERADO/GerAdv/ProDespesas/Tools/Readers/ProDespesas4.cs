@@ -8,6 +8,7 @@ public partial interface IProDespesasReader
     ProDespesasResponse? Read(int id, SqlConnection oCnn);
     ProDespesasResponse? Read(string where, SqlConnection oCnn);
     ProDespesasResponse? Read(Entity.DBProDespesas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProDespesasResponse? Read(DBProDespesas dbRec);
 }
 

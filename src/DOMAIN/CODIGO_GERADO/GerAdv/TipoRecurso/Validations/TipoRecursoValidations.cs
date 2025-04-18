@@ -16,8 +16,10 @@ public class TipoRecursoValidation : ITipoRecursoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"TipoRecurso '{reg.Descricao}' já cadastrado.";
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -27,7 +29,7 @@ public class TipoRecursoValidation : ITipoRecursoValidation
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -37,5 +39,11 @@ public class TipoRecursoValidation : ITipoRecursoValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.TipoRecurso reg, ITipoRecursoService service, string uri)
+    {
+        var existingTipoRecurso = (await service.Filter(new Filters.FilterTipoRecurso { Area = reg.Area, Descricao = reg.Descricao, Justica = reg.Justica }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingTipoRecurso != null && existingTipoRecurso.Id > 0 && existingTipoRecurso.Id != reg.Id;
     }
 }

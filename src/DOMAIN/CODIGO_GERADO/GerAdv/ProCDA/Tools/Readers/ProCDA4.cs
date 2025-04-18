@@ -8,6 +8,7 @@ public partial interface IProCDAReader
     ProCDAResponse? Read(int id, SqlConnection oCnn);
     ProCDAResponse? Read(string where, SqlConnection oCnn);
     ProCDAResponse? Read(Entity.DBProCDA dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProCDAResponse? Read(DBProCDA dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface IAlarmSMSReader
     AlarmSMSResponse? Read(int id, SqlConnection oCnn);
     AlarmSMSResponse? Read(string where, SqlConnection oCnn);
     AlarmSMSResponse? Read(Entity.DBAlarmSMS dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AlarmSMSResponse? Read(DBAlarmSMS dbRec);
 }
 

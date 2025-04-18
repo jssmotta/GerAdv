@@ -15,7 +15,7 @@ public class TribEnderecosValidation : ITribEnderecosValidation
         if (reg == null)
             return "Objeto está nulo";
         // Tribunal
-        if (reg.Tribunal.IsEmptyIDNumber())
+        if (!reg.Tribunal.IsEmptyIDNumber())
         {
             var regTribunal = tribunalReader.Read(reg.Tribunal, oCnn);
             if (regTribunal == null || regTribunal.Id != reg.Tribunal)

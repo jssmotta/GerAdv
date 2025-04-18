@@ -8,6 +8,7 @@ public partial interface ISetorReader
     SetorResponse? Read(int id, SqlConnection oCnn);
     SetorResponse? Read(string where, SqlConnection oCnn);
     SetorResponse? Read(Entity.DBSetor dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     SetorResponse? Read(DBSetor dbRec);
 }
 

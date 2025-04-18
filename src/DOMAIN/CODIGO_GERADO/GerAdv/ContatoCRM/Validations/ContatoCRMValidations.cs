@@ -15,7 +15,7 @@ public class ContatoCRMValidation : IContatoCRMValidation
         if (reg == null)
             return "Objeto está nulo";
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
@@ -25,7 +25,7 @@ public class ContatoCRMValidation : IContatoCRMValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -35,7 +35,7 @@ public class ContatoCRMValidation : IContatoCRMValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -45,7 +45,7 @@ public class ContatoCRMValidation : IContatoCRMValidation
         }
 
         // TipoContatoCRM
-        if (reg.TipoContatoCRM.IsEmptyIDNumber())
+        if (!reg.TipoContatoCRM.IsEmptyIDNumber())
         {
             var regTipoContatoCRM = tipocontatocrmReader.Read(reg.TipoContatoCRM, oCnn);
             if (regTipoContatoCRM == null || regTipoContatoCRM.Id != reg.TipoContatoCRM)

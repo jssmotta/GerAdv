@@ -99,7 +99,8 @@ public partial class DBClientesODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "cliCodigo"
+            "cliCodigo",
+            "cliNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBClientesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

@@ -8,6 +8,7 @@ public partial interface ILigacoesReader
     LigacoesResponse? Read(int id, SqlConnection oCnn);
     LigacoesResponse? Read(string where, SqlConnection oCnn);
     LigacoesResponse? Read(Entity.DBLigacoes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     LigacoesResponse? Read(DBLigacoes dbRec);
 }
 

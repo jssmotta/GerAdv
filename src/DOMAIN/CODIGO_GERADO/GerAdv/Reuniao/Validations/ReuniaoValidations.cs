@@ -15,7 +15,7 @@ public class ReuniaoValidation : IReuniaoValidation
         if (reg == null)
             return "Objeto está nulo";
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)

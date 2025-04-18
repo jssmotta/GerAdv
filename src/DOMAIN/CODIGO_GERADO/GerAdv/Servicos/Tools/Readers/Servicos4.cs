@@ -8,6 +8,7 @@ public partial interface IServicosReader
     ServicosResponse? Read(int id, SqlConnection oCnn);
     ServicosResponse? Read(string where, SqlConnection oCnn);
     ServicosResponse? Read(Entity.DBServicos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ServicosResponse? Read(DBServicos dbRec);
 }
 

@@ -16,6 +16,14 @@ public class CargosEscClassValidation : ICargosEscClassValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"CargosEscClass '{reg.Nome}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.CargosEscClass reg, ICargosEscClassService service, string uri)
+    {
+        var existingCargosEscClass = (await service.Filter(new Filters.FilterCargosEscClass { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingCargosEscClass != null && existingCargosEscClass.Id > 0 && existingCargosEscClass.Id != reg.Id;
     }
 }

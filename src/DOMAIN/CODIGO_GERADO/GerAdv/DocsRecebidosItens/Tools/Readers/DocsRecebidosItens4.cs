@@ -8,6 +8,7 @@ public partial interface IDocsRecebidosItensReader
     DocsRecebidosItensResponse? Read(int id, SqlConnection oCnn);
     DocsRecebidosItensResponse? Read(string where, SqlConnection oCnn);
     DocsRecebidosItensResponse? Read(Entity.DBDocsRecebidosItens dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     DocsRecebidosItensResponse? Read(DBDocsRecebidosItens dbRec);
 }
 

@@ -8,6 +8,7 @@ public partial interface IEnderecoSistemaReader
     EnderecoSistemaResponse? Read(int id, SqlConnection oCnn);
     EnderecoSistemaResponse? Read(string where, SqlConnection oCnn);
     EnderecoSistemaResponse? Read(Entity.DBEnderecoSistema dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EnderecoSistemaResponse? Read(DBEnderecoSistema dbRec);
 }
 

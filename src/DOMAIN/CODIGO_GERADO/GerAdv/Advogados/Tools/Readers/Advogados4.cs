@@ -8,6 +8,7 @@ public partial interface IAdvogadosReader
     AdvogadosResponse? Read(int id, SqlConnection oCnn);
     AdvogadosResponse? Read(string where, SqlConnection oCnn);
     AdvogadosResponse? Read(Entity.DBAdvogados dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AdvogadosResponse? Read(DBAdvogados dbRec);
 }
 

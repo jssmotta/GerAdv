@@ -8,6 +8,7 @@ public partial interface IBensClassificacaoReader
     BensClassificacaoResponse? Read(int id, SqlConnection oCnn);
     BensClassificacaoResponse? Read(string where, SqlConnection oCnn);
     BensClassificacaoResponse? Read(Entity.DBBensClassificacao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     BensClassificacaoResponse? Read(DBBensClassificacao dbRec);
 }
 

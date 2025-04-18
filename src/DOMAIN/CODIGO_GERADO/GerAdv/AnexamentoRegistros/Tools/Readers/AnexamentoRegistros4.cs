@@ -8,6 +8,7 @@ public partial interface IAnexamentoRegistrosReader
     AnexamentoRegistrosResponse? Read(int id, SqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(string where, SqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(Entity.DBAnexamentoRegistros dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(DBAnexamentoRegistros dbRec);
 }
 

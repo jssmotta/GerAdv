@@ -16,11 +16,19 @@ public class OponentesValidation : IOponentesValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Oponentes '{reg.Nome}' já cadastrado.";
         if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
             return $"'Oponentes' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Oponentes com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Oponentes reg, IOponentesService service, string uri)
+    {
+        var existingOponentes = (await service.Filter(new Filters.FilterOponentes { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingOponentes != null && existingOponentes.Id > 0 && existingOponentes.Id != reg.Id;
     }
 
     private async Task<bool> IsCnpjDuplicado(Models.Oponentes reg, IOponentesService service, string uri)

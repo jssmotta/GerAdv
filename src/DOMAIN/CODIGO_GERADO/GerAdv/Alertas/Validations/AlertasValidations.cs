@@ -17,7 +17,7 @@ public class AlertasValidation : IAlertasValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
