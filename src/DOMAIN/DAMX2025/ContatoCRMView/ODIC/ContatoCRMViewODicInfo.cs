@@ -35,7 +35,7 @@ public partial class DBContatoCRMViewODicInfo : IODicInfo
     public static string TTabelaNome => DBContatoCRMViewDicInfo.TabelaNome;
     public static string TTablePrefix => DBContatoCRMViewDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBContatoCRMViewDicInfo.CcwCGUID, DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBContatoCRMViewDicInfo.CcwCGUID, DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
 
     public static List<DBInfoSystem> ListPk()
     {

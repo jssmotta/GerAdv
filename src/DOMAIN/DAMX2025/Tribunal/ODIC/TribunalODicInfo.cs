@@ -47,7 +47,7 @@ public partial class DBTribunalODicInfo : IODicInfo
     public static string TTabelaNome => DBTribunalDicInfo.TabelaNome;
     public static string TTablePrefix => DBTribunalDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGUID, DBTribunalDicInfo.TriQuemCad, DBTribunalDicInfo.TriDtCad, DBTribunalDicInfo.TriQuemAtu, DBTribunalDicInfo.TriDtAtu, DBTribunalDicInfo.TriVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

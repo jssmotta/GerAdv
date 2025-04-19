@@ -43,7 +43,7 @@ public partial class DBAnexamentoRegistrosODicInfo : IODicInfo
     public static string TTabelaNome => DBAnexamentoRegistrosDicInfo.TabelaNome;
     public static string TTablePrefix => DBAnexamentoRegistrosDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBAnexamentoRegistrosDicInfo.AxrCliente, DBAnexamentoRegistrosDicInfo.AxrGUIDReg, DBAnexamentoRegistrosDicInfo.AxrCodigoReg, DBAnexamentoRegistrosDicInfo.AxrIDReg, DBAnexamentoRegistrosDicInfo.AxrData, DBAnexamentoRegistrosDicInfo.AxrGUID, DBAnexamentoRegistrosDicInfo.AxrQuemCad, DBAnexamentoRegistrosDicInfo.AxrDtCad, DBAnexamentoRegistrosDicInfo.AxrQuemAtu, DBAnexamentoRegistrosDicInfo.AxrDtAtu, DBAnexamentoRegistrosDicInfo.AxrVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAnexamentoRegistrosDicInfo.AxrCliente, DBAnexamentoRegistrosDicInfo.AxrCodigoReg, DBAnexamentoRegistrosDicInfo.AxrIDReg, DBAnexamentoRegistrosDicInfo.AxrData];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBAnexamentoRegistrosDicInfo.AxrCliente, DBAnexamentoRegistrosDicInfo.AxrGUIDReg, DBAnexamentoRegistrosDicInfo.AxrCodigoReg, DBAnexamentoRegistrosDicInfo.AxrIDReg, DBAnexamentoRegistrosDicInfo.AxrData, DBAnexamentoRegistrosDicInfo.AxrGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

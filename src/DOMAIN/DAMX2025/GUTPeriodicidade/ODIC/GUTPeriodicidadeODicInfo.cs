@@ -40,7 +40,7 @@ public partial class DBGUTPeriodicidadeODicInfo : IODicInfo
     public static string TTabelaNome => DBGUTPeriodicidadeDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTPeriodicidadeDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGUTPeriodicidadeDicInfo.PcgNome, DBGUTPeriodicidadeDicInfo.PcgIntervaloDias, DBGUTPeriodicidadeDicInfo.PcgGUID, DBGUTPeriodicidadeDicInfo.PcgQuemCad, DBGUTPeriodicidadeDicInfo.PcgDtCad, DBGUTPeriodicidadeDicInfo.PcgQuemAtu, DBGUTPeriodicidadeDicInfo.PcgDtAtu, DBGUTPeriodicidadeDicInfo.PcgVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeDicInfo.PcgNome, DBGUTPeriodicidadeDicInfo.PcgIntervaloDias];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeDicInfo.PcgNome, DBGUTPeriodicidadeDicInfo.PcgIntervaloDias, DBGUTPeriodicidadeDicInfo.PcgGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

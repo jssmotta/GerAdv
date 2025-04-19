@@ -42,7 +42,7 @@ public partial class DBProcessOutputRequestODicInfo : IODicInfo
     public static string TTabelaNome => DBProcessOutputRequestDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessOutputRequestDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo, DBProcessOutputRequestDicInfo.PorGUID, DBProcessOutputRequestDicInfo.PorQuemCad, DBProcessOutputRequestDicInfo.PorDtCad, DBProcessOutputRequestDicInfo.PorQuemAtu, DBProcessOutputRequestDicInfo.PorDtAtu, DBProcessOutputRequestDicInfo.PorVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo, DBProcessOutputRequestDicInfo.PorGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

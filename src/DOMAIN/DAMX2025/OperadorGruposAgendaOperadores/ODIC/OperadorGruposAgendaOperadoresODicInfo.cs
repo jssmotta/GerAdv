@@ -40,7 +40,7 @@ public partial class DBOperadorGruposAgendaOperadoresODicInfo : IODicInfo
     public static string TTabelaNome => DBOperadorGruposAgendaOperadoresDicInfo.TabelaNome;
     public static string TTablePrefix => DBOperadorGruposAgendaOperadoresDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBOperadorGruposAgendaOperadoresDicInfo.OgpOperadorGruposAgenda, DBOperadorGruposAgendaOperadoresDicInfo.OgpOperador, DBOperadorGruposAgendaOperadoresDicInfo.OgpGUID, DBOperadorGruposAgendaOperadoresDicInfo.OgpQuemCad, DBOperadorGruposAgendaOperadoresDicInfo.OgpDtCad, DBOperadorGruposAgendaOperadoresDicInfo.OgpQuemAtu, DBOperadorGruposAgendaOperadoresDicInfo.OgpDtAtu, DBOperadorGruposAgendaOperadoresDicInfo.OgpVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBOperadorGruposAgendaOperadoresDicInfo.OgpOperadorGruposAgenda, DBOperadorGruposAgendaOperadoresDicInfo.OgpOperador];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBOperadorGruposAgendaOperadoresDicInfo.OgpOperadorGruposAgenda, DBOperadorGruposAgendaOperadoresDicInfo.OgpOperador, DBOperadorGruposAgendaOperadoresDicInfo.OgpGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

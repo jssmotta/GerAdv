@@ -43,7 +43,7 @@ public partial class DBProResumosODicInfo : IODicInfo
     public static string TTabelaNome => DBProResumosDicInfo.TabelaNome;
     public static string TTablePrefix => DBProResumosDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProResumosDicInfo.PrsProcesso, DBProResumosDicInfo.PrsData, DBProResumosDicInfo.PrsResumo, DBProResumosDicInfo.PrsTipoResumo, DBProResumosDicInfo.PrsBold, DBProResumosDicInfo.PrsGUID, DBProResumosDicInfo.PrsQuemCad, DBProResumosDicInfo.PrsDtCad, DBProResumosDicInfo.PrsQuemAtu, DBProResumosDicInfo.PrsDtAtu, DBProResumosDicInfo.PrsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProResumosDicInfo.PrsProcesso, DBProResumosDicInfo.PrsData, DBProResumosDicInfo.PrsResumo, DBProResumosDicInfo.PrsTipoResumo, DBProResumosDicInfo.PrsBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProResumosDicInfo.PrsProcesso, DBProResumosDicInfo.PrsData, DBProResumosDicInfo.PrsResumo, DBProResumosDicInfo.PrsTipoResumo, DBProResumosDicInfo.PrsBold, DBProResumosDicInfo.PrsGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

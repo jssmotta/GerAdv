@@ -46,7 +46,7 @@ public partial class DBGruposEmpresasODicInfo : IODicInfo
     public static string TTabelaNome => DBGruposEmpresasDicInfo.TabelaNome;
     public static string TTablePrefix => DBGruposEmpresasDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGruposEmpresasDicInfo.GrpEMail, DBGruposEmpresasDicInfo.GrpInativo, DBGruposEmpresasDicInfo.GrpOponente, DBGruposEmpresasDicInfo.GrpDescricao, DBGruposEmpresasDicInfo.GrpObservacoes, DBGruposEmpresasDicInfo.GrpCliente, DBGruposEmpresasDicInfo.GrpIcone, DBGruposEmpresasDicInfo.GrpDespesaUnificada, DBGruposEmpresasDicInfo.GrpGUID, DBGruposEmpresasDicInfo.GrpQuemCad, DBGruposEmpresasDicInfo.GrpDtCad, DBGruposEmpresasDicInfo.GrpQuemAtu, DBGruposEmpresasDicInfo.GrpDtAtu, DBGruposEmpresasDicInfo.GrpVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGruposEmpresasDicInfo.GrpEMail, DBGruposEmpresasDicInfo.GrpInativo, DBGruposEmpresasDicInfo.GrpOponente, DBGruposEmpresasDicInfo.GrpDescricao, DBGruposEmpresasDicInfo.GrpObservacoes, DBGruposEmpresasDicInfo.GrpCliente, DBGruposEmpresasDicInfo.GrpIcone, DBGruposEmpresasDicInfo.GrpDespesaUnificada];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGruposEmpresasDicInfo.GrpEMail, DBGruposEmpresasDicInfo.GrpInativo, DBGruposEmpresasDicInfo.GrpOponente, DBGruposEmpresasDicInfo.GrpDescricao, DBGruposEmpresasDicInfo.GrpObservacoes, DBGruposEmpresasDicInfo.GrpCliente, DBGruposEmpresasDicInfo.GrpIcone, DBGruposEmpresasDicInfo.GrpDespesaUnificada, DBGruposEmpresasDicInfo.GrpGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

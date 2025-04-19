@@ -46,7 +46,7 @@ public partial class DBDadosProcuracaoODicInfo : IODicInfo
     public static string TTabelaNome => DBDadosProcuracaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBDadosProcuracaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto, DBDadosProcuracaoDicInfo.PrcGUID, DBDadosProcuracaoDicInfo.PrcQuemCad, DBDadosProcuracaoDicInfo.PrcDtCad, DBDadosProcuracaoDicInfo.PrcQuemAtu, DBDadosProcuracaoDicInfo.PrcDtAtu, DBDadosProcuracaoDicInfo.PrcVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto, DBDadosProcuracaoDicInfo.PrcGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

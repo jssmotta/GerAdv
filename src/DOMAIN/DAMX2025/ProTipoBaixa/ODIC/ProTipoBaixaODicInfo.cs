@@ -40,7 +40,7 @@ public partial class DBProTipoBaixaODicInfo : IODicInfo
     public static string TTabelaNome => DBProTipoBaixaDicInfo.TabelaNome;
     public static string TTablePrefix => DBProTipoBaixaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProTipoBaixaDicInfo.PtxNome, DBProTipoBaixaDicInfo.PtxBold, DBProTipoBaixaDicInfo.PtxGUID, DBProTipoBaixaDicInfo.PtxQuemCad, DBProTipoBaixaDicInfo.PtxDtCad, DBProTipoBaixaDicInfo.PtxQuemAtu, DBProTipoBaixaDicInfo.PtxDtAtu, DBProTipoBaixaDicInfo.PtxVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProTipoBaixaDicInfo.PtxNome, DBProTipoBaixaDicInfo.PtxBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProTipoBaixaDicInfo.PtxNome, DBProTipoBaixaDicInfo.PtxBold, DBProTipoBaixaDicInfo.PtxGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

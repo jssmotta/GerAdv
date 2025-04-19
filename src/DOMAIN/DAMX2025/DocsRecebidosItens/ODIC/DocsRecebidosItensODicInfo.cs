@@ -44,7 +44,7 @@ public partial class DBDocsRecebidosItensODicInfo : IODicInfo
     public static string TTabelaNome => DBDocsRecebidosItensDicInfo.TabelaNome;
     public static string TTablePrefix => DBDocsRecebidosItensDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriBold, DBDocsRecebidosItensDicInfo.DriGUID, DBDocsRecebidosItensDicInfo.DriQuemCad, DBDocsRecebidosItensDicInfo.DriDtCad, DBDocsRecebidosItensDicInfo.DriQuemAtu, DBDocsRecebidosItensDicInfo.DriDtAtu, DBDocsRecebidosItensDicInfo.DriVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriBold, DBDocsRecebidosItensDicInfo.DriGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

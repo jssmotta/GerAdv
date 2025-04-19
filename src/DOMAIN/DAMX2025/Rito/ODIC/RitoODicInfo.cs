@@ -41,7 +41,7 @@ public partial class DBRitoODicInfo : IODicInfo
     public static string TTabelaNome => DBRitoDicInfo.TabelaNome;
     public static string TTablePrefix => DBRitoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold, DBRitoDicInfo.RitGUID, DBRitoDicInfo.RitQuemCad, DBRitoDicInfo.RitDtCad, DBRitoDicInfo.RitQuemAtu, DBRitoDicInfo.RitDtAtu, DBRitoDicInfo.RitVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold, DBRitoDicInfo.RitGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

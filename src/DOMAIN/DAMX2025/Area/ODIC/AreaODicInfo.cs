@@ -40,7 +40,7 @@ public partial class DBAreaODicInfo : IODicInfo
     public static string TTabelaNome => DBAreaDicInfo.TabelaNome;
     public static string TTablePrefix => DBAreaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBAreaDicInfo.AreDescricao, DBAreaDicInfo.AreTop, DBAreaDicInfo.AreGUID, DBAreaDicInfo.AreQuemCad, DBAreaDicInfo.AreDtCad, DBAreaDicInfo.AreQuemAtu, DBAreaDicInfo.AreDtAtu, DBAreaDicInfo.AreVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAreaDicInfo.AreDescricao, DBAreaDicInfo.AreTop];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBAreaDicInfo.AreDescricao, DBAreaDicInfo.AreTop, DBAreaDicInfo.AreGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

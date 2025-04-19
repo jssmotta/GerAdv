@@ -42,7 +42,7 @@ public partial class DBProCDAODicInfo : IODicInfo
     public static string TTabelaNome => DBProCDADicInfo.TabelaNome;
     public static string TTablePrefix => DBProCDADicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProCDADicInfo.PcdProcesso, DBProCDADicInfo.PcdNome, DBProCDADicInfo.PcdNroInterno, DBProCDADicInfo.PcdBold, DBProCDADicInfo.PcdGUID, DBProCDADicInfo.PcdQuemCad, DBProCDADicInfo.PcdDtCad, DBProCDADicInfo.PcdQuemAtu, DBProCDADicInfo.PcdDtAtu, DBProCDADicInfo.PcdVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProCDADicInfo.PcdProcesso, DBProCDADicInfo.PcdNome, DBProCDADicInfo.PcdNroInterno, DBProCDADicInfo.PcdBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProCDADicInfo.PcdProcesso, DBProCDADicInfo.PcdNome, DBProCDADicInfo.PcdNroInterno, DBProCDADicInfo.PcdBold, DBProCDADicInfo.PcdGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

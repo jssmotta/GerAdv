@@ -39,7 +39,7 @@ public partial class DBAtividadesODicInfo : IODicInfo
     public static string TTabelaNome => DBAtividadesDicInfo.TabelaNome;
     public static string TTablePrefix => DBAtividadesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBAtividadesDicInfo.AtvDescricao, DBAtividadesDicInfo.AtvGUID, DBAtividadesDicInfo.AtvQuemCad, DBAtividadesDicInfo.AtvDtCad, DBAtividadesDicInfo.AtvQuemAtu, DBAtividadesDicInfo.AtvDtAtu, DBAtividadesDicInfo.AtvVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAtividadesDicInfo.AtvDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBAtividadesDicInfo.AtvDescricao, DBAtividadesDicInfo.AtvGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

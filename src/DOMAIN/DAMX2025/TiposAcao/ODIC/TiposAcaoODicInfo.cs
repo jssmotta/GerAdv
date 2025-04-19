@@ -41,7 +41,7 @@ public partial class DBTiposAcaoODicInfo : IODicInfo
     public static string TTabelaNome => DBTiposAcaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTiposAcaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold, DBTiposAcaoDicInfo.TacGUID, DBTiposAcaoDicInfo.TacQuemCad, DBTiposAcaoDicInfo.TacDtCad, DBTiposAcaoDicInfo.TacQuemAtu, DBTiposAcaoDicInfo.TacDtAtu, DBTiposAcaoDicInfo.TacVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold, DBTiposAcaoDicInfo.TacGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

@@ -39,7 +39,7 @@ public partial class DBTipoEnderecoSistemaODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoEnderecoSistemaDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoEnderecoSistemaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoEnderecoSistemaDicInfo.TesNome, DBTipoEnderecoSistemaDicInfo.TesGUID, DBTipoEnderecoSistemaDicInfo.TesQuemCad, DBTipoEnderecoSistemaDicInfo.TesDtCad, DBTipoEnderecoSistemaDicInfo.TesQuemAtu, DBTipoEnderecoSistemaDicInfo.TesDtAtu, DBTipoEnderecoSistemaDicInfo.TesVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoEnderecoSistemaDicInfo.TesNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoEnderecoSistemaDicInfo.TesNome, DBTipoEnderecoSistemaDicInfo.TesGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

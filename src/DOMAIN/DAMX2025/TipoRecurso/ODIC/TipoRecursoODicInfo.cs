@@ -41,7 +41,7 @@ public partial class DBTipoRecursoODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoRecursoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoRecursoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao, DBTipoRecursoDicInfo.TrcGUID, DBTipoRecursoDicInfo.TrcQuemCad, DBTipoRecursoDicInfo.TrcDtCad, DBTipoRecursoDicInfo.TrcQuemAtu, DBTipoRecursoDicInfo.TrcDtAtu, DBTipoRecursoDicInfo.TrcVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao, DBTipoRecursoDicInfo.TrcGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

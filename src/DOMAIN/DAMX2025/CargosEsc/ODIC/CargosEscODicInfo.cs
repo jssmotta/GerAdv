@@ -41,7 +41,7 @@ public partial class DBCargosEscODicInfo : IODicInfo
     public static string TTabelaNome => DBCargosEscDicInfo.TabelaNome;
     public static string TTablePrefix => DBCargosEscDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGUID, DBCargosEscDicInfo.CgeQuemCad, DBCargosEscDicInfo.CgeDtCad, DBCargosEscDicInfo.CgeQuemAtu, DBCargosEscDicInfo.CgeDtAtu, DBCargosEscDicInfo.CgeVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

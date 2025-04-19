@@ -40,7 +40,7 @@ public partial class DBGUTTipoODicInfo : IODicInfo
     public static string TTabelaNome => DBGUTTipoDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTTipoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGUTTipoDicInfo.GttNome, DBGUTTipoDicInfo.GttOrdem, DBGUTTipoDicInfo.GttGUID, DBGUTTipoDicInfo.GttQuemCad, DBGUTTipoDicInfo.GttDtCad, DBGUTTipoDicInfo.GttQuemAtu, DBGUTTipoDicInfo.GttDtAtu, DBGUTTipoDicInfo.GttVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTTipoDicInfo.GttNome, DBGUTTipoDicInfo.GttOrdem];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTTipoDicInfo.GttNome, DBGUTTipoDicInfo.GttOrdem, DBGUTTipoDicInfo.GttGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

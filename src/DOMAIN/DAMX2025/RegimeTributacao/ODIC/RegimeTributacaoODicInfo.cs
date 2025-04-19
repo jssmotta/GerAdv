@@ -39,7 +39,7 @@ public partial class DBRegimeTributacaoODicInfo : IODicInfo
     public static string TTabelaNome => DBRegimeTributacaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBRegimeTributacaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBRegimeTributacaoDicInfo.RdtNome, DBRegimeTributacaoDicInfo.RdtGUID, DBRegimeTributacaoDicInfo.RdtQuemCad, DBRegimeTributacaoDicInfo.RdtDtCad, DBRegimeTributacaoDicInfo.RdtQuemAtu, DBRegimeTributacaoDicInfo.RdtDtAtu, DBRegimeTributacaoDicInfo.RdtVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBRegimeTributacaoDicInfo.RdtNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBRegimeTributacaoDicInfo.RdtNome, DBRegimeTributacaoDicInfo.RdtGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

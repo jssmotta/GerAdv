@@ -40,7 +40,7 @@ public partial class DBGUTPeriodicidadeStatusODicInfo : IODicInfo
     public static string TTabelaNome => DBGUTPeriodicidadeStatusDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTPeriodicidadeStatusDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID, DBGUTPeriodicidadeStatusDicInfo.PgsQuemCad, DBGUTPeriodicidadeStatusDicInfo.PgsDtCad, DBGUTPeriodicidadeStatusDicInfo.PgsQuemAtu, DBGUTPeriodicidadeStatusDicInfo.PgsDtAtu, DBGUTPeriodicidadeStatusDicInfo.PgsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

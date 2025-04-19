@@ -45,7 +45,7 @@ public partial class DBPrecatoriaODicInfo : IODicInfo
     public static string TTabelaNome => DBPrecatoriaDicInfo.TabelaNome;
     public static string TTablePrefix => DBPrecatoriaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBPrecatoriaDicInfo.PreDtDist, DBPrecatoriaDicInfo.PreProcesso, DBPrecatoriaDicInfo.PrePrecatoria, DBPrecatoriaDicInfo.PreDeprecante, DBPrecatoriaDicInfo.PreDeprecado, DBPrecatoriaDicInfo.PreOBS, DBPrecatoriaDicInfo.PreBold, DBPrecatoriaDicInfo.PreGUID, DBPrecatoriaDicInfo.PreQuemCad, DBPrecatoriaDicInfo.PreDtCad, DBPrecatoriaDicInfo.PreQuemAtu, DBPrecatoriaDicInfo.PreDtAtu, DBPrecatoriaDicInfo.PreVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBPrecatoriaDicInfo.PreDtDist, DBPrecatoriaDicInfo.PreProcesso, DBPrecatoriaDicInfo.PrePrecatoria, DBPrecatoriaDicInfo.PreDeprecante, DBPrecatoriaDicInfo.PreDeprecado, DBPrecatoriaDicInfo.PreOBS, DBPrecatoriaDicInfo.PreBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBPrecatoriaDicInfo.PreDtDist, DBPrecatoriaDicInfo.PreProcesso, DBPrecatoriaDicInfo.PrePrecatoria, DBPrecatoriaDicInfo.PreDeprecante, DBPrecatoriaDicInfo.PreDeprecado, DBPrecatoriaDicInfo.PreOBS, DBPrecatoriaDicInfo.PreBold, DBPrecatoriaDicInfo.PreGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

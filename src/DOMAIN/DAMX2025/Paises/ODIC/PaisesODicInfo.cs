@@ -39,7 +39,7 @@ public partial class DBPaisesODicInfo : IODicInfo
     public static string TTabelaNome => DBPaisesDicInfo.TabelaNome;
     public static string TTablePrefix => DBPaisesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBPaisesDicInfo.PaiNome, DBPaisesDicInfo.PaiGUID, DBPaisesDicInfo.PaiQuemCad, DBPaisesDicInfo.PaiDtCad, DBPaisesDicInfo.PaiQuemAtu, DBPaisesDicInfo.PaiDtAtu, DBPaisesDicInfo.PaiVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBPaisesDicInfo.PaiNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBPaisesDicInfo.PaiNome, DBPaisesDicInfo.PaiGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

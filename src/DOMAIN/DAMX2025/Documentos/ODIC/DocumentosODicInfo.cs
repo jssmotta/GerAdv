@@ -41,7 +41,7 @@ public partial class DBDocumentosODicInfo : IODicInfo
     public static string TTabelaNome => DBDocumentosDicInfo.TabelaNome;
     public static string TTablePrefix => DBDocumentosDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBDocumentosDicInfo.DocProcesso, DBDocumentosDicInfo.DocData, DBDocumentosDicInfo.DocObservacao, DBDocumentosDicInfo.DocGUID, DBDocumentosDicInfo.DocQuemCad, DBDocumentosDicInfo.DocDtCad, DBDocumentosDicInfo.DocQuemAtu, DBDocumentosDicInfo.DocDtAtu, DBDocumentosDicInfo.DocVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDocumentosDicInfo.DocProcesso, DBDocumentosDicInfo.DocData, DBDocumentosDicInfo.DocObservacao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBDocumentosDicInfo.DocProcesso, DBDocumentosDicInfo.DocData, DBDocumentosDicInfo.DocObservacao, DBDocumentosDicInfo.DocGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

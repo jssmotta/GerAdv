@@ -39,7 +39,7 @@ public partial class DBCargosEscClassODicInfo : IODicInfo
     public static string TTabelaNome => DBCargosEscClassDicInfo.TabelaNome;
     public static string TTablePrefix => DBCargosEscClassDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBCargosEscClassDicInfo.CecNome, DBCargosEscClassDicInfo.CecGUID, DBCargosEscClassDicInfo.CecQuemCad, DBCargosEscClassDicInfo.CecDtCad, DBCargosEscClassDicInfo.CecQuemAtu, DBCargosEscClassDicInfo.CecDtAtu, DBCargosEscClassDicInfo.CecVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosEscClassDicInfo.CecNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosEscClassDicInfo.CecNome, DBCargosEscClassDicInfo.CecGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

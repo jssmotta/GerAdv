@@ -45,7 +45,7 @@ public partial class DBDiario2ODicInfo : IODicInfo
     public static string TTabelaNome => DBDiario2DicInfo.TabelaNome;
     public static string TTablePrefix => DBDiario2DicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBDiario2DicInfo.DiaData, DBDiario2DicInfo.DiaHora, DBDiario2DicInfo.DiaOperador, DBDiario2DicInfo.DiaNome, DBDiario2DicInfo.DiaOcorrencia, DBDiario2DicInfo.DiaCliente, DBDiario2DicInfo.DiaBold, DBDiario2DicInfo.DiaGUID, DBDiario2DicInfo.DiaQuemCad, DBDiario2DicInfo.DiaDtCad, DBDiario2DicInfo.DiaQuemAtu, DBDiario2DicInfo.DiaDtAtu, DBDiario2DicInfo.DiaVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDiario2DicInfo.DiaData, DBDiario2DicInfo.DiaHora, DBDiario2DicInfo.DiaOperador, DBDiario2DicInfo.DiaNome, DBDiario2DicInfo.DiaOcorrencia, DBDiario2DicInfo.DiaCliente, DBDiario2DicInfo.DiaBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBDiario2DicInfo.DiaData, DBDiario2DicInfo.DiaHora, DBDiario2DicInfo.DiaOperador, DBDiario2DicInfo.DiaNome, DBDiario2DicInfo.DiaOcorrencia, DBDiario2DicInfo.DiaCliente, DBDiario2DicInfo.DiaBold, DBDiario2DicInfo.DiaGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

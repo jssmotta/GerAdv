@@ -41,7 +41,7 @@ public partial class DBOperadorGruposAgendaODicInfo : IODicInfo
     public static string TTabelaNome => DBOperadorGruposAgendaDicInfo.TabelaNome;
     public static string TTablePrefix => DBOperadorGruposAgendaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBOperadorGruposAgendaDicInfo.GroSQLWhere, DBOperadorGruposAgendaDicInfo.GroNome, DBOperadorGruposAgendaDicInfo.GroOperador, DBOperadorGruposAgendaDicInfo.GroGUID, DBOperadorGruposAgendaDicInfo.GroQuemCad, DBOperadorGruposAgendaDicInfo.GroDtCad, DBOperadorGruposAgendaDicInfo.GroQuemAtu, DBOperadorGruposAgendaDicInfo.GroDtAtu, DBOperadorGruposAgendaDicInfo.GroVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBOperadorGruposAgendaDicInfo.GroSQLWhere, DBOperadorGruposAgendaDicInfo.GroNome, DBOperadorGruposAgendaDicInfo.GroOperador];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBOperadorGruposAgendaDicInfo.GroSQLWhere, DBOperadorGruposAgendaDicInfo.GroNome, DBOperadorGruposAgendaDicInfo.GroOperador, DBOperadorGruposAgendaDicInfo.GroGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

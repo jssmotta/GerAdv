@@ -41,7 +41,7 @@ public partial class DBGraphODicInfo : IODicInfo
     public static string TTabelaNome => DBGraphDicInfo.TabelaNome;
     public static string TTablePrefix => DBGraphDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGraphDicInfo.GphTabela, DBGraphDicInfo.GphTabelaId, DBGraphDicInfo.GphImagem, DBGraphDicInfo.GphGUID, DBGraphDicInfo.GphQuemCad, DBGraphDicInfo.GphDtCad, DBGraphDicInfo.GphQuemAtu, DBGraphDicInfo.GphDtAtu, DBGraphDicInfo.GphVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGraphDicInfo.GphTabela, DBGraphDicInfo.GphTabelaId, DBGraphDicInfo.GphImagem];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGraphDicInfo.GphTabela, DBGraphDicInfo.GphTabelaId, DBGraphDicInfo.GphImagem, DBGraphDicInfo.GphGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

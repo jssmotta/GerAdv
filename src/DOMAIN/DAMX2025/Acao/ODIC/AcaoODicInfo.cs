@@ -41,7 +41,7 @@ public partial class DBAcaoODicInfo : IODicInfo
     public static string TTabelaNome => DBAcaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBAcaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBAcaoDicInfo.AcaJustica, DBAcaoDicInfo.AcaArea, DBAcaoDicInfo.AcaDescricao, DBAcaoDicInfo.AcaGUID, DBAcaoDicInfo.AcaQuemCad, DBAcaoDicInfo.AcaDtCad, DBAcaoDicInfo.AcaQuemAtu, DBAcaoDicInfo.AcaDtAtu, DBAcaoDicInfo.AcaVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAcaoDicInfo.AcaJustica, DBAcaoDicInfo.AcaArea, DBAcaoDicInfo.AcaDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBAcaoDicInfo.AcaJustica, DBAcaoDicInfo.AcaArea, DBAcaoDicInfo.AcaDescricao, DBAcaoDicInfo.AcaGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

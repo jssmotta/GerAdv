@@ -42,7 +42,7 @@ public partial class DBProObservacoesODicInfo : IODicInfo
     public static string TTabelaNome => DBProObservacoesDicInfo.TabelaNome;
     public static string TTablePrefix => DBProObservacoesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProObservacoesDicInfo.PobProcesso, DBProObservacoesDicInfo.PobNome, DBProObservacoesDicInfo.PobObservacoes, DBProObservacoesDicInfo.PobData, DBProObservacoesDicInfo.PobGUID, DBProObservacoesDicInfo.PobQuemCad, DBProObservacoesDicInfo.PobDtCad, DBProObservacoesDicInfo.PobQuemAtu, DBProObservacoesDicInfo.PobDtAtu, DBProObservacoesDicInfo.PobVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProObservacoesDicInfo.PobProcesso, DBProObservacoesDicInfo.PobNome, DBProObservacoesDicInfo.PobObservacoes, DBProObservacoesDicInfo.PobData];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProObservacoesDicInfo.PobProcesso, DBProObservacoesDicInfo.PobNome, DBProObservacoesDicInfo.PobObservacoes, DBProObservacoesDicInfo.PobData, DBProObservacoesDicInfo.PobGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
