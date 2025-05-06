@@ -71,4 +71,7 @@ public partial class FilterLigacoes
 
     [JsonPropertyName("emotion")]
     public int Emotion { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

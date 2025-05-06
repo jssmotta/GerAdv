@@ -26,4 +26,7 @@ public partial class FilterGruposEmpresas
 
     [JsonPropertyName("icone")]
     public string Icone { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

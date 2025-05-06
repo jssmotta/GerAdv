@@ -43,7 +43,7 @@ public partial class Cidade : ICidadeReader
             Nome = dbRec.FNome ?? string.Empty,
             UF = dbRec.FUF,
             Sigla = dbRec.FSigla ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -77,7 +77,7 @@ public partial class Cidade : ICidadeReader
             Nome = dbRec.FNome ?? string.Empty,
             UF = dbRec.FUF,
             Sigla = dbRec.FSigla ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

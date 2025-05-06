@@ -44,4 +44,7 @@ public partial class FilterBensMateriais
 
     [JsonPropertyName("nomevendedor")]
     public string NomeVendedor { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

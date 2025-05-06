@@ -41,7 +41,7 @@ public partial class AndamentosMD : IAndamentosMDReader
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -73,7 +73,7 @@ public partial class AndamentosMD : IAndamentosMDReader
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

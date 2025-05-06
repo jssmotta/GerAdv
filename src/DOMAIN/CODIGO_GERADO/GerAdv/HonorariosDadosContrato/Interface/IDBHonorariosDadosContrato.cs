@@ -12,4 +12,5 @@ public partial interface IDBHonorariosDadosContrato
     public decimal FValorFixo { get; set; }
     public string? FObservacao { get; set; }
     public string? FDataContrato { get; set; }
+    public string? FGUID { get; set; }
 }

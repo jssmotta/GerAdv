@@ -19,6 +19,7 @@ public partial class CargosEsc : ICargosEscWhere
             Percentual = dbRec.FPercentual,
             Nome = dbRec.FNome ?? string.Empty,
             Classificacao = dbRec.FClassificacao,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

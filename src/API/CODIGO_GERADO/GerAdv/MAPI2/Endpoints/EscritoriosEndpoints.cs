@@ -74,30 +74,6 @@ public static class EscritoriosEndpoints
 
             return Results.Ok(result);
         }).WithName("Escritorios_AddAndUpdate").WithDisplayName("Add or Update Escritorios");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IEscritoriosValidation validation, IEscritoriosWriter writer, IEscritoriosService service) =>
-        {
-            logger.LogInfo("Escritorios", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Escritorios", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Escritorios_GetColumns").WithDisplayName("Get Escritorios Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IEscritoriosValidation validation, IEscritoriosWriter writer, IEscritoriosService service) =>
-        {
-            logger.LogInfo("Escritorios", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Escritorios", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Escritorios_UpdateColumns").WithDisplayName("Update Escritorios Columns");
         group.MapDelete("/Delete", async (int id, string uri, IEscritoriosValidation validation, IEscritoriosWriter writer, IEscritoriosService service) =>
         {
             logger.LogInfo("Escritorios", "Delete", $"id = {id}", uri);

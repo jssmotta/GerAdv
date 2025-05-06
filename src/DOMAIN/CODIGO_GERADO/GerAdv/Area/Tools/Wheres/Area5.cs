@@ -18,6 +18,7 @@ public partial class Area : IAreaWhere
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -74,7 +74,7 @@ public partial class AgendaFinanceiro : IAgendaFinanceiroReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHrFinal, out _))
             agendafinanceiro.HrFinal = dbRec.FHrFinal;
@@ -151,7 +151,7 @@ public partial class AgendaFinanceiro : IAgendaFinanceiroReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHrFinal, out _))
             agendafinanceiro.HrFinal = dbRec.FHrFinal;

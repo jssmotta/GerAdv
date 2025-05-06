@@ -40,7 +40,7 @@ public partial class ProcessOutputRequest : IProcessOutputRequestReader
             Operador = dbRec.FOperador,
             Processo = dbRec.FProcesso,
             UltimoIdTabelaExo = dbRec.FUltimoIdTabelaExo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -71,7 +71,7 @@ public partial class ProcessOutputRequest : IProcessOutputRequestReader
             Operador = dbRec.FOperador,
             Processo = dbRec.FProcesso,
             UltimoIdTabelaExo = dbRec.FUltimoIdTabelaExo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

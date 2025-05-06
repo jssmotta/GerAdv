@@ -74,30 +74,6 @@ public static class BensMateriaisEndpoints
 
             return Results.Ok(result);
         }).WithName("BensMateriais_AddAndUpdate").WithDisplayName("Add or Update BensMateriais");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IBensMateriaisValidation validation, IBensMateriaisWriter writer, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, IBensMateriaisService service) =>
-        {
-            logger.LogInfo("BensMateriais", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("BensMateriais", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("BensMateriais_GetColumns").WithDisplayName("Get BensMateriais Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IBensMateriaisValidation validation, IBensMateriaisWriter writer, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, IBensMateriaisService service) =>
-        {
-            logger.LogInfo("BensMateriais", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("BensMateriais", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("BensMateriais_UpdateColumns").WithDisplayName("Update BensMateriais Columns");
         group.MapDelete("/Delete", async (int id, string uri, IBensMateriaisValidation validation, IBensMateriaisWriter writer, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, IBensMateriaisService service) =>
         {
             logger.LogInfo("BensMateriais", "Delete", $"id = {id}", uri);

@@ -15,6 +15,7 @@ public class PosicaoOutrasPartes : IPosicaoOutrasPartesWriter
         var dbRec = posicaooutraspartes.Id.IsEmptyIDNumber() ? new Entity.DBPosicaoOutrasPartes() : new Entity.DBPosicaoOutrasPartes(posicaooutraspartes.Id, oCnn);
         dbRec.FDescricao = posicaooutraspartes.Descricao;
         dbRec.FBold = posicaooutraspartes.Bold;
+        dbRec.FGUID = posicaooutraspartes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

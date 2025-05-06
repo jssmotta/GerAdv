@@ -38,7 +38,7 @@ public partial class Area : IAreaReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class Area : IAreaReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

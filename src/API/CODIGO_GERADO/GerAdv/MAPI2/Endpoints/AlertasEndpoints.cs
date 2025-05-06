@@ -74,30 +74,6 @@ public static class AlertasEndpoints
 
             return Results.Ok(result);
         }).WithName("Alertas_AddAndUpdate").WithDisplayName("Add or Update Alertas");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAlertasValidation validation, IAlertasWriter writer, IOperadorReader operadorReader, IAlertasService service) =>
-        {
-            logger.LogInfo("Alertas", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Alertas", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Alertas_GetColumns").WithDisplayName("Get Alertas Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAlertasValidation validation, IAlertasWriter writer, IOperadorReader operadorReader, IAlertasService service) =>
-        {
-            logger.LogInfo("Alertas", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Alertas", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Alertas_UpdateColumns").WithDisplayName("Update Alertas Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAlertasValidation validation, IAlertasWriter writer, IOperadorReader operadorReader, IAlertasService service) =>
         {
             logger.LogInfo("Alertas", "Delete", $"id = {id}", uri);

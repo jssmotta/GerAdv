@@ -18,6 +18,7 @@ public partial class EMPClassRiscos : IEMPClassRiscosWhere
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

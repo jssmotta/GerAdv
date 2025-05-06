@@ -39,7 +39,7 @@ public partial class CargosEsc : ICargosEscReader
             Percentual = dbRec.FPercentual,
             Nome = dbRec.FNome ?? string.Empty,
             Classificacao = dbRec.FClassificacao,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -69,7 +69,7 @@ public partial class CargosEsc : ICargosEscReader
             Percentual = dbRec.FPercentual,
             Nome = dbRec.FNome ?? string.Empty,
             Classificacao = dbRec.FClassificacao,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

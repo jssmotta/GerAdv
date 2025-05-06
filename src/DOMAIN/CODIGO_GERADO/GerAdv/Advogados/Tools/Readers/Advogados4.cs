@@ -71,7 +71,7 @@ public partial class Advogados : IAdvogadosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out _))
             advogados.DtInicio = dbRec.FDtInicio;
@@ -139,7 +139,7 @@ public partial class Advogados : IAdvogadosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out _))
             advogados.DtInicio = dbRec.FDtInicio;

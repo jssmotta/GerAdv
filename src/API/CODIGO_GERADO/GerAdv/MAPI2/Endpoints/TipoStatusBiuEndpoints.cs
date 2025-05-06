@@ -74,30 +74,6 @@ public static class TipoStatusBiuEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoStatusBiu_AddAndUpdate").WithDisplayName("Add or Update TipoStatusBiu");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, ITipoStatusBiuService service) =>
-        {
-            logger.LogInfo("TipoStatusBiu", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoStatusBiu", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoStatusBiu_GetColumns").WithDisplayName("Get TipoStatusBiu Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, ITipoStatusBiuService service) =>
-        {
-            logger.LogInfo("TipoStatusBiu", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoStatusBiu", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoStatusBiu_UpdateColumns").WithDisplayName("Update TipoStatusBiu Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, ITipoStatusBiuService service) =>
         {
             logger.LogInfo("TipoStatusBiu", "Delete", $"id = {id}", uri);

@@ -58,7 +58,7 @@ public partial class Fornecedores : IFornecedoresReader
             Contatos = dbRec.FContatos ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -107,7 +107,7 @@ public partial class Fornecedores : IFornecedoresReader
             Contatos = dbRec.FContatos ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

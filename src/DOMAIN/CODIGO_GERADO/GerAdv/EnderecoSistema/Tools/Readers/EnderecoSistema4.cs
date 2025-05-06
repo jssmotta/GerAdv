@@ -49,7 +49,7 @@ public partial class EnderecoSistema : IEnderecoSistemaReader
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -89,7 +89,7 @@ public partial class EnderecoSistema : IEnderecoSistemaReader
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

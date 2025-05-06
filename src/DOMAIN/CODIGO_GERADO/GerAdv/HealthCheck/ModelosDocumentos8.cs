@@ -72,7 +72,7 @@ public class ModelosDocumentosHealthCheck(IOptions<AppSettings> appSettings, Mod
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) mdcNome,mdcRemuneracao,mdcAssinatura,mdcHeader,mdcFooter,mdcExtra1,mdcExtra2,mdcExtra3,mdcOutorgante,mdcOutorgados,mdcPoderes,mdcObjeto,mdcTitulo,mdcTestemunhas,mdcTipoModeloDocumento,mdcCSS FROM dbo.ModelosDocumentos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) mdcNome,mdcRemuneracao,mdcAssinatura,mdcHeader,mdcFooter,mdcExtra1,mdcExtra2,mdcExtra3,mdcOutorgante,mdcOutorgados,mdcPoderes,mdcObjeto,mdcTitulo,mdcTestemunhas,mdcTipoModeloDocumento,mdcCSS,mdcGUID FROM dbo.ModelosDocumentos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -54,6 +54,7 @@ public class Advogados : IAdvogadosWriter
         dbRec.FEtiqueta = advogados.Etiqueta;
         dbRec.FAni = advogados.Ani;
         dbRec.FBold = advogados.Bold;
+        dbRec.FGUID = advogados.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

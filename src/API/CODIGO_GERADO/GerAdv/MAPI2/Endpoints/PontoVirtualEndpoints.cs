@@ -56,30 +56,6 @@ public static class PontoVirtualEndpoints
 
             return Results.Ok(result);
         }).WithName("PontoVirtual_AddAndUpdate").WithDisplayName("Add or Update PontoVirtual");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IPontoVirtualValidation validation, IPontoVirtualWriter writer, IOperadorReader operadorReader, IPontoVirtualService service) =>
-        {
-            logger.LogInfo("PontoVirtual", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("PontoVirtual", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("PontoVirtual_GetColumns").WithDisplayName("Get PontoVirtual Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IPontoVirtualValidation validation, IPontoVirtualWriter writer, IOperadorReader operadorReader, IPontoVirtualService service) =>
-        {
-            logger.LogInfo("PontoVirtual", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("PontoVirtual", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("PontoVirtual_UpdateColumns").WithDisplayName("Update PontoVirtual Columns");
         group.MapDelete("/Delete", async (int id, string uri, IPontoVirtualValidation validation, IPontoVirtualWriter writer, IOperadorReader operadorReader, IPontoVirtualService service) =>
         {
             logger.LogInfo("PontoVirtual", "Delete", $"id = {id}", uri);

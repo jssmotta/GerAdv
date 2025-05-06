@@ -23,4 +23,7 @@ public partial class FilterProValores
 
     [JsonPropertyName("dataultimacorrecao")]
     public string DataUltimaCorrecao { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

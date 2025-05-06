@@ -72,7 +72,7 @@ public class ProcessOutPutIDsHealthCheck(IOptions<AppSettings> appSettings, Proc
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) poiNome FROM dbo.ProcessOutPutIDs (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) poiNome,poiGUID FROM dbo.ProcessOutPutIDs (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

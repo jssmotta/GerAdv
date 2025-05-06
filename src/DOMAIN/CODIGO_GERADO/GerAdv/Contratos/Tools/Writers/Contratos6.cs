@@ -44,6 +44,7 @@ public class Contratos : IContratosWriter
         dbRec.FSuspenso = contratos.Suspenso;
         dbRec.FMulta = contratos.Multa;
         dbRec.FBold = contratos.Bold;
+        dbRec.FGUID = contratos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

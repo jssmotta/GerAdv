@@ -57,6 +57,7 @@ public class Agenda : IAgendaWriter
         if (agenda.DataInicioPrazo != null)
             dbRec.FDataInicioPrazo = agenda.DataInicioPrazo.ToString();
         dbRec.FUsuarioCiente = agenda.UsuarioCiente;
+        dbRec.FGUID = agenda.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

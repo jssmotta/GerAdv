@@ -46,6 +46,7 @@ public class ContatoCRM : IContatoCRMWriter
         dbRec.FEmocao = contatocrm.Emocao;
         dbRec.FContinuar = contatocrm.Continuar;
         dbRec.FBold = contatocrm.Bold;
+        dbRec.FGUID = contatocrm.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

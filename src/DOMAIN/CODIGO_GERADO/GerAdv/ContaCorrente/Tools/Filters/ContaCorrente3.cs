@@ -53,4 +53,7 @@ public partial class FilterContaCorrente
 
     [JsonPropertyName("datapgto")]
     public string DataPgto { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

@@ -20,4 +20,5 @@ public partial interface IDBHorasTrab
     public string? FAnexoComp { get; set; }
     public string? FAnexoUNC { get; set; }
     public int FServico { get; set; }
+    public string? FGUID { get; set; }
 }

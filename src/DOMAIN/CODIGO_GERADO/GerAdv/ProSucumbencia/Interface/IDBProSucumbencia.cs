@@ -9,4 +9,5 @@ public partial interface IDBProSucumbencia
     public int FTipoOrigemSucumbencia { get; set; }
     public decimal FValor { get; set; }
     public string? FPercentual { get; set; }
+    public string? FGUID { get; set; }
 }

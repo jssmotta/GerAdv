@@ -23,6 +23,7 @@ public class GUTAtividades : IGUTAtividadesWriter
             dbRec.FDataConcluido = gutatividades.DataConcluido.ToString();
         dbRec.FDiasParaIniciar = gutatividades.DiasParaIniciar;
         dbRec.FMinutosParaRealizar = gutatividades.MinutosParaRealizar;
+        dbRec.FGUID = gutatividades.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

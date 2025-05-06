@@ -41,7 +41,7 @@ public partial class UF : IUFReader
             Pais = dbRec.FPais,
             Top = dbRec.FTop,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -73,7 +73,7 @@ public partial class UF : IUFReader
             Pais = dbRec.FPais,
             Top = dbRec.FTop,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

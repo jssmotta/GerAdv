@@ -5,4 +5,5 @@ public partial interface IDBOperadorGruposAgenda
     public string? FSQLWhere { get; set; }
     public string? FNome { get; set; }
     public int FOperador { get; set; }
+    public string? FGUID { get; set; }
 }

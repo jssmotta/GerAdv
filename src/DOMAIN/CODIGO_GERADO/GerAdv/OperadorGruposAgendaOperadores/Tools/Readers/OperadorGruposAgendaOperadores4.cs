@@ -38,7 +38,7 @@ public partial class OperadorGruposAgendaOperadores : IOperadorGruposAgendaOpera
             Id = dbRec.ID,
             OperadorGruposAgenda = dbRec.FOperadorGruposAgenda,
             Operador = dbRec.FOperador,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class OperadorGruposAgendaOperadores : IOperadorGruposAgendaOpera
             Id = dbRec.ID,
             OperadorGruposAgenda = dbRec.FOperadorGruposAgenda,
             Operador = dbRec.FOperador,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

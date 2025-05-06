@@ -64,7 +64,7 @@ public partial class Prepostos : IPrepostosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             prepostos.DtNasc = dbRec.FDtNasc;
@@ -127,7 +127,7 @@ public partial class Prepostos : IPrepostosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             prepostos.DtNasc = dbRec.FDtNasc;

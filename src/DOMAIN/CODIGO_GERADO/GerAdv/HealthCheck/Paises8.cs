@@ -72,7 +72,7 @@ public class PaisesHealthCheck(IOptions<AppSettings> appSettings, PaisesService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) paiNome FROM dbo.Paises (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) paiNome,paiGUID FROM dbo.Paises (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

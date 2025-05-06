@@ -74,30 +74,6 @@ public static class TipoEnderecoEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoEndereco_AddAndUpdate").WithDisplayName("Add or Update TipoEndereco");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoEnderecoValidation validation, ITipoEnderecoWriter writer, ITipoEnderecoService service) =>
-        {
-            logger.LogInfo("TipoEndereco", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoEndereco", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoEndereco_GetColumns").WithDisplayName("Get TipoEndereco Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoEnderecoValidation validation, ITipoEnderecoWriter writer, ITipoEnderecoService service) =>
-        {
-            logger.LogInfo("TipoEndereco", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoEndereco", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoEndereco_UpdateColumns").WithDisplayName("Update TipoEndereco Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoEnderecoValidation validation, ITipoEnderecoWriter writer, ITipoEnderecoService service) =>
         {
             logger.LogInfo("TipoEndereco", "Delete", $"id = {id}", uri);

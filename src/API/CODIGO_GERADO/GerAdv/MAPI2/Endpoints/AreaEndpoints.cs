@@ -74,30 +74,6 @@ public static class AreaEndpoints
 
             return Results.Ok(result);
         }).WithName("Area_AddAndUpdate").WithDisplayName("Add or Update Area");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAreaValidation validation, IAreaWriter writer, IAreaService service) =>
-        {
-            logger.LogInfo("Area", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Area", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Area_GetColumns").WithDisplayName("Get Area Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAreaValidation validation, IAreaWriter writer, IAreaService service) =>
-        {
-            logger.LogInfo("Area", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Area", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Area_UpdateColumns").WithDisplayName("Update Area Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAreaValidation validation, IAreaWriter writer, IAreaService service) =>
         {
             logger.LogInfo("Area", "Delete", $"id = {id}", uri);

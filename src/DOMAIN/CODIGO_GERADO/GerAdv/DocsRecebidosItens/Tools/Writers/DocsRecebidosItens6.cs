@@ -19,6 +19,7 @@ public class DocsRecebidosItens : IDocsRecebidosItensWriter
         dbRec.FSeraDevolvido = docsrecebidositens.SeraDevolvido;
         dbRec.FObservacoes = docsrecebidositens.Observacoes;
         dbRec.FBold = docsrecebidositens.Bold;
+        dbRec.FGUID = docsrecebidositens.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

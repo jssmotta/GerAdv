@@ -5,4 +5,5 @@ public partial interface IDBGraph
     public string? FTabela { get; set; }
     public int FTabelaId { get; set; }
     public byte[] FImagem { get; set; }
+    public string? FGUID { get; set; }
 }

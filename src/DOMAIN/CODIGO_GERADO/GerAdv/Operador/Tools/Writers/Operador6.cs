@@ -52,6 +52,7 @@ public class Operador : IOperadorWriter
         if (operador.SuporteUltimoAcesso != null)
             dbRec.FSuporteUltimoAcesso = operador.SuporteUltimoAcesso.ToString();
         dbRec.FSuporteIpUltimoAcesso = operador.SuporteIpUltimoAcesso;
+        dbRec.FGUID = operador.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

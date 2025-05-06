@@ -33,7 +33,7 @@ public class OperadorValidation : IOperadorValidation
 
     private async Task<bool> IsDuplicado(Models.Operador reg, IOperadorService service, string uri)
     {
-
-        return false;
+        var existingOperador = (await service.Filter(new Filters.FilterOperador { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingOperador != null && existingOperador.Id > 0 && existingOperador.Id != reg.Id;
     }
 }

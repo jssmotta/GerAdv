@@ -14,6 +14,7 @@ public class PenhoraStatus : IPenhoraStatusWriter
     {
         var dbRec = penhorastatus.Id.IsEmptyIDNumber() ? new Entity.DBPenhoraStatus() : new Entity.DBPenhoraStatus(penhorastatus.Id, oCnn);
         dbRec.FNome = penhorastatus.Nome;
+        dbRec.FGUID = penhorastatus.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

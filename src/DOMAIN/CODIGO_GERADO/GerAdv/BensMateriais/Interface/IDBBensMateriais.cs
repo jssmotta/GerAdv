@@ -17,4 +17,5 @@ public partial interface IDBBensMateriais
     public string? FObservacoes { get; set; }
     public string? FNomeVendedor { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

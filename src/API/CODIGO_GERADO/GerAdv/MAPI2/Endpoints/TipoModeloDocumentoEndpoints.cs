@@ -74,30 +74,6 @@ public static class TipoModeloDocumentoEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoModeloDocumento_AddAndUpdate").WithDisplayName("Add or Update TipoModeloDocumento");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoModeloDocumentoValidation validation, ITipoModeloDocumentoWriter writer, ITipoModeloDocumentoService service) =>
-        {
-            logger.LogInfo("TipoModeloDocumento", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoModeloDocumento", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoModeloDocumento_GetColumns").WithDisplayName("Get TipoModeloDocumento Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoModeloDocumentoValidation validation, ITipoModeloDocumentoWriter writer, ITipoModeloDocumentoService service) =>
-        {
-            logger.LogInfo("TipoModeloDocumento", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoModeloDocumento", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoModeloDocumento_UpdateColumns").WithDisplayName("Update TipoModeloDocumento Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoModeloDocumentoValidation validation, ITipoModeloDocumentoWriter writer, ITipoModeloDocumentoService service) =>
         {
             logger.LogInfo("TipoModeloDocumento", "Delete", $"id = {id}", uri);

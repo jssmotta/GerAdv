@@ -51,10 +51,11 @@ public partial class AlarmSMS : IAlarmSMSReader
             ExcetoDiasFelizes = dbRec.FExcetoDiasFelizes,
             Desktop = dbRec.FDesktop,
             Operador = dbRec.FOperador,
+            GuidExo = dbRec.FGuidExo ?? string.Empty,
             Agenda = dbRec.FAgenda,
             Recado = dbRec.FRecado,
             Emocao = dbRec.FEmocao,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FToday, out _))
             alarmsms.Today = dbRec.FToday;
@@ -100,10 +101,11 @@ public partial class AlarmSMS : IAlarmSMSReader
             ExcetoDiasFelizes = dbRec.FExcetoDiasFelizes,
             Desktop = dbRec.FDesktop,
             Operador = dbRec.FOperador,
+            GuidExo = dbRec.FGuidExo ?? string.Empty,
             Agenda = dbRec.FAgenda,
             Recado = dbRec.FRecado,
             Emocao = dbRec.FEmocao,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FToday, out _))
             alarmsms.Today = dbRec.FToday;

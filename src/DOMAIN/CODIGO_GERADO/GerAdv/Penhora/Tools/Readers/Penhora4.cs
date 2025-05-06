@@ -41,7 +41,7 @@ public partial class Penhora : IPenhoraReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
             Master = dbRec.FMaster,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out _))
             penhora.DataPenhora = dbRec.FDataPenhora;
@@ -75,7 +75,7 @@ public partial class Penhora : IPenhoraReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
             Master = dbRec.FMaster,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out _))
             penhora.DataPenhora = dbRec.FDataPenhora;

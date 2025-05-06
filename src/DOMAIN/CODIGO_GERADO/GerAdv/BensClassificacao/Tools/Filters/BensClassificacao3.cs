@@ -11,4 +11,7 @@ public partial class FilterBensClassificacao
 
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

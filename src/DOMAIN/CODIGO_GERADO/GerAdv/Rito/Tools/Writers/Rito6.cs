@@ -16,6 +16,7 @@ public class Rito : IRitoWriter
         dbRec.FDescricao = rito.Descricao;
         dbRec.FTop = rito.Top;
         dbRec.FBold = rito.Bold;
+        dbRec.FGUID = rito.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

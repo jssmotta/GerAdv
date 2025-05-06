@@ -14,10 +14,12 @@ public class AnexamentoRegistros : IAnexamentoRegistrosWriter
     {
         var dbRec = anexamentoregistros.Id.IsEmptyIDNumber() ? new Entity.DBAnexamentoRegistros() : new Entity.DBAnexamentoRegistros(anexamentoregistros.Id, oCnn);
         dbRec.FCliente = anexamentoregistros.Cliente;
+        dbRec.FGUIDReg = anexamentoregistros.GUIDReg;
         dbRec.FCodigoReg = anexamentoregistros.CodigoReg;
         dbRec.FIDReg = anexamentoregistros.IDReg;
         if (anexamentoregistros.Data != null)
             dbRec.FData = anexamentoregistros.Data.ToString();
+        dbRec.FGUID = anexamentoregistros.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

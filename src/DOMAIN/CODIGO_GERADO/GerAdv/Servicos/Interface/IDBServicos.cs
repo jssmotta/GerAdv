@@ -5,4 +5,5 @@ public partial interface IDBServicos
     public bool FCobrar { get; set; }
     public string? FDescricao { get; set; }
     public bool FBasico { get; set; }
+    public string? FGUID { get; set; }
 }

@@ -56,30 +56,6 @@ public static class OperadorGruposAgendaOperadoresEndpoints
 
             return Results.Ok(result);
         }).WithName("OperadorGruposAgendaOperadores_AddAndUpdate").WithDisplayName("Add or Update OperadorGruposAgendaOperadores");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IOperadorGruposAgendaOperadoresValidation validation, IOperadorGruposAgendaOperadoresWriter writer, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, IOperadorGruposAgendaOperadoresService service) =>
-        {
-            logger.LogInfo("OperadorGruposAgendaOperadores", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("OperadorGruposAgendaOperadores", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("OperadorGruposAgendaOperadores_GetColumns").WithDisplayName("Get OperadorGruposAgendaOperadores Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IOperadorGruposAgendaOperadoresValidation validation, IOperadorGruposAgendaOperadoresWriter writer, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, IOperadorGruposAgendaOperadoresService service) =>
-        {
-            logger.LogInfo("OperadorGruposAgendaOperadores", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("OperadorGruposAgendaOperadores", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("OperadorGruposAgendaOperadores_UpdateColumns").WithDisplayName("Update OperadorGruposAgendaOperadores Columns");
         group.MapDelete("/Delete", async (int id, string uri, IOperadorGruposAgendaOperadoresValidation validation, IOperadorGruposAgendaOperadoresWriter writer, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, IOperadorGruposAgendaOperadoresService service) =>
         {
             logger.LogInfo("OperadorGruposAgendaOperadores", "Delete", $"id = {id}", uri);

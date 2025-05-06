@@ -42,7 +42,7 @@ public partial class ProProcuradores : IProProcuradoresReader
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proprocuradores.Data = dbRec.FData;
@@ -77,7 +77,7 @@ public partial class ProProcuradores : IProProcuradoresReader
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proprocuradores.Data = dbRec.FData;

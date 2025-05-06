@@ -45,7 +45,7 @@ public partial class Tribunal : ITribunalReader
             Web = dbRec.FWeb ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -81,7 +81,7 @@ public partial class Tribunal : ITribunalReader
             Web = dbRec.FWeb ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

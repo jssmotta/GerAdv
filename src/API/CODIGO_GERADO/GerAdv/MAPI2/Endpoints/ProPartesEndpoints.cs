@@ -56,30 +56,6 @@ public static class ProPartesEndpoints
 
             return Results.Ok(result);
         }).WithName("ProPartes_AddAndUpdate").WithDisplayName("Add or Update ProPartes");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProPartesValidation validation, IProPartesWriter writer, IProcessosReader processosReader, IProPartesService service) =>
-        {
-            logger.LogInfo("ProPartes", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProPartes", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProPartes_GetColumns").WithDisplayName("Get ProPartes Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProPartesValidation validation, IProPartesWriter writer, IProcessosReader processosReader, IProPartesService service) =>
-        {
-            logger.LogInfo("ProPartes", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProPartes", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProPartes_UpdateColumns").WithDisplayName("Update ProPartes Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProPartesValidation validation, IProPartesWriter writer, IProcessosReader processosReader, IProPartesService service) =>
         {
             logger.LogInfo("ProPartes", "Delete", $"id = {id}", uri);

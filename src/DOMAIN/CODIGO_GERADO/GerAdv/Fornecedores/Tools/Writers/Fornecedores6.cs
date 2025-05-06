@@ -35,6 +35,7 @@ public class Fornecedores : IFornecedoresWriter
         dbRec.FContatos = fornecedores.Contatos;
         dbRec.FEtiqueta = fornecedores.Etiqueta;
         dbRec.FBold = fornecedores.Bold;
+        dbRec.FGUID = fornecedores.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

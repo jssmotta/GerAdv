@@ -74,30 +74,6 @@ public static class GUTTipoEndpoints
 
             return Results.Ok(result);
         }).WithName("GUTTipo_AddAndUpdate").WithDisplayName("Add or Update GUTTipo");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IGUTTipoValidation validation, IGUTTipoWriter writer, IGUTTipoService service) =>
-        {
-            logger.LogInfo("GUTTipo", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("GUTTipo", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("GUTTipo_GetColumns").WithDisplayName("Get GUTTipo Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IGUTTipoValidation validation, IGUTTipoWriter writer, IGUTTipoService service) =>
-        {
-            logger.LogInfo("GUTTipo", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("GUTTipo", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("GUTTipo_UpdateColumns").WithDisplayName("Update GUTTipo Columns");
         group.MapDelete("/Delete", async (int id, string uri, IGUTTipoValidation validation, IGUTTipoWriter writer, IGUTTipoService service) =>
         {
             logger.LogInfo("GUTTipo", "Delete", $"id = {id}", uri);

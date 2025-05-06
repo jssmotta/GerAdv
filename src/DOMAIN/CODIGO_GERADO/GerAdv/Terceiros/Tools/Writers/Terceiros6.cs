@@ -28,6 +28,7 @@ public class Terceiros : ITerceirosWriter
         dbRec.FVaraForoComarca = terceiros.VaraForoComarca;
         dbRec.FSexo = terceiros.Sexo;
         dbRec.FBold = terceiros.Bold;
+        dbRec.FGUID = terceiros.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

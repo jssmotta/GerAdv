@@ -72,7 +72,7 @@ public class BensClassificacaoHealthCheck(IOptions<AppSettings> appSettings, Ben
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) bcsNome,bcsBold FROM dbo.BensClassificacao (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) bcsNome,bcsBold,bcsGUID FROM dbo.BensClassificacao (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -28,6 +28,7 @@ public partial class BensMateriais : IBensMateriaisWhere
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             NomeVendedor = dbRec.FNomeVendedor ?? string.Empty,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataCompra, out _))
             bensmateriais.DataCompra = dbRec.FDataCompra;

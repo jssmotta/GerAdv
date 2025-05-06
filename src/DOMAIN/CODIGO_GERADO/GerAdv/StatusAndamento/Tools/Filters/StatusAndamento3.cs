@@ -14,4 +14,7 @@ public partial class FilterStatusAndamento
 
     [JsonPropertyName("icone")]
     public int Icone { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

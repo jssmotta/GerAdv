@@ -21,6 +21,7 @@ public class GruposEmpresas : IGruposEmpresasWriter
         dbRec.FCliente = gruposempresas.Cliente;
         dbRec.FIcone = gruposempresas.Icone;
         dbRec.FDespesaUnificada = gruposempresas.DespesaUnificada;
+        dbRec.FGUID = gruposempresas.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

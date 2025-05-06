@@ -72,7 +72,7 @@ public class OperadorEMailPopupHealthCheck(IOptions<AppSettings> appSettings, Op
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) oepOperador,oepNome,oepSenha,oepSMTP,oepPOP3,oepAutenticacao,oepDescricao,oepUsuario,oepPortaSmtp,oepPortaPop3,oepAssinatura,oepSenha256 FROM dbo.OperadorEMailPopup (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) oepOperador,oepNome,oepSenha,oepSMTP,oepPOP3,oepAutenticacao,oepDescricao,oepUsuario,oepPortaSmtp,oepPortaPop3,oepAssinatura,oepSenha256,oepGUID FROM dbo.OperadorEMailPopup (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -40,7 +40,7 @@ public partial class ProCDA : IProCDAReader
             Nome = dbRec.FNome ?? string.Empty,
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -71,7 +71,7 @@ public partial class ProCDA : IProCDAReader
             Nome = dbRec.FNome ?? string.Empty,
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

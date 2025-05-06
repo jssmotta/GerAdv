@@ -16,6 +16,12 @@ public partial class AnexamentoRegistros
     public int Cliente { get; set; }
 
     /// <summary>
+    /// Sem descrição - axrGUIDReg - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guidreg")]
+    public string GUIDReg { get; set; } = "";
+
+    /// <summary>
     /// Sem descrição - axrCodigoReg  
     /// </summary>
     [JsonPropertyName("codigoreg")]
@@ -37,7 +43,7 @@ public partial class AnexamentoRegistros
     /// GUId - axrGUID - tamanho máximo: 100 
     /// </summary>
     [JsonPropertyName("guid")]
-    public string Guid { get; set; } = "";
+    public string GUID { get; set; } = "";
 
     [JsonPropertyName("auditor")]
     public Auditor? Auditor { get; set; }

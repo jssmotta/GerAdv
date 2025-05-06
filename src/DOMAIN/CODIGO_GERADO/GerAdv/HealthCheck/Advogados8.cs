@@ -72,7 +72,7 @@ public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) advCargo,advEMailPro,advCPF,advNome,advRG,advCasa,advNomeMae,advEscritorio,advEstagiario,advOAB,advNomeCompleto,advEndereco,advCidade,advCEP,advSexo,advBairro,advCTPSSerie,advCTPS,advFone,advFax,advComissao,advDtInicio,advDtFim,advDtNasc,advSalario,advSecretaria,advTextoProcuracao,advEMail,advEspecializacao,advPasta,advObservacao,advContaBancaria,advParcTop,advClass,advTop,advEtiqueta,advAni,advBold FROM dbo.Advogados (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) advCargo,advEMailPro,advCPF,advNome,advRG,advCasa,advNomeMae,advEscritorio,advEstagiario,advOAB,advNomeCompleto,advEndereco,advCidade,advCEP,advSexo,advBairro,advCTPSSerie,advCTPS,advFone,advFax,advComissao,advDtInicio,advDtFim,advDtNasc,advSalario,advSecretaria,advTextoProcuracao,advEMail,advEspecializacao,advPasta,advObservacao,advContaBancaria,advParcTop,advClass,advTop,advEtiqueta,advAni,advBold,advGUID FROM dbo.Advogados (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

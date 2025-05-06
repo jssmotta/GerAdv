@@ -7,4 +7,5 @@ public partial interface IDBUF
     public int FPais { get; set; }
     public bool FTop { get; set; }
     public string? FDescricao { get; set; }
+    public string? FGUID { get; set; }
 }

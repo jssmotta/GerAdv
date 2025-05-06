@@ -38,7 +38,7 @@ public partial class PosicaoOutrasPartes : IPosicaoOutrasPartesReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class PosicaoOutrasPartes : IPosicaoOutrasPartesReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

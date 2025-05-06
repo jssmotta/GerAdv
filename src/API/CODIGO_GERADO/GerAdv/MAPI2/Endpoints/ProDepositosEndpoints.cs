@@ -56,30 +56,6 @@ public static class ProDepositosEndpoints
 
             return Results.Ok(result);
         }).WithName("ProDepositos_AddAndUpdate").WithDisplayName("Add or Update ProDepositos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProDepositosValidation validation, IProDepositosWriter writer, IProcessosReader processosReader, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, IProDepositosService service) =>
-        {
-            logger.LogInfo("ProDepositos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProDepositos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProDepositos_GetColumns").WithDisplayName("Get ProDepositos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProDepositosValidation validation, IProDepositosWriter writer, IProcessosReader processosReader, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, IProDepositosService service) =>
-        {
-            logger.LogInfo("ProDepositos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProDepositos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProDepositos_UpdateColumns").WithDisplayName("Update ProDepositos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProDepositosValidation validation, IProDepositosWriter writer, IProcessosReader processosReader, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, IProDepositosService service) =>
         {
             logger.LogInfo("ProDepositos", "Delete", $"id = {id}", uri);

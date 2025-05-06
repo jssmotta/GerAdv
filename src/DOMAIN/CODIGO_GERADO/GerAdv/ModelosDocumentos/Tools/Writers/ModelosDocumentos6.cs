@@ -29,6 +29,7 @@ public class ModelosDocumentos : IModelosDocumentosWriter
         dbRec.FTestemunhas = modelosdocumentos.Testemunhas;
         dbRec.FTipoModeloDocumento = modelosdocumentos.TipoModeloDocumento;
         dbRec.FCSS = modelosdocumentos.CSS;
+        dbRec.FGUID = modelosdocumentos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

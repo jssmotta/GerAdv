@@ -53,7 +53,7 @@ public partial class HorasTrab : IHorasTrabReader
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             horastrab.Data = dbRec.FData;
@@ -99,7 +99,7 @@ public partial class HorasTrab : IHorasTrabReader
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             horastrab.Data = dbRec.FData;

@@ -18,6 +18,7 @@ public partial class PosicaoOutrasPartes : IPosicaoOutrasPartesWhere
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

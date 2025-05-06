@@ -72,7 +72,7 @@ public class GUTAtividadesMatrizHealthCheck(IOptions<AppSettings> appSettings, G
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) amgGUTMatriz,amgGUTAtividade FROM dbo.GUTAtividadesMatriz (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) amgGUTMatriz,amgGUTAtividade,amgGUID FROM dbo.GUTAtividadesMatriz (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

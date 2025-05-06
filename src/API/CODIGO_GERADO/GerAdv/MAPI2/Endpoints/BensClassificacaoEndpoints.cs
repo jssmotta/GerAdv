@@ -74,30 +74,6 @@ public static class BensClassificacaoEndpoints
 
             return Results.Ok(result);
         }).WithName("BensClassificacao_AddAndUpdate").WithDisplayName("Add or Update BensClassificacao");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IBensClassificacaoValidation validation, IBensClassificacaoWriter writer, IBensClassificacaoService service) =>
-        {
-            logger.LogInfo("BensClassificacao", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("BensClassificacao", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("BensClassificacao_GetColumns").WithDisplayName("Get BensClassificacao Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IBensClassificacaoValidation validation, IBensClassificacaoWriter writer, IBensClassificacaoService service) =>
-        {
-            logger.LogInfo("BensClassificacao", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("BensClassificacao", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("BensClassificacao_UpdateColumns").WithDisplayName("Update BensClassificacao Columns");
         group.MapDelete("/Delete", async (int id, string uri, IBensClassificacaoValidation validation, IBensClassificacaoWriter writer, IBensClassificacaoService service) =>
         {
             logger.LogInfo("BensClassificacao", "Delete", $"id = {id}", uri);

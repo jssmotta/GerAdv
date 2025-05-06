@@ -37,7 +37,7 @@ public partial class GUTPeriodicidadeStatus : IGUTPeriodicidadeStatusReader
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizado, out _))
             gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
@@ -67,7 +67,7 @@ public partial class GUTPeriodicidadeStatus : IGUTPeriodicidadeStatusReader
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizado, out _))
             gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;

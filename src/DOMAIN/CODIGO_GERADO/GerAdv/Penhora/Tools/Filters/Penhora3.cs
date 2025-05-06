@@ -26,4 +26,7 @@ public partial class FilterPenhora
 
     [JsonPropertyName("master")]
     public int Master { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

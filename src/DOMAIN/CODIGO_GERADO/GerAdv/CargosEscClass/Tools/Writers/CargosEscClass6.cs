@@ -14,6 +14,7 @@ public class CargosEscClass : ICargosEscClassWriter
     {
         var dbRec = cargosescclass.Id.IsEmptyIDNumber() ? new Entity.DBCargosEscClass() : new Entity.DBCargosEscClass(cargosescclass.Id, oCnn);
         dbRec.FNome = cargosescclass.Nome;
+        dbRec.FGUID = cargosescclass.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -47,4 +47,7 @@ public partial class FilterTerceiros
 
     [JsonPropertyName("varaforocomarca")]
     public string VaraForoComarca { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

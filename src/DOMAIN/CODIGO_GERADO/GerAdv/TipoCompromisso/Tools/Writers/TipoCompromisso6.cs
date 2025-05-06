@@ -17,6 +17,7 @@ public class TipoCompromisso : ITipoCompromissoWriter
         dbRec.FDescricao = tipocompromisso.Descricao;
         dbRec.FFinanceiro = tipocompromisso.Financeiro;
         dbRec.FBold = tipocompromisso.Bold;
+        dbRec.FGUID = tipocompromisso.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

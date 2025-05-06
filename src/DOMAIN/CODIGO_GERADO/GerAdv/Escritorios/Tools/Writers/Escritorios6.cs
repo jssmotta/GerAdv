@@ -34,6 +34,7 @@ public class Escritorios : IEscritoriosWriter
         dbRec.FTop = escritorios.Top;
         dbRec.FEtiqueta = escritorios.Etiqueta;
         dbRec.FBold = escritorios.Bold;
+        dbRec.FGUID = escritorios.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

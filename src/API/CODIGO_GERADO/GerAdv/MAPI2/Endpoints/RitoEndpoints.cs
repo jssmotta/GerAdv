@@ -74,30 +74,6 @@ public static class RitoEndpoints
 
             return Results.Ok(result);
         }).WithName("Rito_AddAndUpdate").WithDisplayName("Add or Update Rito");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IRitoValidation validation, IRitoWriter writer, IRitoService service) =>
-        {
-            logger.LogInfo("Rito", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Rito", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Rito_GetColumns").WithDisplayName("Get Rito Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IRitoValidation validation, IRitoWriter writer, IRitoService service) =>
-        {
-            logger.LogInfo("Rito", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Rito", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Rito_UpdateColumns").WithDisplayName("Update Rito Columns");
         group.MapDelete("/Delete", async (int id, string uri, IRitoValidation validation, IRitoWriter writer, IRitoService service) =>
         {
             logger.LogInfo("Rito", "Delete", $"id = {id}", uri);

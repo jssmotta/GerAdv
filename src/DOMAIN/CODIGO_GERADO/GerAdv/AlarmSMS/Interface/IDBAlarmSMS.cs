@@ -19,7 +19,9 @@ public partial interface IDBAlarmSMS
     public bool FDesktop { get; set; }
     public string? FAlertarDataHora { get; set; }
     public int FOperador { get; set; }
+    public string? FGuidExo { get; set; }
     public int FAgenda { get; set; }
     public int FRecado { get; set; }
     public int FEmocao { get; set; }
+    public string? FGUID { get; set; }
 }

@@ -51,6 +51,7 @@ public partial class Advogados : IAdvogadosWhere
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out _))
             advogados.DtInicio = dbRec.FDtInicio;

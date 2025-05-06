@@ -44,7 +44,7 @@ public partial class GUTAtividades : IGUTAtividadesReader
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out _))
             gutatividades.DataConcluido = dbRec.FDataConcluido;
@@ -81,7 +81,7 @@ public partial class GUTAtividades : IGUTAtividadesReader
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out _))
             gutatividades.DataConcluido = dbRec.FDataConcluido;

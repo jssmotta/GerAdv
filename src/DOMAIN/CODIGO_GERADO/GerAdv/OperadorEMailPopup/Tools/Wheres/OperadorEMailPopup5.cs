@@ -26,6 +26,7 @@ public partial class OperadorEMailPopup : IOperadorEMailPopupWhere
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

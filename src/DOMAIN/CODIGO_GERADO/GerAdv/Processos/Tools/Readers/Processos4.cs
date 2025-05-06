@@ -99,7 +99,7 @@ public partial class Processos : IProcessosReader
             ValorCondenacao = dbRec.FValorCondenacao,
             ValorCondenacaoCalculado = dbRec.FValorCondenacaoCalculado,
             ValorCondenacaoProvisorio = dbRec.FValorCondenacaoProvisorio,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataEntrada, out _))
             processos.DataEntrada = dbRec.FDataEntrada;
@@ -195,7 +195,7 @@ public partial class Processos : IProcessosReader
             ValorCondenacao = dbRec.FValorCondenacao,
             ValorCondenacaoCalculado = dbRec.FValorCondenacaoCalculado,
             ValorCondenacaoProvisorio = dbRec.FValorCondenacaoProvisorio,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataEntrada, out _))
             processos.DataEntrada = dbRec.FDataEntrada;

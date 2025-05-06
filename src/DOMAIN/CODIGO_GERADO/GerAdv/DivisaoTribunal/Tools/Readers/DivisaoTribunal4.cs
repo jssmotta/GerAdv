@@ -53,7 +53,7 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Andar = dbRec.FAndar ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -97,7 +97,7 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Andar = dbRec.FAndar ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -26,4 +26,7 @@ public partial class FilterDiario2
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

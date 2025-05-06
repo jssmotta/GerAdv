@@ -72,7 +72,7 @@ public class ProSucumbenciaHealthCheck(IOptions<AppSettings> appSettings, ProSuc
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) scbProcesso,scbInstancia,scbData,scbNome,scbTipoOrigemSucumbencia,scbValor,scbPercentual FROM dbo.ProSucumbencia (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) scbProcesso,scbInstancia,scbData,scbNome,scbTipoOrigemSucumbencia,scbValor,scbPercentual,scbGUID FROM dbo.ProSucumbencia (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

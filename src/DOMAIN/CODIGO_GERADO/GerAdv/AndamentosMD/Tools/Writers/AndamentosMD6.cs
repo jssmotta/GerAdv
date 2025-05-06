@@ -18,6 +18,7 @@ public class AndamentosMD : IAndamentosMDWriter
         dbRec.FAndamento = andamentosmd.Andamento;
         dbRec.FPathFull = andamentosmd.PathFull;
         dbRec.FUNC = andamentosmd.UNC;
+        dbRec.FGUID = andamentosmd.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

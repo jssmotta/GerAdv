@@ -74,30 +74,6 @@ public static class FuncaoEndpoints
 
             return Results.Ok(result);
         }).WithName("Funcao_AddAndUpdate").WithDisplayName("Add or Update Funcao");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IFuncaoValidation validation, IFuncaoWriter writer, IFuncaoService service) =>
-        {
-            logger.LogInfo("Funcao", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Funcao", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Funcao_GetColumns").WithDisplayName("Get Funcao Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IFuncaoValidation validation, IFuncaoWriter writer, IFuncaoService service) =>
-        {
-            logger.LogInfo("Funcao", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Funcao", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Funcao_UpdateColumns").WithDisplayName("Update Funcao Columns");
         group.MapDelete("/Delete", async (int id, string uri, IFuncaoValidation validation, IFuncaoWriter writer, IFuncaoService service) =>
         {
             logger.LogInfo("Funcao", "Delete", $"id = {id}", uri);

@@ -68,7 +68,7 @@ public partial class Recados : IRecadosReader
             ContatoCRM = dbRec.FContatoCRM,
             Ligacoes = dbRec.FLigacoes,
             Agenda = dbRec.FAgenda,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHora, out _))
             recados.Hora = dbRec.FHora;
@@ -133,7 +133,7 @@ public partial class Recados : IRecadosReader
             ContatoCRM = dbRec.FContatoCRM,
             Ligacoes = dbRec.FLigacoes,
             Agenda = dbRec.FAgenda,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHora, out _))
             recados.Hora = dbRec.FHora;

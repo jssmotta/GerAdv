@@ -6,4 +6,5 @@ public partial interface IDBObjetos
     public int FArea { get; set; }
     public string? FNome { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

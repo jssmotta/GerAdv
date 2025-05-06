@@ -58,7 +58,7 @@ public partial class Ligacoes : ILigacoesReader
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out _))
             ligacoes.DataRealizada = dbRec.FDataRealizada;
@@ -117,7 +117,7 @@ public partial class Ligacoes : ILigacoesReader
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out _))
             ligacoes.DataRealizada = dbRec.FDataRealizada;

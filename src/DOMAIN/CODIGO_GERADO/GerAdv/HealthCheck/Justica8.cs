@@ -72,7 +72,7 @@ public class JusticaHealthCheck(IOptions<AppSettings> appSettings, JusticaServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) jusNome,jusBold FROM dbo.Justica (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) jusNome,jusBold,jusGUID FROM dbo.Justica (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

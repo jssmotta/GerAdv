@@ -72,7 +72,7 @@ public class AtividadesHealthCheck(IOptions<AppSettings> appSettings, Atividades
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) atvDescricao FROM dbo.Atividades (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) atvDescricao,atvGUID FROM dbo.Atividades (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

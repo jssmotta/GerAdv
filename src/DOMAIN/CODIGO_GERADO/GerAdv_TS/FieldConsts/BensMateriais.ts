@@ -1,0 +1,18 @@
+﻿export enum FieldsBensMateriais
+{	bensclassificacao = `BensClassificacao`,
+	fornecedor = `Fornecedor`,
+	cidade = `Cidade`,
+	nome = `Nome`,
+	datacompra = `DataCompra`,
+	datafimdagarantia = `DataFimDaGarantia`,
+	nfnro = `NFNRO`,
+	valorbem = `ValorBem`,
+	nroserieproduto = `NroSerieProduto`,
+	comprador = `Comprador`,
+	garantialoja = `GarantiaLoja`,
+	dataterminodagarantiadaloja = `DataTerminoDaGarantiaDaLoja`,
+	observacoes = `Observacoes`,
+	nomevendedor = `NomeVendedor`,
+	bold = `Bold`,
+	guid = `GUID`,
+}

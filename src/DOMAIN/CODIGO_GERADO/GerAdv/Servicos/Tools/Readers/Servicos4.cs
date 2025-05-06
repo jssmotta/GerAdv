@@ -39,7 +39,7 @@ public partial class Servicos : IServicosReader
             Cobrar = dbRec.FCobrar,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Basico = dbRec.FBasico,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -69,7 +69,7 @@ public partial class Servicos : IServicosReader
             Cobrar = dbRec.FCobrar,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Basico = dbRec.FBasico,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

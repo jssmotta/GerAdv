@@ -189,6 +189,10 @@ END;
             }
 
             count++;
+
+#if (DEBUG)
+            break;
+            #endif
         }
 
         return count;

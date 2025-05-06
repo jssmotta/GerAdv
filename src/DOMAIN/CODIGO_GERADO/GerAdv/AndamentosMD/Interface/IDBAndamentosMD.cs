@@ -7,4 +7,5 @@ public partial interface IDBAndamentosMD
     public int FAndamento { get; set; }
     public string? FPathFull { get; set; }
     public string? FUNC { get; set; }
+    public string? FGUID { get; set; }
 }

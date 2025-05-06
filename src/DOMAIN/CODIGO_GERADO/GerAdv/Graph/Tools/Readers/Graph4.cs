@@ -39,7 +39,7 @@ public partial class Graph : IGraphReader
             Tabela = dbRec.FTabela ?? string.Empty,
             TabelaId = dbRec.FTabelaId,
             Imagem = dbRec.FImagem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -69,7 +69,7 @@ public partial class Graph : IGraphReader
             Tabela = dbRec.FTabela ?? string.Empty,
             TabelaId = dbRec.FTabelaId,
             Imagem = dbRec.FImagem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -72,7 +72,7 @@ public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettin
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pjaJustica,pjaJusticaNome,pjaArea,pjaAreaNome,pjaTribunal,pjaTribunalNome,pjaForo,pjaForoNome,pjaCidade,pjaSubDivisaoNome,pjaCidadeNome,pjaSubDivisao,pjaTipo FROM dbo.PoderJudiciarioAssociado (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) pjaJustica,pjaJusticaNome,pjaArea,pjaAreaNome,pjaTribunal,pjaTribunalNome,pjaForo,pjaForoNome,pjaCidade,pjaSubDivisaoNome,pjaCidadeNome,pjaSubDivisao,pjaTipo,pjaGUID FROM dbo.PoderJudiciarioAssociado (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

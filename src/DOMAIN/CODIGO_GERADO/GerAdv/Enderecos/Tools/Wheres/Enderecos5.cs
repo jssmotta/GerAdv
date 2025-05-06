@@ -38,6 +38,7 @@ public partial class Enderecos : IEnderecosWhere
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             enderecos.DtNasc = dbRec.FDtNasc;

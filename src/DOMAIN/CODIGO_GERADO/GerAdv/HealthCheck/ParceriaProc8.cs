@@ -72,7 +72,7 @@ public class ParceriaProcHealthCheck(IOptions<AppSettings> appSettings, Parceria
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) parAdvogado,parProcesso FROM dbo.ParceriaProc (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) parAdvogado,parProcesso,parGUID FROM dbo.ParceriaProc (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

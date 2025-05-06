@@ -5,4 +5,5 @@ public partial interface IDBAcao
     public int FJustica { get; set; }
     public int FArea { get; set; }
     public string? FDescricao { get; set; }
+    public string? FGUID { get; set; }
 }

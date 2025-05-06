@@ -9,4 +9,5 @@ public partial interface IDBProProcuradores
     public bool FSubstabelecimento { get; set; }
     public bool FProcuracao { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

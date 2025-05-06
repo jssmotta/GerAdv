@@ -15,6 +15,7 @@ public class GUTTipo : IGUTTipoWriter
         var dbRec = guttipo.Id.IsEmptyIDNumber() ? new Entity.DBGUTTipo() : new Entity.DBGUTTipo(guttipo.Id, oCnn);
         dbRec.FNome = guttipo.Nome;
         dbRec.FOrdem = guttipo.Ordem;
+        dbRec.FGUID = guttipo.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

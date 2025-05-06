@@ -17,4 +17,7 @@ public partial class FilterProCDA
 
     [JsonPropertyName("nrointerno")]
     public string NroInterno { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

@@ -56,30 +56,6 @@ public static class GraphEndpoints
 
             return Results.Ok(result);
         }).WithName("Graph_AddAndUpdate").WithDisplayName("Add or Update Graph");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IGraphValidation validation, IGraphWriter writer, IGraphService service) =>
-        {
-            logger.LogInfo("Graph", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Graph", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Graph_GetColumns").WithDisplayName("Get Graph Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IGraphValidation validation, IGraphWriter writer, IGraphService service) =>
-        {
-            logger.LogInfo("Graph", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Graph", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Graph_UpdateColumns").WithDisplayName("Update Graph Columns");
         group.MapDelete("/Delete", async (int id, string uri, IGraphValidation validation, IGraphWriter writer, IGraphService service) =>
         {
             logger.LogInfo("Graph", "Delete", $"id = {id}", uri);

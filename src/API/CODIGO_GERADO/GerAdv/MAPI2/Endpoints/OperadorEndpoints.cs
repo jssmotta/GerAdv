@@ -68,30 +68,6 @@ public static class OperadorEndpoints
 
             return Results.Ok(result);
         }).WithName("Operador_AddAndUpdate").WithDisplayName("Add or Update Operador");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>
-        {
-            logger.LogInfo("Operador", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Operador", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Operador_GetColumns").WithDisplayName("Get Operador Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>
-        {
-            logger.LogInfo("Operador", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Operador", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Operador_UpdateColumns").WithDisplayName("Update Operador Columns");
         group.MapDelete("/Delete", async (int id, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>
         {
             logger.LogInfo("Operador", "Delete", $"id = {id}", uri);

@@ -49,7 +49,7 @@ public partial class PoderJudiciarioAssociado : IPoderJudiciarioAssociadoReader
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
             Tipo = dbRec.FTipo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -89,7 +89,7 @@ public partial class PoderJudiciarioAssociado : IPoderJudiciarioAssociadoReader
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
             Tipo = dbRec.FTipo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -15,4 +15,5 @@ public partial interface IDBEnderecoSistema
     public string? FFone { get; set; }
     public string? FFax { get; set; }
     public string? FObservacao { get; set; }
+    public string? FGUID { get; set; }
 }

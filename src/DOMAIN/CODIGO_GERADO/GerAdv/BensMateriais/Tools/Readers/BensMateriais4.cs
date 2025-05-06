@@ -48,7 +48,7 @@ public partial class BensMateriais : IBensMateriaisReader
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             NomeVendedor = dbRec.FNomeVendedor ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataCompra, out _))
             bensmateriais.DataCompra = dbRec.FDataCompra;
@@ -93,7 +93,7 @@ public partial class BensMateriais : IBensMateriaisReader
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             NomeVendedor = dbRec.FNomeVendedor ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataCompra, out _))
             bensmateriais.DataCompra = dbRec.FDataCompra;

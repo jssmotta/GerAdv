@@ -21,6 +21,7 @@ public class ProSucumbencia : IProSucumbenciaWriter
         dbRec.FTipoOrigemSucumbencia = prosucumbencia.TipoOrigemSucumbencia;
         dbRec.FValor = prosucumbencia.Valor;
         dbRec.FPercentual = prosucumbencia.Percentual;
+        dbRec.FGUID = prosucumbencia.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

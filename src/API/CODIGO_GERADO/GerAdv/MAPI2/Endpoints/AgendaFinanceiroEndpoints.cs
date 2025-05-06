@@ -56,30 +56,6 @@ public static class AgendaFinanceiroEndpoints
 
             return Results.Ok(result);
         }).WithName("AgendaFinanceiro_AddAndUpdate").WithDisplayName("Add or Update AgendaFinanceiro");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgendaFinanceiroValidation validation, IAgendaFinanceiroWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgendaFinanceiroService service) =>
-        {
-            logger.LogInfo("AgendaFinanceiro", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AgendaFinanceiro", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AgendaFinanceiro_GetColumns").WithDisplayName("Get AgendaFinanceiro Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgendaFinanceiroValidation validation, IAgendaFinanceiroWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgendaFinanceiroService service) =>
-        {
-            logger.LogInfo("AgendaFinanceiro", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AgendaFinanceiro", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AgendaFinanceiro_UpdateColumns").WithDisplayName("Update AgendaFinanceiro Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgendaFinanceiroValidation validation, IAgendaFinanceiroWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgendaFinanceiroService service) =>
         {
             logger.LogInfo("AgendaFinanceiro", "Delete", $"id = {id}", uri);

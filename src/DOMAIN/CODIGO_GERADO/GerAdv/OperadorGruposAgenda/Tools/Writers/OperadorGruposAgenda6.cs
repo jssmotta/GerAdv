@@ -16,6 +16,7 @@ public class OperadorGruposAgenda : IOperadorGruposAgendaWriter
         dbRec.FSQLWhere = operadorgruposagenda.SQLWhere;
         dbRec.FNome = operadorgruposagenda.Nome;
         dbRec.FOperador = operadorgruposagenda.Operador;
+        dbRec.FGUID = operadorgruposagenda.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

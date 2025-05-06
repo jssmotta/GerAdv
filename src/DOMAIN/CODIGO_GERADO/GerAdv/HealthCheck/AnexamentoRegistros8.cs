@@ -72,7 +72,7 @@ public class AnexamentoRegistrosHealthCheck(IOptions<AppSettings> appSettings, A
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) axrCliente,axrCodigoReg,axrIDReg,axrData FROM dbo.AnexamentoRegistros (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) axrCliente,axrGUIDReg,axrCodigoReg,axrIDReg,axrData,axrGUID FROM dbo.AnexamentoRegistros (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

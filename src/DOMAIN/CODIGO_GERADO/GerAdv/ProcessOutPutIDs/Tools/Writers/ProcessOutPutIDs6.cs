@@ -14,6 +14,7 @@ public class ProcessOutPutIDs : IProcessOutPutIDsWriter
     {
         var dbRec = processoutputids.Id.IsEmptyIDNumber() ? new Entity.DBProcessOutPutIDs() : new Entity.DBProcessOutPutIDs(processoutputids.Id, oCnn);
         dbRec.FNome = processoutputids.Nome;
+        dbRec.FGUID = processoutputids.GUID;
         dbRec.Update(oCnn);
         return dbRec;
     }

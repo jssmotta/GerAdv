@@ -19,6 +19,7 @@ public partial class Servicos : IServicosWhere
             Cobrar = dbRec.FCobrar,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Basico = dbRec.FBasico,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

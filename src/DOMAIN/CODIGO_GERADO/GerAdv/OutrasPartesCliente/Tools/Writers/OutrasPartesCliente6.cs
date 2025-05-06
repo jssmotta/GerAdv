@@ -37,6 +37,7 @@ public class OutrasPartesCliente : IOutrasPartesClienteWriter
         dbRec.FEtiqueta = outraspartescliente.Etiqueta;
         dbRec.FAni = outraspartescliente.Ani;
         dbRec.FBold = outraspartescliente.Bold;
+        dbRec.FGUID = outraspartescliente.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

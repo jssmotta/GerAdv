@@ -22,6 +22,7 @@ public class Diario2 : IDiario2Writer
         dbRec.FOcorrencia = diario2.Ocorrencia;
         dbRec.FCliente = diario2.Cliente;
         dbRec.FBold = diario2.Bold;
+        dbRec.FGUID = diario2.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

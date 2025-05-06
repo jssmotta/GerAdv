@@ -74,30 +74,6 @@ public static class AlarmSMSEndpoints
 
             return Results.Ok(result);
         }).WithName("AlarmSMS_AddAndUpdate").WithDisplayName("Add or Update AlarmSMS");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAlarmSMSValidation validation, IAlarmSMSWriter writer, IOperadorReader operadorReader, IAgendaReader agendaReader, IRecadosReader recadosReader, IAlarmSMSService service) =>
-        {
-            logger.LogInfo("AlarmSMS", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AlarmSMS", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AlarmSMS_GetColumns").WithDisplayName("Get AlarmSMS Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAlarmSMSValidation validation, IAlarmSMSWriter writer, IOperadorReader operadorReader, IAgendaReader agendaReader, IRecadosReader recadosReader, IAlarmSMSService service) =>
-        {
-            logger.LogInfo("AlarmSMS", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AlarmSMS", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AlarmSMS_UpdateColumns").WithDisplayName("Update AlarmSMS Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAlarmSMSValidation validation, IAlarmSMSWriter writer, IOperadorReader operadorReader, IAgendaReader agendaReader, IRecadosReader recadosReader, IAlarmSMSService service) =>
         {
             logger.LogInfo("AlarmSMS", "Delete", $"id = {id}", uri);

@@ -40,7 +40,7 @@ public partial class ProResumos : IProResumosReader
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proresumos.Data = dbRec.FData;
@@ -73,7 +73,7 @@ public partial class ProResumos : IProResumosReader
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proresumos.Data = dbRec.FData;

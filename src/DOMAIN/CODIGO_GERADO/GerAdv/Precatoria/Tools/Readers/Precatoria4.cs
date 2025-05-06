@@ -42,7 +42,7 @@ public partial class Precatoria : IPrecatoriaReader
             Deprecado = dbRec.FDeprecado ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtDist, out _))
             precatoria.DtDist = dbRec.FDtDist;
@@ -77,7 +77,7 @@ public partial class Precatoria : IPrecatoriaReader
             Deprecado = dbRec.FDeprecado ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtDist, out _))
             precatoria.DtDist = dbRec.FDtDist;

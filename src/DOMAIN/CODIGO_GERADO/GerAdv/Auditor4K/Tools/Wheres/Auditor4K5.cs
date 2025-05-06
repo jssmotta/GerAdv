@@ -17,6 +17,7 @@ public partial class Auditor4K : IAuditor4KWhere
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

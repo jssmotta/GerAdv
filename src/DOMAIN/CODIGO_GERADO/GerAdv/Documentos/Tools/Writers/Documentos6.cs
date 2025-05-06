@@ -17,6 +17,7 @@ public class Documentos : IDocumentosWriter
         if (documentos.Data != null)
             dbRec.FData = documentos.Data.ToString();
         dbRec.FObservacao = documentos.Observacao;
+        dbRec.FGUID = documentos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

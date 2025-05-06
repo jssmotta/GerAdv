@@ -44,6 +44,7 @@ public partial class Funcionarios : IFuncionariosWhere
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out _))
             funcionarios.Periodo_Ini = dbRec.FPeriodo_Ini;

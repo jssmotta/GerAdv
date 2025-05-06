@@ -72,7 +72,7 @@ public class HorasTrabHealthCheck(IOptions<AppSettings> appSettings, HorasTrabSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) htbIDContatoCRM,htbHonorario,htbIDAgenda,htbData,htbCliente,htbStatus,htbProcesso,htbAdvogado,htbFuncionario,htbHrIni,htbHrFim,htbTempo,htbValor,htbOBS,htbAnexo,htbAnexoComp,htbAnexoUNC,htbServico FROM dbo.HorasTrab (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) htbIDContatoCRM,htbHonorario,htbIDAgenda,htbData,htbCliente,htbStatus,htbProcesso,htbAdvogado,htbFuncionario,htbHrIni,htbHrFim,htbTempo,htbValor,htbOBS,htbAnexo,htbAnexoComp,htbAnexoUNC,htbServico,htbGUID FROM dbo.HorasTrab (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

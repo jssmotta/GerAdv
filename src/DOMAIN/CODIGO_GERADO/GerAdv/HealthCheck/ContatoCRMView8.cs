@@ -72,7 +72,7 @@ public class ContatoCRMViewHealthCheck(IOptions<AppSettings> appSettings, Contat
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ccwData,ccwIP FROM dbo.ContatoCRMView (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ccwCGUID,ccwData,ccwIP FROM dbo.ContatoCRMView (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -20,4 +20,7 @@ public partial class FilterCidade
 
     [JsonPropertyName("sigla")]
     public string Sigla { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

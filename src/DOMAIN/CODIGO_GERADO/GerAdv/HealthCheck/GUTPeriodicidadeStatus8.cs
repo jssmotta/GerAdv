@@ -72,7 +72,7 @@ public class GUTPeriodicidadeStatusHealthCheck(IOptions<AppSettings> appSettings
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pgsGUTAtividade,pgsDataRealizado FROM dbo.GUTPeriodicidadeStatus (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) pgsGUTAtividade,pgsDataRealizado,pgsGUID FROM dbo.GUTPeriodicidadeStatus (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

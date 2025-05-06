@@ -38,7 +38,7 @@ public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -40,7 +40,7 @@ public partial class Situacao : ISituacaoReader
             Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -71,7 +71,7 @@ public partial class Situacao : ISituacaoReader
             Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

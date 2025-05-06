@@ -6,4 +6,5 @@ public partial interface IDBProObservacoes
     public string? FNome { get; set; }
     public string? FObservacoes { get; set; }
     public string? FData { get; set; }
+    public string? FGUID { get; set; }
 }

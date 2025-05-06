@@ -30,6 +30,7 @@ public class DivisaoTribunal : IDivisaoTribunalWriter
         dbRec.FAndar = divisaotribunal.Andar;
         dbRec.FEtiqueta = divisaotribunal.Etiqueta;
         dbRec.FBold = divisaotribunal.Bold;
+        dbRec.FGUID = divisaotribunal.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

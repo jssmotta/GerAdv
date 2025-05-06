@@ -68,4 +68,5 @@ public partial interface IDBProcessos
     public decimal FValorCondenacao { get; set; }
     public decimal FValorCondenacaoCalculado { get; set; }
     public int FValorCondenacaoProvisorio { get; set; }
+    public string? FGUID { get; set; }
 }

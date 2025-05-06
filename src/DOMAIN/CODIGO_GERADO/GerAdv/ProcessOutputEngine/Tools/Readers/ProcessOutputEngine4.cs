@@ -47,7 +47,7 @@ public partial class ProcessOutputEngine : IProcessOutputEngineReader
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }
@@ -74,7 +74,7 @@ public partial class ProcessOutputEngine : IProcessOutputEngineReader
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }

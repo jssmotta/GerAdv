@@ -72,7 +72,7 @@ public class TribunalHealthCheck(IOptions<AppSettings> appSettings, TribunalServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) triNome,triArea,triJustica,triDescricao,triInstancia,triSigla,triWeb,triEtiqueta,triBold FROM dbo.Tribunal (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) triNome,triArea,triJustica,triDescricao,triInstancia,triSigla,triWeb,triEtiqueta,triBold,triGUID FROM dbo.Tribunal (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -74,30 +74,6 @@ public static class AcaoEndpoints
 
             return Results.Ok(result);
         }).WithName("Acao_AddAndUpdate").WithDisplayName("Add or Update Acao");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAcaoValidation validation, IAcaoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IAcaoService service) =>
-        {
-            logger.LogInfo("Acao", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Acao", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Acao_GetColumns").WithDisplayName("Get Acao Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAcaoValidation validation, IAcaoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IAcaoService service) =>
-        {
-            logger.LogInfo("Acao", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Acao", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Acao_UpdateColumns").WithDisplayName("Update Acao Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAcaoValidation validation, IAcaoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IAcaoService service) =>
         {
             logger.LogInfo("Acao", "Delete", $"id = {id}", uri);

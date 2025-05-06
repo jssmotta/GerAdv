@@ -56,30 +56,6 @@ public static class Agenda2AgendaEndpoints
 
             return Results.Ok(result);
         }).WithName("Agenda2Agenda_AddAndUpdate").WithDisplayName("Add or Update Agenda2Agenda");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgenda2AgendaValidation validation, IAgenda2AgendaWriter writer, IAgendaReader agendaReader, IAgenda2AgendaService service) =>
-        {
-            logger.LogInfo("Agenda2Agenda", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Agenda2Agenda", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Agenda2Agenda_GetColumns").WithDisplayName("Get Agenda2Agenda Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgenda2AgendaValidation validation, IAgenda2AgendaWriter writer, IAgendaReader agendaReader, IAgenda2AgendaService service) =>
-        {
-            logger.LogInfo("Agenda2Agenda", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Agenda2Agenda", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Agenda2Agenda_UpdateColumns").WithDisplayName("Update Agenda2Agenda Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgenda2AgendaValidation validation, IAgenda2AgendaWriter writer, IAgendaReader agendaReader, IAgenda2AgendaService service) =>
         {
             logger.LogInfo("Agenda2Agenda", "Delete", $"id = {id}", uri);

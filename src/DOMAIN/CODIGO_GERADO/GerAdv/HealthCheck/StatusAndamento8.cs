@@ -72,7 +72,7 @@ public class StatusAndamentoHealthCheck(IOptions<AppSettings> appSettings, Statu
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) sanNome,sanIcone,sanBold FROM dbo.StatusAndamento (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) sanNome,sanIcone,sanBold,sanGUID FROM dbo.StatusAndamento (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

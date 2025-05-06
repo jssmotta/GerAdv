@@ -17,6 +17,7 @@ public class ProcessOutputRequest : IProcessOutputRequestWriter
         dbRec.FOperador = processoutputrequest.Operador;
         dbRec.FProcesso = processoutputrequest.Processo;
         dbRec.FUltimoIdTabelaExo = processoutputrequest.UltimoIdTabelaExo;
+        dbRec.FGUID = processoutputrequest.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

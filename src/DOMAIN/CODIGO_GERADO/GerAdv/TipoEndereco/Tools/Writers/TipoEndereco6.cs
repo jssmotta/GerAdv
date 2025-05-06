@@ -14,6 +14,7 @@ public class TipoEndereco : ITipoEnderecoWriter
     {
         var dbRec = tipoendereco.Id.IsEmptyIDNumber() ? new Entity.DBTipoEndereco() : new Entity.DBTipoEndereco(tipoendereco.Id, oCnn);
         dbRec.FDescricao = tipoendereco.Descricao;
+        dbRec.FGUID = tipoendereco.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

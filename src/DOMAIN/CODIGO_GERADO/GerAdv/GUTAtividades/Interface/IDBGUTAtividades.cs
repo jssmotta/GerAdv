@@ -11,4 +11,5 @@ public partial interface IDBGUTAtividades
     public string? FDataConcluido { get; set; }
     public int FDiasParaIniciar { get; set; }
     public int FMinutosParaRealizar { get; set; }
+    public string? FGUID { get; set; }
 }

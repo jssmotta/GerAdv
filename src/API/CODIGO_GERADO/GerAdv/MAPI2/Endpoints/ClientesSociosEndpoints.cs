@@ -74,30 +74,6 @@ public static class ClientesSociosEndpoints
 
             return Results.Ok(result);
         }).WithName("ClientesSocios_AddAndUpdate").WithDisplayName("Add or Update ClientesSocios");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IClientesSociosValidation validation, IClientesSociosWriter writer, IClientesReader clientesReader, IClientesSociosService service) =>
-        {
-            logger.LogInfo("ClientesSocios", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ClientesSocios", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ClientesSocios_GetColumns").WithDisplayName("Get ClientesSocios Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IClientesSociosValidation validation, IClientesSociosWriter writer, IClientesReader clientesReader, IClientesSociosService service) =>
-        {
-            logger.LogInfo("ClientesSocios", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ClientesSocios", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ClientesSocios_UpdateColumns").WithDisplayName("Update ClientesSocios Columns");
         group.MapDelete("/Delete", async (int id, string uri, IClientesSociosValidation validation, IClientesSociosWriter writer, IClientesReader clientesReader, IClientesSociosService service) =>
         {
             logger.LogInfo("ClientesSocios", "Delete", $"id = {id}", uri);

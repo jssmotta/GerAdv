@@ -74,30 +74,6 @@ public static class ProcessOutputSourcesEndpoints
 
             return Results.Ok(result);
         }).WithName("ProcessOutputSources_AddAndUpdate").WithDisplayName("Add or Update ProcessOutputSources");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProcessOutputSourcesValidation validation, IProcessOutputSourcesWriter writer, IProcessOutputSourcesService service) =>
-        {
-            logger.LogInfo("ProcessOutputSources", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProcessOutputSources", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProcessOutputSources_GetColumns").WithDisplayName("Get ProcessOutputSources Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProcessOutputSourcesValidation validation, IProcessOutputSourcesWriter writer, IProcessOutputSourcesService service) =>
-        {
-            logger.LogInfo("ProcessOutputSources", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProcessOutputSources", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProcessOutputSources_UpdateColumns").WithDisplayName("Update ProcessOutputSources Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProcessOutputSourcesValidation validation, IProcessOutputSourcesWriter writer, IProcessOutputSourcesService service) =>
         {
             logger.LogInfo("ProcessOutputSources", "Delete", $"id = {id}", uri);

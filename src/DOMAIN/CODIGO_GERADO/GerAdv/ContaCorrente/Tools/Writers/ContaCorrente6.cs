@@ -41,6 +41,7 @@ public class ContaCorrente : IContaCorrenteWriter
         dbRec.FHide = contacorrente.Hide;
         if (contacorrente.DataPgto != null)
             dbRec.FDataPgto = contacorrente.DataPgto.ToString();
+        dbRec.FGUID = contacorrente.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

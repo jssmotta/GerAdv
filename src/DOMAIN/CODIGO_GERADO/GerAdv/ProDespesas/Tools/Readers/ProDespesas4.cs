@@ -46,7 +46,7 @@ public partial class ProDespesas : IProDespesasReader
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prodespesas.Data = dbRec.FData;
@@ -87,7 +87,7 @@ public partial class ProDespesas : IProDespesasReader
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prodespesas.Data = dbRec.FData;

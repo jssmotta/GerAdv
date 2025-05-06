@@ -31,4 +31,5 @@ public partial interface IDBOponentes
     public bool FTop { get; set; }
     public bool FEtiqueta { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

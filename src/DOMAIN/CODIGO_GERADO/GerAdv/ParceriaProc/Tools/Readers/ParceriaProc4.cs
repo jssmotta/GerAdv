@@ -38,7 +38,7 @@ public partial class ParceriaProc : IParceriaProcReader
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
             Processo = dbRec.FProcesso,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class ParceriaProc : IParceriaProcReader
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
             Processo = dbRec.FProcesso,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

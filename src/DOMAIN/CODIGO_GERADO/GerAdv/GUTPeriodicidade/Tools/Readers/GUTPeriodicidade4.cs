@@ -38,7 +38,7 @@ public partial class GUTPeriodicidade : IGUTPeriodicidadeReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             IntervaloDias = dbRec.FIntervaloDias,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class GUTPeriodicidade : IGUTPeriodicidadeReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             IntervaloDias = dbRec.FIntervaloDias,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

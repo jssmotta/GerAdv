@@ -48,7 +48,7 @@ public partial class ProValores : IProValoresReader
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             provalores.Data = dbRec.FData;
@@ -91,7 +91,7 @@ public partial class ProValores : IProValoresReader
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             provalores.Data = dbRec.FData;

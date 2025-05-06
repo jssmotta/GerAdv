@@ -26,6 +26,7 @@ public class EnderecoSistema : IEnderecoSistemaWriter
         dbRec.FFone = enderecosistema.Fone;
         dbRec.FFax = enderecosistema.Fax;
         dbRec.FObservacao = enderecosistema.Observacao;
+        dbRec.FGUID = enderecosistema.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

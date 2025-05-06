@@ -56,30 +56,6 @@ public static class ContratosEndpoints
 
             return Results.Ok(result);
         }).WithName("Contratos_AddAndUpdate").WithDisplayName("Add or Update Contratos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IContratosValidation validation, IContratosWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IContratosService service) =>
-        {
-            logger.LogInfo("Contratos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Contratos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Contratos_GetColumns").WithDisplayName("Get Contratos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IContratosValidation validation, IContratosWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IContratosService service) =>
-        {
-            logger.LogInfo("Contratos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Contratos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Contratos_UpdateColumns").WithDisplayName("Update Contratos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IContratosValidation validation, IContratosWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IContratosService service) =>
         {
             logger.LogInfo("Contratos", "Delete", $"id = {id}", uri);

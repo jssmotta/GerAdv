@@ -16,6 +16,7 @@ public class SMSAlice : ISMSAliceWriter
         dbRec.FOperador = smsalice.Operador;
         dbRec.FNome = smsalice.Nome;
         dbRec.FTipoEMail = smsalice.TipoEMail;
+        dbRec.FGUID = smsalice.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

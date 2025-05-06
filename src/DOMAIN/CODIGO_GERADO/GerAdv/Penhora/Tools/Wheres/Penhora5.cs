@@ -21,6 +21,7 @@ public partial class Penhora : IPenhoraWhere
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
             Master = dbRec.FMaster,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out _))
             penhora.DataPenhora = dbRec.FDataPenhora;

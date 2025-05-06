@@ -18,6 +18,7 @@ public class ProObservacoes : IProObservacoesWriter
         dbRec.FObservacoes = proobservacoes.Observacoes;
         if (proobservacoes.Data != null)
             dbRec.FData = proobservacoes.Data.ToString();
+        dbRec.FGUID = proobservacoes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -72,7 +72,7 @@ public class LigacoesHealthCheck(IOptions<AppSettings> appSettings, LigacoesServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ligAssunto,ligAgeClienteAvisado,ligCelular,ligCliente,ligContato,ligDataRealizada,ligQuemID,ligTelefonista,ligUltimoAviso,ligHoraFinal,ligNome,ligQuemCodigo,ligSolicitante,ligPara,ligFone,ligRamal,ligParticular,ligRealizada,ligStatus,ligData,ligHora,ligUrgente,ligLigarPara,ligProcesso,ligStartScreen,ligEmotion,ligBold FROM dbo.Ligacoes (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ligAssunto,ligAgeClienteAvisado,ligCelular,ligCliente,ligContato,ligDataRealizada,ligQuemID,ligTelefonista,ligUltimoAviso,ligHoraFinal,ligNome,ligQuemCodigo,ligSolicitante,ligPara,ligFone,ligRamal,ligParticular,ligRealizada,ligStatus,ligData,ligHora,ligUrgente,ligLigarPara,ligProcesso,ligStartScreen,ligEmotion,ligBold,ligGUID FROM dbo.Ligacoes (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

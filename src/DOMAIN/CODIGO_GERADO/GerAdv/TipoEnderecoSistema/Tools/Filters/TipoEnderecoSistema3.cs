@@ -11,4 +11,7 @@ public partial class FilterTipoEnderecoSistema
 
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

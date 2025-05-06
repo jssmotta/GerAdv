@@ -72,7 +72,7 @@ public class FaseHealthCheck(IOptions<AppSettings> appSettings, FaseService fase
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) fasDescricao,fasJustica,fasArea FROM dbo.Fase (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) fasDescricao,fasJustica,fasArea,fasGUID FROM dbo.Fase (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

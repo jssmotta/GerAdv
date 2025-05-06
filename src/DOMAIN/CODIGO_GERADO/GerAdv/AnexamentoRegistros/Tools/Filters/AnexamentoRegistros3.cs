@@ -12,6 +12,9 @@ public partial class FilterAnexamentoRegistros
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = -2147483648;
 
+    [JsonPropertyName("guidreg")]
+    public string GUIDReg { get; set; } = string.Empty;
+
     [JsonPropertyName("codigoreg")]
     public int CodigoReg { get; set; } = -2147483648;
 
@@ -20,4 +23,7 @@ public partial class FilterAnexamentoRegistros
 
     [JsonPropertyName("data")]
     public string Data { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

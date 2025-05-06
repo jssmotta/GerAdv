@@ -52,7 +52,7 @@ public partial class ModelosDocumentos : IModelosDocumentosReader
             Testemunhas = dbRec.FTestemunhas ?? string.Empty,
             TipoModeloDocumento = dbRec.FTipoModeloDocumento,
             CSS = dbRec.FCSS ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -95,7 +95,7 @@ public partial class ModelosDocumentos : IModelosDocumentosReader
             Testemunhas = dbRec.FTestemunhas ?? string.Empty,
             TipoModeloDocumento = dbRec.FTipoModeloDocumento,
             CSS = dbRec.FCSS ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

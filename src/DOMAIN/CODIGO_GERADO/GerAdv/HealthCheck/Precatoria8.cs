@@ -72,7 +72,7 @@ public class PrecatoriaHealthCheck(IOptions<AppSettings> appSettings, Precatoria
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) preDtDist,preProcesso,prePrecatoria,preDeprecante,preDeprecado,preOBS,preBold FROM dbo.Precatoria (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) preDtDist,preProcesso,prePrecatoria,preDeprecante,preDeprecado,preOBS,preBold,preGUID FROM dbo.Precatoria (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

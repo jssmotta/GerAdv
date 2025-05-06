@@ -39,7 +39,7 @@ public partial class OperadorGruposAgenda : IOperadorGruposAgendaReader
             SQLWhere = dbRec.FSQLWhere ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Operador = dbRec.FOperador,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -69,7 +69,7 @@ public partial class OperadorGruposAgenda : IOperadorGruposAgendaReader
             SQLWhere = dbRec.FSQLWhere ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Operador = dbRec.FOperador,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -72,7 +72,7 @@ public class CidadeHealthCheck(IOptions<AppSettings> appSettings, CidadeService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cidDDD,cidTop,cidComarca,cidCapital,cidNome,cidUF,cidSigla FROM dbo.Cidade (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) cidDDD,cidTop,cidComarca,cidCapital,cidNome,cidUF,cidSigla,cidGUID FROM dbo.Cidade (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

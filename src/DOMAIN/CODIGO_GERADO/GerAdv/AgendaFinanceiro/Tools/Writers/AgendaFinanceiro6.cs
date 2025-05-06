@@ -63,6 +63,7 @@ public class AgendaFinanceiro : IAgendaFinanceiroWriter
         if (agendafinanceiro.DataInicioPrazo != null)
             dbRec.FDataInicioPrazo = agendafinanceiro.DataInicioPrazo.ToString();
         dbRec.FUsuarioCiente = agendafinanceiro.UsuarioCiente;
+        dbRec.FGUID = agendafinanceiro.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

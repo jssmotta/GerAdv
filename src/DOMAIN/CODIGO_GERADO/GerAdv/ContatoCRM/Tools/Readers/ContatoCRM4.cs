@@ -59,7 +59,7 @@ public partial class ContatoCRM : IContatoCRMReader
             Emocao = dbRec.FEmocao,
             Continuar = dbRec.FContinuar,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataNotificou, out _))
             contatocrm.DataNotificou = dbRec.FDataNotificou;
@@ -119,7 +119,7 @@ public partial class ContatoCRM : IContatoCRMReader
             Emocao = dbRec.FEmocao,
             Continuar = dbRec.FContinuar,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataNotificou, out _))
             contatocrm.DataNotificou = dbRec.FDataNotificou;

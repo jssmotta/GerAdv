@@ -56,30 +56,6 @@ public static class ContatoCRMEndpoints
 
             return Results.Ok(result);
         }).WithName("ContatoCRM_AddAndUpdate").WithDisplayName("Add or Update ContatoCRM");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IContatoCRMValidation validation, IContatoCRMWriter writer, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, IContatoCRMService service) =>
-        {
-            logger.LogInfo("ContatoCRM", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ContatoCRM", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ContatoCRM_GetColumns").WithDisplayName("Get ContatoCRM Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IContatoCRMValidation validation, IContatoCRMWriter writer, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, IContatoCRMService service) =>
-        {
-            logger.LogInfo("ContatoCRM", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ContatoCRM", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ContatoCRM_UpdateColumns").WithDisplayName("Update ContatoCRM Columns");
         group.MapDelete("/Delete", async (int id, string uri, IContatoCRMValidation validation, IContatoCRMWriter writer, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, IContatoCRMService service) =>
         {
             logger.LogInfo("ContatoCRM", "Delete", $"id = {id}", uri);

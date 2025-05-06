@@ -72,7 +72,7 @@ public class SetorHealthCheck(IOptions<AppSettings> appSettings, SetorService se
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) setDescricao FROM dbo.Setor (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) setDescricao,setGUID FROM dbo.Setor (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

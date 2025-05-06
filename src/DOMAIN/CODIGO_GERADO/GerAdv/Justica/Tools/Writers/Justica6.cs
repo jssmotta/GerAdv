@@ -15,6 +15,7 @@ public class Justica : IJusticaWriter
         var dbRec = justica.Id.IsEmptyIDNumber() ? new Entity.DBJustica() : new Entity.DBJustica(justica.Id, oCnn);
         dbRec.FNome = justica.Nome;
         dbRec.FBold = justica.Bold;
+        dbRec.FGUID = justica.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

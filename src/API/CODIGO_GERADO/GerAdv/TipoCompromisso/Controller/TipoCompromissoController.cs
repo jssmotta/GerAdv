@@ -82,36 +82,6 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
         return Ok(result);
     }
 
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> GetColumns([FromBody] GetColumns parameters, [FromRoute, Required] string uri)
-    {
-        _logger.Info("TipoCompromisso: GetColumns called with id = {0} and columns = {1}, {2}", parameters.Id, parameters.Columns, uri);
-        var result = await _tipocompromissoService.GetColumns(parameters, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetColumns: No columns found for id = {0}, {1}", parameters.Id, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
-    [HttpPost()]
-    [Authorize]
-    public async Task<IActionResult> UpdateColumns([FromBody] UpdateColumnsRequest parameters, [FromRoute, Required] string uri)
-    {
-        _logger.Info("TipoCompromisso: UpdateColumns called with id = {0} and campos = {1}, {2}", parameters.Id, parameters, uri);
-        var result = await _tipocompromissoService.UpdateColumns(parameters, uri);
-        if (!result)
-        {
-            _logger.Warn("UpdateColumns: Failed to update columns for id = {0}, {1}", parameters.Id, uri);
-            return BadRequest();
-        }
-
-        return Ok();
-    }
-
     [HttpDelete]
     [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)

@@ -15,6 +15,7 @@ public class OperadorGruposAgendaOperadores : IOperadorGruposAgendaOperadoresWri
         var dbRec = operadorgruposagendaoperadores.Id.IsEmptyIDNumber() ? new Entity.DBOperadorGruposAgendaOperadores() : new Entity.DBOperadorGruposAgendaOperadores(operadorgruposagendaoperadores.Id, oCnn);
         dbRec.FOperadorGruposAgenda = operadorgruposagendaoperadores.OperadorGruposAgenda;
         dbRec.FOperador = operadorgruposagendaoperadores.Operador;
+        dbRec.FGUID = operadorgruposagendaoperadores.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

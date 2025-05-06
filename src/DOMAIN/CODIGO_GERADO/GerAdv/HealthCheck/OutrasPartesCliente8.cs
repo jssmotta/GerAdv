@@ -72,7 +72,7 @@ public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, O
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) opcNome,opcTerceirizado,opcClientePrincipal,opcTipo,opcSexo,opcDtNasc,opcCPF,opcRG,opcCNPJ,opcInscEst,opcNomeFantasia,opcEndereco,opcCidade,opcCEP,opcBairro,opcFone,opcFax,opcEMail,opcSite,opcClass,opcEtiqueta,opcAni,opcBold FROM dbo.OutrasPartesCliente (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) opcNome,opcTerceirizado,opcClientePrincipal,opcTipo,opcSexo,opcDtNasc,opcCPF,opcRG,opcCNPJ,opcInscEst,opcNomeFantasia,opcEndereco,opcCidade,opcCEP,opcBairro,opcFone,opcFax,opcEMail,opcSite,opcClass,opcEtiqueta,opcAni,opcBold,opcGUID FROM dbo.OutrasPartesCliente (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -72,7 +72,7 @@ public class PenhoraStatusHealthCheck(IOptions<AppSettings> appSettings, Penhora
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) phsNome FROM dbo.PenhoraStatus (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) phsNome,phsGUID FROM dbo.PenhoraStatus (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

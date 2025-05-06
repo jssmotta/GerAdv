@@ -24,6 +24,7 @@ public class HonorariosDadosContrato : IHonorariosDadosContratoWriter
         dbRec.FObservacao = honorariosdadoscontrato.Observacao;
         if (honorariosdadoscontrato.DataContrato != null)
             dbRec.FDataContrato = honorariosdadoscontrato.DataContrato.ToString();
+        dbRec.FGUID = honorariosdadoscontrato.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

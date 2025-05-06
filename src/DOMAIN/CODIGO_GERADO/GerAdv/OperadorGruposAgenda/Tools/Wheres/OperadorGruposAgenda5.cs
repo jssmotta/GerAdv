@@ -19,6 +19,7 @@ public partial class OperadorGruposAgenda : IOperadorGruposAgendaWhere
             SQLWhere = dbRec.FSQLWhere ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

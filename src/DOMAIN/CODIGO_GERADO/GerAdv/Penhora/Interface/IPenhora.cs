@@ -5,8 +5,6 @@ public partial interface IPenhoraService
     Task<PenhoraResponse?> AddAndUpdate(Models.Penhora regPenhora, [FromRoute, Required] string uri = "");
     Task<PenhoraResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<PenhoraResponse>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<bool> UpdateColumns(UpdateColumnsRequest columns, [FromRoute, Required] string uri = "");
-    Task<GetColumnsResponse?> GetColumns(GetColumns parameters, [FromRoute, Required] string uri = "");
     Task<PenhoraResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<PenhoraResponse?> GetByName(string name, [FromRoute, Required] string uri = "");
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterPenhora? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);

@@ -19,6 +19,7 @@ public partial class StatusAndamento : IStatusAndamentoWhere
             Nome = dbRec.FNome ?? string.Empty,
             Icone = dbRec.FIcone,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

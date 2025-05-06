@@ -46,4 +46,5 @@ public partial interface IDBAgendaFinanceiro
     public int FProtocoloIntegrado { get; set; }
     public string? FDataInicioPrazo { get; set; }
     public bool FUsuarioCiente { get; set; }
+    public string? FGUID { get; set; }
 }

@@ -72,7 +72,7 @@ public class HistoricoHealthCheck(IOptions<AppSettings> appSettings, HistoricoSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) hisExtraID,hisIDNE,hisLiminarOrigem,hisNaoPublicavel,hisProcesso,hisPrecatoria,hisApenso,hisIDInstProcesso,hisFase,hisData,hisObservacao,hisAgendado,hisConcluido,hisMesmaAgenda,hisSAD,hisResumido,hisStatusAndamento,hisTop FROM dbo.Historico (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) hisExtraID,hisIDNE,hisExtraGUID,hisLiminarOrigem,hisNaoPublicavel,hisProcesso,hisPrecatoria,hisApenso,hisIDInstProcesso,hisFase,hisData,hisObservacao,hisAgendado,hisConcluido,hisMesmaAgenda,hisSAD,hisResumido,hisStatusAndamento,hisTop,hisGUID FROM dbo.Historico (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

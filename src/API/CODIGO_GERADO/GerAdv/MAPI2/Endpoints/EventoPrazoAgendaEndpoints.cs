@@ -74,30 +74,6 @@ public static class EventoPrazoAgendaEndpoints
 
             return Results.Ok(result);
         }).WithName("EventoPrazoAgenda_AddAndUpdate").WithDisplayName("Add or Update EventoPrazoAgenda");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IEventoPrazoAgendaValidation validation, IEventoPrazoAgendaWriter writer, IEventoPrazoAgendaService service) =>
-        {
-            logger.LogInfo("EventoPrazoAgenda", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("EventoPrazoAgenda", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("EventoPrazoAgenda_GetColumns").WithDisplayName("Get EventoPrazoAgenda Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IEventoPrazoAgendaValidation validation, IEventoPrazoAgendaWriter writer, IEventoPrazoAgendaService service) =>
-        {
-            logger.LogInfo("EventoPrazoAgenda", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("EventoPrazoAgenda", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("EventoPrazoAgenda_UpdateColumns").WithDisplayName("Update EventoPrazoAgenda Columns");
         group.MapDelete("/Delete", async (int id, string uri, IEventoPrazoAgendaValidation validation, IEventoPrazoAgendaWriter writer, IEventoPrazoAgendaService service) =>
         {
             logger.LogInfo("EventoPrazoAgenda", "Delete", $"id = {id}", uri);

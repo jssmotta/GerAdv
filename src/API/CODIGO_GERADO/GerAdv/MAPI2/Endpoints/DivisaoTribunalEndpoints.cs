@@ -56,30 +56,6 @@ public static class DivisaoTribunalEndpoints
 
             return Results.Ok(result);
         }).WithName("DivisaoTribunal_AddAndUpdate").WithDisplayName("Add or Update DivisaoTribunal");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IDivisaoTribunalValidation validation, IDivisaoTribunalWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IForoReader foroReader, ITribunalReader tribunalReader, IDivisaoTribunalService service) =>
-        {
-            logger.LogInfo("DivisaoTribunal", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("DivisaoTribunal", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("DivisaoTribunal_GetColumns").WithDisplayName("Get DivisaoTribunal Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IDivisaoTribunalValidation validation, IDivisaoTribunalWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IForoReader foroReader, ITribunalReader tribunalReader, IDivisaoTribunalService service) =>
-        {
-            logger.LogInfo("DivisaoTribunal", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("DivisaoTribunal", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("DivisaoTribunal_UpdateColumns").WithDisplayName("Update DivisaoTribunal Columns");
         group.MapDelete("/Delete", async (int id, string uri, IDivisaoTribunalValidation validation, IDivisaoTribunalWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IForoReader foroReader, ITribunalReader tribunalReader, IDivisaoTribunalService service) =>
         {
             logger.LogInfo("DivisaoTribunal", "Delete", $"id = {id}", uri);

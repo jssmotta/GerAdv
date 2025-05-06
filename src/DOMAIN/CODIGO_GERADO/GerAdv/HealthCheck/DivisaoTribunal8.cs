@@ -72,7 +72,7 @@ public class DivisaoTribunalHealthCheck(IOptions<AppSettings> appSettings, Divis
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) divNumCodigo,divJustica,divNomeEspecial,divArea,divCidade,divForo,divTribunal,divCodigoDiv,divEndereco,divFone,divFax,divCEP,divObs,divEMail,divAndar,divEtiqueta,divBold FROM dbo.DivisaoTribunal (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) divNumCodigo,divJustica,divNomeEspecial,divArea,divCidade,divForo,divTribunal,divCodigoDiv,divEndereco,divFone,divFax,divCEP,divObs,divEMail,divAndar,divEtiqueta,divBold,divGUID FROM dbo.DivisaoTribunal (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

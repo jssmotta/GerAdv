@@ -82,6 +82,7 @@ public class Processos : IProcessosWriter
         dbRec.FValorCondenacao = processos.ValorCondenacao;
         dbRec.FValorCondenacaoCalculado = processos.ValorCondenacaoCalculado;
         dbRec.FValorCondenacaoProvisorio = processos.ValorCondenacaoProvisorio;
+        dbRec.FGUID = processos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

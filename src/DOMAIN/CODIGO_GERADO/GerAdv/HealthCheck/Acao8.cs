@@ -79,7 +79,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) acaJustica,acaArea,acaDescricao FROM dbo.Acao (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) acaJustica,acaArea,acaDescricao,acaGUID FROM dbo.Acao (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

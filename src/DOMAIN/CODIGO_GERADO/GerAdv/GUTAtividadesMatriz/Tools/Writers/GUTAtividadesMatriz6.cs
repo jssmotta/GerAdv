@@ -15,6 +15,7 @@ public class GUTAtividadesMatriz : IGUTAtividadesMatrizWriter
         var dbRec = gutatividadesmatriz.Id.IsEmptyIDNumber() ? new Entity.DBGUTAtividadesMatriz() : new Entity.DBGUTAtividadesMatriz(gutatividadesmatriz.Id, oCnn);
         dbRec.FGUTMatriz = gutatividadesmatriz.GUTMatriz;
         dbRec.FGUTAtividade = gutatividadesmatriz.GUTAtividade;
+        dbRec.FGUID = gutatividadesmatriz.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

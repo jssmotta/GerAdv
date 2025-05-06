@@ -29,4 +29,7 @@ public partial class FilterProDespesas
 
     [JsonPropertyName("historico")]
     public string Historico { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

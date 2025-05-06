@@ -37,6 +37,7 @@ public class Enderecos : IEnderecosWriter
         dbRec.FEtiqueta = enderecos.Etiqueta;
         dbRec.FAni = enderecos.Ani;
         dbRec.FBold = enderecos.Bold;
+        dbRec.FGUID = enderecos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

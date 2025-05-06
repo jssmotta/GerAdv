@@ -14,4 +14,5 @@ public partial interface IDBReuniao
     public string? FHoraRetorno { get; set; }
     public string? FPrincipaisDecisoes { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

@@ -74,30 +74,6 @@ public static class UFEndpoints
 
             return Results.Ok(result);
         }).WithName("UF_AddAndUpdate").WithDisplayName("Add or Update UF");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IUFValidation validation, IUFWriter writer, IPaisesReader paisesReader, IUFService service) =>
-        {
-            logger.LogInfo("UF", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("UF", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("UF_GetColumns").WithDisplayName("Get UF Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IUFValidation validation, IUFWriter writer, IPaisesReader paisesReader, IUFService service) =>
-        {
-            logger.LogInfo("UF", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("UF", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("UF_UpdateColumns").WithDisplayName("Update UF Columns");
         group.MapDelete("/Delete", async (int id, string uri, IUFValidation validation, IUFWriter writer, IPaisesReader paisesReader, IUFService service) =>
         {
             logger.LogInfo("UF", "Delete", $"id = {id}", uri);

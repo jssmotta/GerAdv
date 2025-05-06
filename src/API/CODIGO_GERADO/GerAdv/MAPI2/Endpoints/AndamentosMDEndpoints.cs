@@ -74,30 +74,6 @@ public static class AndamentosMDEndpoints
 
             return Results.Ok(result);
         }).WithName("AndamentosMD_AddAndUpdate").WithDisplayName("Add or Update AndamentosMD");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAndamentosMDValidation validation, IAndamentosMDWriter writer, IProcessosReader processosReader, IAndamentosMDService service) =>
-        {
-            logger.LogInfo("AndamentosMD", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AndamentosMD", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AndamentosMD_GetColumns").WithDisplayName("Get AndamentosMD Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAndamentosMDValidation validation, IAndamentosMDWriter writer, IProcessosReader processosReader, IAndamentosMDService service) =>
-        {
-            logger.LogInfo("AndamentosMD", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AndamentosMD", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AndamentosMD_UpdateColumns").WithDisplayName("Update AndamentosMD Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAndamentosMDValidation validation, IAndamentosMDWriter writer, IProcessosReader processosReader, IAndamentosMDService service) =>
         {
             logger.LogInfo("AndamentosMD", "Delete", $"id = {id}", uri);

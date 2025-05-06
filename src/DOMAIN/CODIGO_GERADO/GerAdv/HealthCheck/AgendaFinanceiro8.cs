@@ -72,7 +72,7 @@ public class AgendaFinanceiroHealthCheck(IOptions<AppSettings> appSettings, Agen
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ageIDCOB,ageIDNE,agePrazoProvisionado,ageCidade,ageOculto,ageCartaPrecatoria,ageRepetirDias,ageHrFinal,ageRepetir,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageDDias,ageDias,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageCompromissoHTML,ageDecisao,ageRevisar,ageRevisarP2,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente FROM dbo.AgendaFinanceiro (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ageIDCOB,ageIDNE,agePrazoProvisionado,ageCidade,ageOculto,ageCartaPrecatoria,ageRepetirDias,ageHrFinal,ageRepetir,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageDDias,ageDias,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageCompromissoHTML,ageDecisao,ageRevisar,ageRevisarP2,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente,ageGUID FROM dbo.AgendaFinanceiro (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -74,30 +74,6 @@ public static class TipoValorProcessoEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoValorProcesso_AddAndUpdate").WithDisplayName("Add or Update TipoValorProcesso");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoValorProcessoValidation validation, ITipoValorProcessoWriter writer, ITipoValorProcessoService service) =>
-        {
-            logger.LogInfo("TipoValorProcesso", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoValorProcesso", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoValorProcesso_GetColumns").WithDisplayName("Get TipoValorProcesso Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoValorProcessoValidation validation, ITipoValorProcessoWriter writer, ITipoValorProcessoService service) =>
-        {
-            logger.LogInfo("TipoValorProcesso", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoValorProcesso", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoValorProcesso_UpdateColumns").WithDisplayName("Update TipoValorProcesso Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoValorProcessoValidation validation, ITipoValorProcessoWriter writer, ITipoValorProcessoService service) =>
         {
             logger.LogInfo("TipoValorProcesso", "Delete", $"id = {id}", uri);

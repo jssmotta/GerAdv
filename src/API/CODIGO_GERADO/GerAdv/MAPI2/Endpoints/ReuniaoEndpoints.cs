@@ -56,30 +56,6 @@ public static class ReuniaoEndpoints
 
             return Results.Ok(result);
         }).WithName("Reuniao_AddAndUpdate").WithDisplayName("Add or Update Reuniao");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IReuniaoValidation validation, IReuniaoWriter writer, IClientesReader clientesReader, IReuniaoService service) =>
-        {
-            logger.LogInfo("Reuniao", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Reuniao", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Reuniao_GetColumns").WithDisplayName("Get Reuniao Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IReuniaoValidation validation, IReuniaoWriter writer, IClientesReader clientesReader, IReuniaoService service) =>
-        {
-            logger.LogInfo("Reuniao", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Reuniao", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Reuniao_UpdateColumns").WithDisplayName("Update Reuniao Columns");
         group.MapDelete("/Delete", async (int id, string uri, IReuniaoValidation validation, IReuniaoWriter writer, IClientesReader clientesReader, IReuniaoService service) =>
         {
             logger.LogInfo("Reuniao", "Delete", $"id = {id}", uri);

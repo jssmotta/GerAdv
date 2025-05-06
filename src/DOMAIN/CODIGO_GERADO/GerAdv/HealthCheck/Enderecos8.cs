@@ -72,7 +72,7 @@ public class EnderecosHealthCheck(IOptions<AppSettings> appSettings, EnderecosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) endTopIndex,endDescricao,endContato,endDtNasc,endEndereco,endBairro,endPrivativo,endAddContato,endCEP,endOAB,endOBS,endFone,endFax,endTratamento,endCidade,endSite,endEMail,endQuem,endQuemIndicou,endReportECBOnly,endEtiqueta,endAni,endBold FROM dbo.Enderecos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) endTopIndex,endDescricao,endContato,endDtNasc,endEndereco,endBairro,endPrivativo,endAddContato,endCEP,endOAB,endOBS,endFone,endFax,endTratamento,endCidade,endSite,endEMail,endQuem,endQuemIndicou,endReportECBOnly,endEtiqueta,endAni,endBold,endGUID FROM dbo.Enderecos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

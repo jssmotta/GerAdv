@@ -30,4 +30,5 @@ public partial interface IDBContatoCRM
     public int FEmocao { get; set; }
     public bool FContinuar { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

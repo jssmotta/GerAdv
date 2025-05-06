@@ -14,6 +14,7 @@ public class TipoEnderecoSistema : ITipoEnderecoSistemaWriter
     {
         var dbRec = tipoenderecosistema.Id.IsEmptyIDNumber() ? new Entity.DBTipoEnderecoSistema() : new Entity.DBTipoEnderecoSistema(tipoenderecosistema.Id, oCnn);
         dbRec.FNome = tipoenderecosistema.Nome;
+        dbRec.FGUID = tipoenderecosistema.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

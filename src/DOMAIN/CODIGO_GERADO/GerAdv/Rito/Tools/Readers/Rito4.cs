@@ -39,7 +39,7 @@ public partial class Rito : IRitoReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -69,7 +69,7 @@ public partial class Rito : IRitoReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

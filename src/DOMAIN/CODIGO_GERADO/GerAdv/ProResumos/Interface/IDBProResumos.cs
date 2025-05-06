@@ -7,4 +7,5 @@ public partial interface IDBProResumos
     public string? FResumo { get; set; }
     public int FTipoResumo { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

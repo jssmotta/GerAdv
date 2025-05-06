@@ -15,6 +15,7 @@ public class BensClassificacao : IBensClassificacaoWriter
         var dbRec = bensclassificacao.Id.IsEmptyIDNumber() ? new Entity.DBBensClassificacao() : new Entity.DBBensClassificacao(bensclassificacao.Id, oCnn);
         dbRec.FNome = bensclassificacao.Nome;
         dbRec.FBold = bensclassificacao.Bold;
+        dbRec.FGUID = bensclassificacao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

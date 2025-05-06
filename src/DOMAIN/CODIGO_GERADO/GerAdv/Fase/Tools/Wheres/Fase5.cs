@@ -19,6 +19,7 @@ public partial class Fase : IFaseWhere
             Descricao = dbRec.FDescricao ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

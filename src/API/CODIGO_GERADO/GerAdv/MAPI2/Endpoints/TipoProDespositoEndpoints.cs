@@ -74,30 +74,6 @@ public static class TipoProDespositoEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoProDesposito_AddAndUpdate").WithDisplayName("Add or Update TipoProDesposito");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoProDespositoValidation validation, ITipoProDespositoWriter writer, ITipoProDespositoService service) =>
-        {
-            logger.LogInfo("TipoProDesposito", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoProDesposito", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoProDesposito_GetColumns").WithDisplayName("Get TipoProDesposito Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoProDespositoValidation validation, ITipoProDespositoWriter writer, ITipoProDespositoService service) =>
-        {
-            logger.LogInfo("TipoProDesposito", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoProDesposito", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoProDesposito_UpdateColumns").WithDisplayName("Update TipoProDesposito Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoProDespositoValidation validation, ITipoProDespositoWriter writer, ITipoProDespositoService service) =>
         {
             logger.LogInfo("TipoProDesposito", "Delete", $"id = {id}", uri);

@@ -18,6 +18,7 @@ public class UF : IUFWriter
         dbRec.FPais = uf.Pais;
         dbRec.FTop = uf.Top;
         dbRec.FDescricao = uf.Descricao;
+        dbRec.FGUID = uf.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

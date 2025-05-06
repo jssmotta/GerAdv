@@ -5,4 +5,5 @@ public partial interface IDBSMSAlice
     public int FOperador { get; set; }
     public string? FNome { get; set; }
     public int FTipoEMail { get; set; }
+    public string? FGUID { get; set; }
 }

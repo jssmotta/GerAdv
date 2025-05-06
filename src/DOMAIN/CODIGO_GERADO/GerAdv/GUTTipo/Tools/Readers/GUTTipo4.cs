@@ -38,7 +38,7 @@ public partial class GUTTipo : IGUTTipoReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Ordem = dbRec.FOrdem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -67,7 +67,7 @@ public partial class GUTTipo : IGUTTipoReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Ordem = dbRec.FOrdem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

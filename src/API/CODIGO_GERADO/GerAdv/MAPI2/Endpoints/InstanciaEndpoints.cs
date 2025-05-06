@@ -74,30 +74,6 @@ public static class InstanciaEndpoints
 
             return Results.Ok(result);
         }).WithName("Instancia_AddAndUpdate").WithDisplayName("Add or Update Instancia");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IInstanciaValidation validation, IInstanciaWriter writer, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, IInstanciaService service) =>
-        {
-            logger.LogInfo("Instancia", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Instancia", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Instancia_GetColumns").WithDisplayName("Get Instancia Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IInstanciaValidation validation, IInstanciaWriter writer, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, IInstanciaService service) =>
-        {
-            logger.LogInfo("Instancia", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Instancia", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Instancia_UpdateColumns").WithDisplayName("Update Instancia Columns");
         group.MapDelete("/Delete", async (int id, string uri, IInstanciaValidation validation, IInstanciaWriter writer, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, IInstanciaService service) =>
         {
             logger.LogInfo("Instancia", "Delete", $"id = {id}", uri);

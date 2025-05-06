@@ -74,30 +74,6 @@ public static class AtividadesEndpoints
 
             return Results.Ok(result);
         }).WithName("Atividades_AddAndUpdate").WithDisplayName("Add or Update Atividades");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAtividadesValidation validation, IAtividadesWriter writer, IAtividadesService service) =>
-        {
-            logger.LogInfo("Atividades", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Atividades", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Atividades_GetColumns").WithDisplayName("Get Atividades Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAtividadesValidation validation, IAtividadesWriter writer, IAtividadesService service) =>
-        {
-            logger.LogInfo("Atividades", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Atividades", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Atividades_UpdateColumns").WithDisplayName("Update Atividades Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAtividadesValidation validation, IAtividadesWriter writer, IAtividadesService service) =>
         {
             logger.LogInfo("Atividades", "Delete", $"id = {id}", uri);

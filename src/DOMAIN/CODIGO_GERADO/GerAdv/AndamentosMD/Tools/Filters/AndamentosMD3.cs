@@ -23,4 +23,7 @@ public partial class FilterAndamentosMD
 
     [JsonPropertyName("unc")]
     public string UNC { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

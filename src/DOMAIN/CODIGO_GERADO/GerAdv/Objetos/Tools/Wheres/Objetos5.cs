@@ -20,6 +20,7 @@ public partial class Objetos : IObjetosWhere
             Area = dbRec.FArea,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -16,6 +16,7 @@ public class TiposAcao : ITiposAcaoWriter
         dbRec.FNome = tiposacao.Nome;
         dbRec.FInativo = tiposacao.Inativo;
         dbRec.FBold = tiposacao.Bold;
+        dbRec.FGUID = tiposacao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

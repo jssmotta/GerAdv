@@ -59,4 +59,7 @@ public partial class FilterContatoCRM
 
     [JsonPropertyName("emocao")]
     public int Emocao { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

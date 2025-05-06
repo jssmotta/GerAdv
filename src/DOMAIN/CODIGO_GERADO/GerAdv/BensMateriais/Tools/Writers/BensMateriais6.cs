@@ -31,6 +31,7 @@ public class BensMateriais : IBensMateriaisWriter
         dbRec.FObservacoes = bensmateriais.Observacoes;
         dbRec.FNomeVendedor = bensmateriais.NomeVendedor;
         dbRec.FBold = bensmateriais.Bold;
+        dbRec.FGUID = bensmateriais.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

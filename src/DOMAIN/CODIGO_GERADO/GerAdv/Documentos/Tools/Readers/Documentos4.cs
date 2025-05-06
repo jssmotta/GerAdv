@@ -38,7 +38,7 @@ public partial class Documentos : IDocumentosReader
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             documentos.Data = dbRec.FData;
@@ -69,7 +69,7 @@ public partial class Documentos : IDocumentosReader
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             documentos.Data = dbRec.FData;

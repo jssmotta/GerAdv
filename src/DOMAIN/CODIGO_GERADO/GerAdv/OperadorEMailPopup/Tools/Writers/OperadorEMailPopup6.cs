@@ -27,6 +27,7 @@ public class OperadorEMailPopup : IOperadorEMailPopupWriter
         dbRec.FAssinatura = operadoremailpopup.Assinatura;
         if (operadoremailpopup.Senha256.Length > 0)
             dbRec.FSenha256 = operadoremailpopup.Senha256.Encrypt();
+        dbRec.FGUID = operadoremailpopup.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

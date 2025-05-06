@@ -74,30 +74,6 @@ public static class ModelosDocumentosEndpoints
 
             return Results.Ok(result);
         }).WithName("ModelosDocumentos_AddAndUpdate").WithDisplayName("Add or Update ModelosDocumentos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IModelosDocumentosValidation validation, IModelosDocumentosWriter writer, ITipoModeloDocumentoReader tipomodelodocumentoReader, IModelosDocumentosService service) =>
-        {
-            logger.LogInfo("ModelosDocumentos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ModelosDocumentos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ModelosDocumentos_GetColumns").WithDisplayName("Get ModelosDocumentos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IModelosDocumentosValidation validation, IModelosDocumentosWriter writer, ITipoModeloDocumentoReader tipomodelodocumentoReader, IModelosDocumentosService service) =>
-        {
-            logger.LogInfo("ModelosDocumentos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ModelosDocumentos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ModelosDocumentos_UpdateColumns").WithDisplayName("Update ModelosDocumentos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IModelosDocumentosValidation validation, IModelosDocumentosWriter writer, ITipoModeloDocumentoReader tipomodelodocumentoReader, IModelosDocumentosService service) =>
         {
             logger.LogInfo("ModelosDocumentos", "Delete", $"id = {id}", uri);

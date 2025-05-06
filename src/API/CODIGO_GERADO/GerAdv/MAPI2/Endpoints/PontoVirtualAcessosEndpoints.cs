@@ -56,30 +56,6 @@ public static class PontoVirtualAcessosEndpoints
 
             return Results.Ok(result);
         }).WithName("PontoVirtualAcessos_AddAndUpdate").WithDisplayName("Add or Update PontoVirtualAcessos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IPontoVirtualAcessosValidation validation, IPontoVirtualAcessosWriter writer, IOperadorReader operadorReader, IPontoVirtualAcessosService service) =>
-        {
-            logger.LogInfo("PontoVirtualAcessos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("PontoVirtualAcessos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("PontoVirtualAcessos_GetColumns").WithDisplayName("Get PontoVirtualAcessos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IPontoVirtualAcessosValidation validation, IPontoVirtualAcessosWriter writer, IOperadorReader operadorReader, IPontoVirtualAcessosService service) =>
-        {
-            logger.LogInfo("PontoVirtualAcessos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("PontoVirtualAcessos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("PontoVirtualAcessos_UpdateColumns").WithDisplayName("Update PontoVirtualAcessos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IPontoVirtualAcessosValidation validation, IPontoVirtualAcessosWriter writer, IOperadorReader operadorReader, IPontoVirtualAcessosService service) =>
         {
             logger.LogInfo("PontoVirtualAcessos", "Delete", $"id = {id}", uri);

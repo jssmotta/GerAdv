@@ -74,30 +74,6 @@ public static class NENotasEndpoints
 
             return Results.Ok(result);
         }).WithName("NENotas_AddAndUpdate").WithDisplayName("Add or Update NENotas");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, INENotasValidation validation, INENotasWriter writer, IApensoReader apensoReader, IPrecatoriaReader precatoriaReader, IInstanciaReader instanciaReader, IProcessosReader processosReader, INENotasService service) =>
-        {
-            logger.LogInfo("NENotas", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("NENotas", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("NENotas_GetColumns").WithDisplayName("Get NENotas Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, INENotasValidation validation, INENotasWriter writer, IApensoReader apensoReader, IPrecatoriaReader precatoriaReader, IInstanciaReader instanciaReader, IProcessosReader processosReader, INENotasService service) =>
-        {
-            logger.LogInfo("NENotas", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("NENotas", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("NENotas_UpdateColumns").WithDisplayName("Update NENotas Columns");
         group.MapDelete("/Delete", async (int id, string uri, INENotasValidation validation, INENotasWriter writer, IApensoReader apensoReader, IPrecatoriaReader precatoriaReader, IInstanciaReader instanciaReader, IProcessosReader processosReader, INENotasService service) =>
         {
             logger.LogInfo("NENotas", "Delete", $"id = {id}", uri);

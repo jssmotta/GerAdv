@@ -53,4 +53,7 @@ public partial class FilterEscritorios
 
     [JsonPropertyName("inscest")]
     public string InscEst { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

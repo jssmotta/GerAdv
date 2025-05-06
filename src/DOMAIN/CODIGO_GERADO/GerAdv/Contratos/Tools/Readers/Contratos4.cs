@@ -63,7 +63,7 @@ public partial class Contratos : IContratosReader
             Suspenso = dbRec.FSuspenso,
             Multa = dbRec.FMulta ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataInicio, out _))
             contratos.DataInicio = dbRec.FDataInicio;
@@ -121,7 +121,7 @@ public partial class Contratos : IContratosReader
             Suspenso = dbRec.FSuspenso,
             Multa = dbRec.FMulta ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataInicio, out _))
             contratos.DataInicio = dbRec.FDataInicio;

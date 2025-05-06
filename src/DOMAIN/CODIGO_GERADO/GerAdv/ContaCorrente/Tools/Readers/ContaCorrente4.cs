@@ -58,7 +58,7 @@ public partial class ContaCorrente : IContaCorrenteReader
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out _))
             contacorrente.DtOriginal = dbRec.FDtOriginal;
@@ -113,7 +113,7 @@ public partial class ContaCorrente : IContaCorrenteReader
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out _))
             contacorrente.DtOriginal = dbRec.FDtOriginal;

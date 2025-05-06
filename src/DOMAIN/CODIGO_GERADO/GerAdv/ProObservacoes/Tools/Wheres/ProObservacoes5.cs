@@ -19,6 +19,7 @@ public partial class ProObservacoes : IProObservacoesWhere
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proobservacoes.Data = dbRec.FData;

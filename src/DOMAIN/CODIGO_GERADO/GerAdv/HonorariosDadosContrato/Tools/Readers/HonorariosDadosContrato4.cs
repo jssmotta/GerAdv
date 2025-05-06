@@ -45,7 +45,7 @@ public partial class HonorariosDadosContrato : IHonorariosDadosContratoReader
             TextoContrato = dbRec.FTextoContrato ?? string.Empty,
             ValorFixo = dbRec.FValorFixo,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataContrato, out _))
             honorariosdadoscontrato.DataContrato = dbRec.FDataContrato;
@@ -83,7 +83,7 @@ public partial class HonorariosDadosContrato : IHonorariosDadosContratoReader
             TextoContrato = dbRec.FTextoContrato ?? string.Empty,
             ValorFixo = dbRec.FValorFixo,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataContrato, out _))
             honorariosdadoscontrato.DataContrato = dbRec.FDataContrato;

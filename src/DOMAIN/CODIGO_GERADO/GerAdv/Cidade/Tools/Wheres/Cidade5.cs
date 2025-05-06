@@ -23,6 +23,7 @@ public partial class Cidade : ICidadeWhere
             Nome = dbRec.FNome ?? string.Empty,
             UF = dbRec.FUF,
             Sigla = dbRec.FSigla ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -39,7 +39,7 @@ public partial class SMSAlice : ISMSAliceReader
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             TipoEMail = dbRec.FTipoEMail,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -69,7 +69,7 @@ public partial class SMSAlice : ISMSAliceReader
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             TipoEMail = dbRec.FTipoEMail,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

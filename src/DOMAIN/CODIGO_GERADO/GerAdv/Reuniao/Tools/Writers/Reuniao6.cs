@@ -30,6 +30,7 @@ public class Reuniao : IReuniaoWriter
             dbRec.FHoraRetorno = reuniao.HoraRetorno.ToString();
         dbRec.FPrincipaisDecisoes = reuniao.PrincipaisDecisoes;
         dbRec.FBold = reuniao.Bold;
+        dbRec.FGUID = reuniao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

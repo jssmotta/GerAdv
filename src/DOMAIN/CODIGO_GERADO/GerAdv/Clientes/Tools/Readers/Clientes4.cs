@@ -78,7 +78,7 @@ public partial class Clientes : IClientesReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out _))
             clientes.RGDataExp = dbRec.FRGDataExp;
@@ -153,7 +153,7 @@ public partial class Clientes : IClientesReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out _))
             clientes.RGDataExp = dbRec.FRGDataExp;

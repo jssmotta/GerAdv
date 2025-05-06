@@ -31,4 +31,5 @@ public partial interface IDBContratos
     public bool FSuspenso { get; set; }
     public string? FMulta { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

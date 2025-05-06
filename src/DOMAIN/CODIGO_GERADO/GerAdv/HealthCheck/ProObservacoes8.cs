@@ -72,7 +72,7 @@ public class ProObservacoesHealthCheck(IOptions<AppSettings> appSettings, ProObs
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pobProcesso,pobNome,pobObservacoes,pobData FROM dbo.ProObservacoes (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) pobProcesso,pobNome,pobObservacoes,pobData,pobGUID FROM dbo.ProObservacoes (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

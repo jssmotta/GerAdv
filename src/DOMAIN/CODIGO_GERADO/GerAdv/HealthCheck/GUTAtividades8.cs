@@ -72,7 +72,7 @@ public class GUTAtividadesHealthCheck(IOptions<AppSettings> appSettings, GUTAtiv
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) agtNome,agtObservacao,agtGUTGrupo,agtGUTPeriodicidade,agtOperador,agtConcluido,agtDataConcluido,agtDiasParaIniciar,agtMinutosParaRealizar FROM dbo.GUTAtividades (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) agtNome,agtObservacao,agtGUTGrupo,agtGUTPeriodicidade,agtOperador,agtConcluido,agtDataConcluido,agtDiasParaIniciar,agtMinutosParaRealizar,agtGUID FROM dbo.GUTAtividades (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

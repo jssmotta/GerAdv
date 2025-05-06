@@ -64,7 +64,7 @@ public partial class Funcionarios : IFuncionariosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out _))
             funcionarios.Periodo_Ini = dbRec.FPeriodo_Ini;
@@ -129,7 +129,7 @@ public partial class Funcionarios : IFuncionariosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out _))
             funcionarios.Periodo_Ini = dbRec.FPeriodo_Ini;

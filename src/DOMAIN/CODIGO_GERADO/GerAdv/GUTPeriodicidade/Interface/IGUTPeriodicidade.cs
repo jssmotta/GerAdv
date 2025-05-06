@@ -5,8 +5,6 @@ public partial interface IGUTPeriodicidadeService
     Task<GUTPeriodicidadeResponse?> AddAndUpdate(Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<GUTPeriodicidadeResponse>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<bool> UpdateColumns(UpdateColumnsRequest columns, [FromRoute, Required] string uri = "");
-    Task<GetColumnsResponse?> GetColumns(GetColumns parameters, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeResponse?> GetByName(string name, [FromRoute, Required] string uri = "");
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidade? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);

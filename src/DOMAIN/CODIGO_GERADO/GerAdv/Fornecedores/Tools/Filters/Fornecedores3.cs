@@ -62,4 +62,7 @@ public partial class FilterFornecedores
 
     [JsonPropertyName("contatos")]
     public string Contatos { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

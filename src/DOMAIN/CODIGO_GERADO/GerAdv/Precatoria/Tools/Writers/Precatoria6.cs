@@ -21,6 +21,7 @@ public class Precatoria : IPrecatoriaWriter
         dbRec.FDeprecado = precatoria.Deprecado;
         dbRec.FOBS = precatoria.OBS;
         dbRec.FBold = precatoria.Bold;
+        dbRec.FGUID = precatoria.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -72,7 +72,7 @@ public class SMSAliceHealthCheck(IOptions<AppSettings> appSettings, SMSAliceServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) smaOperador,smaNome,smaTipoEMail FROM dbo.SMSAlice (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) smaOperador,smaNome,smaTipoEMail,smaGUID FROM dbo.SMSAlice (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

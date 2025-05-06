@@ -8,4 +8,5 @@ public partial interface IDBDocsRecebidosItens
     public bool FSeraDevolvido { get; set; }
     public string? FObservacoes { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

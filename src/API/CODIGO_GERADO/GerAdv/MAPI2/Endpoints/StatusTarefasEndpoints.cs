@@ -74,30 +74,6 @@ public static class StatusTarefasEndpoints
 
             return Results.Ok(result);
         }).WithName("StatusTarefas_AddAndUpdate").WithDisplayName("Add or Update StatusTarefas");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IStatusTarefasValidation validation, IStatusTarefasWriter writer, IStatusTarefasService service) =>
-        {
-            logger.LogInfo("StatusTarefas", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("StatusTarefas", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("StatusTarefas_GetColumns").WithDisplayName("Get StatusTarefas Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IStatusTarefasValidation validation, IStatusTarefasWriter writer, IStatusTarefasService service) =>
-        {
-            logger.LogInfo("StatusTarefas", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("StatusTarefas", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("StatusTarefas_UpdateColumns").WithDisplayName("Update StatusTarefas Columns");
         group.MapDelete("/Delete", async (int id, string uri, IStatusTarefasValidation validation, IStatusTarefasWriter writer, IStatusTarefasService service) =>
         {
             logger.LogInfo("StatusTarefas", "Delete", $"id = {id}", uri);

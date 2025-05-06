@@ -37,9 +37,10 @@ public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
         {
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
+            GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             anexamentoregistros.Data = dbRec.FData;
@@ -69,9 +70,10 @@ public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
         {
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
+            GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             anexamentoregistros.Data = dbRec.FData;

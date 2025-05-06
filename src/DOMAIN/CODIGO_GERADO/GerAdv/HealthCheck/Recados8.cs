@@ -72,7 +72,7 @@ public class RecadosHealthCheck(IOptions<AppSettings> appSettings, RecadosServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) recClienteNome,recDe,recPara,recAssunto,recConcluido,recProcesso,recCliente,recRecado,recUrgente,recImportante,recHora,recData,recVoltara,recPessoal,recRetornar,recRetornoData,recEmotion,recInternetID,recUploaded,recNatureza,recBIU,recAguardarRetorno,recAguardarRetornoPara,recAguardarRetornoOK,recParaID,recNaoPublicavel,recIsContatoCRM,recMasterID,recListaPara,recTyped,recAssuntoRecado,recHistorico,recContatoCRM,recLigacoes,recAgenda FROM dbo.Recados (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) recClienteNome,recDe,recPara,recAssunto,recConcluido,recProcesso,recCliente,recRecado,recUrgente,recImportante,recHora,recData,recVoltara,recPessoal,recRetornar,recRetornoData,recEmotion,recInternetID,recUploaded,recNatureza,recBIU,recAguardarRetorno,recAguardarRetornoPara,recAguardarRetornoOK,recParaID,recNaoPublicavel,recIsContatoCRM,recMasterID,recListaPara,recTyped,recAssuntoRecado,recHistorico,recContatoCRM,recLigacoes,recAgenda,recGUID FROM dbo.Recados (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

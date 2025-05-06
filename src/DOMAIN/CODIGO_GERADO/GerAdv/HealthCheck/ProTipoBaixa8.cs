@@ -72,7 +72,7 @@ public class ProTipoBaixaHealthCheck(IOptions<AppSettings> appSettings, ProTipoB
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ptxNome,ptxBold FROM dbo.ProTipoBaixa (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ptxNome,ptxBold,ptxGUID FROM dbo.ProTipoBaixa (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

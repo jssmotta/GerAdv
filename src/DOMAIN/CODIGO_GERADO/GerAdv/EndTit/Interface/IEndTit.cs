@@ -5,7 +5,5 @@ public partial interface IEndTitService
     Task<EndTitResponse?> AddAndUpdate(Models.EndTit regEndTit, [FromRoute, Required] string uri = "");
     Task<EndTitResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<EndTitResponse>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<bool> UpdateColumns(UpdateColumnsRequest columns, [FromRoute, Required] string uri = "");
-    Task<GetColumnsResponse?> GetColumns(GetColumns parameters, [FromRoute, Required] string uri = "");
     Task<EndTitResponse?> Delete(int id, [FromRoute, Required] string uri = "");
 }
