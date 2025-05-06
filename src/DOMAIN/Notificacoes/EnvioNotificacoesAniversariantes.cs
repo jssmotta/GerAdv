@@ -4,7 +4,6 @@ using DBFuncionarios = MenphisSI.GerAdv.DBFuncionarios;
 using DBOperador = MenphisSI.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
-
 public class EnvioNotificacoesAniversariantes
 {
     private string ConteudoHtml(string operador, int advogado, string uri, SqlConnection oCnn)
@@ -102,10 +101,11 @@ END;
         var builder = new StringBuilder(estiloTabela);
 
         // Adiciona o cabeçalho da tabela
-        builder.AppendLine("<table class='tabCompromissos'><thead>");
+        builder.AppendLine("<table class='tabAniversariantes'><thead>");
         builder.AppendLine("<tr>");
-        builder.AppendLine($"<th width=\"100%\"><h1>{total} aniversariante{(total == 1 ? "" : "s")} ligados a: {nome}</h1></th>");
-
+        builder.AppendLine($"<th width=\"4%\">#</th>");
+        builder.AppendLine($"<th width=\"78%\">Aniversariante{(total == 1 ? "" : "s")} nos próximos 7 dias</h1></th>");
+        builder.AppendLine("<th width=\"18%\">Dia/Mês </th>");
         builder.AppendLine("</tr>");
         builder.AppendLine("</thead>");
 
@@ -116,15 +116,14 @@ END;
             contador++;
 
             builder.AppendLine("<tr>");
-            builder.AppendLine($"<td>Dia/Mês {linha[2]:dd}{linha[1]:MM}</td>");
-            builder.AppendLine("</tr>");
-
-            builder.AppendLine("<tr>");
+            builder.AppendLine($"<td>{contador}</td>");
             builder.AppendLine($"<td>{linha[0]}</td>");
+            builder.AppendLine($"<td>{linha[2]:D2}/{linha[1]:D2}</td>");
             builder.AppendLine("</tr>");
         }
 
         builder.AppendLine("</table>");
+        builder.AppendLine($"<span><b>{nome.Split(' ')[0]}, você está recebendo aviso de aniversariantes somente de clientes ativos que você tem algum processo ou compromisso em nome deles.</b></span>");
         return builder.ToString();
     }
 
@@ -155,17 +154,19 @@ END;
                 continue;
             }
 
+#if (!DEBUG)
+
             var email = new MenphisSI.Api.Models.SendEmail
             {
                 ParaEmail = operador.FEMailNet,
                 ParaNome = cNome,
-                Assunto = assunto + cNome,
+                Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
                 NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                 Time2Live = 24
             };
 
-#if (!DEBUG)
+
             _ = servicoEmail.Send(email);
 #endif
             if (count == 0)
@@ -178,9 +179,9 @@ END;
                     {
                         ParaEmail = "motta@menphis.com.br",
                         ParaNome = "Jefferson S. Motta",
-                        Assunto = assunto + cNome,
+                        Assunto = assunto + " - " + cNome,
                         Mensagem = conteudoHtml,
-                        NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                        NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                         Time2Live = 24
                     };
                     _ = servicoEmail.Send(email2);
@@ -190,7 +191,7 @@ END;
 
             count++;
 
-#if (DEBUG)
+        #if (DEBUG)
             break;
             #endif
         }
@@ -201,7 +202,7 @@ END;
     private string ObterEstiloTabelaCss()
     {
         return @"<style>
-       .tabCompromissos {
+       .tabAniversariantes {
     width: 100%;
     border-collapse: collapse;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -212,14 +213,14 @@ END;
     box-sizing: border-box;
 }
 
-.tabCompromissos thead {
+.tabAniversariantes thead {
     background-color: #f8f9fa;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
-.tabCompromissos th {
+.tabAniversariantes th {
     padding: 12px 8px;
     text-align: left;
     border: 1px solid #ddd;
@@ -227,114 +228,99 @@ END;
     color: #222;
 }
 
-.tabCompromissos td {
+.tabAniversariantes td {
     padding: 10px 8px;
     border: 1px solid #ddd;
     vertical-align: top;
 }
 
-.tabCompromissos tr:nth-child(even) {
+.tabAniversariantes tr:nth-child(even) {
     background-color: #f8f9fa;
 }
 
-.tabCompromissos tr:hover {
+.tabAniversariantes tr:hover {
     background-color: #f1f3f5;
 }
 
 @media only screen and (max-width: 767px) {
-    .tabCompromissos {
+    .tabAniversariantes {
         font-size: 13px;
     }
     
-    .tabCompromissos th, 
-    .tabCompromissos td {
+    .tabAniversariantes th, 
+    .tabAniversariantes td {
         font-size: 13px;
         padding: 8px 6px;
     }    
     
-    .tabCompromissos td table {
+    .tabAniversariantes td table {
         width: 100%;
     }
     
-    .tabCompromissos td table td {
+    .tabAniversariantes td table td {
         padding: 6px 4px;
         word-break: break-word;
     }    
     
-    .tabCompromissos td a {
+    .tabAniversariantes td a {
         word-break: break-word;
     }    
     
     @media only screen and (max-width: 375px) {
-        .tabCompromissos {
+        .tabAniversariantes {
             font-size: 12px;
         }
         
-        .tabCompromissos th, 
-        .tabCompromissos td {
+        .tabAniversariantes th, 
+        .tabAniversariantes td {
             font-size: 12px;
             padding: 6px 4px;
         }
         
-        .tabCompromissos td table td {
+        .tabAniversariantes td table td {
             padding: 5px 3px;
         }
     }
 }
 
 
-.tabCompromissos tr td:first-child {
+.tabAniversariantes tr td:first-child {
     font-weight: 600;
     background-color: #f8f9fa;
 }
 
-.tabCompromissos td table {
+.tabAniversariantes td table {
     border-collapse: collapse;
     width: 100%;
 }
 
-.tabCompromissos td table tr:hover {
+.tabAniversariantes td table tr:hover {
     background-color: transparent;
 }
 
-.tabCompromissos td table td:first-child {
+.tabAniversariantes td table td:first-child {
     font-weight: normal;
 }
 
-.tabCompromissos a {
+.tabAniversariantes a {
     color: #0066cc;
     text-decoration: none;
 }
 
-.tabCompromissos a:hover {
+.tabAniversariantes a:hover {
     text-decoration: underline;
 }
 
-.tabCompromissos span[style*=""color:red""] {
+.tabAniversariantes span[style*=""color:red""] {
     color: #ff3b30 !important;
     font-weight: bold;
 }
 
-.tabCompromissos img {
+.tabAniversariantes img {
     vertical-align: middle;
     margin-right: 4px;
 }
 
-@supports (-webkit-touch-callout: none) {
-    .tabCompromissos {
-        -webkit-text-size-adjust: 100%;
-    }
-}
-
-.tabCompromissos td a[href*=""MobileAndamentoRetorno.aspx""] span,
-.tabCompromissos td table tr:first-child td[colspan=""3""],
-.tabCompromissos td table tr:nth-child(2) td[colspan=""3""] {
-    display: none;
-}
-
-a[href*=""MobileAndamentoRetorno.aspx""] {
-    display: none;
-}
    </style> ";
     }
 

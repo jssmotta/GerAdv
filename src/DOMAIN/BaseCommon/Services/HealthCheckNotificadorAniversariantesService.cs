@@ -7,30 +7,24 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private bool _disposed;
     private readonly string _uri = uri;
-
-
-#if (DEBUG)
-    private int PHoraParaDia = DateTime.Now.Hour;
-#else
-    private const int PHoraParaDia = 7;
-#endif
+    private const int PHoraProcessamento = 7;
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+
+            if (IsNotDiaOperacional())
             {
                 return CreateHealthyResult("Notificador operacional");
             }
 
-            if (DateTime.Now.Hour == PHoraParaDia)
+            if (IsHoraProcessamento())
             {
                 using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)
                 {
                     return CreateUnhealthyResult("Conexão não disponível");
                 }
-
                 _ = await SendNotificationsAndGetResult(oCnn);
             }
            
@@ -43,6 +37,13 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
             return CreateUnhealthyResult("Erro durante verificação", ex);
         }
     }
+
+    private bool IsHoraProcessamento() =>
+            DateTime.Now.Hour == PHoraProcessamento;
+
+    private bool IsNotDiaOperacional() =>
+        DateTime.Now.DayOfWeek != DayOfWeek.Monday &&
+        DateTime.Now.DayOfWeek != DayOfWeek.Thursday;
 
     private string GetScheduleKey()
     {

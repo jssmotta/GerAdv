@@ -15,6 +15,10 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
+
+#if (DEBUG)
+        return CreateHealthyResult("Notificador operacional");
+#endif
         try
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
