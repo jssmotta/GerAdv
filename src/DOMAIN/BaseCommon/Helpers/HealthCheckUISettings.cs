@@ -11,11 +11,23 @@ public partial class AppSettingsHealthCheck
     {
         builder.Services.AddHealthChecks().AddCheck<HealthCheckMemoryService>("Memory", failureStatus: HealthStatus.Degraded, tags: ["Memory"]);
 
-        var n = 0;
-        foreach (var uri in settings.ValidUris.Split(";"))
         {
-            builder.Services.AddHealthChecks()
-                .AddCheck($"Notificador - {++n}", new HealthCheckNotificadorService(uri), failureStatus: HealthStatus.Degraded, tags: ["Notificador"]);
+            var n = 0;
+            foreach (var uri in settings.UrisNotificadorAgenda.Split(";"))
+            {
+                builder.Services.AddHealthChecks()
+                    .AddCheck($"Notificador - {++n}", new HealthCheckNotificadorService(uri), failureStatus: HealthStatus.Degraded, tags: ["Notificador"]);
+            }
+        }
+
+        {
+            var n = 0;
+            foreach (var uri in settings.UrisAniversariantes.Split(";"))
+            {
+                builder.Services.AddHealthChecks()
+                    .AddCheck($"Niver - {++n}", new HealthCheckNotificadorAniversariantesService(uri), failureStatus: HealthStatus.Degraded, tags: ["Notificador"]);
+            }
+
         }
 
     }

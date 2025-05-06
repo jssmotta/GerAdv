@@ -90,7 +90,6 @@
 
   <ItemGroup>
     <Folder Include="CODIGO_GERADO\" />
-    <Folder Include="Notificacoes\" />
     <Folder Include="PERSONALIZADO\Reader\" />
   </ItemGroup>
 

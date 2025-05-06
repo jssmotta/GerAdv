@@ -1,22 +1,15 @@
 ﻿using MenphisSI.GerEntityTools.Entity;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using DBAdvogados = MenphisSI.GerAdv.DBAdvogados;
 using DBFuncionarios = MenphisSI.GerAdv.DBFuncionarios;
 using DBOperador = MenphisSI.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 
-public enum E_TIPO_ENVIO
+public class EnvioNotificacoesAniversariantes
 {
-    NOVOS = 1,
-    DIA = 2
-}
-
-public class EnvioNotificacoes
-{
-    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
+    private string ConteudoHtml(string operador, int advogado, string uri, SqlConnection oCnn)
     {
-        var ds = ObterCompromissos(oCnn, tipo, uri, operador);
+        var ds = ObterAniversariantes(oCnn, uri, operador, advogado);
         if (ds.Rows.Count == 0)
         {
             return "";
@@ -28,76 +21,61 @@ public class EnvioNotificacoes
     {
 
         string createViewScript1 = $@"
-            IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'dbo.AgendaRelatorio'))
+            IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'dbo.NotificarAniversariantes'))
 BEGIN
-    EXEC('CREATE VIEW [dbo].[AgendaRelatorio] AS 
-        SELECT 
-            qa.*, 
-            vp.advNome AS xxxNomeAdvogado,
-            vp.forNome AS xxxNomeForo,
-            vp.jusNome AS xxxNomeJustica,
-            vp.areDescricao AS xxxNomeArea
-        FROM [dbo].[view_QAgenda] qa
-        JOIN [dbo].[agenda] a ON a.ageCodigo = qa.vqaCodigo
-        LEFT JOIN [dbo].[view_QProcessos] vp ON a.ageIDInsProcesso = vp.insCodigo;');
+    EXEC('CREATE VIEW [dbo].[NotificarAniversariantes] AS 
+            SELECT DISTINCT
+                c.cliCodigo,
+                c.cliNome,
+                DAY(c.cliDtNasc) as dia,
+	            MONTH(c.cliDtNasc) as mes,
+                a.advCodigo,
+                a.advNome
+            FROM
+                dbo.Clientes c
+            LEFT JOIN
+                dbo.Processos p ON c.cliCodigo = p.proCliente
+            LEFT JOIN
+                dbo.Historico h ON p.proCodigo = h.hisProcesso
+            LEFT JOIN
+                dbo.Agenda ag ON c.cliCodigo = ag.ageCliente
+            LEFT JOIN
+                dbo.Advogados a ON a.advCodigo = p.proAdvogado OR a.advCodigo = ag.ageAdvogado
+            left join
+	            dbo.Operador o ON o.operCadCod = a.advCodigo AND o.operCadID=1
+            WHERE
+	            o.operSituacao=1 AND
+                c.cliInativo=0 AND
+                MONTH(c.cliDtNasc) = MONTH(GETDATE()) AND
+                DAY(c.cliDtNasc) BETWEEN DAY(GETDATE()) AND DAY(DATEADD(DAY, 7, GETDATE()));	            
+            ');
 END;
 
                     ;";
 
-        string createViewScript2 = @"
-               IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'dbo.AgendaSemana'))
-BEGIN
-    EXEC('CREATE VIEW [dbo].[AgendaSemana] 
-    WITH SCHEMABINDING AS
-    SELECT
-        CASE WHEN f.funNome IS NULL THEN adv.advNome ELSE f.funNome END AS xxxParaNome,
-        a.ageCodigo AS xxxCodigo,
-        a.ageData AS xxxData, 
-        a.ageFuncionario AS xxxFuncionario, 
-        a.ageAdvogado AS xxxAdvogado,
-        a.ageHora AS xxxHora, 
-        a.ageTipoCompromisso AS xxxTipoCompromisso, 
-        a.ageCompromisso AS xxxCompromisso, 
-        a.ageConcluido AS xxxConcluido, 
-        a.ageLiberado AS xxxLiberado,   
-        a.ageImportante AS xxxImportante, 
-        a.ageHrFinal AS xxxHoraFinal, 
-        c.cliNome AS xxxNomeCliente, 
-        t.tipDescricao AS xxxTipo
-    FROM dbo.Agenda a
-    LEFT JOIN dbo.Funcionarios f ON f.funCodigo = a.ageFuncionario
-    LEFT JOIN dbo.Advogados adv ON adv.advCodigo = a.ageAdvogado
-    LEFT JOIN dbo.Clientes c ON c.cliCodigo = a.ageCliente
-    JOIN dbo.TipoCompromisso t ON t.tipCodigo = a.ageTipoCompromisso;');
-END;
 
-
-";
         using var conexao = Configuracoes.GetConnectionByUriRw(uri);
-        ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
-        ConfiguracoesDBT.ExecuteSqlCreate(createViewScript2, conexao);
+        ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);        
     }
 
-    private DataTable ObterCompromissos(
-        SqlConnection conexao,
-        E_TIPO_ENVIO tipo,
+    private DataTable ObterAniversariantes(
+        SqlConnection conexao,        
         string uri,
         string operador,
+        int advogado,
         int nTry = 0)
     {
         try
         {
-            string whereClause = ConstruirCondicaoFiltro(tipo);
+            string whereClause = ConstruirCondicaoFiltro(advogado);
             string operadorSanitizado = operador.Replace("'", "''");
 
             string sql = $@"
-SELECT [vqaData], [xxxBoxAudienciaMobile] 
-FROM [dbo].[AgendaRelatorio]
-LEFT JOIN [dbo].[Agenda] a ON vqaCodigo = a.ageCodigo
-WHERE a.ageConcluido = 0 
-     {whereClause}
-     AND xxxParaNome LIKE '{operadorSanitizado}'
-ORDER BY vqaData;";
+    SELECT distinct cliNome, mes, dia 
+    FROM dbo.NotificarAniversariantes
+    WHERE {whereClause}   
+    ORDER BY mes, dia, cliNome;
+";
 
             return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
         }
@@ -109,22 +87,13 @@ ORDER BY vqaData;";
             }
 
             TestaViews(uri);
-            return ObterCompromissos(conexao, tipo, uri, operador, nTry);
+            return ObterAniversariantes(conexao, uri, operador, advogado, nTry);
         }
     }
     
-    private string ConstruirCondicaoFiltro(E_TIPO_ENVIO tipo)
+    private string ConstruirCondicaoFiltro(int advogado)
     {
-        if (tipo == E_TIPO_ENVIO.NOVOS)
-        {
-            return @"  AND (CAST(a.ageDtCad AS DATE) = CAST(GETDATE() AS DATE) 
-                    OR CAST(a.ageDtAtu AS DATE) = CAST(GETDATE() AS DATE))";
-        }
-
-        int diasAFrente = (DateTime.Now.DayOfWeek == DayOfWeek.Monday) ? 8 : 5;
-
-        return $@" AND vqaData >= DATEADD(DAY, -1, GETDATE()) 
-                AND vqaData <= DATEADD(DAY, {diasAFrente}, GETDATE())";
+        return $"advCodigo={advogado}";
     }
 
     private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total)
@@ -135,7 +104,7 @@ ORDER BY vqaData;";
         // Adiciona o cabeçalho da tabela
         builder.AppendLine("<table class='tabCompromissos'><thead>");
         builder.AppendLine("<tr>");
-        builder.AppendLine($"<th width=\"100%\"><h1>{total} compromisso{(total == 1 ? "" : "s")} para {nome}</h1></th>");
+        builder.AppendLine($"<th width=\"100%\"><h1>{total} aniversariante{(total == 1 ? "" : "s")} ligados a: {nome}</h1></th>");
 
         builder.AppendLine("</tr>");
         builder.AppendLine("</thead>");
@@ -147,25 +116,25 @@ ORDER BY vqaData;";
             contador++;
 
             builder.AppendLine("<tr>");
-            builder.AppendLine($"<td>#{contador}){(DateTime)linha[0]:dd/MM/yyyy}</td>");
+            builder.AppendLine($"<td>Dia/Mês {linha[2]:dd}{linha[1]:MM}</td>");
             builder.AppendLine("</tr>");
 
             builder.AppendLine("<tr>");
-            builder.AppendLine($"<td>{linha[1]}</td>");
+            builder.AppendLine($"<td>{linha[0]}</td>");
             builder.AppendLine("</tr>");
         }
 
         builder.AppendLine("</table>");
-        return builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"", "\"");
+        return builder.ToString();
     }
 
     
-    public int EnviarEmailsParaOperadores(E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
+    public int EnviarEmailsParaOperadores(string uri, SqlConnection oCnn)
     {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
+        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And + DBOperadorDicInfo.CadIDSql(1);
         var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
         var servicoEmail = new SendEmailApi();
-        var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
+        var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
         foreach (var operador in operadores)
@@ -179,7 +148,7 @@ ORDER BY vqaData;";
                                              : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtml(cNome, tipo, uri, oCnn);
+            var conteudoHtml = ConteudoHtml(cNome, operador.FCadID, uri, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -268,7 +237,6 @@ ORDER BY vqaData;";
     background-color: #f1f3f5;
 }
 
-/* Better Responsiveness for iPhone */
 @media only screen and (max-width: 767px) {
     .tabCompromissos {
         font-size: 13px;
@@ -278,9 +246,8 @@ ORDER BY vqaData;";
     .tabCompromissos td {
         font-size: 13px;
         padding: 8px 6px;
-    }
+    }    
     
-    /* Inner table styles */
     .tabCompromissos td table {
         width: 100%;
     }
@@ -288,14 +255,12 @@ ORDER BY vqaData;";
     .tabCompromissos td table td {
         padding: 6px 4px;
         word-break: break-word;
-    }
+    }    
     
-    /* Ensure text doesn't overflow on small screens */
     .tabCompromissos td a {
         word-break: break-word;
-    }
+    }    
     
-    /* Optimize font size for very small screens */
     @media only screen and (max-width: 375px) {
         .tabCompromissos {
             font-size: 12px;
@@ -313,13 +278,12 @@ ORDER BY vqaData;";
     }
 }
 
-/* Add some visual enhancements */
+
 .tabCompromissos tr td:first-child {
     font-weight: 600;
     background-color: #f8f9fa;
 }
 
-/* Better inner table styling */
 .tabCompromissos td table {
     border-collapse: collapse;
     width: 100%;
@@ -329,12 +293,10 @@ ORDER BY vqaData;";
     background-color: transparent;
 }
 
-/* Style for the client name in inner tables */
 .tabCompromissos td table td:first-child {
     font-weight: normal;
 }
 
-/* Better styling for links */
 .tabCompromissos a {
     color: #0066cc;
     text-decoration: none;
@@ -344,33 +306,28 @@ ORDER BY vqaData;";
     text-decoration: underline;
 }
 
-/* Style for color red spans */
 .tabCompromissos span[style*=""color:red""] {
     color: #ff3b30 !important;
     font-weight: bold;
 }
 
-/* Better icon spacing */
 .tabCompromissos img {
     vertical-align: middle;
     margin-right: 4px;
 }
 
-/* Fix for Safari on iOS */
 @supports (-webkit-touch-callout: none) {
     .tabCompromissos {
         -webkit-text-size-adjust: 100%;
     }
 }
 
-/* Hide header elements */
 .tabCompromissos td a[href*=""MobileAndamentoRetorno.aspx""] span,
 .tabCompromissos td table tr:first-child td[colspan=""3""],
 .tabCompromissos td table tr:nth-child(2) td[colspan=""3""] {
     display: none;
 }
 
-/* Additionally hide the ""INFORMAR RESULTADO"" text */
 a[href*=""MobileAndamentoRetorno.aspx""] {
     display: none;
 }
