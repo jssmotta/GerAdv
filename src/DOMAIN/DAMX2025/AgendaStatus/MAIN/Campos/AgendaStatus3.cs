@@ -7,7 +7,6 @@ public partial class DBAgendaStatus
     private protected bool pFldFAgenda, pFldFCompleted;
     [XmlIgnore]
     private protected int m_FAgenda, m_FCompleted;
-    public int NFAgenda() => m_FAgenda;
     [XmlAttribute]
     public int FAgenda
     {
@@ -20,7 +19,6 @@ public partial class DBAgendaStatus
         }
     }
 
-    public int NFCompleted() => m_FCompleted;
     [XmlAttribute]
     public int FCompleted
     {

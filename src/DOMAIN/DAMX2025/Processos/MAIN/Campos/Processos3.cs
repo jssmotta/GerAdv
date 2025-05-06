@@ -15,7 +15,6 @@ public partial class DBProcessos
     private protected bool m_FAJGPedidoNegado, m_FAJGCliente, m_FAJGPedidoNegadoOPO, m_FNotificarPOE, m_FAJGOponente, m_FAJGPedidoOPO, m_FConsiderarParado, m_FValorCalculado, m_FAJGConcedidoOPO, m_FCobranca, m_FPenhora, m_FAJGPedido, m_FIsApenso, m_FAJGConcedido, m_FMNA, m_FExtra, m_FIDSituacao, m_FBaixado, m_FPrinted, m_FNaoImprimir, m_FEletronico;
     [XmlIgnore]
     private protected decimal m_FValorProvisionado, m_FValorCacheCalculo, m_FValorCacheCalculoProv, m_FValorCausaInicial, m_FValorCausaDefinitivo, m_FPercProbExito, m_FPercExito, m_FValor, m_FHonorarioValor, m_FHonorarioPercentual, m_FHonorarioSucumbencia, m_FValorCondenacao, m_FValorCondenacaoCalculado;
-    public int NFAdvParc() => m_FAdvParc;
     [XmlAttribute]
     public int FAdvParc
     {
@@ -28,7 +27,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGPedidoNegado() => m_FAJGPedidoNegado;
     [XmlAttribute]
     public bool FAJGPedidoNegado
     {
@@ -41,7 +39,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGCliente() => m_FAJGCliente;
     [XmlAttribute]
     public bool FAJGCliente
     {
@@ -54,7 +51,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGPedidoNegadoOPO() => m_FAJGPedidoNegadoOPO;
     [XmlAttribute]
     public bool FAJGPedidoNegadoOPO
     {
@@ -67,7 +63,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFNotificarPOE() => m_FNotificarPOE;
     [XmlAttribute]
     public bool FNotificarPOE
     {
@@ -80,7 +75,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorProvisionado() => m_FValorProvisionado;
     [XmlAttribute]
     public decimal FValorProvisionado
     {
@@ -94,7 +88,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGOponente() => m_FAJGOponente;
     [XmlAttribute]
     public bool FAJGOponente
     {
@@ -107,7 +100,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorCacheCalculo() => m_FValorCacheCalculo;
     [XmlAttribute]
     public decimal FValorCacheCalculo
     {
@@ -121,7 +113,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGPedidoOPO() => m_FAJGPedidoOPO;
     [XmlAttribute]
     public bool FAJGPedidoOPO
     {
@@ -134,7 +125,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorCacheCalculoProv() => m_FValorCacheCalculoProv;
     [XmlAttribute]
     public decimal FValorCacheCalculoProv
     {
@@ -148,7 +138,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFConsiderarParado() => m_FConsiderarParado;
     [XmlAttribute]
     public bool FConsiderarParado
     {
@@ -161,7 +150,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFValorCalculado() => m_FValorCalculado;
     [XmlAttribute]
     public bool FValorCalculado
     {
@@ -174,7 +162,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGConcedidoOPO() => m_FAJGConcedidoOPO;
     [XmlAttribute]
     public bool FAJGConcedidoOPO
     {
@@ -187,7 +174,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFCobranca() => m_FCobranca;
     [XmlAttribute]
     public bool FCobranca
     {
@@ -200,7 +186,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFDataEntrada() => $"{m_FDataEntrada:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataEntrada:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataEntrada => Convert.ToDateTime(m_FDataEntrada);
 
@@ -218,7 +203,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFPenhora() => m_FPenhora;
     [XmlAttribute]
     public bool FPenhora
     {
@@ -231,7 +215,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGPedido() => m_FAJGPedido;
     [XmlAttribute]
     public bool FAJGPedido
     {
@@ -244,7 +227,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFTipoBaixa() => m_FTipoBaixa;
     [XmlAttribute]
     public int FTipoBaixa
     {
@@ -257,7 +239,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFClassRisco() => m_FClassRisco;
     [XmlAttribute]
     public int FClassRisco
     {
@@ -270,7 +251,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFIsApenso() => m_FIsApenso;
     [XmlAttribute]
     public bool FIsApenso
     {
@@ -283,7 +263,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorCausaInicial() => m_FValorCausaInicial;
     [XmlAttribute]
     public decimal FValorCausaInicial
     {
@@ -297,7 +276,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFAJGConcedido() => m_FAJGConcedido;
     [XmlAttribute]
     public bool FAJGConcedido
     {
@@ -310,7 +288,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFObsBCX() => m_FObsBCX ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObsBCX
     {
@@ -323,7 +300,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorCausaDefinitivo() => m_FValorCausaDefinitivo;
     [XmlAttribute]
     public decimal FValorCausaDefinitivo
     {
@@ -337,7 +313,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFPercProbExito() => m_FPercProbExito;
     [XmlAttribute]
     public decimal FPercProbExito
     {
@@ -351,7 +326,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFMNA() => m_FMNA;
     [XmlAttribute]
     public bool FMNA
     {
@@ -364,7 +338,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFPercExito() => m_FPercExito;
     [XmlAttribute]
     public decimal FPercExito
     {
@@ -378,7 +351,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFNroExtra() => m_FNroExtra ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroExtra
     {
@@ -391,7 +363,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFAdvOpo() => m_FAdvOpo;
     [XmlAttribute]
     public int FAdvOpo
     {
@@ -404,7 +375,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFExtra() => m_FExtra;
     [XmlAttribute]
     public bool FExtra
     {
@@ -417,7 +387,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -430,7 +399,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -443,7 +411,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFNroCaixa() => m_FNroCaixa ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroCaixa
     {
@@ -456,7 +423,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFPreposto() => m_FPreposto;
     [XmlAttribute]
     public int FPreposto
     {
@@ -469,7 +435,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -482,7 +447,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFOponente() => m_FOponente;
     [XmlAttribute]
     public int FOponente
     {
@@ -495,7 +459,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -508,7 +471,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -521,7 +483,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFSituacao() => m_FSituacao;
     [XmlAttribute]
     public int FSituacao
     {
@@ -534,7 +495,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFIDSituacao() => m_FIDSituacao;
     [XmlAttribute]
     public bool FIDSituacao
     {
@@ -547,7 +507,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -561,7 +520,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFRito() => m_FRito;
     [XmlAttribute]
     public int FRito
     {
@@ -574,7 +532,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFFato() => m_FFato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFato
     {
@@ -587,7 +544,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFNroPasta() => m_FNroPasta ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroPasta
     {
@@ -600,7 +556,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFAtividade() => m_FAtividade;
     [XmlAttribute]
     public int FAtividade
     {
@@ -613,7 +568,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFCaixaMorto() => m_FCaixaMorto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCaixaMorto
     {
@@ -626,7 +580,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFBaixado() => m_FBaixado;
     [XmlAttribute]
     public bool FBaixado
     {
@@ -639,7 +592,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFDtBaixa() => $"{m_FDtBaixa:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtBaixa:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtBaixa => Convert.ToDateTime(m_FDtBaixa);
 
@@ -657,7 +609,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFMotivoBaixa() => m_FMotivoBaixa ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FMotivoBaixa
     {
@@ -670,7 +621,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -683,7 +633,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFPrinted() => m_FPrinted;
     [XmlAttribute]
     public bool FPrinted
     {
@@ -696,7 +645,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFZKey() => m_FZKey ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FZKey
     {
@@ -709,7 +657,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFZKeyQuem() => m_FZKeyQuem;
     [XmlAttribute]
     public int FZKeyQuem
     {
@@ -722,7 +669,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFZKeyQuando() => $"{m_FZKeyQuando:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FZKeyQuando:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MZKeyQuando => Convert.ToDateTime(m_FZKeyQuando);
 
@@ -740,7 +686,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFResumo() => m_FResumo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FResumo
     {
@@ -753,7 +698,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFNaoImprimir() => m_FNaoImprimir;
     [XmlAttribute]
     public bool FNaoImprimir
     {
@@ -766,7 +710,6 @@ public partial class DBProcessos
         }
     }
 
-    public bool NFEletronico() => m_FEletronico;
     [XmlAttribute]
     public bool FEletronico
     {
@@ -779,7 +722,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFNroContrato() => m_FNroContrato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroContrato
     {
@@ -792,7 +734,6 @@ public partial class DBProcessos
         }
     }
 
-    public string NFPercProbExitoJustificativa() => m_FPercProbExitoJustificativa ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPercProbExitoJustificativa
     {
@@ -805,7 +746,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFHonorarioValor() => m_FHonorarioValor;
     [XmlAttribute]
     public decimal FHonorarioValor
     {
@@ -819,7 +759,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFHonorarioPercentual() => m_FHonorarioPercentual;
     [XmlAttribute]
     public decimal FHonorarioPercentual
     {
@@ -833,7 +772,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFHonorarioSucumbencia() => m_FHonorarioSucumbencia;
     [XmlAttribute]
     public decimal FHonorarioSucumbencia
     {
@@ -847,7 +785,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFFaseAuditoria() => m_FFaseAuditoria;
     [XmlAttribute]
     public int FFaseAuditoria
     {
@@ -860,7 +797,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorCondenacao() => m_FValorCondenacao;
     [XmlAttribute]
     public decimal FValorCondenacao
     {
@@ -874,7 +810,6 @@ public partial class DBProcessos
         }
     }
 
-    public decimal NFValorCondenacaoCalculado() => m_FValorCondenacaoCalculado;
     [XmlAttribute]
     public decimal FValorCondenacaoCalculado
     {
@@ -888,7 +823,6 @@ public partial class DBProcessos
         }
     }
 
-    public int NFValorCondenacaoProvisorio() => m_FValorCondenacaoProvisorio;
     [XmlAttribute]
     public int FValorCondenacaoProvisorio
     {

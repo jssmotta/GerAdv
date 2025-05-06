@@ -7,7 +7,6 @@ public partial class DBAgenda2Agenda
     private protected bool pFldFMaster, pFldFAgenda;
     [XmlIgnore]
     private protected int m_FMaster, m_FAgenda;
-    public int NFMaster() => m_FMaster;
     [XmlAttribute]
     public int FMaster
     {
@@ -20,7 +19,6 @@ public partial class DBAgenda2Agenda
         }
     }
 
-    public int NFAgenda() => m_FAgenda;
     [XmlAttribute]
     public int FAgenda
     {

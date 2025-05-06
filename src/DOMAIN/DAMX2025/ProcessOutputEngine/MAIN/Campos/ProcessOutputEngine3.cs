@@ -11,7 +11,6 @@ public partial class DBProcessOutputEngine
     private protected string? m_FNome, m_FDatabase, m_FTabela, m_FCampo, m_FValor, m_FOutput, m_FGUID;
     [XmlIgnore]
     private protected bool m_FAdministrador, m_FDisabledItem, m_FIsOnlyProcesso;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -24,7 +23,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public string NFDatabase() => m_FDatabase ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDatabase
     {
@@ -37,7 +35,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public string NFTabela() => m_FTabela ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTabela
     {
@@ -50,7 +47,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public string NFCampo() => m_FCampo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCampo
     {
@@ -63,7 +59,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public string NFValor() => m_FValor ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FValor
     {
@@ -76,7 +71,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public string NFOutput() => m_FOutput ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOutput
     {
@@ -89,7 +83,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public bool NFAdministrador() => m_FAdministrador;
     [XmlAttribute]
     public bool FAdministrador
     {
@@ -102,7 +95,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public int NFOutputSource() => m_FOutputSource;
     [XmlAttribute]
     public int FOutputSource
     {
@@ -115,7 +107,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public bool NFDisabledItem() => m_FDisabledItem;
     [XmlAttribute]
     public bool FDisabledItem
     {
@@ -128,7 +119,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public int NFIDModulo() => m_FIDModulo;
     [XmlAttribute]
     public int FIDModulo
     {
@@ -141,7 +131,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public bool NFIsOnlyProcesso() => m_FIsOnlyProcesso;
     [XmlAttribute]
     public bool FIsOnlyProcesso
     {
@@ -154,7 +143,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public int NFMyID() => m_FMyID;
     [XmlAttribute]
     public int FMyID
     {
@@ -167,7 +155,6 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public string NFGUID() => m_FGUID ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FGUID
     {

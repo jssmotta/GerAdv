@@ -9,7 +9,6 @@ public partial class DBOperadorGruposAgenda
     private protected int m_FOperador;
     [XmlIgnore]
     private protected string? m_FSQLWhere, m_FNome;
-    public string NFSQLWhere() => m_FSQLWhere ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSQLWhere
     {
@@ -22,7 +21,6 @@ public partial class DBOperadorGruposAgenda
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -35,7 +33,6 @@ public partial class DBOperadorGruposAgenda
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {

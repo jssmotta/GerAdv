@@ -9,7 +9,6 @@ public partial class DBUltimosProcessos
     private protected int m_FProcesso, m_FQuem;
     [XmlIgnore]
     private protected DateTime? m_FQuando;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -22,7 +21,6 @@ public partial class DBUltimosProcessos
         }
     }
 
-    public string NFQuando() => $"{m_FQuando:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FQuando:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MQuando => Convert.ToDateTime(m_FQuando);
 
@@ -40,7 +38,6 @@ public partial class DBUltimosProcessos
         }
     }
 
-    public int NFQuem() => m_FQuem;
     [XmlAttribute]
     public int FQuem
     {

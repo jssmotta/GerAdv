@@ -13,7 +13,6 @@ public partial class DBAlarmSMS
     private protected DateTime? m_FToday, m_FAlertarDataHora;
     [XmlIgnore]
     private protected bool m_FD1, m_FD2, m_FD3, m_FD4, m_FD5, m_FD6, m_FD7, m_FDesativar, m_FExcetoDiasFelizes, m_FDesktop;
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -26,7 +25,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public int NFHora() => m_FHora;
     [XmlAttribute]
     public int FHora
     {
@@ -39,7 +37,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public int NFMinuto() => m_FMinuto;
     [XmlAttribute]
     public int FMinuto
     {
@@ -52,7 +49,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD1() => m_FD1;
     [XmlAttribute]
     public bool FD1
     {
@@ -65,7 +61,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD2() => m_FD2;
     [XmlAttribute]
     public bool FD2
     {
@@ -78,7 +73,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD3() => m_FD3;
     [XmlAttribute]
     public bool FD3
     {
@@ -91,7 +85,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD4() => m_FD4;
     [XmlAttribute]
     public bool FD4
     {
@@ -104,7 +97,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD5() => m_FD5;
     [XmlAttribute]
     public bool FD5
     {
@@ -117,7 +109,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD6() => m_FD6;
     [XmlAttribute]
     public bool FD6
     {
@@ -130,7 +121,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFD7() => m_FD7;
     [XmlAttribute]
     public bool FD7
     {
@@ -143,7 +133,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -156,7 +145,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFDesativar() => m_FDesativar;
     [XmlAttribute]
     public bool FDesativar
     {
@@ -169,7 +157,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public string NFToday() => $"{m_FToday:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FToday:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MToday => Convert.ToDateTime(m_FToday);
 
@@ -187,7 +174,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFExcetoDiasFelizes() => m_FExcetoDiasFelizes;
     [XmlAttribute]
     public bool FExcetoDiasFelizes
     {
@@ -200,7 +186,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public bool NFDesktop() => m_FDesktop;
     [XmlAttribute]
     public bool FDesktop
     {
@@ -213,7 +198,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public string NFAlertarDataHora() => $"{m_FAlertarDataHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FAlertarDataHora:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MAlertarDataHora => Convert.ToDateTime(m_FAlertarDataHora);
 
@@ -231,7 +215,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -244,7 +227,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public string NFGuidExo() => m_FGuidExo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FGuidExo
     {
@@ -257,7 +239,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public int NFAgenda() => m_FAgenda;
     [XmlAttribute]
     public int FAgenda
     {
@@ -270,7 +251,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public int NFRecado() => m_FRecado;
     [XmlAttribute]
     public int FRecado
     {
@@ -283,7 +263,6 @@ public partial class DBAlarmSMS
         }
     }
 
-    public int NFEmocao() => m_FEmocao;
     [XmlAttribute]
     public int FEmocao
     {

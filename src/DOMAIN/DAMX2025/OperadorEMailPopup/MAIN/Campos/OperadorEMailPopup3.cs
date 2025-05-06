@@ -11,7 +11,6 @@ public partial class DBOperadorEMailPopup
     private protected string? m_FNome, m_FSenha, m_FSMTP, m_FPOP3, m_FDescricao, m_FUsuario, m_FAssinatura, m_FSenha256;
     [XmlIgnore]
     private protected bool m_FAutenticacao;
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -24,7 +23,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -37,7 +35,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFSenha() => m_FSenha ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSenha
     {
@@ -50,7 +47,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFSMTP() => m_FSMTP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSMTP
     {
@@ -63,7 +59,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFPOP3() => m_FPOP3 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPOP3
     {
@@ -76,7 +71,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public bool NFAutenticacao() => m_FAutenticacao;
     [XmlAttribute]
     public bool FAutenticacao
     {
@@ -89,7 +83,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -102,7 +95,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFUsuario() => m_FUsuario ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FUsuario
     {
@@ -115,7 +107,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public int NFPortaSmtp() => m_FPortaSmtp;
     [XmlAttribute]
     public int FPortaSmtp
     {
@@ -128,7 +119,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public int NFPortaPop3() => m_FPortaPop3;
     [XmlAttribute]
     public int FPortaPop3
     {
@@ -141,7 +131,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFAssinatura() => m_FAssinatura ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssinatura
     {
@@ -154,7 +143,6 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public string NFSenha256() => m_FSenha256 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSenha256
     {

@@ -7,7 +7,6 @@ public partial class DBGUTAtividadesMatriz
     private protected bool pFldFGUTMatriz, pFldFGUTAtividade;
     [XmlIgnore]
     private protected int m_FGUTMatriz, m_FGUTAtividade;
-    public int NFGUTMatriz() => m_FGUTMatriz;
     [XmlAttribute]
     public int FGUTMatriz
     {
@@ -20,7 +19,6 @@ public partial class DBGUTAtividadesMatriz
         }
     }
 
-    public int NFGUTAtividade() => m_FGUTAtividade;
     [XmlAttribute]
     public int FGUTAtividade
     {

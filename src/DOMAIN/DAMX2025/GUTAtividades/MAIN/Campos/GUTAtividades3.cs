@@ -13,7 +13,6 @@ public partial class DBGUTAtividades
     private protected DateTime? m_FDataConcluido;
     [XmlIgnore]
     private protected bool m_FConcluido;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -26,7 +25,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -39,7 +37,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public int NFGUTGrupo() => m_FGUTGrupo;
     [XmlAttribute]
     public int FGUTGrupo
     {
@@ -52,7 +49,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public int NFGUTPeriodicidade() => m_FGUTPeriodicidade;
     [XmlAttribute]
     public int FGUTPeriodicidade
     {
@@ -65,7 +61,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -78,7 +73,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public bool NFConcluido() => m_FConcluido;
     [XmlAttribute]
     public bool FConcluido
     {
@@ -91,7 +85,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public string NFDataConcluido() => $"{m_FDataConcluido:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataConcluido:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataConcluido => Convert.ToDateTime(m_FDataConcluido);
 
@@ -109,7 +102,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public int NFDiasParaIniciar() => m_FDiasParaIniciar;
     [XmlAttribute]
     public int FDiasParaIniciar
     {
@@ -122,7 +114,6 @@ public partial class DBGUTAtividades
         }
     }
 
-    public int NFMinutosParaRealizar() => m_FMinutosParaRealizar;
     [XmlAttribute]
     public int FMinutosParaRealizar
     {

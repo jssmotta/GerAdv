@@ -7,7 +7,6 @@ public partial class DBEndTit
     private protected bool pFldFEndereco, pFldFTitulo;
     [XmlIgnore]
     private protected int m_FEndereco, m_FTitulo;
-    public int NFEndereco() => m_FEndereco;
     [XmlAttribute]
     public int FEndereco
     {
@@ -20,7 +19,6 @@ public partial class DBEndTit
         }
     }
 
-    public int NFTitulo() => m_FTitulo;
     [XmlAttribute]
     public int FTitulo
     {

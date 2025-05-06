@@ -13,7 +13,6 @@ public partial class DBNENotas
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected bool m_FMovPro, m_FNotaExpedida, m_FRevisada;
-    public int NFApenso() => m_FApenso;
     [XmlAttribute]
     public int FApenso
     {
@@ -26,7 +25,6 @@ public partial class DBNENotas
         }
     }
 
-    public int NFPrecatoria() => m_FPrecatoria;
     [XmlAttribute]
     public int FPrecatoria
     {
@@ -39,7 +37,6 @@ public partial class DBNENotas
         }
     }
 
-    public int NFInstancia() => m_FInstancia;
     [XmlAttribute]
     public int FInstancia
     {
@@ -52,7 +49,6 @@ public partial class DBNENotas
         }
     }
 
-    public bool NFMovPro() => m_FMovPro;
     [XmlAttribute]
     public bool FMovPro
     {
@@ -65,7 +61,6 @@ public partial class DBNENotas
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -78,7 +73,6 @@ public partial class DBNENotas
         }
     }
 
-    public bool NFNotaExpedida() => m_FNotaExpedida;
     [XmlAttribute]
     public bool FNotaExpedida
     {
@@ -91,7 +85,6 @@ public partial class DBNENotas
         }
     }
 
-    public bool NFRevisada() => m_FRevisada;
     [XmlAttribute]
     public bool FRevisada
     {
@@ -104,7 +97,6 @@ public partial class DBNENotas
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -117,7 +109,6 @@ public partial class DBNENotas
         }
     }
 
-    public int NFPalavraChave() => m_FPalavraChave;
     [XmlAttribute]
     public int FPalavraChave
     {
@@ -130,7 +121,6 @@ public partial class DBNENotas
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -148,7 +138,6 @@ public partial class DBNENotas
         }
     }
 
-    public string NFNotaPublicada() => m_FNotaPublicada ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNotaPublicada
     {

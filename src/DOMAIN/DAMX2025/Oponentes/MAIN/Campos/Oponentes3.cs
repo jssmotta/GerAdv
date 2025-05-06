@@ -11,7 +11,6 @@ public partial class DBOponentes
     private protected string? m_FCTPSNumero, m_FSite, m_FCTPSSerie, m_FPIS, m_FContato, m_FCNPJ, m_FRG, m_FFone, m_FFax, m_FInscEst, m_FObservacao, m_FEMail;
     [XmlIgnore]
     private protected bool m_FJuridica, m_FTipo, m_FTop;
-    public int NFEMPFuncao() => m_FEMPFuncao;
     [XmlAttribute]
     public int FEMPFuncao
     {
@@ -24,7 +23,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFCTPSNumero() => m_FCTPSNumero ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPSNumero
     {
@@ -37,7 +35,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {
@@ -50,7 +47,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFCTPSSerie() => m_FCTPSSerie ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPSSerie
     {
@@ -75,7 +71,6 @@ public partial class DBOponentes
         }
     }
 
-    public int NFAdv() => m_FAdv;
     [XmlAttribute]
     public int FAdv
     {
@@ -88,7 +83,6 @@ public partial class DBOponentes
         }
     }
 
-    public int NFEMPCliente() => m_FEMPCliente;
     [XmlAttribute]
     public int FEMPCliente
     {
@@ -101,7 +95,6 @@ public partial class DBOponentes
         }
     }
 
-    public int NFIDRep() => m_FIDRep;
     [XmlAttribute]
     public int FIDRep
     {
@@ -114,7 +107,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFPIS() => m_FPIS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPIS
     {
@@ -127,7 +119,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFContato() => m_FContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContato
     {
@@ -142,7 +133,6 @@ public partial class DBOponentes
 
     public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
 
-    public string NFCNPJ() => m_FCNPJ ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -155,7 +145,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -168,7 +157,6 @@ public partial class DBOponentes
         }
     }
 
-    public bool NFJuridica() => m_FJuridica;
     [XmlAttribute]
     public bool FJuridica
     {
@@ -181,7 +169,6 @@ public partial class DBOponentes
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -194,7 +181,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -207,7 +193,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -220,7 +205,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFInscEst() => m_FInscEst ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FInscEst
     {
@@ -233,7 +217,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -246,7 +229,6 @@ public partial class DBOponentes
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -259,7 +241,6 @@ public partial class DBOponentes
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {

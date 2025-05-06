@@ -9,7 +9,6 @@ public partial class DBTerceiros
     private protected int m_FProcesso, m_FSituacao, m_FCidade;
     [XmlIgnore]
     private protected string? m_FNome, m_FEndereco, m_FBairro, m_FCEP, m_FFone, m_FFax, m_FOBS, m_FEMail, m_FClass, m_FVaraForoComarca;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -22,7 +21,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -35,7 +33,6 @@ public partial class DBTerceiros
         }
     }
 
-    public int NFSituacao() => m_FSituacao;
     [XmlAttribute]
     public int FSituacao
     {
@@ -48,7 +45,6 @@ public partial class DBTerceiros
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -61,7 +57,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -74,7 +69,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFBairro() => m_FBairro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FBairro
     {
@@ -88,7 +82,6 @@ public partial class DBTerceiros
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -101,7 +94,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -114,7 +106,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -127,7 +118,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -140,7 +130,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -153,7 +142,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFClass() => m_FClass ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FClass
     {
@@ -166,7 +154,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string NFVaraForoComarca() => m_FVaraForoComarca ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FVaraForoComarca
     {

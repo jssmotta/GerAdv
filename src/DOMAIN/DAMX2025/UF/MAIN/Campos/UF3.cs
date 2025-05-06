@@ -11,7 +11,6 @@ public partial class DBUF
     private protected string? m_FDDD, m_FID, m_FDescricao;
     [XmlIgnore]
     private protected bool m_FTop;
-    public string NFDDD() => m_FDDD ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDDD
     {
@@ -24,7 +23,6 @@ public partial class DBUF
         }
     }
 
-    public string NFID() => m_FID ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FID
     {
@@ -37,7 +35,6 @@ public partial class DBUF
         }
     }
 
-    public int NFPais() => m_FPais;
     [XmlAttribute]
     public int FPais
     {
@@ -50,7 +47,6 @@ public partial class DBUF
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {
@@ -63,7 +59,6 @@ public partial class DBUF
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {

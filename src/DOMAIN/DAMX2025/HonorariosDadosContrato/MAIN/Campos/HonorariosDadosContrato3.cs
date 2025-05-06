@@ -15,7 +15,6 @@ public partial class DBHonorariosDadosContrato
     private protected bool m_FFixo, m_FVariavel;
     [XmlIgnore]
     private protected decimal m_FPercSucesso, m_FValorFixo;
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -28,7 +27,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public bool NFFixo() => m_FFixo;
     [XmlAttribute]
     public bool FFixo
     {
@@ -41,7 +39,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public bool NFVariavel() => m_FVariavel;
     [XmlAttribute]
     public bool FVariavel
     {
@@ -54,7 +51,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public decimal NFPercSucesso() => m_FPercSucesso;
     [XmlAttribute]
     public decimal FPercSucesso
     {
@@ -68,7 +64,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -81,7 +76,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public string NFArquivoContrato() => m_FArquivoContrato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FArquivoContrato
     {
@@ -94,7 +88,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public string NFTextoContrato() => m_FTextoContrato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTextoContrato
     {
@@ -107,7 +100,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public decimal NFValorFixo() => m_FValorFixo;
     [XmlAttribute]
     public decimal FValorFixo
     {
@@ -121,7 +113,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -134,7 +125,6 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public string NFDataContrato() => $"{m_FDataContrato:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataContrato:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataContrato => Convert.ToDateTime(m_FDataContrato);
 

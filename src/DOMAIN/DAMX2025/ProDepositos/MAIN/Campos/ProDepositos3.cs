@@ -11,7 +11,6 @@ public partial class DBProDepositos
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected decimal m_FValor;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -24,7 +23,6 @@ public partial class DBProDepositos
         }
     }
 
-    public int NFFase() => m_FFase;
     [XmlAttribute]
     public int FFase
     {
@@ -37,7 +35,6 @@ public partial class DBProDepositos
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -55,7 +52,6 @@ public partial class DBProDepositos
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -69,7 +65,6 @@ public partial class DBProDepositos
         }
     }
 
-    public int NFTipoProDesposito() => m_FTipoProDesposito;
     [XmlAttribute]
     public int FTipoProDesposito
     {

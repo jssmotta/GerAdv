@@ -13,7 +13,6 @@ public partial class DBProSucumbencia
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected decimal m_FValor;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -26,7 +25,6 @@ public partial class DBProSucumbencia
         }
     }
 
-    public int NFInstancia() => m_FInstancia;
     [XmlAttribute]
     public int FInstancia
     {
@@ -39,7 +37,6 @@ public partial class DBProSucumbencia
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -57,7 +54,6 @@ public partial class DBProSucumbencia
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -70,7 +66,6 @@ public partial class DBProSucumbencia
         }
     }
 
-    public int NFTipoOrigemSucumbencia() => m_FTipoOrigemSucumbencia;
     [XmlAttribute]
     public int FTipoOrigemSucumbencia
     {
@@ -83,7 +78,6 @@ public partial class DBProSucumbencia
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -97,7 +91,6 @@ public partial class DBProSucumbencia
         }
     }
 
-    public string NFPercentual() => m_FPercentual ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPercentual
     {

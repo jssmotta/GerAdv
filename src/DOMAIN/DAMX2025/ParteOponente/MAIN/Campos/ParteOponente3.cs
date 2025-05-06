@@ -7,7 +7,6 @@ public partial class DBParteOponente
     private protected bool pFldFOponente, pFldFProcesso;
     [XmlIgnore]
     private protected int m_FOponente, m_FProcesso;
-    public int NFOponente() => m_FOponente;
     [XmlAttribute]
     public int FOponente
     {
@@ -20,7 +19,6 @@ public partial class DBParteOponente
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {

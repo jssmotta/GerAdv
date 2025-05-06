@@ -13,7 +13,6 @@ public partial class DBDiario2
     private protected DateTime? m_FData, m_FHora;
     [XmlIgnore]
     private protected bool m_FBold;
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -31,7 +30,6 @@ public partial class DBDiario2
         }
     }
 
-    public string NFHora() => $"{m_FHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHora:HH:mm}";
     [XmlIgnore]
     public DateTime MHora => Convert.ToDateTime(m_FHora);
 
@@ -66,7 +64,6 @@ public partial class DBDiario2
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -79,7 +76,6 @@ public partial class DBDiario2
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -92,7 +88,6 @@ public partial class DBDiario2
         }
     }
 
-    public string NFOcorrencia() => m_FOcorrencia ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOcorrencia
     {
@@ -105,7 +100,6 @@ public partial class DBDiario2
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -118,7 +112,6 @@ public partial class DBDiario2
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

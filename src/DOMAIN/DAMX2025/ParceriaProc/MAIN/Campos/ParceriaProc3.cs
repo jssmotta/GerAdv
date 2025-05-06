@@ -7,7 +7,6 @@ public partial class DBParceriaProc
     private protected bool pFldFAdvogado, pFldFProcesso;
     [XmlIgnore]
     private protected int m_FAdvogado, m_FProcesso;
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -20,7 +19,6 @@ public partial class DBParceriaProc
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {

@@ -7,7 +7,6 @@ public partial class DBAgendaQuem
     private protected bool pFldFIDAgenda, pFldFAdvogado, pFldFFuncionario, pFldFPreposto;
     [XmlIgnore]
     private protected int m_FIDAgenda, m_FAdvogado, m_FFuncionario, m_FPreposto;
-    public int NFIDAgenda() => m_FIDAgenda;
     [XmlAttribute]
     public int FIDAgenda
     {
@@ -20,7 +19,6 @@ public partial class DBAgendaQuem
         }
     }
 
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -33,7 +31,6 @@ public partial class DBAgendaQuem
         }
     }
 
-    public int NFFuncionario() => m_FFuncionario;
     [XmlAttribute]
     public int FFuncionario
     {
@@ -46,7 +43,6 @@ public partial class DBAgendaQuem
         }
     }
 
-    public int NFPreposto() => m_FPreposto;
     [XmlAttribute]
     public int FPreposto
     {

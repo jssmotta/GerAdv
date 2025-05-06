@@ -483,10 +483,12 @@ public class DicionarioDeDadosManagedDatabaseCode : IDicManager
         148 => DBUF.PTabelaNome,
         149 => DBUltimosProcessos.PTabelaNome,
         150 => DBViaRecebimento.PTabelaNome,
+        151 => DBAgendaRelatorio.PTabelaNome,
+        152 => DBAgendaSemana.PTabelaNome,
         _ => string.Empty
     };
     public IODicInfo IGlobalObjectDicInfo(string tabelaOrIdOrPrefix) => GlobalObjectDicInfo(tabelaOrIdOrPrefix);
-    public IODicInfo GlobalObjectDicInfo(string tabelaOrIdOrPrefix) => tabelaOrIdOrPrefix switch
+    public IODicInfo? GlobalObjectDicInfo(string tabelaOrIdOrPrefix) => tabelaOrIdOrPrefix switch
     {
         "1" => new DBAcaoODicInfo(),
         DBAcao.PTabelaNome => new DBAcaoODicInfo(),
@@ -943,7 +945,8 @@ public class DicionarioDeDadosManagedDatabaseCode : IDicManager
         "152" => new DBAgendaSemanaODicInfo(),
         DBAgendaSemana.PTabelaNome => new DBAgendaSemanaODicInfo(),
         "AGENDASEMANA" => new DBAgendaSemanaODicInfo(),
-        _ => throw new Exception(tabelaOrIdOrPrefix)};
+        _ => null
+    };
     public ICadastros IGlobalObjectLoad(string tabela, string cWhere, SqlConnection? oCnn) => GlobalObjectLoad(tabela, cWhere, oCnn);
     public ICadastros GlobalObjectLoad(string tabela, string cWhere, SqlConnection? oCnn) => tabela switch
     {

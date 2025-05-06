@@ -7,7 +7,6 @@ public partial class DBRamal
     private protected bool pFldFNome, pFldFObs;
     [XmlIgnore]
     private protected string? m_FNome, m_FObs;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -20,7 +19,6 @@ public partial class DBRamal
         }
     }
 
-    public string NFObs() => m_FObs ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObs
     {

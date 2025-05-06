@@ -11,7 +11,6 @@ public partial class DBNECompromissos
     private protected string? m_FTextoCompromisso;
     [XmlIgnore]
     private protected bool m_FProvisionar, m_FBold;
-    public int NFPalavraChave() => m_FPalavraChave;
     [XmlAttribute]
     public int FPalavraChave
     {
@@ -24,7 +23,6 @@ public partial class DBNECompromissos
         }
     }
 
-    public bool NFProvisionar() => m_FProvisionar;
     [XmlAttribute]
     public bool FProvisionar
     {
@@ -37,7 +35,6 @@ public partial class DBNECompromissos
         }
     }
 
-    public int NFTipoCompromisso() => m_FTipoCompromisso;
     [XmlAttribute]
     public int FTipoCompromisso
     {
@@ -50,7 +47,6 @@ public partial class DBNECompromissos
         }
     }
 
-    public string NFTextoCompromisso() => m_FTextoCompromisso ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTextoCompromisso
     {
@@ -63,7 +59,6 @@ public partial class DBNECompromissos
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

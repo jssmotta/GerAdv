@@ -9,7 +9,6 @@ public partial class DBDadosProcuracao
     private protected int m_FCliente;
     [XmlIgnore]
     private protected string? m_FEstadoCivil, m_FNacionalidade, m_FProfissao, m_FCTPS, m_FPisPasep, m_FRemuneracao, m_FObjeto;
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -22,7 +21,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFEstadoCivil() => m_FEstadoCivil ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEstadoCivil
     {
@@ -35,7 +33,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFNacionalidade() => m_FNacionalidade ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNacionalidade
     {
@@ -48,7 +45,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFProfissao() => m_FProfissao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FProfissao
     {
@@ -61,7 +57,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFCTPS() => m_FCTPS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPS
     {
@@ -74,7 +69,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFPisPasep() => m_FPisPasep ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPisPasep
     {
@@ -87,7 +81,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFRemuneracao() => m_FRemuneracao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRemuneracao
     {
@@ -100,7 +93,6 @@ public partial class DBDadosProcuracao
         }
     }
 
-    public string NFObjeto() => m_FObjeto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObjeto
     {

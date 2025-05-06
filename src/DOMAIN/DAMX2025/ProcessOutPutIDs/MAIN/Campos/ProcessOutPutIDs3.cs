@@ -7,7 +7,6 @@ public partial class DBProcessOutPutIDs
     private protected bool pFldFNome, pFldFGUID;
     [XmlIgnore]
     private protected string? m_FNome, m_FGUID;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -20,7 +19,6 @@ public partial class DBProcessOutPutIDs
         }
     }
 
-    public string NFGUID() => m_FGUID ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FGUID
     {

@@ -9,7 +9,6 @@ public partial class DBArea
     private protected string? m_FDescricao;
     [XmlIgnore]
     private protected bool m_FTop;
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -22,7 +21,6 @@ public partial class DBArea
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {

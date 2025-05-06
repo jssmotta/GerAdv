@@ -9,7 +9,6 @@ public partial class DBGUTPeriodicidade
     private protected int m_FIntervaloDias;
     [XmlIgnore]
     private protected string? m_FNome;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -22,7 +21,6 @@ public partial class DBGUTPeriodicidade
         }
     }
 
-    public int NFIntervaloDias() => m_FIntervaloDias;
     [XmlAttribute]
     public int FIntervaloDias
     {

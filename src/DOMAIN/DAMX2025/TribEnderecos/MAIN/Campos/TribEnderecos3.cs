@@ -9,7 +9,6 @@ public partial class DBTribEnderecos
     private protected int m_FTribunal, m_FCidade;
     [XmlIgnore]
     private protected string? m_FEndereco, m_FCEP, m_FFone, m_FFax, m_FOBS;
-    public int NFTribunal() => m_FTribunal;
     [XmlAttribute]
     public int FTribunal
     {
@@ -22,7 +21,6 @@ public partial class DBTribEnderecos
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -35,7 +33,6 @@ public partial class DBTribEnderecos
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -49,7 +46,6 @@ public partial class DBTribEnderecos
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -62,7 +58,6 @@ public partial class DBTribEnderecos
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -75,7 +70,6 @@ public partial class DBTribEnderecos
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -88,7 +82,6 @@ public partial class DBTribEnderecos
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {

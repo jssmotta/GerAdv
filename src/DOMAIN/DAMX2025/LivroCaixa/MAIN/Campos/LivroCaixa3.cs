@@ -15,7 +15,6 @@ public partial class DBLivroCaixa
     private protected bool m_FAjuste, m_FIDHonSuc, m_FTipo, m_FPrevisto;
     [XmlIgnore]
     private protected decimal m_FValor;
-    public int NFIDDes() => m_FIDDes;
     [XmlAttribute]
     public int FIDDes
     {
@@ -28,7 +27,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public int NFPessoal() => m_FPessoal;
     [XmlAttribute]
     public int FPessoal
     {
@@ -41,7 +39,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public bool NFAjuste() => m_FAjuste;
     [XmlAttribute]
     public bool FAjuste
     {
@@ -54,7 +51,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public int NFIDHon() => m_FIDHon;
     [XmlAttribute]
     public int FIDHon
     {
@@ -67,7 +63,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public int NFIDHonParc() => m_FIDHonParc;
     [XmlAttribute]
     public int FIDHonParc
     {
@@ -80,7 +75,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public bool NFIDHonSuc() => m_FIDHonSuc;
     [XmlAttribute]
     public bool FIDHonSuc
     {
@@ -93,7 +87,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -111,7 +104,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -124,7 +116,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -138,7 +129,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -151,7 +141,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public string NFHistorico() => m_FHistorico ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHistorico
     {
@@ -164,7 +153,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public bool NFPrevisto() => m_FPrevisto;
     [XmlAttribute]
     public bool FPrevisto
     {
@@ -177,7 +165,6 @@ public partial class DBLivroCaixa
         }
     }
 
-    public int NFGrupo() => m_FGrupo;
     [XmlAttribute]
     public int FGrupo
     {

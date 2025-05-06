@@ -13,7 +13,6 @@ public partial class DBProResumos
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected bool m_FBold;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -26,7 +25,6 @@ public partial class DBProResumos
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -44,7 +42,6 @@ public partial class DBProResumos
         }
     }
 
-    public string NFResumo() => m_FResumo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FResumo
     {
@@ -57,7 +54,6 @@ public partial class DBProResumos
         }
     }
 
-    public int NFTipoResumo() => m_FTipoResumo;
     [XmlAttribute]
     public int FTipoResumo
     {
@@ -70,7 +66,6 @@ public partial class DBProResumos
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

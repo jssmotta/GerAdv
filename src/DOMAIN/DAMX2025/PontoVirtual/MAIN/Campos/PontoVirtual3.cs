@@ -11,7 +11,6 @@ public partial class DBPontoVirtual
     private protected string? m_FKey;
     [XmlIgnore]
     private protected DateTime? m_FHoraEntrada, m_FHoraSaida;
-    public string NFHoraEntrada() => $"{m_FHoraEntrada:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraEntrada:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraEntrada => Convert.ToDateTime(m_FHoraEntrada);
 
@@ -46,7 +45,6 @@ public partial class DBPontoVirtual
         }
     }
 
-    public string NFHoraSaida() => $"{m_FHoraSaida:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraSaida:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraSaida => Convert.ToDateTime(m_FHoraSaida);
 
@@ -81,7 +79,6 @@ public partial class DBPontoVirtual
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -94,7 +91,6 @@ public partial class DBPontoVirtual
         }
     }
 
-    public string NFKey() => m_FKey ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FKey
     {

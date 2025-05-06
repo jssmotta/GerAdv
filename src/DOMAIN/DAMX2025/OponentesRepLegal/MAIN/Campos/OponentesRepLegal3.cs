@@ -21,7 +21,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -34,7 +33,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public int NFOponente() => m_FOponente;
     [XmlAttribute]
     public int FOponente
     {
@@ -47,7 +45,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -60,7 +57,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -73,7 +69,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -86,7 +81,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {
@@ -99,7 +93,6 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {

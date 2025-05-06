@@ -9,7 +9,6 @@ public partial class DBModelosDocumentos
     private protected int m_FTipoModeloDocumento;
     [XmlIgnore]
     private protected string? m_FNome, m_FRemuneracao, m_FAssinatura, m_FHeader, m_FFooter, m_FExtra1, m_FExtra2, m_FExtra3, m_FOutorgante, m_FOutorgados, m_FPoderes, m_FObjeto, m_FTitulo, m_FTestemunhas, m_FCSS;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -22,7 +21,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFRemuneracao() => m_FRemuneracao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRemuneracao
     {
@@ -35,7 +33,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFAssinatura() => m_FAssinatura ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssinatura
     {
@@ -48,7 +45,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFHeader() => m_FHeader ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHeader
     {
@@ -61,7 +57,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFFooter() => m_FFooter ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFooter
     {
@@ -74,7 +69,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFExtra1() => m_FExtra1 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FExtra1
     {
@@ -87,7 +81,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFExtra2() => m_FExtra2 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FExtra2
     {
@@ -100,7 +93,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFExtra3() => m_FExtra3 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FExtra3
     {
@@ -113,7 +105,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFOutorgante() => m_FOutorgante ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOutorgante
     {
@@ -126,7 +117,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFOutorgados() => m_FOutorgados ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOutorgados
     {
@@ -139,7 +129,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFPoderes() => m_FPoderes ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPoderes
     {
@@ -152,7 +141,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFObjeto() => m_FObjeto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObjeto
     {
@@ -165,7 +153,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFTitulo() => m_FTitulo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTitulo
     {
@@ -178,7 +165,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFTestemunhas() => m_FTestemunhas ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTestemunhas
     {
@@ -191,7 +177,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public int NFTipoModeloDocumento() => m_FTipoModeloDocumento;
     [XmlAttribute]
     public int FTipoModeloDocumento
     {
@@ -204,7 +189,6 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public string NFCSS() => m_FCSS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCSS
     {

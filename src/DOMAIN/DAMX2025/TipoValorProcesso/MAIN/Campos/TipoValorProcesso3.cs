@@ -7,7 +7,6 @@ public partial class DBTipoValorProcesso
     private protected bool pFldFDescricao, pFldFGUID;
     [XmlIgnore]
     private protected string? m_FDescricao, m_FGUID;
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -20,7 +19,6 @@ public partial class DBTipoValorProcesso
         }
     }
 
-    public string NFGUID() => m_FGUID ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FGUID
     {

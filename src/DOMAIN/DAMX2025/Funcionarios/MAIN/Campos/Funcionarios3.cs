@@ -15,7 +15,6 @@ public partial class DBFuncionarios
     private protected bool m_FTipo, m_FLiberaAgenda;
     [XmlIgnore]
     private protected decimal m_FSalario;
-    public string NFEMailPro() => m_FEMailPro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMailPro
     {
@@ -28,7 +27,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public int NFCargo() => m_FCargo;
     [XmlAttribute]
     public int FCargo
     {
@@ -53,7 +51,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public int NFFuncao() => m_FFuncao;
     [XmlAttribute]
     public int FFuncao
     {
@@ -66,7 +63,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFRegistro() => m_FRegistro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRegistro
     {
@@ -79,7 +75,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -92,7 +87,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -105,7 +99,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -118,7 +111,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFContato() => m_FContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContato
     {
@@ -131,7 +123,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -144,7 +135,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -157,7 +147,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -170,7 +159,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFPeriodo_Ini() => $"{m_FPeriodo_Ini:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FPeriodo_Ini:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MPeriodo_Ini => Convert.ToDateTime(m_FPeriodo_Ini);
 
@@ -188,7 +176,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFPeriodo_Fim() => $"{m_FPeriodo_Fim:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FPeriodo_Fim:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MPeriodo_Fim => Convert.ToDateTime(m_FPeriodo_Fim);
 
@@ -206,7 +193,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFCTPSNumero() => m_FCTPSNumero ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPSNumero
     {
@@ -219,7 +205,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFCTPSSerie() => m_FCTPSSerie ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPSSerie
     {
@@ -232,7 +217,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFPIS() => m_FPIS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPIS
     {
@@ -245,7 +229,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public decimal NFSalario() => m_FSalario;
     [XmlAttribute]
     public decimal FSalario
     {
@@ -259,7 +242,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFCTPSDtEmissao() => $"{m_FCTPSDtEmissao:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FCTPSDtEmissao:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MCTPSDtEmissao => Convert.ToDateTime(m_FCTPSDtEmissao);
 
@@ -277,7 +259,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -295,7 +276,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public bool NFLiberaAgenda() => m_FLiberaAgenda;
     [XmlAttribute]
     public bool FLiberaAgenda
     {
@@ -308,7 +288,6 @@ public partial class DBFuncionarios
         }
     }
 
-    public string NFPasta() => m_FPasta ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPasta
     {

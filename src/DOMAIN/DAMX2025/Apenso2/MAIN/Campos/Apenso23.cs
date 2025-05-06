@@ -7,7 +7,6 @@ public partial class DBApenso2
     private protected bool pFldFProcesso, pFldFApensado;
     [XmlIgnore]
     private protected int m_FProcesso, m_FApensado;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -20,7 +19,6 @@ public partial class DBApenso2
         }
     }
 
-    public int NFApensado() => m_FApensado;
     [XmlAttribute]
     public int FApensado
     {

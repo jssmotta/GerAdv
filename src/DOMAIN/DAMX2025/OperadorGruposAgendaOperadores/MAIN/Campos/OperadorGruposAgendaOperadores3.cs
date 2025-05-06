@@ -7,7 +7,6 @@ public partial class DBOperadorGruposAgendaOperadores
     private protected bool pFldFOperadorGruposAgenda, pFldFOperador;
     [XmlIgnore]
     private protected int m_FOperadorGruposAgenda, m_FOperador;
-    public int NFOperadorGruposAgenda() => m_FOperadorGruposAgenda;
     [XmlAttribute]
     public int FOperadorGruposAgenda
     {
@@ -20,7 +19,6 @@ public partial class DBOperadorGruposAgendaOperadores
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {

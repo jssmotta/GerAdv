@@ -11,7 +11,6 @@ public partial class DBTipoCompromisso
     private protected string? m_FDescricao;
     [XmlIgnore]
     private protected bool m_FFinanceiro, m_FBold;
-    public int NFIcone() => m_FIcone;
     [XmlAttribute]
     public int FIcone
     {
@@ -24,7 +23,6 @@ public partial class DBTipoCompromisso
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -37,7 +35,6 @@ public partial class DBTipoCompromisso
         }
     }
 
-    public bool NFFinanceiro() => m_FFinanceiro;
     [XmlAttribute]
     public bool FFinanceiro
     {
@@ -50,7 +47,6 @@ public partial class DBTipoCompromisso
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

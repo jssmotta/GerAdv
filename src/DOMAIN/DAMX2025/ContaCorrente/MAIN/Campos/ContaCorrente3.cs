@@ -15,7 +15,6 @@ public partial class DBContaCorrente
     private protected bool m_FQuitado, m_FSucumbencia, m_FDistRegra, m_FContrato, m_FPago, m_FDistribuir, m_FLC, m_FHide;
     [XmlIgnore]
     private protected decimal m_FValor, m_FValorPrincipal;
-    public int NFCIAcordo() => m_FCIAcordo;
     [XmlAttribute]
     public int FCIAcordo
     {
@@ -28,7 +27,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFQuitado() => m_FQuitado;
     [XmlAttribute]
     public bool FQuitado
     {
@@ -41,7 +39,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFIDContrato() => m_FIDContrato;
     [XmlAttribute]
     public int FIDContrato
     {
@@ -54,7 +51,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFQuitadoID() => m_FQuitadoID;
     [XmlAttribute]
     public int FQuitadoID
     {
@@ -67,7 +63,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFDebitoID() => m_FDebitoID;
     [XmlAttribute]
     public int FDebitoID
     {
@@ -80,7 +75,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFLivroCaixaID() => m_FLivroCaixaID;
     [XmlAttribute]
     public int FLivroCaixaID
     {
@@ -93,7 +87,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFSucumbencia() => m_FSucumbencia;
     [XmlAttribute]
     public bool FSucumbencia
     {
@@ -106,7 +99,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFDistRegra() => m_FDistRegra;
     [XmlAttribute]
     public bool FDistRegra
     {
@@ -119,7 +111,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public string NFDtOriginal() => $"{m_FDtOriginal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtOriginal:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtOriginal => Convert.ToDateTime(m_FDtOriginal);
 
@@ -137,7 +128,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -150,7 +140,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFParcelaX() => m_FParcelaX;
     [XmlAttribute]
     public int FParcelaX
     {
@@ -163,7 +152,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -177,7 +165,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -195,7 +182,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -208,7 +194,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public string NFHistorico() => m_FHistorico ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHistorico
     {
@@ -221,7 +206,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFContrato() => m_FContrato;
     [XmlAttribute]
     public bool FContrato
     {
@@ -234,7 +218,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFPago() => m_FPago;
     [XmlAttribute]
     public bool FPago
     {
@@ -247,7 +230,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFDistribuir() => m_FDistribuir;
     [XmlAttribute]
     public bool FDistribuir
     {
@@ -260,7 +242,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFLC() => m_FLC;
     [XmlAttribute]
     public bool FLC
     {
@@ -273,7 +254,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFIDHTrab() => m_FIDHTrab;
     [XmlAttribute]
     public int FIDHTrab
     {
@@ -286,7 +266,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFNroParcelas() => m_FNroParcelas;
     [XmlAttribute]
     public int FNroParcelas
     {
@@ -299,7 +278,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public decimal NFValorPrincipal() => m_FValorPrincipal;
     [XmlAttribute]
     public decimal FValorPrincipal
     {
@@ -313,7 +291,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public int NFParcelaPrincipalID() => m_FParcelaPrincipalID;
     [XmlAttribute]
     public int FParcelaPrincipalID
     {
@@ -326,7 +303,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public bool NFHide() => m_FHide;
     [XmlAttribute]
     public bool FHide
     {
@@ -339,7 +315,6 @@ public partial class DBContaCorrente
         }
     }
 
-    public string NFDataPgto() => $"{m_FDataPgto:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataPgto:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataPgto => Convert.ToDateTime(m_FDataPgto);
 

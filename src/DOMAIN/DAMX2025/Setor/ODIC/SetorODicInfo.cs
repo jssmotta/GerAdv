@@ -46,6 +46,7 @@ public partial class DBSetorODicInfo : IODicInfo
     {
         string[] campos =
         {
+            "setCodigo",
             "setDescricao"
         };
         var result = campos.Where(campo => !campo.Equals(DBSetorDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();

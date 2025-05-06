@@ -11,7 +11,6 @@ public partial class DBGraph
     private protected string? m_FTabela;
     [XmlIgnore]
     private protected byte[]? m_FImagem;
-    public string NFTabela() => m_FTabela ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTabela
     {
@@ -24,7 +23,6 @@ public partial class DBGraph
         }
     }
 
-    public int NFTabelaId() => m_FTabelaId;
     [XmlAttribute]
     public int FTabelaId
     {
@@ -37,7 +35,6 @@ public partial class DBGraph
         }
     }
 
-    public byte[] NFImagem() => m_FImagem ?? [0];
     [XmlAttribute]
     public byte[] FImagem
     {

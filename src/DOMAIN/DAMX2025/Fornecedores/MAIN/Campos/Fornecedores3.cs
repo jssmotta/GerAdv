@@ -11,7 +11,6 @@ public partial class DBFornecedores
     private protected string? m_FCNPJ, m_FInscEst, m_FRG, m_FFone, m_FFax, m_FEmail, m_FSite, m_FObs, m_FProdutos, m_FContatos;
     [XmlIgnore]
     private protected bool m_FTipo;
-    public int NFGrupo() => m_FGrupo;
     [XmlAttribute]
     public int FGrupo
     {
@@ -36,7 +35,6 @@ public partial class DBFornecedores
         }
     }
 
-    public int NFSubGrupo() => m_FSubGrupo;
     [XmlAttribute]
     public int FSubGrupo
     {
@@ -49,7 +47,6 @@ public partial class DBFornecedores
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -64,7 +61,6 @@ public partial class DBFornecedores
 
     public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
 
-    public string NFCNPJ() => m_FCNPJ ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -77,7 +73,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFInscEst() => m_FInscEst ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FInscEst
     {
@@ -90,7 +85,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -103,7 +97,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -116,7 +109,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -129,7 +121,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFEmail() => m_FEmail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEmail
     {
@@ -142,7 +133,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {
@@ -155,7 +145,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFObs() => m_FObs ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObs
     {
@@ -168,7 +157,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFProdutos() => m_FProdutos ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FProdutos
     {
@@ -181,7 +169,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string NFContatos() => m_FContatos ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContatos
     {

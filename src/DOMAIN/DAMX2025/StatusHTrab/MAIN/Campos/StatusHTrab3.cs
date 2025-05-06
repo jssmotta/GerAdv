@@ -9,7 +9,6 @@ public partial class DBStatusHTrab
     private protected int m_FResID;
     [XmlIgnore]
     private protected string? m_FDescricao;
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -22,7 +21,6 @@ public partial class DBStatusHTrab
         }
     }
 
-    public int NFResID() => m_FResID;
     [XmlAttribute]
     public int FResID
     {

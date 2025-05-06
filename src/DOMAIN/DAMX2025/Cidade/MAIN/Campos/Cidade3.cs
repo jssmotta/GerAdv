@@ -11,7 +11,6 @@ public partial class DBCidade
     private protected string? m_FDDD, m_FNome, m_FSigla;
     [XmlIgnore]
     private protected bool m_FTop, m_FComarca, m_FCapital;
-    public string NFDDD() => m_FDDD ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDDD
     {
@@ -24,7 +23,6 @@ public partial class DBCidade
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {
@@ -37,7 +35,6 @@ public partial class DBCidade
         }
     }
 
-    public bool NFComarca() => m_FComarca;
     [XmlAttribute]
     public bool FComarca
     {
@@ -50,7 +47,6 @@ public partial class DBCidade
         }
     }
 
-    public bool NFCapital() => m_FCapital;
     [XmlAttribute]
     public bool FCapital
     {
@@ -63,7 +59,6 @@ public partial class DBCidade
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -76,7 +71,6 @@ public partial class DBCidade
         }
     }
 
-    public int NFUF() => m_FUF;
     [XmlAttribute]
     public int FUF
     {
@@ -89,7 +83,6 @@ public partial class DBCidade
         }
     }
 
-    public string NFSigla() => m_FSigla ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSigla
     {

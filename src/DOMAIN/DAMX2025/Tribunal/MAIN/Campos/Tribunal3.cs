@@ -11,7 +11,6 @@ public partial class DBTribunal
     private protected string? m_FNome, m_FDescricao, m_FSigla, m_FWeb;
     [XmlIgnore]
     private protected bool m_FEtiqueta, m_FBold;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -24,7 +23,6 @@ public partial class DBTribunal
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -37,7 +35,6 @@ public partial class DBTribunal
         }
     }
 
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -50,7 +47,6 @@ public partial class DBTribunal
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -63,7 +59,6 @@ public partial class DBTribunal
         }
     }
 
-    public int NFInstancia() => m_FInstancia;
     [XmlAttribute]
     public int FInstancia
     {
@@ -76,7 +71,6 @@ public partial class DBTribunal
         }
     }
 
-    public string NFSigla() => m_FSigla ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSigla
     {
@@ -89,7 +83,6 @@ public partial class DBTribunal
         }
     }
 
-    public string NFWeb() => m_FWeb ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FWeb
     {
@@ -102,7 +95,6 @@ public partial class DBTribunal
         }
     }
 
-    public bool NFEtiqueta() => m_FEtiqueta;
     [XmlAttribute]
     public bool FEtiqueta
     {
@@ -115,7 +107,6 @@ public partial class DBTribunal
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

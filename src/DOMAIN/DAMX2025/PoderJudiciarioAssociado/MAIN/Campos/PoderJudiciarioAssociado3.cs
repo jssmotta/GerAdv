@@ -9,7 +9,6 @@ public partial class DBPoderJudiciarioAssociado
     private protected int m_FJustica, m_FArea, m_FTribunal, m_FForo, m_FCidade, m_FSubDivisao, m_FTipo;
     [XmlIgnore]
     private protected string? m_FJusticaNome, m_FAreaNome, m_FTribunalNome, m_FForoNome, m_FSubDivisaoNome, m_FCidadeNome;
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -22,7 +21,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public string NFJusticaNome() => m_FJusticaNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FJusticaNome
     {
@@ -35,7 +33,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -48,7 +45,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public string NFAreaNome() => m_FAreaNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAreaNome
     {
@@ -61,7 +57,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public int NFTribunal() => m_FTribunal;
     [XmlAttribute]
     public int FTribunal
     {
@@ -74,7 +69,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public string NFTribunalNome() => m_FTribunalNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTribunalNome
     {
@@ -87,7 +81,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public int NFForo() => m_FForo;
     [XmlAttribute]
     public int FForo
     {
@@ -100,7 +93,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public string NFForoNome() => m_FForoNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FForoNome
     {
@@ -113,7 +105,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -126,7 +117,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public string NFSubDivisaoNome() => m_FSubDivisaoNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSubDivisaoNome
     {
@@ -139,7 +129,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public string NFCidadeNome() => m_FCidadeNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCidadeNome
     {
@@ -152,7 +141,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public int NFSubDivisao() => m_FSubDivisao;
     [XmlAttribute]
     public int FSubDivisao
     {
@@ -165,7 +153,6 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
-    public int NFTipo() => m_FTipo;
     [XmlAttribute]
     public int FTipo
     {

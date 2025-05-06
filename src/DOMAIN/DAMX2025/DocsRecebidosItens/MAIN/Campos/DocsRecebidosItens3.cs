@@ -11,7 +11,6 @@ public partial class DBDocsRecebidosItens
     private protected string? m_FNome, m_FObservacoes;
     [XmlIgnore]
     private protected bool m_FDevolvido, m_FSeraDevolvido, m_FBold;
-    public int NFContatoCRM() => m_FContatoCRM;
     [XmlAttribute]
     public int FContatoCRM
     {
@@ -24,7 +23,6 @@ public partial class DBDocsRecebidosItens
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -37,7 +35,6 @@ public partial class DBDocsRecebidosItens
         }
     }
 
-    public bool NFDevolvido() => m_FDevolvido;
     [XmlAttribute]
     public bool FDevolvido
     {
@@ -50,7 +47,6 @@ public partial class DBDocsRecebidosItens
         }
     }
 
-    public bool NFSeraDevolvido() => m_FSeraDevolvido;
     [XmlAttribute]
     public bool FSeraDevolvido
     {
@@ -63,7 +59,6 @@ public partial class DBDocsRecebidosItens
         }
     }
 
-    public string NFObservacoes() => m_FObservacoes ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacoes
     {
@@ -76,7 +71,6 @@ public partial class DBDocsRecebidosItens
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

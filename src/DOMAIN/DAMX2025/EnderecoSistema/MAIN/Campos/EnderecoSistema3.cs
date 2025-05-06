@@ -9,7 +9,6 @@ public partial class DBEnderecoSistema
     private protected int m_FCadastro, m_FCadastroExCod, m_FTipoEnderecoSistema, m_FProcesso, m_FCidade;
     [XmlIgnore]
     private protected string? m_FMotivo, m_FContatoNoLocal, m_FEndereco, m_FBairro, m_FCEP, m_FFone, m_FFax, m_FObservacao;
-    public int NFCadastro() => m_FCadastro;
     [XmlAttribute]
     public int FCadastro
     {
@@ -22,7 +21,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public int NFCadastroExCod() => m_FCadastroExCod;
     [XmlAttribute]
     public int FCadastroExCod
     {
@@ -35,7 +33,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public int NFTipoEnderecoSistema() => m_FTipoEnderecoSistema;
     [XmlAttribute]
     public int FTipoEnderecoSistema
     {
@@ -48,7 +45,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -61,7 +57,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFMotivo() => m_FMotivo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FMotivo
     {
@@ -74,7 +69,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFContatoNoLocal() => m_FContatoNoLocal ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContatoNoLocal
     {
@@ -87,7 +81,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -100,7 +93,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -113,7 +105,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFBairro() => m_FBairro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FBairro
     {
@@ -127,7 +118,6 @@ public partial class DBEnderecoSistema
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -140,7 +130,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -153,7 +142,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -166,7 +154,6 @@ public partial class DBEnderecoSistema
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {

@@ -11,7 +11,6 @@ public partial class DBProObservacoes
     private protected string? m_FNome, m_FObservacoes;
     [XmlIgnore]
     private protected DateTime? m_FData;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -24,7 +23,6 @@ public partial class DBProObservacoes
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -37,7 +35,6 @@ public partial class DBProObservacoes
         }
     }
 
-    public string NFObservacoes() => m_FObservacoes ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacoes
     {
@@ -50,7 +47,6 @@ public partial class DBProObservacoes
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 

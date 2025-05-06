@@ -13,7 +13,6 @@ public partial class DBApenso
     private protected DateTime? m_FDtDist;
     [XmlIgnore]
     private protected decimal m_FValorCausa;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -26,7 +25,6 @@ public partial class DBApenso
         }
     }
 
-    public string NFApenso() => m_FApenso ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FApenso
     {
@@ -39,7 +37,6 @@ public partial class DBApenso
         }
     }
 
-    public string NFAcao() => m_FAcao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAcao
     {
@@ -52,7 +49,6 @@ public partial class DBApenso
         }
     }
 
-    public string NFDtDist() => $"{m_FDtDist:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtDist:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtDist => Convert.ToDateTime(m_FDtDist);
 
@@ -70,7 +66,6 @@ public partial class DBApenso
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -83,7 +78,6 @@ public partial class DBApenso
         }
     }
 
-    public decimal NFValorCausa() => m_FValorCausa;
     [XmlAttribute]
     public decimal FValorCausa
     {

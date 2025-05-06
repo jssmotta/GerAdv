@@ -13,7 +13,6 @@ public partial class DBLigacoes
     private protected DateTime? m_FDataRealizada, m_FUltimoAviso, m_FHoraFinal, m_FData, m_FHora;
     [XmlIgnore]
     private protected bool m_FCelular, m_FParticular, m_FRealizada, m_FUrgente, m_FStartScreen, m_FBold;
-    public string NFAssunto() => m_FAssunto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssunto
     {
@@ -26,7 +25,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFAgeClienteAvisado() => m_FAgeClienteAvisado;
     [XmlAttribute]
     public int FAgeClienteAvisado
     {
@@ -39,7 +37,6 @@ public partial class DBLigacoes
         }
     }
 
-    public bool NFCelular() => m_FCelular;
     [XmlAttribute]
     public bool FCelular
     {
@@ -52,7 +49,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -65,7 +61,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFContato() => m_FContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContato
     {
@@ -78,7 +73,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFDataRealizada() => $"{m_FDataRealizada:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataRealizada:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataRealizada => Convert.ToDateTime(m_FDataRealizada);
 
@@ -96,7 +90,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFQuemID() => m_FQuemID;
     [XmlAttribute]
     public int FQuemID
     {
@@ -109,7 +102,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFTelefonista() => m_FTelefonista;
     [XmlAttribute]
     public int FTelefonista
     {
@@ -122,7 +114,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFUltimoAviso() => $"{m_FUltimoAviso:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FUltimoAviso:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MUltimoAviso => Convert.ToDateTime(m_FUltimoAviso);
 
@@ -140,7 +131,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFHoraFinal() => $"{m_FHoraFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraFinal:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
@@ -175,7 +165,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -188,7 +177,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFQuemCodigo() => m_FQuemCodigo;
     [XmlAttribute]
     public int FQuemCodigo
     {
@@ -201,7 +189,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFSolicitante() => m_FSolicitante;
     [XmlAttribute]
     public int FSolicitante
     {
@@ -214,7 +201,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFPara() => m_FPara ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPara
     {
@@ -227,7 +213,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -240,7 +225,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFRamal() => m_FRamal;
     [XmlAttribute]
     public int FRamal
     {
@@ -253,7 +237,6 @@ public partial class DBLigacoes
         }
     }
 
-    public bool NFParticular() => m_FParticular;
     [XmlAttribute]
     public bool FParticular
     {
@@ -266,7 +249,6 @@ public partial class DBLigacoes
         }
     }
 
-    public bool NFRealizada() => m_FRealizada;
     [XmlAttribute]
     public bool FRealizada
     {
@@ -279,7 +261,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFStatus() => m_FStatus ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FStatus
     {
@@ -292,7 +273,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -310,7 +290,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFHora() => $"{m_FHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHora:HH:mm}";
     [XmlIgnore]
     public DateTime MHora => Convert.ToDateTime(m_FHora);
 
@@ -345,7 +324,6 @@ public partial class DBLigacoes
         }
     }
 
-    public bool NFUrgente() => m_FUrgente;
     [XmlAttribute]
     public bool FUrgente
     {
@@ -358,7 +336,6 @@ public partial class DBLigacoes
         }
     }
 
-    public string NFLigarPara() => m_FLigarPara ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FLigarPara
     {
@@ -371,7 +348,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -384,7 +360,6 @@ public partial class DBLigacoes
         }
     }
 
-    public bool NFStartScreen() => m_FStartScreen;
     [XmlAttribute]
     public bool FStartScreen
     {
@@ -397,7 +372,6 @@ public partial class DBLigacoes
         }
     }
 
-    public int NFEmotion() => m_FEmotion;
     [XmlAttribute]
     public int FEmotion
     {
@@ -410,7 +384,6 @@ public partial class DBLigacoes
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

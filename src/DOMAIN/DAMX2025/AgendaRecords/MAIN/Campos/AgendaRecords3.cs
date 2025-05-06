@@ -11,7 +11,6 @@ public partial class DBAgendaRecords
     private protected DateTime? m_FDataAviso1, m_FDataAviso2, m_FDataAviso3;
     [XmlIgnore]
     private protected bool m_FAviso1, m_FAviso2, m_FAviso3;
-    public int NFAgenda() => m_FAgenda;
     [XmlAttribute]
     public int FAgenda
     {
@@ -24,7 +23,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFJulgador() => m_FJulgador;
     [XmlAttribute]
     public int FJulgador
     {
@@ -37,7 +35,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFClientesSocios() => m_FClientesSocios;
     [XmlAttribute]
     public int FClientesSocios
     {
@@ -50,7 +47,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFPerito() => m_FPerito;
     [XmlAttribute]
     public int FPerito
     {
@@ -63,7 +59,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFColaborador() => m_FColaborador;
     [XmlAttribute]
     public int FColaborador
     {
@@ -76,7 +71,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFForo() => m_FForo;
     [XmlAttribute]
     public int FForo
     {
@@ -89,7 +83,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public bool NFAviso1() => m_FAviso1;
     [XmlAttribute]
     public bool FAviso1
     {
@@ -102,7 +95,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public bool NFAviso2() => m_FAviso2;
     [XmlAttribute]
     public bool FAviso2
     {
@@ -115,7 +107,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public bool NFAviso3() => m_FAviso3;
     [XmlAttribute]
     public bool FAviso3
     {
@@ -128,7 +119,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFCrmAviso1() => m_FCrmAviso1;
     [XmlAttribute]
     public int FCrmAviso1
     {
@@ -141,7 +131,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFCrmAviso2() => m_FCrmAviso2;
     [XmlAttribute]
     public int FCrmAviso2
     {
@@ -154,7 +143,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public int NFCrmAviso3() => m_FCrmAviso3;
     [XmlAttribute]
     public int FCrmAviso3
     {
@@ -167,7 +155,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public string NFDataAviso1() => $"{m_FDataAviso1:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataAviso1:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataAviso1 => Convert.ToDateTime(m_FDataAviso1);
 
@@ -185,7 +172,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public string NFDataAviso2() => $"{m_FDataAviso2:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataAviso2:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataAviso2 => Convert.ToDateTime(m_FDataAviso2);
 
@@ -203,7 +189,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    public string NFDataAviso3() => $"{m_FDataAviso3:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataAviso3:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataAviso3 => Convert.ToDateTime(m_FDataAviso3);
 

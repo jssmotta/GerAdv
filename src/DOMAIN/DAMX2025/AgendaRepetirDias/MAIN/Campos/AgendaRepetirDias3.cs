@@ -9,7 +9,6 @@ public partial class DBAgendaRepetirDias
     private protected int m_FMaster, m_FDia;
     [XmlIgnore]
     private protected DateTime? m_FHoraFinal, m_FHora;
-    public string NFHoraFinal() => $"{m_FHoraFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraFinal:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
@@ -44,7 +43,6 @@ public partial class DBAgendaRepetirDias
         }
     }
 
-    public int NFMaster() => m_FMaster;
     [XmlAttribute]
     public int FMaster
     {
@@ -57,7 +55,6 @@ public partial class DBAgendaRepetirDias
         }
     }
 
-    public int NFDia() => m_FDia;
     [XmlAttribute]
     public int FDia
     {
@@ -70,7 +67,6 @@ public partial class DBAgendaRepetirDias
         }
     }
 
-    public string NFHora() => $"{m_FHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHora:HH:mm}";
     [XmlIgnore]
     public DateTime MHora => Convert.ToDateTime(m_FHora);
 

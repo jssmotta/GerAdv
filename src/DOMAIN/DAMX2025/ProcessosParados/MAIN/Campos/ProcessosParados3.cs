@@ -9,7 +9,6 @@ public partial class DBProcessosParados
     private protected int m_FProcesso, m_FSemana, m_FAno, m_FOperador;
     [XmlIgnore]
     private protected DateTime? m_FDataHora, m_FDataHistorico, m_FDataNENotas;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -22,7 +21,6 @@ public partial class DBProcessosParados
         }
     }
 
-    public int NFSemana() => m_FSemana;
     [XmlAttribute]
     public int FSemana
     {
@@ -35,7 +33,6 @@ public partial class DBProcessosParados
         }
     }
 
-    public int NFAno() => m_FAno;
     [XmlAttribute]
     public int FAno
     {
@@ -48,7 +45,6 @@ public partial class DBProcessosParados
         }
     }
 
-    public string NFDataHora() => $"{m_FDataHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataHora:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataHora => Convert.ToDateTime(m_FDataHora);
 
@@ -66,7 +62,6 @@ public partial class DBProcessosParados
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -79,7 +74,6 @@ public partial class DBProcessosParados
         }
     }
 
-    public string NFDataHistorico() => $"{m_FDataHistorico:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataHistorico:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataHistorico => Convert.ToDateTime(m_FDataHistorico);
 
@@ -97,7 +91,6 @@ public partial class DBProcessosParados
         }
     }
 
-    public string NFDataNENotas() => $"{m_FDataNENotas:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataNENotas:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataNENotas => Convert.ToDateTime(m_FDataNENotas);
 

@@ -13,7 +13,6 @@ public partial class DBInstancia
     private protected DateTime? m_FData, m_FZKeyQuando;
     [XmlIgnore]
     private protected bool m_FLiminarPendente, m_FInterpusemosRecurso, m_FLiminarConcedida, m_FLiminarNegada, m_FLiminarParcial, m_FLiminarCliente, m_FPrincipal;
-    public string NFLiminarPedida() => m_FLiminarPedida ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FLiminarPedida
     {
@@ -26,7 +25,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFObjeto() => m_FObjeto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObjeto
     {
@@ -39,7 +37,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFStatusResultado() => m_FStatusResultado;
     [XmlAttribute]
     public int FStatusResultado
     {
@@ -52,7 +49,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFLiminarPendente() => m_FLiminarPendente;
     [XmlAttribute]
     public bool FLiminarPendente
     {
@@ -65,7 +61,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFInterpusemosRecurso() => m_FInterpusemosRecurso;
     [XmlAttribute]
     public bool FInterpusemosRecurso
     {
@@ -78,7 +73,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFLiminarConcedida() => m_FLiminarConcedida;
     [XmlAttribute]
     public bool FLiminarConcedida
     {
@@ -91,7 +85,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFLiminarNegada() => m_FLiminarNegada;
     [XmlAttribute]
     public bool FLiminarNegada
     {
@@ -104,7 +97,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -117,7 +109,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -135,7 +126,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFLiminarParcial() => m_FLiminarParcial;
     [XmlAttribute]
     public bool FLiminarParcial
     {
@@ -148,7 +138,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFLiminarResultado() => m_FLiminarResultado ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FLiminarResultado
     {
@@ -161,7 +150,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFNroProcesso() => m_FNroProcesso ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroProcesso
     {
@@ -174,7 +162,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFDivisao() => m_FDivisao;
     [XmlAttribute]
     public int FDivisao
     {
@@ -187,7 +174,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFLiminarCliente() => m_FLiminarCliente;
     [XmlAttribute]
     public bool FLiminarCliente
     {
@@ -200,7 +186,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFComarca() => m_FComarca;
     [XmlAttribute]
     public int FComarca
     {
@@ -213,7 +198,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFSubDivisao() => m_FSubDivisao;
     [XmlAttribute]
     public int FSubDivisao
     {
@@ -226,7 +210,6 @@ public partial class DBInstancia
         }
     }
 
-    public bool NFPrincipal() => m_FPrincipal;
     [XmlAttribute]
     public bool FPrincipal
     {
@@ -239,7 +222,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFAcao() => m_FAcao;
     [XmlAttribute]
     public int FAcao
     {
@@ -252,7 +234,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFForo() => m_FForo;
     [XmlAttribute]
     public int FForo
     {
@@ -265,7 +246,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFTipoRecurso() => m_FTipoRecurso;
     [XmlAttribute]
     public int FTipoRecurso
     {
@@ -278,7 +258,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFZKey() => m_FZKey ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FZKey
     {
@@ -291,7 +270,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFZKeyQuem() => m_FZKeyQuem;
     [XmlAttribute]
     public int FZKeyQuem
     {
@@ -304,7 +282,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFZKeyQuando() => $"{m_FZKeyQuando:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FZKeyQuando:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MZKeyQuando => Convert.ToDateTime(m_FZKeyQuando);
 
@@ -322,7 +299,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFNroAntigo() => m_FNroAntigo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroAntigo
     {
@@ -335,7 +311,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFAccessCode() => m_FAccessCode ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAccessCode
     {
@@ -348,7 +323,6 @@ public partial class DBInstancia
         }
     }
 
-    public int NFJulgador() => m_FJulgador;
     [XmlAttribute]
     public int FJulgador
     {
@@ -361,7 +335,6 @@ public partial class DBInstancia
         }
     }
 
-    public string NFZKeyIA() => m_FZKeyIA ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FZKeyIA
     {

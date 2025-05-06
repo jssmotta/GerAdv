@@ -7,7 +7,6 @@ public partial class DBContatoCRMOperador
     private protected bool pFldFContatoCRM, pFldFCargoEsc, pFldFOperador;
     [XmlIgnore]
     private protected int m_FContatoCRM, m_FCargoEsc, m_FOperador;
-    public int NFContatoCRM() => m_FContatoCRM;
     [XmlAttribute]
     public int FContatoCRM
     {
@@ -20,7 +19,6 @@ public partial class DBContatoCRMOperador
         }
     }
 
-    public int NFCargoEsc() => m_FCargoEsc;
     [XmlAttribute]
     public int FCargoEsc
     {
@@ -33,7 +31,6 @@ public partial class DBContatoCRMOperador
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {

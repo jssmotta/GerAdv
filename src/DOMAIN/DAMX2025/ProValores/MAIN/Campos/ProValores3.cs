@@ -15,7 +15,6 @@ public partial class DBProValores
     private protected bool m_FIgnorar;
     [XmlIgnore]
     private protected decimal m_FValorOriginal, m_FPercMulta, m_FValorMulta, m_FPercJuros, m_FValorOriginalCorrigidoIndice, m_FValorMultaCorrigido, m_FValorJurosCorrigido, m_FValorFinal;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -28,7 +27,6 @@ public partial class DBProValores
         }
     }
 
-    public int NFTipoValorProcesso() => m_FTipoValorProcesso;
     [XmlAttribute]
     public int FTipoValorProcesso
     {
@@ -41,7 +39,6 @@ public partial class DBProValores
         }
     }
 
-    public string NFIndice() => m_FIndice ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FIndice
     {
@@ -54,7 +51,6 @@ public partial class DBProValores
         }
     }
 
-    public bool NFIgnorar() => m_FIgnorar;
     [XmlAttribute]
     public bool FIgnorar
     {
@@ -67,7 +63,6 @@ public partial class DBProValores
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -85,7 +80,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFValorOriginal() => m_FValorOriginal;
     [XmlAttribute]
     public decimal FValorOriginal
     {
@@ -99,7 +93,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFPercMulta() => m_FPercMulta;
     [XmlAttribute]
     public decimal FPercMulta
     {
@@ -113,7 +106,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFValorMulta() => m_FValorMulta;
     [XmlAttribute]
     public decimal FValorMulta
     {
@@ -127,7 +119,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFPercJuros() => m_FPercJuros;
     [XmlAttribute]
     public decimal FPercJuros
     {
@@ -141,7 +132,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFValorOriginalCorrigidoIndice() => m_FValorOriginalCorrigidoIndice;
     [XmlAttribute]
     public decimal FValorOriginalCorrigidoIndice
     {
@@ -155,7 +145,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFValorMultaCorrigido() => m_FValorMultaCorrigido;
     [XmlAttribute]
     public decimal FValorMultaCorrigido
     {
@@ -169,7 +158,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFValorJurosCorrigido() => m_FValorJurosCorrigido;
     [XmlAttribute]
     public decimal FValorJurosCorrigido
     {
@@ -183,7 +171,6 @@ public partial class DBProValores
         }
     }
 
-    public decimal NFValorFinal() => m_FValorFinal;
     [XmlAttribute]
     public decimal FValorFinal
     {
@@ -197,7 +184,6 @@ public partial class DBProValores
         }
     }
 
-    public string NFDataUltimaCorrecao() => $"{m_FDataUltimaCorrecao:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataUltimaCorrecao:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataUltimaCorrecao => Convert.ToDateTime(m_FDataUltimaCorrecao);
 

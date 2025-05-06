@@ -9,7 +9,6 @@ public partial class DBGUTMatriz
     private protected int m_FGUTTipo, m_FValor;
     [XmlIgnore]
     private protected string? m_FDescricao;
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -22,7 +21,6 @@ public partial class DBGUTMatriz
         }
     }
 
-    public int NFGUTTipo() => m_FGUTTipo;
     [XmlAttribute]
     public int FGUTTipo
     {
@@ -35,7 +33,6 @@ public partial class DBGUTMatriz
         }
     }
 
-    public int NFValor() => m_FValor;
     [XmlAttribute]
     public int FValor
     {

@@ -15,7 +15,6 @@ public partial class DBAdvogados
     private protected bool m_FCasa, m_FEstagiario, m_FParcTop, m_FTop;
     [XmlIgnore]
     private protected decimal m_FSalario;
-    public int NFCargo() => m_FCargo;
     [XmlAttribute]
     public int FCargo
     {
@@ -28,7 +27,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFEMailPro() => m_FEMailPro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMailPro
     {
@@ -53,7 +51,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -66,7 +63,6 @@ public partial class DBAdvogados
         }
     }
 
-    public bool NFCasa() => m_FCasa;
     [XmlAttribute]
     public bool FCasa
     {
@@ -79,7 +75,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFNomeMae() => m_FNomeMae ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeMae
     {
@@ -92,7 +87,6 @@ public partial class DBAdvogados
         }
     }
 
-    public int NFEscritorio() => m_FEscritorio;
     [XmlAttribute]
     public int FEscritorio
     {
@@ -105,7 +99,6 @@ public partial class DBAdvogados
         }
     }
 
-    public bool NFEstagiario() => m_FEstagiario;
     [XmlAttribute]
     public bool FEstagiario
     {
@@ -118,7 +111,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFOAB() => m_FOAB ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOAB
     {
@@ -131,7 +123,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFNomeCompleto() => m_FNomeCompleto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeCompleto
     {
@@ -144,7 +135,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFCTPSSerie() => m_FCTPSSerie ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPSSerie
     {
@@ -157,7 +147,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFCTPS() => m_FCTPS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCTPS
     {
@@ -170,7 +159,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -183,7 +171,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -196,7 +183,6 @@ public partial class DBAdvogados
         }
     }
 
-    public int NFComissao() => m_FComissao;
     [XmlAttribute]
     public int FComissao
     {
@@ -209,7 +195,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFDtInicio() => $"{m_FDtInicio:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtInicio:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtInicio => Convert.ToDateTime(m_FDtInicio);
 
@@ -227,7 +212,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFDtFim() => $"{m_FDtFim:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtFim:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtFim => Convert.ToDateTime(m_FDtFim);
 
@@ -245,7 +229,6 @@ public partial class DBAdvogados
         }
     }
 
-    public decimal NFSalario() => m_FSalario;
     [XmlAttribute]
     public decimal FSalario
     {
@@ -259,7 +242,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFSecretaria() => m_FSecretaria ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSecretaria
     {
@@ -272,7 +254,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFTextoProcuracao() => m_FTextoProcuracao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTextoProcuracao
     {
@@ -285,7 +266,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -298,7 +278,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFEspecializacao() => m_FEspecializacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEspecializacao
     {
@@ -311,7 +290,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFPasta() => m_FPasta ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPasta
     {
@@ -324,7 +302,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -337,7 +314,6 @@ public partial class DBAdvogados
         }
     }
 
-    public string NFContaBancaria() => m_FContaBancaria ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContaBancaria
     {
@@ -350,7 +326,6 @@ public partial class DBAdvogados
         }
     }
 
-    public bool NFParcTop() => m_FParcTop;
     [XmlAttribute]
     public bool FParcTop
     {
@@ -363,7 +338,6 @@ public partial class DBAdvogados
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {

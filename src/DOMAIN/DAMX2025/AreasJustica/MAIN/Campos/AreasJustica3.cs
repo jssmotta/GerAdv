@@ -7,7 +7,6 @@ public partial class DBAreasJustica
     private protected bool pFldFArea, pFldFJustica;
     [XmlIgnore]
     private protected int m_FArea, m_FJustica;
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -20,7 +19,6 @@ public partial class DBAreasJustica
         }
     }
 
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
