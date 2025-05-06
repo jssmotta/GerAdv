@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { INENotas } from '../../Interfaces/interface.NENotas';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { INENotas } from '@/app/GerAdv_TS/NENotas/Interfaces/interface.NENotas';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ApensoComboBox from '@/app/GerAdv_TS/Apenso/ComboBox/Apenso';
@@ -16,6 +20,8 @@ import { ApensoApi } from '@/app/GerAdv_TS/Apenso/Apis/ApiApenso';
 import { PrecatoriaApi } from '@/app/GerAdv_TS/Precatoria/Apis/ApiPrecatoria';
 import { InstanciaApi } from '@/app/GerAdv_TS/Instancia/Apis/ApiInstancia';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface NENotasFormProps {
     nenotasData: INENotas;
@@ -129,26 +135,37 @@ if (getParamFromUrl("processos") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('NENotasForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeApenso && (<h2>{nomeApenso}</h2>)}
-{nomePrecatoria && (<h2>{nomePrecatoria}</h2>)}
-{nomeInstancia && (<h2>{nomeInstancia}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`NENotasForm-${nenotasData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={nenotasData} isSubmitting={isSubmitting} onClose={onClose} formId={`NENotasForm-${nenotasData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={nenotasData.nome}
+            placeholder={`Digite nome n e notas`}
             onChange={onChange}
             required
           />
@@ -174,9 +191,9 @@ if (getParamFromUrl("processos") > 0) {
             label={'Instancia'}
             />
 
-<Checkbox label="MovPro" name="movpro" checked={nenotasData.movpro} onChange={onChange} />
-<Checkbox label="NotaExpedida" name="notaexpedida" checked={nenotasData.notaexpedida} onChange={onChange} />
-<Checkbox label="Revisada" name="revisada" checked={nenotasData.revisada} onChange={onChange} />
+<InputCheckbox label="MovPro" name="movpro" checked={nenotasData.movpro} onChange={onChange} />
+<InputCheckbox label="NotaExpedida" name="notaexpedida" checked={nenotasData.notaexpedida} onChange={onChange} />
+<InputCheckbox label="Revisada" name="revisada" checked={nenotasData.revisada} onChange={onChange} />
  
             <ProcessosComboBox
             name={'processo'}
@@ -216,19 +233,10 @@ value={nenotasData.notapublicada}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

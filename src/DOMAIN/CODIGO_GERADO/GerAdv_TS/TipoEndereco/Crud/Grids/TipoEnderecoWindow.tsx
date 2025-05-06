@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TipoEnderecoInc from "../Inc/TipoEndereco";
 import { ITipoEndereco } from "../../Interfaces/interface.TipoEndereco";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TipoEnderecoWindow: React.FC<TipoEnderecoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tipoendereco/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoEndereco?.id}`);
+            router.push(`/pages/tipoendereco/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoEndereco?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTipoEndereco]);
@@ -42,7 +43,7 @@ const TipoEnderecoWindow: React.FC<TipoEnderecoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTipoEndereco?.id ?? 0).toString()}

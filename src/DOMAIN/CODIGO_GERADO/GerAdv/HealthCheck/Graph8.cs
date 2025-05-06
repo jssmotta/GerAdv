@@ -72,7 +72,7 @@ public class GraphHealthCheck(IOptions<AppSettings> appSettings, GraphService gr
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) gphTabela,gphTabelaId,gphImagem FROM dbo.Graph (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) gphTabela,gphTabelaId,gphImagem,gphGUID FROM dbo.Graph (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

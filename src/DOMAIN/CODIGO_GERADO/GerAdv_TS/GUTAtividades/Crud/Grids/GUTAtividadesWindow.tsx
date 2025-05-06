@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import GUTAtividadesInc from "../Inc/GUTAtividades";
 import { IGUTAtividades } from "../../Interfaces/interface.GUTAtividades";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const GUTAtividadesWindow: React.FC<GUTAtividadesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/gutatividades/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTAtividades?.id}`);
+            router.push(`/pages/gutatividades/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTAtividades?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedGUTAtividades]);
@@ -42,7 +43,7 @@ const GUTAtividadesWindow: React.FC<GUTAtividadesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={791}
                     newWidth={720}
                     id={(selectedGUTAtividades?.id ?? 0).toString()}

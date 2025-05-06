@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IInstancia } from '../../Interfaces/interface.Instancia';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IInstancia } from '@/app/GerAdv_TS/Instancia/Interfaces/interface.Instancia';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
@@ -16,6 +20,8 @@ import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { AcaoApi } from '@/app/GerAdv_TS/Acao/Apis/ApiAcao';
 import { ForoApi } from '@/app/GerAdv_TS/Foro/Apis/ApiForo';
 import { TipoRecursoApi } from '@/app/GerAdv_TS/TipoRecurso/Apis/ApiTipoRecurso';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface InstanciaFormProps {
     instanciaData: IInstancia;
@@ -129,26 +135,37 @@ if (getParamFromUrl("tiporecurso") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('InstanciaForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeAcao && (<h2>{nomeAcao}</h2>)}
-{nomeForo && (<h2>{nomeForo}</h2>)}
-{nomeTipoRecurso && (<h2>{nomeTipoRecurso}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`InstanciaForm-${instanciaData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={instanciaData} isSubmitting={isSubmitting} onClose={onClose} formId={`InstanciaForm-${instanciaData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nroprocesso"
             label="nroprocesso"
             className="inputIncNome"
             name="nroprocesso"
             value={instanciaData.nroprocesso}
+            placeholder={`Digite nome instancia`}
             onChange={onChange}
             required
           />
@@ -183,10 +200,10 @@ value={instanciaData.statusresultado}
 onChange={onChange}               
 />
 
-<Checkbox label="LiminarPendente" name="liminarpendente" checked={instanciaData.liminarpendente} onChange={onChange} />
-<Checkbox label="InterpusemosRecurso" name="interpusemosrecurso" checked={instanciaData.interpusemosrecurso} onChange={onChange} />
-<Checkbox label="LiminarConcedida" name="liminarconcedida" checked={instanciaData.liminarconcedida} onChange={onChange} />
-<Checkbox label="LiminarNegada" name="liminarnegada" checked={instanciaData.liminarnegada} onChange={onChange} />
+<InputCheckbox label="LiminarPendente" name="liminarpendente" checked={instanciaData.liminarpendente} onChange={onChange} />
+<InputCheckbox label="InterpusemosRecurso" name="interpusemosrecurso" checked={instanciaData.interpusemosrecurso} onChange={onChange} />
+<InputCheckbox label="LiminarConcedida" name="liminarconcedida" checked={instanciaData.liminarconcedida} onChange={onChange} />
+<InputCheckbox label="LiminarNegada" name="liminarnegada" checked={instanciaData.liminarnegada} onChange={onChange} />
  
             <ProcessosComboBox
             name={'processo'}
@@ -205,7 +222,7 @@ value={instanciaData.data}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="LiminarParcial" name="liminarparcial" checked={instanciaData.liminarparcial} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="LiminarParcial" name="liminarparcial" checked={instanciaData.liminarparcial} onChange={onChange} />
         
 <Input
 type="text"
@@ -227,7 +244,7 @@ value={instanciaData.divisao}
 onChange={onChange}               
 />
 
-<Checkbox label="LiminarCliente" name="liminarcliente" checked={instanciaData.liminarcliente} onChange={onChange} />
+<InputCheckbox label="LiminarCliente" name="liminarcliente" checked={instanciaData.liminarcliente} onChange={onChange} />
         
 <Input
 type="text"
@@ -249,7 +266,7 @@ value={instanciaData.subdivisao}
 onChange={onChange}               
 />
 
-<Checkbox label="Principal" name="principal" checked={instanciaData.principal} onChange={onChange} />
+<InputCheckbox label="Principal" name="principal" checked={instanciaData.principal} onChange={onChange} />
  
             <AcaoComboBox
             name={'acao'}
@@ -343,23 +360,10 @@ value={instanciaData.zkeyia}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/nenotas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?instancia=${instanciaData.id}`)}>N E Notas</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prosucumbencia${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?instancia=${instanciaData.id}`)}>Pro Sucumbencia</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/tribunal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?instancia=${instanciaData.id}`)}>Tribunal</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

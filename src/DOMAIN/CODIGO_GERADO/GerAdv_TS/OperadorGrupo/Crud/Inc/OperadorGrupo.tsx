@@ -5,7 +5,7 @@ import { OperadorGrupoApi } from '../../Apis/ApiOperadorGrupo';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IOperadorGrupoFormProps } from '../../Interfaces/interface.OperadorGrupo';
 import { OperadorGrupoService } from '../../Services/OperadorGrupo.service';
 import { useOperadorGrupoForm } from '../../Hooks/useOperadorGrupoForm';

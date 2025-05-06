@@ -8,6 +8,7 @@ public partial interface IGUTTipoReader
     GUTTipoResponse? Read(int id, SqlConnection oCnn);
     GUTTipoResponse? Read(string where, SqlConnection oCnn);
     GUTTipoResponse? Read(Entity.DBGUTTipo dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTTipoResponse? Read(DBGUTTipo dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class GUTTipo : IGUTTipoReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Ordem = dbRec.FOrdem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class GUTTipo : IGUTTipoReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Ordem = dbRec.FOrdem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

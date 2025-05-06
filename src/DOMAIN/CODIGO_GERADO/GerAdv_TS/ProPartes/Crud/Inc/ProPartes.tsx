@@ -5,7 +5,7 @@ import { ProPartesApi } from '../../Apis/ApiProPartes';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProPartesFormProps } from '../../Interfaces/interface.ProPartes';
 import { ProPartesService } from '../../Services/ProPartes.service';
 import { useProPartesForm } from '../../Hooks/useProPartesForm';

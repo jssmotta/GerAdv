@@ -8,6 +8,7 @@ public partial interface IContratosReader
     ContratosResponse? Read(int id, SqlConnection oCnn);
     ContratosResponse? Read(string where, SqlConnection oCnn);
     ContratosResponse? Read(Entity.DBContratos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ContratosResponse? Read(DBContratos dbRec);
 }
 
@@ -62,7 +63,7 @@ public partial class Contratos : IContratosReader
             Suspenso = dbRec.FSuspenso,
             Multa = dbRec.FMulta ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataInicio, out _))
             contratos.DataInicio = dbRec.FDataInicio;
@@ -120,7 +121,7 @@ public partial class Contratos : IContratosReader
             Suspenso = dbRec.FSuspenso,
             Multa = dbRec.FMulta ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataInicio, out _))
             contratos.DataInicio = dbRec.FDataInicio;

@@ -8,6 +8,7 @@ public partial interface IAdvogadosReader
     AdvogadosResponse? Read(int id, SqlConnection oCnn);
     AdvogadosResponse? Read(string where, SqlConnection oCnn);
     AdvogadosResponse? Read(Entity.DBAdvogados dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AdvogadosResponse? Read(DBAdvogados dbRec);
 }
 
@@ -70,7 +71,7 @@ public partial class Advogados : IAdvogadosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out _))
             advogados.DtInicio = dbRec.FDtInicio;
@@ -138,7 +139,7 @@ public partial class Advogados : IAdvogadosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out _))
             advogados.DtInicio = dbRec.FDtInicio;

@@ -14,6 +14,7 @@ public class Paises : IPaisesWriter
     {
         var dbRec = paises.Id.IsEmptyIDNumber() ? new Entity.DBPaises() : new Entity.DBPaises(paises.Id, oCnn);
         dbRec.FNome = paises.Nome;
+        dbRec.FGUID = paises.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

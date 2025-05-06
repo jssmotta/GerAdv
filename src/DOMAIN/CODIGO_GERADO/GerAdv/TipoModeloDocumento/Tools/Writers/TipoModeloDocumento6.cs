@@ -14,6 +14,7 @@ public class TipoModeloDocumento : ITipoModeloDocumentoWriter
     {
         var dbRec = tipomodelodocumento.Id.IsEmptyIDNumber() ? new Entity.DBTipoModeloDocumento() : new Entity.DBTipoModeloDocumento(tipomodelodocumento.Id, oCnn);
         dbRec.FNome = tipomodelodocumento.Nome;
+        dbRec.FGUID = tipomodelodocumento.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

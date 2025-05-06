@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AdvogadosEmpty } from "../../../Models/Advogados";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AdvogadosInc from "../Inc/Advogados";
 import { IAdvogados } from "../../Interfaces/interface.Advogados";
 import { AdvogadosService } from "../../Services/Advogados.service";
 import { AdvogadosApi } from "../../Apis/ApiAdvogados";
@@ -16,11 +14,12 @@ import { AdvogadosGridMobileComponent } from "../GridsMobile/Advogados";
 import { AdvogadosGridDesktopComponent } from "../GridsDesktop/Advogados";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAdvogados } from "../../Filters/Advogados";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AdvogadosWindow from "./AdvogadosWindow";
 
 const AdvogadosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const AdvogadosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <AdvogadosGridMobileComponent data={advogados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AdvogadosGridDesktopComponent data={advogados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AdvogadosGridMobileComponent data={advogados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AdvogadosGridDesktopComponent data={advogados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AdvogadosWindow
           isOpen={showInc}

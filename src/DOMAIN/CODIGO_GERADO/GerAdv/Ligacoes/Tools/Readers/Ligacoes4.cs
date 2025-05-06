@@ -8,6 +8,7 @@ public partial interface ILigacoesReader
     LigacoesResponse? Read(int id, SqlConnection oCnn);
     LigacoesResponse? Read(string where, SqlConnection oCnn);
     LigacoesResponse? Read(Entity.DBLigacoes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     LigacoesResponse? Read(DBLigacoes dbRec);
 }
 
@@ -57,7 +58,7 @@ public partial class Ligacoes : ILigacoesReader
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out _))
             ligacoes.DataRealizada = dbRec.FDataRealizada;
@@ -116,7 +117,7 @@ public partial class Ligacoes : ILigacoesReader
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out _))
             ligacoes.DataRealizada = dbRec.FDataRealizada;

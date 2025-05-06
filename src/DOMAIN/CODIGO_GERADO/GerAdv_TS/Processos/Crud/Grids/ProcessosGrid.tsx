@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProcessosEmpty } from "../../../Models/Processos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProcessosInc from "../Inc/Processos";
 import { IProcessos } from "../../Interfaces/interface.Processos";
 import { ProcessosService } from "../../Services/Processos.service";
 import { ProcessosApi } from "../../Apis/ApiProcessos";
@@ -16,11 +14,12 @@ import { ProcessosGridMobileComponent } from "../GridsMobile/Processos";
 import { ProcessosGridDesktopComponent } from "../GridsDesktop/Processos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProcessos } from "../../Filters/Processos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProcessosWindow from "./ProcessosWindow";
 
 const ProcessosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProcessosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProcessosGridMobileComponent data={processos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProcessosGridDesktopComponent data={processos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProcessosGridMobileComponent data={processos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProcessosGridDesktopComponent data={processos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProcessosWindow
           isOpen={showInc}

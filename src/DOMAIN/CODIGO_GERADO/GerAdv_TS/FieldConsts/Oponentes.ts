@@ -28,4 +28,5 @@
 	top = `Top`,
 	etiqueta = `Etiqueta`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

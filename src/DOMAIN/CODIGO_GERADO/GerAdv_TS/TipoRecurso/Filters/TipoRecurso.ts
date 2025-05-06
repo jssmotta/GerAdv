@@ -4,6 +4,7 @@
     justica?: number;
     area?: number;
  descricao?: string;
+ guid?: string;
 }
 
 export class FilterTipoRecursoDefaults implements FilterTipoRecurso {
@@ -11,5 +12,6 @@ export class FilterTipoRecursoDefaults implements FilterTipoRecurso {
     justica?: number = -2147483648;
     area?: number = -2147483648;
     descricao?: string = '';
+    guid?: string = '';
 }
     

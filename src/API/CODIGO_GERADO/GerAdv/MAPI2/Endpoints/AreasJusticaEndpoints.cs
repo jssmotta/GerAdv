@@ -56,30 +56,6 @@ public static class AreasJusticaEndpoints
 
             return Results.Ok(result);
         }).WithName("AreasJustica_AddAndUpdate").WithDisplayName("Add or Update AreasJustica");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAreasJusticaValidation validation, IAreasJusticaWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IAreasJusticaService service) =>
-        {
-            logger.LogInfo("AreasJustica", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AreasJustica", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AreasJustica_GetColumns").WithDisplayName("Get AreasJustica Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAreasJusticaValidation validation, IAreasJusticaWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IAreasJusticaService service) =>
-        {
-            logger.LogInfo("AreasJustica", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AreasJustica", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AreasJustica_UpdateColumns").WithDisplayName("Update AreasJustica Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAreasJusticaValidation validation, IAreasJusticaWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IAreasJusticaService service) =>
         {
             logger.LogInfo("AreasJustica", "Delete", $"id = {id}", uri);

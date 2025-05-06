@@ -5,7 +5,7 @@ import { TipoRecursoApi } from '../../Apis/ApiTipoRecurso';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoRecursoFormProps } from '../../Interfaces/interface.TipoRecurso';
 import { TipoRecursoService } from '../../Services/TipoRecurso.service';
 import { useTipoRecursoForm } from '../../Hooks/useTipoRecursoForm';

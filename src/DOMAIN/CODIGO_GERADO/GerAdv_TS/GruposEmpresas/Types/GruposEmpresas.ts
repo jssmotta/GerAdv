@@ -10,6 +10,7 @@ export interface IGruposEmpresas {
 	observacoes : string;
 	icone : string;
 	despesaunificada : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

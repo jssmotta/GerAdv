@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { FuncionariosEmpty } from "../../../Models/Funcionarios";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import FuncionariosInc from "../Inc/Funcionarios";
 import { IFuncionarios } from "../../Interfaces/interface.Funcionarios";
 import { FuncionariosService } from "../../Services/Funcionarios.service";
 import { FuncionariosApi } from "../../Apis/ApiFuncionarios";
@@ -16,11 +14,12 @@ import { FuncionariosGridMobileComponent } from "../GridsMobile/Funcionarios";
 import { FuncionariosGridDesktopComponent } from "../GridsDesktop/Funcionarios";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterFuncionarios } from "../../Filters/Funcionarios";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import FuncionariosWindow from "./FuncionariosWindow";
 
 const FuncionariosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const FuncionariosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <FuncionariosGridMobileComponent data={funcionarios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <FuncionariosGridDesktopComponent data={funcionarios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <FuncionariosGridMobileComponent data={funcionarios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <FuncionariosGridDesktopComponent data={funcionarios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <FuncionariosWindow
           isOpen={showInc}

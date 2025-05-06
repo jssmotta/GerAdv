@@ -5,6 +5,7 @@ export interface IRito {
 	descricao : string;
 	top : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

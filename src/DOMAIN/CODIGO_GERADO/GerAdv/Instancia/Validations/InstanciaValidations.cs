@@ -16,8 +16,10 @@ public class InstanciaValidation : IInstanciaValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.NroProcesso))
             return "NroProcesso é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Instancia '{reg.NroProcesso}' já cadastrado.";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -27,7 +29,7 @@ public class InstanciaValidation : IInstanciaValidation
         }
 
         // Acao
-        if (reg.Acao.IsEmptyIDNumber())
+        if (!reg.Acao.IsEmptyIDNumber())
         {
             var regAcao = acaoReader.Read(reg.Acao, oCnn);
             if (regAcao == null || regAcao.Id != reg.Acao)
@@ -37,7 +39,7 @@ public class InstanciaValidation : IInstanciaValidation
         }
 
         // Foro
-        if (reg.Foro.IsEmptyIDNumber())
+        if (!reg.Foro.IsEmptyIDNumber())
         {
             var regForo = foroReader.Read(reg.Foro, oCnn);
             if (regForo == null || regForo.Id != reg.Foro)
@@ -47,7 +49,7 @@ public class InstanciaValidation : IInstanciaValidation
         }
 
         // TipoRecurso
-        if (reg.TipoRecurso.IsEmptyIDNumber())
+        if (!reg.TipoRecurso.IsEmptyIDNumber())
         {
             var regTipoRecurso = tiporecursoReader.Read(reg.TipoRecurso, oCnn);
             if (regTipoRecurso == null || regTipoRecurso.Id != reg.TipoRecurso)
@@ -57,5 +59,11 @@ public class InstanciaValidation : IInstanciaValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Instancia reg, IInstanciaService service, string uri)
+    {
+        var existingInstancia = (await service.Filter(new Filters.FilterInstancia { Divisao = reg.Divisao, NroProcesso = reg.NroProcesso, SubDivisao = reg.SubDivisao }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingInstancia != null && existingInstancia.Id > 0 && existingInstancia.Id != reg.Id;
     }
 }

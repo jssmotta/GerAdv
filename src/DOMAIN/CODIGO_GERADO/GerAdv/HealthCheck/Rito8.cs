@@ -72,7 +72,7 @@ public class RitoHealthCheck(IOptions<AppSettings> appSettings, RitoService rito
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ritDescricao,ritTop,ritBold FROM dbo.Rito (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ritDescricao,ritTop,ritBold,ritGUID FROM dbo.Rito (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

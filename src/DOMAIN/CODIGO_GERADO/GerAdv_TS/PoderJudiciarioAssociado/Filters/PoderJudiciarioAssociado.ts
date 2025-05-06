@@ -14,6 +14,7 @@
  cidadenome?: string;
     subdivisao?: number;
     tipo?: number;
+ guid?: string;
 }
 
 export class FilterPoderJudiciarioAssociadoDefaults implements FilterPoderJudiciarioAssociado {
@@ -31,5 +32,6 @@ export class FilterPoderJudiciarioAssociadoDefaults implements FilterPoderJudici
     cidadenome?: string = '';
     subdivisao?: number = -2147483648;
     tipo?: number = -2147483648;
+    guid?: string = '';
 }
     

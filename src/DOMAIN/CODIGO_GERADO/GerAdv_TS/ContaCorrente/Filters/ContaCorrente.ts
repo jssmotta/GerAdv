@@ -18,6 +18,7 @@
     valorprincipal?: number;
     parcelaprincipalid?: number;
  datapgto?: string;
+ guid?: string;
 }
 
 export class FilterContaCorrenteDefaults implements FilterContaCorrente {
@@ -39,5 +40,6 @@ export class FilterContaCorrenteDefaults implements FilterContaCorrente {
     valorprincipal?: number = -2147483648;
     parcelaprincipalid?: number = -2147483648;
     datapgto?: string = '';
+    guid?: string = '';
 }
     

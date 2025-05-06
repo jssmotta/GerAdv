@@ -104,4 +104,7 @@ public partial class FilterProcessos
 
     [JsonPropertyName("valorcondenacaoprovisorio")]
     public int ValorCondenacaoProvisorio { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

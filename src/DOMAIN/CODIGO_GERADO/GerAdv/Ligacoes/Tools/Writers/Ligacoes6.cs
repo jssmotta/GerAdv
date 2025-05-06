@@ -45,6 +45,7 @@ public class Ligacoes : ILigacoesWriter
         dbRec.FStartScreen = ligacoes.StartScreen;
         dbRec.FEmotion = ligacoes.Emotion;
         dbRec.FBold = ligacoes.Bold;
+        dbRec.FGUID = ligacoes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

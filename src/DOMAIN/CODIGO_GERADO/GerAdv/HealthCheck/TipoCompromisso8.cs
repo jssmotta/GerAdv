@@ -72,7 +72,7 @@ public class TipoCompromissoHealthCheck(IOptions<AppSettings> appSettings, TipoC
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) tipIcone,tipDescricao,tipFinanceiro,tipBold FROM dbo.TipoCompromisso (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) tipIcone,tipDescricao,tipFinanceiro,tipBold,tipGUID FROM dbo.TipoCompromisso (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

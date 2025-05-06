@@ -15,7 +15,7 @@ public class OperadorGruposAgendaOperadoresValidation : IOperadorGruposAgendaOpe
         if (reg == null)
             return "Objeto está nulo";
         // OperadorGruposAgenda
-        if (reg.OperadorGruposAgenda.IsEmptyIDNumber())
+        if (!reg.OperadorGruposAgenda.IsEmptyIDNumber())
         {
             var regOperadorGruposAgenda = operadorgruposagendaReader.Read(reg.OperadorGruposAgenda, oCnn);
             if (regOperadorGruposAgenda == null || regOperadorGruposAgenda.Id != reg.OperadorGruposAgenda)
@@ -25,7 +25,7 @@ public class OperadorGruposAgendaOperadoresValidation : IOperadorGruposAgendaOpe
         }
 
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

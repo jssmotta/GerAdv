@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { UFEmpty } from "../../../Models/UF";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import UFInc from "../Inc/UF";
 import { IUF } from "../../Interfaces/interface.UF";
 import { UFService } from "../../Services/UF.service";
 import { UFApi } from "../../Apis/ApiUF";
@@ -16,11 +14,12 @@ import { UFGridMobileComponent } from "../GridsMobile/UF";
 import { UFGridDesktopComponent } from "../GridsDesktop/UF";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterUF } from "../../Filters/UF";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import UFWindow from "./UFWindow";
 
 const UFGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const UFGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <UFGridMobileComponent data={uf} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <UFGridDesktopComponent data={uf} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <UFGridMobileComponent data={uf} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <UFGridDesktopComponent data={uf} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <UFWindow
           isOpen={showInc}

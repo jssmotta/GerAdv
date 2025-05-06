@@ -1,8 +1,9 @@
-﻿"use client";
+﻿// GridsDesktop.tsx.txt
+"use client";
 import { Grid, GridColumn, GridFilterChangeEvent, GridPageChangeEvent, GridSortChangeEvent } from "@progress/kendo-react-all";
 import { IOperadores } from "../../Interfaces/interface.Operadores";
 import { useRouter } from 'next/navigation';
-import { LoaderGrid } from "@/app/components/GridLoader";
+import { LoaderGrid } from "@/app/components/Cruds/GridLoader";
 import { useState } from "react";
 import { applyFilter, applyFilterToColumn, sortData } from "@/app/tools/crud";
 
@@ -10,12 +11,14 @@ interface OperadoresGridProps {
 	data: IOperadores[];
 	onRowClick: (operadores: IOperadores) => void;
 	onDeleteClick: (e: any) => void;
+	setSelectedId: (id: number | null) => void;
 }
 
 export const OperadoresGridDesktopComponent: React.FC<OperadoresGridProps> = ({
 	data,
 	onRowClick,
-	onDeleteClick
+	onDeleteClick,
+	setSelectedId,
 }) => {
 	const router = useRouter();
 

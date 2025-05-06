@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import EnderecoSistemaInc from "../Inc/EnderecoSistema";
 import { IEnderecoSistema } from "../../Interfaces/interface.EnderecoSistema";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const EnderecoSistemaWindow: React.FC<EnderecoSistemaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/enderecosistema/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEnderecoSistema?.id}`);
+            router.push(`/pages/enderecosistema/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEnderecoSistema?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedEnderecoSistema]);
@@ -42,7 +43,7 @@ const EnderecoSistemaWindow: React.FC<EnderecoSistemaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={657}
                     newWidth={1440}
                     id={(selectedEnderecoSistema?.id ?? 0).toString()}

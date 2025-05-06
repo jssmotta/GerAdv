@@ -72,7 +72,7 @@ public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) preNome,preFuncao,preSetor,preDtNasc,preQualificacao,preSexo,preIdade,preCPF,preRG,prePeriodo_Ini,prePeriodo_Fim,preRegistro,preCTPSNumero,preCTPSSerie,preCTPSDtEmissao,prePIS,preSalario,preLiberaAgenda,preObservacao,preEndereco,preBairro,preCidade,preCEP,preFone,preFax,preEMail,prePai,preMae,preClass,preEtiqueta,preAni,preBold FROM dbo.Prepostos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) preNome,preFuncao,preSetor,preDtNasc,preQualificacao,preSexo,preIdade,preCPF,preRG,prePeriodo_Ini,prePeriodo_Fim,preRegistro,preCTPSNumero,preCTPSSerie,preCTPSDtEmissao,prePIS,preSalario,preLiberaAgenda,preObservacao,preEndereco,preBairro,preCidade,preCEP,preFone,preFax,preEMail,prePai,preMae,preClass,preEtiqueta,preAni,preBold,preGUID FROM dbo.Prepostos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

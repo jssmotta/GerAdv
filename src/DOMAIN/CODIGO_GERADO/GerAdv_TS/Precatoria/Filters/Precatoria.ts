@@ -7,6 +7,7 @@
  deprecante?: string;
  deprecado?: string;
  obs?: string;
+ guid?: string;
 }
 
 export class FilterPrecatoriaDefaults implements FilterPrecatoria {
@@ -17,5 +18,6 @@ export class FilterPrecatoriaDefaults implements FilterPrecatoria {
     deprecante?: string = '';
     deprecado?: string = '';
     obs?: string = '';
+    guid?: string = '';
 }
     

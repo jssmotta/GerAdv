@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IContatoCRM } from '../../Interfaces/interface.ContatoCRM';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IContatoCRM } from '@/app/GerAdv_TS/ContatoCRM/Interfaces/interface.ContatoCRM';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
@@ -16,6 +20,8 @@ import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { TipoContatoCRMApi } from '@/app/GerAdv_TS/TipoContatoCRM/Apis/ApiTipoContatoCRM';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ContatoCRMFormProps {
     contatocrmData: IContatoCRM;
@@ -129,18 +135,28 @@ if (getParamFromUrl("tipocontatocrm") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ContatoCRMForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOperador && (<h2>{nomeOperador}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeTipoContatoCRM && (<h2>{nomeTipoContatoCRM}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ContatoCRMForm-${contatocrmData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={contatocrmData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContatoCRMForm-${contatocrmData.id}`} />
+
+                <div className="grid-container">
 
 <Input
 type="text"
@@ -162,9 +178,9 @@ value={contatocrmData.docsviarecebimento}
 onChange={onChange}               
 />
 
-<Checkbox label="NaoPublicavel" name="naopublicavel" checked={contatocrmData.naopublicavel} onChange={onChange} />
-<Checkbox label="Notificar" name="notificar" checked={contatocrmData.notificar} onChange={onChange} />
-<Checkbox label="Ocultar" name="ocultar" checked={contatocrmData.ocultar} onChange={onChange} />
+<InputCheckbox label="NaoPublicavel" name="naopublicavel" checked={contatocrmData.naopublicavel} onChange={onChange} />
+<InputCheckbox label="Notificar" name="notificar" checked={contatocrmData.notificar} onChange={onChange} />
+<InputCheckbox label="Ocultar" name="ocultar" checked={contatocrmData.ocultar} onChange={onChange} />
         
 <Input
 type="text"
@@ -176,7 +192,7 @@ value={contatocrmData.assunto}
 onChange={onChange}               
 />
 
-<Checkbox label="IsDocsRecebidos" name="isdocsrecebidos" checked={contatocrmData.isdocsrecebidos} onChange={onChange} />
+<InputCheckbox label="IsDocsRecebidos" name="isdocsrecebidos" checked={contatocrmData.isdocsrecebidos} onChange={onChange} />
         
 <Input
 type="text"
@@ -290,10 +306,10 @@ onChange={onChange}
             label={'Processos'}
             />
 
-</div><div className="grid-container"><Checkbox label="Importante" name="importante" checked={contatocrmData.importante} onChange={onChange} />
-<Checkbox label="Urgente" name="urgente" checked={contatocrmData.urgente} onChange={onChange} />
-<Checkbox label="GerarHoraTrabalhada" name="gerarhoratrabalhada" checked={contatocrmData.gerarhoratrabalhada} onChange={onChange} />
-<Checkbox label="ExibirNoTopo" name="exibirnotopo" checked={contatocrmData.exibirnotopo} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Importante" name="importante" checked={contatocrmData.importante} onChange={onChange} />
+<InputCheckbox label="Urgente" name="urgente" checked={contatocrmData.urgente} onChange={onChange} />
+<InputCheckbox label="GerarHoraTrabalhada" name="gerarhoratrabalhada" checked={contatocrmData.gerarhoratrabalhada} onChange={onChange} />
+<InputCheckbox label="ExibirNoTopo" name="exibirnotopo" checked={contatocrmData.exibirnotopo} onChange={onChange} />
  
             <TipoContatoCRMComboBox
             name={'tipocontatocrm'}
@@ -322,24 +338,12 @@ value={contatocrmData.emocao}
 onChange={onChange}               
 />
 
-<Checkbox label="Continuar" name="continuar" checked={contatocrmData.continuar} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contatocrmoperador${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?contatocrm=${contatocrmData.id}`)}>Contato C R M Operador</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/docsrecebidositens${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?contatocrm=${contatocrmData.id}`)}>Docs Recebidos Itens</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/recados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?contatocrm=${contatocrmData.id}`)}>Recados</div>
+<InputCheckbox label="Continuar" name="continuar" checked={contatocrmData.continuar} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

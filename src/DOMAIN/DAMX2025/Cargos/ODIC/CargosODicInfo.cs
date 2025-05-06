@@ -54,7 +54,8 @@ public partial class DBCargosODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "carCodigo"
+            "carCodigo",
+            "carNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBCargosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

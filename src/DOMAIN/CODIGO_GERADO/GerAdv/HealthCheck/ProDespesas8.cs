@@ -72,7 +72,7 @@ public class ProDespesasHealthCheck(IOptions<AppSettings> appSettings, ProDespes
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) desLigacaoID,desCliente,desCorrigido,desData,desValorOriginal,desProcesso,desQuitado,desDataCorrecao,desValor,desTipo,desHistorico,desLivroCaixa FROM dbo.ProDespesas (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) desLigacaoID,desCliente,desCorrigido,desData,desValorOriginal,desProcesso,desQuitado,desDataCorrecao,desValor,desTipo,desHistorico,desLivroCaixa,desGUID FROM dbo.ProDespesas (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

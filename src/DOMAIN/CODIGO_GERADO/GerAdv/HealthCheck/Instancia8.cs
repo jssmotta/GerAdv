@@ -72,7 +72,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA FROM dbo.Instancia (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA,insGUID FROM dbo.Instancia (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

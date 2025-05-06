@@ -56,30 +56,6 @@ public static class AgendaQuemEndpoints
 
             return Results.Ok(result);
         }).WithName("AgendaQuem_AddAndUpdate").WithDisplayName("Add or Update AgendaQuem");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgendaQuemValidation validation, IAgendaQuemWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IPrepostosReader prepostosReader, IAgendaQuemService service) =>
-        {
-            logger.LogInfo("AgendaQuem", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AgendaQuem", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AgendaQuem_GetColumns").WithDisplayName("Get AgendaQuem Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgendaQuemValidation validation, IAgendaQuemWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IPrepostosReader prepostosReader, IAgendaQuemService service) =>
-        {
-            logger.LogInfo("AgendaQuem", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AgendaQuem", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AgendaQuem_UpdateColumns").WithDisplayName("Update AgendaQuem Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgendaQuemValidation validation, IAgendaQuemWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IPrepostosReader prepostosReader, IAgendaQuemService service) =>
         {
             logger.LogInfo("AgendaQuem", "Delete", $"id = {id}", uri);

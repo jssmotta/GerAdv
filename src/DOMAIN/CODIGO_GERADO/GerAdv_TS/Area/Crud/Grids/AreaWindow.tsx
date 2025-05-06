@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AreaInc from "../Inc/Area";
 import { IArea } from "../../Interfaces/interface.Area";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AreaWindow: React.FC<AreaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/area/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedArea?.id}`);
+            router.push(`/pages/area/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedArea?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedArea]);
@@ -42,7 +43,7 @@ const AreaWindow: React.FC<AreaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedArea?.id ?? 0).toString()}

@@ -11,7 +11,6 @@ public partial class DBCargosEsc
     private protected string? m_FNome;
     [XmlIgnore]
     private protected decimal m_FPercentual;
-    public decimal NFPercentual() => m_FPercentual;
     [XmlAttribute]
     public decimal FPercentual
     {
@@ -25,7 +24,6 @@ public partial class DBCargosEsc
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -38,7 +36,6 @@ public partial class DBCargosEsc
         }
     }
 
-    public int NFClassificacao() => m_FClassificacao;
     [XmlAttribute]
     public int FClassificacao
     {

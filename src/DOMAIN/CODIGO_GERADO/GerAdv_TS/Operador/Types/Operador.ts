@@ -35,6 +35,7 @@ export interface IOperador {
 	suportenomesolicitante : string;
 	suporteultimoacesso : string;
 	suporteipultimoacesso : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

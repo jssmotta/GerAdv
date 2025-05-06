@@ -91,6 +91,11 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
             }
         }
 
+        if (id.IsEmptyIDNumber())
+        {
+            return new OperadorEMailPopupResponse();
+        }
+
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
@@ -98,7 +103,10 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-OperadorEMailPopup-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            using var scope = Configuracoes.CreateConnectionScope(uri);
+            var oCnn = scope.Connection;
+            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{uri}-OperadorEMailPopup-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
@@ -188,67 +196,6 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
             }
 
             return operadoremailpopup;
-        });
-    }
-
-    public async Task<GetColumnsResponse?> GetColumns([FromBody] GetColumns parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("OperadorEMailPopup: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            using var dbRec = new DBOperadorEMailPopup(parameters?.Id ?? throw new Exception("Id == null"), oCnn);
-            var campos = new List<ColumnValueItem>();
-            foreach (var column in parameters?.Columns!)
-                if (column != null && column.Length > 0)
-                {
-                    var value = dbRec.GetValueByNameField($"{DBOperadorEMailPopupDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}");
-                    if (value != null)
-                        campos.Add(new ColumnValueItem(column, value));
-                }
-
-            var result = new GetColumnsResponse
-            {
-                Id = parameters.Id,
-                Columns = campos
-            };
-            return result;
-        });
-    }
-
-    public async Task<bool> UpdateColumns([FromBody] UpdateColumnsRequest parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("OperadorEMailPopup: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return false;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return false;
-            }
-
-            using var dbRec = new DBOperadorEMailPopup(parameters?.Id ?? throw new Exception("Id is null"), oCnn);
-            foreach (var(column, value)in parameters?.Columns!)
-                dbRec.SetValueByNameField($"{DBOperadorEMailPopupDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}", value);
-            dbRec.AuditorQuem = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-            return dbRec.Update(oCnn) == 0;
         });
     }
 
@@ -358,6 +305,7 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
         cWhere += filtro.PortaPop3 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorEMailPopupDicInfo.PortaPop3Sql(filtro.PortaPop3);
         cWhere += filtro.Assinatura.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorEMailPopupDicInfo.AssinaturaSql(filtro.Assinatura);
         cWhere += filtro.Senha256.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorEMailPopupDicInfo.Senha256Sql(filtro.Senha256);
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorEMailPopupDicInfo.GUIDSql(filtro.GUID);
         return cWhere;
     }
 }

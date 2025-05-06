@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import DocumentosInc from "../Inc/Documentos";
 import { IDocumentos } from "../../Interfaces/interface.Documentos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const DocumentosWindow: React.FC<DocumentosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/documentos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedDocumentos?.id}`);
+            router.push(`/pages/documentos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedDocumentos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedDocumentos]);
@@ -42,7 +43,7 @@ const DocumentosWindow: React.FC<DocumentosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedDocumentos?.id ?? 0).toString()}

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { HorasTrabEmpty } from "../../../Models/HorasTrab";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import HorasTrabInc from "../Inc/HorasTrab";
 import { IHorasTrab } from "../../Interfaces/interface.HorasTrab";
 import { HorasTrabService } from "../../Services/HorasTrab.service";
 import { HorasTrabApi } from "../../Apis/ApiHorasTrab";
@@ -16,11 +14,12 @@ import { HorasTrabGridMobileComponent } from "../GridsMobile/HorasTrab";
 import { HorasTrabGridDesktopComponent } from "../GridsDesktop/HorasTrab";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterHorasTrab } from "../../Filters/HorasTrab";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import HorasTrabWindow from "./HorasTrabWindow";
 
 const HorasTrabGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const HorasTrabGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <HorasTrabGridMobileComponent data={horastrab} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <HorasTrabGridDesktopComponent data={horastrab} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <HorasTrabGridMobileComponent data={horastrab} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <HorasTrabGridDesktopComponent data={horastrab} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <HorasTrabWindow
           isOpen={showInc}

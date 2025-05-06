@@ -16,4 +16,5 @@
 	andar = `Andar`,
 	etiqueta = `Etiqueta`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

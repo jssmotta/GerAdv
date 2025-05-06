@@ -211,7 +211,7 @@ public partial class Funcionarios
     /// GUId - funGUID - tamanho máximo: 150 
     /// </summary>
     [JsonPropertyName("guid")]
-    public string Guid { get; set; } = "";
+    public string GUID { get; set; } = "";
 
     [JsonPropertyName("auditor")]
     public Auditor? Auditor { get; set; }

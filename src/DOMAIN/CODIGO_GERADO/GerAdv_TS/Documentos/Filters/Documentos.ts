@@ -4,6 +4,7 @@
     processo?: number;
  data?: string;
  observacao?: string;
+ guid?: string;
 }
 
 export class FilterDocumentosDefaults implements FilterDocumentos {
@@ -11,5 +12,6 @@ export class FilterDocumentosDefaults implements FilterDocumentos {
     processo?: number = -2147483648;
     data?: string = '';
     observacao?: string = '';
+    guid?: string = '';
 }
     

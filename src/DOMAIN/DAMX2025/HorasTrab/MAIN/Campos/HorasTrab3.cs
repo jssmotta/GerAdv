@@ -15,7 +15,6 @@ public partial class DBHorasTrab
     private protected bool m_FHonorario;
     [XmlIgnore]
     private protected decimal m_FTempo, m_FValor;
-    public int NFIDContatoCRM() => m_FIDContatoCRM;
     [XmlAttribute]
     public int FIDContatoCRM
     {
@@ -28,7 +27,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public bool NFHonorario() => m_FHonorario;
     [XmlAttribute]
     public bool FHonorario
     {
@@ -41,7 +39,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFIDAgenda() => m_FIDAgenda;
     [XmlAttribute]
     public int FIDAgenda
     {
@@ -54,7 +51,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -72,7 +68,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -85,7 +80,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFStatus() => m_FStatus;
     [XmlAttribute]
     public int FStatus
     {
@@ -98,7 +92,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -111,7 +104,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -124,7 +116,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFFuncionario() => m_FFuncionario;
     [XmlAttribute]
     public int FFuncionario
     {
@@ -137,7 +128,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFHrIni() => m_FHrIni ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHrIni
     {
@@ -150,7 +140,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFHrFim() => m_FHrFim ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHrFim
     {
@@ -163,7 +152,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public decimal NFTempo() => m_FTempo;
     [XmlAttribute]
     public decimal FTempo
     {
@@ -177,7 +165,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -191,7 +178,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -204,7 +190,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFAnexo() => m_FAnexo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAnexo
     {
@@ -217,7 +202,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFAnexoComp() => m_FAnexoComp ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAnexoComp
     {
@@ -230,7 +214,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public string NFAnexoUNC() => m_FAnexoUNC ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAnexoUNC
     {
@@ -243,7 +226,6 @@ public partial class DBHorasTrab
         }
     }
 
-    public int NFServico() => m_FServico;
     [XmlAttribute]
     public int FServico
     {

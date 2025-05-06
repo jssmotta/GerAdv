@@ -40,4 +40,5 @@ public partial interface IDBAdvogados
     public bool FEtiqueta { get; set; }
     public bool FAni { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

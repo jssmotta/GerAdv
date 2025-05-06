@@ -5,6 +5,7 @@ export interface ITiposAcao {
 	nome : string;
 	inativo : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

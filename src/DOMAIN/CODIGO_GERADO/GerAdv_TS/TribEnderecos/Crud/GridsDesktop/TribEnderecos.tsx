@@ -1,8 +1,9 @@
-﻿"use client";
+﻿// GridsDesktop.tsx.txt
+"use client";
 import { Grid, GridColumn, GridFilterChangeEvent, GridPageChangeEvent, GridSortChangeEvent } from "@progress/kendo-react-all";
 import { ITribEnderecos } from "../../Interfaces/interface.TribEnderecos";
 import { useRouter } from 'next/navigation';
-import { LoaderGrid } from "@/app/components/GridLoader";
+import { LoaderGrid } from "@/app/components/Cruds/GridLoader";
 import { useState } from "react";
 import { applyFilter, applyFilterToColumn, sortData } from "@/app/tools/crud";
 
@@ -10,12 +11,14 @@ interface TribEnderecosGridProps {
 	data: ITribEnderecos[];
 	onRowClick: (tribenderecos: ITribEnderecos) => void;
 	onDeleteClick: (e: any) => void;
+	setSelectedId: (id: number | null) => void;
 }
 
 export const TribEnderecosGridDesktopComponent: React.FC<TribEnderecosGridProps> = ({
 	data,
 	onRowClick,
-	onDeleteClick
+	onDeleteClick,
+	setSelectedId,
 }) => {
 	const router = useRouter();
 

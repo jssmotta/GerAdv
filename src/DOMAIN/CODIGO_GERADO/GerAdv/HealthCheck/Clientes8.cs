@@ -72,7 +72,7 @@ public class ClientesHealthCheck(IOptions<AppSettings> appSettings, ClientesServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cliEmpresa,cliIcone,cliNomeMae,cliRGDataExp,cliInativo,cliQuemIndicou,cliSendEMail,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliObito,cliNomePai,cliRGOExpeditor,cliRegimeTributacao,cliEnquadramentoEmpresa,cliReportECBOnly,cliProBono,cliCNH,cliPessoaContato,cliEtiqueta,cliAni,cliBold FROM dbo.Clientes (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) cliEmpresa,cliIcone,cliNomeMae,cliRGDataExp,cliInativo,cliQuemIndicou,cliSendEMail,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliObito,cliNomePai,cliRGOExpeditor,cliRegimeTributacao,cliEnquadramentoEmpresa,cliReportECBOnly,cliProBono,cliCNH,cliPessoaContato,cliEtiqueta,cliAni,cliBold,cliGUID FROM dbo.Clientes (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

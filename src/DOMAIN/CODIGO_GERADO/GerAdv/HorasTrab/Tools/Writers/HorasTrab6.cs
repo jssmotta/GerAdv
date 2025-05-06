@@ -32,6 +32,7 @@ public class HorasTrab : IHorasTrabWriter
         dbRec.FAnexoComp = horastrab.AnexoComp;
         dbRec.FAnexoUNC = horastrab.AnexoUNC;
         dbRec.FServico = horastrab.Servico;
+        dbRec.FGUID = horastrab.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

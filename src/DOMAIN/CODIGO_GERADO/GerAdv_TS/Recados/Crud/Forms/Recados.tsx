@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IRecados } from '../../Interfaces/interface.Recados';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IRecados } from '@/app/GerAdv_TS/Recados/Interfaces/interface.Recados';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
@@ -20,6 +24,8 @@ import { HistoricoApi } from '@/app/GerAdv_TS/Historico/Apis/ApiHistorico';
 import { ContatoCRMApi } from '@/app/GerAdv_TS/ContatoCRM/Apis/ApiContatoCRM';
 import { LigacoesApi } from '@/app/GerAdv_TS/Ligacoes/Apis/ApiLigacoes';
 import { AgendaApi } from '@/app/GerAdv_TS/Agenda/Apis/ApiAgenda';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface RecadosFormProps {
     recadosData: IRecados;
@@ -175,20 +181,28 @@ if (getParamFromUrl("agenda") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('RecadosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeHistorico && (<h2>{nomeHistorico}</h2>)}
-{nomeContatoCRM && (<h2>{nomeContatoCRM}</h2>)}
-{nomeLigacoes && (<h2>{nomeLigacoes}</h2>)}
-{nomeAgenda && (<h2>{nomeAgenda}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`RecadosForm-${recadosData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={recadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`RecadosForm-${recadosData.id}`} />
+
+                <div className="grid-container">
 
 <Input
 type="text"
@@ -230,7 +244,7 @@ value={recadosData.assunto}
 onChange={onChange}               
 />
 
-<Checkbox label="Concluido" name="concluido" checked={recadosData.concluido} onChange={onChange} />
+<InputCheckbox label="Concluido" name="concluido" checked={recadosData.concluido} onChange={onChange} />
  
             <ProcessosComboBox
             name={'processo'}
@@ -256,8 +270,8 @@ value={recadosData.recado}
 onChange={onChange}               
 />
 
-<Checkbox label="Urgente" name="urgente" checked={recadosData.urgente} onChange={onChange} />
-</div><div className="grid-container"><Checkbox label="Importante" name="importante" checked={recadosData.importante} onChange={onChange} />
+<InputCheckbox label="Urgente" name="urgente" checked={recadosData.urgente} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Importante" name="importante" checked={recadosData.importante} onChange={onChange} />
         
 <Input
 type="text"
@@ -279,9 +293,9 @@ value={recadosData.data}
 onChange={onChange}               
 />
 
-<Checkbox label="Voltara" name="voltara" checked={recadosData.voltara} onChange={onChange} />
-<Checkbox label="Pessoal" name="pessoal" checked={recadosData.pessoal} onChange={onChange} />
-<Checkbox label="Retornar" name="retornar" checked={recadosData.retornar} onChange={onChange} />
+<InputCheckbox label="Voltara" name="voltara" checked={recadosData.voltara} onChange={onChange} />
+<InputCheckbox label="Pessoal" name="pessoal" checked={recadosData.pessoal} onChange={onChange} />
+<InputCheckbox label="Retornar" name="retornar" checked={recadosData.retornar} onChange={onChange} />
         
 <Input
 type="text"
@@ -313,7 +327,7 @@ value={recadosData.internetid}
 onChange={onChange}               
 />
 
-<Checkbox label="Uploaded" name="uploaded" checked={recadosData.uploaded} onChange={onChange} />
+<InputCheckbox label="Uploaded" name="uploaded" checked={recadosData.uploaded} onChange={onChange} />
 </div><div className="grid-container">        
 <Input
 type="text"
@@ -325,8 +339,8 @@ value={recadosData.natureza}
 onChange={onChange}               
 />
 
-<Checkbox label="BIU" name="biu" checked={recadosData.biu} onChange={onChange} />
-<Checkbox label="AguardarRetorno" name="aguardarretorno" checked={recadosData.aguardarretorno} onChange={onChange} />
+<InputCheckbox label="BIU" name="biu" checked={recadosData.biu} onChange={onChange} />
+<InputCheckbox label="AguardarRetorno" name="aguardarretorno" checked={recadosData.aguardarretorno} onChange={onChange} />
         
 <Input
 type="text"
@@ -338,7 +352,7 @@ value={recadosData.aguardarretornopara}
 onChange={onChange}               
 />
 
-<Checkbox label="AguardarRetornoOK" name="aguardarretornook" checked={recadosData.aguardarretornook} onChange={onChange} />
+<InputCheckbox label="AguardarRetornoOK" name="aguardarretornook" checked={recadosData.aguardarretornook} onChange={onChange} />
         
 <Input
 type="text"
@@ -350,8 +364,8 @@ value={recadosData.paraid}
 onChange={onChange}               
 />
 
-<Checkbox label="NaoPublicavel" name="naopublicavel" checked={recadosData.naopublicavel} onChange={onChange} />
-<Checkbox label="IsContatoCRM" name="iscontatocrm" checked={recadosData.iscontatocrm} onChange={onChange} />
+<InputCheckbox label="NaoPublicavel" name="naopublicavel" checked={recadosData.naopublicavel} onChange={onChange} />
+<InputCheckbox label="IsContatoCRM" name="iscontatocrm" checked={recadosData.iscontatocrm} onChange={onChange} />
         
 <Input
 type="text"
@@ -373,7 +387,7 @@ value={recadosData.listapara}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="Typed" name="typed" checked={recadosData.typed} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Typed" name="typed" checked={recadosData.typed} onChange={onChange} />
         
 <Input
 type="text"
@@ -413,21 +427,10 @@ onChange={onChange}
             label={'Agenda'}
             />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/alarmsms${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?recados=${recadosData.id}`)}>Alarm S M S</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

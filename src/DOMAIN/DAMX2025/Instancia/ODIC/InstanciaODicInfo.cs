@@ -65,7 +65,7 @@ public partial class DBInstanciaODicInfo : IODicInfo
     public static string TTabelaNome => DBInstanciaDicInfo.TabelaNome;
     public static string TTablePrefix => DBInstanciaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGUID, DBInstanciaDicInfo.InsQuemCad, DBInstanciaDicInfo.InsDtCad, DBInstanciaDicInfo.InsQuemAtu, DBInstanciaDicInfo.InsDtAtu, DBInstanciaDicInfo.InsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -81,7 +81,10 @@ public partial class DBInstanciaODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "insCodigo"
+            "insCodigo",
+            "insDivisao",
+            "insNroProcesso",
+            "insSubDivisao"
         };
         var result = campos.Where(campo => !campo.Equals(DBInstanciaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

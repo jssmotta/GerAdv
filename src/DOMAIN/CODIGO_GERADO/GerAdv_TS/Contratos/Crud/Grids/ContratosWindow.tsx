@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ContratosInc from "../Inc/Contratos";
 import { IContratos } from "../../Interfaces/interface.Contratos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ContratosWindow: React.FC<ContratosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/contratos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContratos?.id}`);
+            router.push(`/pages/contratos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContratos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedContratos]);
@@ -42,7 +43,7 @@ const ContratosWindow: React.FC<ContratosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={905}
                     newWidth={1440}
                     id={(selectedContratos?.id ?? 0).toString()}

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { NECompromissosEmpty } from "../../../Models/NECompromissos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import NECompromissosInc from "../Inc/NECompromissos";
 import { INECompromissos } from "../../Interfaces/interface.NECompromissos";
 import { NECompromissosService } from "../../Services/NECompromissos.service";
 import { NECompromissosApi } from "../../Apis/ApiNECompromissos";
@@ -16,11 +14,12 @@ import { NECompromissosGridMobileComponent } from "../GridsMobile/NECompromissos
 import { NECompromissosGridDesktopComponent } from "../GridsDesktop/NECompromissos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterNECompromissos } from "../../Filters/NECompromissos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import NECompromissosWindow from "./NECompromissosWindow";
 
 const NECompromissosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const NECompromissosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <NECompromissosGridMobileComponent data={necompromissos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <NECompromissosGridDesktopComponent data={necompromissos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <NECompromissosGridMobileComponent data={necompromissos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <NECompromissosGridDesktopComponent data={necompromissos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <NECompromissosWindow
           isOpen={showInc}

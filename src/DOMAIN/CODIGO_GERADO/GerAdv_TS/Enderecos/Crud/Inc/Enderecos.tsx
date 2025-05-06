@@ -5,7 +5,7 @@ import { EnderecosApi } from '../../Apis/ApiEnderecos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IEnderecosFormProps } from '../../Interfaces/interface.Enderecos';
 import { EnderecosService } from '../../Services/Enderecos.service';
 import { useEnderecosForm } from '../../Hooks/useEnderecosForm';

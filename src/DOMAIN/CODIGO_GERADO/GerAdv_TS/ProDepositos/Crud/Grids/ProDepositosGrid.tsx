@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProDepositosEmpty } from "../../../Models/ProDepositos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProDepositosInc from "../Inc/ProDepositos";
 import { IProDepositos } from "../../Interfaces/interface.ProDepositos";
 import { ProDepositosService } from "../../Services/ProDepositos.service";
 import { ProDepositosApi } from "../../Apis/ApiProDepositos";
@@ -16,11 +14,12 @@ import { ProDepositosGridMobileComponent } from "../GridsMobile/ProDepositos";
 import { ProDepositosGridDesktopComponent } from "../GridsDesktop/ProDepositos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProDepositos } from "../../Filters/ProDepositos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProDepositosWindow from "./ProDepositosWindow";
 
 const ProDepositosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ProDepositosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ProDepositosGridMobileComponent data={prodepositos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProDepositosGridDesktopComponent data={prodepositos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProDepositosGridMobileComponent data={prodepositos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProDepositosGridDesktopComponent data={prodepositos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProDepositosWindow
           isOpen={showInc}

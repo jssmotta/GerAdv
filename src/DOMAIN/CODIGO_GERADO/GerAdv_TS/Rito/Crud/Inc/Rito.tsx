@@ -5,7 +5,7 @@ import { RitoApi } from '../../Apis/ApiRito';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IRitoFormProps } from '../../Interfaces/interface.Rito';
 import { RitoService } from '../../Services/Rito.service';
 import { useRitoForm } from '../../Hooks/useRitoForm';

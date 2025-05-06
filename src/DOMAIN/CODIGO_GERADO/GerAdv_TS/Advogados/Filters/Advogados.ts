@@ -31,6 +31,7 @@
  observacao?: string;
  contabancaria?: string;
  class?: string;
+ guid?: string;
 }
 
 export class FilterAdvogadosDefaults implements FilterAdvogados {
@@ -65,5 +66,6 @@ export class FilterAdvogadosDefaults implements FilterAdvogados {
     observacao?: string = '';
     contabancaria?: string = '';
     class?: string = '';
+    guid?: string = '';
 }
     

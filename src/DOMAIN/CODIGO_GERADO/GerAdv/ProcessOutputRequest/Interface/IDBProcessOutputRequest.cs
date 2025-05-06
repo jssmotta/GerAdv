@@ -6,4 +6,5 @@ public partial interface IDBProcessOutputRequest
     public int FOperador { get; set; }
     public int FProcesso { get; set; }
     public int FUltimoIdTabelaExo { get; set; }
+    public string? FGUID { get; set; }
 }

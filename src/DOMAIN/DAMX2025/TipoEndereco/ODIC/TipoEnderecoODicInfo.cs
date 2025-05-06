@@ -39,7 +39,7 @@ public partial class DBTipoEnderecoODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoEnderecoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoEnderecoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoEnderecoDicInfo.TipDescricao, DBTipoEnderecoDicInfo.TipGUID, DBTipoEnderecoDicInfo.TipQuemCad, DBTipoEnderecoDicInfo.TipDtCad, DBTipoEnderecoDicInfo.TipQuemAtu, DBTipoEnderecoDicInfo.TipDtAtu, DBTipoEnderecoDicInfo.TipVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoEnderecoDicInfo.TipDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoEnderecoDicInfo.TipDescricao, DBTipoEnderecoDicInfo.TipGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -55,7 +55,8 @@ public partial class DBTipoEnderecoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "tipCodigo"
+            "tipCodigo",
+            "tipDescricao"
         };
         var result = campos.Where(campo => !campo.Equals(DBTipoEnderecoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

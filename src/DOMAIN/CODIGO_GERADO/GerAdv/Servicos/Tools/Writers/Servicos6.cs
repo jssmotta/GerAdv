@@ -16,6 +16,7 @@ public class Servicos : IServicosWriter
         dbRec.FCobrar = servicos.Cobrar;
         dbRec.FDescricao = servicos.Descricao;
         dbRec.FBasico = servicos.Basico;
+        dbRec.FGUID = servicos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -8,6 +8,7 @@ public partial interface IEnquadramentoEmpresaReader
     EnquadramentoEmpresaResponse? Read(int id, SqlConnection oCnn);
     EnquadramentoEmpresaResponse? Read(string where, SqlConnection oCnn);
     EnquadramentoEmpresaResponse? Read(Entity.DBEnquadramentoEmpresa dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EnquadramentoEmpresaResponse? Read(DBEnquadramentoEmpresa dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class EnquadramentoEmpresa : IEnquadramentoEmpresaReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class EnquadramentoEmpresa : IEnquadramentoEmpresaReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

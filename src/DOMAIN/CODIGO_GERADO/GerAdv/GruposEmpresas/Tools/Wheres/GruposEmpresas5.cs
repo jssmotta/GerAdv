@@ -24,6 +24,7 @@ public partial class GruposEmpresas : IGruposEmpresasWhere
             Cliente = dbRec.FCliente,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

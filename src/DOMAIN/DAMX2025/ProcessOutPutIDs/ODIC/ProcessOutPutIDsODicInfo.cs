@@ -34,7 +34,7 @@ public partial class DBProcessOutPutIDsODicInfo : IODicInfo
     public static string TTabelaNome => DBProcessOutPutIDsDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessOutPutIDsDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProcessOutPutIDsDicInfo.PoiNome, DBProcessOutPutIDsDicInfo.PoiGUID];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutPutIDsDicInfo.PoiNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutPutIDsDicInfo.PoiNome, DBProcessOutPutIDsDicInfo.PoiGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

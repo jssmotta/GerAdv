@@ -56,30 +56,6 @@ public static class EnderecoSistemaEndpoints
 
             return Results.Ok(result);
         }).WithName("EnderecoSistema_AddAndUpdate").WithDisplayName("Add or Update EnderecoSistema");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, IEnderecoSistemaService service) =>
-        {
-            logger.LogInfo("EnderecoSistema", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("EnderecoSistema", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("EnderecoSistema_GetColumns").WithDisplayName("Get EnderecoSistema Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, IEnderecoSistemaService service) =>
-        {
-            logger.LogInfo("EnderecoSistema", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("EnderecoSistema", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("EnderecoSistema_UpdateColumns").WithDisplayName("Update EnderecoSistema Columns");
         group.MapDelete("/Delete", async (int id, string uri, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, IEnderecoSistemaService service) =>
         {
             logger.LogInfo("EnderecoSistema", "Delete", $"id = {id}", uri);

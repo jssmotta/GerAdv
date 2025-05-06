@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import RamalInc from "../Inc/Ramal";
 import { IRamal } from "../../Interfaces/interface.Ramal";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const RamalWindow: React.FC<RamalWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/ramal/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedRamal?.id}`);
+            router.push(`/pages/ramal/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedRamal?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedRamal]);
@@ -42,7 +43,7 @@ const RamalWindow: React.FC<RamalWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedRamal?.id ?? 0).toString()}

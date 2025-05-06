@@ -8,6 +8,7 @@ public partial interface IParceriaProcReader
     ParceriaProcResponse? Read(int id, SqlConnection oCnn);
     ParceriaProcResponse? Read(string where, SqlConnection oCnn);
     ParceriaProcResponse? Read(Entity.DBParceriaProc dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ParceriaProcResponse? Read(DBParceriaProc dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class ParceriaProc : IParceriaProcReader
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
             Processo = dbRec.FProcesso,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class ParceriaProc : IParceriaProcReader
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
             Processo = dbRec.FProcesso,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

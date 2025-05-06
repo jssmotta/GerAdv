@@ -1,12 +1,19 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IArea } from '../../Interfaces/interface.Area';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IArea } from '@/app/GerAdv_TS/Area/Interfaces/interface.Area';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputDescription from '@/app/components/Inputs/InputDescription';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface AreaFormProps {
     areaData: IArea;
@@ -36,52 +43,48 @@ interface AreaFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AreaForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AreaForm-${areaData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={areaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AreaForm-${areaData.id}`} />
+
+                <div className="grid-container">
+
+    <InputDescription
             type="text"            
             id="descricao"
             label="descricao"
             className="inputIncNome"
             name="descricao"
             value={areaData.descricao}
+            placeholder={`Digite nome area`}
             onChange={onChange}
             required
+            disabled={areaData.id > 0}
           />
 
-          <Checkbox label="Top" name="top" checked={areaData.top} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/acao${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Acao</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendafinanceiro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Agenda Financeiro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/areasjustica${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Areas Justica</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/divisaotribunal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Divisao Tribunal</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/fase${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Fase</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/objetos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Objetos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/poderjudiciarioassociado${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Poder Judiciario Associado</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Processos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/tiporecurso${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Tipo Recurso</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/tribunal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?area=${areaData.id}`)}>Tribunal</div>
+                <InputCheckbox label="Top" name="top" checked={areaData.top} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

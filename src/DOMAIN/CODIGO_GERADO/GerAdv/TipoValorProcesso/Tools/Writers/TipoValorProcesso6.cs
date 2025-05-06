@@ -14,6 +14,7 @@ public class TipoValorProcesso : ITipoValorProcessoWriter
     {
         var dbRec = tipovalorprocesso.Id.IsEmptyIDNumber() ? new Entity.DBTipoValorProcesso() : new Entity.DBTipoValorProcesso(tipovalorprocesso.Id, oCnn);
         dbRec.FDescricao = tipovalorprocesso.Descricao;
+        dbRec.FGUID = tipovalorprocesso.GUID;
         dbRec.Update(oCnn);
         return dbRec;
     }

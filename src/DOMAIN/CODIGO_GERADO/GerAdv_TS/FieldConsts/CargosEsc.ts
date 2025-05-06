@@ -2,4 +2,5 @@
 {	percentual = `Percentual`,
 	nome = `Nome`,
 	classificacao = `Classificacao`,
+	guid = `GUID`,
 }

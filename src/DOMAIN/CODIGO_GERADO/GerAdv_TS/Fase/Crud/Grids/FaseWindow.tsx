@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import FaseInc from "../Inc/Fase";
 import { IFase } from "../../Interfaces/interface.Fase";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const FaseWindow: React.FC<FaseWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/fase/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedFase?.id}`);
+            router.push(`/pages/fase/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedFase?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedFase]);
@@ -42,7 +43,7 @@ const FaseWindow: React.FC<FaseWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedFase?.id ?? 0).toString()}

@@ -72,7 +72,7 @@ public class ReuniaoHealthCheck(IOptions<AppSettings> appSettings, ReuniaoServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) renCliente,renIDAgenda,renData,renPauta,renATA,renHoraInicial,renHoraFinal,renExterna,renHoraSaida,renHoraRetorno,renPrincipaisDecisoes,renBold FROM dbo.Reuniao (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) renCliente,renIDAgenda,renData,renPauta,renATA,renHoraInicial,renHoraFinal,renExterna,renHoraSaida,renHoraRetorno,renPrincipaisDecisoes,renBold,renGUID FROM dbo.Reuniao (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

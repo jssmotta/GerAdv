@@ -7,7 +7,6 @@ public partial class DBProcessOutputRequest
     private protected bool pFldFProcessOutputEngine, pFldFOperador, pFldFProcesso, pFldFUltimoIdTabelaExo;
     [XmlIgnore]
     private protected int m_FProcessOutputEngine, m_FOperador, m_FProcesso, m_FUltimoIdTabelaExo;
-    public int NFProcessOutputEngine() => m_FProcessOutputEngine;
     [XmlAttribute]
     public int FProcessOutputEngine
     {
@@ -20,7 +19,6 @@ public partial class DBProcessOutputRequest
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -33,7 +31,6 @@ public partial class DBProcessOutputRequest
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -46,7 +43,6 @@ public partial class DBProcessOutputRequest
         }
     }
 
-    public int NFUltimoIdTabelaExo() => m_FUltimoIdTabelaExo;
     [XmlAttribute]
     public int FUltimoIdTabelaExo
     {

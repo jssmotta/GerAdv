@@ -9,7 +9,6 @@ public partial class DBParteClienteOutras
     private protected int m_FCliente, m_FProcesso;
     [XmlIgnore]
     private protected bool m_FPrimeiraReclamada;
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -22,7 +21,6 @@ public partial class DBParteClienteOutras
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -35,7 +33,6 @@ public partial class DBParteClienteOutras
         }
     }
 
-    public bool NFPrimeiraReclamada() => m_FPrimeiraReclamada;
     [XmlAttribute]
     public bool FPrimeiraReclamada
     {

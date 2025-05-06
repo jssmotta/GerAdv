@@ -15,7 +15,6 @@ public partial class DBBensMateriais
     private protected bool m_FGarantiaLoja, m_FBold;
     [XmlIgnore]
     private protected decimal m_FValorBem;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -28,7 +27,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public int NFBensClassificacao() => m_FBensClassificacao;
     [XmlAttribute]
     public int FBensClassificacao
     {
@@ -41,7 +39,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFDataCompra() => $"{m_FDataCompra:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataCompra:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataCompra => Convert.ToDateTime(m_FDataCompra);
 
@@ -59,7 +56,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFDataFimDaGarantia() => $"{m_FDataFimDaGarantia:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataFimDaGarantia:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataFimDaGarantia => Convert.ToDateTime(m_FDataFimDaGarantia);
 
@@ -77,7 +73,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFNFNRO() => m_FNFNRO ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNFNRO
     {
@@ -90,7 +85,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public int NFFornecedor() => m_FFornecedor;
     [XmlAttribute]
     public int FFornecedor
     {
@@ -103,7 +97,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public decimal NFValorBem() => m_FValorBem;
     [XmlAttribute]
     public decimal FValorBem
     {
@@ -117,7 +110,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFNroSerieProduto() => m_FNroSerieProduto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroSerieProduto
     {
@@ -130,7 +122,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFComprador() => m_FComprador ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FComprador
     {
@@ -143,7 +134,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -156,7 +146,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public bool NFGarantiaLoja() => m_FGarantiaLoja;
     [XmlAttribute]
     public bool FGarantiaLoja
     {
@@ -169,7 +158,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFDataTerminoDaGarantiaDaLoja() => $"{m_FDataTerminoDaGarantiaDaLoja:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataTerminoDaGarantiaDaLoja:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataTerminoDaGarantiaDaLoja => Convert.ToDateTime(m_FDataTerminoDaGarantiaDaLoja);
 
@@ -187,7 +175,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFObservacoes() => m_FObservacoes ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacoes
     {
@@ -200,7 +187,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public string NFNomeVendedor() => m_FNomeVendedor ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeVendedor
     {
@@ -213,7 +199,6 @@ public partial class DBBensMateriais
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

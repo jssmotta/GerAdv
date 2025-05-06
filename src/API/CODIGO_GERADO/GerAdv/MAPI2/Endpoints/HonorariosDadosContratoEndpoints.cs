@@ -56,30 +56,6 @@ public static class HonorariosDadosContratoEndpoints
 
             return Results.Ok(result);
         }).WithName("HonorariosDadosContrato_AddAndUpdate").WithDisplayName("Add or Update HonorariosDadosContrato");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IHonorariosDadosContratoValidation validation, IHonorariosDadosContratoWriter writer, IClientesReader clientesReader, IProcessosReader processosReader, IHonorariosDadosContratoService service) =>
-        {
-            logger.LogInfo("HonorariosDadosContrato", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("HonorariosDadosContrato", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("HonorariosDadosContrato_GetColumns").WithDisplayName("Get HonorariosDadosContrato Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IHonorariosDadosContratoValidation validation, IHonorariosDadosContratoWriter writer, IClientesReader clientesReader, IProcessosReader processosReader, IHonorariosDadosContratoService service) =>
-        {
-            logger.LogInfo("HonorariosDadosContrato", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("HonorariosDadosContrato", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("HonorariosDadosContrato_UpdateColumns").WithDisplayName("Update HonorariosDadosContrato Columns");
         group.MapDelete("/Delete", async (int id, string uri, IHonorariosDadosContratoValidation validation, IHonorariosDadosContratoWriter writer, IClientesReader clientesReader, IProcessosReader processosReader, IHonorariosDadosContratoService service) =>
         {
             logger.LogInfo("HonorariosDadosContrato", "Delete", $"id = {id}", uri);

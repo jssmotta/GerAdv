@@ -72,7 +72,7 @@ public class ProResumosHealthCheck(IOptions<AppSettings> appSettings, ProResumos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) prsProcesso,prsData,prsResumo,prsTipoResumo,prsBold FROM dbo.ProResumos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) prsProcesso,prsData,prsResumo,prsTipoResumo,prsBold,prsGUID FROM dbo.ProResumos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

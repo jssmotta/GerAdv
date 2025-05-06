@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { EndTitEmpty } from "../../../Models/EndTit";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import EndTitInc from "../Inc/EndTit";
 import { IEndTit } from "../../Interfaces/interface.EndTit";
 import { EndTitService } from "../../Services/EndTit.service";
 import { EndTitApi } from "../../Apis/ApiEndTit";
@@ -16,11 +14,12 @@ import { EndTitGridMobileComponent } from "../GridsMobile/EndTit";
 import { EndTitGridDesktopComponent } from "../GridsDesktop/EndTit";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterEndTit } from "../../Filters/EndTit";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import EndTitWindow from "./EndTitWindow";
 
 const EndTitGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const EndTitGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <EndTitGridMobileComponent data={endtit} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <EndTitGridDesktopComponent data={endtit} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <EndTitGridMobileComponent data={endtit} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <EndTitGridDesktopComponent data={endtit} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <EndTitWindow
           isOpen={showInc}

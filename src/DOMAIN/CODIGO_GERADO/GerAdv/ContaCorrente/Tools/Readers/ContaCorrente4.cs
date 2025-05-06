@@ -8,6 +8,7 @@ public partial interface IContaCorrenteReader
     ContaCorrenteResponse? Read(int id, SqlConnection oCnn);
     ContaCorrenteResponse? Read(string where, SqlConnection oCnn);
     ContaCorrenteResponse? Read(Entity.DBContaCorrente dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ContaCorrenteResponse? Read(DBContaCorrente dbRec);
 }
 
@@ -57,7 +58,7 @@ public partial class ContaCorrente : IContaCorrenteReader
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out _))
             contacorrente.DtOriginal = dbRec.FDtOriginal;
@@ -112,7 +113,7 @@ public partial class ContaCorrente : IContaCorrenteReader
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out _))
             contacorrente.DtOriginal = dbRec.FDtOriginal;

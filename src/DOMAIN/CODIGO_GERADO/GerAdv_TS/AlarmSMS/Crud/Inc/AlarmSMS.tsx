@@ -5,7 +5,7 @@ import { AlarmSMSApi } from '../../Apis/ApiAlarmSMS';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAlarmSMSFormProps } from '../../Interfaces/interface.AlarmSMS';
 import { AlarmSMSService } from '../../Services/AlarmSMS.service';
 import { useAlarmSMSForm } from '../../Hooks/useAlarmSMSForm';

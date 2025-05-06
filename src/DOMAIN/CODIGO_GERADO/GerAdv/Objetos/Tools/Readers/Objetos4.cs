@@ -8,6 +8,7 @@ public partial interface IObjetosReader
     ObjetosResponse? Read(int id, SqlConnection oCnn);
     ObjetosResponse? Read(string where, SqlConnection oCnn);
     ObjetosResponse? Read(Entity.DBObjetos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ObjetosResponse? Read(DBObjetos dbRec);
 }
 
@@ -39,7 +40,7 @@ public partial class Objetos : IObjetosReader
             Area = dbRec.FArea,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -70,7 +71,7 @@ public partial class Objetos : IObjetosReader
             Area = dbRec.FArea,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

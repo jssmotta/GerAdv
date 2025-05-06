@@ -49,6 +49,7 @@ public class Prepostos : IPrepostosWriter
         dbRec.FEtiqueta = prepostos.Etiqueta;
         dbRec.FAni = prepostos.Ani;
         dbRec.FBold = prepostos.Bold;
+        dbRec.FGUID = prepostos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

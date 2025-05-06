@@ -1,12 +1,18 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IProTipoBaixa } from '../../Interfaces/interface.ProTipoBaixa';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IProTipoBaixa } from '@/app/GerAdv_TS/ProTipoBaixa/Interfaces/interface.ProTipoBaixa';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputName from '@/app/components/Inputs/InputName';
 
 interface ProTipoBaixaFormProps {
     protipobaixaData: IProTipoBaixa;
@@ -36,39 +42,45 @@ interface ProTipoBaixaFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ProTipoBaixaForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ProTipoBaixaForm-${protipobaixaData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={protipobaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProTipoBaixaForm-${protipobaixaData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={protipobaixaData.nome}
+            placeholder={`Digite nome pro tipo baixa`}
             onChange={onChange}
             required
           />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

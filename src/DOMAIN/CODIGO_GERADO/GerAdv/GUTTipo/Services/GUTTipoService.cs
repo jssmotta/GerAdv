@@ -91,6 +91,11 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
             }
         }
 
+        if (id.IsEmptyIDNumber())
+        {
+            return new GUTTipoResponse();
+        }
+
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
@@ -98,7 +103,10 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-GUTTipo-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            using var scope = Configuracoes.CreateConnectionScope(uri);
+            var oCnn = scope.Connection;
+            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{uri}-GUTTipo-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
@@ -188,67 +196,6 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
             }
 
             return guttipo;
-        });
-    }
-
-    public async Task<GetColumnsResponse?> GetColumns([FromBody] GetColumns parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("GUTTipo: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            using var dbRec = new DBGUTTipo(parameters?.Id ?? throw new Exception("Id == null"), oCnn);
-            var campos = new List<ColumnValueItem>();
-            foreach (var column in parameters?.Columns!)
-                if (column != null && column.Length > 0)
-                {
-                    var value = dbRec.GetValueByNameField($"{DBGUTTipoDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}");
-                    if (value != null)
-                        campos.Add(new ColumnValueItem(column, value));
-                }
-
-            var result = new GetColumnsResponse
-            {
-                Id = parameters.Id,
-                Columns = campos
-            };
-            return result;
-        });
-    }
-
-    public async Task<bool> UpdateColumns([FromBody] UpdateColumnsRequest parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("GUTTipo: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return false;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return false;
-            }
-
-            using var dbRec = new DBGUTTipo(parameters?.Id ?? throw new Exception("Id is null"), oCnn);
-            foreach (var(column, value)in parameters?.Columns!)
-                dbRec.SetValueByNameField($"{DBGUTTipoDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}", value);
-            dbRec.AuditorQuem = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-            return dbRec.Update(oCnn) == 0;
         });
     }
 
@@ -349,6 +296,7 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
 
         var cWhere = filtro.Nome.IsEmpty() ? string.Empty : DBGUTTipoDicInfo.NomeSql(filtro.Nome);
         cWhere += filtro.Ordem == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBGUTTipoDicInfo.OrdemSql(filtro.Ordem);
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBGUTTipoDicInfo.GUIDSql(filtro.GUID);
         return cWhere;
     }
 }

@@ -35,6 +35,7 @@ export interface IFuncionarios {
 	etiqueta : boolean;
 	ani : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

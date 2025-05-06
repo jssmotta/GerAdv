@@ -5,7 +5,7 @@ import { HistoricoApi } from '../../Apis/ApiHistorico';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IHistoricoFormProps } from '../../Interfaces/interface.Historico';
 import { HistoricoService } from '../../Services/Historico.service';
 import { useHistoricoForm } from '../../Hooks/useHistoricoForm';

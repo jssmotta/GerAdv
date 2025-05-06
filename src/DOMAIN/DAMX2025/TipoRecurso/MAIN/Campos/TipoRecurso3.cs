@@ -9,7 +9,6 @@ public partial class DBTipoRecurso
     private protected int m_FJustica, m_FArea;
     [XmlIgnore]
     private protected string? m_FDescricao;
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -22,7 +21,6 @@ public partial class DBTipoRecurso
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -35,7 +33,6 @@ public partial class DBTipoRecurso
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {

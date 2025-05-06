@@ -43,7 +43,7 @@ public partial class DBUFODicInfo : IODicInfo
     public static string TTabelaNome => DBUFDicInfo.TabelaNome;
     public static string TTablePrefix => DBUFDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBUFDicInfo.UfDDD, DBUFDicInfo.UfID, DBUFDicInfo.UfPais, DBUFDicInfo.UfTop, DBUFDicInfo.UfDescricao, DBUFDicInfo.UfGUID, DBUFDicInfo.UfQuemCad, DBUFDicInfo.UfDtCad, DBUFDicInfo.UfQuemAtu, DBUFDicInfo.UfDtAtu, DBUFDicInfo.UfVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBUFDicInfo.UfDDD, DBUFDicInfo.UfID, DBUFDicInfo.UfPais, DBUFDicInfo.UfTop, DBUFDicInfo.UfDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBUFDicInfo.UfDDD, DBUFDicInfo.UfID, DBUFDicInfo.UfPais, DBUFDicInfo.UfTop, DBUFDicInfo.UfDescricao, DBUFDicInfo.UfGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

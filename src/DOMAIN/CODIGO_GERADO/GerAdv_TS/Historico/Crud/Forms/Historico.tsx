@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IHistorico } from '../../Interfaces/interface.Historico';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IHistorico } from '@/app/GerAdv_TS/Historico/Interfaces/interface.Historico';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
@@ -18,6 +22,8 @@ import { PrecatoriaApi } from '@/app/GerAdv_TS/Precatoria/Apis/ApiPrecatoria';
 import { ApensoApi } from '@/app/GerAdv_TS/Apenso/Apis/ApiApenso';
 import { FaseApi } from '@/app/GerAdv_TS/Fase/Apis/ApiFase';
 import { StatusAndamentoApi } from '@/app/GerAdv_TS/StatusAndamento/Apis/ApiStatusAndamento';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface HistoricoFormProps {
     historicoData: IHistorico;
@@ -152,19 +158,28 @@ if (getParamFromUrl("statusandamento") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('HistoricoForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomePrecatoria && (<h2>{nomePrecatoria}</h2>)}
-{nomeApenso && (<h2>{nomeApenso}</h2>)}
-{nomeFase && (<h2>{nomeFase}</h2>)}
-{nomeStatusAndamento && (<h2>{nomeStatusAndamento}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`HistoricoForm-${historicoData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={historicoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HistoricoForm-${historicoData.id}`} />
+
+                <div className="grid-container">
 
 <Input
 type="text"
@@ -196,7 +211,7 @@ value={historicoData.liminarorigem}
 onChange={onChange}               
 />
 
-<Checkbox label="NaoPublicavel" name="naopublicavel" checked={historicoData.naopublicavel} onChange={onChange} />
+<InputCheckbox label="NaoPublicavel" name="naopublicavel" checked={historicoData.naopublicavel} onChange={onChange} />
  
             <ProcessosComboBox
             name={'processo'}
@@ -257,9 +272,9 @@ value={historicoData.observacao}
 onChange={onChange}               
 />
 
-<Checkbox label="Agendado" name="agendado" checked={historicoData.agendado} onChange={onChange} />
-<Checkbox label="Concluido" name="concluido" checked={historicoData.concluido} onChange={onChange} />
-<Checkbox label="MesmaAgenda" name="mesmaagenda" checked={historicoData.mesmaagenda} onChange={onChange} />
+<InputCheckbox label="Agendado" name="agendado" checked={historicoData.agendado} onChange={onChange} />
+<InputCheckbox label="Concluido" name="concluido" checked={historicoData.concluido} onChange={onChange} />
+<InputCheckbox label="MesmaAgenda" name="mesmaagenda" checked={historicoData.mesmaagenda} onChange={onChange} />
         
 <Input
 type="text"
@@ -271,7 +286,7 @@ value={historicoData.sad}
 onChange={onChange}               
 />
 
-<Checkbox label="Resumido" name="resumido" checked={historicoData.resumido} onChange={onChange} />
+<InputCheckbox label="Resumido" name="resumido" checked={historicoData.resumido} onChange={onChange} />
  
             <StatusAndamentoComboBox
             name={'statusandamento'}
@@ -280,23 +295,12 @@ onChange={onChange}
             label={'Status Andamento'}
             />
 
-<Checkbox label="Top" name="top" checked={historicoData.top} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processosobsreport${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?historico=${historicoData.id}`)}>Processos Obs Report</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/recados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?historico=${historicoData.id}`)}>Recados</div>
+<InputCheckbox label="Top" name="top" checked={historicoData.top} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

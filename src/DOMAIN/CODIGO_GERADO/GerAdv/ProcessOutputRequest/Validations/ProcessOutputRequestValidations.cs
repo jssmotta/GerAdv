@@ -15,7 +15,7 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
         if (reg == null)
             return "Objeto está nulo";
         // ProcessOutputEngine
-        if (reg.ProcessOutputEngine.IsEmptyIDNumber())
+        if (!reg.ProcessOutputEngine.IsEmptyIDNumber())
         {
             var regProcessOutputEngine = processoutputengineReader.Read(reg.ProcessOutputEngine, oCnn);
             if (regProcessOutputEngine == null || regProcessOutputEngine.Id != reg.ProcessOutputEngine)
@@ -25,7 +25,7 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
         }
 
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
@@ -35,7 +35,7 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

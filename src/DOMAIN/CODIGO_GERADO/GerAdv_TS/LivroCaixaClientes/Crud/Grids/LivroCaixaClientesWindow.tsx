@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import LivroCaixaClientesInc from "../Inc/LivroCaixaClientes";
 import { ILivroCaixaClientes } from "../../Interfaces/interface.LivroCaixaClientes";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const LivroCaixaClientesWindow: React.FC<LivroCaixaClientesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/livrocaixaclientes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedLivroCaixaClientes?.id}`);
+            router.push(`/pages/livrocaixaclientes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedLivroCaixaClientes?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedLivroCaixaClientes]);
@@ -42,7 +43,7 @@ const LivroCaixaClientesWindow: React.FC<LivroCaixaClientesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedLivroCaixaClientes?.id ?? 0).toString()}

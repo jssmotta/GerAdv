@@ -5,7 +5,7 @@ import { AgendaQuemApi } from '../../Apis/ApiAgendaQuem';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAgendaQuemFormProps } from '../../Interfaces/interface.AgendaQuem';
 import { AgendaQuemService } from '../../Services/AgendaQuem.service';
 import { useAgendaQuemForm } from '../../Hooks/useAgendaQuemForm';

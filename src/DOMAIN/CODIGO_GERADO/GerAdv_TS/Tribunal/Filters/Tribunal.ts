@@ -8,6 +8,7 @@
     instancia?: number;
  sigla?: string;
  web?: string;
+ guid?: string;
 }
 
 export class FilterTribunalDefaults implements FilterTribunal {
@@ -19,5 +20,6 @@ export class FilterTribunalDefaults implements FilterTribunal {
     instancia?: number = -2147483648;
     sigla?: string = '';
     web?: string = '';
+    guid?: string = '';
 }
     

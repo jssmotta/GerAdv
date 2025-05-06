@@ -52,6 +52,12 @@ public partial class Historico
     public int IDNE { get; set; }
 
     /// <summary>
+    /// Sem descrição - hisExtraGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
+
+    /// <summary>
     /// Sem descrição - hisLiminarOrigem  
     /// </summary>
     [JsonPropertyName("liminarorigem")]
@@ -117,11 +123,7 @@ public partial class Historico
     [JsonPropertyName("top")]
     public bool Top { get; set; }
 
-    /// <summary>
-    /// GUId - hisGUID - tamanho máximo: 100 
-    /// </summary>
-    [JsonPropertyName("guid")]
-    public string Guid { get; set; } = "";
+  
 
     [JsonPropertyName("auditor")]
     public Auditor? Auditor { get; set; }

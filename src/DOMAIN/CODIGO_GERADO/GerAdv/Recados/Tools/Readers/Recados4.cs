@@ -8,6 +8,7 @@ public partial interface IRecadosReader
     RecadosResponse? Read(int id, SqlConnection oCnn);
     RecadosResponse? Read(string where, SqlConnection oCnn);
     RecadosResponse? Read(Entity.DBRecados dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     RecadosResponse? Read(DBRecados dbRec);
 }
 
@@ -67,7 +68,7 @@ public partial class Recados : IRecadosReader
             ContatoCRM = dbRec.FContatoCRM,
             Ligacoes = dbRec.FLigacoes,
             Agenda = dbRec.FAgenda,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHora, out _))
             recados.Hora = dbRec.FHora;
@@ -132,7 +133,7 @@ public partial class Recados : IRecadosReader
             ContatoCRM = dbRec.FContatoCRM,
             Ligacoes = dbRec.FLigacoes,
             Agenda = dbRec.FAgenda,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHora, out _))
             recados.Hora = dbRec.FHora;

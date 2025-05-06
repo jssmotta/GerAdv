@@ -9,7 +9,6 @@ public partial class DBAndamentosMD
     private protected int m_FProcesso, m_FAndamento;
     [XmlIgnore]
     private protected string? m_FNome, m_FPathFull, m_FUNC;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -22,7 +21,6 @@ public partial class DBAndamentosMD
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -35,7 +33,6 @@ public partial class DBAndamentosMD
         }
     }
 
-    public int NFAndamento() => m_FAndamento;
     [XmlAttribute]
     public int FAndamento
     {
@@ -48,7 +45,6 @@ public partial class DBAndamentosMD
         }
     }
 
-    public string NFPathFull() => m_FPathFull ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPathFull
     {
@@ -61,7 +57,6 @@ public partial class DBAndamentosMD
         }
     }
 
-    public string NFUNC() => m_FUNC ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FUNC
     {

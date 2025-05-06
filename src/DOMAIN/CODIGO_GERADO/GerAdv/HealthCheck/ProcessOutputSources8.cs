@@ -72,7 +72,7 @@ public class ProcessOutputSourcesHealthCheck(IOptions<AppSettings> appSettings, 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) posNome FROM dbo.ProcessOutputSources (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) posNome,posGUID FROM dbo.ProcessOutputSources (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

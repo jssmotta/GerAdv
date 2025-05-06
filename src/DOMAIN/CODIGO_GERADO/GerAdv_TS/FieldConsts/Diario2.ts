@@ -6,4 +6,5 @@
 	nome = `Nome`,
 	ocorrencia = `Ocorrencia`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

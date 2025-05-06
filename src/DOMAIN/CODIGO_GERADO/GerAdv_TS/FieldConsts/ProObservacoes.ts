@@ -3,4 +3,5 @@
 	nome = `Nome`,
 	observacoes = `Observacoes`,
 	data = `Data`,
+	guid = `GUID`,
 }

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PaisesEmpty } from "../../../Models/Paises";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PaisesInc from "../Inc/Paises";
 import { IPaises } from "../../Interfaces/interface.Paises";
 import { PaisesService } from "../../Services/Paises.service";
 import { PaisesApi } from "../../Apis/ApiPaises";
@@ -16,11 +14,12 @@ import { PaisesGridMobileComponent } from "../GridsMobile/Paises";
 import { PaisesGridDesktopComponent } from "../GridsDesktop/Paises";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPaises } from "../../Filters/Paises";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PaisesWindow from "./PaisesWindow";
 
 const PaisesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const PaisesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <PaisesGridMobileComponent data={paises} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PaisesGridDesktopComponent data={paises} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PaisesGridMobileComponent data={paises} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PaisesGridDesktopComponent data={paises} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PaisesWindow
           isOpen={showInc}

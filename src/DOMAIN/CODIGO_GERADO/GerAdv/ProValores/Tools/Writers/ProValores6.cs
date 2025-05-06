@@ -29,6 +29,7 @@ public class ProValores : IProValoresWriter
         dbRec.FValorFinal = provalores.ValorFinal;
         if (provalores.DataUltimaCorrecao != null)
             dbRec.FDataUltimaCorrecao = provalores.DataUltimaCorrecao.ToString();
+        dbRec.FGUID = provalores.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

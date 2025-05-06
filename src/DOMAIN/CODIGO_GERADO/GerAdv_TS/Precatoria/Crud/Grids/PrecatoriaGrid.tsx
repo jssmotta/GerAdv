@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PrecatoriaEmpty } from "../../../Models/Precatoria";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PrecatoriaInc from "../Inc/Precatoria";
 import { IPrecatoria } from "../../Interfaces/interface.Precatoria";
 import { PrecatoriaService } from "../../Services/Precatoria.service";
 import { PrecatoriaApi } from "../../Apis/ApiPrecatoria";
@@ -16,11 +14,12 @@ import { PrecatoriaGridMobileComponent } from "../GridsMobile/Precatoria";
 import { PrecatoriaGridDesktopComponent } from "../GridsDesktop/Precatoria";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPrecatoria } from "../../Filters/Precatoria";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PrecatoriaWindow from "./PrecatoriaWindow";
 
 const PrecatoriaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const PrecatoriaGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <PrecatoriaGridMobileComponent data={precatoria} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PrecatoriaGridDesktopComponent data={precatoria} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PrecatoriaGridMobileComponent data={precatoria} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PrecatoriaGridDesktopComponent data={precatoria} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PrecatoriaWindow
           isOpen={showInc}

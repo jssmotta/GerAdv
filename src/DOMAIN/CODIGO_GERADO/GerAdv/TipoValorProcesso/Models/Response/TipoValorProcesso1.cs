@@ -19,5 +19,5 @@ public partial class TipoValorProcessoResponse
     /// GUId - ptvGUID - tamanho máximo: 50 
     /// </summary>
     [JsonPropertyName("guid")]
-    public string Guid { get; set; } = "";
+    public string GUID { get; set; } = "";
 }

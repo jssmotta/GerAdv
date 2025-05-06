@@ -72,7 +72,7 @@ public class TipoRecursoHealthCheck(IOptions<AppSettings> appSettings, TipoRecur
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) trcJustica,trcArea,trcDescricao FROM dbo.TipoRecurso (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) trcJustica,trcArea,trcDescricao,trcGUID FROM dbo.TipoRecurso (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

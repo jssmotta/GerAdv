@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GruposEmpresasCliEmpty } from "../../../Models/GruposEmpresasCli";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GruposEmpresasCliInc from "../Inc/GruposEmpresasCli";
 import { IGruposEmpresasCli } from "../../Interfaces/interface.GruposEmpresasCli";
 import { GruposEmpresasCliService } from "../../Services/GruposEmpresasCli.service";
 import { GruposEmpresasCliApi } from "../../Apis/ApiGruposEmpresasCli";
@@ -16,11 +14,12 @@ import { GruposEmpresasCliGridMobileComponent } from "../GridsMobile/GruposEmpre
 import { GruposEmpresasCliGridDesktopComponent } from "../GridsDesktop/GruposEmpresasCli";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGruposEmpresasCli } from "../../Filters/GruposEmpresasCli";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GruposEmpresasCliWindow from "./GruposEmpresasCliWindow";
 
 const GruposEmpresasCliGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const GruposEmpresasCliGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <GruposEmpresasCliGridMobileComponent data={gruposempresascli} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GruposEmpresasCliGridDesktopComponent data={gruposempresascli} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GruposEmpresasCliGridMobileComponent data={gruposempresascli} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GruposEmpresasCliGridDesktopComponent data={gruposempresascli} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GruposEmpresasCliWindow
           isOpen={showInc}

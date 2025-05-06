@@ -5,7 +5,7 @@ import { StatusHTrabApi } from '../../Apis/ApiStatusHTrab';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IStatusHTrabFormProps } from '../../Interfaces/interface.StatusHTrab';
 import { StatusHTrabService } from '../../Services/StatusHTrab.service';
 import { useStatusHTrabForm } from '../../Hooks/useStatusHTrabForm';

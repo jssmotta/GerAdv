@@ -56,30 +56,6 @@ public static class ParteClienteOutrasEndpoints
 
             return Results.Ok(result);
         }).WithName("ParteClienteOutras_AddAndUpdate").WithDisplayName("Add or Update ParteClienteOutras");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IParteClienteOutrasValidation validation, IParteClienteOutrasWriter writer, IOutrasPartesClienteReader outraspartesclienteReader, IProcessosReader processosReader, IParteClienteOutrasService service) =>
-        {
-            logger.LogInfo("ParteClienteOutras", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ParteClienteOutras", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ParteClienteOutras_GetColumns").WithDisplayName("Get ParteClienteOutras Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IParteClienteOutrasValidation validation, IParteClienteOutrasWriter writer, IOutrasPartesClienteReader outraspartesclienteReader, IProcessosReader processosReader, IParteClienteOutrasService service) =>
-        {
-            logger.LogInfo("ParteClienteOutras", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ParteClienteOutras", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ParteClienteOutras_UpdateColumns").WithDisplayName("Update ParteClienteOutras Columns");
         group.MapDelete("/Delete", async (int id, string uri, IParteClienteOutrasValidation validation, IParteClienteOutrasWriter writer, IOutrasPartesClienteReader outraspartesclienteReader, IProcessosReader processosReader, IParteClienteOutrasService service) =>
         {
             logger.LogInfo("ParteClienteOutras", "Delete", $"id = {id}", uri);

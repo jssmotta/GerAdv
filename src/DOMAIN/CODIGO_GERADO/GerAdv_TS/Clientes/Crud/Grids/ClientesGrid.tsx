@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ClientesEmpty } from "../../../Models/Clientes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ClientesInc from "../Inc/Clientes";
 import { IClientes } from "../../Interfaces/interface.Clientes";
 import { ClientesService } from "../../Services/Clientes.service";
 import { ClientesApi } from "../../Apis/ApiClientes";
@@ -16,11 +14,12 @@ import { ClientesGridMobileComponent } from "../GridsMobile/Clientes";
 import { ClientesGridDesktopComponent } from "../GridsDesktop/Clientes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterClientes } from "../../Filters/Clientes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ClientesWindow from "./ClientesWindow";
 
 const ClientesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ClientesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ClientesGridMobileComponent data={clientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ClientesGridDesktopComponent data={clientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ClientesGridMobileComponent data={clientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ClientesGridDesktopComponent data={clientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ClientesWindow
           isOpen={showInc}

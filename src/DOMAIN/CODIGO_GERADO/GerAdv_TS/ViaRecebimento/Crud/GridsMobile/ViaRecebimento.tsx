@@ -1,8 +1,9 @@
-﻿"use client";
+﻿// GridsMobile.tsx.txt
+"use client";
 import { Grid, GridColumn, GridFilterChangeEvent, GridPageChangeEvent, GridSortChangeEvent } from "@progress/kendo-react-all";
 import { IViaRecebimento } from "../../Interfaces/interface.ViaRecebimento";
 import { useRouter } from 'next/navigation';
-import { LoaderGrid } from "@/app/components/GridLoader";
+import { LoaderGrid } from "@/app/components/Cruds/GridLoader";
 import { useState } from "react";
 import { applyFilter, applyFilterToColumn, sortData } from "@/app/tools/crud";
 
@@ -10,12 +11,14 @@ interface ViaRecebimentoGridProps {
 	data: IViaRecebimento[];
 	onRowClick: (viarecebimento: IViaRecebimento) => void;
 	onDeleteClick: (e: any) => void;
+	setSelectedId: (id: number | null) => void;
 }
 
 export const ViaRecebimentoGridMobileComponent: React.FC<ViaRecebimentoGridProps> = ({
 	data,
 	onRowClick,
-	onDeleteClick
+	onDeleteClick,
+	setSelectedId,
 }) => {
 	const router = useRouter();
 

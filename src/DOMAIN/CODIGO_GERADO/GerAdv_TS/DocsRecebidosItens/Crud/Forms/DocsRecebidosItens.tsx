@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IDocsRecebidosItens } from '../../Interfaces/interface.DocsRecebidosItens';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IDocsRecebidosItens } from '@/app/GerAdv_TS/DocsRecebidosItens/Interfaces/interface.DocsRecebidosItens';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ContatoCRMComboBox from '@/app/GerAdv_TS/ContatoCRM/ComboBox/ContatoCRM';
 import { ContatoCRMApi } from '@/app/GerAdv_TS/ContatoCRM/Apis/ApiContatoCRM';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface DocsRecebidosItensFormProps {
     docsrecebidositensData: IDocsRecebidosItens;
@@ -60,23 +66,37 @@ if (getParamFromUrl("contatocrm") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('DocsRecebidosItensForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeContatoCRM && (<h2>{nomeContatoCRM}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`DocsRecebidosItensForm-${docsrecebidositensData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={docsrecebidositensData} isSubmitting={isSubmitting} onClose={onClose} formId={`DocsRecebidosItensForm-${docsrecebidositensData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={docsrecebidositensData.nome}
+            placeholder={`Digite nome docs recebidos itens`}
             onChange={onChange}
             required
           />
@@ -88,8 +108,8 @@ if (getParamFromUrl("contatocrm") > 0) {
             label={'Contato C R M'}
             />
 
-<Checkbox label="Devolvido" name="devolvido" checked={docsrecebidositensData.devolvido} onChange={onChange} />
-<Checkbox label="SeraDevolvido" name="seradevolvido" checked={docsrecebidositensData.seradevolvido} onChange={onChange} />
+<InputCheckbox label="Devolvido" name="devolvido" checked={docsrecebidositensData.devolvido} onChange={onChange} />
+<InputCheckbox label="SeraDevolvido" name="seradevolvido" checked={docsrecebidositensData.seradevolvido} onChange={onChange} />
         
 <Input
 type="text"
@@ -101,19 +121,10 @@ value={docsrecebidositensData.observacoes}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

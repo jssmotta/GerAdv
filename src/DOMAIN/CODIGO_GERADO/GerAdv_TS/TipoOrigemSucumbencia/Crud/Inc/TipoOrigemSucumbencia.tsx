@@ -5,7 +5,7 @@ import { TipoOrigemSucumbenciaApi } from '../../Apis/ApiTipoOrigemSucumbencia';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoOrigemSucumbenciaFormProps } from '../../Interfaces/interface.TipoOrigemSucumbencia';
 import { TipoOrigemSucumbenciaService } from '../../Services/TipoOrigemSucumbencia.service';
 import { useTipoOrigemSucumbenciaForm } from '../../Hooks/useTipoOrigemSucumbenciaForm';

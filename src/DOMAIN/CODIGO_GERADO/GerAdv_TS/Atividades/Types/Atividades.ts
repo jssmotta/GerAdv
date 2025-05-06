@@ -3,6 +3,7 @@
 export interface IAtividades {
   id: number;
 	descricao : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import GUTPeriodicidadeStatusInc from "../Inc/GUTPeriodicidadeStatus";
 import { IGUTPeriodicidadeStatus } from "../../Interfaces/interface.GUTPeriodicidadeStatus";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const GUTPeriodicidadeStatusWindow: React.FC<GUTPeriodicidadeStatusWindowProps> 
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/gutperiodicidadestatus/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTPeriodicidadeStatus?.id}`);
+            router.push(`/pages/gutperiodicidadestatus/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTPeriodicidadeStatus?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedGUTPeriodicidadeStatus]);
@@ -42,7 +43,7 @@ const GUTPeriodicidadeStatusWindow: React.FC<GUTPeriodicidadeStatusWindowProps> 
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedGUTPeriodicidadeStatus?.id ?? 0).toString()}

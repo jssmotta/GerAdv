@@ -9,7 +9,6 @@ public partial class DBLivroCaixaClientes
     private protected int m_FLivroCaixa, m_FCliente;
     [XmlIgnore]
     private protected bool m_FLancado;
-    public int NFLivroCaixa() => m_FLivroCaixa;
     [XmlAttribute]
     public int FLivroCaixa
     {
@@ -22,7 +21,6 @@ public partial class DBLivroCaixaClientes
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -35,7 +33,6 @@ public partial class DBLivroCaixaClientes
         }
     }
 
-    public bool NFLancado() => m_FLancado;
     [XmlAttribute]
     public bool FLancado
     {

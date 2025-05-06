@@ -74,30 +74,6 @@ public static class OperadorGruposEndpoints
 
             return Results.Ok(result);
         }).WithName("OperadorGrupos_AddAndUpdate").WithDisplayName("Add or Update OperadorGrupos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IOperadorGruposValidation validation, IOperadorGruposWriter writer, IOperadorGruposService service) =>
-        {
-            logger.LogInfo("OperadorGrupos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("OperadorGrupos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("OperadorGrupos_GetColumns").WithDisplayName("Get OperadorGrupos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IOperadorGruposValidation validation, IOperadorGruposWriter writer, IOperadorGruposService service) =>
-        {
-            logger.LogInfo("OperadorGrupos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("OperadorGrupos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("OperadorGrupos_UpdateColumns").WithDisplayName("Update OperadorGrupos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IOperadorGruposValidation validation, IOperadorGruposWriter writer, IOperadorGruposService service) =>
         {
             logger.LogInfo("OperadorGrupos", "Delete", $"id = {id}", uri);

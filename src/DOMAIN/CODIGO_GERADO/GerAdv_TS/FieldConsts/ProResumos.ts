@@ -4,4 +4,5 @@
 	resumo = `Resumo`,
 	tiporesumo = `TipoResumo`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

@@ -8,6 +8,7 @@ public partial interface IEventoPrazoAgendaReader
     EventoPrazoAgendaResponse? Read(int id, SqlConnection oCnn);
     EventoPrazoAgendaResponse? Read(string where, SqlConnection oCnn);
     EventoPrazoAgendaResponse? Read(Entity.DBEventoPrazoAgenda dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EventoPrazoAgendaResponse? Read(DBEventoPrazoAgenda dbRec);
 }
 

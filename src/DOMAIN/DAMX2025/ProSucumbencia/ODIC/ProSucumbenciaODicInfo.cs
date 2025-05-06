@@ -45,7 +45,7 @@ public partial class DBProSucumbenciaODicInfo : IODicInfo
     public static string TTabelaNome => DBProSucumbenciaDicInfo.TabelaNome;
     public static string TTablePrefix => DBProSucumbenciaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProSucumbenciaDicInfo.ScbProcesso, DBProSucumbenciaDicInfo.ScbInstancia, DBProSucumbenciaDicInfo.ScbData, DBProSucumbenciaDicInfo.ScbNome, DBProSucumbenciaDicInfo.ScbTipoOrigemSucumbencia, DBProSucumbenciaDicInfo.ScbValor, DBProSucumbenciaDicInfo.ScbPercentual, DBProSucumbenciaDicInfo.ScbGUID, DBProSucumbenciaDicInfo.ScbQuemCad, DBProSucumbenciaDicInfo.ScbDtCad, DBProSucumbenciaDicInfo.ScbQuemAtu, DBProSucumbenciaDicInfo.ScbDtAtu, DBProSucumbenciaDicInfo.ScbVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProSucumbenciaDicInfo.ScbProcesso, DBProSucumbenciaDicInfo.ScbInstancia, DBProSucumbenciaDicInfo.ScbData, DBProSucumbenciaDicInfo.ScbNome, DBProSucumbenciaDicInfo.ScbTipoOrigemSucumbencia, DBProSucumbenciaDicInfo.ScbValor, DBProSucumbenciaDicInfo.ScbPercentual];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProSucumbenciaDicInfo.ScbProcesso, DBProSucumbenciaDicInfo.ScbInstancia, DBProSucumbenciaDicInfo.ScbData, DBProSucumbenciaDicInfo.ScbNome, DBProSucumbenciaDicInfo.ScbTipoOrigemSucumbencia, DBProSucumbenciaDicInfo.ScbValor, DBProSucumbenciaDicInfo.ScbPercentual, DBProSucumbenciaDicInfo.ScbGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

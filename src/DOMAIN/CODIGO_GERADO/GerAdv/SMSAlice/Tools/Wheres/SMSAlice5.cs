@@ -19,6 +19,7 @@ public partial class SMSAlice : ISMSAliceWhere
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             TipoEMail = dbRec.FTipoEMail,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

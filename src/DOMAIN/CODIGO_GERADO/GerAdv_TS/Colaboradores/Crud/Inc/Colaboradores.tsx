@@ -5,7 +5,7 @@ import { ColaboradoresApi } from '../../Apis/ApiColaboradores';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IColaboradoresFormProps } from '../../Interfaces/interface.Colaboradores';
 import { ColaboradoresService } from '../../Services/Colaboradores.service';
 import { useColaboradoresForm } from '../../Hooks/useColaboradoresForm';

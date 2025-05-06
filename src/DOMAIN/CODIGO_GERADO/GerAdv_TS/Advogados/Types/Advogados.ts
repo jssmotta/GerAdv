@@ -40,6 +40,7 @@ export interface IAdvogados {
 	etiqueta : boolean;
 	ani : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

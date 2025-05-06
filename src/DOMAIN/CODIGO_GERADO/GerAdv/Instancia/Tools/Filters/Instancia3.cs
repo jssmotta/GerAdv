@@ -68,4 +68,7 @@ public partial class FilterInstancia
 
     [JsonPropertyName("zkeyia")]
     public string ZKeyIA { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

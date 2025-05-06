@@ -42,7 +42,7 @@ public partial class DBObjetosODicInfo : IODicInfo
     public static string TTabelaNome => DBObjetosDicInfo.TabelaNome;
     public static string TTablePrefix => DBObjetosDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBObjetosDicInfo.OjtJustica, DBObjetosDicInfo.OjtArea, DBObjetosDicInfo.OjtNome, DBObjetosDicInfo.OjtBold, DBObjetosDicInfo.OjtGUID, DBObjetosDicInfo.OjtQuemCad, DBObjetosDicInfo.OjtDtCad, DBObjetosDicInfo.OjtQuemAtu, DBObjetosDicInfo.OjtDtAtu, DBObjetosDicInfo.OjtVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBObjetosDicInfo.OjtJustica, DBObjetosDicInfo.OjtArea, DBObjetosDicInfo.OjtNome, DBObjetosDicInfo.OjtBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBObjetosDicInfo.OjtJustica, DBObjetosDicInfo.OjtArea, DBObjetosDicInfo.OjtNome, DBObjetosDicInfo.OjtBold, DBObjetosDicInfo.OjtGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

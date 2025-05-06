@@ -32,4 +32,5 @@
 	suportenomesolicitante = `SuporteNomeSolicitante`,
 	suporteultimoacesso = `SuporteUltimoAcesso`,
 	suporteipultimoacesso = `SuporteIpUltimoAcesso`,
+	guid = `GUID`,
 }

@@ -5,7 +5,7 @@ import { AlertasApi } from '../../Apis/ApiAlertas';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAlertasFormProps } from '../../Interfaces/interface.Alertas';
 import { AlertasService } from '../../Services/Alertas.service';
 import { useAlertasForm } from '../../Hooks/useAlertasForm';

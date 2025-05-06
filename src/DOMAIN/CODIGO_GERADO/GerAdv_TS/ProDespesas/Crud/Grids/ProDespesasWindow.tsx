@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProDespesasInc from "../Inc/ProDespesas";
 import { IProDespesas } from "../../Interfaces/interface.ProDespesas";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProDespesasWindow: React.FC<ProDespesasWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/prodespesas/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProDespesas?.id}`);
+            router.push(`/pages/prodespesas/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProDespesas?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProDespesas]);
@@ -42,7 +43,7 @@ const ProDespesasWindow: React.FC<ProDespesasWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={585}
                     newWidth={1440}
                     id={(selectedProDespesas?.id ?? 0).toString()}

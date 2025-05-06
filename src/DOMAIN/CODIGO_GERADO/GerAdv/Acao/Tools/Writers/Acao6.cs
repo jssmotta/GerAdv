@@ -16,6 +16,7 @@ public class Acao : IAcaoWriter
         dbRec.FJustica = acao.Justica;
         dbRec.FArea = acao.Area;
         dbRec.FDescricao = acao.Descricao;
+        dbRec.FGUID = acao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

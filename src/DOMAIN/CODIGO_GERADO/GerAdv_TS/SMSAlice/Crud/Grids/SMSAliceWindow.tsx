@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import SMSAliceInc from "../Inc/SMSAlice";
 import { ISMSAlice } from "../../Interfaces/interface.SMSAlice";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const SMSAliceWindow: React.FC<SMSAliceWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/smsalice/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedSMSAlice?.id}`);
+            router.push(`/pages/smsalice/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedSMSAlice?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedSMSAlice]);
@@ -42,7 +43,7 @@ const SMSAliceWindow: React.FC<SMSAliceWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedSMSAlice?.id ?? 0).toString()}

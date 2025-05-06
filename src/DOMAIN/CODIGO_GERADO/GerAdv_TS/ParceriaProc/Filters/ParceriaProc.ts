@@ -3,11 +3,13 @@
     operator?: string;
     advogado?: number;
     processo?: number;
+ guid?: string;
 }
 
 export class FilterParceriaProcDefaults implements FilterParceriaProc {
     operator?: string = " AND ";
     advogado?: number = -2147483648;
     processo?: number = -2147483648;
+    guid?: string = '';
 }
     

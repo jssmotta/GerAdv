@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AcaoInc from "../Inc/Acao";
 import { IAcao } from "../../Interfaces/interface.Acao";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AcaoWindow: React.FC<AcaoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/acao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAcao?.id}`);
+            router.push(`/pages/acao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAcao?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAcao]);
@@ -42,7 +43,7 @@ const AcaoWindow: React.FC<AcaoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedAcao?.id ?? 0).toString()}

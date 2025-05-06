@@ -29,4 +29,5 @@ public partial interface IDBLigacoes
     public bool FStartScreen { get; set; }
     public int FEmotion { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

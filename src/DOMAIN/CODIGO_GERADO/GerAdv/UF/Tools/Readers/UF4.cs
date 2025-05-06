@@ -8,6 +8,7 @@ public partial interface IUFReader
     UFResponse? Read(int id, SqlConnection oCnn);
     UFResponse? Read(string where, SqlConnection oCnn);
     UFResponse? Read(Entity.DBUF dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     UFResponse? Read(DBUF dbRec);
 }
 
@@ -40,7 +41,7 @@ public partial class UF : IUFReader
             Pais = dbRec.FPais,
             Top = dbRec.FTop,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -72,7 +73,7 @@ public partial class UF : IUFReader
             Pais = dbRec.FPais,
             Top = dbRec.FTop,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

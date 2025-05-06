@@ -16,6 +16,14 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"TipoCompromisso '{reg.Descricao}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.TipoCompromisso reg, ITipoCompromissoService service, string uri)
+    {
+        var existingTipoCompromisso = (await service.Filter(new Filters.FilterTipoCompromisso { Descricao = reg.Descricao }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingTipoCompromisso != null && existingTipoCompromisso.Id > 0 && existingTipoCompromisso.Id != reg.Id;
     }
 }

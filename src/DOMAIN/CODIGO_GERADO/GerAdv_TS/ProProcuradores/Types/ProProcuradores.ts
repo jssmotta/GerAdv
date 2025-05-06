@@ -9,6 +9,7 @@ export interface IProProcuradores {
 	substabelecimento : boolean;
 	procuracao : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

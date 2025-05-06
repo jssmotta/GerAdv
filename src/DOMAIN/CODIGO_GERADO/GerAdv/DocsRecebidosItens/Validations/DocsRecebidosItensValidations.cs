@@ -17,7 +17,7 @@ public class DocsRecebidosItensValidation : IDocsRecebidosItensValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // ContatoCRM
-        if (reg.ContatoCRM.IsEmptyIDNumber())
+        if (!reg.ContatoCRM.IsEmptyIDNumber())
         {
             var regContatoCRM = contatocrmReader.Read(reg.ContatoCRM, oCnn);
             if (regContatoCRM == null || regContatoCRM.Id != reg.ContatoCRM)

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import CidadeInc from "../Inc/Cidade";
 import { ICidade } from "../../Interfaces/interface.Cidade";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const CidadeWindow: React.FC<CidadeWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/cidade/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedCidade?.id}`);
+            router.push(`/pages/cidade/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedCidade?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedCidade]);
@@ -42,7 +43,7 @@ const CidadeWindow: React.FC<CidadeWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={699}
                     newWidth={720}
                     id={(selectedCidade?.id ?? 0).toString()}

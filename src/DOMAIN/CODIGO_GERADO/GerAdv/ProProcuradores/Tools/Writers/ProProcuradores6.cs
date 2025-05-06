@@ -21,6 +21,7 @@ public class ProProcuradores : IProProcuradoresWriter
         dbRec.FSubstabelecimento = proprocuradores.Substabelecimento;
         dbRec.FProcuracao = proprocuradores.Procuracao;
         dbRec.FBold = proprocuradores.Bold;
+        dbRec.FGUID = proprocuradores.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

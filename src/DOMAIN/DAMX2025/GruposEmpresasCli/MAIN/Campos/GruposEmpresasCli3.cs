@@ -9,7 +9,6 @@ public partial class DBGruposEmpresasCli
     private protected int m_FGrupo, m_FCliente;
     [XmlIgnore]
     private protected bool m_FOculto;
-    public int NFGrupo() => m_FGrupo;
     [XmlAttribute]
     public int FGrupo
     {
@@ -22,7 +21,6 @@ public partial class DBGruposEmpresasCli
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -35,7 +33,6 @@ public partial class DBGruposEmpresasCli
         }
     }
 
-    public bool NFOculto() => m_FOculto;
     [XmlAttribute]
     public bool FOculto
     {

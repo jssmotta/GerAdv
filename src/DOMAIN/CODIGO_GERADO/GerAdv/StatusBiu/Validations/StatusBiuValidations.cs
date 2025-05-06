@@ -17,7 +17,7 @@ public class StatusBiuValidation : IStatusBiuValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // TipoStatusBiu
-        if (reg.TipoStatusBiu.IsEmptyIDNumber())
+        if (!reg.TipoStatusBiu.IsEmptyIDNumber())
         {
             var regTipoStatusBiu = tipostatusbiuReader.Read(reg.TipoStatusBiu, oCnn);
             if (regTipoStatusBiu == null || regTipoStatusBiu.Id != reg.TipoStatusBiu)
@@ -27,7 +27,7 @@ public class StatusBiuValidation : IStatusBiuValidation
         }
 
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

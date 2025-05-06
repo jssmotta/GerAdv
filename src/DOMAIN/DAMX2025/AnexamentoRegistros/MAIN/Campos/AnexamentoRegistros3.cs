@@ -11,7 +11,6 @@ public partial class DBAnexamentoRegistros
     private protected string? m_FGUIDReg;
     [XmlIgnore]
     private protected DateTime? m_FData;
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -24,7 +23,6 @@ public partial class DBAnexamentoRegistros
         }
     }
 
-    public string NFGUIDReg() => m_FGUIDReg ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FGUIDReg
     {
@@ -37,7 +35,6 @@ public partial class DBAnexamentoRegistros
         }
     }
 
-    public int NFCodigoReg() => m_FCodigoReg;
     [XmlAttribute]
     public int FCodigoReg
     {
@@ -50,7 +47,6 @@ public partial class DBAnexamentoRegistros
         }
     }
 
-    public int NFIDReg() => m_FIDReg;
     [XmlAttribute]
     public int FIDReg
     {
@@ -63,7 +59,6 @@ public partial class DBAnexamentoRegistros
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 

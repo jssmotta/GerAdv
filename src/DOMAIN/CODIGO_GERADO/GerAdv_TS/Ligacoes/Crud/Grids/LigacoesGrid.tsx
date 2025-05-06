@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { LigacoesEmpty } from "../../../Models/Ligacoes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import LigacoesInc from "../Inc/Ligacoes";
 import { ILigacoes } from "../../Interfaces/interface.Ligacoes";
 import { LigacoesService } from "../../Services/Ligacoes.service";
 import { LigacoesApi } from "../../Apis/ApiLigacoes";
@@ -16,11 +14,12 @@ import { LigacoesGridMobileComponent } from "../GridsMobile/Ligacoes";
 import { LigacoesGridDesktopComponent } from "../GridsDesktop/Ligacoes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterLigacoes } from "../../Filters/Ligacoes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import LigacoesWindow from "./LigacoesWindow";
 
 const LigacoesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const LigacoesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <LigacoesGridMobileComponent data={ligacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <LigacoesGridDesktopComponent data={ligacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <LigacoesGridMobileComponent data={ligacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <LigacoesGridDesktopComponent data={ligacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <LigacoesWindow
           isOpen={showInc}

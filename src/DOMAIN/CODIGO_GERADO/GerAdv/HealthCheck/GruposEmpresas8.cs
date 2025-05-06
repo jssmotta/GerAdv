@@ -72,7 +72,7 @@ public class GruposEmpresasHealthCheck(IOptions<AppSettings> appSettings, Grupos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) grpEMail,grpInativo,grpOponente,grpDescricao,grpObservacoes,grpCliente,grpIcone,grpDespesaUnificada FROM dbo.GruposEmpresas (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) grpEMail,grpInativo,grpOponente,grpDescricao,grpObservacoes,grpCliente,grpIcone,grpDespesaUnificada,grpGUID FROM dbo.GruposEmpresas (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

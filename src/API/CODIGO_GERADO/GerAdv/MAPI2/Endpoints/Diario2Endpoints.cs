@@ -74,30 +74,6 @@ public static class Diario2Endpoints
 
             return Results.Ok(result);
         }).WithName("Diario2_AddAndUpdate").WithDisplayName("Add or Update Diario2");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IDiario2Validation validation, IDiario2Writer writer, IOperadorReader operadorReader, IClientesReader clientesReader, IDiario2Service service) =>
-        {
-            logger.LogInfo("Diario2", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Diario2", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Diario2_GetColumns").WithDisplayName("Get Diario2 Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IDiario2Validation validation, IDiario2Writer writer, IOperadorReader operadorReader, IClientesReader clientesReader, IDiario2Service service) =>
-        {
-            logger.LogInfo("Diario2", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Diario2", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Diario2_UpdateColumns").WithDisplayName("Update Diario2 Columns");
         group.MapDelete("/Delete", async (int id, string uri, IDiario2Validation validation, IDiario2Writer writer, IOperadorReader operadorReader, IClientesReader clientesReader, IDiario2Service service) =>
         {
             logger.LogInfo("Diario2", "Delete", $"id = {id}", uri);

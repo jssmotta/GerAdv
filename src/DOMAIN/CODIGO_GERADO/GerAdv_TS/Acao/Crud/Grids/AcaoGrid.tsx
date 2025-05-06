@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AcaoEmpty } from "../../../Models/Acao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AcaoInc from "../Inc/Acao";
 import { IAcao } from "../../Interfaces/interface.Acao";
 import { AcaoService } from "../../Services/Acao.service";
 import { AcaoApi } from "../../Apis/ApiAcao";
@@ -16,11 +14,12 @@ import { AcaoGridMobileComponent } from "../GridsMobile/Acao";
 import { AcaoGridDesktopComponent } from "../GridsDesktop/Acao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAcao } from "../../Filters/Acao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AcaoWindow from "./AcaoWindow";
 
 const AcaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const AcaoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <AcaoGridMobileComponent data={acao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AcaoGridDesktopComponent data={acao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AcaoGridMobileComponent data={acao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AcaoGridDesktopComponent data={acao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AcaoWindow
           isOpen={showInc}

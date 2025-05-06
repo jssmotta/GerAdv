@@ -9,6 +9,7 @@ export interface IProSucumbencia {
 	nome : string;
 	valor : number;
 	percentual : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AndCompEmpty } from "../../../Models/AndComp";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AndCompInc from "../Inc/AndComp";
 import { IAndComp } from "../../Interfaces/interface.AndComp";
 import { AndCompService } from "../../Services/AndComp.service";
 import { AndCompApi } from "../../Apis/ApiAndComp";
@@ -16,11 +14,12 @@ import { AndCompGridMobileComponent } from "../GridsMobile/AndComp";
 import { AndCompGridDesktopComponent } from "../GridsDesktop/AndComp";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAndComp } from "../../Filters/AndComp";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AndCompWindow from "./AndCompWindow";
 
 const AndCompGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AndCompGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AndCompGridMobileComponent data={andcomp} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AndCompGridDesktopComponent data={andcomp} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AndCompGridMobileComponent data={andcomp} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AndCompGridDesktopComponent data={andcomp} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AndCompWindow
           isOpen={showInc}

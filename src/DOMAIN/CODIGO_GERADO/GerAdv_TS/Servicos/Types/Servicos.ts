@@ -5,6 +5,7 @@ export interface IServicos {
 	cobrar : boolean;
 	descricao : string;
 	basico : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

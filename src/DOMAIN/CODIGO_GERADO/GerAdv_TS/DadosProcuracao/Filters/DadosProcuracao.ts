@@ -9,6 +9,7 @@
  pispasep?: string;
  remuneracao?: string;
  objeto?: string;
+ guid?: string;
 }
 
 export class FilterDadosProcuracaoDefaults implements FilterDadosProcuracao {
@@ -21,5 +22,6 @@ export class FilterDadosProcuracaoDefaults implements FilterDadosProcuracao {
     pispasep?: string = '';
     remuneracao?: string = '';
     objeto?: string = '';
+    guid?: string = '';
 }
     

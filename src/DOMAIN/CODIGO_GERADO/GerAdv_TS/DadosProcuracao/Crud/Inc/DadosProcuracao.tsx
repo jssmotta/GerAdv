@@ -5,7 +5,7 @@ import { DadosProcuracaoApi } from '../../Apis/ApiDadosProcuracao';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IDadosProcuracaoFormProps } from '../../Interfaces/interface.DadosProcuracao';
 import { DadosProcuracaoService } from '../../Services/DadosProcuracao.service';
 import { useDadosProcuracaoForm } from '../../Hooks/useDadosProcuracaoForm';

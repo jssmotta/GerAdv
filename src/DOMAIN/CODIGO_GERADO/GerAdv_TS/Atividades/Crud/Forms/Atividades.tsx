@@ -1,12 +1,18 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAtividades } from '../../Interfaces/interface.Atividades';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAtividades } from '@/app/GerAdv_TS/Atividades/Interfaces/interface.Atividades';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputDescription from '@/app/components/Inputs/InputDescription';
 
 interface AtividadesFormProps {
     atividadesData: IAtividades;
@@ -36,41 +42,46 @@ interface AtividadesFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AtividadesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AtividadesForm-${atividadesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={atividadesData} isSubmitting={isSubmitting} onClose={onClose} formId={`AtividadesForm-${atividadesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputDescription
             type="text"            
             id="descricao"
             label="descricao"
             className="inputIncNome"
             name="descricao"
             value={atividadesData.descricao}
+            placeholder={`Digite nome atividades`}
             onChange={onChange}
             required
+            disabled={atividadesData.id > 0}
           />
 
-          							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?atividades=${atividadesData.id}`)}>Processos</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -13,7 +13,6 @@ public partial class DBReuniao
     private protected DateTime? m_FData, m_FHoraInicial, m_FHoraFinal, m_FHoraSaida, m_FHoraRetorno;
     [XmlIgnore]
     private protected bool m_FExterna, m_FBold;
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -26,7 +25,6 @@ public partial class DBReuniao
         }
     }
 
-    public int NFIDAgenda() => m_FIDAgenda;
     [XmlAttribute]
     public int FIDAgenda
     {
@@ -39,7 +37,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -57,7 +54,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFPauta() => m_FPauta ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPauta
     {
@@ -70,7 +66,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFATA() => m_FATA ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FATA
     {
@@ -83,7 +78,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFHoraInicial() => $"{m_FHoraInicial:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraInicial:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraInicial => Convert.ToDateTime(m_FHoraInicial);
 
@@ -118,7 +112,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFHoraFinal() => $"{m_FHoraFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraFinal:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
@@ -153,7 +146,6 @@ public partial class DBReuniao
         }
     }
 
-    public bool NFExterna() => m_FExterna;
     [XmlAttribute]
     public bool FExterna
     {
@@ -166,7 +158,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFHoraSaida() => $"{m_FHoraSaida:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraSaida:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraSaida => Convert.ToDateTime(m_FHoraSaida);
 
@@ -201,7 +192,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFHoraRetorno() => $"{m_FHoraRetorno:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraRetorno:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraRetorno => Convert.ToDateTime(m_FHoraRetorno);
 
@@ -236,7 +226,6 @@ public partial class DBReuniao
         }
     }
 
-    public string NFPrincipaisDecisoes() => m_FPrincipaisDecisoes ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPrincipaisDecisoes
     {
@@ -249,7 +238,6 @@ public partial class DBReuniao
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

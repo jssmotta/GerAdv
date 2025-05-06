@@ -20,4 +20,7 @@ public partial class FilterUF
 
     [JsonPropertyName("descricao")]
     public string Descricao { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

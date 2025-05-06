@@ -19,6 +19,7 @@
  obs?: string;
  produtos?: string;
  contatos?: string;
+ guid?: string;
 }
 
 export class FilterFornecedoresDefaults implements FilterFornecedores {
@@ -41,5 +42,6 @@ export class FilterFornecedoresDefaults implements FilterFornecedores {
     obs?: string = '';
     produtos?: string = '';
     contatos?: string = '';
+    guid?: string = '';
 }
     

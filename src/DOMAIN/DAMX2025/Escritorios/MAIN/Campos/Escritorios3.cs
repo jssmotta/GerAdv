@@ -13,7 +13,6 @@ public partial class DBEscritorios
     private protected bool m_FCasa, m_FParceria, m_FCorrespondente, m_FTop, m_FEtiqueta, m_FBold;
     public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
 
-    public string NFCNPJ() => m_FCNPJ ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -26,7 +25,6 @@ public partial class DBEscritorios
         }
     }
 
-    public bool NFCasa() => m_FCasa;
     [XmlAttribute]
     public bool FCasa
     {
@@ -39,7 +37,6 @@ public partial class DBEscritorios
         }
     }
 
-    public bool NFParceria() => m_FParceria;
     [XmlAttribute]
     public bool FParceria
     {
@@ -52,7 +49,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -65,7 +61,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFOAB() => m_FOAB ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOAB
     {
@@ -78,7 +73,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -91,7 +85,6 @@ public partial class DBEscritorios
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -104,7 +97,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFBairro() => m_FBairro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FBairro
     {
@@ -118,7 +110,6 @@ public partial class DBEscritorios
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -131,7 +122,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -144,7 +134,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -157,7 +146,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {
@@ -170,7 +158,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -183,7 +170,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -196,7 +182,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFAdvResponsavel() => m_FAdvResponsavel ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAdvResponsavel
     {
@@ -209,7 +194,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFSecretaria() => m_FSecretaria ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSecretaria
     {
@@ -222,7 +206,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string NFInscEst() => m_FInscEst ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FInscEst
     {
@@ -235,7 +218,6 @@ public partial class DBEscritorios
         }
     }
 
-    public bool NFCorrespondente() => m_FCorrespondente;
     [XmlAttribute]
     public bool FCorrespondente
     {
@@ -248,7 +230,6 @@ public partial class DBEscritorios
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {
@@ -261,7 +242,6 @@ public partial class DBEscritorios
         }
     }
 
-    public bool NFEtiqueta() => m_FEtiqueta;
     [XmlAttribute]
     public bool FEtiqueta
     {
@@ -274,7 +254,6 @@ public partial class DBEscritorios
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

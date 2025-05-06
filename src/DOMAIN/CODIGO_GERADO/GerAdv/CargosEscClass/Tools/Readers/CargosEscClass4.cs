@@ -8,6 +8,7 @@ public partial interface ICargosEscClassReader
     CargosEscClassResponse? Read(int id, SqlConnection oCnn);
     CargosEscClassResponse? Read(string where, SqlConnection oCnn);
     CargosEscClassResponse? Read(Entity.DBCargosEscClass dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     CargosEscClassResponse? Read(DBCargosEscClass dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class CargosEscClass : ICargosEscClassReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class CargosEscClass : ICargosEscClassReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

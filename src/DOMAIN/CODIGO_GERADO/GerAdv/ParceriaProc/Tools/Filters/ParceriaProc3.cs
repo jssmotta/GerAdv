@@ -14,4 +14,7 @@ public partial class FilterParceriaProc
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AlertasEnviadosEmpty } from "../../../Models/AlertasEnviados";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AlertasEnviadosInc from "../Inc/AlertasEnviados";
 import { IAlertasEnviados } from "../../Interfaces/interface.AlertasEnviados";
 import { AlertasEnviadosService } from "../../Services/AlertasEnviados.service";
 import { AlertasEnviadosApi } from "../../Apis/ApiAlertasEnviados";
@@ -16,11 +14,12 @@ import { AlertasEnviadosGridMobileComponent } from "../GridsMobile/AlertasEnviad
 import { AlertasEnviadosGridDesktopComponent } from "../GridsDesktop/AlertasEnviados";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAlertasEnviados } from "../../Filters/AlertasEnviados";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AlertasEnviadosWindow from "./AlertasEnviadosWindow";
 
 const AlertasEnviadosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AlertasEnviadosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AlertasEnviadosGridMobileComponent data={alertasenviados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AlertasEnviadosGridDesktopComponent data={alertasenviados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AlertasEnviadosGridMobileComponent data={alertasenviados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AlertasEnviadosGridDesktopComponent data={alertasenviados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AlertasEnviadosWindow
           isOpen={showInc}

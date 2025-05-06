@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GruposEmpresasEmpty } from "../../../Models/GruposEmpresas";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GruposEmpresasInc from "../Inc/GruposEmpresas";
 import { IGruposEmpresas } from "../../Interfaces/interface.GruposEmpresas";
 import { GruposEmpresasService } from "../../Services/GruposEmpresas.service";
 import { GruposEmpresasApi } from "../../Apis/ApiGruposEmpresas";
@@ -16,11 +14,12 @@ import { GruposEmpresasGridMobileComponent } from "../GridsMobile/GruposEmpresas
 import { GruposEmpresasGridDesktopComponent } from "../GridsDesktop/GruposEmpresas";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGruposEmpresas } from "../../Filters/GruposEmpresas";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GruposEmpresasWindow from "./GruposEmpresasWindow";
 
 const GruposEmpresasGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const GruposEmpresasGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <GruposEmpresasGridMobileComponent data={gruposempresas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GruposEmpresasGridDesktopComponent data={gruposempresas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GruposEmpresasGridMobileComponent data={gruposempresas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GruposEmpresasGridDesktopComponent data={gruposempresas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GruposEmpresasWindow
           isOpen={showInc}

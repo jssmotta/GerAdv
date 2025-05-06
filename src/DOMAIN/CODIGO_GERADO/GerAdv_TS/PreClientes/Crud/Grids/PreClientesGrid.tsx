@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PreClientesEmpty } from "../../../Models/PreClientes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PreClientesInc from "../Inc/PreClientes";
 import { IPreClientes } from "../../Interfaces/interface.PreClientes";
 import { PreClientesService } from "../../Services/PreClientes.service";
 import { PreClientesApi } from "../../Apis/ApiPreClientes";
@@ -16,11 +14,12 @@ import { PreClientesGridMobileComponent } from "../GridsMobile/PreClientes";
 import { PreClientesGridDesktopComponent } from "../GridsDesktop/PreClientes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPreClientes } from "../../Filters/PreClientes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PreClientesWindow from "./PreClientesWindow";
 
 const PreClientesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const PreClientesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <PreClientesGridMobileComponent data={preclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PreClientesGridDesktopComponent data={preclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PreClientesGridMobileComponent data={preclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PreClientesGridDesktopComponent data={preclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PreClientesWindow
           isOpen={showInc}

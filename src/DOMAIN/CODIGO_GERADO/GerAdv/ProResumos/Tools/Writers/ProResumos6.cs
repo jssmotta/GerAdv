@@ -19,6 +19,7 @@ public class ProResumos : IProResumosWriter
         dbRec.FResumo = proresumos.Resumo;
         dbRec.FTipoResumo = proresumos.TipoResumo;
         dbRec.FBold = proresumos.Bold;
+        dbRec.FGUID = proresumos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

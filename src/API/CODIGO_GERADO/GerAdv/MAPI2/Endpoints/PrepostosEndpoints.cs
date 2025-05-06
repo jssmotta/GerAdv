@@ -74,30 +74,6 @@ public static class PrepostosEndpoints
 
             return Results.Ok(result);
         }).WithName("Prepostos_AddAndUpdate").WithDisplayName("Add or Update Prepostos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, IPrepostosService service) =>
-        {
-            logger.LogInfo("Prepostos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Prepostos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Prepostos_GetColumns").WithDisplayName("Get Prepostos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, IPrepostosService service) =>
-        {
-            logger.LogInfo("Prepostos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Prepostos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Prepostos_UpdateColumns").WithDisplayName("Update Prepostos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, IPrepostosService service) =>
         {
             logger.LogInfo("Prepostos", "Delete", $"id = {id}", uri);

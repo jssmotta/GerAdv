@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import UFInc from "../Inc/UF";
 import { IUF } from "../../Interfaces/interface.UF";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const UFWindow: React.FC<UFWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/uf/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedUF?.id}`);
+            router.push(`/pages/uf/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedUF?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedUF]);
@@ -42,7 +43,7 @@ const UFWindow: React.FC<UFWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedUF?.id ?? 0).toString()}

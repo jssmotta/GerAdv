@@ -21,4 +21,5 @@
 	contatos = `Contatos`,
 	etiqueta = `Etiqueta`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

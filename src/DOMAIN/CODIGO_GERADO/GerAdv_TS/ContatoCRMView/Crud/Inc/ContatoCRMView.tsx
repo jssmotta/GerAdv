@@ -5,7 +5,7 @@ import { ContatoCRMViewApi } from '../../Apis/ApiContatoCRMView';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IContatoCRMViewFormProps } from '../../Interfaces/interface.ContatoCRMView';
 import { ContatoCRMViewService } from '../../Services/ContatoCRMView.service';
 import { useContatoCRMViewForm } from '../../Hooks/useContatoCRMViewForm';

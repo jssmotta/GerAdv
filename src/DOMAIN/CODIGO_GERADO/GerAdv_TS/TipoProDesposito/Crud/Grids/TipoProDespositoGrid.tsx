@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoProDespositoEmpty } from "../../../Models/TipoProDesposito";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoProDespositoInc from "../Inc/TipoProDesposito";
 import { ITipoProDesposito } from "../../Interfaces/interface.TipoProDesposito";
 import { TipoProDespositoService } from "../../Services/TipoProDesposito.service";
 import { TipoProDespositoApi } from "../../Apis/ApiTipoProDesposito";
@@ -16,11 +14,12 @@ import { TipoProDespositoGridMobileComponent } from "../GridsMobile/TipoProDespo
 import { TipoProDespositoGridDesktopComponent } from "../GridsDesktop/TipoProDesposito";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoProDesposito } from "../../Filters/TipoProDesposito";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoProDespositoWindow from "./TipoProDespositoWindow";
 
 const TipoProDespositoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoProDespositoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoProDespositoGridMobileComponent data={tipoprodesposito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoProDespositoGridDesktopComponent data={tipoprodesposito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoProDespositoGridMobileComponent data={tipoprodesposito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoProDespositoGridDesktopComponent data={tipoprodesposito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoProDespositoWindow
           isOpen={showInc}

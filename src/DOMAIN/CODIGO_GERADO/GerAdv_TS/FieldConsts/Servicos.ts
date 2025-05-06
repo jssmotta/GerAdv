@@ -2,4 +2,5 @@
 {	cobrar = `Cobrar`,
 	descricao = `Descricao`,
 	basico = `Basico`,
+	guid = `GUID`,
 }

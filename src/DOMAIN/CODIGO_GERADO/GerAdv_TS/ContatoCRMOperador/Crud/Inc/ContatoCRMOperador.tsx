@@ -5,7 +5,7 @@ import { ContatoCRMOperadorApi } from '../../Apis/ApiContatoCRMOperador';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IContatoCRMOperadorFormProps } from '../../Interfaces/interface.ContatoCRMOperador';
 import { ContatoCRMOperadorService } from '../../Services/ContatoCRMOperador.service';
 import { useContatoCRMOperadorForm } from '../../Hooks/useContatoCRMOperadorForm';

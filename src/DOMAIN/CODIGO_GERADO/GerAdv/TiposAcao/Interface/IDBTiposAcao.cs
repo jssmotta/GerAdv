@@ -5,4 +5,5 @@ public partial interface IDBTiposAcao
     public string? FNome { get; set; }
     public bool FInativo { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

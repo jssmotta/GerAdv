@@ -71,4 +71,7 @@ public partial class FilterContratos
 
     [JsonPropertyName("multa")]
     public string Multa { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

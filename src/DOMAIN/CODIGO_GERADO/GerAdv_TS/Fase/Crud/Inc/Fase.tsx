@@ -5,7 +5,7 @@ import { FaseApi } from '../../Apis/ApiFase';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IFaseFormProps } from '../../Interfaces/interface.Fase';
 import { FaseService } from '../../Services/Fase.service';
 import { useFaseForm } from '../../Hooks/useFaseForm';

@@ -1,12 +1,19 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { ITipoCompromisso } from '../../Interfaces/interface.TipoCompromisso';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { ITipoCompromisso } from '@/app/GerAdv_TS/TipoCompromisso/Interfaces/interface.TipoCompromisso';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputDescription from '@/app/components/Inputs/InputDescription';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface TipoCompromissoFormProps {
     tipocompromissoData: ITipoCompromisso;
@@ -36,24 +43,40 @@ interface TipoCompromissoFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('TipoCompromissoForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`TipoCompromissoForm-${tipocompromissoData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={tipocompromissoData} isSubmitting={isSubmitting} onClose={onClose} formId={`TipoCompromissoForm-${tipocompromissoData.id}`} />
+
+                <div className="grid-container">
+
+    <InputDescription
             type="text"            
             id="descricao"
             label="descricao"
             className="inputIncNome"
             name="descricao"
             value={tipocompromissoData.descricao}
+            placeholder={`Digite nome tipo compromisso`}
             onChange={onChange}
             required
+            disabled={tipocompromissoData.id > 0}
           />
 
 <Input
@@ -66,25 +89,12 @@ value={tipocompromissoData.icone}
 onChange={onChange}               
 />
 
-<Checkbox label="Financeiro" name="financeiro" checked={tipocompromissoData.financeiro} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?tipocompromisso=${tipocompromissoData.id}`)}>Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendafinanceiro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?tipocompromisso=${tipocompromissoData.id}`)}>Agenda Financeiro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/necompromissos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?tipocompromisso=${tipocompromissoData.id}`)}>N E Compromissos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendasemana${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?tipocompromisso=${tipocompromissoData.id}`)}>Agenda Semana</div>
+<InputCheckbox label="Financeiro" name="financeiro" checked={tipocompromissoData.financeiro} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -6,6 +6,7 @@
 	statusandamento = `StatusAndamento`,
 	extraid = `ExtraID`,
 	idne = `IDNE`,
+	guid = `GUID`,
 	liminarorigem = `LiminarOrigem`,
 	naopublicavel = `NaoPublicavel`,
 	idinstprocesso = `IDInstProcesso`,
@@ -17,4 +18,5 @@
 	sad = `SAD`,
 	resumido = `Resumido`,
 	top = `Top`,
+	guid = `GUID`,
 }

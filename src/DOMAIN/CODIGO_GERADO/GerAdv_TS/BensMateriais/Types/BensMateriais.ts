@@ -17,6 +17,7 @@ export interface IBensMateriais {
 	observacoes : string;
 	nomevendedor : string;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

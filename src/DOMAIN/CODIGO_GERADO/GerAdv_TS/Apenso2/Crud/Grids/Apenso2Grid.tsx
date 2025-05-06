@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { Apenso2Empty } from "../../../Models/Apenso2";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import Apenso2Inc from "../Inc/Apenso2";
 import { IApenso2 } from "../../Interfaces/interface.Apenso2";
 import { Apenso2Service } from "../../Services/Apenso2.service";
 import { Apenso2Api } from "../../Apis/ApiApenso2";
@@ -16,11 +14,12 @@ import { Apenso2GridMobileComponent } from "../GridsMobile/Apenso2";
 import { Apenso2GridDesktopComponent } from "../GridsDesktop/Apenso2";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterApenso2 } from "../../Filters/Apenso2";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import Apenso2Window from "./Apenso2Window";
 
 const Apenso2Grid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const Apenso2Grid: React.FC = () => {
       <>
             
         {isMobile ?
-           <Apenso2GridMobileComponent data={apenso2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <Apenso2GridDesktopComponent data={apenso2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <Apenso2GridMobileComponent data={apenso2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <Apenso2GridDesktopComponent data={apenso2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <Apenso2Window
           isOpen={showInc}

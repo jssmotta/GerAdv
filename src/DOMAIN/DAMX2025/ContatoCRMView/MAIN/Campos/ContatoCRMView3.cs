@@ -9,7 +9,6 @@ public partial class DBContatoCRMView
     private protected string? m_FCGUID, m_FIP;
     [XmlIgnore]
     private protected DateTime? m_FData;
-    public string NFCGUID() => m_FCGUID ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCGUID
     {
@@ -22,7 +21,6 @@ public partial class DBContatoCRMView
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -40,7 +38,6 @@ public partial class DBContatoCRMView
         }
     }
 
-    public string NFIP() => m_FIP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FIP
     {

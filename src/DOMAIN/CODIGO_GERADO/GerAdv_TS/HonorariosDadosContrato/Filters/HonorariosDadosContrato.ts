@@ -9,6 +9,7 @@
     valorfixo?: number;
  observacao?: string;
  datacontrato?: string;
+ guid?: string;
 }
 
 export class FilterHonorariosDadosContratoDefaults implements FilterHonorariosDadosContrato {
@@ -21,5 +22,6 @@ export class FilterHonorariosDadosContratoDefaults implements FilterHonorariosDa
     valorfixo?: number = -2147483648;
     observacao?: string = '';
     datacontrato?: string = '';
+    guid?: string = '';
 }
     

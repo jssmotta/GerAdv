@@ -5,6 +5,7 @@ export interface IFase {
 	justica : number;
 	area : number;
 	descricao : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

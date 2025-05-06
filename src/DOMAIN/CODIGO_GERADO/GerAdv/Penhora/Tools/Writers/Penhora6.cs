@@ -20,6 +20,7 @@ public class Penhora : IPenhoraWriter
             dbRec.FDataPenhora = penhora.DataPenhora.ToString();
         dbRec.FPenhoraStatus = penhora.PenhoraStatus;
         dbRec.FMaster = penhora.Master;
+        dbRec.FGUID = penhora.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

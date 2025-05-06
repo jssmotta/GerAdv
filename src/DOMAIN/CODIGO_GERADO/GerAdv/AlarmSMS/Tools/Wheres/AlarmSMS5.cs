@@ -31,9 +31,11 @@ public partial class AlarmSMS : IAlarmSMSWhere
             ExcetoDiasFelizes = dbRec.FExcetoDiasFelizes,
             Desktop = dbRec.FDesktop,
             Operador = dbRec.FOperador,
+            GuidExo = dbRec.FGuidExo ?? string.Empty,
             Agenda = dbRec.FAgenda,
             Recado = dbRec.FRecado,
             Emocao = dbRec.FEmocao,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FToday, out _))
             alarmsms.Today = dbRec.FToday;

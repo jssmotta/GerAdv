@@ -72,7 +72,7 @@ public class TipoContatoCRMHealthCheck(IOptions<AppSettings> appSettings, TipoCo
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) tccNome,tccBold FROM dbo.TipoContatoCRM (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) tccNome,tccBold,tccGUID FROM dbo.TipoContatoCRM (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

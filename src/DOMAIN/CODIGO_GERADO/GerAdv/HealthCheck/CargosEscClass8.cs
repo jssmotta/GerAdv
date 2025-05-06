@@ -72,7 +72,7 @@ public class CargosEscClassHealthCheck(IOptions<AppSettings> appSettings, Cargos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cecNome FROM dbo.CargosEscClass (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) cecNome,cecGUID FROM dbo.CargosEscClass (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

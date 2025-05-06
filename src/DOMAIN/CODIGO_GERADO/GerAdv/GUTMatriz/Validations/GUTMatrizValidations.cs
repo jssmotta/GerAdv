@@ -17,7 +17,7 @@ public class GUTMatrizValidation : IGUTMatrizValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         // GUTTipo
-        if (reg.GUTTipo.IsEmptyIDNumber())
+        if (!reg.GUTTipo.IsEmptyIDNumber())
         {
             var regGUTTipo = guttipoReader.Read(reg.GUTTipo, oCnn);
             if (regGUTTipo == null || regGUTTipo.Id != reg.GUTTipo)

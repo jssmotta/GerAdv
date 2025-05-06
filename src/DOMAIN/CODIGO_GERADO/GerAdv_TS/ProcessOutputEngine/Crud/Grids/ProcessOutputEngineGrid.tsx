@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProcessOutputEngineEmpty } from "../../../Models/ProcessOutputEngine";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProcessOutputEngineInc from "../Inc/ProcessOutputEngine";
 import { IProcessOutputEngine } from "../../Interfaces/interface.ProcessOutputEngine";
 import { ProcessOutputEngineService } from "../../Services/ProcessOutputEngine.service";
 import { ProcessOutputEngineApi } from "../../Apis/ApiProcessOutputEngine";
@@ -16,11 +14,12 @@ import { ProcessOutputEngineGridMobileComponent } from "../GridsMobile/ProcessOu
 import { ProcessOutputEngineGridDesktopComponent } from "../GridsDesktop/ProcessOutputEngine";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProcessOutputEngine } from "../../Filters/ProcessOutputEngine";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProcessOutputEngineWindow from "./ProcessOutputEngineWindow";
 
 const ProcessOutputEngineGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProcessOutputEngineGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProcessOutputEngineGridMobileComponent data={processoutputengine} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProcessOutputEngineGridDesktopComponent data={processoutputengine} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProcessOutputEngineGridMobileComponent data={processoutputengine} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProcessOutputEngineGridDesktopComponent data={processoutputengine} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProcessOutputEngineWindow
           isOpen={showInc}

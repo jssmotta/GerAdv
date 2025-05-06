@@ -72,7 +72,7 @@ public class Diario2HealthCheck(IOptions<AppSettings> appSettings, Diario2Servic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) diaData,diaHora,diaOperador,diaNome,diaOcorrencia,diaCliente,diaBold FROM dbo.Diario2 (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) diaData,diaHora,diaOperador,diaNome,diaOcorrencia,diaCliente,diaBold,diaGUID FROM dbo.Diario2 (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -18,6 +18,7 @@ public partial class GUTTipo : IGUTTipoWhere
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Ordem = dbRec.FOrdem,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

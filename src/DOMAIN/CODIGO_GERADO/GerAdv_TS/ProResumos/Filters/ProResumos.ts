@@ -5,6 +5,7 @@
  data?: string;
  resumo?: string;
     tiporesumo?: number;
+ guid?: string;
 }
 
 export class FilterProResumosDefaults implements FilterProResumos {
@@ -13,5 +14,6 @@ export class FilterProResumosDefaults implements FilterProResumos {
     data?: string = '';
     resumo?: string = '';
     tiporesumo?: number = -2147483648;
+    guid?: string = '';
 }
     

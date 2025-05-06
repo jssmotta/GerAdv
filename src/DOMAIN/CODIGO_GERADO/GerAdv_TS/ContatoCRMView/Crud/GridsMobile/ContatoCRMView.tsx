@@ -1,8 +1,9 @@
-﻿"use client";
+﻿// GridsMobile.tsx.txt
+"use client";
 import { Grid, GridColumn, GridFilterChangeEvent, GridPageChangeEvent, GridSortChangeEvent } from "@progress/kendo-react-all";
 import { IContatoCRMView } from "../../Interfaces/interface.ContatoCRMView";
 import { useRouter } from 'next/navigation';
-import { LoaderGrid } from "@/app/components/GridLoader";
+import { LoaderGrid } from "@/app/components/Cruds/GridLoader";
 import { useState } from "react";
 import { applyFilter, applyFilterToColumn, sortData } from "@/app/tools/crud";
 
@@ -10,12 +11,14 @@ interface ContatoCRMViewGridProps {
 	data: IContatoCRMView[];
 	onRowClick: (contatocrmview: IContatoCRMView) => void;
 	onDeleteClick: (e: any) => void;
+	setSelectedId: (id: number | null) => void;
 }
 
 export const ContatoCRMViewGridMobileComponent: React.FC<ContatoCRMViewGridProps> = ({
 	data,
 	onRowClick,
-	onDeleteClick
+	onDeleteClick,
+	setSelectedId,
 }) => {
 	const router = useRouter();
 

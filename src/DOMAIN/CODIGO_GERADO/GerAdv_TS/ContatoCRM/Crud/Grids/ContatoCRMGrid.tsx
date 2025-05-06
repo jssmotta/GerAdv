@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ContatoCRMEmpty } from "../../../Models/ContatoCRM";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ContatoCRMInc from "../Inc/ContatoCRM";
 import { IContatoCRM } from "../../Interfaces/interface.ContatoCRM";
 import { ContatoCRMService } from "../../Services/ContatoCRM.service";
 import { ContatoCRMApi } from "../../Apis/ApiContatoCRM";
@@ -16,11 +14,12 @@ import { ContatoCRMGridMobileComponent } from "../GridsMobile/ContatoCRM";
 import { ContatoCRMGridDesktopComponent } from "../GridsDesktop/ContatoCRM";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterContatoCRM } from "../../Filters/ContatoCRM";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ContatoCRMWindow from "./ContatoCRMWindow";
 
 const ContatoCRMGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ContatoCRMGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ContatoCRMGridMobileComponent data={contatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ContatoCRMGridDesktopComponent data={contatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ContatoCRMGridMobileComponent data={contatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ContatoCRMGridDesktopComponent data={contatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ContatoCRMWindow
           isOpen={showInc}

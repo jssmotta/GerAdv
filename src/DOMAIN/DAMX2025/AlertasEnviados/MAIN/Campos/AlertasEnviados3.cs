@@ -11,7 +11,6 @@ public partial class DBAlertasEnviados
     private protected DateTime? m_FDataAlertado;
     [XmlIgnore]
     private protected bool m_FVisualizado;
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -24,7 +23,6 @@ public partial class DBAlertasEnviados
         }
     }
 
-    public int NFAlerta() => m_FAlerta;
     [XmlAttribute]
     public int FAlerta
     {
@@ -37,7 +35,6 @@ public partial class DBAlertasEnviados
         }
     }
 
-    public string NFDataAlertado() => $"{m_FDataAlertado:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataAlertado:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataAlertado => Convert.ToDateTime(m_FDataAlertado);
 
@@ -55,7 +52,6 @@ public partial class DBAlertasEnviados
         }
     }
 
-    public bool NFVisualizado() => m_FVisualizado;
     [XmlAttribute]
     public bool FVisualizado
     {

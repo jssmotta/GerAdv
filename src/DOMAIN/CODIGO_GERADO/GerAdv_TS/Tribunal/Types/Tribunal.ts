@@ -11,6 +11,7 @@ export interface ITribunal {
 	web : string;
 	etiqueta : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

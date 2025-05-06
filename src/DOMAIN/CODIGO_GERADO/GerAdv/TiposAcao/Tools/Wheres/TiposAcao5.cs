@@ -19,6 +19,7 @@ public partial class TiposAcao : ITiposAcaoWhere
             Nome = dbRec.FNome ?? string.Empty,
             Inativo = dbRec.FInativo,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -41,7 +41,7 @@ public partial class DBCargosEscODicInfo : IODicInfo
     public static string TTabelaNome => DBCargosEscDicInfo.TabelaNome;
     public static string TTablePrefix => DBCargosEscDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGUID, DBCargosEscDicInfo.CgeQuemCad, DBCargosEscDicInfo.CgeDtCad, DBCargosEscDicInfo.CgeQuemAtu, DBCargosEscDicInfo.CgeDtAtu, DBCargosEscDicInfo.CgeVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -57,7 +57,8 @@ public partial class DBCargosEscODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "cgeCodigo"
+            "cgeCodigo",
+            "cgeNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBCargosEscDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

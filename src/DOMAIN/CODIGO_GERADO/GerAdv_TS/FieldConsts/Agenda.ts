@@ -38,4 +38,5 @@
 	protocolointegrado = `ProtocoloIntegrado`,
 	datainicioprazo = `DataInicioPrazo`,
 	usuariociente = `UsuarioCiente`,
+	guid = `GUID`,
 }

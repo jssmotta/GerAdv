@@ -16,6 +16,7 @@ public class Graph : IGraphWriter
         dbRec.FTabela = graph.Tabela;
         dbRec.FTabelaId = graph.TabelaId;
         dbRec.FImagem = graph.Imagem;
+        dbRec.FGUID = graph.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -72,7 +72,7 @@ public class FuncionariosHealthCheck(IOptions<AppSettings> appSettings, Funciona
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) funEMailPro,funCargo,funNome,funFuncao,funSexo,funRegistro,funCPF,funRG,funTipo,funObservacao,funEndereco,funBairro,funCidade,funCEP,funContato,funFax,funFone,funEMail,funPeriodo_Ini,funPeriodo_Fim,funCTPSNumero,funCTPSSerie,funPIS,funSalario,funCTPSDtEmissao,funDtNasc,funData,funLiberaAgenda,funPasta,funClass,funEtiqueta,funAni,funBold FROM dbo.Funcionarios (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) funEMailPro,funCargo,funNome,funFuncao,funSexo,funRegistro,funCPF,funRG,funTipo,funObservacao,funEndereco,funBairro,funCidade,funCEP,funContato,funFax,funFone,funEMail,funPeriodo_Ini,funPeriodo_Fim,funCTPSNumero,funCTPSSerie,funPIS,funSalario,funCTPSDtEmissao,funDtNasc,funData,funLiberaAgenda,funPasta,funClass,funEtiqueta,funAni,funBold,funGUID FROM dbo.Funcionarios (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

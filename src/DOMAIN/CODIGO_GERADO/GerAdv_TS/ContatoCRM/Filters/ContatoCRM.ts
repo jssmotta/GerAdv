@@ -19,6 +19,7 @@
     tipocontatocrm?: number;
  contato?: string;
     emocao?: number;
+ guid?: string;
 }
 
 export class FilterContatoCRMDefaults implements FilterContatoCRM {
@@ -41,5 +42,6 @@ export class FilterContatoCRMDefaults implements FilterContatoCRM {
     tipocontatocrm?: number = -2147483648;
     contato?: string = '';
     emocao?: number = -2147483648;
+    guid?: string = '';
 }
     

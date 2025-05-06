@@ -34,7 +34,7 @@ public partial class DBProcessOutputSourcesODicInfo : IODicInfo
     public static string TTabelaNome => DBProcessOutputSourcesDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessOutputSourcesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProcessOutputSourcesDicInfo.PosNome, DBProcessOutputSourcesDicInfo.PosGUID];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputSourcesDicInfo.PosNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputSourcesDicInfo.PosNome, DBProcessOutputSourcesDicInfo.PosGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

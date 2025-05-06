@@ -1,17 +1,22 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IFase } from '../../Interfaces/interface.Fase';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IFase } from '@/app/GerAdv_TS/Fase/Interfaces/interface.Fase';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import JusticaComboBox from '@/app/GerAdv_TS/Justica/ComboBox/Justica';
 import AreaComboBox from '@/app/GerAdv_TS/Area/ComboBox/Area';
 import { JusticaApi } from '@/app/GerAdv_TS/Justica/Apis/ApiJustica';
 import { AreaApi } from '@/app/GerAdv_TS/Area/Apis/ApiArea';
+import InputDescription from '@/app/components/Inputs/InputDescription';
 
 interface FaseFormProps {
     faseData: IFase;
@@ -83,26 +88,40 @@ if (getParamFromUrl("area") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('FaseForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeJustica && (<h2>{nomeJustica}</h2>)}
-{nomeArea && (<h2>{nomeArea}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`FaseForm-${faseData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={faseData} isSubmitting={isSubmitting} onClose={onClose} formId={`FaseForm-${faseData.id}`} />
+
+                <div className="grid-container">
+
+    <InputDescription
             type="text"            
             id="descricao"
             label="descricao"
             className="inputIncNome"
             name="descricao"
             value={faseData.descricao}
+            placeholder={`Digite nome fase`}
             onChange={onChange}
             required
+            disabled={faseData.id > 0}
           />
 
             <JusticaComboBox
@@ -119,22 +138,10 @@ if (getParamFromUrl("area") > 0) {
             label={'Area'}
             />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/historico${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?fase=${faseData.id}`)}>Historico</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prodepositos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?fase=${faseData.id}`)}>Pro Depositos</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import OperadorEMailPopupInc from "../Inc/OperadorEMailPopup";
 import { IOperadorEMailPopup } from "../../Interfaces/interface.OperadorEMailPopup";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const OperadorEMailPopupWindow: React.FC<OperadorEMailPopupWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/operadoremailpopup/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedOperadorEMailPopup?.id}`);
+            router.push(`/pages/operadoremailpopup/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedOperadorEMailPopup?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedOperadorEMailPopup]);
@@ -42,7 +43,7 @@ const OperadorEMailPopupWindow: React.FC<OperadorEMailPopupWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={596}
                     newWidth={1440}
                     id={(selectedOperadorEMailPopup?.id ?? 0).toString()}

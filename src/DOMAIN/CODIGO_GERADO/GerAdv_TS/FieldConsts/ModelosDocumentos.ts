@@ -15,4 +15,5 @@
 	titulo = `Titulo`,
 	testemunhas = `Testemunhas`,
 	css = `CSS`,
+	guid = `GUID`,
 }

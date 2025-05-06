@@ -5,7 +5,7 @@ import { ApensoApi } from '../../Apis/ApiApenso';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IApensoFormProps } from '../../Interfaces/interface.Apenso';
 import { ApensoService } from '../../Services/Apenso.service';
 import { useApensoForm } from '../../Hooks/useApensoForm';

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AgendaRepetirEmpty } from "../../../Models/AgendaRepetir";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AgendaRepetirInc from "../Inc/AgendaRepetir";
 import { IAgendaRepetir } from "../../Interfaces/interface.AgendaRepetir";
 import { AgendaRepetirService } from "../../Services/AgendaRepetir.service";
 import { AgendaRepetirApi } from "../../Apis/ApiAgendaRepetir";
@@ -16,11 +14,12 @@ import { AgendaRepetirGridMobileComponent } from "../GridsMobile/AgendaRepetir";
 import { AgendaRepetirGridDesktopComponent } from "../GridsDesktop/AgendaRepetir";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAgendaRepetir } from "../../Filters/AgendaRepetir";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AgendaRepetirWindow from "./AgendaRepetirWindow";
 
 const AgendaRepetirGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AgendaRepetirGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AgendaRepetirGridMobileComponent data={agendarepetir} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AgendaRepetirGridDesktopComponent data={agendarepetir} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AgendaRepetirGridMobileComponent data={agendarepetir} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AgendaRepetirGridDesktopComponent data={agendarepetir} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AgendaRepetirWindow
           isOpen={showInc}

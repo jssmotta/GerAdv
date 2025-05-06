@@ -26,6 +26,7 @@
     idextrangeiro?: number;
  chavecontrato?: string;
  multa?: string;
+ guid?: string;
 }
 
 export class FilterContratosDefaults implements FilterContratos {
@@ -55,5 +56,6 @@ export class FilterContratosDefaults implements FilterContratos {
     idextrangeiro?: number = -2147483648;
     chavecontrato?: string = '';
     multa?: string = '';
+    guid?: string = '';
 }
     

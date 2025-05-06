@@ -74,30 +74,6 @@ public static class TipoEnderecoSistemaEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoEnderecoSistema_AddAndUpdate").WithDisplayName("Add or Update TipoEnderecoSistema");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoEnderecoSistemaValidation validation, ITipoEnderecoSistemaWriter writer, ITipoEnderecoSistemaService service) =>
-        {
-            logger.LogInfo("TipoEnderecoSistema", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoEnderecoSistema", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoEnderecoSistema_GetColumns").WithDisplayName("Get TipoEnderecoSistema Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoEnderecoSistemaValidation validation, ITipoEnderecoSistemaWriter writer, ITipoEnderecoSistemaService service) =>
-        {
-            logger.LogInfo("TipoEnderecoSistema", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoEnderecoSistema", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoEnderecoSistema_UpdateColumns").WithDisplayName("Update TipoEnderecoSistema Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoEnderecoSistemaValidation validation, ITipoEnderecoSistemaWriter writer, ITipoEnderecoSistemaService service) =>
         {
             logger.LogInfo("TipoEnderecoSistema", "Delete", $"id = {id}", uri);

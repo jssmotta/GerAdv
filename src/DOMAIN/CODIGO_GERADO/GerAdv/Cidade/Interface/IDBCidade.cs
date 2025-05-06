@@ -9,4 +9,5 @@ public partial interface IDBCidade
     public string? FNome { get; set; }
     public int FUF { get; set; }
     public string? FSigla { get; set; }
+    public string? FGUID { get; set; }
 }

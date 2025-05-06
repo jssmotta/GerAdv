@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { Agenda2AgendaEmpty } from "../../../Models/Agenda2Agenda";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import Agenda2AgendaInc from "../Inc/Agenda2Agenda";
 import { IAgenda2Agenda } from "../../Interfaces/interface.Agenda2Agenda";
 import { Agenda2AgendaService } from "../../Services/Agenda2Agenda.service";
 import { Agenda2AgendaApi } from "../../Apis/ApiAgenda2Agenda";
@@ -16,11 +14,12 @@ import { Agenda2AgendaGridMobileComponent } from "../GridsMobile/Agenda2Agenda";
 import { Agenda2AgendaGridDesktopComponent } from "../GridsDesktop/Agenda2Agenda";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAgenda2Agenda } from "../../Filters/Agenda2Agenda";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import Agenda2AgendaWindow from "./Agenda2AgendaWindow";
 
 const Agenda2AgendaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const Agenda2AgendaGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <Agenda2AgendaGridMobileComponent data={agenda2agenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <Agenda2AgendaGridDesktopComponent data={agenda2agenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <Agenda2AgendaGridMobileComponent data={agenda2agenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <Agenda2AgendaGridDesktopComponent data={agenda2agenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <Agenda2AgendaWindow
           isOpen={showInc}

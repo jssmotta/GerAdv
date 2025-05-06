@@ -8,6 +8,7 @@ public partial interface IPosicaoOutrasPartesReader
     PosicaoOutrasPartesResponse? Read(int id, SqlConnection oCnn);
     PosicaoOutrasPartesResponse? Read(string where, SqlConnection oCnn);
     PosicaoOutrasPartesResponse? Read(Entity.DBPosicaoOutrasPartes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PosicaoOutrasPartesResponse? Read(DBPosicaoOutrasPartes dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class PosicaoOutrasPartes : IPosicaoOutrasPartesReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class PosicaoOutrasPartes : IPosicaoOutrasPartesReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

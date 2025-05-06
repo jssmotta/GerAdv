@@ -1,17 +1,22 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IDiario2 } from '../../Interfaces/interface.Diario2';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IDiario2 } from '@/app/GerAdv_TS/Diario2/Interfaces/interface.Diario2';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
 
 interface Diario2FormProps {
     diario2Data: IDiario2;
@@ -83,24 +88,37 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('Diario2Form');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOperador && (<h2>{nomeOperador}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`Diario2Form-${diario2Data.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={diario2Data} isSubmitting={isSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={diario2Data.nome}
+            placeholder={`Digite nome diario2`}
             onChange={onChange}
             required
           />
@@ -149,19 +167,10 @@ onChange={onChange}
             label={'Clientes'}
             />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

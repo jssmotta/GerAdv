@@ -5,6 +5,7 @@ export interface AnexamentoRegistros
 {
     id: number;
 	cliente : number;
+	guidreg : string;
 	codigoreg : number;
 	idreg : number;
 	data : string;
@@ -16,6 +17,7 @@ export function AnexamentoRegistrosEmpty(): IAnexamentoRegistros {
     return {
         id: 0,
 		cliente: 0,
+		guidreg: '',
 		codigoreg: 0,
 		idreg: 0,
 		data: '',

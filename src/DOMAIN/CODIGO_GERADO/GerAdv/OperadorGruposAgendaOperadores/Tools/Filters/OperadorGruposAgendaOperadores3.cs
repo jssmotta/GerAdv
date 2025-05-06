@@ -14,4 +14,7 @@ public partial class FilterOperadorGruposAgendaOperadores
 
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

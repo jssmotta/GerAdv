@@ -43,7 +43,7 @@ public partial class DBAndamentosMDODicInfo : IODicInfo
     public static string TTabelaNome => DBAndamentosMDDicInfo.TabelaNome;
     public static string TTablePrefix => DBAndamentosMDDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBAndamentosMDDicInfo.AmdNome, DBAndamentosMDDicInfo.AmdProcesso, DBAndamentosMDDicInfo.AmdAndamento, DBAndamentosMDDicInfo.AmdPathFull, DBAndamentosMDDicInfo.AmdUNC, DBAndamentosMDDicInfo.AmdGUID, DBAndamentosMDDicInfo.AmdQuemCad, DBAndamentosMDDicInfo.AmdDtCad, DBAndamentosMDDicInfo.AmdQuemAtu, DBAndamentosMDDicInfo.AmdDtAtu, DBAndamentosMDDicInfo.AmdVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAndamentosMDDicInfo.AmdNome, DBAndamentosMDDicInfo.AmdProcesso, DBAndamentosMDDicInfo.AmdAndamento, DBAndamentosMDDicInfo.AmdPathFull, DBAndamentosMDDicInfo.AmdUNC];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBAndamentosMDDicInfo.AmdNome, DBAndamentosMDDicInfo.AmdProcesso, DBAndamentosMDDicInfo.AmdAndamento, DBAndamentosMDDicInfo.AmdPathFull, DBAndamentosMDDicInfo.AmdUNC, DBAndamentosMDDicInfo.AmdGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

@@ -14,4 +14,5 @@ public partial interface IDBProDespesas
     public bool FTipo { get; set; }
     public string? FHistorico { get; set; }
     public bool FLivroCaixa { get; set; }
+    public string? FGUID { get; set; }
 }

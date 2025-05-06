@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import FornecedoresInc from "../Inc/Fornecedores";
 import { IFornecedores } from "../../Interfaces/interface.Fornecedores";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const FornecedoresWindow: React.FC<FornecedoresWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/fornecedores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedFornecedores?.id}`);
+            router.push(`/pages/fornecedores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedFornecedores?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedFornecedores]);
@@ -42,7 +43,7 @@ const FornecedoresWindow: React.FC<FornecedoresWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={759}
                     newWidth={1440}
                     id={(selectedFornecedores?.id ?? 0).toString()}

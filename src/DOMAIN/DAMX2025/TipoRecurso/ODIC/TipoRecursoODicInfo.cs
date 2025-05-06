@@ -41,7 +41,7 @@ public partial class DBTipoRecursoODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoRecursoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoRecursoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao, DBTipoRecursoDicInfo.TrcGUID, DBTipoRecursoDicInfo.TrcQuemCad, DBTipoRecursoDicInfo.TrcDtCad, DBTipoRecursoDicInfo.TrcQuemAtu, DBTipoRecursoDicInfo.TrcDtAtu, DBTipoRecursoDicInfo.TrcVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoRecursoDicInfo.TrcJustica, DBTipoRecursoDicInfo.TrcArea, DBTipoRecursoDicInfo.TrcDescricao, DBTipoRecursoDicInfo.TrcGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -57,7 +57,10 @@ public partial class DBTipoRecursoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "trcCodigo"
+            "trcArea",
+            "trcCodigo",
+            "trcDescricao",
+            "trcJustica"
         };
         var result = campos.Where(campo => !campo.Equals(DBTipoRecursoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProcessosParadosInc from "../Inc/ProcessosParados";
 import { IProcessosParados } from "../../Interfaces/interface.ProcessosParados";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProcessosParadosWindow: React.FC<ProcessosParadosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/processosparados/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProcessosParados?.id}`);
+            router.push(`/pages/processosparados/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProcessosParados?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProcessosParados]);
@@ -42,7 +43,7 @@ const ProcessosParadosWindow: React.FC<ProcessosParadosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={725}
                     newWidth={720}
                     id={(selectedProcessosParados?.id ?? 0).toString()}

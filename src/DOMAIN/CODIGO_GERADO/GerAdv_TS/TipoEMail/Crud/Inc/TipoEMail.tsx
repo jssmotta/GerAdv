@@ -5,7 +5,7 @@ import { TipoEMailApi } from '../../Apis/ApiTipoEMail';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoEMailFormProps } from '../../Interfaces/interface.TipoEMail';
 import { TipoEMailService } from '../../Services/TipoEMail.service';
 import { useTipoEMailForm } from '../../Hooks/useTipoEMailForm';

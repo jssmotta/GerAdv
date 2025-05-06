@@ -15,7 +15,7 @@ public class ReuniaoPessoasValidation : IReuniaoPessoasValidation
         if (reg == null)
             return "Objeto está nulo";
         // Reuniao
-        if (reg.Reuniao.IsEmptyIDNumber())
+        if (!reg.Reuniao.IsEmptyIDNumber())
         {
             var regReuniao = reuniaoReader.Read(reg.Reuniao, oCnn);
             if (regReuniao == null || regReuniao.Id != reg.Reuniao)
@@ -25,7 +25,7 @@ public class ReuniaoPessoasValidation : IReuniaoPessoasValidation
         }
 
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

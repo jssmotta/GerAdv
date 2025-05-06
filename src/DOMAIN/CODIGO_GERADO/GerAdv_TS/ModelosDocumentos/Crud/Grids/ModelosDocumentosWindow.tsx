@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ModelosDocumentosInc from "../Inc/ModelosDocumentos";
 import { IModelosDocumentos } from "../../Interfaces/interface.ModelosDocumentos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ModelosDocumentosWindow: React.FC<ModelosDocumentosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/modelosdocumentos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedModelosDocumentos?.id}`);
+            router.push(`/pages/modelosdocumentos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedModelosDocumentos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedModelosDocumentos]);
@@ -42,7 +43,7 @@ const ModelosDocumentosWindow: React.FC<ModelosDocumentosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={702}
                     newWidth={1440}
                     id={(selectedModelosDocumentos?.id ?? 0).toString()}

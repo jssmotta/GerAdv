@@ -8,6 +8,7 @@ public partial interface ITipoCompromissoReader
     TipoCompromissoResponse? Read(int id, SqlConnection oCnn);
     TipoCompromissoResponse? Read(string where, SqlConnection oCnn);
     TipoCompromissoResponse? Read(Entity.DBTipoCompromisso dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoCompromissoResponse? Read(DBTipoCompromisso dbRec);
 }
 
@@ -39,7 +40,7 @@ public partial class TipoCompromisso : ITipoCompromissoReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -70,7 +71,7 @@ public partial class TipoCompromisso : ITipoCompromissoReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

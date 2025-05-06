@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ContaCorrenteInc from "../Inc/ContaCorrente";
 import { IContaCorrente } from "../../Interfaces/interface.ContaCorrente";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ContaCorrenteWindow: React.FC<ContaCorrenteWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/contacorrente/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContaCorrente?.id}`);
+            router.push(`/pages/contacorrente/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContaCorrente?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedContaCorrente]);
@@ -42,7 +43,7 @@ const ContaCorrenteWindow: React.FC<ContaCorrenteWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={795}
                     newWidth={1440}
                     id={(selectedContaCorrente?.id ?? 0).toString()}

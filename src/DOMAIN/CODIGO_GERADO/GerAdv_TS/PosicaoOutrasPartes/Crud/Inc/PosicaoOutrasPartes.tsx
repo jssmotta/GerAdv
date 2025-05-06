@@ -5,7 +5,7 @@ import { PosicaoOutrasPartesApi } from '../../Apis/ApiPosicaoOutrasPartes';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IPosicaoOutrasPartesFormProps } from '../../Interfaces/interface.PosicaoOutrasPartes';
 import { PosicaoOutrasPartesService } from '../../Services/PosicaoOutrasPartes.service';
 import { usePosicaoOutrasPartesForm } from '../../Hooks/usePosicaoOutrasPartesForm';

@@ -29,6 +29,7 @@ export interface ILigacoes {
 	startscreen : boolean;
 	emotion : number;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -4,4 +4,5 @@
 	andamento = `Andamento`,
 	pathfull = `PathFull`,
 	unc = `UNC`,
+	guid = `GUID`,
 }

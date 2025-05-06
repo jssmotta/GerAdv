@@ -5,7 +5,7 @@ import { ProTipoBaixaApi } from '../../Apis/ApiProTipoBaixa';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProTipoBaixaFormProps } from '../../Interfaces/interface.ProTipoBaixa';
 import { ProTipoBaixaService } from '../../Services/ProTipoBaixa.service';
 import { useProTipoBaixaForm } from '../../Hooks/useProTipoBaixaForm';

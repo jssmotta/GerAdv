@@ -8,6 +8,7 @@ public partial interface IHonorariosDadosContratoReader
     HonorariosDadosContratoResponse? Read(int id, SqlConnection oCnn);
     HonorariosDadosContratoResponse? Read(string where, SqlConnection oCnn);
     HonorariosDadosContratoResponse? Read(Entity.DBHonorariosDadosContrato dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     HonorariosDadosContratoResponse? Read(DBHonorariosDadosContrato dbRec);
 }
 
@@ -44,7 +45,7 @@ public partial class HonorariosDadosContrato : IHonorariosDadosContratoReader
             TextoContrato = dbRec.FTextoContrato ?? string.Empty,
             ValorFixo = dbRec.FValorFixo,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataContrato, out _))
             honorariosdadoscontrato.DataContrato = dbRec.FDataContrato;
@@ -82,7 +83,7 @@ public partial class HonorariosDadosContrato : IHonorariosDadosContratoReader
             TextoContrato = dbRec.FTextoContrato ?? string.Empty,
             ValorFixo = dbRec.FValorFixo,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataContrato, out _))
             honorariosdadoscontrato.DataContrato = dbRec.FDataContrato;

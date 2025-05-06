@@ -8,6 +8,7 @@ public partial interface IGraphReader
     GraphResponse? Read(int id, SqlConnection oCnn);
     GraphResponse? Read(string where, SqlConnection oCnn);
     GraphResponse? Read(Entity.DBGraph dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GraphResponse? Read(DBGraph dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class Graph : IGraphReader
             Tabela = dbRec.FTabela ?? string.Empty,
             TabelaId = dbRec.FTabelaId,
             Imagem = dbRec.FImagem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class Graph : IGraphReader
             Tabela = dbRec.FTabela ?? string.Empty,
             TabelaId = dbRec.FTabelaId,
             Imagem = dbRec.FImagem,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

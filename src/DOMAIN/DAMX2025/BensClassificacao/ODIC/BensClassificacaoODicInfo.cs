@@ -40,7 +40,7 @@ public partial class DBBensClassificacaoODicInfo : IODicInfo
     public static string TTabelaNome => DBBensClassificacaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBBensClassificacaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsBold, DBBensClassificacaoDicInfo.BcsGUID, DBBensClassificacaoDicInfo.BcsQuemCad, DBBensClassificacaoDicInfo.BcsDtCad, DBBensClassificacaoDicInfo.BcsQuemAtu, DBBensClassificacaoDicInfo.BcsDtAtu, DBBensClassificacaoDicInfo.BcsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsBold, DBBensClassificacaoDicInfo.BcsGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -56,7 +56,8 @@ public partial class DBBensClassificacaoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "bcsCodigo"
+            "bcsCodigo",
+            "bcsNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBBensClassificacaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

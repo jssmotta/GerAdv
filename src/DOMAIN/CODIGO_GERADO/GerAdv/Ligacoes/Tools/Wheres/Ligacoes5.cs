@@ -38,6 +38,7 @@ public partial class Ligacoes : ILigacoesWhere
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out _))
             ligacoes.DataRealizada = dbRec.FDataRealizada;

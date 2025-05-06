@@ -67,7 +67,7 @@ public partial class DBOponentesODicInfo : IODicInfo
     public static string TTabelaNome => DBOponentesDicInfo.TabelaNome;
     public static string TTablePrefix => DBOponentesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold, DBOponentesDicInfo.OpoGUID, DBOponentesDicInfo.OpoQuemCad, DBOponentesDicInfo.OpoDtCad, DBOponentesDicInfo.OpoQuemAtu, DBOponentesDicInfo.OpoDtAtu, DBOponentesDicInfo.OpoVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold, DBOponentesDicInfo.OpoGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -83,7 +83,8 @@ public partial class DBOponentesODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "opoCodigo"
+            "opoCodigo",
+            "opoNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBOponentesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

@@ -41,4 +41,7 @@ public partial class FilterOperadorEMailPopup
 
     [JsonPropertyName("senha256")]
     public string Senha256 { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

@@ -24,6 +24,7 @@ public partial class GUTAtividades : IGUTAtividadesWhere
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out _))
             gutatividades.DataConcluido = dbRec.FDataConcluido;

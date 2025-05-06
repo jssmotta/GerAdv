@@ -1,14 +1,20 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IEscritorios } from '../../Interfaces/interface.Escritorios';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IEscritorios } from '@/app/GerAdv_TS/Escritorios/Interfaces/interface.Escritorios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
+import InputName from '@/app/components/Inputs/InputName';
 import InputCnpj from '@/app/components/Inputs/InputCnpj'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCep from '@/app/components/Inputs/InputCep'
 
 interface EscritoriosFormProps {
@@ -39,22 +45,37 @@ interface EscritoriosFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('EscritoriosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`EscritoriosForm-${escritoriosData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={escritoriosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EscritoriosForm-${escritoriosData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={escritoriosData.nome}
+            placeholder={`Digite nome escritorios`}
             onChange={onChange}
             required
           />
@@ -69,8 +90,8 @@ value={escritoriosData.cnpj}
 onChange={onChange}               
 />
 
-<Checkbox label="Casa" name="casa" checked={escritoriosData.casa} onChange={onChange} />
-<Checkbox label="Parceria" name="parceria" checked={escritoriosData.parceria} onChange={onChange} />
+<InputCheckbox label="Casa" name="casa" checked={escritoriosData.casa} onChange={onChange} />
+<InputCheckbox label="Parceria" name="parceria" checked={escritoriosData.parceria} onChange={onChange} />
         
 <Input
 type="text"
@@ -203,23 +224,13 @@ value={escritoriosData.inscest}
 onChange={onChange}               
 />
 
-<Checkbox label="Correspondente" name="correspondente" checked={escritoriosData.correspondente} onChange={onChange} />
-<Checkbox label="Top" name="top" checked={escritoriosData.top} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/advogados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?escritorios=${escritoriosData.id}`)}>Advogados</div>
+<InputCheckbox label="Correspondente" name="correspondente" checked={escritoriosData.correspondente} onChange={onChange} />
+<InputCheckbox label="Top" name="top" checked={escritoriosData.top} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

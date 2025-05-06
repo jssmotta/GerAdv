@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { HonorariosDadosContratoEmpty } from "../../../Models/HonorariosDadosContrato";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import HonorariosDadosContratoInc from "../Inc/HonorariosDadosContrato";
 import { IHonorariosDadosContrato } from "../../Interfaces/interface.HonorariosDadosContrato";
 import { HonorariosDadosContratoService } from "../../Services/HonorariosDadosContrato.service";
 import { HonorariosDadosContratoApi } from "../../Apis/ApiHonorariosDadosContrato";
@@ -16,11 +14,12 @@ import { HonorariosDadosContratoGridMobileComponent } from "../GridsMobile/Honor
 import { HonorariosDadosContratoGridDesktopComponent } from "../GridsDesktop/HonorariosDadosContrato";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterHonorariosDadosContrato } from "../../Filters/HonorariosDadosContrato";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import HonorariosDadosContratoWindow from "./HonorariosDadosContratoWindow";
 
 const HonorariosDadosContratoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const HonorariosDadosContratoGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <HonorariosDadosContratoGridMobileComponent data={honorariosdadoscontrato} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <HonorariosDadosContratoGridDesktopComponent data={honorariosdadoscontrato} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <HonorariosDadosContratoGridMobileComponent data={honorariosdadoscontrato} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <HonorariosDadosContratoGridDesktopComponent data={honorariosdadoscontrato} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <HonorariosDadosContratoWindow
           isOpen={showInc}

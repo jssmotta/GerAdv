@@ -18,5 +18,7 @@
 	excetodiasfelizes = `ExcetoDiasFelizes`,
 	desktop = `Desktop`,
 	alertardatahora = `AlertarDataHora`,
+	guidexo = `GuidExo`,
 	emocao = `Emocao`,
+	guid = `GUID`,
 }

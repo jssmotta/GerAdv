@@ -33,6 +33,7 @@
     prazodias?: number;
     protocolointegrado?: number;
  datainicioprazo?: string;
+ guid?: string;
 }
 
 export class FilterAgendaDefaults implements FilterAgenda {
@@ -69,5 +70,6 @@ export class FilterAgendaDefaults implements FilterAgenda {
     prazodias?: number = -2147483648;
     protocolointegrado?: number = -2147483648;
     datainicioprazo?: string = '';
+    guid?: string = '';
 }
     

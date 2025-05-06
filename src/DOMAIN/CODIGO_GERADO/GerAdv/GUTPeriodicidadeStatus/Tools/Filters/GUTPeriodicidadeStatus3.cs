@@ -14,4 +14,7 @@ public partial class FilterGUTPeriodicidadeStatus
 
     [JsonPropertyName("datarealizado")]
     public string DataRealizado { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

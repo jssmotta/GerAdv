@@ -5,7 +5,7 @@ import { AndamentosMDApi } from '../../Apis/ApiAndamentosMD';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAndamentosMDFormProps } from '../../Interfaces/interface.AndamentosMD';
 import { AndamentosMDService } from '../../Services/AndamentosMD.service';
 import { useAndamentosMDForm } from '../../Hooks/useAndamentosMDForm';

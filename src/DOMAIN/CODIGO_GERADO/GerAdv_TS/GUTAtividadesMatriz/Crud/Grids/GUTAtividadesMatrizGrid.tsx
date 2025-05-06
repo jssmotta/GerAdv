@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GUTAtividadesMatrizEmpty } from "../../../Models/GUTAtividadesMatriz";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GUTAtividadesMatrizInc from "../Inc/GUTAtividadesMatriz";
 import { IGUTAtividadesMatriz } from "../../Interfaces/interface.GUTAtividadesMatriz";
 import { GUTAtividadesMatrizService } from "../../Services/GUTAtividadesMatriz.service";
 import { GUTAtividadesMatrizApi } from "../../Apis/ApiGUTAtividadesMatriz";
@@ -16,11 +14,12 @@ import { GUTAtividadesMatrizGridMobileComponent } from "../GridsMobile/GUTAtivid
 import { GUTAtividadesMatrizGridDesktopComponent } from "../GridsDesktop/GUTAtividadesMatriz";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGUTAtividadesMatriz } from "../../Filters/GUTAtividadesMatriz";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GUTAtividadesMatrizWindow from "./GUTAtividadesMatrizWindow";
 
 const GUTAtividadesMatrizGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const GUTAtividadesMatrizGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <GUTAtividadesMatrizGridMobileComponent data={gutatividadesmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GUTAtividadesMatrizGridDesktopComponent data={gutatividadesmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GUTAtividadesMatrizGridMobileComponent data={gutatividadesmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GUTAtividadesMatrizGridDesktopComponent data={gutatividadesmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GUTAtividadesMatrizWindow
           isOpen={showInc}

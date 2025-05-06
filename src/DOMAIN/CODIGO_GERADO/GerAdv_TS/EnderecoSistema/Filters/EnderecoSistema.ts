@@ -14,6 +14,7 @@
  fone?: string;
  fax?: string;
  observacao?: string;
+ guid?: string;
 }
 
 export class FilterEnderecoSistemaDefaults implements FilterEnderecoSistema {
@@ -31,5 +32,6 @@ export class FilterEnderecoSistemaDefaults implements FilterEnderecoSistema {
     fone?: string = '';
     fax?: string = '';
     observacao?: string = '';
+    guid?: string = '';
 }
     

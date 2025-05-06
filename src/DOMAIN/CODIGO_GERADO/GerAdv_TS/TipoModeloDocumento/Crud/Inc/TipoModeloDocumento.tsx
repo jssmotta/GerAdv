@@ -5,7 +5,7 @@ import { TipoModeloDocumentoApi } from '../../Apis/ApiTipoModeloDocumento';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoModeloDocumentoFormProps } from '../../Interfaces/interface.TipoModeloDocumento';
 import { TipoModeloDocumentoService } from '../../Services/TipoModeloDocumento.service';
 import { useTipoModeloDocumentoForm } from '../../Hooks/useTipoModeloDocumentoForm';

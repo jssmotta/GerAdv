@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProObservacoesEmpty } from "../../../Models/ProObservacoes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProObservacoesInc from "../Inc/ProObservacoes";
 import { IProObservacoes } from "../../Interfaces/interface.ProObservacoes";
 import { ProObservacoesService } from "../../Services/ProObservacoes.service";
 import { ProObservacoesApi } from "../../Apis/ApiProObservacoes";
@@ -16,11 +14,12 @@ import { ProObservacoesGridMobileComponent } from "../GridsMobile/ProObservacoes
 import { ProObservacoesGridDesktopComponent } from "../GridsDesktop/ProObservacoes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProObservacoes } from "../../Filters/ProObservacoes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProObservacoesWindow from "./ProObservacoesWindow";
 
 const ProObservacoesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProObservacoesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProObservacoesGridMobileComponent data={proobservacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProObservacoesGridDesktopComponent data={proobservacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProObservacoesGridMobileComponent data={proobservacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProObservacoesGridDesktopComponent data={proobservacoes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProObservacoesWindow
           isOpen={showInc}

@@ -25,6 +25,7 @@ export interface IEnderecos {
 	etiqueta : boolean;
 	ani : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

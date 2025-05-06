@@ -14,4 +14,5 @@ public partial interface IDBProcessOutputEngine
     public int FIDModulo { get; set; }
     public bool FIsOnlyProcesso { get; set; }
     public int FMyID { get; set; }
+    public string? FGUID { get; set; }
 }

@@ -56,30 +56,6 @@ public static class HistoricoEndpoints
 
             return Results.Ok(result);
         }).WithName("Historico_AddAndUpdate").WithDisplayName("Add or Update Historico");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IHistoricoValidation validation, IHistoricoWriter writer, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, IHistoricoService service) =>
-        {
-            logger.LogInfo("Historico", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Historico", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Historico_GetColumns").WithDisplayName("Get Historico Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IHistoricoValidation validation, IHistoricoWriter writer, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, IHistoricoService service) =>
-        {
-            logger.LogInfo("Historico", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Historico", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Historico_UpdateColumns").WithDisplayName("Update Historico Columns");
         group.MapDelete("/Delete", async (int id, string uri, IHistoricoValidation validation, IHistoricoWriter writer, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, IHistoricoService service) =>
         {
             logger.LogInfo("Historico", "Delete", $"id = {id}", uri);

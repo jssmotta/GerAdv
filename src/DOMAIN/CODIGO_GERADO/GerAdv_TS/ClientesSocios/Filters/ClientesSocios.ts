@@ -31,6 +31,7 @@
  rgdataexp?: string;
  fax?: string;
  class?: string;
+ guid?: string;
 }
 
 export class FilterClientesSociosDefaults implements FilterClientesSocios {
@@ -65,5 +66,6 @@ export class FilterClientesSociosDefaults implements FilterClientesSocios {
     rgdataexp?: string = '';
     fax?: string = '';
     class?: string = '';
+    guid?: string = '';
 }
     

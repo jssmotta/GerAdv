@@ -5,7 +5,7 @@ import { ProcessOutPutIDsApi } from '../../Apis/ApiProcessOutPutIDs';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProcessOutPutIDsFormProps } from '../../Interfaces/interface.ProcessOutPutIDs';
 import { ProcessOutPutIDsService } from '../../Services/ProcessOutPutIDs.service';
 import { useProcessOutPutIDsForm } from '../../Hooks/useProcessOutPutIDsForm';

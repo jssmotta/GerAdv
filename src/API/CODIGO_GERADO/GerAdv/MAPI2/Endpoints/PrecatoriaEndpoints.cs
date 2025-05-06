@@ -56,30 +56,6 @@ public static class PrecatoriaEndpoints
 
             return Results.Ok(result);
         }).WithName("Precatoria_AddAndUpdate").WithDisplayName("Add or Update Precatoria");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IPrecatoriaValidation validation, IPrecatoriaWriter writer, IProcessosReader processosReader, IPrecatoriaService service) =>
-        {
-            logger.LogInfo("Precatoria", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Precatoria", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Precatoria_GetColumns").WithDisplayName("Get Precatoria Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IPrecatoriaValidation validation, IPrecatoriaWriter writer, IProcessosReader processosReader, IPrecatoriaService service) =>
-        {
-            logger.LogInfo("Precatoria", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Precatoria", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Precatoria_UpdateColumns").WithDisplayName("Update Precatoria Columns");
         group.MapDelete("/Delete", async (int id, string uri, IPrecatoriaValidation validation, IPrecatoriaWriter writer, IProcessosReader processosReader, IPrecatoriaService service) =>
         {
             logger.LogInfo("Precatoria", "Delete", $"id = {id}", uri);

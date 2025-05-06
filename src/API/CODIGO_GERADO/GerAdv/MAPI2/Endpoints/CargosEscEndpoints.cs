@@ -74,30 +74,6 @@ public static class CargosEscEndpoints
 
             return Results.Ok(result);
         }).WithName("CargosEsc_AddAndUpdate").WithDisplayName("Add or Update CargosEsc");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ICargosEscValidation validation, ICargosEscWriter writer, ICargosEscService service) =>
-        {
-            logger.LogInfo("CargosEsc", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("CargosEsc", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("CargosEsc_GetColumns").WithDisplayName("Get CargosEsc Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ICargosEscValidation validation, ICargosEscWriter writer, ICargosEscService service) =>
-        {
-            logger.LogInfo("CargosEsc", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("CargosEsc", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("CargosEsc_UpdateColumns").WithDisplayName("Update CargosEsc Columns");
         group.MapDelete("/Delete", async (int id, string uri, ICargosEscValidation validation, ICargosEscWriter writer, ICargosEscService service) =>
         {
             logger.LogInfo("CargosEsc", "Delete", $"id = {id}", uri);

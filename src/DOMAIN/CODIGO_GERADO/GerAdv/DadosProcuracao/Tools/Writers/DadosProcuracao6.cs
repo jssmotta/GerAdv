@@ -21,6 +21,7 @@ public class DadosProcuracao : IDadosProcuracaoWriter
         dbRec.FPisPasep = dadosprocuracao.PisPasep;
         dbRec.FRemuneracao = dadosprocuracao.Remuneracao;
         dbRec.FObjeto = dadosprocuracao.Objeto;
+        dbRec.FGUID = dadosprocuracao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

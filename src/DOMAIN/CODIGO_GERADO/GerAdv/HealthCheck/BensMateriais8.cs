@@ -72,7 +72,7 @@ public class BensMateriaisHealthCheck(IOptions<AppSettings> appSettings, BensMat
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) bmtNome,bmtBensClassificacao,bmtDataCompra,bmtDataFimDaGarantia,bmtNFNRO,bmtFornecedor,bmtValorBem,bmtNroSerieProduto,bmtComprador,bmtCidade,bmtGarantiaLoja,bmtDataTerminoDaGarantiaDaLoja,bmtObservacoes,bmtNomeVendedor,bmtBold FROM dbo.BensMateriais (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) bmtNome,bmtBensClassificacao,bmtDataCompra,bmtDataFimDaGarantia,bmtNFNRO,bmtFornecedor,bmtValorBem,bmtNroSerieProduto,bmtComprador,bmtCidade,bmtGarantiaLoja,bmtDataTerminoDaGarantiaDaLoja,bmtObservacoes,bmtNomeVendedor,bmtBold,bmtGUID FROM dbo.BensMateriais (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

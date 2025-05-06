@@ -32,9 +32,11 @@ public class AlarmSMS : IAlarmSMSWriter
         if (alarmsms.AlertarDataHora != null)
             dbRec.FAlertarDataHora = alarmsms.AlertarDataHora.ToString();
         dbRec.FOperador = alarmsms.Operador;
+        dbRec.FGuidExo = alarmsms.GuidExo;
         dbRec.FAgenda = alarmsms.Agenda;
         dbRec.FRecado = alarmsms.Recado;
         dbRec.FEmocao = alarmsms.Emocao;
+        dbRec.FGUID = alarmsms.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

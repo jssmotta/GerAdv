@@ -32,4 +32,5 @@
 	etiqueta = `Etiqueta`,
 	ani = `Ani`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

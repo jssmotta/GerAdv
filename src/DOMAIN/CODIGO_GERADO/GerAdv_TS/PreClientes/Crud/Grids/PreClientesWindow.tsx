@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import PreClientesInc from "../Inc/PreClientes";
 import { IPreClientes } from "../../Interfaces/interface.PreClientes";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const PreClientesWindow: React.FC<PreClientesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/preclientes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPreClientes?.id}`);
+            router.push(`/pages/preclientes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPreClientes?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedPreClientes]);
@@ -42,7 +43,7 @@ const PreClientesWindow: React.FC<PreClientesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={905}
                     newWidth={1440}
                     id={(selectedPreClientes?.id ?? 0).toString()}

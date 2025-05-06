@@ -10,6 +10,7 @@
  datacorrecao?: string;
     valor?: number;
  historico?: string;
+ guid?: string;
 }
 
 export class FilterProDespesasDefaults implements FilterProDespesas {
@@ -23,5 +24,6 @@ export class FilterProDespesasDefaults implements FilterProDespesas {
     datacorrecao?: string = '';
     valor?: number = -2147483648;
     historico?: string = '';
+    guid?: string = '';
 }
     

@@ -16,8 +16,10 @@ public class OperadoresValidation : IOperadoresValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Operadores '{reg.Nome}' já cadastrado.";
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -27,5 +29,11 @@ public class OperadoresValidation : IOperadoresValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Operadores reg, IOperadoresService service, string uri)
+    {
+        var existingOperadores = (await service.Filter(new Filters.FilterOperadores { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingOperadores != null && existingOperadores.Id > 0 && existingOperadores.Id != reg.Id;
     }
 }

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { EnderecosEmpty } from "../../../Models/Enderecos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import EnderecosInc from "../Inc/Enderecos";
 import { IEnderecos } from "../../Interfaces/interface.Enderecos";
 import { EnderecosService } from "../../Services/Enderecos.service";
 import { EnderecosApi } from "../../Apis/ApiEnderecos";
@@ -16,11 +14,12 @@ import { EnderecosGridMobileComponent } from "../GridsMobile/Enderecos";
 import { EnderecosGridDesktopComponent } from "../GridsDesktop/Enderecos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterEnderecos } from "../../Filters/Enderecos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import EnderecosWindow from "./EnderecosWindow";
 
 const EnderecosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const EnderecosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <EnderecosGridMobileComponent data={enderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <EnderecosGridDesktopComponent data={enderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <EnderecosGridMobileComponent data={enderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <EnderecosGridDesktopComponent data={enderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <EnderecosWindow
           isOpen={showInc}

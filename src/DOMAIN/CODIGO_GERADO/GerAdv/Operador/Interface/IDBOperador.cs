@@ -35,4 +35,5 @@ public partial interface IDBOperador
     public string? FSuporteNomeSolicitante { get; set; }
     public string? FSuporteUltimoAcesso { get; set; }
     public string? FSuporteIpUltimoAcesso { get; set; }
+    public string? FGUID { get; set; }
 }

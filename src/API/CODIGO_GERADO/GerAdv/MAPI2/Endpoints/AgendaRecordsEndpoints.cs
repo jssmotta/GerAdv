@@ -56,30 +56,6 @@ public static class AgendaRecordsEndpoints
 
             return Results.Ok(result);
         }).WithName("AgendaRecords_AddAndUpdate").WithDisplayName("Add or Update AgendaRecords");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgendaRecordsValidation validation, IAgendaRecordsWriter writer, IAgendaReader agendaReader, IClientesSociosReader clientessociosReader, IColaboradoresReader colaboradoresReader, IForoReader foroReader, IAgendaRecordsService service) =>
-        {
-            logger.LogInfo("AgendaRecords", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AgendaRecords", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AgendaRecords_GetColumns").WithDisplayName("Get AgendaRecords Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgendaRecordsValidation validation, IAgendaRecordsWriter writer, IAgendaReader agendaReader, IClientesSociosReader clientessociosReader, IColaboradoresReader colaboradoresReader, IForoReader foroReader, IAgendaRecordsService service) =>
-        {
-            logger.LogInfo("AgendaRecords", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AgendaRecords", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AgendaRecords_UpdateColumns").WithDisplayName("Update AgendaRecords Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgendaRecordsValidation validation, IAgendaRecordsWriter writer, IAgendaReader agendaReader, IClientesSociosReader clientessociosReader, IColaboradoresReader colaboradoresReader, IForoReader foroReader, IAgendaRecordsService service) =>
         {
             logger.LogInfo("AgendaRecords", "Delete", $"id = {id}", uri);

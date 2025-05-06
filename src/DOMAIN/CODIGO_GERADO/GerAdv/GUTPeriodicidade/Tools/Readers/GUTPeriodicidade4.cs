@@ -8,6 +8,7 @@ public partial interface IGUTPeriodicidadeReader
     GUTPeriodicidadeResponse? Read(int id, SqlConnection oCnn);
     GUTPeriodicidadeResponse? Read(string where, SqlConnection oCnn);
     GUTPeriodicidadeResponse? Read(Entity.DBGUTPeriodicidade dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTPeriodicidadeResponse? Read(DBGUTPeriodicidade dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class GUTPeriodicidade : IGUTPeriodicidadeReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             IntervaloDias = dbRec.FIntervaloDias,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class GUTPeriodicidade : IGUTPeriodicidadeReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             IntervaloDias = dbRec.FIntervaloDias,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

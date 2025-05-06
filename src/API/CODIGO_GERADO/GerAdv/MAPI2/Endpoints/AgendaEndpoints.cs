@@ -56,30 +56,6 @@ public static class AgendaEndpoints
 
             return Results.Ok(result);
         }).WithName("Agenda_AddAndUpdate").WithDisplayName("Add or Update Agenda");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgendaValidation validation, IAgendaWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgendaService service) =>
-        {
-            logger.LogInfo("Agenda", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Agenda", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Agenda_GetColumns").WithDisplayName("Get Agenda Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgendaValidation validation, IAgendaWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgendaService service) =>
-        {
-            logger.LogInfo("Agenda", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Agenda", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Agenda_UpdateColumns").WithDisplayName("Update Agenda Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgendaValidation validation, IAgendaWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgendaService service) =>
         {
             logger.LogInfo("Agenda", "Delete", $"id = {id}", uri);

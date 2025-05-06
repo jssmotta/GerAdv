@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProSucumbenciaInc from "../Inc/ProSucumbencia";
 import { IProSucumbencia } from "../../Interfaces/interface.ProSucumbencia";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProSucumbenciaWindow: React.FC<ProSucumbenciaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/prosucumbencia/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProSucumbencia?.id}`);
+            router.push(`/pages/prosucumbencia/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProSucumbencia?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProSucumbencia]);
@@ -42,7 +43,7 @@ const ProSucumbenciaWindow: React.FC<ProSucumbenciaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={699}
                     newWidth={720}
                     id={(selectedProSucumbencia?.id ?? 0).toString()}

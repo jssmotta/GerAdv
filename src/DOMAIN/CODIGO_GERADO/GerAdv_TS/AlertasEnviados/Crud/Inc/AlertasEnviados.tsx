@@ -5,7 +5,7 @@ import { AlertasEnviadosApi } from '../../Apis/ApiAlertasEnviados';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAlertasEnviadosFormProps } from '../../Interfaces/interface.AlertasEnviados';
 import { AlertasEnviadosService } from '../../Services/AlertasEnviados.service';
 import { useAlertasEnviadosForm } from '../../Hooks/useAlertasEnviadosForm';

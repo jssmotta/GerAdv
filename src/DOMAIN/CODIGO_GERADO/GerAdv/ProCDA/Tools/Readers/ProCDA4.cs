@@ -8,6 +8,7 @@ public partial interface IProCDAReader
     ProCDAResponse? Read(int id, SqlConnection oCnn);
     ProCDAResponse? Read(string where, SqlConnection oCnn);
     ProCDAResponse? Read(Entity.DBProCDA dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProCDAResponse? Read(DBProCDA dbRec);
 }
 
@@ -39,7 +40,7 @@ public partial class ProCDA : IProCDAReader
             Nome = dbRec.FNome ?? string.Empty,
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -70,7 +71,7 @@ public partial class ProCDA : IProCDAReader
             Nome = dbRec.FNome ?? string.Empty,
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -74,30 +74,6 @@ public static class SMSAliceEndpoints
 
             return Results.Ok(result);
         }).WithName("SMSAlice_AddAndUpdate").WithDisplayName("Add or Update SMSAlice");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ISMSAliceValidation validation, ISMSAliceWriter writer, IOperadorReader operadorReader, ITipoEMailReader tipoemailReader, ISMSAliceService service) =>
-        {
-            logger.LogInfo("SMSAlice", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("SMSAlice", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("SMSAlice_GetColumns").WithDisplayName("Get SMSAlice Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ISMSAliceValidation validation, ISMSAliceWriter writer, IOperadorReader operadorReader, ITipoEMailReader tipoemailReader, ISMSAliceService service) =>
-        {
-            logger.LogInfo("SMSAlice", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("SMSAlice", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("SMSAlice_UpdateColumns").WithDisplayName("Update SMSAlice Columns");
         group.MapDelete("/Delete", async (int id, string uri, ISMSAliceValidation validation, ISMSAliceWriter writer, IOperadorReader operadorReader, ITipoEMailReader tipoemailReader, ISMSAliceService service) =>
         {
             logger.LogInfo("SMSAlice", "Delete", $"id = {id}", uri);

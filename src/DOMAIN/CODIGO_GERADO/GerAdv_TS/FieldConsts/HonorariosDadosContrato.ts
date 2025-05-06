@@ -9,4 +9,5 @@
 	valorfixo = `ValorFixo`,
 	observacao = `Observacao`,
 	datacontrato = `DataContrato`,
+	guid = `GUID`,
 }

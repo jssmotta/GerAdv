@@ -5,7 +5,7 @@ import { FuncaoApi } from '../../Apis/ApiFuncao';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IFuncaoFormProps } from '../../Interfaces/interface.Funcao';
 import { FuncaoService } from '../../Services/Funcao.service';
 import { useFuncaoForm } from '../../Hooks/useFuncaoForm';

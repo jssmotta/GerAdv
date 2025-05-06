@@ -7,7 +7,6 @@ public partial class DBParteCliente
     private protected bool pFldFCliente, pFldFProcesso;
     [XmlIgnore]
     private protected int m_FCliente, m_FProcesso;
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -20,7 +19,6 @@ public partial class DBParteCliente
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {

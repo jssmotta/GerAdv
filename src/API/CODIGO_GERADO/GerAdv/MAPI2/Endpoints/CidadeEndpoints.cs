@@ -74,30 +74,6 @@ public static class CidadeEndpoints
 
             return Results.Ok(result);
         }).WithName("Cidade_AddAndUpdate").WithDisplayName("Add or Update Cidade");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, ICidadeService service) =>
-        {
-            logger.LogInfo("Cidade", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Cidade", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Cidade_GetColumns").WithDisplayName("Get Cidade Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, ICidadeService service) =>
-        {
-            logger.LogInfo("Cidade", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Cidade", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Cidade_UpdateColumns").WithDisplayName("Update Cidade Columns");
         group.MapDelete("/Delete", async (int id, string uri, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, ICidadeService service) =>
         {
             logger.LogInfo("Cidade", "Delete", $"id = {id}", uri);

@@ -5,7 +5,7 @@ import { OperadorGruposAgendaApi } from '../../Apis/ApiOperadorGruposAgenda';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IOperadorGruposAgendaFormProps } from '../../Interfaces/interface.OperadorGruposAgenda';
 import { OperadorGruposAgendaService } from '../../Services/OperadorGruposAgenda.service';
 import { useOperadorGruposAgendaForm } from '../../Hooks/useOperadorGruposAgendaForm';

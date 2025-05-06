@@ -74,30 +74,6 @@ public static class Auditor4KEndpoints
 
             return Results.Ok(result);
         }).WithName("Auditor4K_AddAndUpdate").WithDisplayName("Add or Update Auditor4K");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAuditor4KValidation validation, IAuditor4KWriter writer, IAuditor4KService service) =>
-        {
-            logger.LogInfo("Auditor4K", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Auditor4K", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Auditor4K_GetColumns").WithDisplayName("Get Auditor4K Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAuditor4KValidation validation, IAuditor4KWriter writer, IAuditor4KService service) =>
-        {
-            logger.LogInfo("Auditor4K", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Auditor4K", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Auditor4K_UpdateColumns").WithDisplayName("Update Auditor4K Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAuditor4KValidation validation, IAuditor4KWriter writer, IAuditor4KService service) =>
         {
             logger.LogInfo("Auditor4K", "Delete", $"id = {id}", uri);

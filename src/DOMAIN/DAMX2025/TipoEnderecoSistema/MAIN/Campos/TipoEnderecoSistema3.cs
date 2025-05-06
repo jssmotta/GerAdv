@@ -7,7 +7,6 @@ public partial class DBTipoEnderecoSistema
     private protected bool pFldFNome;
     [XmlIgnore]
     private protected string? m_FNome;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {

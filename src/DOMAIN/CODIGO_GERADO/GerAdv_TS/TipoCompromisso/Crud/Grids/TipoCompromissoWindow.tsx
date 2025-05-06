@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TipoCompromissoInc from "../Inc/TipoCompromisso";
 import { ITipoCompromisso } from "../../Interfaces/interface.TipoCompromisso";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TipoCompromissoWindow: React.FC<TipoCompromissoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tipocompromisso/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoCompromisso?.id}`);
+            router.push(`/pages/tipocompromisso/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoCompromisso?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTipoCompromisso]);
@@ -42,7 +43,7 @@ const TipoCompromissoWindow: React.FC<TipoCompromissoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTipoCompromisso?.id ?? 0).toString()}

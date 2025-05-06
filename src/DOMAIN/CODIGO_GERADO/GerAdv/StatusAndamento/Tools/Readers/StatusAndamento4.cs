@@ -8,6 +8,7 @@ public partial interface IStatusAndamentoReader
     StatusAndamentoResponse? Read(int id, SqlConnection oCnn);
     StatusAndamentoResponse? Read(string where, SqlConnection oCnn);
     StatusAndamentoResponse? Read(Entity.DBStatusAndamento dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     StatusAndamentoResponse? Read(DBStatusAndamento dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class StatusAndamento : IStatusAndamentoReader
             Nome = dbRec.FNome ?? string.Empty,
             Icone = dbRec.FIcone,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class StatusAndamento : IStatusAndamentoReader
             Nome = dbRec.FNome ?? string.Empty,
             Icone = dbRec.FIcone,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

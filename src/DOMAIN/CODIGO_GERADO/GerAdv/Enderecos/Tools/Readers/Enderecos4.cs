@@ -8,6 +8,7 @@ public partial interface IEnderecosReader
     EnderecosResponse? Read(int id, SqlConnection oCnn);
     EnderecosResponse? Read(string where, SqlConnection oCnn);
     EnderecosResponse? Read(Entity.DBEnderecos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EnderecosResponse? Read(DBEnderecos dbRec);
 }
 
@@ -57,7 +58,7 @@ public partial class Enderecos : IEnderecosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             enderecos.DtNasc = dbRec.FDtNasc;
@@ -108,7 +109,7 @@ public partial class Enderecos : IEnderecosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             enderecos.DtNasc = dbRec.FDtNasc;

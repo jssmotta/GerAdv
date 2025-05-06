@@ -15,6 +15,7 @@ public class StatusInstancia : IStatusInstanciaWriter
         var dbRec = statusinstancia.Id.IsEmptyIDNumber() ? new Entity.DBStatusInstancia() : new Entity.DBStatusInstancia(statusinstancia.Id, oCnn);
         dbRec.FNome = statusinstancia.Nome;
         dbRec.FBold = statusinstancia.Bold;
+        dbRec.FGUID = statusinstancia.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

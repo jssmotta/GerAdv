@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ForoEmpty } from "../../../Models/Foro";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ForoInc from "../Inc/Foro";
 import { IForo } from "../../Interfaces/interface.Foro";
 import { ForoService } from "../../Services/Foro.service";
 import { ForoApi } from "../../Apis/ApiForo";
@@ -16,11 +14,12 @@ import { ForoGridMobileComponent } from "../GridsMobile/Foro";
 import { ForoGridDesktopComponent } from "../GridsDesktop/Foro";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterForo } from "../../Filters/Foro";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ForoWindow from "./ForoWindow";
 
 const ForoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ForoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ForoGridMobileComponent data={foro} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ForoGridDesktopComponent data={foro} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ForoGridMobileComponent data={foro} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ForoGridDesktopComponent data={foro} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ForoWindow
           isOpen={showInc}

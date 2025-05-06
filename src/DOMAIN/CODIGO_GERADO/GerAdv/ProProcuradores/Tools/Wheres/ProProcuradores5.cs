@@ -22,6 +22,7 @@ public partial class ProProcuradores : IProProcuradoresWhere
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proprocuradores.Data = dbRec.FData;

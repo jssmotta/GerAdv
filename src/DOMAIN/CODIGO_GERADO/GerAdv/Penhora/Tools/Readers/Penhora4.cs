@@ -8,6 +8,7 @@ public partial interface IPenhoraReader
     PenhoraResponse? Read(int id, SqlConnection oCnn);
     PenhoraResponse? Read(string where, SqlConnection oCnn);
     PenhoraResponse? Read(Entity.DBPenhora dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PenhoraResponse? Read(DBPenhora dbRec);
 }
 
@@ -40,7 +41,7 @@ public partial class Penhora : IPenhoraReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
             Master = dbRec.FMaster,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out _))
             penhora.DataPenhora = dbRec.FDataPenhora;
@@ -74,7 +75,7 @@ public partial class Penhora : IPenhoraReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
             Master = dbRec.FMaster,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out _))
             penhora.DataPenhora = dbRec.FDataPenhora;

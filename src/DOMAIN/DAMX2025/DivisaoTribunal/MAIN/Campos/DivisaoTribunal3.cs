@@ -11,7 +11,6 @@ public partial class DBDivisaoTribunal
     private protected string? m_FNomeEspecial, m_FCodigoDiv, m_FEndereco, m_FFone, m_FFax, m_FCEP, m_FObs, m_FEMail, m_FAndar;
     [XmlIgnore]
     private protected bool m_FEtiqueta, m_FBold;
-    public int NFNumCodigo() => m_FNumCodigo;
     [XmlAttribute]
     public int FNumCodigo
     {
@@ -24,7 +23,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -37,7 +35,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFNomeEspecial() => m_FNomeEspecial ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeEspecial
     {
@@ -50,7 +47,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -63,7 +59,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -76,7 +71,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public int NFForo() => m_FForo;
     [XmlAttribute]
     public int FForo
     {
@@ -89,7 +83,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public int NFTribunal() => m_FTribunal;
     [XmlAttribute]
     public int FTribunal
     {
@@ -102,7 +95,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFCodigoDiv() => m_FCodigoDiv ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCodigoDiv
     {
@@ -115,7 +107,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -128,7 +119,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -141,7 +131,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -155,7 +144,6 @@ public partial class DBDivisaoTribunal
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -168,7 +156,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFObs() => m_FObs ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObs
     {
@@ -181,7 +168,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -194,7 +180,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string NFAndar() => m_FAndar ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAndar
     {
@@ -207,7 +192,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public bool NFEtiqueta() => m_FEtiqueta;
     [XmlAttribute]
     public bool FEtiqueta
     {
@@ -220,7 +204,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

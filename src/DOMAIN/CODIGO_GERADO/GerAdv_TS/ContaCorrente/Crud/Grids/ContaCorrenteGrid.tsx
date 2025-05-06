@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ContaCorrenteEmpty } from "../../../Models/ContaCorrente";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ContaCorrenteInc from "../Inc/ContaCorrente";
 import { IContaCorrente } from "../../Interfaces/interface.ContaCorrente";
 import { ContaCorrenteService } from "../../Services/ContaCorrente.service";
 import { ContaCorrenteApi } from "../../Apis/ApiContaCorrente";
@@ -16,11 +14,12 @@ import { ContaCorrenteGridMobileComponent } from "../GridsMobile/ContaCorrente";
 import { ContaCorrenteGridDesktopComponent } from "../GridsDesktop/ContaCorrente";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterContaCorrente } from "../../Filters/ContaCorrente";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ContaCorrenteWindow from "./ContaCorrenteWindow";
 
 const ContaCorrenteGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ContaCorrenteGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ContaCorrenteGridMobileComponent data={contacorrente} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ContaCorrenteGridDesktopComponent data={contacorrente} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ContaCorrenteGridMobileComponent data={contacorrente} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ContaCorrenteGridDesktopComponent data={contacorrente} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ContaCorrenteWindow
           isOpen={showInc}

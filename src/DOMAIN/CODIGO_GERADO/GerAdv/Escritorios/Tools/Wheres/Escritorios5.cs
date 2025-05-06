@@ -37,6 +37,7 @@ public partial class Escritorios : IEscritoriosWhere
             Top = dbRec.FTop,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

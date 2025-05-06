@@ -8,6 +8,7 @@ public partial interface INEPalavrasChavesReader
     NEPalavrasChavesResponse? Read(int id, SqlConnection oCnn);
     NEPalavrasChavesResponse? Read(string where, SqlConnection oCnn);
     NEPalavrasChavesResponse? Read(Entity.DBNEPalavrasChaves dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     NEPalavrasChavesResponse? Read(DBNEPalavrasChaves dbRec);
 }
 

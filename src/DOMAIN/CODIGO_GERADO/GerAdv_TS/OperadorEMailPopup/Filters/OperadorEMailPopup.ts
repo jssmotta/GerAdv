@@ -12,6 +12,7 @@
     portapop3?: number;
  assinatura?: string;
  senha256?: string;
+ guid?: string;
 }
 
 export class FilterOperadorEMailPopupDefaults implements FilterOperadorEMailPopup {
@@ -27,5 +28,6 @@ export class FilterOperadorEMailPopupDefaults implements FilterOperadorEMailPopu
     portapop3?: number = -2147483648;
     assinatura?: string = '';
     senha256?: string = '';
+    guid?: string = '';
 }
     

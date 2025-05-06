@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { ILigacoes } from '../../Interfaces/interface.Ligacoes';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { ILigacoes } from '@/app/GerAdv_TS/Ligacoes/Interfaces/interface.Ligacoes';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
@@ -14,6 +18,8 @@ import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
 import { RamalApi } from '@/app/GerAdv_TS/Ramal/Apis/ApiRamal';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface LigacoesFormProps {
     ligacoesData: ILigacoes;
@@ -106,25 +112,37 @@ if (getParamFromUrl("processos") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('LigacoesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeRamal && (<h2>{nomeRamal}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`LigacoesForm-${ligacoesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={ligacoesData} isSubmitting={isSubmitting} onClose={onClose} formId={`LigacoesForm-${ligacoesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={ligacoesData.nome}
+            placeholder={`Digite nome ligacoes`}
             onChange={onChange}
             required
           />
@@ -149,7 +167,7 @@ value={ligacoesData.ageclienteavisado}
 onChange={onChange}               
 />
 
-<Checkbox label="Celular" name="celular" checked={ligacoesData.celular} onChange={onChange} />
+<InputCheckbox label="Celular" name="celular" checked={ligacoesData.celular} onChange={onChange} />
  
             <ClientesComboBox
             name={'cliente'}
@@ -266,8 +284,8 @@ onChange={onChange}
             label={'Ramal'}
             />
 
-<Checkbox label="Particular" name="particular" checked={ligacoesData.particular} onChange={onChange} />
-<Checkbox label="Realizada" name="realizada" checked={ligacoesData.realizada} onChange={onChange} />
+<InputCheckbox label="Particular" name="particular" checked={ligacoesData.particular} onChange={onChange} />
+<InputCheckbox label="Realizada" name="realizada" checked={ligacoesData.realizada} onChange={onChange} />
         
 <Input
 type="text"
@@ -300,7 +318,7 @@ value={ligacoesData.hora}
 onChange={onChange}               
 />
 
-<Checkbox label="Urgente" name="urgente" checked={ligacoesData.urgente} onChange={onChange} />
+<InputCheckbox label="Urgente" name="urgente" checked={ligacoesData.urgente} onChange={onChange} />
         
 <Input
 type="text"
@@ -319,7 +337,7 @@ onChange={onChange}
             label={'Processos'}
             />
 
-<Checkbox label="StartScreen" name="startscreen" checked={ligacoesData.startscreen} onChange={onChange} />
+<InputCheckbox label="StartScreen" name="startscreen" checked={ligacoesData.startscreen} onChange={onChange} />
         
 <Input
 type="text"
@@ -331,21 +349,10 @@ value={ligacoesData.emotion}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/recados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?ligacoes=${ligacoesData.id}`)}>Recados</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

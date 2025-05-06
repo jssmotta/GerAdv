@@ -13,7 +13,6 @@ public partial class DBClientes
     private protected DateTime? m_FRGDataExp, m_FData;
     [XmlIgnore]
     private protected bool m_FInativo, m_FSendEMail, m_FJuridica, m_FTipo, m_FTipoCaptacao, m_FObito, m_FReportECBOnly, m_FProBono;
-    public int NFEmpresa() => m_FEmpresa;
     [XmlAttribute]
     public int FEmpresa
     {
@@ -26,7 +25,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFIcone() => m_FIcone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FIcone
     {
@@ -39,7 +37,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFNomeMae() => m_FNomeMae ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeMae
     {
@@ -52,7 +49,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFRGDataExp() => $"{m_FRGDataExp:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FRGDataExp:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MRGDataExp => Convert.ToDateTime(m_FRGDataExp);
 
@@ -70,7 +66,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFInativo() => m_FInativo;
     [XmlAttribute]
     public bool FInativo
     {
@@ -83,7 +78,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFQuemIndicou() => m_FQuemIndicou ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FQuemIndicou
     {
@@ -96,7 +90,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFSendEMail() => m_FSendEMail;
     [XmlAttribute]
     public bool FSendEMail
     {
@@ -121,7 +114,6 @@ public partial class DBClientes
         }
     }
 
-    public int NFAdv() => m_FAdv;
     [XmlAttribute]
     public int FAdv
     {
@@ -134,7 +126,6 @@ public partial class DBClientes
         }
     }
 
-    public int NFIDRep() => m_FIDRep;
     [XmlAttribute]
     public int FIDRep
     {
@@ -147,7 +138,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFJuridica() => m_FJuridica;
     [XmlAttribute]
     public bool FJuridica
     {
@@ -160,7 +150,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFNomeFantasia() => m_FNomeFantasia ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeFantasia
     {
@@ -173,7 +162,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -186,7 +174,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFInscEst() => m_FInscEst ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FInscEst
     {
@@ -199,7 +186,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFQualificacao() => m_FQualificacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FQualificacao
     {
@@ -212,7 +198,6 @@ public partial class DBClientes
         }
     }
 
-    public int NFIdade() => m_FIdade;
     [XmlAttribute]
     public int FIdade
     {
@@ -227,7 +212,6 @@ public partial class DBClientes
 
     public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
 
-    public string NFCNPJ() => m_FCNPJ ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -240,7 +224,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -253,7 +236,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFTipoCaptacao() => m_FTipoCaptacao;
     [XmlAttribute]
     public bool FTipoCaptacao
     {
@@ -266,7 +248,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -279,7 +260,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -292,7 +272,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -305,7 +284,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -323,7 +301,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFHomePage() => m_FHomePage ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHomePage
     {
@@ -336,7 +313,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -349,7 +325,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFObito() => m_FObito;
     [XmlAttribute]
     public bool FObito
     {
@@ -362,7 +337,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFNomePai() => m_FNomePai ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomePai
     {
@@ -375,7 +349,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFRGOExpeditor() => m_FRGOExpeditor ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRGOExpeditor
     {
@@ -388,7 +361,6 @@ public partial class DBClientes
         }
     }
 
-    public int NFRegimeTributacao() => m_FRegimeTributacao;
     [XmlAttribute]
     public int FRegimeTributacao
     {
@@ -401,7 +373,6 @@ public partial class DBClientes
         }
     }
 
-    public int NFEnquadramentoEmpresa() => m_FEnquadramentoEmpresa;
     [XmlAttribute]
     public int FEnquadramentoEmpresa
     {
@@ -414,7 +385,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFReportECBOnly() => m_FReportECBOnly;
     [XmlAttribute]
     public bool FReportECBOnly
     {
@@ -427,7 +397,6 @@ public partial class DBClientes
         }
     }
 
-    public bool NFProBono() => m_FProBono;
     [XmlAttribute]
     public bool FProBono
     {
@@ -440,7 +409,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFCNH() => m_FCNH ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNH
     {
@@ -453,7 +421,6 @@ public partial class DBClientes
         }
     }
 
-    public string NFPessoaContato() => m_FPessoaContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPessoaContato
     {

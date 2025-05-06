@@ -41,7 +41,7 @@ public partial class DBStatusAndamentoODicInfo : IODicInfo
     public static string TTabelaNome => DBStatusAndamentoDicInfo.TabelaNome;
     public static string TTablePrefix => DBStatusAndamentoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanIcone, DBStatusAndamentoDicInfo.SanBold, DBStatusAndamentoDicInfo.SanGUID, DBStatusAndamentoDicInfo.SanQuemCad, DBStatusAndamentoDicInfo.SanDtCad, DBStatusAndamentoDicInfo.SanQuemAtu, DBStatusAndamentoDicInfo.SanDtAtu, DBStatusAndamentoDicInfo.SanVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanIcone, DBStatusAndamentoDicInfo.SanBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanIcone, DBStatusAndamentoDicInfo.SanBold, DBStatusAndamentoDicInfo.SanGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

@@ -5,7 +5,7 @@ import { ProcessOutputSourcesApi } from '../../Apis/ApiProcessOutputSources';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProcessOutputSourcesFormProps } from '../../Interfaces/interface.ProcessOutputSources';
 import { ProcessOutputSourcesService } from '../../Services/ProcessOutputSources.service';
 import { useProcessOutputSourcesForm } from '../../Hooks/useProcessOutputSourcesForm';

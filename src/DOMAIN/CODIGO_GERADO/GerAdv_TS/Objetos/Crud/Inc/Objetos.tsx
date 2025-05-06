@@ -5,7 +5,7 @@ import { ObjetosApi } from '../../Apis/ApiObjetos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IObjetosFormProps } from '../../Interfaces/interface.Objetos';
 import { ObjetosService } from '../../Services/Objetos.service';
 import { useObjetosForm } from '../../Hooks/useObjetosForm';

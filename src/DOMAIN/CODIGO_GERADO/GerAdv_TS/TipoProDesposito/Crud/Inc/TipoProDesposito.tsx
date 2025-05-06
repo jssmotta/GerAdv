@@ -5,7 +5,7 @@ import { TipoProDespositoApi } from '../../Apis/ApiTipoProDesposito';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoProDespositoFormProps } from '../../Interfaces/interface.TipoProDesposito';
 import { TipoProDespositoService } from '../../Services/TipoProDesposito.service';
 import { useTipoProDespositoForm } from '../../Hooks/useTipoProDespositoForm';

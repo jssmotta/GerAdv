@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { DadosProcuracaoEmpty } from "../../../Models/DadosProcuracao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import DadosProcuracaoInc from "../Inc/DadosProcuracao";
 import { IDadosProcuracao } from "../../Interfaces/interface.DadosProcuracao";
 import { DadosProcuracaoService } from "../../Services/DadosProcuracao.service";
 import { DadosProcuracaoApi } from "../../Apis/ApiDadosProcuracao";
@@ -16,11 +14,12 @@ import { DadosProcuracaoGridMobileComponent } from "../GridsMobile/DadosProcurac
 import { DadosProcuracaoGridDesktopComponent } from "../GridsDesktop/DadosProcuracao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterDadosProcuracao } from "../../Filters/DadosProcuracao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import DadosProcuracaoWindow from "./DadosProcuracaoWindow";
 
 const DadosProcuracaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const DadosProcuracaoGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <DadosProcuracaoGridMobileComponent data={dadosprocuracao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <DadosProcuracaoGridDesktopComponent data={dadosprocuracao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <DadosProcuracaoGridMobileComponent data={dadosprocuracao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <DadosProcuracaoGridDesktopComponent data={dadosprocuracao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <DadosProcuracaoWindow
           isOpen={showInc}

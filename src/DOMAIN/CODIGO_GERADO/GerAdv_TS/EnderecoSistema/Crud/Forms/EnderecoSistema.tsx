@@ -1,17 +1,22 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IEnderecoSistema } from '../../Interfaces/interface.EnderecoSistema';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IEnderecoSistema } from '@/app/GerAdv_TS/EnderecoSistema/Interfaces/interface.EnderecoSistema';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import TipoEnderecoSistemaComboBox from '@/app/GerAdv_TS/TipoEnderecoSistema/ComboBox/TipoEnderecoSistema';
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import { TipoEnderecoSistemaApi } from '@/app/GerAdv_TS/TipoEnderecoSistema/Apis/ApiTipoEnderecoSistema';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import InputName from '@/app/components/Inputs/InputName';
 import InputCep from '@/app/components/Inputs/InputCep'
 
 interface EnderecoSistemaFormProps {
@@ -84,16 +89,28 @@ if (getParamFromUrl("processos") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('EnderecoSistemaForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeTipoEnderecoSistema && (<h2>{nomeTipoEnderecoSistema}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`EnderecoSistemaForm-${enderecosistemaData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={enderecosistemaData} isSubmitting={isSubmitting} onClose={onClose} formId={`EnderecoSistemaForm-${enderecosistemaData.id}`} />
+
+                <div className="grid-container">
 
 <Input
 type="text"
@@ -220,19 +237,10 @@ value={enderecosistemaData.observacao}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

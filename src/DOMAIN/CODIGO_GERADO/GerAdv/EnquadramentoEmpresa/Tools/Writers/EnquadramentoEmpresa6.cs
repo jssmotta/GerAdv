@@ -14,6 +14,7 @@ public class EnquadramentoEmpresa : IEnquadramentoEmpresaWriter
     {
         var dbRec = enquadramentoempresa.Id.IsEmptyIDNumber() ? new Entity.DBEnquadramentoEmpresa() : new Entity.DBEnquadramentoEmpresa(enquadramentoempresa.Id, oCnn);
         dbRec.FNome = enquadramentoempresa.Nome;
+        dbRec.FGUID = enquadramentoempresa.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

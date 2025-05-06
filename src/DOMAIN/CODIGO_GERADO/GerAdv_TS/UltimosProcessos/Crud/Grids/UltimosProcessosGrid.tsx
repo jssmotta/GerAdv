@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { UltimosProcessosEmpty } from "../../../Models/UltimosProcessos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import UltimosProcessosInc from "../Inc/UltimosProcessos";
 import { IUltimosProcessos } from "../../Interfaces/interface.UltimosProcessos";
 import { UltimosProcessosService } from "../../Services/UltimosProcessos.service";
 import { UltimosProcessosApi } from "../../Apis/ApiUltimosProcessos";
@@ -16,11 +14,12 @@ import { UltimosProcessosGridMobileComponent } from "../GridsMobile/UltimosProce
 import { UltimosProcessosGridDesktopComponent } from "../GridsDesktop/UltimosProcessos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterUltimosProcessos } from "../../Filters/UltimosProcessos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import UltimosProcessosWindow from "./UltimosProcessosWindow";
 
 const UltimosProcessosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const UltimosProcessosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <UltimosProcessosGridMobileComponent data={ultimosprocessos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <UltimosProcessosGridDesktopComponent data={ultimosprocessos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <UltimosProcessosGridMobileComponent data={ultimosprocessos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <UltimosProcessosGridDesktopComponent data={ultimosprocessos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <UltimosProcessosWindow
           isOpen={showInc}

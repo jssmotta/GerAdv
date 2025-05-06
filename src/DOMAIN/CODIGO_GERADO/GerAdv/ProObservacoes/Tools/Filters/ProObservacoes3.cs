@@ -20,4 +20,7 @@ public partial class FilterProObservacoes
 
     [JsonPropertyName("data")]
     public string Data { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

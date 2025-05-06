@@ -5,7 +5,7 @@ import { AgendaRepetirDiasApi } from '../../Apis/ApiAgendaRepetirDias';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAgendaRepetirDiasFormProps } from '../../Interfaces/interface.AgendaRepetirDias';
 import { AgendaRepetirDiasService } from '../../Services/AgendaRepetirDias.service';
 import { useAgendaRepetirDiasForm } from '../../Hooks/useAgendaRepetirDiasForm';

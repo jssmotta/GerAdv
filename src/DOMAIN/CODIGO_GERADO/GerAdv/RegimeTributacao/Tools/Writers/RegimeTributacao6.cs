@@ -14,6 +14,7 @@ public class RegimeTributacao : IRegimeTributacaoWriter
     {
         var dbRec = regimetributacao.Id.IsEmptyIDNumber() ? new Entity.DBRegimeTributacao() : new Entity.DBRegimeTributacao(regimetributacao.Id, oCnn);
         dbRec.FNome = regimetributacao.Nome;
+        dbRec.FGUID = regimetributacao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

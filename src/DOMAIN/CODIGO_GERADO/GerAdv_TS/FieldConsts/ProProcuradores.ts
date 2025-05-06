@@ -6,4 +6,5 @@
 	substabelecimento = `Substabelecimento`,
 	procuracao = `Procuracao`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

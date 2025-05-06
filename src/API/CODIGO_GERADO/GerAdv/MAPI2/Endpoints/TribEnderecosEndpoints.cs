@@ -56,30 +56,6 @@ public static class TribEnderecosEndpoints
 
             return Results.Ok(result);
         }).WithName("TribEnderecos_AddAndUpdate").WithDisplayName("Add or Update TribEnderecos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITribEnderecosValidation validation, ITribEnderecosWriter writer, ITribunalReader tribunalReader, ITribEnderecosService service) =>
-        {
-            logger.LogInfo("TribEnderecos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TribEnderecos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TribEnderecos_GetColumns").WithDisplayName("Get TribEnderecos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITribEnderecosValidation validation, ITribEnderecosWriter writer, ITribunalReader tribunalReader, ITribEnderecosService service) =>
-        {
-            logger.LogInfo("TribEnderecos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TribEnderecos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TribEnderecos_UpdateColumns").WithDisplayName("Update TribEnderecos Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITribEnderecosValidation validation, ITribEnderecosWriter writer, ITribunalReader tribunalReader, ITribEnderecosService service) =>
         {
             logger.LogInfo("TribEnderecos", "Delete", $"id = {id}", uri);

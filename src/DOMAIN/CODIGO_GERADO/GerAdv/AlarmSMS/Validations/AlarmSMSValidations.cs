@@ -17,7 +17,7 @@ public class AlarmSMSValidation : IAlarmSMSValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
@@ -27,7 +27,7 @@ public class AlarmSMSValidation : IAlarmSMSValidation
         }
 
         // Agenda
-        if (reg.Agenda.IsEmptyIDNumber())
+        if (!reg.Agenda.IsEmptyIDNumber())
         {
             var regAgenda = agendaReader.Read(reg.Agenda, oCnn);
             if (regAgenda == null || regAgenda.Id != reg.Agenda)
@@ -37,7 +37,7 @@ public class AlarmSMSValidation : IAlarmSMSValidation
         }
 
         // Recados
-        if (reg.Recado.IsEmptyIDNumber())
+        if (!reg.Recado.IsEmptyIDNumber())
         {
             var regRecados = recadosReader.Read(reg.Recado, oCnn);
             if (regRecados == null || regRecados.Id != reg.Recado)

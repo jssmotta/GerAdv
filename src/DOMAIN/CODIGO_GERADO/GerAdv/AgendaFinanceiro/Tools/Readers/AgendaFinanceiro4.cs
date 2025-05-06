@@ -8,6 +8,7 @@ public partial interface IAgendaFinanceiroReader
     AgendaFinanceiroResponse? Read(int id, SqlConnection oCnn);
     AgendaFinanceiroResponse? Read(string where, SqlConnection oCnn);
     AgendaFinanceiroResponse? Read(Entity.DBAgendaFinanceiro dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AgendaFinanceiroResponse? Read(DBAgendaFinanceiro dbRec);
 }
 
@@ -73,7 +74,7 @@ public partial class AgendaFinanceiro : IAgendaFinanceiroReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHrFinal, out _))
             agendafinanceiro.HrFinal = dbRec.FHrFinal;
@@ -150,7 +151,7 @@ public partial class AgendaFinanceiro : IAgendaFinanceiroReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FHrFinal, out _))
             agendafinanceiro.HrFinal = dbRec.FHrFinal;

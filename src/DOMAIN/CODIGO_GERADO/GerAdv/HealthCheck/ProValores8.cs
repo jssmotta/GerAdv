@@ -72,7 +72,7 @@ public class ProValoresHealthCheck(IOptions<AppSettings> appSettings, ProValores
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) prvProcesso,prvTipoValorProcesso,prvIndice,prvIgnorar,prvData,prvValorOriginal,prvPercMulta,prvValorMulta,prvPercJuros,prvValorOriginalCorrigidoIndice,prvValorMultaCorrigido,prvValorJurosCorrigido,prvValorFinal,prvDataUltimaCorrecao FROM dbo.ProValores (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) prvProcesso,prvTipoValorProcesso,prvIndice,prvIgnorar,prvData,prvValorOriginal,prvPercMulta,prvValorMulta,prvPercJuros,prvValorOriginalCorrigidoIndice,prvValorMultaCorrigido,prvValorJurosCorrigido,prvValorFinal,prvDataUltimaCorrecao,prvGUID FROM dbo.ProValores (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

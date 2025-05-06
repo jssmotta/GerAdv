@@ -47,4 +47,7 @@ public partial class FilterEnderecoSistema
 
     [JsonPropertyName("observacao")]
     public string Observacao { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

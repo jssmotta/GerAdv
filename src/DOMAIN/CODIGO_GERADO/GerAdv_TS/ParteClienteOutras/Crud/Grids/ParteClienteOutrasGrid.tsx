@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ParteClienteOutrasEmpty } from "../../../Models/ParteClienteOutras";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ParteClienteOutrasInc from "../Inc/ParteClienteOutras";
 import { IParteClienteOutras } from "../../Interfaces/interface.ParteClienteOutras";
 import { ParteClienteOutrasService } from "../../Services/ParteClienteOutras.service";
 import { ParteClienteOutrasApi } from "../../Apis/ApiParteClienteOutras";
@@ -16,11 +14,12 @@ import { ParteClienteOutrasGridMobileComponent } from "../GridsMobile/ParteClien
 import { ParteClienteOutrasGridDesktopComponent } from "../GridsDesktop/ParteClienteOutras";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterParteClienteOutras } from "../../Filters/ParteClienteOutras";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ParteClienteOutrasWindow from "./ParteClienteOutrasWindow";
 
 const ParteClienteOutrasGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ParteClienteOutrasGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ParteClienteOutrasGridMobileComponent data={parteclienteoutras} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ParteClienteOutrasGridDesktopComponent data={parteclienteoutras} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ParteClienteOutrasGridMobileComponent data={parteclienteoutras} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ParteClienteOutrasGridDesktopComponent data={parteclienteoutras} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ParteClienteOutrasWindow
           isOpen={showInc}

@@ -27,4 +27,5 @@
 	emocao = `Emocao`,
 	continuar = `Continuar`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

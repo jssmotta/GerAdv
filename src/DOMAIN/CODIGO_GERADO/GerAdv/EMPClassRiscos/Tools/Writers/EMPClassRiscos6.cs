@@ -15,6 +15,7 @@ public class EMPClassRiscos : IEMPClassRiscosWriter
         var dbRec = empclassriscos.Id.IsEmptyIDNumber() ? new Entity.DBEMPClassRiscos() : new Entity.DBEMPClassRiscos(empclassriscos.Id, oCnn);
         dbRec.FNome = empclassriscos.Nome;
         dbRec.FBold = empclassriscos.Bold;
+        dbRec.FGUID = empclassriscos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

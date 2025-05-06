@@ -20,6 +20,7 @@ public partial class TipoCompromisso : ITipoCompromissoWhere
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

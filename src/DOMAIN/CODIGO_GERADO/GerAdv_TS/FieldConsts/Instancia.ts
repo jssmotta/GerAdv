@@ -26,4 +26,5 @@
 	accesscode = `AccessCode`,
 	julgador = `Julgador`,
 	zkeyia = `ZKeyIA`,
+	guid = `GUID`,
 }

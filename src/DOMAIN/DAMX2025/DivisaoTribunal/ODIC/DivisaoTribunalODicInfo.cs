@@ -55,7 +55,7 @@ public partial class DBDivisaoTribunalODicInfo : IODicInfo
     public static string TTabelaNome => DBDivisaoTribunalDicInfo.TabelaNome;
     public static string TTablePrefix => DBDivisaoTribunalDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold, DBDivisaoTribunalDicInfo.DivGUID, DBDivisaoTribunalDicInfo.DivQuemCad, DBDivisaoTribunalDicInfo.DivDtCad, DBDivisaoTribunalDicInfo.DivQuemAtu, DBDivisaoTribunalDicInfo.DivDtAtu, DBDivisaoTribunalDicInfo.DivVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold, DBDivisaoTribunalDicInfo.DivGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -71,7 +71,13 @@ public partial class DBDivisaoTribunalODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "divCodigo"
+            "divArea",
+            "divCidade",
+            "divCodigo",
+            "divForo",
+            "divJustica",
+            "divNumCodigo",
+            "divTribunal"
         };
         var result = campos.Where(campo => !campo.Equals(DBDivisaoTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

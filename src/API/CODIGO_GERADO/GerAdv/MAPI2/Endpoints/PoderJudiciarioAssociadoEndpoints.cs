@@ -56,30 +56,6 @@ public static class PoderJudiciarioAssociadoEndpoints
 
             return Results.Ok(result);
         }).WithName("PoderJudiciarioAssociado_AddAndUpdate").WithDisplayName("Add or Update PoderJudiciarioAssociado");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IPoderJudiciarioAssociadoValidation validation, IPoderJudiciarioAssociadoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, IPoderJudiciarioAssociadoService service) =>
-        {
-            logger.LogInfo("PoderJudiciarioAssociado", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("PoderJudiciarioAssociado", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("PoderJudiciarioAssociado_GetColumns").WithDisplayName("Get PoderJudiciarioAssociado Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IPoderJudiciarioAssociadoValidation validation, IPoderJudiciarioAssociadoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, IPoderJudiciarioAssociadoService service) =>
-        {
-            logger.LogInfo("PoderJudiciarioAssociado", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("PoderJudiciarioAssociado", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("PoderJudiciarioAssociado_UpdateColumns").WithDisplayName("Update PoderJudiciarioAssociado Columns");
         group.MapDelete("/Delete", async (int id, string uri, IPoderJudiciarioAssociadoValidation validation, IPoderJudiciarioAssociadoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, IPoderJudiciarioAssociadoService service) =>
         {
             logger.LogInfo("PoderJudiciarioAssociado", "Delete", $"id = {id}", uri);

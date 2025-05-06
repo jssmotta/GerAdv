@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { CidadeEmpty } from "../../../Models/Cidade";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import CidadeInc from "../Inc/Cidade";
 import { ICidade } from "../../Interfaces/interface.Cidade";
 import { CidadeService } from "../../Services/Cidade.service";
 import { CidadeApi } from "../../Apis/ApiCidade";
@@ -16,11 +14,12 @@ import { CidadeGridMobileComponent } from "../GridsMobile/Cidade";
 import { CidadeGridDesktopComponent } from "../GridsDesktop/Cidade";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterCidade } from "../../Filters/Cidade";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import CidadeWindow from "./CidadeWindow";
 
 const CidadeGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const CidadeGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <CidadeGridMobileComponent data={cidade} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <CidadeGridDesktopComponent data={cidade} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <CidadeGridMobileComponent data={cidade} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <CidadeGridDesktopComponent data={cidade} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <CidadeWindow
           isOpen={showInc}

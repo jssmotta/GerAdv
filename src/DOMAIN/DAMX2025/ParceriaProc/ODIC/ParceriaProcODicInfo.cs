@@ -40,7 +40,7 @@ public partial class DBParceriaProcODicInfo : IODicInfo
     public static string TTabelaNome => DBParceriaProcDicInfo.TabelaNome;
     public static string TTablePrefix => DBParceriaProcDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGUID, DBParceriaProcDicInfo.ParQuemCad, DBParceriaProcDicInfo.ParDtCad, DBParceriaProcDicInfo.ParQuemAtu, DBParceriaProcDicInfo.ParDtAtu, DBParceriaProcDicInfo.ParVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

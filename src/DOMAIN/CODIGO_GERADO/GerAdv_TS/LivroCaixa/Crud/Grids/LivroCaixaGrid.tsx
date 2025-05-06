@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { LivroCaixaEmpty } from "../../../Models/LivroCaixa";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import LivroCaixaInc from "../Inc/LivroCaixa";
 import { ILivroCaixa } from "../../Interfaces/interface.LivroCaixa";
 import { LivroCaixaService } from "../../Services/LivroCaixa.service";
 import { LivroCaixaApi } from "../../Apis/ApiLivroCaixa";
@@ -16,11 +14,12 @@ import { LivroCaixaGridMobileComponent } from "../GridsMobile/LivroCaixa";
 import { LivroCaixaGridDesktopComponent } from "../GridsDesktop/LivroCaixa";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterLivroCaixa } from "../../Filters/LivroCaixa";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import LivroCaixaWindow from "./LivroCaixaWindow";
 
 const LivroCaixaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const LivroCaixaGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <LivroCaixaGridMobileComponent data={livrocaixa} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <LivroCaixaGridDesktopComponent data={livrocaixa} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <LivroCaixaGridMobileComponent data={livrocaixa} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <LivroCaixaGridDesktopComponent data={livrocaixa} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <LivroCaixaWindow
           isOpen={showInc}

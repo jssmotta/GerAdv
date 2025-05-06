@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { OponentesRepLegalEmpty } from "../../../Models/OponentesRepLegal";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import OponentesRepLegalInc from "../Inc/OponentesRepLegal";
 import { IOponentesRepLegal } from "../../Interfaces/interface.OponentesRepLegal";
 import { OponentesRepLegalService } from "../../Services/OponentesRepLegal.service";
 import { OponentesRepLegalApi } from "../../Apis/ApiOponentesRepLegal";
@@ -16,11 +14,12 @@ import { OponentesRepLegalGridMobileComponent } from "../GridsMobile/OponentesRe
 import { OponentesRepLegalGridDesktopComponent } from "../GridsDesktop/OponentesRepLegal";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterOponentesRepLegal } from "../../Filters/OponentesRepLegal";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import OponentesRepLegalWindow from "./OponentesRepLegalWindow";
 
 const OponentesRepLegalGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const OponentesRepLegalGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <OponentesRepLegalGridMobileComponent data={oponentesreplegal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <OponentesRepLegalGridDesktopComponent data={oponentesreplegal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <OponentesRepLegalGridMobileComponent data={oponentesreplegal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <OponentesRepLegalGridDesktopComponent data={oponentesreplegal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <OponentesRepLegalWindow
           isOpen={showInc}

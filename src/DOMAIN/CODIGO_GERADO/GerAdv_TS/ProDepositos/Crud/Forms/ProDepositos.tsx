@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IProDepositos } from '../../Interfaces/interface.ProDepositos';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IProDepositos } from '@/app/GerAdv_TS/ProDepositos/Interfaces/interface.ProDepositos';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
@@ -14,6 +18,7 @@ import TipoProDespositoComboBox from '@/app/GerAdv_TS/TipoProDesposito/ComboBox/
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { FaseApi } from '@/app/GerAdv_TS/Fase/Apis/ApiFase';
 import { TipoProDespositoApi } from '@/app/GerAdv_TS/TipoProDesposito/Apis/ApiTipoProDesposito';
+import InputName from '@/app/components/Inputs/InputName';
 
 interface ProDepositosFormProps {
     prodepositosData: IProDepositos;
@@ -106,17 +111,28 @@ if (getParamFromUrl("tipoprodesposito") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ProDepositosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeFase && (<h2>{nomeFase}</h2>)}
-{nomeTipoProDesposito && (<h2>{nomeTipoProDesposito}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ProDepositosForm-${prodepositosData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={prodepositosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProDepositosForm-${prodepositosData.id}`} />
+
+                <div className="grid-container">
 
             <ProcessosComboBox
             name={'processo'}
@@ -159,19 +175,10 @@ onChange={onChange}
             label={'Tipo Pro Desposito'}
             />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

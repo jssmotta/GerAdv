@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import InstanciaInc from "../Inc/Instancia";
 import { IInstancia } from "../../Interfaces/interface.Instancia";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const InstanciaWindow: React.FC<InstanciaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/instancia/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedInstancia?.id}`);
+            router.push(`/pages/instancia/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedInstancia?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedInstancia]);
@@ -42,7 +43,7 @@ const InstanciaWindow: React.FC<InstanciaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={834}
                     newWidth={1440}
                     id={(selectedInstancia?.id ?? 0).toString()}

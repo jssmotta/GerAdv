@@ -8,6 +8,7 @@ public partial interface ICidadeReader
     CidadeResponse? Read(int id, SqlConnection oCnn);
     CidadeResponse? Read(string where, SqlConnection oCnn);
     CidadeResponse? Read(Entity.DBCidade dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     CidadeResponse? Read(DBCidade dbRec);
 }
 
@@ -42,7 +43,7 @@ public partial class Cidade : ICidadeReader
             Nome = dbRec.FNome ?? string.Empty,
             UF = dbRec.FUF,
             Sigla = dbRec.FSigla ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -76,7 +77,7 @@ public partial class Cidade : ICidadeReader
             Nome = dbRec.FNome ?? string.Empty,
             UF = dbRec.FUF,
             Sigla = dbRec.FSigla ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

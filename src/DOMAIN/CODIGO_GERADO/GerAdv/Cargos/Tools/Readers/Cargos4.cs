@@ -8,6 +8,7 @@ public partial interface ICargosReader
     CargosResponse? Read(int id, SqlConnection oCnn);
     CargosResponse? Read(string where, SqlConnection oCnn);
     CargosResponse? Read(Entity.DBCargos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     CargosResponse? Read(DBCargos dbRec);
 }
 

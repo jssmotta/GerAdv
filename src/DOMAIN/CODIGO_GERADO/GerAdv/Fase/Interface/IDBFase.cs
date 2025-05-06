@@ -5,4 +5,5 @@ public partial interface IDBFase
     public string? FDescricao { get; set; }
     public int FJustica { get; set; }
     public int FArea { get; set; }
+    public string? FGUID { get; set; }
 }

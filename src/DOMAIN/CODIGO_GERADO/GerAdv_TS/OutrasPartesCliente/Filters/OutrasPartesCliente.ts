@@ -18,6 +18,7 @@
  email?: string;
  site?: string;
  class?: string;
+ guid?: string;
 }
 
 export class FilterOutrasPartesClienteDefaults implements FilterOutrasPartesCliente {
@@ -39,5 +40,6 @@ export class FilterOutrasPartesClienteDefaults implements FilterOutrasPartesClie
     email?: string = '';
     site?: string = '';
     class?: string = '';
+    guid?: string = '';
 }
     

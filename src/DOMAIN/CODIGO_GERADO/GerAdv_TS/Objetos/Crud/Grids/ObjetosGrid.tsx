@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ObjetosEmpty } from "../../../Models/Objetos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ObjetosInc from "../Inc/Objetos";
 import { IObjetos } from "../../Interfaces/interface.Objetos";
 import { ObjetosService } from "../../Services/Objetos.service";
 import { ObjetosApi } from "../../Apis/ApiObjetos";
@@ -16,11 +14,12 @@ import { ObjetosGridMobileComponent } from "../GridsMobile/Objetos";
 import { ObjetosGridDesktopComponent } from "../GridsDesktop/Objetos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterObjetos } from "../../Filters/Objetos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ObjetosWindow from "./ObjetosWindow";
 
 const ObjetosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ObjetosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ObjetosGridMobileComponent data={objetos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ObjetosGridDesktopComponent data={objetos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ObjetosGridMobileComponent data={objetos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ObjetosGridDesktopComponent data={objetos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ObjetosWindow
           isOpen={showInc}

@@ -9,7 +9,6 @@ public partial class DBColaboradores
     private protected int m_FCargo, m_FCliente, m_FIdade;
     [XmlIgnore]
     private protected string? m_FRG, m_FFone, m_FObservacao, m_FEMail, m_FCNH;
-    public int NFCargo() => m_FCargo;
     [XmlAttribute]
     public int FCargo
     {
@@ -22,7 +21,6 @@ public partial class DBColaboradores
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -47,7 +45,6 @@ public partial class DBColaboradores
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -60,7 +57,6 @@ public partial class DBColaboradores
         }
     }
 
-    public int NFIdade() => m_FIdade;
     [XmlAttribute]
     public int FIdade
     {
@@ -73,7 +69,6 @@ public partial class DBColaboradores
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -86,7 +81,6 @@ public partial class DBColaboradores
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -99,7 +93,6 @@ public partial class DBColaboradores
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -112,7 +105,6 @@ public partial class DBColaboradores
         }
     }
 
-    public string NFCNH() => m_FCNH ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNH
     {

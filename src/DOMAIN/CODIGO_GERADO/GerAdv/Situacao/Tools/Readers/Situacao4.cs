@@ -8,6 +8,7 @@ public partial interface ISituacaoReader
     SituacaoResponse? Read(int id, SqlConnection oCnn);
     SituacaoResponse? Read(string where, SqlConnection oCnn);
     SituacaoResponse? Read(Entity.DBSituacao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     SituacaoResponse? Read(DBSituacao dbRec);
 }
 
@@ -39,7 +40,7 @@ public partial class Situacao : ISituacaoReader
             Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -70,7 +71,7 @@ public partial class Situacao : ISituacaoReader
             Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

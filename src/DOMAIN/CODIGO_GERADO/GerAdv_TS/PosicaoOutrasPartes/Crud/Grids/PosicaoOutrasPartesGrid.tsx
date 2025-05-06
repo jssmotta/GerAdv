@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PosicaoOutrasPartesEmpty } from "../../../Models/PosicaoOutrasPartes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PosicaoOutrasPartesInc from "../Inc/PosicaoOutrasPartes";
 import { IPosicaoOutrasPartes } from "../../Interfaces/interface.PosicaoOutrasPartes";
 import { PosicaoOutrasPartesService } from "../../Services/PosicaoOutrasPartes.service";
 import { PosicaoOutrasPartesApi } from "../../Apis/ApiPosicaoOutrasPartes";
@@ -16,11 +14,12 @@ import { PosicaoOutrasPartesGridMobileComponent } from "../GridsMobile/PosicaoOu
 import { PosicaoOutrasPartesGridDesktopComponent } from "../GridsDesktop/PosicaoOutrasPartes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPosicaoOutrasPartes } from "../../Filters/PosicaoOutrasPartes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PosicaoOutrasPartesWindow from "./PosicaoOutrasPartesWindow";
 
 const PosicaoOutrasPartesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const PosicaoOutrasPartesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <PosicaoOutrasPartesGridMobileComponent data={posicaooutraspartes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PosicaoOutrasPartesGridDesktopComponent data={posicaooutraspartes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PosicaoOutrasPartesGridMobileComponent data={posicaooutraspartes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PosicaoOutrasPartesGridDesktopComponent data={posicaooutraspartes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PosicaoOutrasPartesWindow
           isOpen={showInc}

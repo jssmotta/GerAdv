@@ -5,7 +5,7 @@ import { SMSAliceApi } from '../../Apis/ApiSMSAlice';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ISMSAliceFormProps } from '../../Interfaces/interface.SMSAlice';
 import { SMSAliceService } from '../../Services/SMSAlice.service';
 import { useSMSAliceForm } from '../../Hooks/useSMSAliceForm';

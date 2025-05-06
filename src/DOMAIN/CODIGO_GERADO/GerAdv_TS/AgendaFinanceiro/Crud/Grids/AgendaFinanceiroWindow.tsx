@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AgendaFinanceiroInc from "../Inc/AgendaFinanceiro";
 import { IAgendaFinanceiro } from "../../Interfaces/interface.AgendaFinanceiro";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AgendaFinanceiroWindow: React.FC<AgendaFinanceiroWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/agendafinanceiro/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaFinanceiro?.id}`);
+            router.push(`/pages/agendafinanceiro/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaFinanceiro?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAgendaFinanceiro]);
@@ -42,7 +43,7 @@ const AgendaFinanceiroWindow: React.FC<AgendaFinanceiroWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={905}
                     newWidth={1440}
                     id={(selectedAgendaFinanceiro?.id ?? 0).toString()}

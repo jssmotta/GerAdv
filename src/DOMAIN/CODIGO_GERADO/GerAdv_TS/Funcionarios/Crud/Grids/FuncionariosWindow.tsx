@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import FuncionariosInc from "../Inc/Funcionarios";
 import { IFuncionarios } from "../../Interfaces/interface.Funcionarios";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const FuncionariosWindow: React.FC<FuncionariosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/funcionarios/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedFuncionarios?.id}`);
+            router.push(`/pages/funcionarios/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedFuncionarios?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedFuncionarios]);
@@ -42,7 +43,7 @@ const FuncionariosWindow: React.FC<FuncionariosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={905}
                     newWidth={1440}
                     id={(selectedFuncionarios?.id ?? 0).toString()}

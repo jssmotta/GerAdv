@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { LivroCaixaClientesEmpty } from "../../../Models/LivroCaixaClientes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import LivroCaixaClientesInc from "../Inc/LivroCaixaClientes";
 import { ILivroCaixaClientes } from "../../Interfaces/interface.LivroCaixaClientes";
 import { LivroCaixaClientesService } from "../../Services/LivroCaixaClientes.service";
 import { LivroCaixaClientesApi } from "../../Apis/ApiLivroCaixaClientes";
@@ -16,11 +14,12 @@ import { LivroCaixaClientesGridMobileComponent } from "../GridsMobile/LivroCaixa
 import { LivroCaixaClientesGridDesktopComponent } from "../GridsDesktop/LivroCaixaClientes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterLivroCaixaClientes } from "../../Filters/LivroCaixaClientes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import LivroCaixaClientesWindow from "./LivroCaixaClientesWindow";
 
 const LivroCaixaClientesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const LivroCaixaClientesGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <LivroCaixaClientesGridMobileComponent data={livrocaixaclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <LivroCaixaClientesGridDesktopComponent data={livrocaixaclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <LivroCaixaClientesGridMobileComponent data={livrocaixaclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <LivroCaixaClientesGridDesktopComponent data={livrocaixaclientes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <LivroCaixaClientesWindow
           isOpen={showInc}

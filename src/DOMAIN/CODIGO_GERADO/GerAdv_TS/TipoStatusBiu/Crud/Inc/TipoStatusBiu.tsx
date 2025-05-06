@@ -5,7 +5,7 @@ import { TipoStatusBiuApi } from '../../Apis/ApiTipoStatusBiu';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoStatusBiuFormProps } from '../../Interfaces/interface.TipoStatusBiu';
 import { TipoStatusBiuService } from '../../Services/TipoStatusBiu.service';
 import { useTipoStatusBiuForm } from '../../Hooks/useTipoStatusBiuForm';

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { EMPClassRiscosEmpty } from "../../../Models/EMPClassRiscos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import EMPClassRiscosInc from "../Inc/EMPClassRiscos";
 import { IEMPClassRiscos } from "../../Interfaces/interface.EMPClassRiscos";
 import { EMPClassRiscosService } from "../../Services/EMPClassRiscos.service";
 import { EMPClassRiscosApi } from "../../Apis/ApiEMPClassRiscos";
@@ -16,11 +14,12 @@ import { EMPClassRiscosGridMobileComponent } from "../GridsMobile/EMPClassRiscos
 import { EMPClassRiscosGridDesktopComponent } from "../GridsDesktop/EMPClassRiscos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterEMPClassRiscos } from "../../Filters/EMPClassRiscos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import EMPClassRiscosWindow from "./EMPClassRiscosWindow";
 
 const EMPClassRiscosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const EMPClassRiscosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <EMPClassRiscosGridMobileComponent data={empclassriscos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <EMPClassRiscosGridDesktopComponent data={empclassriscos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <EMPClassRiscosGridMobileComponent data={empclassriscos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <EMPClassRiscosGridDesktopComponent data={empclassriscos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <EMPClassRiscosWindow
           isOpen={showInc}

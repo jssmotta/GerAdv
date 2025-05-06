@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IProcessos } from '../../Interfaces/interface.Processos';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IProcessos } from '@/app/GerAdv_TS/Processos/Interfaces/interface.Processos';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
@@ -27,6 +31,8 @@ import { AreaApi } from '@/app/GerAdv_TS/Area/Apis/ApiArea';
 import { SituacaoApi } from '@/app/GerAdv_TS/Situacao/Apis/ApiSituacao';
 import { RitoApi } from '@/app/GerAdv_TS/Rito/Apis/ApiRito';
 import { AtividadesApi } from '@/app/GerAdv_TS/Atividades/Apis/ApiAtividades';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ProcessosFormProps {
     processosData: IProcessos;
@@ -249,31 +255,37 @@ if (getParamFromUrl("atividades") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ProcessosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeAdvogados && (<h2>{nomeAdvogados}</h2>)}
-{nomeJustica && (<h2>{nomeJustica}</h2>)}
-{nomePrepostos && (<h2>{nomePrepostos}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeOponentes && (<h2>{nomeOponentes}</h2>)}
-{nomeArea && (<h2>{nomeArea}</h2>)}
-{nomeSituacao && (<h2>{nomeSituacao}</h2>)}
-{nomeRito && (<h2>{nomeRito}</h2>)}
-{nomeAtividades && (<h2>{nomeAtividades}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ProcessosForm-${processosData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={processosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosForm-${processosData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nropasta"
             label="nropasta"
             className="inputIncNome"
             name="nropasta"
             value={processosData.nropasta}
+            placeholder={`Digite nome processos`}
             onChange={onChange}
             required
           />
@@ -288,10 +300,10 @@ value={processosData.advparc}
 onChange={onChange}               
 />
 
-<Checkbox label="AJGPedidoNegado" name="ajgpedidonegado" checked={processosData.ajgpedidonegado} onChange={onChange} />
-<Checkbox label="AJGCliente" name="ajgcliente" checked={processosData.ajgcliente} onChange={onChange} />
-<Checkbox label="AJGPedidoNegadoOPO" name="ajgpedidonegadoopo" checked={processosData.ajgpedidonegadoopo} onChange={onChange} />
-<Checkbox label="NotificarPOE" name="notificarpoe" checked={processosData.notificarpoe} onChange={onChange} />
+<InputCheckbox label="AJGPedidoNegado" name="ajgpedidonegado" checked={processosData.ajgpedidonegado} onChange={onChange} />
+<InputCheckbox label="AJGCliente" name="ajgcliente" checked={processosData.ajgcliente} onChange={onChange} />
+<InputCheckbox label="AJGPedidoNegadoOPO" name="ajgpedidonegadoopo" checked={processosData.ajgpedidonegadoopo} onChange={onChange} />
+<InputCheckbox label="NotificarPOE" name="notificarpoe" checked={processosData.notificarpoe} onChange={onChange} />
         
 <Input
 type="text"
@@ -303,7 +315,7 @@ value={processosData.valorprovisionado}
 onChange={onChange}               
 />
 
-<Checkbox label="AJGOponente" name="ajgoponente" checked={processosData.ajgoponente} onChange={onChange} />
+<InputCheckbox label="AJGOponente" name="ajgoponente" checked={processosData.ajgoponente} onChange={onChange} />
         
 <Input
 type="text"
@@ -315,7 +327,7 @@ value={processosData.valorcachecalculo}
 onChange={onChange}               
 />
 
-<Checkbox label="AJGPedidoOPO" name="ajgpedidoopo" checked={processosData.ajgpedidoopo} onChange={onChange} />
+<InputCheckbox label="AJGPedidoOPO" name="ajgpedidoopo" checked={processosData.ajgpedidoopo} onChange={onChange} />
 </div><div className="grid-container">        
 <Input
 type="text"
@@ -327,10 +339,10 @@ value={processosData.valorcachecalculoprov}
 onChange={onChange}               
 />
 
-<Checkbox label="ConsiderarParado" name="considerarparado" checked={processosData.considerarparado} onChange={onChange} />
-<Checkbox label="ValorCalculado" name="valorcalculado" checked={processosData.valorcalculado} onChange={onChange} />
-<Checkbox label="AJGConcedidoOPO" name="ajgconcedidoopo" checked={processosData.ajgconcedidoopo} onChange={onChange} />
-<Checkbox label="Cobranca" name="cobranca" checked={processosData.cobranca} onChange={onChange} />
+<InputCheckbox label="ConsiderarParado" name="considerarparado" checked={processosData.considerarparado} onChange={onChange} />
+<InputCheckbox label="ValorCalculado" name="valorcalculado" checked={processosData.valorcalculado} onChange={onChange} />
+<InputCheckbox label="AJGConcedidoOPO" name="ajgconcedidoopo" checked={processosData.ajgconcedidoopo} onChange={onChange} />
+<InputCheckbox label="Cobranca" name="cobranca" checked={processosData.cobranca} onChange={onChange} />
         
 <Input
 type="text"
@@ -342,8 +354,8 @@ value={processosData.dataentrada}
 onChange={onChange}               
 />
 
-<Checkbox label="Penhora" name="penhora" checked={processosData.penhora} onChange={onChange} />
-<Checkbox label="AJGPedido" name="ajgpedido" checked={processosData.ajgpedido} onChange={onChange} />
+<InputCheckbox label="Penhora" name="penhora" checked={processosData.penhora} onChange={onChange} />
+<InputCheckbox label="AJGPedido" name="ajgpedido" checked={processosData.ajgpedido} onChange={onChange} />
         
 <Input
 type="text"
@@ -365,7 +377,7 @@ value={processosData.classrisco}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="IsApenso" name="isapenso" checked={processosData.isapenso} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="IsApenso" name="isapenso" checked={processosData.isapenso} onChange={onChange} />
         
 <Input
 type="text"
@@ -377,7 +389,7 @@ value={processosData.valorcausainicial}
 onChange={onChange}               
 />
 
-<Checkbox label="AJGConcedido" name="ajgconcedido" checked={processosData.ajgconcedido} onChange={onChange} />
+<InputCheckbox label="AJGConcedido" name="ajgconcedido" checked={processosData.ajgconcedido} onChange={onChange} />
         
 <Input
 type="text"
@@ -409,7 +421,7 @@ value={processosData.percprobexito}
 onChange={onChange}               
 />
 
-<Checkbox label="MNA" name="mna" checked={processosData.mna} onChange={onChange} />
+<InputCheckbox label="MNA" name="mna" checked={processosData.mna} onChange={onChange} />
         
 <Input
 type="text"
@@ -438,7 +450,7 @@ onChange={onChange}
             label={'Advogados'}
             />
 
-</div><div className="grid-container"><Checkbox label="Extra" name="extra" checked={processosData.extra} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Extra" name="extra" checked={processosData.extra} onChange={onChange} />
  
             <JusticaComboBox
             name={'justica'}
@@ -509,7 +521,7 @@ onChange={onChange}
             label={'Situacao'}
             />
 
-</div><div className="grid-container"><Checkbox label="IDSituacao" name="idsituacao" checked={processosData.idsituacao} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="IDSituacao" name="idsituacao" checked={processosData.idsituacao} onChange={onChange} />
         
 <Input
 type="text"
@@ -555,7 +567,7 @@ value={processosData.caixamorto}
 onChange={onChange}               
 />
 
-<Checkbox label="Baixado" name="baixado" checked={processosData.baixado} onChange={onChange} />
+<InputCheckbox label="Baixado" name="baixado" checked={processosData.baixado} onChange={onChange} />
         
 <Input
 type="text"
@@ -587,7 +599,7 @@ value={processosData.obs}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="Printed" name="printed" checked={processosData.printed} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Printed" name="printed" checked={processosData.printed} onChange={onChange} />
         
 <Input
 type="text"
@@ -629,8 +641,8 @@ value={processosData.resumo}
 onChange={onChange}               
 />
 
-<Checkbox label="NaoImprimir" name="naoimprimir" checked={processosData.naoimprimir} onChange={onChange} />
-<Checkbox label="Eletronico" name="eletronico" checked={processosData.eletronico} onChange={onChange} />
+<InputCheckbox label="NaoImprimir" name="naoimprimir" checked={processosData.naoimprimir} onChange={onChange} />
+<InputCheckbox label="Eletronico" name="eletronico" checked={processosData.eletronico} onChange={onChange} />
         
 <Input
 type="text"
@@ -723,58 +735,10 @@ value={processosData.valorcondenacaoprovisorio}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendafinanceiro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Agenda Financeiro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarepetir${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Agenda Repetir</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/andamentosmd${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Andamentos M D</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/apenso${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Apenso</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/apenso2${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Apenso2</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contacorrente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Conta Corrente</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contatocrm${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Contato C R M</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contratos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Contratos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/documentos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Documentos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/enderecosistema${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Endereco Sistema</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/historico${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Historico</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/honorariosdadoscontrato${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Honorarios Dados Contrato</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/horastrab${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Horas Trab</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/instancia${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Instancia</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/ligacoes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Ligacoes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/livrocaixa${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Livro Caixa</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/nenotas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>N E Notas</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parceriaproc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Parceria Proc</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parteclienteoutras${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Parte Cliente Outras</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/penhora${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Penhora</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/precatoria${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Precatoria</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/procda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro C D A</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processosobsreport${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Processos Obs Report</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processosparados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Processos Parados</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processoutputrequest${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Process Output Request</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prodepositos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Depositos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prodespesas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Despesas</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/proobservacoes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Observacoes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/propartes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Partes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/proprocuradores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Procuradores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/proresumos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Resumos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prosucumbencia${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Sucumbencia</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/provalores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Pro Valores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/recados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Recados</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/terceiros${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Terceiros</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/ultimosprocessos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Ultimos Processos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarelatorio${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processos=${processosData.id}`)}>Agenda Relatorio</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

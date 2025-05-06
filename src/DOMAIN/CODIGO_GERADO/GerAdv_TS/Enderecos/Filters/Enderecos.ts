@@ -17,6 +17,7 @@
  email?: string;
     quem?: number;
  quemindicou?: string;
+ guid?: string;
 }
 
 export class FilterEnderecosDefaults implements FilterEnderecos {
@@ -37,5 +38,6 @@ export class FilterEnderecosDefaults implements FilterEnderecos {
     email?: string = '';
     quem?: number = -2147483648;
     quemindicou?: string = '';
+    guid?: string = '';
 }
     

@@ -1,17 +1,22 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IReuniaoPessoas } from '../../Interfaces/interface.ReuniaoPessoas';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IReuniaoPessoas } from '@/app/GerAdv_TS/ReuniaoPessoas/Interfaces/interface.ReuniaoPessoas';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ReuniaoComboBox from '@/app/GerAdv_TS/Reuniao/ComboBox/Reuniao';
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
 import { ReuniaoApi } from '@/app/GerAdv_TS/Reuniao/Apis/ApiReuniao';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import InputName from '@/app/components/Inputs/InputName';
 
 interface ReuniaoPessoasFormProps {
     reuniaopessoasData: IReuniaoPessoas;
@@ -83,16 +88,28 @@ if (getParamFromUrl("operador") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ReuniaoPessoasForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeReuniao && (<h2>{nomeReuniao}</h2>)}
-{nomeOperador && (<h2>{nomeOperador}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ReuniaoPessoasForm-${reuniaopessoasData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={reuniaopessoasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ReuniaoPessoasForm-${reuniaopessoasData.id}`} />
+
+                <div className="grid-container">
 
             <ReuniaoComboBox
             name={'reuniao'}
@@ -108,19 +125,10 @@ if (getParamFromUrl("operador") > 0) {
             label={'Operador'}
             />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -42,6 +42,7 @@ public class Instancia : IInstanciaWriter
         dbRec.FAccessCode = instancia.AccessCode;
         dbRec.FJulgador = instancia.Julgador;
         dbRec.FZKeyIA = instancia.ZKeyIA;
+        dbRec.FGUID = instancia.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

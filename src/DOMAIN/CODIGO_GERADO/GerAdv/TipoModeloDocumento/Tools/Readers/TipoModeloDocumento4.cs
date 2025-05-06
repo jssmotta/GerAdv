@@ -8,6 +8,7 @@ public partial interface ITipoModeloDocumentoReader
     TipoModeloDocumentoResponse? Read(int id, SqlConnection oCnn);
     TipoModeloDocumentoResponse? Read(string where, SqlConnection oCnn);
     TipoModeloDocumentoResponse? Read(Entity.DBTipoModeloDocumento dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoModeloDocumentoResponse? Read(DBTipoModeloDocumento dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class TipoModeloDocumento : ITipoModeloDocumentoReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class TipoModeloDocumento : ITipoModeloDocumentoReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

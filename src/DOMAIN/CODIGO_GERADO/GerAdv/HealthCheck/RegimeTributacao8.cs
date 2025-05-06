@@ -72,7 +72,7 @@ public class RegimeTributacaoHealthCheck(IOptions<AppSettings> appSettings, Regi
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) rdtNome FROM dbo.RegimeTributacao (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) rdtNome,rdtGUID FROM dbo.RegimeTributacao (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

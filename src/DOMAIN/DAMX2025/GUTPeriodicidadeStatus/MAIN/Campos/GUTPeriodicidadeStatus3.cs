@@ -9,7 +9,6 @@ public partial class DBGUTPeriodicidadeStatus
     private protected int m_FGUTAtividade;
     [XmlIgnore]
     private protected DateTime? m_FDataRealizado;
-    public int NFGUTAtividade() => m_FGUTAtividade;
     [XmlAttribute]
     public int FGUTAtividade
     {
@@ -22,7 +21,6 @@ public partial class DBGUTPeriodicidadeStatus
         }
     }
 
-    public string NFDataRealizado() => $"{m_FDataRealizado:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataRealizado:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataRealizado => Convert.ToDateTime(m_FDataRealizado);
 

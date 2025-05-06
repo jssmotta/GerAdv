@@ -5,7 +5,7 @@ import { TipoEnderecoSistemaApi } from '../../Apis/ApiTipoEnderecoSistema';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITipoEnderecoSistemaFormProps } from '../../Interfaces/interface.TipoEnderecoSistema';
 import { TipoEnderecoSistemaService } from '../../Services/TipoEnderecoSistema.service';
 import { useTipoEnderecoSistemaForm } from '../../Hooks/useTipoEnderecoSistemaForm';

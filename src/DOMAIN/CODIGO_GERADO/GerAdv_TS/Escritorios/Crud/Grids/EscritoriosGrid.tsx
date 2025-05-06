@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { EscritoriosEmpty } from "../../../Models/Escritorios";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import EscritoriosInc from "../Inc/Escritorios";
 import { IEscritorios } from "../../Interfaces/interface.Escritorios";
 import { EscritoriosService } from "../../Services/Escritorios.service";
 import { EscritoriosApi } from "../../Apis/ApiEscritorios";
@@ -16,11 +14,12 @@ import { EscritoriosGridMobileComponent } from "../GridsMobile/Escritorios";
 import { EscritoriosGridDesktopComponent } from "../GridsDesktop/Escritorios";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterEscritorios } from "../../Filters/Escritorios";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import EscritoriosWindow from "./EscritoriosWindow";
 
 const EscritoriosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const EscritoriosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <EscritoriosGridMobileComponent data={escritorios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <EscritoriosGridDesktopComponent data={escritorios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <EscritoriosGridMobileComponent data={escritorios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <EscritoriosGridDesktopComponent data={escritorios} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <EscritoriosWindow
           isOpen={showInc}

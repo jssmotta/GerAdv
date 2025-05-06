@@ -72,7 +72,7 @@ public class ProcessOutputEngineHealthCheck(IOptions<AppSettings> appSettings, P
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) poeNome,poeDatabase,poeTabela,poeCampo,poeValor,poeOutput,poeAdministrador,poeOutputSource,poeDisabledItem,poeIDModulo,poeIsOnlyProcesso,poeMyID FROM dbo.ProcessOutputEngine (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) poeNome,poeDatabase,poeTabela,poeCampo,poeValor,poeOutput,poeAdministrador,poeOutputSource,poeDisabledItem,poeIDModulo,poeIsOnlyProcesso,poeMyID,poeGUID FROM dbo.ProcessOutputEngine (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

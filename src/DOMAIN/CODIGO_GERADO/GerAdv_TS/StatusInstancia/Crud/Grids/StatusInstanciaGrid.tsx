@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { StatusInstanciaEmpty } from "../../../Models/StatusInstancia";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import StatusInstanciaInc from "../Inc/StatusInstancia";
 import { IStatusInstancia } from "../../Interfaces/interface.StatusInstancia";
 import { StatusInstanciaService } from "../../Services/StatusInstancia.service";
 import { StatusInstanciaApi } from "../../Apis/ApiStatusInstancia";
@@ -16,11 +14,12 @@ import { StatusInstanciaGridMobileComponent } from "../GridsMobile/StatusInstanc
 import { StatusInstanciaGridDesktopComponent } from "../GridsDesktop/StatusInstancia";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterStatusInstancia } from "../../Filters/StatusInstancia";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import StatusInstanciaWindow from "./StatusInstanciaWindow";
 
 const StatusInstanciaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const StatusInstanciaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <StatusInstanciaGridMobileComponent data={statusinstancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <StatusInstanciaGridDesktopComponent data={statusinstancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <StatusInstanciaGridMobileComponent data={statusinstancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <StatusInstanciaGridDesktopComponent data={statusinstancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <StatusInstanciaWindow
           isOpen={showInc}

@@ -74,30 +74,6 @@ public static class ProObservacoesEndpoints
 
             return Results.Ok(result);
         }).WithName("ProObservacoes_AddAndUpdate").WithDisplayName("Add or Update ProObservacoes");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProObservacoesValidation validation, IProObservacoesWriter writer, IProcessosReader processosReader, IProObservacoesService service) =>
-        {
-            logger.LogInfo("ProObservacoes", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProObservacoes", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProObservacoes_GetColumns").WithDisplayName("Get ProObservacoes Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProObservacoesValidation validation, IProObservacoesWriter writer, IProcessosReader processosReader, IProObservacoesService service) =>
-        {
-            logger.LogInfo("ProObservacoes", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProObservacoes", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProObservacoes_UpdateColumns").WithDisplayName("Update ProObservacoes Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProObservacoesValidation validation, IProObservacoesWriter writer, IProcessosReader processosReader, IProObservacoesService service) =>
         {
             logger.LogInfo("ProObservacoes", "Delete", $"id = {id}", uri);

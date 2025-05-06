@@ -16,6 +16,7 @@ public class StatusAndamento : IStatusAndamentoWriter
         dbRec.FNome = statusandamento.Nome;
         dbRec.FIcone = statusandamento.Icone;
         dbRec.FBold = statusandamento.Bold;
+        dbRec.FGUID = statusandamento.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

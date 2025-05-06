@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IContratos } from '../../Interfaces/interface.Contratos';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IContratos } from '@/app/GerAdv_TS/Contratos/Interfaces/interface.Contratos';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
@@ -14,6 +18,8 @@ import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
 import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ContratosFormProps {
     contratosData: IContratos;
@@ -106,17 +112,28 @@ if (getParamFromUrl("advogados") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ContratosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeAdvogados && (<h2>{nomeAdvogados}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ContratosForm-${contratosData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} />
+
+                <div className="grid-container">
 
             <ProcessosComboBox
             name={'processo'}
@@ -179,7 +196,7 @@ value={contratosData.datatermino}
 onChange={onChange}               
 />
 
-<Checkbox label="OcultarRelatorio" name="ocultarrelatorio" checked={contratosData.ocultarrelatorio} onChange={onChange} />
+<InputCheckbox label="OcultarRelatorio" name="ocultarrelatorio" checked={contratosData.ocultarrelatorio} onChange={onChange} />
         
 <Input
 type="text"
@@ -353,8 +370,8 @@ value={contratosData.chavecontrato}
 onChange={onChange}               
 />
 
-<Checkbox label="Avulso" name="avulso" checked={contratosData.avulso} onChange={onChange} />
-<Checkbox label="Suspenso" name="suspenso" checked={contratosData.suspenso} onChange={onChange} />
+<InputCheckbox label="Avulso" name="avulso" checked={contratosData.avulso} onChange={onChange} />
+<InputCheckbox label="Suspenso" name="suspenso" checked={contratosData.suspenso} onChange={onChange} />
         
 <Input
 type="text"
@@ -366,19 +383,10 @@ value={contratosData.multa}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

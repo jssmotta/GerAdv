@@ -14,6 +14,7 @@
  email?: string;
  class?: string;
  varaforocomarca?: string;
+ guid?: string;
 }
 
 export class FilterTerceirosDefaults implements FilterTerceiros {
@@ -31,5 +32,6 @@ export class FilterTerceirosDefaults implements FilterTerceiros {
     email?: string = '';
     class?: string = '';
     varaforocomarca?: string = '';
+    guid?: string = '';
 }
     

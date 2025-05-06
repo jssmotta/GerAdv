@@ -22,6 +22,7 @@ public class Tribunal : ITribunalWriter
         dbRec.FWeb = tribunal.Web;
         dbRec.FEtiqueta = tribunal.Etiqueta;
         dbRec.FBold = tribunal.Bold;
+        dbRec.FGUID = tribunal.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

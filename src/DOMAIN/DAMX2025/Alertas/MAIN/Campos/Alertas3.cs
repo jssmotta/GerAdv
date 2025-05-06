@@ -11,7 +11,6 @@ public partial class DBAlertas
     private protected string? m_FNome;
     [XmlIgnore]
     private protected DateTime? m_FData, m_FDataAte;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -24,7 +23,6 @@ public partial class DBAlertas
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -42,7 +40,6 @@ public partial class DBAlertas
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -55,7 +52,6 @@ public partial class DBAlertas
         }
     }
 
-    public string NFDataAte() => $"{m_FDataAte:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataAte:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataAte => Convert.ToDateTime(m_FDataAte);
 

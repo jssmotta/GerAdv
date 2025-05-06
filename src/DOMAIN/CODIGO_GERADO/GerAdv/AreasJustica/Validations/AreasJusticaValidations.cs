@@ -15,7 +15,7 @@ public class AreasJusticaValidation : IAreasJusticaValidation
         if (reg == null)
             return "Objeto está nulo";
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -25,7 +25,7 @@ public class AreasJusticaValidation : IAreasJusticaValidation
         }
 
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ObjetosInc from "../Inc/Objetos";
 import { IObjetos } from "../../Interfaces/interface.Objetos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ObjetosWindow: React.FC<ObjetosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/objetos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedObjetos?.id}`);
+            router.push(`/pages/objetos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedObjetos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedObjetos]);
@@ -42,7 +43,7 @@ const ObjetosWindow: React.FC<ObjetosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedObjetos?.id ?? 0).toString()}

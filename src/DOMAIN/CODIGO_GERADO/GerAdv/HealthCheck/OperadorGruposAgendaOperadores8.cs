@@ -72,7 +72,7 @@ public class OperadorGruposAgendaOperadoresHealthCheck(IOptions<AppSettings> app
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ogpOperadorGruposAgenda,ogpOperador FROM dbo.OperadorGruposAgendaOperadores (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ogpOperadorGruposAgenda,ogpOperador,ogpGUID FROM dbo.OperadorGruposAgendaOperadores (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

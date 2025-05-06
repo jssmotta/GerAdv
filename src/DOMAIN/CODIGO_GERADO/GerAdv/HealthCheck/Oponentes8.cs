@@ -72,7 +72,7 @@ public class OponentesHealthCheck(IOptions<AppSettings> appSettings, OponentesSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) opoEMPFuncao,opoCTPSNumero,opoSite,opoCTPSSerie,opoNome,opoAdv,opoEMPCliente,opoIDRep,opoPIS,opoContato,opoCNPJ,opoRG,opoJuridica,opoTipo,opoSexo,opoCPF,opoEndereco,opoFone,opoFax,opoCidade,opoBairro,opoCEP,opoInscEst,opoObservacao,opoEMail,opoClass,opoTop,opoEtiqueta,opoBold FROM dbo.Oponentes (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) opoEMPFuncao,opoCTPSNumero,opoSite,opoCTPSSerie,opoNome,opoAdv,opoEMPCliente,opoIDRep,opoPIS,opoContato,opoCNPJ,opoRG,opoJuridica,opoTipo,opoSexo,opoCPF,opoEndereco,opoFone,opoFax,opoCidade,opoBairro,opoCEP,opoInscEst,opoObservacao,opoEMail,opoClass,opoTop,opoEtiqueta,opoBold,opoGUID FROM dbo.Oponentes (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

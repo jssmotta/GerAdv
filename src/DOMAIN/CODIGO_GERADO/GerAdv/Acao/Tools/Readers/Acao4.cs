@@ -8,6 +8,7 @@ public partial interface IAcaoReader
     AcaoResponse? Read(int id, SqlConnection oCnn);
     AcaoResponse? Read(string where, SqlConnection oCnn);
     AcaoResponse? Read(Entity.DBAcao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AcaoResponse? Read(DBAcao dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class Acao : IAcaoReader
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class Acao : IAcaoReader
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

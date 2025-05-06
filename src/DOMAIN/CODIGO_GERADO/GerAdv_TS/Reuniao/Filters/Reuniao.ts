@@ -11,6 +11,7 @@
  horasaida?: string;
  horaretorno?: string;
  principaisdecisoes?: string;
+ guid?: string;
 }
 
 export class FilterReuniaoDefaults implements FilterReuniao {
@@ -25,5 +26,6 @@ export class FilterReuniaoDefaults implements FilterReuniao {
     horasaida?: string = '';
     horaretorno?: string = '';
     principaisdecisoes?: string = '';
+    guid?: string = '';
 }
     

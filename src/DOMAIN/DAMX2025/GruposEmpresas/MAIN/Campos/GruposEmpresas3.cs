@@ -11,7 +11,6 @@ public partial class DBGruposEmpresas
     private protected string? m_FEMail, m_FDescricao, m_FObservacoes, m_FIcone;
     [XmlIgnore]
     private protected bool m_FInativo, m_FDespesaUnificada;
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -24,7 +23,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public bool NFInativo() => m_FInativo;
     [XmlAttribute]
     public bool FInativo
     {
@@ -37,7 +35,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public int NFOponente() => m_FOponente;
     [XmlAttribute]
     public int FOponente
     {
@@ -50,7 +47,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -63,7 +59,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public string NFObservacoes() => m_FObservacoes ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacoes
     {
@@ -76,7 +71,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -89,7 +83,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public string NFIcone() => m_FIcone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FIcone
     {
@@ -102,7 +95,6 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public bool NFDespesaUnificada() => m_FDespesaUnificada;
     [XmlAttribute]
     public bool FDespesaUnificada
     {

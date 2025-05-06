@@ -14,4 +14,5 @@
 	observacoes = `Observacoes`,
 	nomevendedor = `NomeVendedor`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

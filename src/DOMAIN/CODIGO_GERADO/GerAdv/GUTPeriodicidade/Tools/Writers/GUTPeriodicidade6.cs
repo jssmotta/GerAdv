@@ -15,6 +15,7 @@ public class GUTPeriodicidade : IGUTPeriodicidadeWriter
         var dbRec = gutperiodicidade.Id.IsEmptyIDNumber() ? new Entity.DBGUTPeriodicidade() : new Entity.DBGUTPeriodicidade(gutperiodicidade.Id, oCnn);
         dbRec.FNome = gutperiodicidade.Nome;
         dbRec.FIntervaloDias = gutperiodicidade.IntervaloDias;
+        dbRec.FGUID = gutperiodicidade.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

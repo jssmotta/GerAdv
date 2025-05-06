@@ -16,6 +16,7 @@ public class TipoRecurso : ITipoRecursoWriter
         dbRec.FJustica = tiporecurso.Justica;
         dbRec.FArea = tiporecurso.Area;
         dbRec.FDescricao = tiporecurso.Descricao;
+        dbRec.FGUID = tiporecurso.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

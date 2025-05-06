@@ -74,30 +74,6 @@ public static class CargosEscClassEndpoints
 
             return Results.Ok(result);
         }).WithName("CargosEscClass_AddAndUpdate").WithDisplayName("Add or Update CargosEscClass");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ICargosEscClassValidation validation, ICargosEscClassWriter writer, ICargosEscClassService service) =>
-        {
-            logger.LogInfo("CargosEscClass", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("CargosEscClass", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("CargosEscClass_GetColumns").WithDisplayName("Get CargosEscClass Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ICargosEscClassValidation validation, ICargosEscClassWriter writer, ICargosEscClassService service) =>
-        {
-            logger.LogInfo("CargosEscClass", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("CargosEscClass", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("CargosEscClass_UpdateColumns").WithDisplayName("Update CargosEscClass Columns");
         group.MapDelete("/Delete", async (int id, string uri, ICargosEscClassValidation validation, ICargosEscClassWriter writer, ICargosEscClassService service) =>
         {
             logger.LogInfo("CargosEscClass", "Delete", $"id = {id}", uri);

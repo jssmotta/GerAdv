@@ -71,4 +71,7 @@ public partial class FilterOperador
 
     [JsonPropertyName("suporteipultimoacesso")]
     public string SuporteIpUltimoAcesso { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

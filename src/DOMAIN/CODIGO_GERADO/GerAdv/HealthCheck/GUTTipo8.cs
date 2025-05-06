@@ -72,7 +72,7 @@ public class GUTTipoHealthCheck(IOptions<AppSettings> appSettings, GUTTipoServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) gttNome,gttOrdem FROM dbo.GUTTipo (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) gttNome,gttOrdem,gttGUID FROM dbo.GUTTipo (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

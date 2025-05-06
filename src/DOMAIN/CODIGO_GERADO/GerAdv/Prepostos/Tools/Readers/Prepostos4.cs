@@ -8,6 +8,7 @@ public partial interface IPrepostosReader
     PrepostosResponse? Read(int id, SqlConnection oCnn);
     PrepostosResponse? Read(string where, SqlConnection oCnn);
     PrepostosResponse? Read(Entity.DBPrepostos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PrepostosResponse? Read(DBPrepostos dbRec);
 }
 
@@ -63,7 +64,7 @@ public partial class Prepostos : IPrepostosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             prepostos.DtNasc = dbRec.FDtNasc;
@@ -126,7 +127,7 @@ public partial class Prepostos : IPrepostosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             prepostos.DtNasc = dbRec.FDtNasc;

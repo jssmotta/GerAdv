@@ -17,6 +17,7 @@
  testemunhas?: string;
     tipomodelodocumento?: number;
  css?: string;
+ guid?: string;
 }
 
 export class FilterModelosDocumentosDefaults implements FilterModelosDocumentos {
@@ -37,5 +38,6 @@ export class FilterModelosDocumentosDefaults implements FilterModelosDocumentos 
     testemunhas?: string = '';
     tipomodelodocumento?: number = -2147483648;
     css?: string = '';
+    guid?: string = '';
 }
     

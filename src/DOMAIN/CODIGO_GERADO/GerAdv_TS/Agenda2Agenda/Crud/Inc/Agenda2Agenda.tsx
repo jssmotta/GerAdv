@@ -5,7 +5,7 @@ import { Agenda2AgendaApi } from '../../Apis/ApiAgenda2Agenda';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAgenda2AgendaFormProps } from '../../Interfaces/interface.Agenda2Agenda';
 import { Agenda2AgendaService } from '../../Services/Agenda2Agenda.service';
 import { useAgenda2AgendaForm } from '../../Hooks/useAgenda2AgendaForm';

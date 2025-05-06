@@ -5,6 +5,7 @@
  iduf?: string;
     pais?: number;
  descricao?: string;
+ guid?: string;
 }
 
 export class FilterUFDefaults implements FilterUF {
@@ -13,5 +14,6 @@ export class FilterUFDefaults implements FilterUF {
     iduf?: string = '';
     pais?: number = -2147483648;
     descricao?: string = '';
+    guid?: string = '';
 }
     

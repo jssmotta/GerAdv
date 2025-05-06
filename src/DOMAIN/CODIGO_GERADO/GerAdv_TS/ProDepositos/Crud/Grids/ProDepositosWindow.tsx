@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProDepositosInc from "../Inc/ProDepositos";
 import { IProDepositos } from "../../Interfaces/interface.ProDepositos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProDepositosWindow: React.FC<ProDepositosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/prodepositos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProDepositos?.id}`);
+            router.push(`/pages/prodepositos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProDepositos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProDepositos]);
@@ -42,7 +43,7 @@ const ProDepositosWindow: React.FC<ProDepositosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={633}
                     newWidth={720}
                     id={(selectedProDepositos?.id ?? 0).toString()}

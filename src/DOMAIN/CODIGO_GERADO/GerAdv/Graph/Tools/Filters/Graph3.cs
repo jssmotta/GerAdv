@@ -14,4 +14,7 @@ public partial class FilterGraph
 
     [JsonPropertyName("tabelaid")]
     public int TabelaId { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

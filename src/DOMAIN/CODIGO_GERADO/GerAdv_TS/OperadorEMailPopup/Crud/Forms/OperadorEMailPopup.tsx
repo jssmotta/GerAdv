@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IOperadorEMailPopup } from '../../Interfaces/interface.OperadorEMailPopup';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IOperadorEMailPopup } from '@/app/GerAdv_TS/OperadorEMailPopup/Interfaces/interface.OperadorEMailPopup';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface OperadorEMailPopupFormProps {
     operadoremailpopupData: IOperadorEMailPopup;
@@ -60,23 +66,37 @@ if (getParamFromUrl("operador") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('OperadorEMailPopupForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOperador && (<h2>{nomeOperador}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={operadoremailpopupData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={operadoremailpopupData.nome}
+            placeholder={`Digite nome operador e mail popup`}
             onChange={onChange}
             required
           />
@@ -119,7 +139,7 @@ value={operadoremailpopupData.pop3}
 onChange={onChange}               
 />
 
-<Checkbox label="Autenticacao" name="autenticacao" checked={operadoremailpopupData.autenticacao} onChange={onChange} />
+<InputCheckbox label="Autenticacao" name="autenticacao" checked={operadoremailpopupData.autenticacao} onChange={onChange} />
         
 <Input
 type="text"
@@ -183,19 +203,10 @@ value={operadoremailpopupData.senha256}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

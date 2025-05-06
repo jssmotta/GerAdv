@@ -14,6 +14,7 @@ public class Setor : ISetorWriter
     {
         var dbRec = setor.Id.IsEmptyIDNumber() ? new Entity.DBSetor() : new Entity.DBSetor(setor.Id, oCnn);
         dbRec.FDescricao = setor.Descricao;
+        dbRec.FGUID = setor.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

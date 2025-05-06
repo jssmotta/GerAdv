@@ -91,6 +91,11 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
             }
         }
 
+        if (id.IsEmptyIDNumber())
+        {
+            return new LigacoesResponse();
+        }
+
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
@@ -98,7 +103,10 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-Ligacoes-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            using var scope = Configuracoes.CreateConnectionScope(uri);
+            var oCnn = scope.Connection;
+            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Ligacoes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
@@ -188,67 +196,6 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
             }
 
             return ligacoes;
-        });
-    }
-
-    public async Task<GetColumnsResponse?> GetColumns([FromBody] GetColumns parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("Ligacoes: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            using var dbRec = new DBLigacoes(parameters?.Id ?? throw new Exception("Id == null"), oCnn);
-            var campos = new List<ColumnValueItem>();
-            foreach (var column in parameters?.Columns!)
-                if (column != null && column.Length > 0)
-                {
-                    var value = dbRec.GetValueByNameField($"{DBLigacoesDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}");
-                    if (value != null)
-                        campos.Add(new ColumnValueItem(column, value));
-                }
-
-            var result = new GetColumnsResponse
-            {
-                Id = parameters.Id,
-                Columns = campos
-            };
-            return result;
-        });
-    }
-
-    public async Task<bool> UpdateColumns([FromBody] UpdateColumnsRequest parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("Ligacoes: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return false;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return false;
-            }
-
-            using var dbRec = new DBLigacoes(parameters?.Id ?? throw new Exception("Id is null"), oCnn);
-            foreach (var(column, value)in parameters?.Columns!)
-                dbRec.SetValueByNameField($"{DBLigacoesDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}", value);
-            dbRec.AuditorQuem = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-            return dbRec.Update(oCnn) == 0;
         });
     }
 
@@ -363,6 +310,7 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
         cWhere += filtro.LigarPara.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.LigarParaSql(filtro.LigarPara);
         cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.ProcessoSql(filtro.Processo);
         cWhere += filtro.Emotion == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.EmotionSql(filtro.Emotion);
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.GUIDSql(filtro.GUID);
         return cWhere;
     }
 }

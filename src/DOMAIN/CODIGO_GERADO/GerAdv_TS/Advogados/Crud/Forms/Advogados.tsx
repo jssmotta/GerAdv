@@ -1,18 +1,24 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAdvogados } from '../../Interfaces/interface.Advogados';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAdvogados } from '@/app/GerAdv_TS/Advogados/Interfaces/interface.Advogados';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import CargosComboBox from '@/app/GerAdv_TS/Cargos/ComboBox/Cargos';
 import EscritoriosComboBox from '@/app/GerAdv_TS/Escritorios/ComboBox/Escritorios';
 import { CargosApi } from '@/app/GerAdv_TS/Cargos/Apis/ApiCargos';
 import { EscritoriosApi } from '@/app/GerAdv_TS/Escritorios/Apis/ApiEscritorios';
+import InputName from '@/app/components/Inputs/InputName';
 import InputCpf from '@/app/components/Inputs/InputCpf'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCep from '@/app/components/Inputs/InputCep'
 
 interface AdvogadosFormProps {
@@ -85,24 +91,37 @@ if (getParamFromUrl("escritorios") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AdvogadosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeCargos && (<h2>{nomeCargos}</h2>)}
-{nomeEscritorios && (<h2>{nomeEscritorios}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AdvogadosForm-${advogadosData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={advogadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`AdvogadosForm-${advogadosData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={advogadosData.nome}
+            placeholder={`Digite nome advogados`}
             onChange={onChange}
             required
           />
@@ -144,7 +163,7 @@ value={advogadosData.rg}
 onChange={onChange}               
 />
 
-<Checkbox label="Casa" name="casa" checked={advogadosData.casa} onChange={onChange} />
+<InputCheckbox label="Casa" name="casa" checked={advogadosData.casa} onChange={onChange} />
         
 <Input
 type="text"
@@ -163,7 +182,7 @@ onChange={onChange}
             label={'Escritorios'}
             />
 
-<Checkbox label="Estagiario" name="estagiario" checked={advogadosData.estagiario} onChange={onChange} />
+<InputCheckbox label="Estagiario" name="estagiario" checked={advogadosData.estagiario} onChange={onChange} />
         
 <Input
 type="text"
@@ -216,7 +235,7 @@ value={advogadosData.cep}
 onChange={onChange}               
 />
 
-<Checkbox label="Sexo" name="sexo" checked={advogadosData.sexo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={advogadosData.sexo} onChange={onChange} />
         
 <Input
 type="text"
@@ -390,7 +409,7 @@ value={advogadosData.contabancaria}
 onChange={onChange}               
 />
 
-<Checkbox label="ParcTop" name="parctop" checked={advogadosData.parctop} onChange={onChange} />
+<InputCheckbox label="ParcTop" name="parctop" checked={advogadosData.parctop} onChange={onChange} />
         
 <Input
 type="text"
@@ -402,32 +421,13 @@ value={advogadosData.class}
 onChange={onChange}               
 />
 
-<Checkbox label="Top" name="top" checked={advogadosData.top} onChange={onChange} />
-<Checkbox label="Ani" name="ani" checked={advogadosData.ani} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendafinanceiro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Agenda Financeiro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendaquem${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Agenda Quem</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarepetir${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Agenda Repetir</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contratos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Contratos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/horastrab${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Horas Trab</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parceriaproc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Parceria Proc</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Processos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/proprocuradores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Pro Procuradores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendasemana${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?advogados=${advogadosData.id}`)}>Agenda Semana</div>
+<InputCheckbox label="Top" name="top" checked={advogadosData.top} onChange={onChange} />
+<InputCheckbox label="Ani" name="ani" checked={advogadosData.ani} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -29,4 +29,5 @@ public partial interface IDBInstancia
     public string? FAccessCode { get; set; }
     public int FJulgador { get; set; }
     public string? FZKeyIA { get; set; }
+    public string? FGUID { get; set; }
 }

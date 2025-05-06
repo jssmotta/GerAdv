@@ -5,6 +5,7 @@
  nome?: string;
  observacoes?: string;
  data?: string;
+ guid?: string;
 }
 
 export class FilterProObservacoesDefaults implements FilterProObservacoes {
@@ -13,5 +14,6 @@ export class FilterProObservacoesDefaults implements FilterProObservacoes {
     nome?: string = '';
     observacoes?: string = '';
     data?: string = '';
+    guid?: string = '';
 }
     

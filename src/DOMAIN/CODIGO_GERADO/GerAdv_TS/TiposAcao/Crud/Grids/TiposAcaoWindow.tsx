@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TiposAcaoInc from "../Inc/TiposAcao";
 import { ITiposAcao } from "../../Interfaces/interface.TiposAcao";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TiposAcaoWindow: React.FC<TiposAcaoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tiposacao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTiposAcao?.id}`);
+            router.push(`/pages/tiposacao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTiposAcao?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTiposAcao]);
@@ -42,7 +43,7 @@ const TiposAcaoWindow: React.FC<TiposAcaoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTiposAcao?.id ?? 0).toString()}

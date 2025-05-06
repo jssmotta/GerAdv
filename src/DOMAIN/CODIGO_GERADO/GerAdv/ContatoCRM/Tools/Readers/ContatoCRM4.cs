@@ -8,6 +8,7 @@ public partial interface IContatoCRMReader
     ContatoCRMResponse? Read(int id, SqlConnection oCnn);
     ContatoCRMResponse? Read(string where, SqlConnection oCnn);
     ContatoCRMResponse? Read(Entity.DBContatoCRM dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ContatoCRMResponse? Read(DBContatoCRM dbRec);
 }
 
@@ -58,7 +59,7 @@ public partial class ContatoCRM : IContatoCRMReader
             Emocao = dbRec.FEmocao,
             Continuar = dbRec.FContinuar,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataNotificou, out _))
             contatocrm.DataNotificou = dbRec.FDataNotificou;
@@ -118,7 +119,7 @@ public partial class ContatoCRM : IContatoCRMReader
             Emocao = dbRec.FEmocao,
             Continuar = dbRec.FContinuar,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataNotificou, out _))
             contatocrm.DataNotificou = dbRec.FDataNotificou;

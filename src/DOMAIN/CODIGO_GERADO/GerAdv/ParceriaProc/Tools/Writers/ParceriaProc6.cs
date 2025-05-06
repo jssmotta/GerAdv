@@ -15,6 +15,7 @@ public class ParceriaProc : IParceriaProcWriter
         var dbRec = parceriaproc.Id.IsEmptyIDNumber() ? new Entity.DBParceriaProc() : new Entity.DBParceriaProc(parceriaproc.Id, oCnn);
         dbRec.FAdvogado = parceriaproc.Advogado;
         dbRec.FProcesso = parceriaproc.Processo;
+        dbRec.FGUID = parceriaproc.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

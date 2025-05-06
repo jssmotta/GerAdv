@@ -1,12 +1,18 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IPenhoraStatus } from '../../Interfaces/interface.PenhoraStatus';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IPenhoraStatus } from '@/app/GerAdv_TS/PenhoraStatus/Interfaces/interface.PenhoraStatus';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputName from '@/app/components/Inputs/InputName';
 
 interface PenhoraStatusFormProps {
     penhorastatusData: IPenhoraStatus;
@@ -36,41 +42,45 @@ interface PenhoraStatusFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('PenhoraStatusForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`PenhoraStatusForm-${penhorastatusData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={penhorastatusData} isSubmitting={isSubmitting} onClose={onClose} formId={`PenhoraStatusForm-${penhorastatusData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={penhorastatusData.nome}
+            placeholder={`Digite nome penhora status`}
             onChange={onChange}
             required
           />
 
-          							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/penhora${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?penhorastatus=${penhorastatusData.id}`)}>Penhora</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

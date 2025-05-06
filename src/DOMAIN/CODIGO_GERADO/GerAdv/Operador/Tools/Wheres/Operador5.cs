@@ -43,6 +43,7 @@ public partial class Operador : IOperadorWhere
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out _))
             operador.UltimoLogoff = dbRec.FUltimoLogoff;

@@ -1,4 +1,5 @@
 ﻿export enum FieldsContatoCRMView
-{	data = `Data`,
+{	guid = `GUID`,
+	data = `Data`,
 	ip = `IP`,
 }

@@ -2,4 +2,5 @@
 {	nome = `Nome`,
 	inativo = `Inativo`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

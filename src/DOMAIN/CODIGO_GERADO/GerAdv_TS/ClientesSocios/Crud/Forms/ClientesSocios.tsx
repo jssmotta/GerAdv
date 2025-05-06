@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IClientesSocios } from '../../Interfaces/interface.ClientesSocios';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IClientesSocios } from '@/app/GerAdv_TS/ClientesSocios/Interfaces/interface.ClientesSocios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCep from '@/app/components/Inputs/InputCep'
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCnpj from '@/app/components/Inputs/InputCnpj'
@@ -63,28 +69,42 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ClientesSociosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ClientesSociosForm-${clientessociosData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={clientessociosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ClientesSociosForm-${clientessociosData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={clientessociosData.nome}
+            placeholder={`Digite nome clientes socios`}
             onChange={onChange}
             required
           />
 
-          <Checkbox label="SomenteRepresentante" name="somenterepresentante" checked={clientessociosData.somenterepresentante} onChange={onChange} />
+                <InputCheckbox label="SomenteRepresentante" name="somenterepresentante" checked={clientessociosData.somenterepresentante} onChange={onChange} />
         
 <Input
 type="text"
@@ -96,7 +116,7 @@ value={clientessociosData.idade}
 onChange={onChange}               
 />
 
-<Checkbox label="IsRepresentanteLegal" name="isrepresentantelegal" checked={clientessociosData.isrepresentantelegal} onChange={onChange} />
+<InputCheckbox label="IsRepresentanteLegal" name="isrepresentantelegal" checked={clientessociosData.isrepresentantelegal} onChange={onChange} />
         
 <Input
 type="text"
@@ -108,7 +128,7 @@ value={clientessociosData.qualificacao}
 onChange={onChange}               
 />
 
-<Checkbox label="Sexo" name="sexo" checked={clientessociosData.sexo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={clientessociosData.sexo} onChange={onChange} />
         
 <Input
 type="text"
@@ -360,8 +380,8 @@ value={clientessociosData.rgdataexp}
 onChange={onChange}               
 />
 
-<Checkbox label="SocioEmpresaAdminSomente" name="socioempresaadminsomente" checked={clientessociosData.socioempresaadminsomente} onChange={onChange} />
-<Checkbox label="Tipo" name="tipo" checked={clientessociosData.tipo} onChange={onChange} />
+<InputCheckbox label="SocioEmpresaAdminSomente" name="socioempresaadminsomente" checked={clientessociosData.socioempresaadminsomente} onChange={onChange} />
+<InputCheckbox label="Tipo" name="tipo" checked={clientessociosData.tipo} onChange={onChange} />
         
 <Input
 type="text"
@@ -383,22 +403,12 @@ value={clientessociosData.class}
 onChange={onChange}               
 />
 
-<Checkbox label="Ani" name="ani" checked={clientessociosData.ani} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarecords${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientessocios=${clientessociosData.id}`)}>Agenda Records</div>
+<InputCheckbox label="Ani" name="ani" checked={clientessociosData.ani} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

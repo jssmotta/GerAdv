@@ -24,6 +24,7 @@ export interface IFornecedores {
 	contatos : string;
 	etiqueta : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

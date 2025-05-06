@@ -8,6 +8,7 @@ public partial interface ITerceirosReader
     TerceirosResponse? Read(int id, SqlConnection oCnn);
     TerceirosResponse? Read(string where, SqlConnection oCnn);
     TerceirosResponse? Read(Entity.DBTerceiros dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TerceirosResponse? Read(DBTerceiros dbRec);
 }
 
@@ -50,7 +51,7 @@ public partial class Terceiros : ITerceirosReader
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -92,7 +93,7 @@ public partial class Terceiros : ITerceirosReader
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

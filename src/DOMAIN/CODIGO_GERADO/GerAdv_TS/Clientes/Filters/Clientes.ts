@@ -34,6 +34,7 @@
     enquadramentoempresa?: number;
  cnh?: string;
  pessoacontato?: string;
+ guid?: string;
 }
 
 export class FilterClientesDefaults implements FilterClientes {
@@ -71,5 +72,6 @@ export class FilterClientesDefaults implements FilterClientes {
     enquadramentoempresa?: number = -2147483648;
     cnh?: string = '';
     pessoacontato?: string = '';
+    guid?: string = '';
 }
     

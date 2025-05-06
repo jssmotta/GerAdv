@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AnexamentoRegistrosInc from "../Inc/AnexamentoRegistros";
 import { IAnexamentoRegistros } from "../../Interfaces/interface.AnexamentoRegistros";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AnexamentoRegistrosWindow: React.FC<AnexamentoRegistrosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/anexamentoregistros/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAnexamentoRegistros?.id}`);
+            router.push(`/pages/anexamentoregistros/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAnexamentoRegistros?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAnexamentoRegistros]);
@@ -42,8 +43,8 @@ const AnexamentoRegistrosWindow: React.FC<AnexamentoRegistrosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
-                    newHeight={445}
+                    dimensions={dimensions ?? dimensionsEmpty}
+                    newHeight={633}
                     newWidth={720}
                     id={(selectedAnexamentoRegistros?.id ?? 0).toString()}
                 >

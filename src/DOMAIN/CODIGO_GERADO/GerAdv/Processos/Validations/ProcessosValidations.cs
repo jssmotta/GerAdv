@@ -17,7 +17,7 @@ public class ProcessosValidation : IProcessosValidation
         if (string.IsNullOrWhiteSpace(reg.NroPasta))
             return "NroPasta é obrigatório";
         // Advogados
-        if (reg.AdvOpo.IsEmptyIDNumber())
+        if (!reg.AdvOpo.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.AdvOpo, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.AdvOpo)
@@ -27,7 +27,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -37,7 +37,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Advogados
-        if (reg.Advogado.IsEmptyIDNumber())
+        if (!reg.Advogado.IsEmptyIDNumber())
         {
             var regAdvogados = advogadosReader.Read(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
@@ -47,7 +47,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Prepostos
-        if (reg.Preposto.IsEmptyIDNumber())
+        if (!reg.Preposto.IsEmptyIDNumber())
         {
             var regPrepostos = prepostosReader.Read(reg.Preposto, oCnn);
             if (regPrepostos == null || regPrepostos.Id != reg.Preposto)
@@ -57,7 +57,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Clientes
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
@@ -67,7 +67,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Oponentes
-        if (reg.Oponente.IsEmptyIDNumber())
+        if (!reg.Oponente.IsEmptyIDNumber())
         {
             var regOponentes = oponentesReader.Read(reg.Oponente, oCnn);
             if (regOponentes == null || regOponentes.Id != reg.Oponente)
@@ -77,7 +77,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -87,7 +87,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Situacao
-        if (reg.Situacao.IsEmptyIDNumber())
+        if (!reg.Situacao.IsEmptyIDNumber())
         {
             var regSituacao = situacaoReader.Read(reg.Situacao, oCnn);
             if (regSituacao == null || regSituacao.Id != reg.Situacao)
@@ -97,7 +97,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Rito
-        if (reg.Rito.IsEmptyIDNumber())
+        if (!reg.Rito.IsEmptyIDNumber())
         {
             var regRito = ritoReader.Read(reg.Rito, oCnn);
             if (regRito == null || regRito.Id != reg.Rito)
@@ -107,7 +107,7 @@ public class ProcessosValidation : IProcessosValidation
         }
 
         // Atividades
-        if (reg.Atividade.IsEmptyIDNumber())
+        if (!reg.Atividade.IsEmptyIDNumber())
         {
             var regAtividades = atividadesReader.Read(reg.Atividade, oCnn);
             if (regAtividades == null || regAtividades.Id != reg.Atividade)

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ColaboradoresInc from "../Inc/Colaboradores";
 import { IColaboradores } from "../../Interfaces/interface.Colaboradores";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ColaboradoresWindow: React.FC<ColaboradoresWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/colaboradores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedColaboradores?.id}`);
+            router.push(`/pages/colaboradores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedColaboradores?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedColaboradores]);
@@ -42,7 +43,7 @@ const ColaboradoresWindow: React.FC<ColaboradoresWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={714}
                     newWidth={1440}
                     id={(selectedColaboradores?.id ?? 0).toString()}

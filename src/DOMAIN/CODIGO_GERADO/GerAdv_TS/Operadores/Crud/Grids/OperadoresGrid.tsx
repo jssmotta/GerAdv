@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { OperadoresEmpty } from "../../../Models/Operadores";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import OperadoresInc from "../Inc/Operadores";
 import { IOperadores } from "../../Interfaces/interface.Operadores";
 import { OperadoresService } from "../../Services/Operadores.service";
 import { OperadoresApi } from "../../Apis/ApiOperadores";
@@ -16,11 +14,12 @@ import { OperadoresGridMobileComponent } from "../GridsMobile/Operadores";
 import { OperadoresGridDesktopComponent } from "../GridsDesktop/Operadores";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterOperadores } from "../../Filters/Operadores";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import OperadoresWindow from "./OperadoresWindow";
 
 const OperadoresGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const OperadoresGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <OperadoresGridMobileComponent data={operadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <OperadoresGridDesktopComponent data={operadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <OperadoresGridMobileComponent data={operadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <OperadoresGridDesktopComponent data={operadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <OperadoresWindow
           isOpen={showInc}

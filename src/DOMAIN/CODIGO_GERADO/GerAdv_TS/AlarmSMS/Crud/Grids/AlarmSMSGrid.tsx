@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AlarmSMSEmpty } from "../../../Models/AlarmSMS";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AlarmSMSInc from "../Inc/AlarmSMS";
 import { IAlarmSMS } from "../../Interfaces/interface.AlarmSMS";
 import { AlarmSMSService } from "../../Services/AlarmSMS.service";
 import { AlarmSMSApi } from "../../Apis/ApiAlarmSMS";
@@ -16,11 +14,12 @@ import { AlarmSMSGridMobileComponent } from "../GridsMobile/AlarmSMS";
 import { AlarmSMSGridDesktopComponent } from "../GridsDesktop/AlarmSMS";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAlarmSMS } from "../../Filters/AlarmSMS";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AlarmSMSWindow from "./AlarmSMSWindow";
 
 const AlarmSMSGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const AlarmSMSGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <AlarmSMSGridMobileComponent data={alarmsms} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AlarmSMSGridDesktopComponent data={alarmsms} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AlarmSMSGridMobileComponent data={alarmsms} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AlarmSMSGridDesktopComponent data={alarmsms} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AlarmSMSWindow
           isOpen={showInc}

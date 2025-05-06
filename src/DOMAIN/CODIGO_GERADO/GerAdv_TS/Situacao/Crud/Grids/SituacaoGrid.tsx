@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { SituacaoEmpty } from "../../../Models/Situacao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import SituacaoInc from "../Inc/Situacao";
 import { ISituacao } from "../../Interfaces/interface.Situacao";
 import { SituacaoService } from "../../Services/Situacao.service";
 import { SituacaoApi } from "../../Apis/ApiSituacao";
@@ -16,11 +14,12 @@ import { SituacaoGridMobileComponent } from "../GridsMobile/Situacao";
 import { SituacaoGridDesktopComponent } from "../GridsDesktop/Situacao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterSituacao } from "../../Filters/Situacao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import SituacaoWindow from "./SituacaoWindow";
 
 const SituacaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const SituacaoGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <SituacaoGridMobileComponent data={situacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <SituacaoGridDesktopComponent data={situacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <SituacaoGridMobileComponent data={situacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <SituacaoGridDesktopComponent data={situacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <SituacaoWindow
           isOpen={showInc}

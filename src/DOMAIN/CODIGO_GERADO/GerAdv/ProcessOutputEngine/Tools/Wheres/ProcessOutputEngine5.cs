@@ -28,6 +28,7 @@ public partial class ProcessOutputEngine : IProcessOutputEngineWhere
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }

@@ -36,7 +36,7 @@ public partial class ProcessOutPutIDs : IProcessOutPutIDsReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputids;
     }
@@ -52,7 +52,7 @@ public partial class ProcessOutPutIDs : IProcessOutPutIDsReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputids;
     }

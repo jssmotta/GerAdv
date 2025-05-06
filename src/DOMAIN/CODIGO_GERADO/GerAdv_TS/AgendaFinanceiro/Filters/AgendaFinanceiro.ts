@@ -39,6 +39,7 @@
     prazodias?: number;
     protocolointegrado?: number;
  datainicioprazo?: string;
+ guid?: string;
 }
 
 export class FilterAgendaFinanceiroDefaults implements FilterAgendaFinanceiro {
@@ -81,5 +82,6 @@ export class FilterAgendaFinanceiroDefaults implements FilterAgendaFinanceiro {
     prazodias?: number = -2147483648;
     protocolointegrado?: number = -2147483648;
     datainicioprazo?: string = '';
+    guid?: string = '';
 }
     

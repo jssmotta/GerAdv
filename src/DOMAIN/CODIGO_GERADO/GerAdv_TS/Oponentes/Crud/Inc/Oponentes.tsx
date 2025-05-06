@@ -5,7 +5,7 @@ import { OponentesApi } from '../../Apis/ApiOponentes';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IOponentesFormProps } from '../../Interfaces/interface.Oponentes';
 import { OponentesService } from '../../Services/Oponentes.service';
 import { useOponentesForm } from '../../Hooks/useOponentesForm';

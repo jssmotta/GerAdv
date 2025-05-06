@@ -11,7 +11,6 @@ public partial class DBPenhora
     private protected string? m_FNome, m_FDescricao;
     [XmlIgnore]
     private protected DateTime? m_FDataPenhora;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -24,7 +23,6 @@ public partial class DBPenhora
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -37,7 +35,6 @@ public partial class DBPenhora
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -50,7 +47,6 @@ public partial class DBPenhora
         }
     }
 
-    public string NFDataPenhora() => $"{m_FDataPenhora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataPenhora:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataPenhora => Convert.ToDateTime(m_FDataPenhora);
 
@@ -68,7 +64,6 @@ public partial class DBPenhora
         }
     }
 
-    public int NFPenhoraStatus() => m_FPenhoraStatus;
     [XmlAttribute]
     public int FPenhoraStatus
     {
@@ -81,7 +76,6 @@ public partial class DBPenhora
         }
     }
 
-    public int NFMaster() => m_FMaster;
     [XmlAttribute]
     public int FMaster
     {

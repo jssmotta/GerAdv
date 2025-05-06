@@ -7,6 +7,7 @@
  nome?: string;
  ocorrencia?: string;
     cliente?: number;
+ guid?: string;
 }
 
 export class FilterDiario2Defaults implements FilterDiario2 {
@@ -17,5 +18,6 @@ export class FilterDiario2Defaults implements FilterDiario2 {
     nome?: string = '';
     ocorrencia?: string = '';
     cliente?: number = -2147483648;
+    guid?: string = '';
 }
     

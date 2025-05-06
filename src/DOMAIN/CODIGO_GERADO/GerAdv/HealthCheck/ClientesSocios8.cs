@@ -72,7 +72,7 @@ public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, Client
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cscSomenteRepresentante,cscIdade,cscIsRepresentanteLegal,cscQualificacao,cscSexo,cscDtNasc,cscNome,cscSite,cscRepresentanteLegal,cscCliente,cscEndereco,cscBairro,cscCEP,cscCidade,cscRG,cscCPF,cscFone,cscParticipacao,cscCargo,cscEMail,cscObs,cscCNH,cscDataContrato,cscCNPJ,cscInscEst,cscSocioEmpresaAdminNome,cscEnderecoSocio,cscBairroSocio,cscCEPSocio,cscCidadeSocio,cscRGDataExp,cscSocioEmpresaAdminSomente,cscTipo,cscFax,cscClass,cscEtiqueta,cscAni,cscBold FROM dbo.ClientesSocios (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) cscSomenteRepresentante,cscIdade,cscIsRepresentanteLegal,cscQualificacao,cscSexo,cscDtNasc,cscNome,cscSite,cscRepresentanteLegal,cscCliente,cscEndereco,cscBairro,cscCEP,cscCidade,cscRG,cscCPF,cscFone,cscParticipacao,cscCargo,cscEMail,cscObs,cscCNH,cscDataContrato,cscCNPJ,cscInscEst,cscSocioEmpresaAdminNome,cscEnderecoSocio,cscBairroSocio,cscCEPSocio,cscCidadeSocio,cscRGDataExp,cscSocioEmpresaAdminSomente,cscTipo,cscFax,cscClass,cscEtiqueta,cscAni,cscBold,cscGUID FROM dbo.ClientesSocios (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

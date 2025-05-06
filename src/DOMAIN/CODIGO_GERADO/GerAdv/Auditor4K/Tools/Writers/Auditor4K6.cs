@@ -14,6 +14,7 @@ public class Auditor4K : IAuditor4KWriter
     {
         var dbRec = auditor4k.Id.IsEmptyIDNumber() ? new Entity.DBAuditor4K() : new Entity.DBAuditor4K(auditor4k.Id, oCnn);
         dbRec.FNome = auditor4k.Nome;
+        dbRec.FGUID = auditor4k.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

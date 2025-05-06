@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import PrecatoriaInc from "../Inc/Precatoria";
 import { IPrecatoria } from "../../Interfaces/interface.Precatoria";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const PrecatoriaWindow: React.FC<PrecatoriaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/precatoria/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPrecatoria?.id}`);
+            router.push(`/pages/precatoria/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPrecatoria?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedPrecatoria]);
@@ -42,7 +43,7 @@ const PrecatoriaWindow: React.FC<PrecatoriaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={699}
                     newWidth={720}
                     id={(selectedPrecatoria?.id ?? 0).toString()}

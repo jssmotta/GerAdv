@@ -8,6 +8,7 @@ public partial interface IFaseReader
     FaseResponse? Read(int id, SqlConnection oCnn);
     FaseResponse? Read(string where, SqlConnection oCnn);
     FaseResponse? Read(Entity.DBFase dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     FaseResponse? Read(DBFase dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class Fase : IFaseReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class Fase : IFaseReader
             Descricao = dbRec.FDescricao ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

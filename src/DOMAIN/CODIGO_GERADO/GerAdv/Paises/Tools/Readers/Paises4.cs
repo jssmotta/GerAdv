@@ -8,6 +8,7 @@ public partial interface IPaisesReader
     PaisesResponse? Read(int id, SqlConnection oCnn);
     PaisesResponse? Read(string where, SqlConnection oCnn);
     PaisesResponse? Read(Entity.DBPaises dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PaisesResponse? Read(DBPaises dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class Paises : IPaisesReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class Paises : IPaisesReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

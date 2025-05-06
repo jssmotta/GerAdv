@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import GUTAtividadesMatrizInc from "../Inc/GUTAtividadesMatriz";
 import { IGUTAtividadesMatriz } from "../../Interfaces/interface.GUTAtividadesMatriz";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const GUTAtividadesMatrizWindow: React.FC<GUTAtividadesMatrizWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/gutatividadesmatriz/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTAtividadesMatriz?.id}`);
+            router.push(`/pages/gutatividadesmatriz/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTAtividadesMatriz?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedGUTAtividadesMatriz]);
@@ -42,7 +43,7 @@ const GUTAtividadesMatrizWindow: React.FC<GUTAtividadesMatrizWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedGUTAtividadesMatriz?.id ?? 0).toString()}

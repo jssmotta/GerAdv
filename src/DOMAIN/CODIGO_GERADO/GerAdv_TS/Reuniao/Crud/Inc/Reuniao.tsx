@@ -5,7 +5,7 @@ import { ReuniaoApi } from '../../Apis/ApiReuniao';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IReuniaoFormProps } from '../../Interfaces/interface.Reuniao';
 import { ReuniaoService } from '../../Services/Reuniao.service';
 import { useReuniaoForm } from '../../Hooks/useReuniaoForm';

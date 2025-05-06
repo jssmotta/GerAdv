@@ -8,6 +8,7 @@ public partial interface IProProcuradoresReader
     ProProcuradoresResponse? Read(int id, SqlConnection oCnn);
     ProProcuradoresResponse? Read(string where, SqlConnection oCnn);
     ProProcuradoresResponse? Read(Entity.DBProProcuradores dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProProcuradoresResponse? Read(DBProProcuradores dbRec);
 }
 
@@ -41,7 +42,7 @@ public partial class ProProcuradores : IProProcuradoresReader
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proprocuradores.Data = dbRec.FData;
@@ -76,7 +77,7 @@ public partial class ProProcuradores : IProProcuradoresReader
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proprocuradores.Data = dbRec.FData;

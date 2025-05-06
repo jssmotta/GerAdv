@@ -5,7 +5,7 @@ import { AndCompApi } from '../../Apis/ApiAndComp';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAndCompFormProps } from '../../Interfaces/interface.AndComp';
 import { AndCompService } from '../../Services/AndComp.service';
 import { useAndCompForm } from '../../Hooks/useAndCompForm';

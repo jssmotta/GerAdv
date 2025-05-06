@@ -21,6 +21,7 @@
  accesscode?: string;
     julgador?: number;
  zkeyia?: string;
+ guid?: string;
 }
 
 export class FilterInstanciaDefaults implements FilterInstancia {
@@ -45,5 +46,6 @@ export class FilterInstanciaDefaults implements FilterInstancia {
     accesscode?: string = '';
     julgador?: number = -2147483648;
     zkeyia?: string = '';
+    guid?: string = '';
 }
     

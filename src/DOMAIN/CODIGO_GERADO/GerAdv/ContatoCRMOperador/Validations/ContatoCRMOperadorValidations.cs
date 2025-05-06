@@ -15,7 +15,7 @@ public class ContatoCRMOperadorValidation : IContatoCRMOperadorValidation
         if (reg == null)
             return "Objeto está nulo";
         // ContatoCRM
-        if (reg.ContatoCRM.IsEmptyIDNumber())
+        if (!reg.ContatoCRM.IsEmptyIDNumber())
         {
             var regContatoCRM = contatocrmReader.Read(reg.ContatoCRM, oCnn);
             if (regContatoCRM == null || regContatoCRM.Id != reg.ContatoCRM)
@@ -25,7 +25,7 @@ public class ContatoCRMOperadorValidation : IContatoCRMOperadorValidation
         }
 
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

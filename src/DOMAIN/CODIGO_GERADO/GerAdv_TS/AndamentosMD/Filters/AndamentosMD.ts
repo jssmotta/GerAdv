@@ -6,6 +6,7 @@
     andamento?: number;
  pathfull?: string;
  unc?: string;
+ guid?: string;
 }
 
 export class FilterAndamentosMDDefaults implements FilterAndamentosMD {
@@ -15,5 +16,6 @@ export class FilterAndamentosMDDefaults implements FilterAndamentosMD {
     andamento?: number = -2147483648;
     pathfull?: string = '';
     unc?: string = '';
+    guid?: string = '';
 }
     

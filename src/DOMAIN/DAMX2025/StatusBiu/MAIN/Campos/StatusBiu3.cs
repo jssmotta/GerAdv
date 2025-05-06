@@ -9,7 +9,6 @@ public partial class DBStatusBiu
     private protected int m_FTipoStatusBiu, m_FOperador, m_FIcone;
     [XmlIgnore]
     private protected string? m_FNome;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -22,7 +21,6 @@ public partial class DBStatusBiu
         }
     }
 
-    public int NFTipoStatusBiu() => m_FTipoStatusBiu;
     [XmlAttribute]
     public int FTipoStatusBiu
     {
@@ -35,7 +33,6 @@ public partial class DBStatusBiu
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -48,7 +45,6 @@ public partial class DBStatusBiu
         }
     }
 
-    public int NFIcone() => m_FIcone;
     [XmlAttribute]
     public int FIcone
     {

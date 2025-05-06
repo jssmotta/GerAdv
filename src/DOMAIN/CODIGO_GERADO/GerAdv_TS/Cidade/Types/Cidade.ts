@@ -9,6 +9,7 @@ export interface ICidade {
 	capital : boolean;
 	nome : string;
 	sigla : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

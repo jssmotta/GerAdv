@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { ICidade } from '../../Interfaces/interface.Cidade';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { ICidade } from '@/app/GerAdv_TS/Cidade/Interfaces/interface.Cidade';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import UFComboBox from '@/app/GerAdv_TS/UF/ComboBox/UF';
 import { UFApi } from '@/app/GerAdv_TS/UF/Apis/ApiUF';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface CidadeFormProps {
     cidadeData: ICidade;
@@ -60,23 +66,37 @@ if (getParamFromUrl("uf") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('CidadeForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeUF && (<h2>{nomeUF}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`CidadeForm-${cidadeData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={cidadeData} isSubmitting={isSubmitting} onClose={onClose} formId={`CidadeForm-${cidadeData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={cidadeData.nome}
+            placeholder={`Digite nome cidade`}
             onChange={onChange}
             required
           />
@@ -91,9 +111,9 @@ value={cidadeData.ddd}
 onChange={onChange}               
 />
 
-<Checkbox label="Top" name="top" checked={cidadeData.top} onChange={onChange} />
-<Checkbox label="Comarca" name="comarca" checked={cidadeData.comarca} onChange={onChange} />
-<Checkbox label="Capital" name="capital" checked={cidadeData.capital} onChange={onChange} />
+<InputCheckbox label="Top" name="top" checked={cidadeData.top} onChange={onChange} />
+<InputCheckbox label="Comarca" name="comarca" checked={cidadeData.comarca} onChange={onChange} />
+<InputCheckbox label="Capital" name="capital" checked={cidadeData.capital} onChange={onChange} />
  
             <UFComboBox
             name={'uf'}
@@ -112,43 +132,10 @@ value={cidadeData.sigla}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/advogados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Advogados</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendafinanceiro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Agenda Financeiro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/bensmateriais${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Bens Materiais</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/clientes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Clientes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/clientessocios${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Clientes Socios</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/colaboradores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Colaboradores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/divisaotribunal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Divisao Tribunal</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/enderecos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Endereços</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/enderecosistema${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Endereco Sistema</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/escritorios${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Escritorios</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/fornecedores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Fornecedores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/foro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Foro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/funcionarios${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Colaborador</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/oponentes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Oponentes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/oponentesreplegal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Oponentes Rep Legal</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/outraspartescliente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Outras Partes Cliente</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/poderjudiciarioassociado${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Poder Judiciario Associado</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/preclientes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Pre Clientes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prepostos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Prepostos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Processos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/terceiros${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Terceiros</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/tribenderecos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?cidade=${cidadeData.id}`)}>Trib Endereços</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

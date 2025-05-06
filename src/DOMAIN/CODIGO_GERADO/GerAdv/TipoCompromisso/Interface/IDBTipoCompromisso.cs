@@ -6,4 +6,5 @@ public partial interface IDBTipoCompromisso
     public string? FDescricao { get; set; }
     public bool FFinanceiro { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

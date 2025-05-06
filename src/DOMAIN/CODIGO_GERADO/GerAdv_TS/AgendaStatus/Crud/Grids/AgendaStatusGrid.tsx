@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AgendaStatusEmpty } from "../../../Models/AgendaStatus";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AgendaStatusInc from "../Inc/AgendaStatus";
 import { IAgendaStatus } from "../../Interfaces/interface.AgendaStatus";
 import { AgendaStatusService } from "../../Services/AgendaStatus.service";
 import { AgendaStatusApi } from "../../Apis/ApiAgendaStatus";
@@ -16,11 +14,12 @@ import { AgendaStatusGridMobileComponent } from "../GridsMobile/AgendaStatus";
 import { AgendaStatusGridDesktopComponent } from "../GridsDesktop/AgendaStatus";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAgendaStatus } from "../../Filters/AgendaStatus";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AgendaStatusWindow from "./AgendaStatusWindow";
 
 const AgendaStatusGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AgendaStatusGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AgendaStatusGridMobileComponent data={agendastatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AgendaStatusGridDesktopComponent data={agendastatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AgendaStatusGridMobileComponent data={agendastatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AgendaStatusGridDesktopComponent data={agendastatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AgendaStatusWindow
           isOpen={showInc}

@@ -8,6 +8,7 @@ public partial interface ISMSAliceReader
     SMSAliceResponse? Read(int id, SqlConnection oCnn);
     SMSAliceResponse? Read(string where, SqlConnection oCnn);
     SMSAliceResponse? Read(Entity.DBSMSAlice dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     SMSAliceResponse? Read(DBSMSAlice dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class SMSAlice : ISMSAliceReader
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             TipoEMail = dbRec.FTipoEMail,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class SMSAlice : ISMSAliceReader
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             TipoEMail = dbRec.FTipoEMail,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

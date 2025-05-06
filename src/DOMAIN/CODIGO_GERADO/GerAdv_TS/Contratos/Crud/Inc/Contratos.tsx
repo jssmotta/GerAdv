@@ -5,7 +5,7 @@ import { ContratosApi } from '../../Apis/ApiContratos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IContratosFormProps } from '../../Interfaces/interface.Contratos';
 import { ContratosService } from '../../Services/Contratos.service';
 import { useContratosForm } from '../../Hooks/useContratosForm';

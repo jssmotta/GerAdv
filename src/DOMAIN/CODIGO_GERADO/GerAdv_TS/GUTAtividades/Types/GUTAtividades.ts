@@ -11,6 +11,7 @@ export interface IGUTAtividades {
 	dataconcluido : string;
 	diasparainiciar : number;
 	minutospararealizar : number;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

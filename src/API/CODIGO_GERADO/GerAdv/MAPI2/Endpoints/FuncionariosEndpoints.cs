@@ -74,30 +74,6 @@ public static class FuncionariosEndpoints
 
             return Results.Ok(result);
         }).WithName("Funcionarios_AddAndUpdate").WithDisplayName("Add or Update Funcionarios");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, IFuncionariosService service) =>
-        {
-            logger.LogInfo("Funcionarios", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Funcionarios", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Funcionarios_GetColumns").WithDisplayName("Get Funcionarios Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, IFuncionariosService service) =>
-        {
-            logger.LogInfo("Funcionarios", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Funcionarios", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Funcionarios_UpdateColumns").WithDisplayName("Update Funcionarios Columns");
         group.MapDelete("/Delete", async (int id, string uri, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, IFuncionariosService service) =>
         {
             logger.LogInfo("Funcionarios", "Delete", $"id = {id}", uri);

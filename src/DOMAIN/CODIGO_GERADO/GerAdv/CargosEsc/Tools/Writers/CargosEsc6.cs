@@ -16,6 +16,7 @@ public class CargosEsc : ICargosEscWriter
         dbRec.FPercentual = cargosesc.Percentual;
         dbRec.FNome = cargosesc.Nome;
         dbRec.FClassificacao = cargosesc.Classificacao;
+        dbRec.FGUID = cargosesc.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

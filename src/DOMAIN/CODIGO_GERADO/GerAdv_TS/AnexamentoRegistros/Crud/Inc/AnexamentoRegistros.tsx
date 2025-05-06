@@ -5,7 +5,7 @@ import { AnexamentoRegistrosApi } from '../../Apis/ApiAnexamentoRegistros';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAnexamentoRegistrosFormProps } from '../../Interfaces/interface.AnexamentoRegistros';
 import { AnexamentoRegistrosService } from '../../Services/AnexamentoRegistros.service';
 import { useAnexamentoRegistrosForm } from '../../Hooks/useAnexamentoRegistrosForm';

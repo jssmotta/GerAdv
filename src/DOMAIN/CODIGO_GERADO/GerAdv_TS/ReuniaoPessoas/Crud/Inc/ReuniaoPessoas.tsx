@@ -5,7 +5,7 @@ import { ReuniaoPessoasApi } from '../../Apis/ApiReuniaoPessoas';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IReuniaoPessoasFormProps } from '../../Interfaces/interface.ReuniaoPessoas';
 import { ReuniaoPessoasService } from '../../Services/ReuniaoPessoas.service';
 import { useReuniaoPessoasForm } from '../../Hooks/useReuniaoPessoasForm';

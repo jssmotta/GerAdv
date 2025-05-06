@@ -5,7 +5,7 @@ import { OponentesRepLegalApi } from '../../Apis/ApiOponentesRepLegal';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IOponentesRepLegalFormProps } from '../../Interfaces/interface.OponentesRepLegal';
 import { OponentesRepLegalService } from '../../Services/OponentesRepLegal.service';
 import { useOponentesRepLegalForm } from '../../Hooks/useOponentesRepLegalForm';

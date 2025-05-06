@@ -5,6 +5,7 @@
  nome?: string;
     uf?: number;
  sigla?: string;
+ guid?: string;
 }
 
 export class FilterCidadeDefaults implements FilterCidade {
@@ -13,5 +14,6 @@ export class FilterCidadeDefaults implements FilterCidade {
     nome?: string = '';
     uf?: number = -2147483648;
     sigla?: string = '';
+    guid?: string = '';
 }
     

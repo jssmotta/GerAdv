@@ -14,6 +14,7 @@ export interface IOperadorEMailPopup {
 	portapop3 : number;
 	assinatura : string;
 	senha256 : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

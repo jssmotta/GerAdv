@@ -29,6 +29,7 @@ export interface IInstancia {
 	accesscode : string;
 	julgador : number;
 	zkeyia : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

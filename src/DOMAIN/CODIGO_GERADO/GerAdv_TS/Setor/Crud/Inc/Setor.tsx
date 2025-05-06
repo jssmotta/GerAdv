@@ -5,7 +5,7 @@ import { SetorApi } from '../../Apis/ApiSetor';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ISetorFormProps } from '../../Interfaces/interface.Setor';
 import { SetorService } from '../../Services/Setor.service';
 import { useSetorForm } from '../../Hooks/useSetorForm';

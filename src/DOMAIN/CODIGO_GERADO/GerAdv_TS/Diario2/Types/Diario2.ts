@@ -9,6 +9,7 @@ export interface IDiario2 {
 	nome : string;
 	ocorrencia : string;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

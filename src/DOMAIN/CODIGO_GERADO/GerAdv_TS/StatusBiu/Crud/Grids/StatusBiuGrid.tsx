@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { StatusBiuEmpty } from "../../../Models/StatusBiu";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import StatusBiuInc from "../Inc/StatusBiu";
 import { IStatusBiu } from "../../Interfaces/interface.StatusBiu";
 import { StatusBiuService } from "../../Services/StatusBiu.service";
 import { StatusBiuApi } from "../../Apis/ApiStatusBiu";
@@ -16,11 +14,12 @@ import { StatusBiuGridMobileComponent } from "../GridsMobile/StatusBiu";
 import { StatusBiuGridDesktopComponent } from "../GridsDesktop/StatusBiu";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterStatusBiu } from "../../Filters/StatusBiu";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import StatusBiuWindow from "./StatusBiuWindow";
 
 const StatusBiuGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const StatusBiuGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <StatusBiuGridMobileComponent data={statusbiu} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <StatusBiuGridDesktopComponent data={statusbiu} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <StatusBiuGridMobileComponent data={statusbiu} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <StatusBiuGridDesktopComponent data={statusbiu} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <StatusBiuWindow
           isOpen={showInc}

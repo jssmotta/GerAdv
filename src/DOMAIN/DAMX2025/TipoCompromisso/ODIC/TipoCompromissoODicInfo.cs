@@ -42,7 +42,7 @@ public partial class DBTipoCompromissoODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoCompromissoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoCompromissoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoCompromissoDicInfo.TipIcone, DBTipoCompromissoDicInfo.TipDescricao, DBTipoCompromissoDicInfo.TipFinanceiro, DBTipoCompromissoDicInfo.TipBold, DBTipoCompromissoDicInfo.TipGUID, DBTipoCompromissoDicInfo.TipQuemCad, DBTipoCompromissoDicInfo.TipDtCad, DBTipoCompromissoDicInfo.TipQuemAtu, DBTipoCompromissoDicInfo.TipDtAtu, DBTipoCompromissoDicInfo.TipVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoCompromissoDicInfo.TipIcone, DBTipoCompromissoDicInfo.TipDescricao, DBTipoCompromissoDicInfo.TipFinanceiro, DBTipoCompromissoDicInfo.TipBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoCompromissoDicInfo.TipIcone, DBTipoCompromissoDicInfo.TipDescricao, DBTipoCompromissoDicInfo.TipFinanceiro, DBTipoCompromissoDicInfo.TipBold, DBTipoCompromissoDicInfo.TipGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -58,7 +58,8 @@ public partial class DBTipoCompromissoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "tipCodigo"
+            "tipCodigo",
+            "tipDescricao"
         };
         var result = campos.Where(campo => !campo.Equals(DBTipoCompromissoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

@@ -13,7 +13,6 @@ public partial class DBAgendaRepetir
     private protected DateTime? m_FDataFinal, m_FHoraFinal, m_FHora;
     [XmlIgnore]
     private protected bool m_FPessoal, m_FSegunda, m_FQuarta, m_FQuinta, m_FSexta, m_FSabado, m_FDomingo, m_FTerca;
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -26,7 +25,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -39,7 +37,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public string NFDataFinal() => $"{m_FDataFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataFinal:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataFinal => Convert.ToDateTime(m_FDataFinal);
 
@@ -57,7 +54,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFFuncionario() => m_FFuncionario;
     [XmlAttribute]
     public int FFuncionario
     {
@@ -70,7 +66,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public string NFHoraFinal() => $"{m_FHoraFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraFinal:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
@@ -105,7 +100,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -118,7 +112,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFPessoal() => m_FPessoal;
     [XmlAttribute]
     public bool FPessoal
     {
@@ -131,7 +124,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFFrequencia() => m_FFrequencia;
     [XmlAttribute]
     public int FFrequencia
     {
@@ -144,7 +136,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFDia() => m_FDia;
     [XmlAttribute]
     public int FDia
     {
@@ -157,7 +148,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFMes() => m_FMes;
     [XmlAttribute]
     public int FMes
     {
@@ -170,7 +160,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public string NFHora() => $"{m_FHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHora:HH:mm}";
     [XmlIgnore]
     public DateTime MHora => Convert.ToDateTime(m_FHora);
 
@@ -205,7 +194,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFIDQuem() => m_FIDQuem;
     [XmlAttribute]
     public int FIDQuem
     {
@@ -218,7 +206,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFIDQuem2() => m_FIDQuem2;
     [XmlAttribute]
     public int FIDQuem2
     {
@@ -231,7 +218,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public string NFMensagem() => m_FMensagem ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FMensagem
     {
@@ -244,7 +230,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFIDTipo() => m_FIDTipo;
     [XmlAttribute]
     public int FIDTipo
     {
@@ -257,7 +242,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFID1() => m_FID1;
     [XmlAttribute]
     public int FID1
     {
@@ -270,7 +254,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFID2() => m_FID2;
     [XmlAttribute]
     public int FID2
     {
@@ -283,7 +266,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFID3() => m_FID3;
     [XmlAttribute]
     public int FID3
     {
@@ -296,7 +278,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public int NFID4() => m_FID4;
     [XmlAttribute]
     public int FID4
     {
@@ -309,7 +290,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFSegunda() => m_FSegunda;
     [XmlAttribute]
     public bool FSegunda
     {
@@ -322,7 +302,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFQuarta() => m_FQuarta;
     [XmlAttribute]
     public bool FQuarta
     {
@@ -335,7 +314,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFQuinta() => m_FQuinta;
     [XmlAttribute]
     public bool FQuinta
     {
@@ -348,7 +326,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFSexta() => m_FSexta;
     [XmlAttribute]
     public bool FSexta
     {
@@ -361,7 +338,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFSabado() => m_FSabado;
     [XmlAttribute]
     public bool FSabado
     {
@@ -374,7 +350,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFDomingo() => m_FDomingo;
     [XmlAttribute]
     public bool FDomingo
     {
@@ -387,7 +362,6 @@ public partial class DBAgendaRepetir
         }
     }
 
-    public bool NFTerca() => m_FTerca;
     [XmlAttribute]
     public bool FTerca
     {

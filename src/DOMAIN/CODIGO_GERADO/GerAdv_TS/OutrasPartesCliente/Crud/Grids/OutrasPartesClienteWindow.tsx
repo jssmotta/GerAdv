@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import OutrasPartesClienteInc from "../Inc/OutrasPartesCliente";
 import { IOutrasPartesCliente } from "../../Interfaces/interface.OutrasPartesCliente";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const OutrasPartesClienteWindow: React.FC<OutrasPartesClienteWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/outraspartescliente/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedOutrasPartesCliente?.id}`);
+            router.push(`/pages/outraspartescliente/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedOutrasPartesCliente?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedOutrasPartesCliente]);
@@ -42,7 +43,7 @@ const OutrasPartesClienteWindow: React.FC<OutrasPartesClienteWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={749}
                     newWidth={1440}
                     id={(selectedOutrasPartesCliente?.id ?? 0).toString()}

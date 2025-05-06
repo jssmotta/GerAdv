@@ -8,6 +8,7 @@ public partial interface IOponentesReader
     OponentesResponse? Read(int id, SqlConnection oCnn);
     OponentesResponse? Read(string where, SqlConnection oCnn);
     OponentesResponse? Read(Entity.DBOponentes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OponentesResponse? Read(DBOponentes dbRec);
 }
 
@@ -64,7 +65,7 @@ public partial class Oponentes : IOponentesReader
             Top = dbRec.FTop,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -120,7 +121,7 @@ public partial class Oponentes : IOponentesReader
             Top = dbRec.FTop,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

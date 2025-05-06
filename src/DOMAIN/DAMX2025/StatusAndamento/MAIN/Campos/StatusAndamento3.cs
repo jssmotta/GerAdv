@@ -11,7 +11,6 @@ public partial class DBStatusAndamento
     private protected string? m_FNome;
     [XmlIgnore]
     private protected bool m_FBold;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -24,7 +23,6 @@ public partial class DBStatusAndamento
         }
     }
 
-    public int NFIcone() => m_FIcone;
     [XmlAttribute]
     public int FIcone
     {
@@ -37,7 +35,6 @@ public partial class DBStatusAndamento
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

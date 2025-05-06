@@ -13,4 +13,5 @@
 	valorjuroscorrigido = `ValorJurosCorrigido`,
 	valorfinal = `ValorFinal`,
 	dataultimacorrecao = `DataUltimaCorrecao`,
+	guid = `GUID`,
 }

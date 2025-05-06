@@ -28,6 +28,7 @@
  pai?: string;
  mae?: string;
  class?: string;
+ guid?: string;
 }
 
 export class FilterPrepostosDefaults implements FilterPrepostos {
@@ -59,5 +60,6 @@ export class FilterPrepostosDefaults implements FilterPrepostos {
     pai?: string = '';
     mae?: string = '';
     class?: string = '';
+    guid?: string = '';
 }
     

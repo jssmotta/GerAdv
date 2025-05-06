@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ServicosEmpty } from "../../../Models/Servicos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ServicosInc from "../Inc/Servicos";
 import { IServicos } from "../../Interfaces/interface.Servicos";
 import { ServicosService } from "../../Services/Servicos.service";
 import { ServicosApi } from "../../Apis/ApiServicos";
@@ -16,11 +14,12 @@ import { ServicosGridMobileComponent } from "../GridsMobile/Servicos";
 import { ServicosGridDesktopComponent } from "../GridsDesktop/Servicos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterServicos } from "../../Filters/Servicos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ServicosWindow from "./ServicosWindow";
 
 const ServicosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ServicosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ServicosGridMobileComponent data={servicos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ServicosGridDesktopComponent data={servicos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ServicosGridMobileComponent data={servicos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ServicosGridDesktopComponent data={servicos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ServicosWindow
           isOpen={showInc}

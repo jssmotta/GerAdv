@@ -56,30 +56,6 @@ public static class ProResumosEndpoints
 
             return Results.Ok(result);
         }).WithName("ProResumos_AddAndUpdate").WithDisplayName("Add or Update ProResumos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProResumosValidation validation, IProResumosWriter writer, IProcessosReader processosReader, IProResumosService service) =>
-        {
-            logger.LogInfo("ProResumos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProResumos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProResumos_GetColumns").WithDisplayName("Get ProResumos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProResumosValidation validation, IProResumosWriter writer, IProcessosReader processosReader, IProResumosService service) =>
-        {
-            logger.LogInfo("ProResumos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProResumos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProResumos_UpdateColumns").WithDisplayName("Update ProResumos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProResumosValidation validation, IProResumosWriter writer, IProcessosReader processosReader, IProResumosService service) =>
         {
             logger.LogInfo("ProResumos", "Delete", $"id = {id}", uri);

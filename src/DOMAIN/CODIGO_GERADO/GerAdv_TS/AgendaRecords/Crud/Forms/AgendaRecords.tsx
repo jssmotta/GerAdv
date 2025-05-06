@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAgendaRecords } from '../../Interfaces/interface.AgendaRecords';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAgendaRecords } from '@/app/GerAdv_TS/AgendaRecords/Interfaces/interface.AgendaRecords';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import AgendaComboBox from '@/app/GerAdv_TS/Agenda/ComboBox/Agenda';
@@ -16,6 +20,8 @@ import { AgendaApi } from '@/app/GerAdv_TS/Agenda/Apis/ApiAgenda';
 import { ClientesSociosApi } from '@/app/GerAdv_TS/ClientesSocios/Apis/ApiClientesSocios';
 import { ColaboradoresApi } from '@/app/GerAdv_TS/Colaboradores/Apis/ApiColaboradores';
 import { ForoApi } from '@/app/GerAdv_TS/Foro/Apis/ApiForo';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface AgendaRecordsFormProps {
     agendarecordsData: IAgendaRecords;
@@ -129,18 +135,28 @@ if (getParamFromUrl("foro") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AgendaRecordsForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeAgenda && (<h2>{nomeAgenda}</h2>)}
-{nomeClientesSocios && (<h2>{nomeClientesSocios}</h2>)}
-{nomeColaboradores && (<h2>{nomeColaboradores}</h2>)}
-{nomeForo && (<h2>{nomeForo}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AgendaRecordsForm-${agendarecordsData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={agendarecordsData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRecordsForm-${agendarecordsData.id}`} />
+
+                <div className="grid-container">
 
             <AgendaComboBox
             name={'agenda'}
@@ -190,9 +206,9 @@ onChange={onChange}
             label={'Foro'}
             />
 
-<Checkbox label="Aviso1" name="aviso1" checked={agendarecordsData.aviso1} onChange={onChange} />
-<Checkbox label="Aviso2" name="aviso2" checked={agendarecordsData.aviso2} onChange={onChange} />
-<Checkbox label="Aviso3" name="aviso3" checked={agendarecordsData.aviso3} onChange={onChange} />
+<InputCheckbox label="Aviso1" name="aviso1" checked={agendarecordsData.aviso1} onChange={onChange} />
+<InputCheckbox label="Aviso2" name="aviso2" checked={agendarecordsData.aviso2} onChange={onChange} />
+<InputCheckbox label="Aviso3" name="aviso3" checked={agendarecordsData.aviso3} onChange={onChange} />
 </div><div className="grid-container">        
 <Input
 type="text"
@@ -254,19 +270,10 @@ value={agendarecordsData.dataaviso3}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

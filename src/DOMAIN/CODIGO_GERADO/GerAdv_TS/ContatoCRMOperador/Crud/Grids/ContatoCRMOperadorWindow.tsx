@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ContatoCRMOperadorInc from "../Inc/ContatoCRMOperador";
 import { IContatoCRMOperador } from "../../Interfaces/interface.ContatoCRMOperador";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ContatoCRMOperadorWindow: React.FC<ContatoCRMOperadorWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/contatocrmoperador/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContatoCRMOperador?.id}`);
+            router.push(`/pages/contatocrmoperador/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContatoCRMOperador?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedContatoCRMOperador]);
@@ -42,7 +43,7 @@ const ContatoCRMOperadorWindow: React.FC<ContatoCRMOperadorWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedContatoCRMOperador?.id ?? 0).toString()}

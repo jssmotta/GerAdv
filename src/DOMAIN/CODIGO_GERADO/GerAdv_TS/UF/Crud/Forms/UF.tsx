@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IUF } from '../../Interfaces/interface.UF';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IUF } from '@/app/GerAdv_TS/UF/Interfaces/interface.UF';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import PaisesComboBox from '@/app/GerAdv_TS/Paises/ComboBox/Paises';
 import { PaisesApi } from '@/app/GerAdv_TS/Paises/Apis/ApiPaises';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface UFFormProps {
     ufData: IUF;
@@ -60,23 +66,37 @@ if (getParamFromUrl("paises") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('UFForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomePaises && (<h2>{nomePaises}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`UFForm-${ufData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={ufData} isSubmitting={isSubmitting} onClose={onClose} formId={`UFForm-${ufData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="iduf"
             label="iduf"
             className="inputIncNome"
             name="iduf"
             value={ufData.iduf}
+            placeholder={`Digite nome uf`}
             onChange={onChange}
             required
           />
@@ -98,7 +118,7 @@ onChange={onChange}
             label={'Paises'}
             />
 
-<Checkbox label="Top" name="top" checked={ufData.top} onChange={onChange} />
+<InputCheckbox label="Top" name="top" checked={ufData.top} onChange={onChange} />
         
 <Input
 type="text"
@@ -110,21 +130,10 @@ value={ufData.descricao}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/cidade${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?uf=${ufData.id}`)}>Cidade</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

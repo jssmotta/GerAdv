@@ -6,4 +6,5 @@
 	nome = `Nome`,
 	valor = `Valor`,
 	percentual = `Percentual`,
+	guid = `GUID`,
 }

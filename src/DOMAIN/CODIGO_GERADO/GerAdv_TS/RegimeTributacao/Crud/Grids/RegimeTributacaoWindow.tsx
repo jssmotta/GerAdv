@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import RegimeTributacaoInc from "../Inc/RegimeTributacao";
 import { IRegimeTributacao } from "../../Interfaces/interface.RegimeTributacao";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const RegimeTributacaoWindow: React.FC<RegimeTributacaoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/regimetributacao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedRegimeTributacao?.id}`);
+            router.push(`/pages/regimetributacao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedRegimeTributacao?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedRegimeTributacao]);
@@ -42,7 +43,7 @@ const RegimeTributacaoWindow: React.FC<RegimeTributacaoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedRegimeTributacao?.id ?? 0).toString()}

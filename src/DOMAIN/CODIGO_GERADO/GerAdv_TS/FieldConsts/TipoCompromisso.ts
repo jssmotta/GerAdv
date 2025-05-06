@@ -3,4 +3,5 @@
 	descricao = `Descricao`,
 	financeiro = `Financeiro`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

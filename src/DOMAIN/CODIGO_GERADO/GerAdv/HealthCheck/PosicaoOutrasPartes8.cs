@@ -72,7 +72,7 @@ public class PosicaoOutrasPartesHealthCheck(IOptions<AppSettings> appSettings, P
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) posDescricao,posBold FROM dbo.PosicaoOutrasPartes (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) posDescricao,posBold,posGUID FROM dbo.PosicaoOutrasPartes (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

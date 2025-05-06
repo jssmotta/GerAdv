@@ -4,6 +4,7 @@ export interface IGUTTipo {
   id: number;
 	nome : string;
 	ordem : number;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

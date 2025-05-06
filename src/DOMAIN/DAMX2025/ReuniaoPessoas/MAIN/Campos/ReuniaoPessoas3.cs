@@ -7,7 +7,6 @@ public partial class DBReuniaoPessoas
     private protected bool pFldFReuniao, pFldFOperador;
     [XmlIgnore]
     private protected int m_FReuniao, m_FOperador;
-    public int NFReuniao() => m_FReuniao;
     [XmlAttribute]
     public int FReuniao
     {
@@ -20,7 +19,6 @@ public partial class DBReuniaoPessoas
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {

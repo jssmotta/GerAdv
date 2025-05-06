@@ -50,7 +50,7 @@ public partial class DBReuniaoODicInfo : IODicInfo
     public static string TTabelaNome => DBReuniaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBReuniaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenBold, DBReuniaoDicInfo.RenGUID, DBReuniaoDicInfo.RenQuemCad, DBReuniaoDicInfo.RenDtCad, DBReuniaoDicInfo.RenQuemAtu, DBReuniaoDicInfo.RenDtAtu, DBReuniaoDicInfo.RenVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenBold, DBReuniaoDicInfo.RenGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

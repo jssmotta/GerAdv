@@ -16,6 +16,7 @@
  obs?: string;
  email?: string;
  andar?: string;
+ guid?: string;
 }
 
 export class FilterDivisaoTribunalDefaults implements FilterDivisaoTribunal {
@@ -35,5 +36,6 @@ export class FilterDivisaoTribunalDefaults implements FilterDivisaoTribunal {
     obs?: string = '';
     email?: string = '';
     andar?: string = '';
+    guid?: string = '';
 }
     

@@ -19,7 +19,7 @@ public class PrepostosValidation : IPrepostosValidation
         if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
             return $"'Prepostos' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
         // Funcao
-        if (reg.Funcao.IsEmptyIDNumber())
+        if (!reg.Funcao.IsEmptyIDNumber())
         {
             var regFuncao = funcaoReader.Read(reg.Funcao, oCnn);
             if (regFuncao == null || regFuncao.Id != reg.Funcao)
@@ -29,7 +29,7 @@ public class PrepostosValidation : IPrepostosValidation
         }
 
         // Setor
-        if (reg.Setor.IsEmptyIDNumber())
+        if (!reg.Setor.IsEmptyIDNumber())
         {
             var regSetor = setorReader.Read(reg.Setor, oCnn);
             if (regSetor == null || regSetor.Id != reg.Setor)

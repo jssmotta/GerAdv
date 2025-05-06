@@ -5,7 +5,7 @@ import { ProDespesasApi } from '../../Apis/ApiProDespesas';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProDespesasFormProps } from '../../Interfaces/interface.ProDespesas';
 import { ProDespesasService } from '../../Services/ProDespesas.service';
 import { useProDespesasForm } from '../../Hooks/useProDespesasForm';

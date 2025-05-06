@@ -8,6 +8,7 @@ public partial interface IOperadorGruposReader
     OperadorGruposResponse? Read(int id, SqlConnection oCnn);
     OperadorGruposResponse? Read(string where, SqlConnection oCnn);
     OperadorGruposResponse? Read(Entity.DBOperadorGrupos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OperadorGruposResponse? Read(DBOperadorGrupos dbRec);
 }
 

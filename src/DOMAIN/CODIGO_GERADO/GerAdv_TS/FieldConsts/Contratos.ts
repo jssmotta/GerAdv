@@ -28,4 +28,5 @@
 	suspenso = `Suspenso`,
 	multa = `Multa`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

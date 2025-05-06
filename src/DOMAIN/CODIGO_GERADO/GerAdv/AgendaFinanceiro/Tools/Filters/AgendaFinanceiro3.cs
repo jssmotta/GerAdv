@@ -119,4 +119,7 @@ public partial class FilterAgendaFinanceiro
 
     [JsonPropertyName("datainicioprazo")]
     public string DataInicioPrazo { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

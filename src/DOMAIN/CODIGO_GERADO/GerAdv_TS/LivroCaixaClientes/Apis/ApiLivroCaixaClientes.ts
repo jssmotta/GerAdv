@@ -3,7 +3,6 @@ import useSWR from 'swr';
 import { FilterLivroCaixaClientes } from "../Filters/LivroCaixaClientes"
 import { LivroCaixaClientes } from "../../Models/LivroCaixaClientes";
 import { ILivroCaixaClientes } from '../Interfaces/interface.LivroCaixaClientes';
-import { GetColumns, UpdateColumnsRequest } from "../../Models/Columns";
 import { decodeBase64Token, fetcher } from '@/app/tools/Fetcher';
 import { INotificationService, INotifySystemEntity, NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 
@@ -23,6 +22,7 @@ export class LivroCaixaClientesApi {
             headers: {
                 Authorization: `Bearer ${decodeBase64Token(this.authorization)}`,
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',     
             },
         };
     }
@@ -58,14 +58,6 @@ export class LivroCaixaClientesApi {
         return result;
     }
 
-    public async updateColumns(parameters: UpdateColumnsRequest): Promise<AxiosResponse> {
-        return axios.post(`${this.baseUrl}/UpdateColumns`, parameters, this.getHeaders());
-    }
-
-    public async getColumns(parameters: GetColumns): Promise<AxiosResponse> {
-        return axios.post(`${this.baseUrl}/GetColumns`, parameters, this.getHeaders());
-    }
-
     public async delete(id: number): Promise<AxiosResponse> {
         var result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
         if (result.data) {
@@ -97,15 +89,6 @@ export class LivroCaixaClientesApi {
     public useFilter(filtro: FilterLivroCaixaClientes) {
         const url = `${this.baseUrl}/Filter`;
         const key = `${url}::${this.authorization}::${JSON.stringify(filtro)}`;
-        return useSWR<LivroCaixaClientes[]>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
-    }
-
-    public useGetColumns(parameters: GetColumns) {
-        const url = `${this.baseUrl}/GetColumns`;
-        const key = `${url}::${this.authorization}`;
         return useSWR<LivroCaixaClientes[]>(key, fetcher, {
             revalidateOnFocus: false,
             revalidateOnReconnect: false

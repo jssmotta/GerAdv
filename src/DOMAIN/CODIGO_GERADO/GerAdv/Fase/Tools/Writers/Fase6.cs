@@ -16,6 +16,7 @@ public class Fase : IFaseWriter
         dbRec.FDescricao = fase.Descricao;
         dbRec.FJustica = fase.Justica;
         dbRec.FArea = fase.Area;
+        dbRec.FGUID = fase.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

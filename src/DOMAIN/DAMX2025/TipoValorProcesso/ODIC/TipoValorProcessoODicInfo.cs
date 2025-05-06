@@ -34,7 +34,7 @@ public partial class DBTipoValorProcessoODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoValorProcessoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoValorProcessoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoValorProcessoDicInfo.PtvDescricao, DBTipoValorProcessoDicInfo.PtvGUID];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoValorProcessoDicInfo.PtvDescricao];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoValorProcessoDicInfo.PtvDescricao, DBTipoValorProcessoDicInfo.PtvGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

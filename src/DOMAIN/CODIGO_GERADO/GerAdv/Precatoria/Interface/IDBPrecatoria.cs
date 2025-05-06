@@ -9,4 +9,5 @@ public partial interface IDBPrecatoria
     public string? FDeprecado { get; set; }
     public string? FOBS { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

@@ -13,7 +13,6 @@ public partial class DBHistorico
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected bool m_FNaoPublicavel, m_FAgendado, m_FConcluido, m_FMesmaAgenda, m_FResumido, m_FTop;
-    public int NFExtraID() => m_FExtraID;
     [XmlAttribute]
     public int FExtraID
     {
@@ -26,7 +25,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFIDNE() => m_FIDNE;
     [XmlAttribute]
     public int FIDNE
     {
@@ -39,7 +37,6 @@ public partial class DBHistorico
         }
     }
 
-    public string NFExtraGUID() => m_FExtraGUID ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FExtraGUID
     {
@@ -52,7 +49,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFLiminarOrigem() => m_FLiminarOrigem;
     [XmlAttribute]
     public int FLiminarOrigem
     {
@@ -65,7 +61,6 @@ public partial class DBHistorico
         }
     }
 
-    public bool NFNaoPublicavel() => m_FNaoPublicavel;
     [XmlAttribute]
     public bool FNaoPublicavel
     {
@@ -78,7 +73,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -91,7 +85,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFPrecatoria() => m_FPrecatoria;
     [XmlAttribute]
     public int FPrecatoria
     {
@@ -104,7 +97,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFApenso() => m_FApenso;
     [XmlAttribute]
     public int FApenso
     {
@@ -117,7 +109,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFIDInstProcesso() => m_FIDInstProcesso;
     [XmlAttribute]
     public int FIDInstProcesso
     {
@@ -130,7 +121,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFFase() => m_FFase;
     [XmlAttribute]
     public int FFase
     {
@@ -143,7 +133,6 @@ public partial class DBHistorico
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -161,7 +150,6 @@ public partial class DBHistorico
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -174,7 +162,6 @@ public partial class DBHistorico
         }
     }
 
-    public bool NFAgendado() => m_FAgendado;
     [XmlAttribute]
     public bool FAgendado
     {
@@ -187,7 +174,6 @@ public partial class DBHistorico
         }
     }
 
-    public bool NFConcluido() => m_FConcluido;
     [XmlAttribute]
     public bool FConcluido
     {
@@ -200,7 +186,6 @@ public partial class DBHistorico
         }
     }
 
-    public bool NFMesmaAgenda() => m_FMesmaAgenda;
     [XmlAttribute]
     public bool FMesmaAgenda
     {
@@ -213,7 +198,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFSAD() => m_FSAD;
     [XmlAttribute]
     public int FSAD
     {
@@ -226,7 +210,6 @@ public partial class DBHistorico
         }
     }
 
-    public bool NFResumido() => m_FResumido;
     [XmlAttribute]
     public bool FResumido
     {
@@ -239,7 +222,6 @@ public partial class DBHistorico
         }
     }
 
-    public int NFStatusAndamento() => m_FStatusAndamento;
     [XmlAttribute]
     public int FStatusAndamento
     {
@@ -252,7 +234,6 @@ public partial class DBHistorico
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {

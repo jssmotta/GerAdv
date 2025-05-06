@@ -9,7 +9,6 @@ public partial class DBProBarCODE
     private protected int m_FProcesso;
     [XmlIgnore]
     private protected string? m_FBarCODE;
-    public string NFBarCODE() => m_FBarCODE ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FBarCODE
     {
@@ -22,7 +21,6 @@ public partial class DBProBarCODE
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {

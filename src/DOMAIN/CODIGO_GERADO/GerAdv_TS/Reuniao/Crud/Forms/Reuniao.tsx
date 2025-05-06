@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IReuniao } from '../../Interfaces/interface.Reuniao';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IReuniao } from '@/app/GerAdv_TS/Reuniao/Interfaces/interface.Reuniao';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ReuniaoFormProps {
     reuniaoData: IReuniao;
@@ -60,15 +66,28 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ReuniaoForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ReuniaoForm-${reuniaoData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={reuniaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} />
+
+                <div className="grid-container">
 
             <ClientesComboBox
             name={'cliente'}
@@ -137,7 +156,7 @@ value={reuniaoData.horafinal}
 onChange={onChange}               
 />
 
-<Checkbox label="Externa" name="externa" checked={reuniaoData.externa} onChange={onChange} />
+<InputCheckbox label="Externa" name="externa" checked={reuniaoData.externa} onChange={onChange} />
         
 <Input
 type="text"
@@ -170,21 +189,10 @@ value={reuniaoData.principaisdecisoes}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/reuniaopessoas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?reuniao=${reuniaoData.id}`)}>Reuniao Pessoas</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

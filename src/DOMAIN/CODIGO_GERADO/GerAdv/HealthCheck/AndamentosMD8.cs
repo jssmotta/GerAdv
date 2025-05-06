@@ -72,7 +72,7 @@ public class AndamentosMDHealthCheck(IOptions<AppSettings> appSettings, Andament
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) amdNome,amdProcesso,amdAndamento,amdPathFull,amdUNC FROM dbo.AndamentosMD (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) amdNome,amdProcesso,amdAndamento,amdPathFull,amdUNC,amdGUID FROM dbo.AndamentosMD (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

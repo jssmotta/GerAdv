@@ -72,7 +72,7 @@ public class DocsRecebidosItensHealthCheck(IOptions<AppSettings> appSettings, Do
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) driContatoCRM,driNome,driDevolvido,driSeraDevolvido,driObservacoes,driBold FROM dbo.DocsRecebidosItens (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) driContatoCRM,driNome,driDevolvido,driSeraDevolvido,driObservacoes,driBold,driGUID FROM dbo.DocsRecebidosItens (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -27,4 +27,5 @@ public partial interface IDBContaCorrente
     public int FParcelaPrincipalID { get; set; }
     public bool FHide { get; set; }
     public string? FDataPgto { get; set; }
+    public string? FGUID { get; set; }
 }

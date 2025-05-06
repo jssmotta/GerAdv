@@ -10,4 +10,5 @@ public partial interface IDBDadosProcuracao
     public string? FPisPasep { get; set; }
     public string? FRemuneracao { get; set; }
     public string? FObjeto { get; set; }
+    public string? FGUID { get; set; }
 }

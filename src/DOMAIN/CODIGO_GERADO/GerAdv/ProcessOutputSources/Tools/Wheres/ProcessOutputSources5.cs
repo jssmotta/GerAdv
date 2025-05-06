@@ -17,6 +17,7 @@ public partial class ProcessOutputSources : IProcessOutputSourcesWhere
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputsources;
     }

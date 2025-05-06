@@ -20,6 +20,7 @@ public partial class ProCDA : IProCDAWhere
             Nome = dbRec.FNome ?? string.Empty,
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

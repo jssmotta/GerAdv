@@ -56,30 +56,6 @@ public static class AgendaRepetirDiasEndpoints
 
             return Results.Ok(result);
         }).WithName("AgendaRepetirDias_AddAndUpdate").WithDisplayName("Add or Update AgendaRepetirDias");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgendaRepetirDiasValidation validation, IAgendaRepetirDiasWriter writer, IAgendaRepetirDiasService service) =>
-        {
-            logger.LogInfo("AgendaRepetirDias", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AgendaRepetirDias", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AgendaRepetirDias_GetColumns").WithDisplayName("Get AgendaRepetirDias Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgendaRepetirDiasValidation validation, IAgendaRepetirDiasWriter writer, IAgendaRepetirDiasService service) =>
-        {
-            logger.LogInfo("AgendaRepetirDias", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AgendaRepetirDias", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AgendaRepetirDias_UpdateColumns").WithDisplayName("Update AgendaRepetirDias Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgendaRepetirDiasValidation validation, IAgendaRepetirDiasWriter writer, IAgendaRepetirDiasService service) =>
         {
             logger.LogInfo("AgendaRepetirDias", "Delete", $"id = {id}", uri);

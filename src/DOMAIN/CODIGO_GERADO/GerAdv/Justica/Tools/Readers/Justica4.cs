@@ -8,6 +8,7 @@ public partial interface IJusticaReader
     JusticaResponse? Read(int id, SqlConnection oCnn);
     JusticaResponse? Read(string where, SqlConnection oCnn);
     JusticaResponse? Read(Entity.DBJustica dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     JusticaResponse? Read(DBJustica dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class Justica : IJusticaReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class Justica : IJusticaReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

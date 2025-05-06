@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GraphEmpty } from "../../../Models/Graph";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GraphInc from "../Inc/Graph";
 import { IGraph } from "../../Interfaces/interface.Graph";
 import { GraphService } from "../../Services/Graph.service";
 import { GraphApi } from "../../Apis/ApiGraph";
@@ -16,11 +14,12 @@ import { GraphGridMobileComponent } from "../GridsMobile/Graph";
 import { GraphGridDesktopComponent } from "../GridsDesktop/Graph";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGraph } from "../../Filters/Graph";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GraphWindow from "./GraphWindow";
 
 const GraphGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const GraphGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <GraphGridMobileComponent data={graph} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GraphGridDesktopComponent data={graph} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GraphGridMobileComponent data={graph} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GraphGridDesktopComponent data={graph} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GraphWindow
           isOpen={showInc}

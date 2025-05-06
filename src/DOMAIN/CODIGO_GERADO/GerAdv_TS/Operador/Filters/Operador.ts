@@ -22,6 +22,7 @@
  suportenomesolicitante?: string;
  suporteultimoacesso?: string;
  suporteipultimoacesso?: string;
+ guid?: string;
 }
 
 export class FilterOperadorDefaults implements FilterOperador {
@@ -47,5 +48,6 @@ export class FilterOperadorDefaults implements FilterOperador {
     suportenomesolicitante?: string = '';
     suporteultimoacesso?: string = '';
     suporteipultimoacesso?: string = '';
+    guid?: string = '';
 }
     

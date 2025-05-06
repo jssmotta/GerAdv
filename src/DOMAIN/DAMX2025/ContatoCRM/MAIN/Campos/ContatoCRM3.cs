@@ -15,7 +15,6 @@ public partial class DBContatoCRM
     private protected bool m_FNaoPublicavel, m_FNotificar, m_FOcultar, m_FIsDocsRecebidos, m_FImportante, m_FUrgente, m_FGerarHoraTrabalhada, m_FExibirNoTopo, m_FContinuar, m_FBold;
     [XmlIgnore]
     private protected decimal m_FTempo;
-    public int NFAgeClienteAvisado() => m_FAgeClienteAvisado;
     [XmlAttribute]
     public int FAgeClienteAvisado
     {
@@ -28,7 +27,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFDocsViaRecebimento() => m_FDocsViaRecebimento;
     [XmlAttribute]
     public int FDocsViaRecebimento
     {
@@ -41,7 +39,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFNaoPublicavel() => m_FNaoPublicavel;
     [XmlAttribute]
     public bool FNaoPublicavel
     {
@@ -54,7 +51,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFNotificar() => m_FNotificar;
     [XmlAttribute]
     public bool FNotificar
     {
@@ -67,7 +63,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFOcultar() => m_FOcultar;
     [XmlAttribute]
     public bool FOcultar
     {
@@ -80,7 +75,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFAssunto() => m_FAssunto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssunto
     {
@@ -93,7 +87,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFIsDocsRecebidos() => m_FIsDocsRecebidos;
     [XmlAttribute]
     public bool FIsDocsRecebidos
     {
@@ -106,7 +99,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFQuemNotificou() => m_FQuemNotificou;
     [XmlAttribute]
     public int FQuemNotificou
     {
@@ -119,7 +111,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFDataNotificou() => $"{m_FDataNotificou:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataNotificou:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataNotificou => Convert.ToDateTime(m_FDataNotificou);
 
@@ -137,7 +128,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -150,7 +140,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -163,7 +152,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFHoraNotificou() => $"{m_FHoraNotificou:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraNotificou:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraNotificou => Convert.ToDateTime(m_FHoraNotificou);
 
@@ -198,7 +186,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFObjetoNotificou() => m_FObjetoNotificou;
     [XmlAttribute]
     public int FObjetoNotificou
     {
@@ -211,7 +198,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFPessoaContato() => m_FPessoaContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPessoaContato
     {
@@ -224,7 +210,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -242,7 +227,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public decimal NFTempo() => m_FTempo;
     [XmlAttribute]
     public decimal FTempo
     {
@@ -256,7 +240,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFHoraInicial() => $"{m_FHoraInicial:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraInicial:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraInicial => Convert.ToDateTime(m_FHoraInicial);
 
@@ -291,7 +274,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFHoraFinal() => $"{m_FHoraFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHoraFinal:HH:mm}";
     [XmlIgnore]
     public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
@@ -326,7 +308,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -339,7 +320,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFImportante() => m_FImportante;
     [XmlAttribute]
     public bool FImportante
     {
@@ -352,7 +332,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFUrgente() => m_FUrgente;
     [XmlAttribute]
     public bool FUrgente
     {
@@ -365,7 +344,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFGerarHoraTrabalhada() => m_FGerarHoraTrabalhada;
     [XmlAttribute]
     public bool FGerarHoraTrabalhada
     {
@@ -378,7 +356,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFExibirNoTopo() => m_FExibirNoTopo;
     [XmlAttribute]
     public bool FExibirNoTopo
     {
@@ -391,7 +368,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFTipoContatoCRM() => m_FTipoContatoCRM;
     [XmlAttribute]
     public int FTipoContatoCRM
     {
@@ -404,7 +380,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public string NFContato() => m_FContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContato
     {
@@ -417,7 +392,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public int NFEmocao() => m_FEmocao;
     [XmlAttribute]
     public int FEmocao
     {
@@ -430,7 +404,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFContinuar() => m_FContinuar;
     [XmlAttribute]
     public bool FContinuar
     {
@@ -443,7 +416,6 @@ public partial class DBContatoCRM
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

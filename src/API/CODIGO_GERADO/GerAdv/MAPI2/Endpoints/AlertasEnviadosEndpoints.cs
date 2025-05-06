@@ -56,30 +56,6 @@ public static class AlertasEnviadosEndpoints
 
             return Results.Ok(result);
         }).WithName("AlertasEnviados_AddAndUpdate").WithDisplayName("Add or Update AlertasEnviados");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAlertasEnviadosValidation validation, IAlertasEnviadosWriter writer, IOperadorReader operadorReader, IAlertasReader alertasReader, IAlertasEnviadosService service) =>
-        {
-            logger.LogInfo("AlertasEnviados", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AlertasEnviados", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AlertasEnviados_GetColumns").WithDisplayName("Get AlertasEnviados Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAlertasEnviadosValidation validation, IAlertasEnviadosWriter writer, IOperadorReader operadorReader, IAlertasReader alertasReader, IAlertasEnviadosService service) =>
-        {
-            logger.LogInfo("AlertasEnviados", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AlertasEnviados", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AlertasEnviados_UpdateColumns").WithDisplayName("Update AlertasEnviados Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAlertasEnviadosValidation validation, IAlertasEnviadosWriter writer, IOperadorReader operadorReader, IAlertasReader alertasReader, IAlertasEnviadosService service) =>
         {
             logger.LogInfo("AlertasEnviados", "Delete", $"id = {id}", uri);

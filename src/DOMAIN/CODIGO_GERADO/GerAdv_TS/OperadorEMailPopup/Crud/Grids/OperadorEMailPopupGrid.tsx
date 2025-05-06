@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { OperadorEMailPopupEmpty } from "../../../Models/OperadorEMailPopup";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import OperadorEMailPopupInc from "../Inc/OperadorEMailPopup";
 import { IOperadorEMailPopup } from "../../Interfaces/interface.OperadorEMailPopup";
 import { OperadorEMailPopupService } from "../../Services/OperadorEMailPopup.service";
 import { OperadorEMailPopupApi } from "../../Apis/ApiOperadorEMailPopup";
@@ -16,11 +14,12 @@ import { OperadorEMailPopupGridMobileComponent } from "../GridsMobile/OperadorEM
 import { OperadorEMailPopupGridDesktopComponent } from "../GridsDesktop/OperadorEMailPopup";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterOperadorEMailPopup } from "../../Filters/OperadorEMailPopup";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import OperadorEMailPopupWindow from "./OperadorEMailPopupWindow";
 
 const OperadorEMailPopupGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const OperadorEMailPopupGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <OperadorEMailPopupGridMobileComponent data={operadoremailpopup} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <OperadorEMailPopupGridDesktopComponent data={operadoremailpopup} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <OperadorEMailPopupGridMobileComponent data={operadoremailpopup} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <OperadorEMailPopupGridDesktopComponent data={operadoremailpopup} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <OperadorEMailPopupWindow
           isOpen={showInc}

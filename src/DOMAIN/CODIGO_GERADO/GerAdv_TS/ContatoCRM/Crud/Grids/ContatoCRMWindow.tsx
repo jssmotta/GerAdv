@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ContatoCRMInc from "../Inc/ContatoCRM";
 import { IContatoCRM } from "../../Interfaces/interface.ContatoCRM";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ContatoCRMWindow: React.FC<ContatoCRMWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/contatocrm/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContatoCRM?.id}`);
+            router.push(`/pages/contatocrm/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedContatoCRM?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedContatoCRM]);
@@ -42,7 +43,7 @@ const ContatoCRMWindow: React.FC<ContatoCRMWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={824}
                     newWidth={1440}
                     id={(selectedContatoCRM?.id ?? 0).toString()}

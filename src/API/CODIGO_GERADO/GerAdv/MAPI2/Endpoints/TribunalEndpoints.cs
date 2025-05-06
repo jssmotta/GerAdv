@@ -74,30 +74,6 @@ public static class TribunalEndpoints
 
             return Results.Ok(result);
         }).WithName("Tribunal_AddAndUpdate").WithDisplayName("Add or Update Tribunal");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, ITribunalService service) =>
-        {
-            logger.LogInfo("Tribunal", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Tribunal", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Tribunal_GetColumns").WithDisplayName("Get Tribunal Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, ITribunalService service) =>
-        {
-            logger.LogInfo("Tribunal", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Tribunal", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Tribunal_UpdateColumns").WithDisplayName("Update Tribunal Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, ITribunalService service) =>
         {
             logger.LogInfo("Tribunal", "Delete", $"id = {id}", uri);

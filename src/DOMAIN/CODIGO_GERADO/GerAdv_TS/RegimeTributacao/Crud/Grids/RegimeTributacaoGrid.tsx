@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { RegimeTributacaoEmpty } from "../../../Models/RegimeTributacao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import RegimeTributacaoInc from "../Inc/RegimeTributacao";
 import { IRegimeTributacao } from "../../Interfaces/interface.RegimeTributacao";
 import { RegimeTributacaoService } from "../../Services/RegimeTributacao.service";
 import { RegimeTributacaoApi } from "../../Apis/ApiRegimeTributacao";
@@ -16,11 +14,12 @@ import { RegimeTributacaoGridMobileComponent } from "../GridsMobile/RegimeTribut
 import { RegimeTributacaoGridDesktopComponent } from "../GridsDesktop/RegimeTributacao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterRegimeTributacao } from "../../Filters/RegimeTributacao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import RegimeTributacaoWindow from "./RegimeTributacaoWindow";
 
 const RegimeTributacaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const RegimeTributacaoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <RegimeTributacaoGridMobileComponent data={regimetributacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <RegimeTributacaoGridDesktopComponent data={regimetributacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <RegimeTributacaoGridMobileComponent data={regimetributacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <RegimeTributacaoGridDesktopComponent data={regimetributacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <RegimeTributacaoWindow
           isOpen={showInc}

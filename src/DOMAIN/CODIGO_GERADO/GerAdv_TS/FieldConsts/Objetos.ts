@@ -3,4 +3,5 @@
 	area = `Area`,
 	nome = `Nome`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

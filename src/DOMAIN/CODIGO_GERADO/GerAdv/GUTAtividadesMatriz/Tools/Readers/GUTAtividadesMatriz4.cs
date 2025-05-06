@@ -8,6 +8,7 @@ public partial interface IGUTAtividadesMatrizReader
     GUTAtividadesMatrizResponse? Read(int id, SqlConnection oCnn);
     GUTAtividadesMatrizResponse? Read(string where, SqlConnection oCnn);
     GUTAtividadesMatrizResponse? Read(Entity.DBGUTAtividadesMatriz dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTAtividadesMatrizResponse? Read(DBGUTAtividadesMatriz dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

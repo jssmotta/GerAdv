@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GUTPeriodicidadeStatusEmpty } from "../../../Models/GUTPeriodicidadeStatus";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GUTPeriodicidadeStatusInc from "../Inc/GUTPeriodicidadeStatus";
 import { IGUTPeriodicidadeStatus } from "../../Interfaces/interface.GUTPeriodicidadeStatus";
 import { GUTPeriodicidadeStatusService } from "../../Services/GUTPeriodicidadeStatus.service";
 import { GUTPeriodicidadeStatusApi } from "../../Apis/ApiGUTPeriodicidadeStatus";
@@ -16,11 +14,12 @@ import { GUTPeriodicidadeStatusGridMobileComponent } from "../GridsMobile/GUTPer
 import { GUTPeriodicidadeStatusGridDesktopComponent } from "../GridsDesktop/GUTPeriodicidadeStatus";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGUTPeriodicidadeStatus } from "../../Filters/GUTPeriodicidadeStatus";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GUTPeriodicidadeStatusWindow from "./GUTPeriodicidadeStatusWindow";
 
 const GUTPeriodicidadeStatusGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const GUTPeriodicidadeStatusGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <GUTPeriodicidadeStatusGridMobileComponent data={gutperiodicidadestatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GUTPeriodicidadeStatusGridDesktopComponent data={gutperiodicidadestatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GUTPeriodicidadeStatusGridMobileComponent data={gutperiodicidadestatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GUTPeriodicidadeStatusGridDesktopComponent data={gutperiodicidadestatus} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GUTPeriodicidadeStatusWindow
           isOpen={showInc}

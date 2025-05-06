@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ViaRecebimentoInc from "../Inc/ViaRecebimento";
 import { IViaRecebimento } from "../../Interfaces/interface.ViaRecebimento";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ViaRecebimentoWindow: React.FC<ViaRecebimentoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/viarecebimento/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedViaRecebimento?.id}`);
+            router.push(`/pages/viarecebimento/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedViaRecebimento?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedViaRecebimento]);
@@ -42,7 +43,7 @@ const ViaRecebimentoWindow: React.FC<ViaRecebimentoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedViaRecebimento?.id ?? 0).toString()}

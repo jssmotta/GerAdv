@@ -14,4 +14,7 @@ public partial class FilterGUTTipo
 
     [JsonPropertyName("ordem")]
     public int Ordem { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

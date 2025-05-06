@@ -6,11 +6,17 @@ using DBOperador = MenphisSI.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 
+public enum E_TIPO_ENVIO
+{
+    NOVOS = 1,
+    DIA = 2
+}
+
 public class EnvioNotificacoes
 {
-    private string ConteudoHtml(string operador, string uri, SqlConnection oCnn)
+    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
     {
-        var ds = ObterCompromissos(oCnn, uri, operador);
+        var ds = ObterCompromissos(oCnn, tipo, uri, operador);
         if (ds.Rows.Count == 0)
         {
             return "";
@@ -70,49 +76,55 @@ END;
         using var conexao = Configuracoes.GetConnectionByUriRw(uri);
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript2, conexao);
-
     }
 
-    private DataTable ObterCompromissos(SqlConnection conexao, string uri, string operador)
+    private DataTable ObterCompromissos(
+        SqlConnection conexao,
+        E_TIPO_ENVIO tipo,
+        string uri,
+        string operador,
+        int nTry = 0)
     {
-        var nTry = 0;
-
         try
         {
-            var nDaysAhead = 5;
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
-            {
-                nDaysAhead = 8;
-            }
+            string whereClause = ConstruirCondicaoFiltro(tipo);
+            string operadorSanitizado = operador.Replace("'", "''");
 
             string sql = $@"
-SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile] 
-  FROM [dbo].[AgendaRelatorio]
+SELECT [vqaData], [xxxBoxAudienciaMobile] 
+FROM [dbo].[AgendaRelatorio]
+LEFT JOIN [dbo].[Agenda] a ON vqaCodigo = a.ageCodigo
+WHERE a.ageConcluido = 0 
+     {whereClause}
+     AND xxxParaNome LIKE '{operadorSanitizado}'
+ORDER BY vqaData;";
 
-  LEFT JOIN [dbo].[Agenda] a on vqaCodigo = a.ageCodigo
-
-  WHERE ageConcluido = 0 
-        AND vqaData >= DATEADD(DAY, -1, GETDATE()) and vqaData <=DATEADD(DAY, {nDaysAhead}, GETDATE())   
-        AND xxxParaNome like '{operador.Replace("'", "''")}'
-  
-  ORDER BY vqaData;
-
-";
-
-            var result = ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
-
-            return result;
+            return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            nTry++;
-            if (nTry > 3)
+            if (++nTry > 3)
             {
                 throw;
             }
+
             TestaViews(uri);
-            return ObterCompromissos(conexao, uri, operador);
+            return ObterCompromissos(conexao, tipo, uri, operador, nTry);
         }
+    }
+    
+    private string ConstruirCondicaoFiltro(E_TIPO_ENVIO tipo)
+    {
+        if (tipo == E_TIPO_ENVIO.NOVOS)
+        {
+            return @"  AND (CAST(a.ageDtCad AS DATE) = CAST(GETDATE() AS DATE) 
+                    OR CAST(a.ageDtAtu AS DATE) = CAST(GETDATE() AS DATE))";
+        }
+
+        int diasAFrente = (DateTime.Now.DayOfWeek == DayOfWeek.Monday) ? 8 : 5;
+
+        return $@" AND vqaData >= DATEADD(DAY, -1, GETDATE()) 
+                AND vqaData <= DATEADD(DAY, {diasAFrente}, GETDATE())";
     }
 
     private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total)
@@ -121,7 +133,7 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
         var builder = new StringBuilder(estiloTabela);
 
         // Adiciona o cabeçalho da tabela
-        builder.AppendLine("<table class='tabComrpomissos'><thead>");
+        builder.AppendLine("<table class='tabCompromissos'><thead>");
         builder.AppendLine("<tr>");
         builder.AppendLine($"<th width=\"100%\"><h1>{total} compromisso{(total == 1 ? "" : "s")} para {nome}</h1></th>");
 
@@ -132,7 +144,6 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
         int contador = 0;
         foreach (DataRow linha in compromissos.Rows)
         {
-
             contador++;
 
             builder.AppendLine("<tr>");
@@ -148,164 +159,13 @@ SELECT TOP (100) [vqaData], [xxxBoxAudienciaMobile]
         return builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"", "\"");
     }
 
-    private string ObterEstiloTabelaCss()
-    {
-        return @"<style>
-       .tabComrpomissos {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.tabComrpomissos thead {
-    background-color: #f8f9fa;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.tabComrpomissos th {
-    padding: 12px 8px;
-    text-align: left;
-    border: 1px solid #ddd;
-    font-weight: 600;
-    color: #222;
-}
-
-.tabComrpomissos td {
-    padding: 10px 8px;
-    border: 1px solid #ddd;
-    vertical-align: top;
-}
-
-.tabComrpomissos tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-.tabComrpomissos tr:hover {
-    background-color: #f1f3f5;
-}
-
-/* Better Responsiveness for iPhone */
-@media only screen and (max-width: 767px) {
-    .tabComrpomissos {
-        font-size: 13px;
-    }
     
-    .tabComrpomissos th, 
-    .tabComrpomissos td {
-        font-size: 13px;
-        padding: 8px 6px;
-    }
-    
-    /* Inner table styles */
-    .tabComrpomissos td table {
-        width: 100%;
-    }
-    
-    .tabComrpomissos td table td {
-        padding: 6px 4px;
-        word-break: break-word;
-    }
-    
-    /* Ensure text doesn't overflow on small screens */
-    .tabComrpomissos td a {
-        word-break: break-word;
-    }
-    
-    /* Optimize font size for very small screens */
-    @media only screen and (max-width: 375px) {
-        .tabComrpomissos {
-            font-size: 12px;
-        }
-        
-        .tabComrpomissos th, 
-        .tabComrpomissos td {
-            font-size: 12px;
-            padding: 6px 4px;
-        }
-        
-        .tabComrpomissos td table td {
-            padding: 5px 3px;
-        }
-    }
-}
-
-/* Add some visual enhancements */
-.tabComrpomissos tr td:first-child {
-    font-weight: 600;
-    background-color: #f8f9fa;
-}
-
-/* Better inner table styling */
-.tabComrpomissos td table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.tabComrpomissos td table tr:hover {
-    background-color: transparent;
-}
-
-/* Style for the client name in inner tables */
-.tabComrpomissos td table td:first-child {
-    font-weight: normal;
-}
-
-/* Better styling for links */
-.tabComrpomissos a {
-    color: #0066cc;
-    text-decoration: none;
-}
-
-.tabComrpomissos a:hover {
-    text-decoration: underline;
-}
-
-/* Style for color red spans */
-.tabComrpomissos span[style*=""color:red""] {
-    color: #ff3b30 !important;
-    font-weight: bold;
-}
-
-/* Better icon spacing */
-.tabComrpomissos img {
-    vertical-align: middle;
-    margin-right: 4px;
-}
-
-/* Fix for Safari on iOS */
-@supports (-webkit-touch-callout: none) {
-    .tabComrpomissos {
-        -webkit-text-size-adjust: 100%;
-    }
-}
-
-/* Hide header elements */
-.tabComrpomissos td a[href*=""MobileAndamentoRetorno.aspx""] span,
-.tabComrpomissos td table tr:first-child td[colspan=""3""],
-.tabComrpomissos td table tr:nth-child(2) td[colspan=""3""] {
-    display: none;
-}
-
-/* Additionally hide the ""INFORMAR RESULTADO"" text */
-a[href*=""MobileAndamentoRetorno.aspx""] {
-    display: none;
-}
-   </style> ";
-    }
-
-    public int EnviarEmailsParaOperadores(string uri, SqlConnection oCnn)
+    public int EnviarEmailsParaOperadores(E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
     {
         string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
         var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
         var servicoEmail = new SendEmailApi();
-        var assunto = "Compromissos da Agenda do Advocati.NET para ";
+        var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
         var count = 0;
 
         foreach (var operador in operadores)
@@ -319,7 +179,7 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
                                              : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtml(cNome, uri, oCnn);
+            var conteudoHtml = ConteudoHtml(cNome, tipo, uri, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -336,19 +196,22 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
                 Time2Live = 24
             };
 
+#if (!DEBUG)
             _ = servicoEmail.Send(email);
-
+#endif
             if (count == 0)
             {
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday) // DIA DE TESTES
+#if (!DEBUG)
+                if (uri.ToUpper().Equals("IBRADV"))
+#endif
                 {
                     var email2 = new MenphisSI.Api.Models.SendEmail
                     {
-                        ParaEmail = "suporte@menphis.com.br",
-                        ParaNome = "SUPORTE MENPHIS",
+                        ParaEmail = "motta@menphis.com.br",
+                        ParaNome = "Jefferson S. Motta",
                         Assunto = assunto + cNome,
                         Mensagem = conteudoHtml,
-                        NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                        NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                         Time2Live = 24
                     };
                     _ = servicoEmail.Send(email2);
@@ -361,4 +224,157 @@ a[href*=""MobileAndamentoRetorno.aspx""] {
 
         return count;
     }
+
+    private string ObterEstiloTabelaCss()
+    {
+        return @"<style>
+       .tabCompromissos {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.tabCompromissos thead {
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tabCompromissos th {
+    padding: 12px 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-weight: 600;
+    color: #222;
+}
+
+.tabCompromissos td {
+    padding: 10px 8px;
+    border: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.tabCompromissos tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.tabCompromissos tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* Better Responsiveness for iPhone */
+@media only screen and (max-width: 767px) {
+    .tabCompromissos {
+        font-size: 13px;
+    }
+    
+    .tabCompromissos th, 
+    .tabCompromissos td {
+        font-size: 13px;
+        padding: 8px 6px;
+    }
+    
+    /* Inner table styles */
+    .tabCompromissos td table {
+        width: 100%;
+    }
+    
+    .tabCompromissos td table td {
+        padding: 6px 4px;
+        word-break: break-word;
+    }
+    
+    /* Ensure text doesn't overflow on small screens */
+    .tabCompromissos td a {
+        word-break: break-word;
+    }
+    
+    /* Optimize font size for very small screens */
+    @media only screen and (max-width: 375px) {
+        .tabCompromissos {
+            font-size: 12px;
+        }
+        
+        .tabCompromissos th, 
+        .tabCompromissos td {
+            font-size: 12px;
+            padding: 6px 4px;
+        }
+        
+        .tabCompromissos td table td {
+            padding: 5px 3px;
+        }
+    }
+}
+
+/* Add some visual enhancements */
+.tabCompromissos tr td:first-child {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+/* Better inner table styling */
+.tabCompromissos td table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tabCompromissos td table tr:hover {
+    background-color: transparent;
+}
+
+/* Style for the client name in inner tables */
+.tabCompromissos td table td:first-child {
+    font-weight: normal;
+}
+
+/* Better styling for links */
+.tabCompromissos a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.tabCompromissos a:hover {
+    text-decoration: underline;
+}
+
+/* Style for color red spans */
+.tabCompromissos span[style*=""color:red""] {
+    color: #ff3b30 !important;
+    font-weight: bold;
+}
+
+/* Better icon spacing */
+.tabCompromissos img {
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+/* Fix for Safari on iOS */
+@supports (-webkit-touch-callout: none) {
+    .tabCompromissos {
+        -webkit-text-size-adjust: 100%;
+    }
+}
+
+/* Hide header elements */
+.tabCompromissos td a[href*=""MobileAndamentoRetorno.aspx""] span,
+.tabCompromissos td table tr:first-child td[colspan=""3""],
+.tabCompromissos td table tr:nth-child(2) td[colspan=""3""] {
+    display: none;
+}
+
+/* Additionally hide the ""INFORMAR RESULTADO"" text */
+a[href*=""MobileAndamentoRetorno.aspx""] {
+    display: none;
+}
+   </style> ";
+    }
+
 }

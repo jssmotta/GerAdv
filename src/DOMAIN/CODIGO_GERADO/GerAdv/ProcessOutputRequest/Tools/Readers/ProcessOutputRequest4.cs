@@ -8,6 +8,7 @@ public partial interface IProcessOutputRequestReader
     ProcessOutputRequestResponse? Read(int id, SqlConnection oCnn);
     ProcessOutputRequestResponse? Read(string where, SqlConnection oCnn);
     ProcessOutputRequestResponse? Read(Entity.DBProcessOutputRequest dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProcessOutputRequestResponse? Read(DBProcessOutputRequest dbRec);
 }
 
@@ -39,7 +40,7 @@ public partial class ProcessOutputRequest : IProcessOutputRequestReader
             Operador = dbRec.FOperador,
             Processo = dbRec.FProcesso,
             UltimoIdTabelaExo = dbRec.FUltimoIdTabelaExo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -70,7 +71,7 @@ public partial class ProcessOutputRequest : IProcessOutputRequestReader
             Operador = dbRec.FOperador,
             Processo = dbRec.FProcesso,
             UltimoIdTabelaExo = dbRec.FUltimoIdTabelaExo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

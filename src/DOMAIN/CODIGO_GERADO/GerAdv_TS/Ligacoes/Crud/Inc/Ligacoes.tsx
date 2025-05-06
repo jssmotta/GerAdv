@@ -5,7 +5,7 @@ import { LigacoesApi } from '../../Apis/ApiLigacoes';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ILigacoesFormProps } from '../../Interfaces/interface.Ligacoes';
 import { LigacoesService } from '../../Services/Ligacoes.service';
 import { useLigacoesForm } from '../../Hooks/useLigacoesForm';

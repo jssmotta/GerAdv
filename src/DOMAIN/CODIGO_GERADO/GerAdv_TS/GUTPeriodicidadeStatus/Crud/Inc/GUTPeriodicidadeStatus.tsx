@@ -5,7 +5,7 @@ import { GUTPeriodicidadeStatusApi } from '../../Apis/ApiGUTPeriodicidadeStatus'
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IGUTPeriodicidadeStatusFormProps } from '../../Interfaces/interface.GUTPeriodicidadeStatus';
 import { GUTPeriodicidadeStatusService } from '../../Services/GUTPeriodicidadeStatus.service';
 import { useGUTPeriodicidadeStatusForm } from '../../Hooks/useGUTPeriodicidadeStatusForm';

@@ -8,6 +8,7 @@ public partial interface IAreaReader
     AreaResponse? Read(int id, SqlConnection oCnn);
     AreaResponse? Read(string where, SqlConnection oCnn);
     AreaResponse? Read(Entity.DBArea dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AreaResponse? Read(DBArea dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class Area : IAreaReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class Area : IAreaReader
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProCDAInc from "../Inc/ProCDA";
 import { IProCDA } from "../../Interfaces/interface.ProCDA";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProCDAWindow: React.FC<ProCDAWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/procda/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProCDA?.id}`);
+            router.push(`/pages/procda/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProCDA?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProCDA]);
@@ -42,7 +43,7 @@ const ProCDAWindow: React.FC<ProCDAWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedProCDA?.id ?? 0).toString()}

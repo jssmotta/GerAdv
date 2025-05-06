@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IColaboradores } from '../../Interfaces/interface.Colaboradores';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IColaboradores } from '@/app/GerAdv_TS/Colaboradores/Interfaces/interface.Colaboradores';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import CargosComboBox from '@/app/GerAdv_TS/Cargos/ComboBox/Cargos';
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { CargosApi } from '@/app/GerAdv_TS/Cargos/Apis/ApiCargos';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCep from '@/app/components/Inputs/InputCep'
 
@@ -85,24 +91,37 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ColaboradoresForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeCargos && (<h2>{nomeCargos}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ColaboradoresForm-${colaboradoresData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={colaboradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={colaboradoresData.nome}
+            placeholder={`Digite nome colaborador`}
             onChange={onChange}
             required
           />
@@ -121,7 +140,7 @@ if (getParamFromUrl("clientes") > 0) {
             label={'Clientes'}
             />
 
-<Checkbox label="Sexo" name="sexo" checked={colaboradoresData.sexo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={colaboradoresData.sexo} onChange={onChange} />
         
 <InputCpf
 type="text"
@@ -254,22 +273,12 @@ value={colaboradoresData.class}
 onChange={onChange}               
 />
 
-<Checkbox label="Ani" name="ani" checked={colaboradoresData.ani} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarecords${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?colaboradores=${colaboradoresData.id}`)}>Agenda Records</div>
+<InputCheckbox label="Ani" name="ani" checked={colaboradoresData.ani} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

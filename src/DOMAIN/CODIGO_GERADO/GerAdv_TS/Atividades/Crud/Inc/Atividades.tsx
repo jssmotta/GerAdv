@@ -5,7 +5,7 @@ import { AtividadesApi } from '../../Apis/ApiAtividades';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAtividadesFormProps } from '../../Interfaces/interface.Atividades';
 import { AtividadesService } from '../../Services/Atividades.service';
 import { useAtividadesForm } from '../../Hooks/useAtividadesForm';

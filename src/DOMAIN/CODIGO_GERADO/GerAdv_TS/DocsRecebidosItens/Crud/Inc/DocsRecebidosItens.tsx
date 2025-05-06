@@ -5,7 +5,7 @@ import { DocsRecebidosItensApi } from '../../Apis/ApiDocsRecebidosItens';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IDocsRecebidosItensFormProps } from '../../Interfaces/interface.DocsRecebidosItens';
 import { DocsRecebidosItensService } from '../../Services/DocsRecebidosItens.service';
 import { useDocsRecebidosItensForm } from '../../Hooks/useDocsRecebidosItensForm';

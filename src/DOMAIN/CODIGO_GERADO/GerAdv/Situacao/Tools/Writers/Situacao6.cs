@@ -17,6 +17,7 @@ public class Situacao : ISituacaoWriter
         dbRec.FParte_Opo = situacao.Parte_Opo;
         dbRec.FTop = situacao.Top;
         dbRec.FBold = situacao.Bold;
+        dbRec.FGUID = situacao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

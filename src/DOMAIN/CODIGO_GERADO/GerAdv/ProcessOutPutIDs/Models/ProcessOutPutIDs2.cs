@@ -19,5 +19,5 @@ public partial class ProcessOutPutIDs
     /// GUId - poiGUID - tamanho máximo: 100 
     /// </summary>
     [JsonPropertyName("guid")]
-    public string Guid { get; set; } = "";
+    public string GUID { get; set; } = "";
 }

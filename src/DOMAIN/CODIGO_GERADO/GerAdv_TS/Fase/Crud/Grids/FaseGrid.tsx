@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { FaseEmpty } from "../../../Models/Fase";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import FaseInc from "../Inc/Fase";
 import { IFase } from "../../Interfaces/interface.Fase";
 import { FaseService } from "../../Services/Fase.service";
 import { FaseApi } from "../../Apis/ApiFase";
@@ -16,11 +14,12 @@ import { FaseGridMobileComponent } from "../GridsMobile/Fase";
 import { FaseGridDesktopComponent } from "../GridsDesktop/Fase";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterFase } from "../../Filters/Fase";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import FaseWindow from "./FaseWindow";
 
 const FaseGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const FaseGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <FaseGridMobileComponent data={fase} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <FaseGridDesktopComponent data={fase} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <FaseGridMobileComponent data={fase} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <FaseGridDesktopComponent data={fase} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <FaseWindow
           isOpen={showInc}

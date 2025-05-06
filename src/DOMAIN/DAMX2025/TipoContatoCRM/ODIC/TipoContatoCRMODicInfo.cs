@@ -40,7 +40,7 @@ public partial class DBTipoContatoCRMODicInfo : IODicInfo
     public static string TTabelaNome => DBTipoContatoCRMDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoContatoCRMDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccBold, DBTipoContatoCRMDicInfo.TccGUID, DBTipoContatoCRMDicInfo.TccQuemCad, DBTipoContatoCRMDicInfo.TccDtCad, DBTipoContatoCRMDicInfo.TccQuemAtu, DBTipoContatoCRMDicInfo.TccDtAtu, DBTipoContatoCRMDicInfo.TccVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccBold, DBTipoContatoCRMDicInfo.TccGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

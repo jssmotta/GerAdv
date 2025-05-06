@@ -20,6 +20,7 @@ public class Cidade : ICidadeWriter
         dbRec.FNome = cidade.Nome;
         dbRec.FUF = cidade.UF;
         dbRec.FSigla = cidade.Sigla;
+        dbRec.FGUID = cidade.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

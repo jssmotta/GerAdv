@@ -18,6 +18,7 @@
  anexocomp?: string;
  anexounc?: string;
     servico?: number;
+ guid?: string;
 }
 
 export class FilterHorasTrabDefaults implements FilterHorasTrab {
@@ -39,5 +40,6 @@ export class FilterHorasTrabDefaults implements FilterHorasTrab {
     anexocomp?: string = '';
     anexounc?: string = '';
     servico?: number = -2147483648;
+    guid?: string = '';
 }
     

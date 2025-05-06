@@ -72,7 +72,7 @@ public class DadosProcuracaoHealthCheck(IOptions<AppSettings> appSettings, Dados
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) prcCliente,prcEstadoCivil,prcNacionalidade,prcProfissao,prcCTPS,prcPisPasep,prcRemuneracao,prcObjeto FROM dbo.DadosProcuracao (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) prcCliente,prcEstadoCivil,prcNacionalidade,prcProfissao,prcCTPS,prcPisPasep,prcRemuneracao,prcObjeto,prcGUID FROM dbo.DadosProcuracao (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

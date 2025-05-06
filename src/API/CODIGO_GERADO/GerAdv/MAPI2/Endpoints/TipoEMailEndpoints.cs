@@ -74,30 +74,6 @@ public static class TipoEMailEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoEMail_AddAndUpdate").WithDisplayName("Add or Update TipoEMail");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoEMailValidation validation, ITipoEMailWriter writer, ITipoEMailService service) =>
-        {
-            logger.LogInfo("TipoEMail", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoEMail", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoEMail_GetColumns").WithDisplayName("Get TipoEMail Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoEMailValidation validation, ITipoEMailWriter writer, ITipoEMailService service) =>
-        {
-            logger.LogInfo("TipoEMail", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoEMail", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoEMail_UpdateColumns").WithDisplayName("Update TipoEMail Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoEMailValidation validation, ITipoEMailWriter writer, ITipoEMailService service) =>
         {
             logger.LogInfo("TipoEMail", "Delete", $"id = {id}", uri);

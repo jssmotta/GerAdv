@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GUTTipoEmpty } from "../../../Models/GUTTipo";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GUTTipoInc from "../Inc/GUTTipo";
 import { IGUTTipo } from "../../Interfaces/interface.GUTTipo";
 import { GUTTipoService } from "../../Services/GUTTipo.service";
 import { GUTTipoApi } from "../../Apis/ApiGUTTipo";
@@ -16,11 +14,12 @@ import { GUTTipoGridMobileComponent } from "../GridsMobile/GUTTipo";
 import { GUTTipoGridDesktopComponent } from "../GridsDesktop/GUTTipo";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGUTTipo } from "../../Filters/GUTTipo";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GUTTipoWindow from "./GUTTipoWindow";
 
 const GUTTipoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const GUTTipoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <GUTTipoGridMobileComponent data={guttipo} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GUTTipoGridDesktopComponent data={guttipo} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GUTTipoGridMobileComponent data={guttipo} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GUTTipoGridDesktopComponent data={guttipo} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GUTTipoWindow
           isOpen={showInc}

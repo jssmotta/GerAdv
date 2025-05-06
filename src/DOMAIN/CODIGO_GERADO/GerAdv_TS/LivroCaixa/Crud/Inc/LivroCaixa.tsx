@@ -5,7 +5,7 @@ import { LivroCaixaApi } from '../../Apis/ApiLivroCaixa';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ILivroCaixaFormProps } from '../../Interfaces/interface.LivroCaixa';
 import { LivroCaixaService } from '../../Services/LivroCaixa.service';
 import { useLivroCaixaForm } from '../../Hooks/useLivroCaixaForm';

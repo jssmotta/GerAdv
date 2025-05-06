@@ -18,6 +18,7 @@ export interface IModelosDocumentos {
 	titulo : string;
 	testemunhas : string;
 	css : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProcessOutputRequestInc from "../Inc/ProcessOutputRequest";
 import { IProcessOutputRequest } from "../../Interfaces/interface.ProcessOutputRequest";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProcessOutputRequestWindow: React.FC<ProcessOutputRequestWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/processoutputrequest/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProcessOutputRequest?.id}`);
+            router.push(`/pages/processoutputrequest/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProcessOutputRequest?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProcessOutputRequest]);
@@ -42,7 +43,7 @@ const ProcessOutputRequestWindow: React.FC<ProcessOutputRequestWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedProcessOutputRequest?.id ?? 0).toString()}

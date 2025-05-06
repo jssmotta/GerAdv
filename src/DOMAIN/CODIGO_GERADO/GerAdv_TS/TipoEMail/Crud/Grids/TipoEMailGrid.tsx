@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoEMailEmpty } from "../../../Models/TipoEMail";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoEMailInc from "../Inc/TipoEMail";
 import { ITipoEMail } from "../../Interfaces/interface.TipoEMail";
 import { TipoEMailService } from "../../Services/TipoEMail.service";
 import { TipoEMailApi } from "../../Apis/ApiTipoEMail";
@@ -16,11 +14,12 @@ import { TipoEMailGridMobileComponent } from "../GridsMobile/TipoEMail";
 import { TipoEMailGridDesktopComponent } from "../GridsDesktop/TipoEMail";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoEMail } from "../../Filters/TipoEMail";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoEMailWindow from "./TipoEMailWindow";
 
 const TipoEMailGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoEMailGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoEMailGridMobileComponent data={tipoemail} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoEMailGridDesktopComponent data={tipoemail} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoEMailGridMobileComponent data={tipoemail} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoEMailGridDesktopComponent data={tipoemail} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoEMailWindow
           isOpen={showInc}

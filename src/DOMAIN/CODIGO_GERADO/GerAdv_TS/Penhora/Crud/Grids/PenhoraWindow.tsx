@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import PenhoraInc from "../Inc/Penhora";
 import { IPenhora } from "../../Interfaces/interface.Penhora";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const PenhoraWindow: React.FC<PenhoraWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/penhora/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPenhora?.id}`);
+            router.push(`/pages/penhora/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPenhora?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedPenhora]);
@@ -42,7 +43,7 @@ const PenhoraWindow: React.FC<PenhoraWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={633}
                     newWidth={720}
                     id={(selectedPenhora?.id ?? 0).toString()}

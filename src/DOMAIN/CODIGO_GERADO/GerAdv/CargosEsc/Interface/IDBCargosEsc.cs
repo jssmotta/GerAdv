@@ -5,4 +5,5 @@ public partial interface IDBCargosEsc
     public decimal FPercentual { get; set; }
     public string? FNome { get; set; }
     public int FClassificacao { get; set; }
+    public string? FGUID { get; set; }
 }

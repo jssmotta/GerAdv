@@ -6,4 +6,5 @@
 	capital = `Capital`,
 	nome = `Nome`,
 	sigla = `Sigla`,
+	guid = `GUID`,
 }

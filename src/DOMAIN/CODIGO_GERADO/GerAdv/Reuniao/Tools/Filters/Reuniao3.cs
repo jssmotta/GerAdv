@@ -38,4 +38,7 @@ public partial class FilterReuniao
 
     [JsonPropertyName("principaisdecisoes")]
     public string PrincipaisDecisoes { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

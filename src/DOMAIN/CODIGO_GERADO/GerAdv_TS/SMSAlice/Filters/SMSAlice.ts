@@ -4,6 +4,7 @@
     operador?: number;
  nome?: string;
     tipoemail?: number;
+ guid?: string;
 }
 
 export class FilterSMSAliceDefaults implements FilterSMSAlice {
@@ -11,5 +12,6 @@ export class FilterSMSAliceDefaults implements FilterSMSAlice {
     operador?: number = -2147483648;
     nome?: string = '';
     tipoemail?: number = -2147483648;
+    guid?: string = '';
 }
     

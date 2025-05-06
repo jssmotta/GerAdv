@@ -9,7 +9,6 @@ public partial class DBServicos
     private protected string? m_FDescricao;
     [XmlIgnore]
     private protected bool m_FCobrar, m_FBasico;
-    public bool NFCobrar() => m_FCobrar;
     [XmlAttribute]
     public bool FCobrar
     {
@@ -22,7 +21,6 @@ public partial class DBServicos
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -35,7 +33,6 @@ public partial class DBServicos
         }
     }
 
-    public bool NFBasico() => m_FBasico;
     [XmlAttribute]
     public bool FBasico
     {

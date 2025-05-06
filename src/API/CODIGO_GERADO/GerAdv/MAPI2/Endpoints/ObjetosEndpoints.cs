@@ -74,30 +74,6 @@ public static class ObjetosEndpoints
 
             return Results.Ok(result);
         }).WithName("Objetos_AddAndUpdate").WithDisplayName("Add or Update Objetos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IObjetosValidation validation, IObjetosWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IObjetosService service) =>
-        {
-            logger.LogInfo("Objetos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Objetos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Objetos_GetColumns").WithDisplayName("Get Objetos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IObjetosValidation validation, IObjetosWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IObjetosService service) =>
-        {
-            logger.LogInfo("Objetos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Objetos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Objetos_UpdateColumns").WithDisplayName("Update Objetos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IObjetosValidation validation, IObjetosWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IObjetosService service) =>
         {
             logger.LogInfo("Objetos", "Delete", $"id = {id}", uri);

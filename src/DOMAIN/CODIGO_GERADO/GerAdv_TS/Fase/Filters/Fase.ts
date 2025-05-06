@@ -4,6 +4,7 @@
  descricao?: string;
     justica?: number;
     area?: number;
+ guid?: string;
 }
 
 export class FilterFaseDefaults implements FilterFase {
@@ -11,5 +12,6 @@ export class FilterFaseDefaults implements FilterFase {
     descricao?: string = '';
     justica?: number = -2147483648;
     area?: number = -2147483648;
+    guid?: string = '';
 }
     

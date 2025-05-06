@@ -37,4 +37,5 @@ public partial interface IDBRecados
     public int FContatoCRM { get; set; }
     public int FLigacoes { get; set; }
     public int FAgenda { get; set; }
+    public string? FGUID { get; set; }
 }

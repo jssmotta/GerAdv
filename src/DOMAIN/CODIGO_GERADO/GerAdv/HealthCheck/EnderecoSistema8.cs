@@ -72,7 +72,7 @@ public class EnderecoSistemaHealthCheck(IOptions<AppSettings> appSettings, Ender
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) estCadastro,estCadastroExCod,estTipoEnderecoSistema,estProcesso,estMotivo,estContatoNoLocal,estCidade,estEndereco,estBairro,estCEP,estFone,estFax,estObservacao FROM dbo.EnderecoSistema (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) estCadastro,estCadastroExCod,estTipoEnderecoSistema,estProcesso,estMotivo,estContatoNoLocal,estCidade,estEndereco,estBairro,estCEP,estFone,estFax,estObservacao,estGUID FROM dbo.EnderecoSistema (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -5,7 +5,7 @@ import { TribEnderecosApi } from '../../Apis/ApiTribEnderecos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITribEnderecosFormProps } from '../../Interfaces/interface.TribEnderecos';
 import { TribEnderecosService } from '../../Services/TribEnderecos.service';
 import { useTribEnderecosForm } from '../../Hooks/useTribEnderecosForm';

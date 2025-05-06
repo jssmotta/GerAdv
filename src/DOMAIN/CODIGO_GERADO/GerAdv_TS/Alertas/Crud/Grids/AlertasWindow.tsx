@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AlertasInc from "../Inc/Alertas";
 import { IAlertas } from "../../Interfaces/interface.Alertas";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AlertasWindow: React.FC<AlertasWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/alertas/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAlertas?.id}`);
+            router.push(`/pages/alertas/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAlertas?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAlertas]);
@@ -42,7 +43,7 @@ const AlertasWindow: React.FC<AlertasWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedAlertas?.id ?? 0).toString()}

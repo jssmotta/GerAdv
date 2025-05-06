@@ -5,4 +5,5 @@
 	seradevolvido = `SeraDevolvido`,
 	observacoes = `Observacoes`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import GraphInc from "../Inc/Graph";
 import { IGraph } from "../../Interfaces/interface.Graph";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const GraphWindow: React.FC<GraphWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/graph/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGraph?.id}`);
+            router.push(`/pages/graph/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGraph?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedGraph]);
@@ -42,7 +43,7 @@ const GraphWindow: React.FC<GraphWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedGraph?.id ?? 0).toString()}

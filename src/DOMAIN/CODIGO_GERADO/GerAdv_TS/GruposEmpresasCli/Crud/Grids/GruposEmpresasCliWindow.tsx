@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import GruposEmpresasCliInc from "../Inc/GruposEmpresasCli";
 import { IGruposEmpresasCli } from "../../Interfaces/interface.GruposEmpresasCli";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const GruposEmpresasCliWindow: React.FC<GruposEmpresasCliWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/gruposempresascli/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGruposEmpresasCli?.id}`);
+            router.push(`/pages/gruposempresascli/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGruposEmpresasCli?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedGruposEmpresasCli]);
@@ -42,7 +43,7 @@ const GruposEmpresasCliWindow: React.FC<GruposEmpresasCliWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedGruposEmpresasCli?.id ?? 0).toString()}

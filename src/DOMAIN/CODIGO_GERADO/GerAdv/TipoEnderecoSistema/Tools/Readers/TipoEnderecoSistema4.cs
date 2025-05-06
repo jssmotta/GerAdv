@@ -8,6 +8,7 @@ public partial interface ITipoEnderecoSistemaReader
     TipoEnderecoSistemaResponse? Read(int id, SqlConnection oCnn);
     TipoEnderecoSistemaResponse? Read(string where, SqlConnection oCnn);
     TipoEnderecoSistemaResponse? Read(Entity.DBTipoEnderecoSistema dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoEnderecoSistemaResponse? Read(DBTipoEnderecoSistema dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class TipoEnderecoSistema : ITipoEnderecoSistemaReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class TipoEnderecoSistema : ITipoEnderecoSistemaReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

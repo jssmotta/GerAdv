@@ -5,7 +5,7 @@ import { TerceirosApi } from '../../Apis/ApiTerceiros';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITerceirosFormProps } from '../../Interfaces/interface.Terceiros';
 import { TerceirosService } from '../../Services/Terceiros.service';
 import { useTerceirosForm } from '../../Hooks/useTerceirosForm';

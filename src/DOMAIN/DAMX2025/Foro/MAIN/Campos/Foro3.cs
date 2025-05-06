@@ -11,7 +11,6 @@ public partial class DBForo
     private protected string? m_FEMail, m_FNome, m_FSite, m_FEndereco, m_FBairro, m_FFone, m_FFax, m_FCEP, m_FOBS, m_FWeb;
     [XmlIgnore]
     private protected bool m_FUnico, m_FUnicoConfirmado, m_FEtiqueta, m_FBold;
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -24,7 +23,6 @@ public partial class DBForo
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -37,7 +35,6 @@ public partial class DBForo
         }
     }
 
-    public bool NFUnico() => m_FUnico;
     [XmlAttribute]
     public bool FUnico
     {
@@ -50,7 +47,6 @@ public partial class DBForo
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -63,7 +59,6 @@ public partial class DBForo
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {
@@ -76,7 +71,6 @@ public partial class DBForo
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -89,7 +83,6 @@ public partial class DBForo
         }
     }
 
-    public string NFBairro() => m_FBairro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FBairro
     {
@@ -102,7 +95,6 @@ public partial class DBForo
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -115,7 +107,6 @@ public partial class DBForo
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -129,7 +120,6 @@ public partial class DBForo
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -142,7 +132,6 @@ public partial class DBForo
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -155,7 +144,6 @@ public partial class DBForo
         }
     }
 
-    public bool NFUnicoConfirmado() => m_FUnicoConfirmado;
     [XmlAttribute]
     public bool FUnicoConfirmado
     {
@@ -168,7 +156,6 @@ public partial class DBForo
         }
     }
 
-    public string NFWeb() => m_FWeb ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FWeb
     {
@@ -181,7 +168,6 @@ public partial class DBForo
         }
     }
 
-    public bool NFEtiqueta() => m_FEtiqueta;
     [XmlAttribute]
     public bool FEtiqueta
     {
@@ -194,7 +180,6 @@ public partial class DBForo
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

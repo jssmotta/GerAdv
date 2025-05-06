@@ -8,6 +8,7 @@ public partial interface IProTipoBaixaReader
     ProTipoBaixaResponse? Read(int id, SqlConnection oCnn);
     ProTipoBaixaResponse? Read(string where, SqlConnection oCnn);
     ProTipoBaixaResponse? Read(Entity.DBProTipoBaixa dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProTipoBaixaResponse? Read(DBProTipoBaixa dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class ProTipoBaixa : IProTipoBaixaReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class ProTipoBaixa : IProTipoBaixaReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

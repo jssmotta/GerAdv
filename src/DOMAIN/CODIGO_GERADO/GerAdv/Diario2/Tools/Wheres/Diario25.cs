@@ -21,6 +21,7 @@ public partial class Diario2 : IDiario2Where
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             diario2.Data = dbRec.FData;

@@ -5,7 +5,7 @@ import { CargosApi } from '../../Apis/ApiCargos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ICargosFormProps } from '../../Interfaces/interface.Cargos';
 import { CargosService } from '../../Services/Cargos.service';
 import { useCargosForm } from '../../Hooks/useCargosForm';

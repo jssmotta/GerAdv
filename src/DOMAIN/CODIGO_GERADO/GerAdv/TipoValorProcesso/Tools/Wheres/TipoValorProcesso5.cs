@@ -17,6 +17,7 @@ public partial class TipoValorProcesso : ITipoValorProcessoWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipovalorprocesso;
     }

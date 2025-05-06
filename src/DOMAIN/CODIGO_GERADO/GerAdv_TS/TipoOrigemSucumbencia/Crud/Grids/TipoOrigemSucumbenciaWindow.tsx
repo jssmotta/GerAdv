@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TipoOrigemSucumbenciaInc from "../Inc/TipoOrigemSucumbencia";
 import { ITipoOrigemSucumbencia } from "../../Interfaces/interface.TipoOrigemSucumbencia";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TipoOrigemSucumbenciaWindow: React.FC<TipoOrigemSucumbenciaWindowProps> = 
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tipoorigemsucumbencia/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoOrigemSucumbencia?.id}`);
+            router.push(`/pages/tipoorigemsucumbencia/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoOrigemSucumbencia?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTipoOrigemSucumbencia]);
@@ -42,7 +43,7 @@ const TipoOrigemSucumbenciaWindow: React.FC<TipoOrigemSucumbenciaWindowProps> = 
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTipoOrigemSucumbencia?.id ?? 0).toString()}

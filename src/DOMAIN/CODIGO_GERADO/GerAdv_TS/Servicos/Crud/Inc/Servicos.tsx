@@ -5,7 +5,7 @@ import { ServicosApi } from '../../Apis/ApiServicos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IServicosFormProps } from '../../Interfaces/interface.Servicos';
 import { ServicosService } from '../../Services/Servicos.service';
 import { useServicosForm } from '../../Hooks/useServicosForm';

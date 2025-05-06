@@ -13,7 +13,6 @@ public partial class DBProProcuradores
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected bool m_FSubstabelecimento, m_FProcuracao, m_FBold;
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -26,7 +25,6 @@ public partial class DBProProcuradores
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -39,7 +37,6 @@ public partial class DBProProcuradores
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -52,7 +49,6 @@ public partial class DBProProcuradores
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -70,7 +66,6 @@ public partial class DBProProcuradores
         }
     }
 
-    public bool NFSubstabelecimento() => m_FSubstabelecimento;
     [XmlAttribute]
     public bool FSubstabelecimento
     {
@@ -83,7 +78,6 @@ public partial class DBProProcuradores
         }
     }
 
-    public bool NFProcuracao() => m_FProcuracao;
     [XmlAttribute]
     public bool FProcuracao
     {
@@ -96,7 +90,6 @@ public partial class DBProProcuradores
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

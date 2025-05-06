@@ -13,7 +13,6 @@ public partial class DBEnderecos
     private protected DateTime? m_FDtNasc;
     [XmlIgnore]
     private protected bool m_FTopIndex, m_FPrivativo, m_FAddContato, m_FReportECBOnly, m_FEtiqueta, m_FAni, m_FBold;
-    public bool NFTopIndex() => m_FTopIndex;
     [XmlAttribute]
     public bool FTopIndex
     {
@@ -26,7 +25,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {
@@ -39,7 +37,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFContato() => m_FContato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FContato
     {
@@ -52,7 +49,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFDtNasc() => $"{m_FDtNasc:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtNasc:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtNasc => Convert.ToDateTime(m_FDtNasc);
 
@@ -70,7 +66,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFEndereco() => m_FEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEndereco
     {
@@ -83,7 +78,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFBairro() => m_FBairro ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FBairro
     {
@@ -96,7 +90,6 @@ public partial class DBEnderecos
         }
     }
 
-    public bool NFPrivativo() => m_FPrivativo;
     [XmlAttribute]
     public bool FPrivativo
     {
@@ -109,7 +102,6 @@ public partial class DBEnderecos
         }
     }
 
-    public bool NFAddContato() => m_FAddContato;
     [XmlAttribute]
     public bool FAddContato
     {
@@ -123,7 +115,6 @@ public partial class DBEnderecos
     }
 
     public string CEPMask() => DevourerOne.MaskCep(FCEP);
-    public string NFCEP() => m_FCEP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCEP
     {
@@ -136,7 +127,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFOAB() => m_FOAB ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOAB
     {
@@ -149,7 +139,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -162,7 +151,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -175,7 +163,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -188,7 +175,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFTratamento() => m_FTratamento ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FTratamento
     {
@@ -201,7 +187,6 @@ public partial class DBEnderecos
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -214,7 +199,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {
@@ -227,7 +211,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -240,7 +223,6 @@ public partial class DBEnderecos
         }
     }
 
-    public int NFQuem() => m_FQuem;
     [XmlAttribute]
     public int FQuem
     {
@@ -253,7 +235,6 @@ public partial class DBEnderecos
         }
     }
 
-    public string NFQuemIndicou() => m_FQuemIndicou ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FQuemIndicou
     {
@@ -266,7 +247,6 @@ public partial class DBEnderecos
         }
     }
 
-    public bool NFReportECBOnly() => m_FReportECBOnly;
     [XmlAttribute]
     public bool FReportECBOnly
     {
@@ -279,7 +259,6 @@ public partial class DBEnderecos
         }
     }
 
-    public bool NFEtiqueta() => m_FEtiqueta;
     [XmlAttribute]
     public bool FEtiqueta
     {
@@ -292,7 +271,6 @@ public partial class DBEnderecos
         }
     }
 
-    public bool NFAni() => m_FAni;
     [XmlAttribute]
     public bool FAni
     {
@@ -305,7 +283,6 @@ public partial class DBEnderecos
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

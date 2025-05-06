@@ -15,7 +15,6 @@ public partial class DBContratos
     private protected bool m_FOcultarRelatorio, m_FAvulso, m_FSuspenso, m_FBold;
     [XmlIgnore]
     private protected decimal m_FValor, m_FPercEscritorio, m_FValorConsultoria, m_FValorRealizavel;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -28,7 +27,6 @@ public partial class DBContratos
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -41,7 +39,6 @@ public partial class DBContratos
         }
     }
 
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -54,7 +51,6 @@ public partial class DBContratos
         }
     }
 
-    public int NFDia() => m_FDia;
     [XmlAttribute]
     public int FDia
     {
@@ -67,7 +63,6 @@ public partial class DBContratos
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -81,7 +76,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFDataInicio() => $"{m_FDataInicio:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataInicio:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataInicio => Convert.ToDateTime(m_FDataInicio);
 
@@ -99,7 +93,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFDataTermino() => $"{m_FDataTermino:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataTermino:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataTermino => Convert.ToDateTime(m_FDataTermino);
 
@@ -117,7 +110,6 @@ public partial class DBContratos
         }
     }
 
-    public bool NFOcultarRelatorio() => m_FOcultarRelatorio;
     [XmlAttribute]
     public bool FOcultarRelatorio
     {
@@ -130,7 +122,6 @@ public partial class DBContratos
         }
     }
 
-    public decimal NFPercEscritorio() => m_FPercEscritorio;
     [XmlAttribute]
     public decimal FPercEscritorio
     {
@@ -144,7 +135,6 @@ public partial class DBContratos
         }
     }
 
-    public decimal NFValorConsultoria() => m_FValorConsultoria;
     [XmlAttribute]
     public decimal FValorConsultoria
     {
@@ -158,7 +148,6 @@ public partial class DBContratos
         }
     }
 
-    public int NFTipoCobranca() => m_FTipoCobranca;
     [XmlAttribute]
     public int FTipoCobranca
     {
@@ -171,7 +160,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFProtestar() => m_FProtestar ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FProtestar
     {
@@ -184,7 +172,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFJuros() => m_FJuros ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FJuros
     {
@@ -197,7 +184,6 @@ public partial class DBContratos
         }
     }
 
-    public decimal NFValorRealizavel() => m_FValorRealizavel;
     [XmlAttribute]
     public decimal FValorRealizavel
     {
@@ -211,7 +197,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFDOCUMENTO() => m_FDOCUMENTO ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDOCUMENTO
     {
@@ -224,7 +209,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFEMail1() => m_FEMail1 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail1
     {
@@ -237,7 +221,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFEMail2() => m_FEMail2 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail2
     {
@@ -250,7 +233,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFEMail3() => m_FEMail3 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail3
     {
@@ -263,7 +245,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFPessoa1() => m_FPessoa1 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPessoa1
     {
@@ -276,7 +257,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFPessoa2() => m_FPessoa2 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPessoa2
     {
@@ -289,7 +269,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFPessoa3() => m_FPessoa3 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPessoa3
     {
@@ -302,7 +281,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -315,7 +293,6 @@ public partial class DBContratos
         }
     }
 
-    public int NFClienteContrato() => m_FClienteContrato;
     [XmlAttribute]
     public int FClienteContrato
     {
@@ -328,7 +305,6 @@ public partial class DBContratos
         }
     }
 
-    public int NFIdExtrangeiro() => m_FIdExtrangeiro;
     [XmlAttribute]
     public int FIdExtrangeiro
     {
@@ -341,7 +317,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFChaveContrato() => m_FChaveContrato ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FChaveContrato
     {
@@ -354,7 +329,6 @@ public partial class DBContratos
         }
     }
 
-    public bool NFAvulso() => m_FAvulso;
     [XmlAttribute]
     public bool FAvulso
     {
@@ -367,7 +341,6 @@ public partial class DBContratos
         }
     }
 
-    public bool NFSuspenso() => m_FSuspenso;
     [XmlAttribute]
     public bool FSuspenso
     {
@@ -380,7 +353,6 @@ public partial class DBContratos
         }
     }
 
-    public string NFMulta() => m_FMulta ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FMulta
     {
@@ -393,7 +365,6 @@ public partial class DBContratos
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

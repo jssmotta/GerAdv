@@ -72,7 +72,7 @@ public class FornecedoresHealthCheck(IOptions<AppSettings> appSettings, Forneced
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) forGrupo,forNome,forSubGrupo,forTipo,forSexo,forCNPJ,forInscEst,forCPF,forRG,forEndereco,forBairro,forCEP,forCidade,forFone,forFax,forEmail,forSite,forObs,forProdutos,forContatos,forEtiqueta,forBold FROM dbo.Fornecedores (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) forGrupo,forNome,forSubGrupo,forTipo,forSexo,forCNPJ,forInscEst,forCPF,forRG,forEndereco,forBairro,forCEP,forCidade,forFone,forFax,forEmail,forSite,forObs,forProdutos,forContatos,forEtiqueta,forBold,forGUID FROM dbo.Fornecedores (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

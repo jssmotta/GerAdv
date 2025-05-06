@@ -41,7 +41,7 @@ public partial class DBSMSAliceODicInfo : IODicInfo
     public static string TTabelaNome => DBSMSAliceDicInfo.TabelaNome;
     public static string TTablePrefix => DBSMSAliceDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBSMSAliceDicInfo.SmaOperador, DBSMSAliceDicInfo.SmaNome, DBSMSAliceDicInfo.SmaTipoEMail, DBSMSAliceDicInfo.SmaGUID, DBSMSAliceDicInfo.SmaQuemCad, DBSMSAliceDicInfo.SmaDtCad, DBSMSAliceDicInfo.SmaQuemAtu, DBSMSAliceDicInfo.SmaDtAtu, DBSMSAliceDicInfo.SmaVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBSMSAliceDicInfo.SmaOperador, DBSMSAliceDicInfo.SmaNome, DBSMSAliceDicInfo.SmaTipoEMail];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBSMSAliceDicInfo.SmaOperador, DBSMSAliceDicInfo.SmaNome, DBSMSAliceDicInfo.SmaTipoEMail, DBSMSAliceDicInfo.SmaGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

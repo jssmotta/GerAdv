@@ -72,7 +72,7 @@ public class ObjetosHealthCheck(IOptions<AppSettings> appSettings, ObjetosServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ojtJustica,ojtArea,ojtNome,ojtBold FROM dbo.Objetos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ojtJustica,ojtArea,ojtNome,ojtBold,ojtGUID FROM dbo.Objetos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

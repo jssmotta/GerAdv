@@ -5,7 +5,7 @@ import { RecadosApi } from '../../Apis/ApiRecados';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IRecadosFormProps } from '../../Interfaces/interface.Recados';
 import { RecadosService } from '../../Services/Recados.service';
 import { useRecadosForm } from '../../Hooks/useRecadosForm';

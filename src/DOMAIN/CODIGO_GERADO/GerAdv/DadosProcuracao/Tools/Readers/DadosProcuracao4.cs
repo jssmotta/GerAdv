@@ -8,6 +8,7 @@ public partial interface IDadosProcuracaoReader
     DadosProcuracaoResponse? Read(int id, SqlConnection oCnn);
     DadosProcuracaoResponse? Read(string where, SqlConnection oCnn);
     DadosProcuracaoResponse? Read(Entity.DBDadosProcuracao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     DadosProcuracaoResponse? Read(DBDadosProcuracao dbRec);
 }
 
@@ -43,7 +44,7 @@ public partial class DadosProcuracao : IDadosProcuracaoReader
             PisPasep = dbRec.FPisPasep ?? string.Empty,
             Remuneracao = dbRec.FRemuneracao ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -78,7 +79,7 @@ public partial class DadosProcuracao : IDadosProcuracaoReader
             PisPasep = dbRec.FPisPasep ?? string.Empty,
             Remuneracao = dbRec.FRemuneracao ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -72,7 +72,7 @@ public class EnquadramentoEmpresaHealthCheck(IOptions<AppSettings> appSettings, 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) eqeNome FROM dbo.EnquadramentoEmpresa (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) eqeNome,eqeGUID FROM dbo.EnquadramentoEmpresa (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

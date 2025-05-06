@@ -15,4 +15,5 @@ public partial interface IDBPoderJudiciarioAssociado
     public string? FCidadeNome { get; set; }
     public int FSubDivisao { get; set; }
     public int FTipo { get; set; }
+    public string? FGUID { get; set; }
 }

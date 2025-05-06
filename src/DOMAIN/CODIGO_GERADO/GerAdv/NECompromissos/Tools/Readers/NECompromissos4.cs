@@ -8,6 +8,7 @@ public partial interface INECompromissosReader
     NECompromissosResponse? Read(int id, SqlConnection oCnn);
     NECompromissosResponse? Read(string where, SqlConnection oCnn);
     NECompromissosResponse? Read(Entity.DBNECompromissos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     NECompromissosResponse? Read(DBNECompromissos dbRec);
 }
 

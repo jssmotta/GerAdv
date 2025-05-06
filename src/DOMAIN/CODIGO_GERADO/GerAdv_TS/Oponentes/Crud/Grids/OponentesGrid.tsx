@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { OponentesEmpty } from "../../../Models/Oponentes";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import OponentesInc from "../Inc/Oponentes";
 import { IOponentes } from "../../Interfaces/interface.Oponentes";
 import { OponentesService } from "../../Services/Oponentes.service";
 import { OponentesApi } from "../../Apis/ApiOponentes";
@@ -16,11 +14,12 @@ import { OponentesGridMobileComponent } from "../GridsMobile/Oponentes";
 import { OponentesGridDesktopComponent } from "../GridsDesktop/Oponentes";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterOponentes } from "../../Filters/Oponentes";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import OponentesWindow from "./OponentesWindow";
 
 const OponentesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const OponentesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <OponentesGridMobileComponent data={oponentes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <OponentesGridDesktopComponent data={oponentes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <OponentesGridMobileComponent data={oponentes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <OponentesGridDesktopComponent data={oponentes} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <OponentesWindow
           isOpen={showInc}

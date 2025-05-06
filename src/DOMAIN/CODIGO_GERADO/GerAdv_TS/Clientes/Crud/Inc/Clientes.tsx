@@ -5,7 +5,7 @@ import { ClientesApi } from '../../Apis/ApiClientes';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IClientesFormProps } from '../../Interfaces/interface.Clientes';
 import { ClientesService } from '../../Services/Clientes.service';
 import { useClientesForm } from '../../Hooks/useClientesForm';

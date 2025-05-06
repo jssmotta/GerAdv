@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IGruposEmpresas } from '../../Interfaces/interface.GruposEmpresas';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IGruposEmpresas } from '@/app/GerAdv_TS/GruposEmpresas/Interfaces/interface.GruposEmpresas';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OponentesComboBox from '@/app/GerAdv_TS/Oponentes/ComboBox/Oponentes';
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { OponentesApi } from '@/app/GerAdv_TS/Oponentes/Apis/ApiOponentes';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputDescription from '@/app/components/Inputs/InputDescription';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface GruposEmpresasFormProps {
     gruposempresasData: IGruposEmpresas;
@@ -83,26 +89,40 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('GruposEmpresasForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOponentes && (<h2>{nomeOponentes}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`GruposEmpresasForm-${gruposempresasData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={gruposempresasData} isSubmitting={isSubmitting} onClose={onClose} formId={`GruposEmpresasForm-${gruposempresasData.id}`} />
+
+                <div className="grid-container">
+
+    <InputDescription
             type="text"            
             id="descricao"
             label="descricao"
             className="inputIncNome"
             name="descricao"
             value={gruposempresasData.descricao}
+            placeholder={`Digite nome grupos empresas`}
             onChange={onChange}
             required
+            disabled={gruposempresasData.id > 0}
           />
 
 <Input
@@ -115,7 +135,7 @@ value={gruposempresasData.email}
 onChange={onChange}               
 />
 
-<Checkbox label="Inativo" name="inativo" checked={gruposempresasData.inativo} onChange={onChange} />
+<InputCheckbox label="Inativo" name="inativo" checked={gruposempresasData.inativo} onChange={onChange} />
  
             <OponentesComboBox
             name={'oponente'}
@@ -151,22 +171,12 @@ value={gruposempresasData.icone}
 onChange={onChange}               
 />
 
-<Checkbox label="DespesaUnificada" name="despesaunificada" checked={gruposempresasData.despesaunificada} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gruposempresascli${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?gruposempresas=${gruposempresasData.id}`)}>Grupos Empresas Cli</div>
+<InputCheckbox label="DespesaUnificada" name="despesaunificada" checked={gruposempresasData.despesaunificada} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

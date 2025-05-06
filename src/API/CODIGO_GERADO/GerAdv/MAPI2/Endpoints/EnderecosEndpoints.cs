@@ -74,30 +74,6 @@ public static class EnderecosEndpoints
 
             return Results.Ok(result);
         }).WithName("Enderecos_AddAndUpdate").WithDisplayName("Add or Update Enderecos");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IEnderecosValidation validation, IEnderecosWriter writer, IEnderecosService service) =>
-        {
-            logger.LogInfo("Enderecos", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Enderecos", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Enderecos_GetColumns").WithDisplayName("Get Enderecos Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IEnderecosValidation validation, IEnderecosWriter writer, IEnderecosService service) =>
-        {
-            logger.LogInfo("Enderecos", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Enderecos", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Enderecos_UpdateColumns").WithDisplayName("Update Enderecos Columns");
         group.MapDelete("/Delete", async (int id, string uri, IEnderecosValidation validation, IEnderecosWriter writer, IEnderecosService service) =>
         {
             logger.LogInfo("Enderecos", "Delete", $"id = {id}", uri);

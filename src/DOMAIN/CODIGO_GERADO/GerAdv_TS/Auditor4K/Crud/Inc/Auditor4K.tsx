@@ -5,7 +5,7 @@ import { Auditor4KApi } from '../../Apis/ApiAuditor4K';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAuditor4KFormProps } from '../../Interfaces/interface.Auditor4K';
 import { Auditor4KService } from '../../Services/Auditor4K.service';
 import { useAuditor4KForm } from '../../Hooks/useAuditor4KForm';

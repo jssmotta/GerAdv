@@ -8,6 +8,7 @@ public partial interface IAgenda2AgendaReader
     Agenda2AgendaResponse? Read(int id, SqlConnection oCnn);
     Agenda2AgendaResponse? Read(string where, SqlConnection oCnn);
     Agenda2AgendaResponse? Read(Entity.DBAgenda2Agenda dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     Agenda2AgendaResponse? Read(DBAgenda2Agenda dbRec);
 }
 

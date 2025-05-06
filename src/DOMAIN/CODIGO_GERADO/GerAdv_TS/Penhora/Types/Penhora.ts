@@ -8,6 +8,7 @@ export interface IPenhora {
 	descricao : string;
 	datapenhora : string;
 	master : number;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

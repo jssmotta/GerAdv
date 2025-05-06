@@ -72,7 +72,7 @@ public class ContatoCRMHealthCheck(IOptions<AppSettings> appSettings, ContatoCRM
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ctcAgeClienteAvisado,ctcDocsViaRecebimento,ctcNaoPublicavel,ctcNotificar,ctcOcultar,ctcAssunto,ctcIsDocsRecebidos,ctcQuemNotificou,ctcDataNotificou,ctcOperador,ctcCliente,ctcHoraNotificou,ctcObjetoNotificou,ctcPessoaContato,ctcData,ctcTempo,ctcHoraInicial,ctcHoraFinal,ctcProcesso,ctcImportante,ctcUrgente,ctcGerarHoraTrabalhada,ctcExibirNoTopo,ctcTipoContatoCRM,ctcContato,ctcEmocao,ctcContinuar,ctcBold FROM dbo.ContatoCRM (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ctcAgeClienteAvisado,ctcDocsViaRecebimento,ctcNaoPublicavel,ctcNotificar,ctcOcultar,ctcAssunto,ctcIsDocsRecebidos,ctcQuemNotificou,ctcDataNotificou,ctcOperador,ctcCliente,ctcHoraNotificou,ctcObjetoNotificou,ctcPessoaContato,ctcData,ctcTempo,ctcHoraInicial,ctcHoraFinal,ctcProcesso,ctcImportante,ctcUrgente,ctcGerarHoraTrabalhada,ctcExibirNoTopo,ctcTipoContatoCRM,ctcContato,ctcEmocao,ctcContinuar,ctcBold,ctcGUID FROM dbo.ContatoCRM (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

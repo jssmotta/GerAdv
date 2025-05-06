@@ -25,6 +25,7 @@ public partial class Tribunal : ITribunalWhere
             Web = dbRec.FWeb ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import Apenso2Inc from "../Inc/Apenso2";
 import { IApenso2 } from "../../Interfaces/interface.Apenso2";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const Apenso2Window: React.FC<Apenso2WindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/apenso2/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedApenso2?.id}`);
+            router.push(`/pages/apenso2/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedApenso2?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedApenso2]);
@@ -42,7 +43,7 @@ const Apenso2Window: React.FC<Apenso2WindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedApenso2?.id ?? 0).toString()}

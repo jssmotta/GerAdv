@@ -23,6 +23,7 @@ export interface IEscritorios {
 	top : boolean;
 	etiqueta : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TipoStatusBiuInc from "../Inc/TipoStatusBiu";
 import { ITipoStatusBiu } from "../../Interfaces/interface.TipoStatusBiu";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TipoStatusBiuWindow: React.FC<TipoStatusBiuWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tipostatusbiu/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoStatusBiu?.id}`);
+            router.push(`/pages/tipostatusbiu/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoStatusBiu?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTipoStatusBiu]);
@@ -42,7 +43,7 @@ const TipoStatusBiuWindow: React.FC<TipoStatusBiuWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTipoStatusBiu?.id ?? 0).toString()}

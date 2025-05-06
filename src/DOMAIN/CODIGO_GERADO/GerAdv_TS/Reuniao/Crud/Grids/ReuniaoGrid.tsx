@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ReuniaoEmpty } from "../../../Models/Reuniao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ReuniaoInc from "../Inc/Reuniao";
 import { IReuniao } from "../../Interfaces/interface.Reuniao";
 import { ReuniaoService } from "../../Services/Reuniao.service";
 import { ReuniaoApi } from "../../Apis/ApiReuniao";
@@ -16,11 +14,12 @@ import { ReuniaoGridMobileComponent } from "../GridsMobile/Reuniao";
 import { ReuniaoGridDesktopComponent } from "../GridsDesktop/Reuniao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterReuniao } from "../../Filters/Reuniao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ReuniaoWindow from "./ReuniaoWindow";
 
 const ReuniaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ReuniaoGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ReuniaoGridMobileComponent data={reuniao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ReuniaoGridDesktopComponent data={reuniao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ReuniaoGridMobileComponent data={reuniao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ReuniaoGridDesktopComponent data={reuniao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ReuniaoWindow
           isOpen={showInc}

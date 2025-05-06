@@ -72,7 +72,7 @@ public class TipoEnderecoSistemaHealthCheck(IOptions<AppSettings> appSettings, T
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) tesNome FROM dbo.TipoEnderecoSistema (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) tesNome,tesGUID FROM dbo.TipoEnderecoSistema (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -14,4 +14,5 @@
 	varaforocomarca = `VaraForoComarca`,
 	sexo = `Sexo`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

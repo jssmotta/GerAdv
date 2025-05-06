@@ -12,5 +12,6 @@
 	idmodulo : number;
 	isonlyprocesso : boolean;
 	myid : number;
+	guid : string;
 }
 

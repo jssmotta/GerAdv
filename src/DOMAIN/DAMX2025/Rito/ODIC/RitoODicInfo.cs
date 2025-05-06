@@ -41,7 +41,7 @@ public partial class DBRitoODicInfo : IODicInfo
     public static string TTabelaNome => DBRitoDicInfo.TabelaNome;
     public static string TTablePrefix => DBRitoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold, DBRitoDicInfo.RitGUID, DBRitoDicInfo.RitQuemCad, DBRitoDicInfo.RitDtCad, DBRitoDicInfo.RitQuemAtu, DBRitoDicInfo.RitDtAtu, DBRitoDicInfo.RitVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBRitoDicInfo.RitDescricao, DBRitoDicInfo.RitTop, DBRitoDicInfo.RitBold, DBRitoDicInfo.RitGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -57,7 +57,8 @@ public partial class DBRitoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "ritCodigo"
+            "ritCodigo",
+            "ritDescricao"
         };
         var result = campos.Where(campo => !campo.Equals(DBRitoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

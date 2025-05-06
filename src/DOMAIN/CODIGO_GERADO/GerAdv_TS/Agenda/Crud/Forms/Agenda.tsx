@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAgenda } from '../../Interfaces/interface.Agenda';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAgenda } from '@/app/GerAdv_TS/Agenda/Interfaces/interface.Agenda';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
@@ -26,6 +30,8 @@ import { JusticaApi } from '@/app/GerAdv_TS/Justica/Apis/ApiJustica';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
 import { PrepostosApi } from '@/app/GerAdv_TS/Prepostos/Apis/ApiPrepostos';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface AgendaFormProps {
     agendaData: IAgenda;
@@ -244,23 +250,28 @@ if (getParamFromUrl("prepostos") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AgendaForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeAdvogados && (<h2>{nomeAdvogados}</h2>)}
-{nomeFuncionarios && (<h2>{nomeFuncionarios}</h2>)}
-{nomeTipoCompromisso && (<h2>{nomeTipoCompromisso}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeArea && (<h2>{nomeArea}</h2>)}
-{nomeJustica && (<h2>{nomeJustica}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeOperador && (<h2>{nomeOperador}</h2>)}
-{nomePrepostos && (<h2>{nomePrepostos}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AgendaForm-${agendaData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={agendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} />
+
+                <div className="grid-container">
 
 <Input
 type="text"
@@ -272,8 +283,8 @@ value={agendaData.idcob}
 onChange={onChange}               
 />
 
-<Checkbox label="ClienteAvisado" name="clienteavisado" checked={agendaData.clienteavisado} onChange={onChange} />
-<Checkbox label="RevisarP2" name="revisarp2" checked={agendaData.revisarp2} onChange={onChange} />
+<InputCheckbox label="ClienteAvisado" name="clienteavisado" checked={agendaData.clienteavisado} onChange={onChange} />
+<InputCheckbox label="RevisarP2" name="revisarp2" checked={agendaData.revisarp2} onChange={onChange} />
         
 <Input
 type="text"
@@ -315,7 +326,7 @@ value={agendaData.cartaprecatoria}
 onChange={onChange}               
 />
 
-<Checkbox label="Revisar" name="revisar" checked={agendaData.revisar} onChange={onChange} />
+<InputCheckbox label="Revisar" name="revisar" checked={agendaData.revisar} onChange={onChange} />
         
 <Input
 type="text"
@@ -416,9 +427,9 @@ onChange={onChange}
             label={'Clientes'}
             />
 
-</div><div className="grid-container"><Checkbox label="Liberado" name="liberado" checked={agendaData.liberado} onChange={onChange} />
-<Checkbox label="Importante" name="importante" checked={agendaData.importante} onChange={onChange} />
-<Checkbox label="Concluido" name="concluido" checked={agendaData.concluido} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Liberado" name="liberado" checked={agendaData.liberado} onChange={onChange} />
+<InputCheckbox label="Importante" name="importante" checked={agendaData.importante} onChange={onChange} />
+<InputCheckbox label="Concluido" name="concluido" checked={agendaData.concluido} onChange={onChange} />
  
             <AreaComboBox
             name={'area'}
@@ -566,26 +577,12 @@ value={agendaData.datainicioprazo}
 onChange={onChange}               
 />
 
-<Checkbox label="UsuarioCiente" name="usuariociente" checked={agendaData.usuariociente} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda2agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?agenda=${agendaData.id}`)}>Agenda2 Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarecords${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?agenda=${agendaData.id}`)}>Agenda Records</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendastatus${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?agenda=${agendaData.id}`)}>Agenda Status</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/alarmsms${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?agenda=${agendaData.id}`)}>Alarm S M S</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/recados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?agenda=${agendaData.id}`)}>Recados</div>
+<InputCheckbox label="UsuarioCiente" name="usuariociente" checked={agendaData.usuariociente} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

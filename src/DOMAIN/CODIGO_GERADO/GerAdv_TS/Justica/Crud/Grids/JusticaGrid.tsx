@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { JusticaEmpty } from "../../../Models/Justica";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import JusticaInc from "../Inc/Justica";
 import { IJustica } from "../../Interfaces/interface.Justica";
 import { JusticaService } from "../../Services/Justica.service";
 import { JusticaApi } from "../../Apis/ApiJustica";
@@ -16,11 +14,12 @@ import { JusticaGridMobileComponent } from "../GridsMobile/Justica";
 import { JusticaGridDesktopComponent } from "../GridsDesktop/Justica";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterJustica } from "../../Filters/Justica";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import JusticaWindow from "./JusticaWindow";
 
 const JusticaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const JusticaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <JusticaGridMobileComponent data={justica} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <JusticaGridDesktopComponent data={justica} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <JusticaGridMobileComponent data={justica} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <JusticaGridDesktopComponent data={justica} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <JusticaWindow
           isOpen={showInc}

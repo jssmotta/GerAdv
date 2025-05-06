@@ -15,7 +15,7 @@ public class ParteClienteOutrasValidation : IParteClienteOutrasValidation
         if (reg == null)
             return "Objeto está nulo";
         // OutrasPartesCliente
-        if (reg.Cliente.IsEmptyIDNumber())
+        if (!reg.Cliente.IsEmptyIDNumber())
         {
             var regOutrasPartesCliente = outraspartesclienteReader.Read(reg.Cliente, oCnn);
             if (regOutrasPartesCliente == null || regOutrasPartesCliente.Id != reg.Cliente)
@@ -25,7 +25,7 @@ public class ParteClienteOutrasValidation : IParteClienteOutrasValidation
         }
 
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)

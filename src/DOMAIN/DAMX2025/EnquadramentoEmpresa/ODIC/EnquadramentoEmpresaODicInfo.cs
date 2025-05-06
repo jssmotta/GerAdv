@@ -39,7 +39,7 @@ public partial class DBEnquadramentoEmpresaODicInfo : IODicInfo
     public static string TTabelaNome => DBEnquadramentoEmpresaDicInfo.TabelaNome;
     public static string TTablePrefix => DBEnquadramentoEmpresaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBEnquadramentoEmpresaDicInfo.EqeNome, DBEnquadramentoEmpresaDicInfo.EqeGUID, DBEnquadramentoEmpresaDicInfo.EqeQuemCad, DBEnquadramentoEmpresaDicInfo.EqeDtCad, DBEnquadramentoEmpresaDicInfo.EqeQuemAtu, DBEnquadramentoEmpresaDicInfo.EqeDtAtu, DBEnquadramentoEmpresaDicInfo.EqeVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBEnquadramentoEmpresaDicInfo.EqeNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBEnquadramentoEmpresaDicInfo.EqeNome, DBEnquadramentoEmpresaDicInfo.EqeGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

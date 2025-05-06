@@ -8,6 +8,7 @@ public partial interface ITipoContatoCRMReader
     TipoContatoCRMResponse? Read(int id, SqlConnection oCnn);
     TipoContatoCRMResponse? Read(string where, SqlConnection oCnn);
     TipoContatoCRMResponse? Read(Entity.DBTipoContatoCRM dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoContatoCRMResponse? Read(DBTipoContatoCRM dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class TipoContatoCRM : ITipoContatoCRMReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class TipoContatoCRM : ITipoContatoCRMReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

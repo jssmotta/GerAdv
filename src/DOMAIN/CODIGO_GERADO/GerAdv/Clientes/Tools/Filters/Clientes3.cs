@@ -107,4 +107,7 @@ public partial class FilterClientes
 
     [JsonPropertyName("pessoacontato")]
     public string PessoaContato { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

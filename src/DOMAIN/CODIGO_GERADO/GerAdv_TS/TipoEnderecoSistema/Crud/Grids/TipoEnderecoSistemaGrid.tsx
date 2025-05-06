@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoEnderecoSistemaEmpty } from "../../../Models/TipoEnderecoSistema";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoEnderecoSistemaInc from "../Inc/TipoEnderecoSistema";
 import { ITipoEnderecoSistema } from "../../Interfaces/interface.TipoEnderecoSistema";
 import { TipoEnderecoSistemaService } from "../../Services/TipoEnderecoSistema.service";
 import { TipoEnderecoSistemaApi } from "../../Apis/ApiTipoEnderecoSistema";
@@ -16,11 +14,12 @@ import { TipoEnderecoSistemaGridMobileComponent } from "../GridsMobile/TipoEnder
 import { TipoEnderecoSistemaGridDesktopComponent } from "../GridsDesktop/TipoEnderecoSistema";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoEnderecoSistema } from "../../Filters/TipoEnderecoSistema";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoEnderecoSistemaWindow from "./TipoEnderecoSistemaWindow";
 
 const TipoEnderecoSistemaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoEnderecoSistemaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoEnderecoSistemaGridMobileComponent data={tipoenderecosistema} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoEnderecoSistemaGridDesktopComponent data={tipoenderecosistema} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoEnderecoSistemaGridMobileComponent data={tipoenderecosistema} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoEnderecoSistemaGridDesktopComponent data={tipoenderecosistema} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoEnderecoSistemaWindow
           isOpen={showInc}

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProValoresInc from "../Inc/ProValores";
 import { IProValores } from "../../Interfaces/interface.ProValores";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProValoresWindow: React.FC<ProValoresWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/provalores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProValores?.id}`);
+            router.push(`/pages/provalores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProValores?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProValores]);
@@ -42,7 +43,7 @@ const ProValoresWindow: React.FC<ProValoresWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={663}
                     newWidth={1440}
                     id={(selectedProValores?.id ?? 0).toString()}

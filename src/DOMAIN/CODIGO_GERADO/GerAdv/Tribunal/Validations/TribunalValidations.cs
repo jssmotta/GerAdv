@@ -16,8 +16,10 @@ public class TribunalValidation : ITribunalValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Tribunal '{reg.Nome}' já cadastrado.";
         // Area
-        if (reg.Area.IsEmptyIDNumber())
+        if (!reg.Area.IsEmptyIDNumber())
         {
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
@@ -27,7 +29,7 @@ public class TribunalValidation : ITribunalValidation
         }
 
         // Justica
-        if (reg.Justica.IsEmptyIDNumber())
+        if (!reg.Justica.IsEmptyIDNumber())
         {
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
@@ -37,7 +39,7 @@ public class TribunalValidation : ITribunalValidation
         }
 
         // Instancia
-        if (reg.Instancia.IsEmptyIDNumber())
+        if (!reg.Instancia.IsEmptyIDNumber())
         {
             var regInstancia = instanciaReader.Read(reg.Instancia, oCnn);
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
@@ -47,5 +49,11 @@ public class TribunalValidation : ITribunalValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Tribunal reg, ITribunalService service, string uri)
+    {
+        var existingTribunal = (await service.Filter(new Filters.FilterTribunal { Area = reg.Area, Descricao = reg.Descricao, Instancia = reg.Instancia, Justica = reg.Justica }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingTribunal != null && existingTribunal.Id > 0 && existingTribunal.Id != reg.Id;
     }
 }

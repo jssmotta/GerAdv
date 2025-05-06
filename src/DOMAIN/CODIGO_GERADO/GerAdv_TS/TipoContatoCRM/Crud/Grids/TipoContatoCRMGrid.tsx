@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoContatoCRMEmpty } from "../../../Models/TipoContatoCRM";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoContatoCRMInc from "../Inc/TipoContatoCRM";
 import { ITipoContatoCRM } from "../../Interfaces/interface.TipoContatoCRM";
 import { TipoContatoCRMService } from "../../Services/TipoContatoCRM.service";
 import { TipoContatoCRMApi } from "../../Apis/ApiTipoContatoCRM";
@@ -16,11 +14,12 @@ import { TipoContatoCRMGridMobileComponent } from "../GridsMobile/TipoContatoCRM
 import { TipoContatoCRMGridDesktopComponent } from "../GridsDesktop/TipoContatoCRM";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoContatoCRM } from "../../Filters/TipoContatoCRM";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoContatoCRMWindow from "./TipoContatoCRMWindow";
 
 const TipoContatoCRMGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoContatoCRMGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoContatoCRMGridMobileComponent data={tipocontatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoContatoCRMGridDesktopComponent data={tipocontatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoContatoCRMGridMobileComponent data={tipocontatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoContatoCRMGridDesktopComponent data={tipocontatocrm} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoContatoCRMWindow
           isOpen={showInc}

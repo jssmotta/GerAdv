@@ -74,30 +74,6 @@ public static class StatusHTrabEndpoints
 
             return Results.Ok(result);
         }).WithName("StatusHTrab_AddAndUpdate").WithDisplayName("Add or Update StatusHTrab");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IStatusHTrabValidation validation, IStatusHTrabWriter writer, IStatusHTrabService service) =>
-        {
-            logger.LogInfo("StatusHTrab", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("StatusHTrab", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("StatusHTrab_GetColumns").WithDisplayName("Get StatusHTrab Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IStatusHTrabValidation validation, IStatusHTrabWriter writer, IStatusHTrabService service) =>
-        {
-            logger.LogInfo("StatusHTrab", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("StatusHTrab", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("StatusHTrab_UpdateColumns").WithDisplayName("Update StatusHTrab Columns");
         group.MapDelete("/Delete", async (int id, string uri, IStatusHTrabValidation validation, IStatusHTrabWriter writer, IStatusHTrabService service) =>
         {
             logger.LogInfo("StatusHTrab", "Delete", $"id = {id}", uri);

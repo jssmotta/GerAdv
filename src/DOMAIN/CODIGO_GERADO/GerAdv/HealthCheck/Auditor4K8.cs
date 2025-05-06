@@ -72,7 +72,7 @@ public class Auditor4KHealthCheck(IOptions<AppSettings> appSettings, Auditor4KSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) audNome FROM dbo.Auditor4K (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) audNome,audGUID FROM dbo.Auditor4K (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

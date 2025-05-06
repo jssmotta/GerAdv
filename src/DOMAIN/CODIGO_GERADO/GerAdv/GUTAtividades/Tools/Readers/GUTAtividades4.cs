@@ -8,6 +8,7 @@ public partial interface IGUTAtividadesReader
     GUTAtividadesResponse? Read(int id, SqlConnection oCnn);
     GUTAtividadesResponse? Read(string where, SqlConnection oCnn);
     GUTAtividadesResponse? Read(Entity.DBGUTAtividades dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GUTAtividadesResponse? Read(DBGUTAtividades dbRec);
 }
 
@@ -43,7 +44,7 @@ public partial class GUTAtividades : IGUTAtividadesReader
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out _))
             gutatividades.DataConcluido = dbRec.FDataConcluido;
@@ -80,7 +81,7 @@ public partial class GUTAtividades : IGUTAtividadesReader
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out _))
             gutatividades.DataConcluido = dbRec.FDataConcluido;

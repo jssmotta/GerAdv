@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import LigacoesInc from "../Inc/Ligacoes";
 import { ILigacoes } from "../../Interfaces/interface.Ligacoes";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const LigacoesWindow: React.FC<LigacoesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/ligacoes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedLigacoes?.id}`);
+            router.push(`/pages/ligacoes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedLigacoes?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedLigacoes]);
@@ -42,7 +43,7 @@ const LigacoesWindow: React.FC<LigacoesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={845}
                     newWidth={1440}
                     id={(selectedLigacoes?.id ?? 0).toString()}

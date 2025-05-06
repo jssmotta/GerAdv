@@ -74,30 +74,6 @@ public static class LigacoesEndpoints
 
             return Results.Ok(result);
         }).WithName("Ligacoes_AddAndUpdate").WithDisplayName("Add or Update Ligacoes");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, ILigacoesService service) =>
-        {
-            logger.LogInfo("Ligacoes", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Ligacoes", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Ligacoes_GetColumns").WithDisplayName("Get Ligacoes Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, ILigacoesService service) =>
-        {
-            logger.LogInfo("Ligacoes", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Ligacoes", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Ligacoes_UpdateColumns").WithDisplayName("Update Ligacoes Columns");
         group.MapDelete("/Delete", async (int id, string uri, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, ILigacoesService service) =>
         {
             logger.LogInfo("Ligacoes", "Delete", $"id = {id}", uri);

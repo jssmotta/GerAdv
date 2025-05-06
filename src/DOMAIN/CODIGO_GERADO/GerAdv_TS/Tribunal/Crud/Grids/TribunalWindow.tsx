@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TribunalInc from "../Inc/Tribunal";
 import { ITribunal } from "../../Interfaces/interface.Tribunal";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TribunalWindow: React.FC<TribunalWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tribunal/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTribunal?.id}`);
+            router.push(`/pages/tribunal/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTribunal?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTribunal]);
@@ -42,7 +43,7 @@ const TribunalWindow: React.FC<TribunalWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={699}
                     newWidth={720}
                     id={(selectedTribunal?.id ?? 0).toString()}

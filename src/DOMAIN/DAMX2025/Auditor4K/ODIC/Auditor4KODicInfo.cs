@@ -39,7 +39,7 @@ public partial class DBAuditor4KODicInfo : IODicInfo
     public static string TTabelaNome => DBAuditor4KDicInfo.TabelaNome;
     public static string TTablePrefix => DBAuditor4KDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBAuditor4KDicInfo.AudNome, DBAuditor4KDicInfo.AudGUID, DBAuditor4KDicInfo.AudQuemCad, DBAuditor4KDicInfo.AudDtCad, DBAuditor4KDicInfo.AudQuemAtu, DBAuditor4KDicInfo.AudDtAtu, DBAuditor4KDicInfo.AudVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAuditor4KDicInfo.AudNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBAuditor4KDicInfo.AudNome, DBAuditor4KDicInfo.AudGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

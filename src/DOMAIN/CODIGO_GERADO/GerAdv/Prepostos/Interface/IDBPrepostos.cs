@@ -34,4 +34,5 @@ public partial interface IDBPrepostos
     public bool FEtiqueta { get; set; }
     public bool FAni { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

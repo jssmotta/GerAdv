@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TiposAcaoEmpty } from "../../../Models/TiposAcao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TiposAcaoInc from "../Inc/TiposAcao";
 import { ITiposAcao } from "../../Interfaces/interface.TiposAcao";
 import { TiposAcaoService } from "../../Services/TiposAcao.service";
 import { TiposAcaoApi } from "../../Apis/ApiTiposAcao";
@@ -16,11 +14,12 @@ import { TiposAcaoGridMobileComponent } from "../GridsMobile/TiposAcao";
 import { TiposAcaoGridDesktopComponent } from "../GridsDesktop/TiposAcao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTiposAcao } from "../../Filters/TiposAcao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TiposAcaoWindow from "./TiposAcaoWindow";
 
 const TiposAcaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TiposAcaoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TiposAcaoGridMobileComponent data={tiposacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TiposAcaoGridDesktopComponent data={tiposacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TiposAcaoGridMobileComponent data={tiposacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TiposAcaoGridDesktopComponent data={tiposacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TiposAcaoWindow
           isOpen={showInc}

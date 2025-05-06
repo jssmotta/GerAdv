@@ -12,4 +12,5 @@
 	fone = `Fone`,
 	fax = `Fax`,
 	observacao = `Observacao`,
+	guid = `GUID`,
 }

@@ -12,4 +12,5 @@
 	cidadenome = `CidadeNome`,
 	subdivisao = `SubDivisao`,
 	tipo = `Tipo`,
+	guid = `GUID`,
 }

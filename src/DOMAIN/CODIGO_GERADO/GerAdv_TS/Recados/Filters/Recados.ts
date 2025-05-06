@@ -23,6 +23,7 @@
     contatocrm?: number;
     ligacoes?: number;
     agenda?: number;
+ guid?: string;
 }
 
 export class FilterRecadosDefaults implements FilterRecados {
@@ -49,5 +50,6 @@ export class FilterRecadosDefaults implements FilterRecados {
     contatocrm?: number = -2147483648;
     ligacoes?: number = -2147483648;
     agenda?: number = -2147483648;
+    guid?: string = '';
 }
     

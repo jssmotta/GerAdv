@@ -8,6 +8,7 @@ public partial interface IEscritoriosReader
     EscritoriosResponse? Read(int id, SqlConnection oCnn);
     EscritoriosResponse? Read(string where, SqlConnection oCnn);
     EscritoriosResponse? Read(Entity.DBEscritorios dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EscritoriosResponse? Read(DBEscritorios dbRec);
 }
 
@@ -56,7 +57,7 @@ public partial class Escritorios : IEscritoriosReader
             Top = dbRec.FTop,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -104,7 +105,7 @@ public partial class Escritorios : IEscritoriosReader
             Top = dbRec.FTop,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProProcuradoresEmpty } from "../../../Models/ProProcuradores";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProProcuradoresInc from "../Inc/ProProcuradores";
 import { IProProcuradores } from "../../Interfaces/interface.ProProcuradores";
 import { ProProcuradoresService } from "../../Services/ProProcuradores.service";
 import { ProProcuradoresApi } from "../../Apis/ApiProProcuradores";
@@ -16,11 +14,12 @@ import { ProProcuradoresGridMobileComponent } from "../GridsMobile/ProProcurador
 import { ProProcuradoresGridDesktopComponent } from "../GridsDesktop/ProProcuradores";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProProcuradores } from "../../Filters/ProProcuradores";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProProcuradoresWindow from "./ProProcuradoresWindow";
 
 const ProProcuradoresGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProProcuradoresGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProProcuradoresGridMobileComponent data={proprocuradores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProProcuradoresGridDesktopComponent data={proprocuradores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProProcuradoresGridMobileComponent data={proprocuradores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProProcuradoresGridDesktopComponent data={proprocuradores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProProcuradoresWindow
           isOpen={showInc}

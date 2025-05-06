@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import DadosProcuracaoInc from "../Inc/DadosProcuracao";
 import { IDadosProcuracao } from "../../Interfaces/interface.DadosProcuracao";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const DadosProcuracaoWindow: React.FC<DadosProcuracaoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/dadosprocuracao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedDadosProcuracao?.id}`);
+            router.push(`/pages/dadosprocuracao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedDadosProcuracao?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedDadosProcuracao]);
@@ -42,7 +43,7 @@ const DadosProcuracaoWindow: React.FC<DadosProcuracaoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={791}
                     newWidth={720}
                     id={(selectedDadosProcuracao?.id ?? 0).toString()}

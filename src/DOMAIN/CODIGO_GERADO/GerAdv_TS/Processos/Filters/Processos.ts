@@ -46,6 +46,7 @@
     valorcondenacao?: number;
     valorcondenacaocalculado?: number;
     valorcondenacaoprovisorio?: number;
+ guid?: string;
 }
 
 export class FilterProcessosDefaults implements FilterProcessos {
@@ -95,5 +96,6 @@ export class FilterProcessosDefaults implements FilterProcessos {
     valorcondenacao?: number = -2147483648;
     valorcondenacaocalculado?: number = -2147483648;
     valorcondenacaoprovisorio?: number = -2147483648;
+    guid?: string = '';
 }
     

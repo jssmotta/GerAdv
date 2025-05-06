@@ -59,4 +59,7 @@ public partial class FilterOutrasPartesCliente
 
     [JsonPropertyName("class")]
     public string Class { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

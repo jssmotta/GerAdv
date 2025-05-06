@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import OperadorInc from "../Inc/Operador";
 import { IOperador } from "../../Interfaces/interface.Operador";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const OperadorWindow: React.FC<OperadorWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/operador/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedOperador?.id}`);
+            router.push(`/pages/operador/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedOperador?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedOperador]);
@@ -42,7 +43,7 @@ const OperadorWindow: React.FC<OperadorWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={905}
                     newWidth={1440}
                     id={(selectedOperador?.id ?? 0).toString()}

@@ -8,6 +8,7 @@
     tipoorigemsucumbencia?: number;
     valor?: number;
  percentual?: string;
+ guid?: string;
 }
 
 export class FilterProSucumbenciaDefaults implements FilterProSucumbencia {
@@ -19,5 +20,6 @@ export class FilterProSucumbenciaDefaults implements FilterProSucumbencia {
     tipoorigemsucumbencia?: number = -2147483648;
     valor?: number = -2147483648;
     percentual?: string = '';
+    guid?: string = '';
 }
     

@@ -74,30 +74,6 @@ public static class TerceirosEndpoints
 
             return Results.Ok(result);
         }).WithName("Terceiros_AddAndUpdate").WithDisplayName("Add or Update Terceiros");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITerceirosValidation validation, ITerceirosWriter writer, IProcessosReader processosReader, IPosicaoOutrasPartesReader posicaooutraspartesReader, ITerceirosService service) =>
-        {
-            logger.LogInfo("Terceiros", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Terceiros", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Terceiros_GetColumns").WithDisplayName("Get Terceiros Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITerceirosValidation validation, ITerceirosWriter writer, IProcessosReader processosReader, IPosicaoOutrasPartesReader posicaooutraspartesReader, ITerceirosService service) =>
-        {
-            logger.LogInfo("Terceiros", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Terceiros", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Terceiros_UpdateColumns").WithDisplayName("Update Terceiros Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITerceirosValidation validation, ITerceirosWriter writer, IProcessosReader processosReader, IPosicaoOutrasPartesReader posicaooutraspartesReader, ITerceirosService service) =>
         {
             logger.LogInfo("Terceiros", "Delete", $"id = {id}", uri);

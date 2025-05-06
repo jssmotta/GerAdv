@@ -8,6 +8,7 @@ public partial interface IReuniaoPessoasReader
     ReuniaoPessoasResponse? Read(int id, SqlConnection oCnn);
     ReuniaoPessoasResponse? Read(string where, SqlConnection oCnn);
     ReuniaoPessoasResponse? Read(Entity.DBReuniaoPessoas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ReuniaoPessoasResponse? Read(DBReuniaoPessoas dbRec);
 }
 

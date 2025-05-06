@@ -14,4 +14,7 @@ public partial class FilterCargosEsc
 
     [JsonPropertyName("classificacao")]
     public int Classificacao { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

@@ -11,4 +11,5 @@
 	portapop3 = `PortaPop3`,
 	assinatura = `Assinatura`,
 	senha256 = `Senha256`,
+	guid = `GUID`,
 }

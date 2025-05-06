@@ -56,30 +56,6 @@ public static class GruposEmpresasCliEndpoints
 
             return Results.Ok(result);
         }).WithName("GruposEmpresasCli_AddAndUpdate").WithDisplayName("Add or Update GruposEmpresasCli");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IGruposEmpresasCliValidation validation, IGruposEmpresasCliWriter writer, IGruposEmpresasReader gruposempresasReader, IClientesReader clientesReader, IGruposEmpresasCliService service) =>
-        {
-            logger.LogInfo("GruposEmpresasCli", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("GruposEmpresasCli", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("GruposEmpresasCli_GetColumns").WithDisplayName("Get GruposEmpresasCli Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IGruposEmpresasCliValidation validation, IGruposEmpresasCliWriter writer, IGruposEmpresasReader gruposempresasReader, IClientesReader clientesReader, IGruposEmpresasCliService service) =>
-        {
-            logger.LogInfo("GruposEmpresasCli", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("GruposEmpresasCli", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("GruposEmpresasCli_UpdateColumns").WithDisplayName("Update GruposEmpresasCli Columns");
         group.MapDelete("/Delete", async (int id, string uri, IGruposEmpresasCliValidation validation, IGruposEmpresasCliWriter writer, IGruposEmpresasReader gruposempresasReader, IClientesReader clientesReader, IGruposEmpresasCliService service) =>
         {
             logger.LogInfo("GruposEmpresasCli", "Delete", $"id = {id}", uri);

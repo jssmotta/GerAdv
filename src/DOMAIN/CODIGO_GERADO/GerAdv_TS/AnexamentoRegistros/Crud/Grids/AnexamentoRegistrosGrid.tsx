@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AnexamentoRegistrosEmpty } from "../../../Models/AnexamentoRegistros";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AnexamentoRegistrosInc from "../Inc/AnexamentoRegistros";
 import { IAnexamentoRegistros } from "../../Interfaces/interface.AnexamentoRegistros";
 import { AnexamentoRegistrosService } from "../../Services/AnexamentoRegistros.service";
 import { AnexamentoRegistrosApi } from "../../Apis/ApiAnexamentoRegistros";
@@ -16,11 +14,12 @@ import { AnexamentoRegistrosGridMobileComponent } from "../GridsMobile/Anexament
 import { AnexamentoRegistrosGridDesktopComponent } from "../GridsDesktop/AnexamentoRegistros";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAnexamentoRegistros } from "../../Filters/AnexamentoRegistros";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AnexamentoRegistrosWindow from "./AnexamentoRegistrosWindow";
 
 const AnexamentoRegistrosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AnexamentoRegistrosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AnexamentoRegistrosGridMobileComponent data={anexamentoregistros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AnexamentoRegistrosGridDesktopComponent data={anexamentoregistros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AnexamentoRegistrosGridMobileComponent data={anexamentoregistros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AnexamentoRegistrosGridDesktopComponent data={anexamentoregistros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AnexamentoRegistrosWindow
           isOpen={showInc}

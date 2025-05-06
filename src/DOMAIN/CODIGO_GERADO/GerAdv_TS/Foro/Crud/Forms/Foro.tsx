@@ -1,13 +1,19 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IForo } from '../../Interfaces/interface.Foro';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IForo } from '@/app/GerAdv_TS/Foro/Interfaces/interface.Foro';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCep from '@/app/components/Inputs/InputCep'
 
 interface ForoFormProps {
@@ -38,22 +44,37 @@ interface ForoFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ForoForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ForoForm-${foroData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={foroData} isSubmitting={isSubmitting} onClose={onClose} formId={`ForoForm-${foroData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={foroData.nome}
+            placeholder={`Digite nome foro`}
             onChange={onChange}
             required
           />
@@ -68,7 +89,7 @@ value={foroData.email}
 onChange={onChange}               
 />
 
-<Checkbox label="Unico" name="unico" checked={foroData.unico} onChange={onChange} />
+<InputCheckbox label="Unico" name="unico" checked={foroData.unico} onChange={onChange} />
         
 <Input
 type="text"
@@ -151,7 +172,7 @@ value={foroData.obs}
 onChange={onChange}               
 />
 
-<Checkbox label="UnicoConfirmado" name="unicoconfirmado" checked={foroData.unicoconfirmado} onChange={onChange} />
+<InputCheckbox label="UnicoConfirmado" name="unicoconfirmado" checked={foroData.unicoconfirmado} onChange={onChange} />
         
 <Input
 type="text"
@@ -163,24 +184,10 @@ value={foroData.web}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarecords${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?foro=${foroData.id}`)}>Agenda Records</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/divisaotribunal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?foro=${foroData.id}`)}>Divisao Tribunal</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/instancia${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?foro=${foroData.id}`)}>Instancia</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/poderjudiciarioassociado${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?foro=${foroData.id}`)}>Poder Judiciario Associado</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -56,30 +56,6 @@ public static class ProcessOutputRequestEndpoints
 
             return Results.Ok(result);
         }).WithName("ProcessOutputRequest_AddAndUpdate").WithDisplayName("Add or Update ProcessOutputRequest");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProcessOutputRequestValidation validation, IProcessOutputRequestWriter writer, IProcessOutputEngineReader processoutputengineReader, IOperadorReader operadorReader, IProcessosReader processosReader, IProcessOutputRequestService service) =>
-        {
-            logger.LogInfo("ProcessOutputRequest", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProcessOutputRequest", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProcessOutputRequest_GetColumns").WithDisplayName("Get ProcessOutputRequest Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProcessOutputRequestValidation validation, IProcessOutputRequestWriter writer, IProcessOutputEngineReader processoutputengineReader, IOperadorReader operadorReader, IProcessosReader processosReader, IProcessOutputRequestService service) =>
-        {
-            logger.LogInfo("ProcessOutputRequest", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProcessOutputRequest", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProcessOutputRequest_UpdateColumns").WithDisplayName("Update ProcessOutputRequest Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProcessOutputRequestValidation validation, IProcessOutputRequestWriter writer, IProcessOutputEngineReader processoutputengineReader, IOperadorReader operadorReader, IProcessosReader processosReader, IProcessOutputRequestService service) =>
         {
             logger.LogInfo("ProcessOutputRequest", "Delete", $"id = {id}", uri);

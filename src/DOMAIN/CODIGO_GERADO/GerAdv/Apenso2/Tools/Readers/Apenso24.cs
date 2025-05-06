@@ -8,6 +8,7 @@ public partial interface IApenso2Reader
     Apenso2Response? Read(int id, SqlConnection oCnn);
     Apenso2Response? Read(string where, SqlConnection oCnn);
     Apenso2Response? Read(Entity.DBApenso2 dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     Apenso2Response? Read(DBApenso2 dbRec);
 }
 

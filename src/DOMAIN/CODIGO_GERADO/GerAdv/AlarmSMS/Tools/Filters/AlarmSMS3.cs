@@ -30,6 +30,9 @@ public partial class FilterAlarmSMS
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = -2147483648;
 
+    [JsonPropertyName("guidexo")]
+    public string GuidExo { get; set; } = string.Empty;
+
     [JsonPropertyName("agenda")]
     public int Agenda { get; set; } = -2147483648;
 
@@ -38,4 +41,7 @@ public partial class FilterAlarmSMS
 
     [JsonPropertyName("emocao")]
     public int Emocao { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

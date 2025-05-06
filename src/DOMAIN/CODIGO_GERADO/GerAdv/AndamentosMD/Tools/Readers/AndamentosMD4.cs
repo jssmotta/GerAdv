@@ -8,6 +8,7 @@ public partial interface IAndamentosMDReader
     AndamentosMDResponse? Read(int id, SqlConnection oCnn);
     AndamentosMDResponse? Read(string where, SqlConnection oCnn);
     AndamentosMDResponse? Read(Entity.DBAndamentosMD dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AndamentosMDResponse? Read(DBAndamentosMD dbRec);
 }
 
@@ -40,7 +41,7 @@ public partial class AndamentosMD : IAndamentosMDReader
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -72,7 +73,7 @@ public partial class AndamentosMD : IAndamentosMDReader
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

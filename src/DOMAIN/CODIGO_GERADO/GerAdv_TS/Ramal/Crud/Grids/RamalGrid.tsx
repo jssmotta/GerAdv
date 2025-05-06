@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { RamalEmpty } from "../../../Models/Ramal";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import RamalInc from "../Inc/Ramal";
 import { IRamal } from "../../Interfaces/interface.Ramal";
 import { RamalService } from "../../Services/Ramal.service";
 import { RamalApi } from "../../Apis/ApiRamal";
@@ -16,11 +14,12 @@ import { RamalGridMobileComponent } from "../GridsMobile/Ramal";
 import { RamalGridDesktopComponent } from "../GridsDesktop/Ramal";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterRamal } from "../../Filters/Ramal";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import RamalWindow from "./RamalWindow";
 
 const RamalGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const RamalGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <RamalGridMobileComponent data={ramal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <RamalGridDesktopComponent data={ramal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <RamalGridMobileComponent data={ramal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <RamalGridDesktopComponent data={ramal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <RamalWindow
           isOpen={showInc}

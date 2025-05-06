@@ -51,6 +51,7 @@ public class Recados : IRecadosWriter
         dbRec.FContatoCRM = recados.ContatoCRM;
         dbRec.FLigacoes = recados.Ligacoes;
         dbRec.FAgenda = recados.Agenda;
+        dbRec.FGUID = recados.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -91,6 +91,11 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, ITipo
             }
         }
 
+        if (id.IsEmptyIDNumber())
+        {
+            return new TipoRecursoResponse();
+        }
+
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
@@ -98,7 +103,10 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, ITipo
         };
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-TipoRecurso-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            using var scope = Configuracoes.CreateConnectionScope(uri);
+            var oCnn = scope.Connection;
+            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var result = await _cache.GetOrCreateAsync($"{uri}-TipoRecurso-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
@@ -188,67 +196,6 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, ITipo
             }
 
             return tiporecurso;
-        });
-    }
-
-    public async Task<GetColumnsResponse?> GetColumns([FromBody] GetColumns parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("TipoRecurso: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            using var dbRec = new DBTipoRecurso(parameters?.Id ?? throw new Exception("Id == null"), oCnn);
-            var campos = new List<ColumnValueItem>();
-            foreach (var column in parameters?.Columns!)
-                if (column != null && column.Length > 0)
-                {
-                    var value = dbRec.GetValueByNameField($"{DBTipoRecursoDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}");
-                    if (value != null)
-                        campos.Add(new ColumnValueItem(column, value));
-                }
-
-            var result = new GetColumnsResponse
-            {
-                Id = parameters.Id,
-                Columns = campos
-            };
-            return result;
-        });
-    }
-
-    public async Task<bool> UpdateColumns([FromBody] UpdateColumnsRequest parameters, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        return !Uris.ValidaUri(uri, _uris) ? throw new Exception("TipoRecurso: URI inválida") : await Task.Run(() =>
-        {
-            if (parameters == null || parameters.Id.IsEmptyIDNumber() || parameters.Columns == null || parameters?.Columns?.Count() == 0)
-            {
-                return false;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return false;
-            }
-
-            using var dbRec = new DBTipoRecurso(parameters?.Id ?? throw new Exception("Id is null"), oCnn);
-            foreach (var(column, value)in parameters?.Columns!)
-                dbRec.SetValueByNameField($"{DBTipoRecursoDicInfo.TablePrefix}{char.ToUpper(column[0])}{column[1..]}", value);
-            dbRec.AuditorQuem = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-            return dbRec.Update(oCnn) == 0;
         });
     }
 
@@ -350,6 +297,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, ITipo
         var cWhere = filtro.Justica == -2147483648 ? string.Empty : DBTipoRecursoDicInfo.JusticaSql(filtro.Justica);
         cWhere += filtro.Area == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTipoRecursoDicInfo.AreaSql(filtro.Area);
         cWhere += filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTipoRecursoDicInfo.DescricaoSql(filtro.Descricao);
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTipoRecursoDicInfo.GUIDSql(filtro.GUID);
         return cWhere;
     }
 }

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { InstanciaEmpty } from "../../../Models/Instancia";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import InstanciaInc from "../Inc/Instancia";
 import { IInstancia } from "../../Interfaces/interface.Instancia";
 import { InstanciaService } from "../../Services/Instancia.service";
 import { InstanciaApi } from "../../Apis/ApiInstancia";
@@ -16,11 +14,12 @@ import { InstanciaGridMobileComponent } from "../GridsMobile/Instancia";
 import { InstanciaGridDesktopComponent } from "../GridsDesktop/Instancia";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterInstancia } from "../../Filters/Instancia";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import InstanciaWindow from "./InstanciaWindow";
 
 const InstanciaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const InstanciaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <InstanciaGridMobileComponent data={instancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <InstanciaGridDesktopComponent data={instancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <InstanciaGridMobileComponent data={instancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <InstanciaGridDesktopComponent data={instancia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <InstanciaWindow
           isOpen={showInc}

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProSucumbenciaEmpty } from "../../../Models/ProSucumbencia";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProSucumbenciaInc from "../Inc/ProSucumbencia";
 import { IProSucumbencia } from "../../Interfaces/interface.ProSucumbencia";
 import { ProSucumbenciaService } from "../../Services/ProSucumbencia.service";
 import { ProSucumbenciaApi } from "../../Apis/ApiProSucumbencia";
@@ -16,11 +14,12 @@ import { ProSucumbenciaGridMobileComponent } from "../GridsMobile/ProSucumbencia
 import { ProSucumbenciaGridDesktopComponent } from "../GridsDesktop/ProSucumbencia";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProSucumbencia } from "../../Filters/ProSucumbencia";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProSucumbenciaWindow from "./ProSucumbenciaWindow";
 
 const ProSucumbenciaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProSucumbenciaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProSucumbenciaGridMobileComponent data={prosucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProSucumbenciaGridDesktopComponent data={prosucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProSucumbenciaGridMobileComponent data={prosucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProSucumbenciaGridDesktopComponent data={prosucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProSucumbenciaWindow
           isOpen={showInc}

@@ -41,7 +41,7 @@ public partial class DBServicosODicInfo : IODicInfo
     public static string TTabelaNome => DBServicosDicInfo.TabelaNome;
     public static string TTablePrefix => DBServicosDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBServicosDicInfo.SerCobrar, DBServicosDicInfo.SerDescricao, DBServicosDicInfo.SerBasico, DBServicosDicInfo.SerGUID, DBServicosDicInfo.SerQuemCad, DBServicosDicInfo.SerDtCad, DBServicosDicInfo.SerQuemAtu, DBServicosDicInfo.SerDtAtu, DBServicosDicInfo.SerVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBServicosDicInfo.SerCobrar, DBServicosDicInfo.SerDescricao, DBServicosDicInfo.SerBasico];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBServicosDicInfo.SerCobrar, DBServicosDicInfo.SerDescricao, DBServicosDicInfo.SerBasico, DBServicosDicInfo.SerGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

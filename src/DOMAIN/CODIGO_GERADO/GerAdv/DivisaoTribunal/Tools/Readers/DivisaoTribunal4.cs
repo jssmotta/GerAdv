@@ -8,6 +8,7 @@ public partial interface IDivisaoTribunalReader
     DivisaoTribunalResponse? Read(int id, SqlConnection oCnn);
     DivisaoTribunalResponse? Read(string where, SqlConnection oCnn);
     DivisaoTribunalResponse? Read(Entity.DBDivisaoTribunal dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     DivisaoTribunalResponse? Read(DBDivisaoTribunal dbRec);
 }
 
@@ -52,7 +53,7 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Andar = dbRec.FAndar ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -96,7 +97,7 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Andar = dbRec.FAndar ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

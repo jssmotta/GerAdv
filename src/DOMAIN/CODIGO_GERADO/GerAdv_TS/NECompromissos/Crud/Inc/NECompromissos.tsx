@@ -5,7 +5,7 @@ import { NECompromissosApi } from '../../Apis/ApiNECompromissos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { INECompromissosFormProps } from '../../Interfaces/interface.NECompromissos';
 import { NECompromissosService } from '../../Services/NECompromissos.service';
 import { useNECompromissosForm } from '../../Hooks/useNECompromissosForm';

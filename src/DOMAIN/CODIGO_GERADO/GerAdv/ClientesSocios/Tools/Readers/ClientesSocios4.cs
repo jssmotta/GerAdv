@@ -8,6 +8,7 @@ public partial interface IClientesSociosReader
     ClientesSociosResponse? Read(int id, SqlConnection oCnn);
     ClientesSociosResponse? Read(string where, SqlConnection oCnn);
     ClientesSociosResponse? Read(Entity.DBClientesSocios dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ClientesSociosResponse? Read(DBClientesSocios dbRec);
 }
 
@@ -70,7 +71,7 @@ public partial class ClientesSocios : IClientesSociosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             clientessocios.DtNasc = dbRec.FDtNasc;
@@ -138,7 +139,7 @@ public partial class ClientesSocios : IClientesSociosReader
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             clientessocios.DtNasc = dbRec.FDtNasc;

@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAlarmSMS } from '../../Interfaces/interface.AlarmSMS';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAlarmSMS } from '@/app/GerAdv_TS/AlarmSMS/Interfaces/interface.AlarmSMS';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
@@ -14,6 +18,8 @@ import RecadosComboBox from '@/app/GerAdv_TS/Recados/ComboBox/Recados';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
 import { AgendaApi } from '@/app/GerAdv_TS/Agenda/Apis/ApiAgenda';
 import { RecadosApi } from '@/app/GerAdv_TS/Recados/Apis/ApiRecados';
+import InputDescription from '@/app/components/Inputs/InputDescription';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface AlarmSMSFormProps {
     alarmsmsData: IAlarmSMS;
@@ -106,27 +112,40 @@ if (getParamFromUrl("recados") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AlarmSMSForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOperador && (<h2>{nomeOperador}</h2>)}
-{nomeAgenda && (<h2>{nomeAgenda}</h2>)}
-{nomeRecados && (<h2>{nomeRecados}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AlarmSMSForm-${alarmsmsData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={alarmsmsData} isSubmitting={isSubmitting} onClose={onClose} formId={`AlarmSMSForm-${alarmsmsData.id}`} />
+
+                <div className="grid-container">
+
+    <InputDescription
             type="text"            
             id="descricao"
             label="descricao"
             className="inputIncNome"
             name="descricao"
             value={alarmsmsData.descricao}
+            placeholder={`Digite nome alarm s m s`}
             onChange={onChange}
             required
+            disabled={alarmsmsData.id > 0}
           />
 
 <Input
@@ -149,13 +168,13 @@ value={alarmsmsData.minuto}
 onChange={onChange}               
 />
 
-<Checkbox label="D1" name="d1" checked={alarmsmsData.d1} onChange={onChange} />
-<Checkbox label="D2" name="d2" checked={alarmsmsData.d2} onChange={onChange} />
-<Checkbox label="D3" name="d3" checked={alarmsmsData.d3} onChange={onChange} />
-<Checkbox label="D4" name="d4" checked={alarmsmsData.d4} onChange={onChange} />
-<Checkbox label="D5" name="d5" checked={alarmsmsData.d5} onChange={onChange} />
-<Checkbox label="D6" name="d6" checked={alarmsmsData.d6} onChange={onChange} />
-<Checkbox label="D7" name="d7" checked={alarmsmsData.d7} onChange={onChange} />
+<InputCheckbox label="D1" name="d1" checked={alarmsmsData.d1} onChange={onChange} />
+<InputCheckbox label="D2" name="d2" checked={alarmsmsData.d2} onChange={onChange} />
+<InputCheckbox label="D3" name="d3" checked={alarmsmsData.d3} onChange={onChange} />
+<InputCheckbox label="D4" name="d4" checked={alarmsmsData.d4} onChange={onChange} />
+<InputCheckbox label="D5" name="d5" checked={alarmsmsData.d5} onChange={onChange} />
+<InputCheckbox label="D6" name="d6" checked={alarmsmsData.d6} onChange={onChange} />
+<InputCheckbox label="D7" name="d7" checked={alarmsmsData.d7} onChange={onChange} />
 </div><div className="grid-container">        
 <Input
 type="email"
@@ -167,7 +186,7 @@ value={alarmsmsData.email}
 onChange={onChange}               
 />
 
-<Checkbox label="Desativar" name="desativar" checked={alarmsmsData.desativar} onChange={onChange} />
+<InputCheckbox label="Desativar" name="desativar" checked={alarmsmsData.desativar} onChange={onChange} />
         
 <Input
 type="text"
@@ -179,8 +198,8 @@ value={alarmsmsData.today}
 onChange={onChange}               
 />
 
-<Checkbox label="ExcetoDiasFelizes" name="excetodiasfelizes" checked={alarmsmsData.excetodiasfelizes} onChange={onChange} />
-<Checkbox label="Desktop" name="desktop" checked={alarmsmsData.desktop} onChange={onChange} />
+<InputCheckbox label="ExcetoDiasFelizes" name="excetodiasfelizes" checked={alarmsmsData.excetodiasfelizes} onChange={onChange} />
+<InputCheckbox label="Desktop" name="desktop" checked={alarmsmsData.desktop} onChange={onChange} />
         
 <Input
 type="text"
@@ -199,6 +218,16 @@ onChange={onChange}
             label={'Operador'}
             />
 
+<Input
+type="text"
+id="guidexo"
+label="GuidExo"
+className="inputIncNome"
+name="guidexo"
+value={alarmsmsData.guidexo}
+onChange={onChange}               
+/>
+
             <AgendaComboBox
             name={'agenda'}
             value={alarmsmsData.agenda}
@@ -213,6 +242,7 @@ onChange={onChange}
             label={'Recados'}
             />
 
+</div><div className="grid-container">        
 <Input
 type="text"
 id="emocao"
@@ -223,19 +253,10 @@ value={alarmsmsData.emocao}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

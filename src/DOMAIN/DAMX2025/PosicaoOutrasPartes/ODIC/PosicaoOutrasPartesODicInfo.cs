@@ -40,7 +40,7 @@ public partial class DBPosicaoOutrasPartesODicInfo : IODicInfo
     public static string TTabelaNome => DBPosicaoOutrasPartesDicInfo.TabelaNome;
     public static string TTablePrefix => DBPosicaoOutrasPartesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBPosicaoOutrasPartesDicInfo.PosDescricao, DBPosicaoOutrasPartesDicInfo.PosBold, DBPosicaoOutrasPartesDicInfo.PosGUID, DBPosicaoOutrasPartesDicInfo.PosQuemCad, DBPosicaoOutrasPartesDicInfo.PosDtCad, DBPosicaoOutrasPartesDicInfo.PosQuemAtu, DBPosicaoOutrasPartesDicInfo.PosDtAtu, DBPosicaoOutrasPartesDicInfo.PosVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBPosicaoOutrasPartesDicInfo.PosDescricao, DBPosicaoOutrasPartesDicInfo.PosBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBPosicaoOutrasPartesDicInfo.PosDescricao, DBPosicaoOutrasPartesDicInfo.PosBold, DBPosicaoOutrasPartesDicInfo.PosGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

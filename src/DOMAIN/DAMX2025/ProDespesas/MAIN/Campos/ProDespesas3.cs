@@ -15,7 +15,6 @@ public partial class DBProDespesas
     private protected bool m_FCorrigido, m_FTipo, m_FLivroCaixa;
     [XmlIgnore]
     private protected decimal m_FValorOriginal, m_FValor;
-    public int NFLigacaoID() => m_FLigacaoID;
     [XmlAttribute]
     public int FLigacaoID
     {
@@ -28,7 +27,6 @@ public partial class DBProDespesas
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -41,7 +39,6 @@ public partial class DBProDespesas
         }
     }
 
-    public bool NFCorrigido() => m_FCorrigido;
     [XmlAttribute]
     public bool FCorrigido
     {
@@ -54,7 +51,6 @@ public partial class DBProDespesas
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -72,7 +68,6 @@ public partial class DBProDespesas
         }
     }
 
-    public decimal NFValorOriginal() => m_FValorOriginal;
     [XmlAttribute]
     public decimal FValorOriginal
     {
@@ -86,7 +81,6 @@ public partial class DBProDespesas
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -99,7 +93,6 @@ public partial class DBProDespesas
         }
     }
 
-    public int NFQuitado() => m_FQuitado;
     [XmlAttribute]
     public int FQuitado
     {
@@ -112,7 +105,6 @@ public partial class DBProDespesas
         }
     }
 
-    public string NFDataCorrecao() => $"{m_FDataCorrecao:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataCorrecao:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataCorrecao => Convert.ToDateTime(m_FDataCorrecao);
 
@@ -130,7 +122,6 @@ public partial class DBProDespesas
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -144,7 +135,6 @@ public partial class DBProDespesas
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -157,7 +147,6 @@ public partial class DBProDespesas
         }
     }
 
-    public string NFHistorico() => m_FHistorico ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHistorico
     {
@@ -170,7 +159,6 @@ public partial class DBProDespesas
         }
     }
 
-    public bool NFLivroCaixa() => m_FLivroCaixa;
     [XmlAttribute]
     public bool FLivroCaixa
     {

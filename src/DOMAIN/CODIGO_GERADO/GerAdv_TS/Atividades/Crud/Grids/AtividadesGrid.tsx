@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AtividadesEmpty } from "../../../Models/Atividades";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AtividadesInc from "../Inc/Atividades";
 import { IAtividades } from "../../Interfaces/interface.Atividades";
 import { AtividadesService } from "../../Services/Atividades.service";
 import { AtividadesApi } from "../../Apis/ApiAtividades";
@@ -16,11 +14,12 @@ import { AtividadesGridMobileComponent } from "../GridsMobile/Atividades";
 import { AtividadesGridDesktopComponent } from "../GridsDesktop/Atividades";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAtividades } from "../../Filters/Atividades";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AtividadesWindow from "./AtividadesWindow";
 
 const AtividadesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const AtividadesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <AtividadesGridMobileComponent data={atividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AtividadesGridDesktopComponent data={atividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AtividadesGridMobileComponent data={atividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AtividadesGridDesktopComponent data={atividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AtividadesWindow
           isOpen={showInc}

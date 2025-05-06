@@ -1,12 +1,18 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IPaises } from '../../Interfaces/interface.Paises';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IPaises } from '@/app/GerAdv_TS/Paises/Interfaces/interface.Paises';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputName from '@/app/components/Inputs/InputName';
 
 interface PaisesFormProps {
     paisesData: IPaises;
@@ -36,41 +42,45 @@ interface PaisesFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('PaisesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`PaisesForm-${paisesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={paisesData} isSubmitting={isSubmitting} onClose={onClose} formId={`PaisesForm-${paisesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={paisesData.nome}
+            placeholder={`Digite nome paises`}
             onChange={onChange}
             required
           />
 
-          							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/uf${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?paises=${paisesData.id}`)}>UF</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -72,7 +72,7 @@ public class HonorariosDadosContratoHealthCheck(IOptions<AppSettings> appSetting
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) hdcCliente,hdcFixo,hdcVariavel,hdcPercSucesso,hdcProcesso,hdcArquivoContrato,hdcTextoContrato,hdcValorFixo,hdcObservacao,hdcDataContrato FROM dbo.HonorariosDadosContrato (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) hdcCliente,hdcFixo,hdcVariavel,hdcPercSucesso,hdcProcesso,hdcArquivoContrato,hdcTextoContrato,hdcValorFixo,hdcObservacao,hdcDataContrato,hdcGUID FROM dbo.HonorariosDadosContrato (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

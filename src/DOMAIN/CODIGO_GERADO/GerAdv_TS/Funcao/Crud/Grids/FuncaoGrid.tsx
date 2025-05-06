@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { FuncaoEmpty } from "../../../Models/Funcao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import FuncaoInc from "../Inc/Funcao";
 import { IFuncao } from "../../Interfaces/interface.Funcao";
 import { FuncaoService } from "../../Services/Funcao.service";
 import { FuncaoApi } from "../../Apis/ApiFuncao";
@@ -16,11 +14,12 @@ import { FuncaoGridMobileComponent } from "../GridsMobile/Funcao";
 import { FuncaoGridDesktopComponent } from "../GridsDesktop/Funcao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterFuncao } from "../../Filters/Funcao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import FuncaoWindow from "./FuncaoWindow";
 
 const FuncaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const FuncaoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <FuncaoGridMobileComponent data={funcao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <FuncaoGridDesktopComponent data={funcao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <FuncaoGridMobileComponent data={funcao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <FuncaoGridDesktopComponent data={funcao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <FuncaoWindow
           isOpen={showInc}

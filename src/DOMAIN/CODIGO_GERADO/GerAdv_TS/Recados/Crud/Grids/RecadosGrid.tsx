@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { RecadosEmpty } from "../../../Models/Recados";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import RecadosInc from "../Inc/Recados";
 import { IRecados } from "../../Interfaces/interface.Recados";
 import { RecadosService } from "../../Services/Recados.service";
 import { RecadosApi } from "../../Apis/ApiRecados";
@@ -16,11 +14,12 @@ import { RecadosGridMobileComponent } from "../GridsMobile/Recados";
 import { RecadosGridDesktopComponent } from "../GridsDesktop/Recados";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterRecados } from "../../Filters/Recados";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import RecadosWindow from "./RecadosWindow";
 
 const RecadosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const RecadosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <RecadosGridMobileComponent data={recados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <RecadosGridDesktopComponent data={recados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <RecadosGridMobileComponent data={recados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <RecadosGridDesktopComponent data={recados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <RecadosWindow
           isOpen={showInc}

@@ -74,30 +74,6 @@ public static class AdvogadosEndpoints
 
             return Results.Ok(result);
         }).WithName("Advogados_AddAndUpdate").WithDisplayName("Add or Update Advogados");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, IAdvogadosService service) =>
-        {
-            logger.LogInfo("Advogados", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Advogados", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Advogados_GetColumns").WithDisplayName("Get Advogados Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, IAdvogadosService service) =>
-        {
-            logger.LogInfo("Advogados", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Advogados", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Advogados_UpdateColumns").WithDisplayName("Update Advogados Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, IAdvogadosService service) =>
         {
             logger.LogInfo("Advogados", "Delete", $"id = {id}", uri);

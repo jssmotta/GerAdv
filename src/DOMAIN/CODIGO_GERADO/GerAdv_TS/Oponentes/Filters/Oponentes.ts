@@ -24,6 +24,7 @@
  observacao?: string;
  email?: string;
  class?: string;
+ guid?: string;
 }
 
 export class FilterOponentesDefaults implements FilterOponentes {
@@ -51,5 +52,6 @@ export class FilterOponentesDefaults implements FilterOponentes {
     observacao?: string = '';
     email?: string = '';
     class?: string = '';
+    guid?: string = '';
 }
     

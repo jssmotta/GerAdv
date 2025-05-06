@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AgendaQuemInc from "../Inc/AgendaQuem";
 import { IAgendaQuem } from "../../Interfaces/interface.AgendaQuem";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AgendaQuemWindow: React.FC<AgendaQuemWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/agendaquem/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaQuem?.id}`);
+            router.push(`/pages/agendaquem/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaQuem?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAgendaQuem]);
@@ -42,7 +43,7 @@ const AgendaQuemWindow: React.FC<AgendaQuemWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedAgendaQuem?.id ?? 0).toString()}

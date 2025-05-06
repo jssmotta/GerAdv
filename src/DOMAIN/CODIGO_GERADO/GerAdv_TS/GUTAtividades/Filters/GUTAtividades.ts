@@ -9,6 +9,7 @@
  dataconcluido?: string;
     diasparainiciar?: number;
     minutospararealizar?: number;
+ guid?: string;
 }
 
 export class FilterGUTAtividadesDefaults implements FilterGUTAtividades {
@@ -21,5 +22,6 @@ export class FilterGUTAtividadesDefaults implements FilterGUTAtividades {
     dataconcluido?: string = '';
     diasparainiciar?: number = -2147483648;
     minutospararealizar?: number = -2147483648;
+    guid?: string = '';
 }
     

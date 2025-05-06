@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AgendaRepetirInc from "../Inc/AgendaRepetir";
 import { IAgendaRepetir } from "../../Interfaces/interface.AgendaRepetir";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AgendaRepetirWindow: React.FC<AgendaRepetirWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/agendarepetir/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaRepetir?.id}`);
+            router.push(`/pages/agendarepetir/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaRepetir?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAgendaRepetir]);
@@ -42,7 +43,7 @@ const AgendaRepetirWindow: React.FC<AgendaRepetirWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={818}
                     newWidth={1440}
                     id={(selectedAgendaRepetir?.id ?? 0).toString()}

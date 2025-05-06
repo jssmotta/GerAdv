@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GUTAtividadesEmpty } from "../../../Models/GUTAtividades";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GUTAtividadesInc from "../Inc/GUTAtividades";
 import { IGUTAtividades } from "../../Interfaces/interface.GUTAtividades";
 import { GUTAtividadesService } from "../../Services/GUTAtividades.service";
 import { GUTAtividadesApi } from "../../Apis/ApiGUTAtividades";
@@ -16,11 +14,12 @@ import { GUTAtividadesGridMobileComponent } from "../GridsMobile/GUTAtividades";
 import { GUTAtividadesGridDesktopComponent } from "../GridsDesktop/GUTAtividades";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGUTAtividades } from "../../Filters/GUTAtividades";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GUTAtividadesWindow from "./GUTAtividadesWindow";
 
 const GUTAtividadesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const GUTAtividadesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <GUTAtividadesGridMobileComponent data={gutatividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GUTAtividadesGridDesktopComponent data={gutatividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GUTAtividadesGridMobileComponent data={gutatividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GUTAtividadesGridDesktopComponent data={gutatividades} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GUTAtividadesWindow
           isOpen={showInc}

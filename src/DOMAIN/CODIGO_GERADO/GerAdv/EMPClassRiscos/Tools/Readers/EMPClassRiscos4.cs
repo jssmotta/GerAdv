@@ -8,6 +8,7 @@ public partial interface IEMPClassRiscosReader
     EMPClassRiscosResponse? Read(int id, SqlConnection oCnn);
     EMPClassRiscosResponse? Read(string where, SqlConnection oCnn);
     EMPClassRiscosResponse? Read(Entity.DBEMPClassRiscos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EMPClassRiscosResponse? Read(DBEMPClassRiscos dbRec);
 }
 
@@ -37,7 +38,7 @@ public partial class EMPClassRiscos : IEMPClassRiscosReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -66,7 +67,7 @@ public partial class EMPClassRiscos : IEMPClassRiscosReader
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

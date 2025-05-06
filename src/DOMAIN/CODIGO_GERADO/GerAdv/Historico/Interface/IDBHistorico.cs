@@ -4,6 +4,7 @@ public partial interface IDBHistorico
     public int ID { get; set; }
     public int FExtraID { get; set; }
     public int FIDNE { get; set; }
+    public string? FExtraGUID { get; set; }
     public int FLiminarOrigem { get; set; }
     public bool FNaoPublicavel { get; set; }
     public int FProcesso { get; set; }
@@ -20,4 +21,5 @@ public partial interface IDBHistorico
     public bool FResumido { get; set; }
     public int FStatusAndamento { get; set; }
     public bool FTop { get; set; }
+    public string? FGUID { get; set; }
 }

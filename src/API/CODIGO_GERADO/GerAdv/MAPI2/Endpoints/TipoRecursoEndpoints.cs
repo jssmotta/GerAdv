@@ -74,30 +74,6 @@ public static class TipoRecursoEndpoints
 
             return Results.Ok(result);
         }).WithName("TipoRecurso_AddAndUpdate").WithDisplayName("Add or Update TipoRecurso");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITipoRecursoValidation validation, ITipoRecursoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITipoRecursoService service) =>
-        {
-            logger.LogInfo("TipoRecurso", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TipoRecurso", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TipoRecurso_GetColumns").WithDisplayName("Get TipoRecurso Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITipoRecursoValidation validation, ITipoRecursoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITipoRecursoService service) =>
-        {
-            logger.LogInfo("TipoRecurso", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TipoRecurso", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TipoRecurso_UpdateColumns").WithDisplayName("Update TipoRecurso Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITipoRecursoValidation validation, ITipoRecursoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITipoRecursoService service) =>
         {
             logger.LogInfo("TipoRecurso", "Delete", $"id = {id}", uri);

@@ -8,6 +8,7 @@ public partial interface ITribunalReader
     TribunalResponse? Read(int id, SqlConnection oCnn);
     TribunalResponse? Read(string where, SqlConnection oCnn);
     TribunalResponse? Read(Entity.DBTribunal dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TribunalResponse? Read(DBTribunal dbRec);
 }
 
@@ -44,7 +45,7 @@ public partial class Tribunal : ITribunalReader
             Web = dbRec.FWeb ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -80,7 +81,7 @@ public partial class Tribunal : ITribunalReader
             Web = dbRec.FWeb ?? string.Empty,
             Etiqueta = dbRec.FEtiqueta,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -5,7 +5,7 @@ import { ProcessosObsReportApi } from '../../Apis/ApiProcessosObsReport';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProcessosObsReportFormProps } from '../../Interfaces/interface.ProcessosObsReport';
 import { ProcessosObsReportService } from '../../Services/ProcessosObsReport.service';
 import { useProcessosObsReportForm } from '../../Hooks/useProcessosObsReportForm';

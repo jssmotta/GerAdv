@@ -8,4 +8,5 @@
 	web = `Web`,
 	etiqueta = `Etiqueta`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

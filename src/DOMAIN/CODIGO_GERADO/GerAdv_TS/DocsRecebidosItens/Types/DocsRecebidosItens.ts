@@ -8,6 +8,7 @@ export interface IDocsRecebidosItens {
 	seradevolvido : boolean;
 	observacoes : string;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

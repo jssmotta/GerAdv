@@ -56,30 +56,6 @@ public static class GUTAtividadesMatrizEndpoints
 
             return Results.Ok(result);
         }).WithName("GUTAtividadesMatriz_AddAndUpdate").WithDisplayName("Add or Update GUTAtividadesMatriz");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IGUTAtividadesMatrizValidation validation, IGUTAtividadesMatrizWriter writer, IGUTMatrizReader gutmatrizReader, IGUTAtividadesReader gutatividadesReader, IGUTAtividadesMatrizService service) =>
-        {
-            logger.LogInfo("GUTAtividadesMatriz", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("GUTAtividadesMatriz", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("GUTAtividadesMatriz_GetColumns").WithDisplayName("Get GUTAtividadesMatriz Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IGUTAtividadesMatrizValidation validation, IGUTAtividadesMatrizWriter writer, IGUTMatrizReader gutmatrizReader, IGUTAtividadesReader gutatividadesReader, IGUTAtividadesMatrizService service) =>
-        {
-            logger.LogInfo("GUTAtividadesMatriz", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("GUTAtividadesMatriz", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("GUTAtividadesMatriz_UpdateColumns").WithDisplayName("Update GUTAtividadesMatriz Columns");
         group.MapDelete("/Delete", async (int id, string uri, IGUTAtividadesMatrizValidation validation, IGUTAtividadesMatrizWriter writer, IGUTMatrizReader gutmatrizReader, IGUTAtividadesReader gutatividadesReader, IGUTAtividadesMatrizService service) =>
         {
             logger.LogInfo("GUTAtividadesMatriz", "Delete", $"id = {id}", uri);

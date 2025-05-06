@@ -8,6 +8,7 @@ public partial interface IProObservacoesReader
     ProObservacoesResponse? Read(int id, SqlConnection oCnn);
     ProObservacoesResponse? Read(string where, SqlConnection oCnn);
     ProObservacoesResponse? Read(Entity.DBProObservacoes dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProObservacoesResponse? Read(DBProObservacoes dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class ProObservacoes : IProObservacoesReader
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proobservacoes.Data = dbRec.FData;
@@ -70,7 +71,7 @@ public partial class ProObservacoes : IProObservacoesReader
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proobservacoes.Data = dbRec.FData;

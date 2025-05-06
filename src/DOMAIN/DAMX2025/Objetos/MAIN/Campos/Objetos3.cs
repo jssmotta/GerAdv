@@ -11,7 +11,6 @@ public partial class DBObjetos
     private protected string? m_FNome;
     [XmlIgnore]
     private protected bool m_FBold;
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -24,7 +23,6 @@ public partial class DBObjetos
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -37,7 +35,6 @@ public partial class DBObjetos
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -50,7 +47,6 @@ public partial class DBObjetos
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

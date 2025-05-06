@@ -53,4 +53,7 @@ public partial class FilterHorasTrab
 
     [JsonPropertyName("servico")]
     public int Servico { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

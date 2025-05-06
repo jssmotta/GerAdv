@@ -7,4 +7,5 @@
 	observacoes = `Observacoes`,
 	icone = `Icone`,
 	despesaunificada = `DespesaUnificada`,
+	guid = `GUID`,
 }

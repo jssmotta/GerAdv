@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AreaEmpty } from "../../../Models/Area";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AreaInc from "../Inc/Area";
 import { IArea } from "../../Interfaces/interface.Area";
 import { AreaService } from "../../Services/Area.service";
 import { AreaApi } from "../../Apis/ApiArea";
@@ -16,11 +14,12 @@ import { AreaGridMobileComponent } from "../GridsMobile/Area";
 import { AreaGridDesktopComponent } from "../GridsDesktop/Area";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterArea } from "../../Filters/Area";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AreaWindow from "./AreaWindow";
 
 const AreaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const AreaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <AreaGridMobileComponent data={area} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AreaGridDesktopComponent data={area} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AreaGridMobileComponent data={area} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AreaGridDesktopComponent data={area} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AreaWindow
           isOpen={showInc}

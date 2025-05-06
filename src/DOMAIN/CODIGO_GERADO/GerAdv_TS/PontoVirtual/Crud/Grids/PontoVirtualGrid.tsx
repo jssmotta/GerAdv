@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PontoVirtualEmpty } from "../../../Models/PontoVirtual";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PontoVirtualInc from "../Inc/PontoVirtual";
 import { IPontoVirtual } from "../../Interfaces/interface.PontoVirtual";
 import { PontoVirtualService } from "../../Services/PontoVirtual.service";
 import { PontoVirtualApi } from "../../Apis/ApiPontoVirtual";
@@ -16,11 +14,12 @@ import { PontoVirtualGridMobileComponent } from "../GridsMobile/PontoVirtual";
 import { PontoVirtualGridDesktopComponent } from "../GridsDesktop/PontoVirtual";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPontoVirtual } from "../../Filters/PontoVirtual";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PontoVirtualWindow from "./PontoVirtualWindow";
 
 const PontoVirtualGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const PontoVirtualGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <PontoVirtualGridMobileComponent data={pontovirtual} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PontoVirtualGridDesktopComponent data={pontovirtual} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PontoVirtualGridMobileComponent data={pontovirtual} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PontoVirtualGridDesktopComponent data={pontovirtual} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PontoVirtualWindow
           isOpen={showInc}

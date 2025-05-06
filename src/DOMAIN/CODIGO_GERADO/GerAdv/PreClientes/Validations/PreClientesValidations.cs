@@ -21,7 +21,7 @@ public class PreClientesValidation : IPreClientesValidation
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Pre Clientes com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         // Clientes
-        if (reg.IDRep.IsEmptyIDNumber())
+        if (!reg.IDRep.IsEmptyIDNumber())
         {
             var regClientes = clientesReader.Read(reg.IDRep, oCnn);
             if (regClientes == null || regClientes.Id != reg.IDRep)

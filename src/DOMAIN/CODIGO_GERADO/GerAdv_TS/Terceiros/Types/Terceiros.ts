@@ -17,6 +17,7 @@ export interface ITerceiros {
 	varaforocomarca : string;
 	sexo : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

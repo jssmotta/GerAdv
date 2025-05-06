@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import DivisaoTribunalInc from "../Inc/DivisaoTribunal";
 import { IDivisaoTribunal } from "../../Interfaces/interface.DivisaoTribunal";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const DivisaoTribunalWindow: React.FC<DivisaoTribunalWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/divisaotribunal/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedDivisaoTribunal?.id}`);
+            router.push(`/pages/divisaotribunal/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedDivisaoTribunal?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedDivisaoTribunal]);
@@ -42,7 +43,7 @@ const DivisaoTribunalWindow: React.FC<DivisaoTribunalWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={702}
                     newWidth={1440}
                     id={(selectedDivisaoTribunal?.id ?? 0).toString()}

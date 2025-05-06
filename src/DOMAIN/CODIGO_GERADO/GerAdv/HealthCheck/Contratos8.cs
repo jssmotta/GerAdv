@@ -72,7 +72,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttBold FROM dbo.Contratos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttBold,cttGUID FROM dbo.Contratos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

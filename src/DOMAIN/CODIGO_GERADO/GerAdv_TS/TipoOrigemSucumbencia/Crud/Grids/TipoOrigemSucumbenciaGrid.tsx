@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoOrigemSucumbenciaEmpty } from "../../../Models/TipoOrigemSucumbencia";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoOrigemSucumbenciaInc from "../Inc/TipoOrigemSucumbencia";
 import { ITipoOrigemSucumbencia } from "../../Interfaces/interface.TipoOrigemSucumbencia";
 import { TipoOrigemSucumbenciaService } from "../../Services/TipoOrigemSucumbencia.service";
 import { TipoOrigemSucumbenciaApi } from "../../Apis/ApiTipoOrigemSucumbencia";
@@ -16,11 +14,12 @@ import { TipoOrigemSucumbenciaGridMobileComponent } from "../GridsMobile/TipoOri
 import { TipoOrigemSucumbenciaGridDesktopComponent } from "../GridsDesktop/TipoOrigemSucumbencia";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoOrigemSucumbencia } from "../../Filters/TipoOrigemSucumbencia";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoOrigemSucumbenciaWindow from "./TipoOrigemSucumbenciaWindow";
 
 const TipoOrigemSucumbenciaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoOrigemSucumbenciaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoOrigemSucumbenciaGridMobileComponent data={tipoorigemsucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoOrigemSucumbenciaGridDesktopComponent data={tipoorigemsucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoOrigemSucumbenciaGridMobileComponent data={tipoorigemsucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoOrigemSucumbenciaGridDesktopComponent data={tipoorigemsucumbencia} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoOrigemSucumbenciaWindow
           isOpen={showInc}

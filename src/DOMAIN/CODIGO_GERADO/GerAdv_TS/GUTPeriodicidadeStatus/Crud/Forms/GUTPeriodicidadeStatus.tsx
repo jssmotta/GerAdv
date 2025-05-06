@@ -1,15 +1,20 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IGUTPeriodicidadeStatus } from '../../Interfaces/interface.GUTPeriodicidadeStatus';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IGUTPeriodicidadeStatus } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Interfaces/interface.GUTPeriodicidadeStatus';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import GUTAtividadesComboBox from '@/app/GerAdv_TS/GUTAtividades/ComboBox/GUTAtividades';
 import { GUTAtividadesApi } from '@/app/GerAdv_TS/GUTAtividades/Apis/ApiGUTAtividades';
+import InputName from '@/app/components/Inputs/InputName';
 
 interface GUTPeriodicidadeStatusFormProps {
     gutperiodicidadestatusData: IGUTPeriodicidadeStatus;
@@ -60,15 +65,28 @@ if (getParamFromUrl("gutatividades") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('GUTPeriodicidadeStatusForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeGUTAtividades && (<h2>{nomeGUTAtividades}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={gutperiodicidadestatusData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} />
+
+                <div className="grid-container">
 
             <GUTAtividadesComboBox
             name={'gutatividade'}
@@ -87,19 +105,10 @@ value={gutperiodicidadestatusData.datarealizado}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

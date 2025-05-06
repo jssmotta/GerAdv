@@ -34,4 +34,5 @@
 	listapara = `ListaPara`,
 	typed = `Typed`,
 	assuntorecado = `AssuntoRecado`,
+	guid = `GUID`,
 }

@@ -5,7 +5,7 @@ import { OutrasPartesClienteApi } from '../../Apis/ApiOutrasPartesCliente';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IOutrasPartesClienteFormProps } from '../../Interfaces/interface.OutrasPartesCliente';
 import { OutrasPartesClienteService } from '../../Services/OutrasPartesCliente.service';
 import { useOutrasPartesClienteForm } from '../../Hooks/useOutrasPartesClienteForm';

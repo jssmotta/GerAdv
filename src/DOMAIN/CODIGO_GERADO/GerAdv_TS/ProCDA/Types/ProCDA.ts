@@ -6,6 +6,7 @@ export interface IProCDA {
 	nome : string;
 	nrointerno : string;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

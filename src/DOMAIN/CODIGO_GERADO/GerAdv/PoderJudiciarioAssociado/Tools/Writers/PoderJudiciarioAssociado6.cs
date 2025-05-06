@@ -26,6 +26,7 @@ public class PoderJudiciarioAssociado : IPoderJudiciarioAssociadoWriter
         dbRec.FCidadeNome = poderjudiciarioassociado.CidadeNome;
         dbRec.FSubDivisao = poderjudiciarioassociado.SubDivisao;
         dbRec.FTipo = poderjudiciarioassociado.Tipo;
+        dbRec.FGUID = poderjudiciarioassociado.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

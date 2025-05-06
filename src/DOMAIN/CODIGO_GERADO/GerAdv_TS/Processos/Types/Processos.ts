@@ -68,6 +68,7 @@ export interface IProcessos {
 	valorcondenacao : number;
 	valorcondenacaocalculado : number;
 	valorcondenacaoprovisorio : number;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

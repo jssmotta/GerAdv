@@ -8,6 +8,7 @@ public partial interface IAtividadesReader
     AtividadesResponse? Read(int id, SqlConnection oCnn);
     AtividadesResponse? Read(string where, SqlConnection oCnn);
     AtividadesResponse? Read(Entity.DBAtividades dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AtividadesResponse? Read(DBAtividades dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class Atividades : IAtividadesReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class Atividades : IAtividadesReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -15,7 +15,7 @@ public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
         if (reg == null)
             return "Objeto está nulo";
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

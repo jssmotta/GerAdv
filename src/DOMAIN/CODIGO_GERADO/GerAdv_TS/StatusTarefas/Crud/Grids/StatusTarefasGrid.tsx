@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { StatusTarefasEmpty } from "../../../Models/StatusTarefas";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import StatusTarefasInc from "../Inc/StatusTarefas";
 import { IStatusTarefas } from "../../Interfaces/interface.StatusTarefas";
 import { StatusTarefasService } from "../../Services/StatusTarefas.service";
 import { StatusTarefasApi } from "../../Apis/ApiStatusTarefas";
@@ -16,11 +14,12 @@ import { StatusTarefasGridMobileComponent } from "../GridsMobile/StatusTarefas";
 import { StatusTarefasGridDesktopComponent } from "../GridsDesktop/StatusTarefas";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterStatusTarefas } from "../../Filters/StatusTarefas";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import StatusTarefasWindow from "./StatusTarefasWindow";
 
 const StatusTarefasGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const StatusTarefasGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <StatusTarefasGridMobileComponent data={statustarefas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <StatusTarefasGridDesktopComponent data={statustarefas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <StatusTarefasGridMobileComponent data={statustarefas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <StatusTarefasGridDesktopComponent data={statustarefas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <StatusTarefasWindow
           isOpen={showInc}

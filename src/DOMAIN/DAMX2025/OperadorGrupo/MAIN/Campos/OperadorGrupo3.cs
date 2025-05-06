@@ -9,7 +9,6 @@ public partial class DBOperadorGrupo
     private protected int m_FOperador, m_FGrupo;
     [XmlIgnore]
     private protected bool m_FInativo;
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -22,7 +21,6 @@ public partial class DBOperadorGrupo
         }
     }
 
-    public int NFGrupo() => m_FGrupo;
     [XmlAttribute]
     public int FGrupo
     {
@@ -35,7 +33,6 @@ public partial class DBOperadorGrupo
         }
     }
 
-    public bool NFInativo() => m_FInativo;
     [XmlAttribute]
     public bool FInativo
     {

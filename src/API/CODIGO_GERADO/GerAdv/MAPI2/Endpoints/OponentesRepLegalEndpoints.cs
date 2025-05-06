@@ -74,30 +74,6 @@ public static class OponentesRepLegalEndpoints
 
             return Results.Ok(result);
         }).WithName("OponentesRepLegal_AddAndUpdate").WithDisplayName("Add or Update OponentesRepLegal");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IOponentesRepLegalValidation validation, IOponentesRepLegalWriter writer, IOponentesReader oponentesReader, IOponentesRepLegalService service) =>
-        {
-            logger.LogInfo("OponentesRepLegal", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("OponentesRepLegal", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("OponentesRepLegal_GetColumns").WithDisplayName("Get OponentesRepLegal Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IOponentesRepLegalValidation validation, IOponentesRepLegalWriter writer, IOponentesReader oponentesReader, IOponentesRepLegalService service) =>
-        {
-            logger.LogInfo("OponentesRepLegal", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("OponentesRepLegal", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("OponentesRepLegal_UpdateColumns").WithDisplayName("Update OponentesRepLegal Columns");
         group.MapDelete("/Delete", async (int id, string uri, IOponentesRepLegalValidation validation, IOponentesRepLegalWriter writer, IOponentesReader oponentesReader, IOponentesRepLegalService service) =>
         {
             logger.LogInfo("OponentesRepLegal", "Delete", $"id = {id}", uri);

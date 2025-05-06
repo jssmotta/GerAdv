@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import HonorariosDadosContratoInc from "../Inc/HonorariosDadosContrato";
 import { IHonorariosDadosContrato } from "../../Interfaces/interface.HonorariosDadosContrato";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const HonorariosDadosContratoWindow: React.FC<HonorariosDadosContratoWindowProps
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/honorariosdadoscontrato/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedHonorariosDadosContrato?.id}`);
+            router.push(`/pages/honorariosdadoscontrato/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedHonorariosDadosContrato?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedHonorariosDadosContrato]);
@@ -42,7 +43,7 @@ const HonorariosDadosContratoWindow: React.FC<HonorariosDadosContratoWindowProps
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={415}
                     newWidth={816}
                     id={(selectedHonorariosDadosContrato?.id ?? 0).toString()}

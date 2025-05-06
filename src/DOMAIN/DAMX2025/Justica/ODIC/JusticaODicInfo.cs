@@ -40,7 +40,7 @@ public partial class DBJusticaODicInfo : IODicInfo
     public static string TTabelaNome => DBJusticaDicInfo.TabelaNome;
     public static string TTablePrefix => DBJusticaDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBJusticaDicInfo.JusNome, DBJusticaDicInfo.JusBold, DBJusticaDicInfo.JusGUID, DBJusticaDicInfo.JusQuemCad, DBJusticaDicInfo.JusDtCad, DBJusticaDicInfo.JusQuemAtu, DBJusticaDicInfo.JusDtAtu, DBJusticaDicInfo.JusVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBJusticaDicInfo.JusNome, DBJusticaDicInfo.JusBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBJusticaDicInfo.JusNome, DBJusticaDicInfo.JusBold, DBJusticaDicInfo.JusGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

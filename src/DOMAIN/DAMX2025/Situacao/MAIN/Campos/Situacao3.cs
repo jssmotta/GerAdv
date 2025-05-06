@@ -9,7 +9,6 @@ public partial class DBSituacao
     private protected string? m_FParte_Int, m_FParte_Opo;
     [XmlIgnore]
     private protected bool m_FTop, m_FBold;
-    public string NFParte_Int() => m_FParte_Int ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FParte_Int
     {
@@ -22,7 +21,6 @@ public partial class DBSituacao
         }
     }
 
-    public string NFParte_Opo() => m_FParte_Opo ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FParte_Opo
     {
@@ -35,7 +33,6 @@ public partial class DBSituacao
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {
@@ -48,7 +45,6 @@ public partial class DBSituacao
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

@@ -9,7 +9,6 @@ public partial class DBTiposAcao
     private protected string? m_FNome;
     [XmlIgnore]
     private protected bool m_FInativo, m_FBold;
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -22,7 +21,6 @@ public partial class DBTiposAcao
         }
     }
 
-    public bool NFInativo() => m_FInativo;
     [XmlAttribute]
     public bool FInativo
     {
@@ -35,7 +33,6 @@ public partial class DBTiposAcao
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

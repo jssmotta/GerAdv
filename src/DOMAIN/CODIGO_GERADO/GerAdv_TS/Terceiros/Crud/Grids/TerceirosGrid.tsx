@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TerceirosEmpty } from "../../../Models/Terceiros";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TerceirosInc from "../Inc/Terceiros";
 import { ITerceiros } from "../../Interfaces/interface.Terceiros";
 import { TerceirosService } from "../../Services/Terceiros.service";
 import { TerceirosApi } from "../../Apis/ApiTerceiros";
@@ -16,11 +14,12 @@ import { TerceirosGridMobileComponent } from "../GridsMobile/Terceiros";
 import { TerceirosGridDesktopComponent } from "../GridsDesktop/Terceiros";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTerceiros } from "../../Filters/Terceiros";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TerceirosWindow from "./TerceirosWindow";
 
 const TerceirosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TerceirosGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TerceirosGridMobileComponent data={terceiros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TerceirosGridDesktopComponent data={terceiros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TerceirosGridMobileComponent data={terceiros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TerceirosGridDesktopComponent data={terceiros} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TerceirosWindow
           isOpen={showInc}

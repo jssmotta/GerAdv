@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import BensMateriaisInc from "../Inc/BensMateriais";
 import { IBensMateriais } from "../../Interfaces/interface.BensMateriais";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const BensMateriaisWindow: React.FC<BensMateriaisWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/bensmateriais/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedBensMateriais?.id}`);
+            router.push(`/pages/bensmateriais/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedBensMateriais?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedBensMateriais]);
@@ -42,7 +43,7 @@ const BensMateriaisWindow: React.FC<BensMateriaisWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={641}
                     newWidth={1440}
                     id={(selectedBensMateriais?.id ?? 0).toString()}

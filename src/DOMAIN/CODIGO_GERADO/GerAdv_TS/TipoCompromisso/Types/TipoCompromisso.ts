@@ -6,6 +6,7 @@ export interface ITipoCompromisso {
 	descricao : string;
 	financeiro : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IContaCorrente } from '../../Interfaces/interface.ContaCorrente';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IContaCorrente } from '@/app/GerAdv_TS/ContaCorrente/Interfaces/interface.ContaCorrente';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ContaCorrenteFormProps {
     contacorrenteData: IContaCorrente;
@@ -83,16 +89,28 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ContaCorrenteForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ContaCorrenteForm-${contacorrenteData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={contacorrenteData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContaCorrenteForm-${contacorrenteData.id}`} />
+
+                <div className="grid-container">
 
 <Input
 type="text"
@@ -104,7 +122,7 @@ value={contacorrenteData.ciacordo}
 onChange={onChange}               
 />
 
-<Checkbox label="Quitado" name="quitado" checked={contacorrenteData.quitado} onChange={onChange} />
+<InputCheckbox label="Quitado" name="quitado" checked={contacorrenteData.quitado} onChange={onChange} />
         
 <Input
 type="text"
@@ -146,8 +164,8 @@ value={contacorrenteData.livrocaixaid}
 onChange={onChange}               
 />
 
-<Checkbox label="Sucumbencia" name="sucumbencia" checked={contacorrenteData.sucumbencia} onChange={onChange} />
-<Checkbox label="DistRegra" name="distregra" checked={contacorrenteData.distregra} onChange={onChange} />
+<InputCheckbox label="Sucumbencia" name="sucumbencia" checked={contacorrenteData.sucumbencia} onChange={onChange} />
+<InputCheckbox label="DistRegra" name="distregra" checked={contacorrenteData.distregra} onChange={onChange} />
         
 <Input
 type="text"
@@ -214,10 +232,10 @@ value={contacorrenteData.historico}
 onChange={onChange}               
 />
 
-<Checkbox label="Contrato" name="contrato" checked={contacorrenteData.contrato} onChange={onChange} />
-<Checkbox label="Pago" name="pago" checked={contacorrenteData.pago} onChange={onChange} />
-<Checkbox label="Distribuir" name="distribuir" checked={contacorrenteData.distribuir} onChange={onChange} />
-<Checkbox label="LC" name="lc" checked={contacorrenteData.lc} onChange={onChange} />
+<InputCheckbox label="Contrato" name="contrato" checked={contacorrenteData.contrato} onChange={onChange} />
+<InputCheckbox label="Pago" name="pago" checked={contacorrenteData.pago} onChange={onChange} />
+<InputCheckbox label="Distribuir" name="distribuir" checked={contacorrenteData.distribuir} onChange={onChange} />
+<InputCheckbox label="LC" name="lc" checked={contacorrenteData.lc} onChange={onChange} />
 </div><div className="grid-container">        
 <Input
 type="text"
@@ -259,7 +277,7 @@ value={contacorrenteData.parcelaprincipalid}
 onChange={onChange}               
 />
 
-<Checkbox label="Hide" name="hide" checked={contacorrenteData.hide} onChange={onChange} />
+<InputCheckbox label="Hide" name="hide" checked={contacorrenteData.hide} onChange={onChange} />
         
 <Input
 type="text"
@@ -271,19 +289,10 @@ value={contacorrenteData.datapgto}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

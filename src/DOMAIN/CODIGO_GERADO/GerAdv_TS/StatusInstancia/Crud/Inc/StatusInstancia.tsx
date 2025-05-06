@@ -5,7 +5,7 @@ import { StatusInstanciaApi } from '../../Apis/ApiStatusInstancia';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IStatusInstanciaFormProps } from '../../Interfaces/interface.StatusInstancia';
 import { StatusInstanciaService } from '../../Services/StatusInstancia.service';
 import { useStatusInstanciaForm } from '../../Hooks/useStatusInstanciaForm';

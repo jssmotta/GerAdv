@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { SMSAliceEmpty } from "../../../Models/SMSAlice";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import SMSAliceInc from "../Inc/SMSAlice";
 import { ISMSAlice } from "../../Interfaces/interface.SMSAlice";
 import { SMSAliceService } from "../../Services/SMSAlice.service";
 import { SMSAliceApi } from "../../Apis/ApiSMSAlice";
@@ -16,11 +14,12 @@ import { SMSAliceGridMobileComponent } from "../GridsMobile/SMSAlice";
 import { SMSAliceGridDesktopComponent } from "../GridsDesktop/SMSAlice";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterSMSAlice } from "../../Filters/SMSAlice";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import SMSAliceWindow from "./SMSAliceWindow";
 
 const SMSAliceGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const SMSAliceGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <SMSAliceGridMobileComponent data={smsalice} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <SMSAliceGridDesktopComponent data={smsalice} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <SMSAliceGridMobileComponent data={smsalice} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <SMSAliceGridDesktopComponent data={smsalice} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <SMSAliceWindow
           isOpen={showInc}

@@ -65,4 +65,5 @@
 	valorcondenacao = `ValorCondenacao`,
 	valorcondenacaocalculado = `ValorCondenacaoCalculado`,
 	valorcondenacaoprovisorio = `ValorCondenacaoProvisorio`,
+	guid = `GUID`,
 }

@@ -9,7 +9,6 @@ public partial class DBSMSAlice
     private protected int m_FOperador, m_FTipoEMail;
     [XmlIgnore]
     private protected string? m_FNome;
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -22,7 +21,6 @@ public partial class DBSMSAlice
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -35,7 +33,6 @@ public partial class DBSMSAlice
         }
     }
 
-    public int NFTipoEMail() => m_FTipoEMail;
     [XmlAttribute]
     public int FTipoEMail
     {

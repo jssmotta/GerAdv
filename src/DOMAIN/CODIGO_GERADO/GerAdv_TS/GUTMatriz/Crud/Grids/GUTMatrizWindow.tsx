@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import GUTMatrizInc from "../Inc/GUTMatriz";
 import { IGUTMatriz } from "../../Interfaces/interface.GUTMatriz";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const GUTMatrizWindow: React.FC<GUTMatrizWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/gutmatriz/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTMatriz?.id}`);
+            router.push(`/pages/gutmatriz/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedGUTMatriz?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedGUTMatriz]);
@@ -42,7 +43,7 @@ const GUTMatrizWindow: React.FC<GUTMatrizWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedGUTMatriz?.id ?? 0).toString()}

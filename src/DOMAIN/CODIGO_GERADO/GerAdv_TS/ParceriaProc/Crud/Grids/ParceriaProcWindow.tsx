@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ParceriaProcInc from "../Inc/ParceriaProc";
 import { IParceriaProc } from "../../Interfaces/interface.ParceriaProc";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ParceriaProcWindow: React.FC<ParceriaProcWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/parceriaproc/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedParceriaProc?.id}`);
+            router.push(`/pages/parceriaproc/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedParceriaProc?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedParceriaProc]);
@@ -42,7 +43,7 @@ const ParceriaProcWindow: React.FC<ParceriaProcWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedParceriaProc?.id ?? 0).toString()}

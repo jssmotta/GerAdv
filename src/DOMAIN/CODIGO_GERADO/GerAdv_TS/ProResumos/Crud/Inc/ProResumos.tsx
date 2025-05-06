@@ -5,7 +5,7 @@ import { ProResumosApi } from '../../Apis/ApiProResumos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProResumosFormProps } from '../../Interfaces/interface.ProResumos';
 import { ProResumosService } from '../../Services/ProResumos.service';
 import { useProResumosForm } from '../../Hooks/useProResumosForm';

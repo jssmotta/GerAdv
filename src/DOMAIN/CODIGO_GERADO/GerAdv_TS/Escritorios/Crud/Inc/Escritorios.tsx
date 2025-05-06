@@ -5,7 +5,7 @@ import { EscritoriosApi } from '../../Apis/ApiEscritorios';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IEscritoriosFormProps } from '../../Interfaces/interface.Escritorios';
 import { EscritoriosService } from '../../Services/Escritorios.service';
 import { useEscritoriosForm } from '../../Hooks/useEscritoriosForm';

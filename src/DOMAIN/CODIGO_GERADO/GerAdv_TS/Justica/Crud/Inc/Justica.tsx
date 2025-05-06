@@ -5,7 +5,7 @@ import { JusticaApi } from '../../Apis/ApiJustica';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IJusticaFormProps } from '../../Interfaces/interface.Justica';
 import { JusticaService } from '../../Services/Justica.service';
 import { useJusticaForm } from '../../Hooks/useJusticaForm';

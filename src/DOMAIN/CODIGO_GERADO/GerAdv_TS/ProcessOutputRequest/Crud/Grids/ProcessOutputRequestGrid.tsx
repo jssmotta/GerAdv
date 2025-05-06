@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProcessOutputRequestEmpty } from "../../../Models/ProcessOutputRequest";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProcessOutputRequestInc from "../Inc/ProcessOutputRequest";
 import { IProcessOutputRequest } from "../../Interfaces/interface.ProcessOutputRequest";
 import { ProcessOutputRequestService } from "../../Services/ProcessOutputRequest.service";
 import { ProcessOutputRequestApi } from "../../Apis/ApiProcessOutputRequest";
@@ -16,11 +14,12 @@ import { ProcessOutputRequestGridMobileComponent } from "../GridsMobile/ProcessO
 import { ProcessOutputRequestGridDesktopComponent } from "../GridsDesktop/ProcessOutputRequest";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProcessOutputRequest } from "../../Filters/ProcessOutputRequest";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProcessOutputRequestWindow from "./ProcessOutputRequestWindow";
 
 const ProcessOutputRequestGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ProcessOutputRequestGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ProcessOutputRequestGridMobileComponent data={processoutputrequest} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProcessOutputRequestGridDesktopComponent data={processoutputrequest} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProcessOutputRequestGridMobileComponent data={processoutputrequest} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProcessOutputRequestGridDesktopComponent data={processoutputrequest} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProcessOutputRequestWindow
           isOpen={showInc}

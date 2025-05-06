@@ -13,7 +13,6 @@ public partial class DBOperador
     private protected DateTime? m_FUltimoLogoff, m_FDataLimiteReset, m_FSuporteMaxAge, m_FSuporteUltimoAcesso;
     [XmlIgnore]
     private protected bool m_FTelefonista, m_FMaster, m_FExcluido, m_FSituacao, m_FOnLine, m_FSysOp, m_FIsFinanceiro, m_FTop, m_FBasico, m_FExterno, m_FEMailConfirmado;
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -26,7 +25,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFPasta() => m_FPasta ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPasta
     {
@@ -39,7 +37,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFTelefonista() => m_FTelefonista;
     [XmlAttribute]
     public bool FTelefonista
     {
@@ -52,7 +49,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFMaster() => m_FMaster;
     [XmlAttribute]
     public bool FMaster
     {
@@ -65,7 +61,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -78,7 +73,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFNick() => m_FNick ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNick
     {
@@ -91,7 +85,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFRamal() => m_FRamal ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRamal
     {
@@ -104,7 +97,6 @@ public partial class DBOperador
         }
     }
 
-    public int NFCadID() => m_FCadID;
     [XmlAttribute]
     public int FCadID
     {
@@ -117,7 +109,6 @@ public partial class DBOperador
         }
     }
 
-    public int NFCadCod() => m_FCadCod;
     [XmlAttribute]
     public int FCadCod
     {
@@ -130,7 +121,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFExcluido() => m_FExcluido;
     [XmlAttribute]
     public bool FExcluido
     {
@@ -143,7 +133,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFSituacao() => m_FSituacao;
     [XmlAttribute]
     public bool FSituacao
     {
@@ -156,7 +145,6 @@ public partial class DBOperador
         }
     }
 
-    public int NFComputador() => m_FComputador;
     [XmlAttribute]
     public int FComputador
     {
@@ -169,7 +157,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFMinhaDescricao() => m_FMinhaDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FMinhaDescricao
     {
@@ -182,7 +169,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFUltimoLogoff() => $"{m_FUltimoLogoff:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FUltimoLogoff:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MUltimoLogoff => Convert.ToDateTime(m_FUltimoLogoff);
 
@@ -200,7 +186,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFEMailNet() => m_FEMailNet ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMailNet
     {
@@ -213,7 +198,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFOnlineIP() => m_FOnlineIP ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOnlineIP
     {
@@ -226,7 +210,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFOnLine() => m_FOnLine;
     [XmlAttribute]
     public bool FOnLine
     {
@@ -239,7 +222,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFSysOp() => m_FSysOp;
     [XmlAttribute]
     public bool FSysOp
     {
@@ -252,7 +234,6 @@ public partial class DBOperador
         }
     }
 
-    public int NFStatusId() => m_FStatusId;
     [XmlAttribute]
     public int FStatusId
     {
@@ -265,7 +246,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFStatusMessage() => m_FStatusMessage ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FStatusMessage
     {
@@ -278,7 +258,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFIsFinanceiro() => m_FIsFinanceiro;
     [XmlAttribute]
     public bool FIsFinanceiro
     {
@@ -291,7 +270,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFTop() => m_FTop;
     [XmlAttribute]
     public bool FTop
     {
@@ -304,7 +282,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFBasico() => m_FBasico;
     [XmlAttribute]
     public bool FBasico
     {
@@ -317,7 +294,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFExterno() => m_FExterno;
     [XmlAttribute]
     public bool FExterno
     {
@@ -330,7 +306,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFSenha256() => m_FSenha256 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSenha256
     {
@@ -343,7 +318,6 @@ public partial class DBOperador
         }
     }
 
-    public bool NFEMailConfirmado() => m_FEMailConfirmado;
     [XmlAttribute]
     public bool FEMailConfirmado
     {
@@ -356,7 +330,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFDataLimiteReset() => $"{m_FDataLimiteReset:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataLimiteReset:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataLimiteReset => Convert.ToDateTime(m_FDataLimiteReset);
 
@@ -374,7 +347,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFSuporteSenha256() => m_FSuporteSenha256 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSuporteSenha256
     {
@@ -387,7 +359,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFSuporteMaxAge() => $"{m_FSuporteMaxAge:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FSuporteMaxAge:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MSuporteMaxAge => Convert.ToDateTime(m_FSuporteMaxAge);
 
@@ -405,7 +376,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFSuporteNomeSolicitante() => m_FSuporteNomeSolicitante ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSuporteNomeSolicitante
     {
@@ -418,7 +388,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFSuporteUltimoAcesso() => $"{m_FSuporteUltimoAcesso:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FSuporteUltimoAcesso:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MSuporteUltimoAcesso => Convert.ToDateTime(m_FSuporteUltimoAcesso);
 
@@ -436,7 +405,6 @@ public partial class DBOperador
         }
     }
 
-    public string NFSuporteIpUltimoAcesso() => m_FSuporteIpUltimoAcesso ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSuporteIpUltimoAcesso
     {

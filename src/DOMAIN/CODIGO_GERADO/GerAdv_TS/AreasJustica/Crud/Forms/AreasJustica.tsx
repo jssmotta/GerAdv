@@ -1,17 +1,22 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAreasJustica } from '../../Interfaces/interface.AreasJustica';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAreasJustica } from '@/app/GerAdv_TS/AreasJustica/Interfaces/interface.AreasJustica';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import AreaComboBox from '@/app/GerAdv_TS/Area/ComboBox/Area';
 import JusticaComboBox from '@/app/GerAdv_TS/Justica/ComboBox/Justica';
 import { AreaApi } from '@/app/GerAdv_TS/Area/Apis/ApiArea';
 import { JusticaApi } from '@/app/GerAdv_TS/Justica/Apis/ApiJustica';
+import InputName from '@/app/components/Inputs/InputName';
 
 interface AreasJusticaFormProps {
     areasjusticaData: IAreasJustica;
@@ -83,16 +88,28 @@ if (getParamFromUrl("justica") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AreasJusticaForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeArea && (<h2>{nomeArea}</h2>)}
-{nomeJustica && (<h2>{nomeJustica}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AreasJusticaForm-${areasjusticaData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={areasjusticaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AreasJusticaForm-${areasjusticaData.id}`} />
+
+                <div className="grid-container">
 
             <AreaComboBox
             name={'area'}
@@ -108,19 +125,10 @@ if (getParamFromUrl("justica") > 0) {
             label={'Justica'}
             />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

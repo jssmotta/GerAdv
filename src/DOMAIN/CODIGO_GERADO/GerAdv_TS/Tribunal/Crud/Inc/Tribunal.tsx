@@ -5,7 +5,7 @@ import { TribunalApi } from '../../Apis/ApiTribunal';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ITribunalFormProps } from '../../Interfaces/interface.Tribunal';
 import { TribunalService } from '../../Services/Tribunal.service';
 import { useTribunalForm } from '../../Hooks/useTribunalForm';

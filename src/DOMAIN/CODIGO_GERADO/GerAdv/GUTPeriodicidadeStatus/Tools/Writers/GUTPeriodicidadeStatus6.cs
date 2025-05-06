@@ -16,6 +16,7 @@ public class GUTPeriodicidadeStatus : IGUTPeriodicidadeStatusWriter
         dbRec.FGUTAtividade = gutperiodicidadestatus.GUTAtividade;
         if (gutperiodicidadestatus.DataRealizado != null)
             dbRec.FDataRealizado = gutperiodicidadestatus.DataRealizado.ToString();
+        dbRec.FGUID = gutperiodicidadestatus.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

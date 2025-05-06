@@ -14,6 +14,7 @@ public class StatusTarefas : IStatusTarefasWriter
     {
         var dbRec = statustarefas.Id.IsEmptyIDNumber() ? new Entity.DBStatusTarefas() : new Entity.DBStatusTarefas(statustarefas.Id, oCnn);
         dbRec.FNome = statustarefas.Nome;
+        dbRec.FGUID = statustarefas.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

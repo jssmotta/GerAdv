@@ -56,30 +56,6 @@ public static class ApensoEndpoints
 
             return Results.Ok(result);
         }).WithName("Apenso_AddAndUpdate").WithDisplayName("Add or Update Apenso");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IApensoValidation validation, IApensoWriter writer, IProcessosReader processosReader, IApensoService service) =>
-        {
-            logger.LogInfo("Apenso", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Apenso", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Apenso_GetColumns").WithDisplayName("Get Apenso Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IApensoValidation validation, IApensoWriter writer, IProcessosReader processosReader, IApensoService service) =>
-        {
-            logger.LogInfo("Apenso", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Apenso", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Apenso_UpdateColumns").WithDisplayName("Update Apenso Columns");
         group.MapDelete("/Delete", async (int id, string uri, IApensoValidation validation, IApensoWriter writer, IProcessosReader processosReader, IApensoService service) =>
         {
             logger.LogInfo("Apenso", "Delete", $"id = {id}", uri);

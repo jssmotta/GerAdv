@@ -79,6 +79,7 @@ public partial class Processos : IProcessosWhere
             ValorCondenacao = dbRec.FValorCondenacao,
             ValorCondenacaoCalculado = dbRec.FValorCondenacaoCalculado,
             ValorCondenacaoProvisorio = dbRec.FValorCondenacaoProvisorio,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataEntrada, out _))
             processos.DataEntrada = dbRec.FDataEntrada;

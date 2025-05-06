@@ -5,7 +5,7 @@ import { ForoApi } from '../../Apis/ApiForo';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IForoFormProps } from '../../Interfaces/interface.Foro';
 import { ForoService } from '../../Services/Foro.service';
 import { useForoForm } from '../../Hooks/useForoForm';

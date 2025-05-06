@@ -8,6 +8,7 @@ public partial interface IOperadorReader
     OperadorResponse? Read(int id, SqlConnection oCnn);
     OperadorResponse? Read(string where, SqlConnection oCnn);
     OperadorResponse? Read(Entity.DBOperador dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OperadorResponse? Read(DBOperador dbRec);
 }
 
@@ -62,7 +63,7 @@ public partial class Operador : IOperadorReader
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out _))
             operador.UltimoLogoff = dbRec.FUltimoLogoff;
@@ -129,7 +130,7 @@ public partial class Operador : IOperadorReader
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out _))
             operador.UltimoLogoff = dbRec.FUltimoLogoff;

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import EventoPrazoAgendaInc from "../Inc/EventoPrazoAgenda";
 import { IEventoPrazoAgenda } from "../../Interfaces/interface.EventoPrazoAgenda";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const EventoPrazoAgendaWindow: React.FC<EventoPrazoAgendaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/eventoprazoagenda/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEventoPrazoAgenda?.id}`);
+            router.push(`/pages/eventoprazoagenda/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEventoPrazoAgenda?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedEventoPrazoAgenda]);
@@ -42,7 +43,7 @@ const EventoPrazoAgendaWindow: React.FC<EventoPrazoAgendaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedEventoPrazoAgenda?.id ?? 0).toString()}

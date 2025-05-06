@@ -5,6 +5,7 @@ export interface IStatusAndamento {
 	nome : string;
 	icone : number;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

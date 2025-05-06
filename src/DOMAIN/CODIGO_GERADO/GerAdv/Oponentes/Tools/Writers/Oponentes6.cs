@@ -42,6 +42,7 @@ public class Oponentes : IOponentesWriter
         dbRec.FTop = oponentes.Top;
         dbRec.FEtiqueta = oponentes.Etiqueta;
         dbRec.FBold = oponentes.Bold;
+        dbRec.FGUID = oponentes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

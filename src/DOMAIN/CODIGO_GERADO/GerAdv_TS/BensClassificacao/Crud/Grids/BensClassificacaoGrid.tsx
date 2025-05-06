@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { BensClassificacaoEmpty } from "../../../Models/BensClassificacao";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import BensClassificacaoInc from "../Inc/BensClassificacao";
 import { IBensClassificacao } from "../../Interfaces/interface.BensClassificacao";
 import { BensClassificacaoService } from "../../Services/BensClassificacao.service";
 import { BensClassificacaoApi } from "../../Apis/ApiBensClassificacao";
@@ -16,11 +14,12 @@ import { BensClassificacaoGridMobileComponent } from "../GridsMobile/BensClassif
 import { BensClassificacaoGridDesktopComponent } from "../GridsDesktop/BensClassificacao";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterBensClassificacao } from "../../Filters/BensClassificacao";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import BensClassificacaoWindow from "./BensClassificacaoWindow";
 
 const BensClassificacaoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const BensClassificacaoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <BensClassificacaoGridMobileComponent data={bensclassificacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <BensClassificacaoGridDesktopComponent data={bensclassificacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <BensClassificacaoGridMobileComponent data={bensclassificacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <BensClassificacaoGridDesktopComponent data={bensclassificacao} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <BensClassificacaoWindow
           isOpen={showInc}

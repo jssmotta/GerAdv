@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import PaisesInc from "../Inc/Paises";
 import { IPaises } from "../../Interfaces/interface.Paises";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const PaisesWindow: React.FC<PaisesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/paises/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPaises?.id}`);
+            router.push(`/pages/paises/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPaises?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedPaises]);
@@ -42,7 +43,7 @@ const PaisesWindow: React.FC<PaisesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedPaises?.id ?? 0).toString()}

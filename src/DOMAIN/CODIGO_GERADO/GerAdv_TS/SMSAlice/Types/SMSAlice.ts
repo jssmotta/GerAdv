@@ -5,6 +5,7 @@ export interface ISMSAlice {
 	operador : number;
 	tipoemail : number;
 	nome : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

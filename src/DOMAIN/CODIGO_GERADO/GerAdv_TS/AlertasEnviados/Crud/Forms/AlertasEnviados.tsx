@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAlertasEnviados } from '../../Interfaces/interface.AlertasEnviados';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAlertasEnviados } from '@/app/GerAdv_TS/AlertasEnviados/Interfaces/interface.AlertasEnviados';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
 import AlertasComboBox from '@/app/GerAdv_TS/Alertas/ComboBox/Alertas';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
 import { AlertasApi } from '@/app/GerAdv_TS/Alertas/Apis/ApiAlertas';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface AlertasEnviadosFormProps {
     alertasenviadosData: IAlertasEnviados;
@@ -83,16 +89,28 @@ if (getParamFromUrl("alertas") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AlertasEnviadosForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOperador && (<h2>{nomeOperador}</h2>)}
-{nomeAlertas && (<h2>{nomeAlertas}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AlertasEnviadosForm-${alertasenviadosData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={alertasenviadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`AlertasEnviadosForm-${alertasenviadosData.id}`} />
+
+                <div className="grid-container">
 
             <OperadorComboBox
             name={'operador'}
@@ -118,21 +136,12 @@ value={alertasenviadosData.dataalertado}
 onChange={onChange}               
 />
 
-<Checkbox label="Visualizado" name="visualizado" checked={alertasenviadosData.visualizado} onChange={onChange} />
+<InputCheckbox label="Visualizado" name="visualizado" checked={alertasenviadosData.visualizado} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

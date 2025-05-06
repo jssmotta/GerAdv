@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TribEnderecosInc from "../Inc/TribEnderecos";
 import { ITribEnderecos } from "../../Interfaces/interface.TribEnderecos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TribEnderecosWindow: React.FC<TribEnderecosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tribenderecos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTribEnderecos?.id}`);
+            router.push(`/pages/tribenderecos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTribEnderecos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTribEnderecos]);
@@ -42,7 +43,7 @@ const TribEnderecosWindow: React.FC<TribEnderecosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={725}
                     newWidth={720}
                     id={(selectedTribEnderecos?.id ?? 0).toString()}

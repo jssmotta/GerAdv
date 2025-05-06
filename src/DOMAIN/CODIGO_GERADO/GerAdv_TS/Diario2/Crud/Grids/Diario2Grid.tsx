@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { Diario2Empty } from "../../../Models/Diario2";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import Diario2Inc from "../Inc/Diario2";
 import { IDiario2 } from "../../Interfaces/interface.Diario2";
 import { Diario2Service } from "../../Services/Diario2.service";
 import { Diario2Api } from "../../Apis/ApiDiario2";
@@ -16,11 +14,12 @@ import { Diario2GridMobileComponent } from "../GridsMobile/Diario2";
 import { Diario2GridDesktopComponent } from "../GridsDesktop/Diario2";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterDiario2 } from "../../Filters/Diario2";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import Diario2Window from "./Diario2Window";
 
 const Diario2Grid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const Diario2Grid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <Diario2GridMobileComponent data={diario2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <Diario2GridDesktopComponent data={diario2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <Diario2GridMobileComponent data={diario2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <Diario2GridDesktopComponent data={diario2} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <Diario2Window
           isOpen={showInc}

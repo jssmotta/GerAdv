@@ -11,4 +11,5 @@
 	horaretorno = `HoraRetorno`,
 	principaisdecisoes = `PrincipaisDecisoes`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

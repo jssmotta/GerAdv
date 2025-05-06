@@ -18,6 +18,7 @@ public partial class GUTPeriodicidade : IGUTPeriodicidadeWhere
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             IntervaloDias = dbRec.FIntervaloDias,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

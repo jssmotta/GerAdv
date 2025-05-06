@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IPreClientes } from '../../Interfaces/interface.PreClientes';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IPreClientes } from '@/app/GerAdv_TS/PreClientes/Interfaces/interface.PreClientes';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCnpj from '@/app/components/Inputs/InputCnpj'
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCep from '@/app/components/Inputs/InputCep'
@@ -63,28 +69,42 @@ if (getParamFromUrl("clientes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('PreClientesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeClientes && (<h2>{nomeClientes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`PreClientesForm-${preclientesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={preclientesData} isSubmitting={isSubmitting} onClose={onClose} formId={`PreClientesForm-${preclientesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={preclientesData.nome}
+            placeholder={`Digite nome pre clientes`}
             onChange={onChange}
             required
           />
 
-          <Checkbox label="Inativo" name="inativo" checked={preclientesData.inativo} onChange={onChange} />
+                <InputCheckbox label="Inativo" name="inativo" checked={preclientesData.inativo} onChange={onChange} />
         
 <Input
 type="text"
@@ -113,7 +133,7 @@ onChange={onChange}
             label={'Clientes'}
             />
 
-<Checkbox label="Juridica" name="juridica" checked={preclientesData.juridica} onChange={onChange} />
+<InputCheckbox label="Juridica" name="juridica" checked={preclientesData.juridica} onChange={onChange} />
         
 <Input
 type="text"
@@ -135,7 +155,7 @@ value={preclientesData.class}
 onChange={onChange}               
 />
 
-<Checkbox label="Tipo" name="tipo" checked={preclientesData.tipo} onChange={onChange} />
+<InputCheckbox label="Tipo" name="tipo" checked={preclientesData.tipo} onChange={onChange} />
         
 <Input
 type="text"
@@ -168,7 +188,7 @@ value={preclientesData.qualificacao}
 onChange={onChange}               
 />
 
-<Checkbox label="Sexo" name="sexo" checked={preclientesData.sexo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={preclientesData.sexo} onChange={onChange} />
         
 <Input
 type="text"
@@ -210,7 +230,7 @@ value={preclientesData.rg}
 onChange={onChange}               
 />
 
-<Checkbox label="TipoCaptacao" name="tipocaptacao" checked={preclientesData.tipocaptacao} onChange={onChange} />
+<InputCheckbox label="TipoCaptacao" name="tipocaptacao" checked={preclientesData.tipocaptacao} onChange={onChange} />
         
 <Input
 type="text"
@@ -364,21 +384,12 @@ value={preclientesData.cnh}
 onChange={onChange}               
 />
 
-<Checkbox label="Ani" name="ani" checked={preclientesData.ani} onChange={onChange} />
+<InputCheckbox label="Ani" name="ani" checked={preclientesData.ani} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

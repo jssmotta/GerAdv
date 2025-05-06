@@ -23,7 +23,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public bool NFTerceirizado() => m_FTerceirizado;
     [XmlAttribute]
     public bool FTerceirizado
     {
@@ -36,7 +35,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public int NFClientePrincipal() => m_FClientePrincipal;
     [XmlAttribute]
     public int FClientePrincipal
     {
@@ -49,7 +47,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -62,7 +59,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -77,7 +73,6 @@ public partial class DBOutrasPartesCliente
 
     public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
 
-    public string NFCNPJ() => m_FCNPJ ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -90,7 +85,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFInscEst() => m_FInscEst ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FInscEst
     {
@@ -103,7 +97,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFNomeFantasia() => m_FNomeFantasia ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeFantasia
     {
@@ -116,7 +109,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -129,7 +121,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -142,7 +133,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -155,7 +145,6 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public string NFSite() => m_FSite ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSite
     {

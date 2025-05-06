@@ -15,7 +15,6 @@ public partial class DBAgenda
     private protected bool m_FClienteAvisado, m_FRevisarP2, m_FRevisar, m_FLiberado, m_FImportante, m_FConcluido, m_FUsuarioCiente;
     [XmlIgnore]
     private protected decimal m_FValor;
-    public int NFIDCOB() => m_FIDCOB;
     [XmlAttribute]
     public int FIDCOB
     {
@@ -28,7 +27,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFClienteAvisado() => m_FClienteAvisado;
     [XmlAttribute]
     public bool FClienteAvisado
     {
@@ -41,7 +39,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFRevisarP2() => m_FRevisarP2;
     [XmlAttribute]
     public bool FRevisarP2
     {
@@ -54,7 +51,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFIDNE() => m_FIDNE;
     [XmlAttribute]
     public int FIDNE
     {
@@ -67,7 +63,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFCidade() => m_FCidade;
     [XmlAttribute]
     public int FCidade
     {
@@ -80,7 +75,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFOculto() => m_FOculto;
     [XmlAttribute]
     public int FOculto
     {
@@ -93,7 +87,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFCartaPrecatoria() => m_FCartaPrecatoria;
     [XmlAttribute]
     public int FCartaPrecatoria
     {
@@ -106,7 +99,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFRevisar() => m_FRevisar;
     [XmlAttribute]
     public bool FRevisar
     {
@@ -119,7 +111,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFHrFinal() => $"{m_FHrFinal:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHrFinal:HH:mm}";
     [XmlIgnore]
     public DateTime MHrFinal => Convert.ToDateTime(m_FHrFinal);
 
@@ -154,7 +145,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFAdvogado() => m_FAdvogado;
     [XmlAttribute]
     public int FAdvogado
     {
@@ -167,7 +157,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFEventoGerador() => m_FEventoGerador;
     [XmlAttribute]
     public int FEventoGerador
     {
@@ -180,7 +169,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFEventoData() => $"{m_FEventoData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FEventoData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MEventoData => Convert.ToDateTime(m_FEventoData);
 
@@ -198,7 +186,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFFuncionario() => m_FFuncionario;
     [XmlAttribute]
     public int FFuncionario
     {
@@ -211,7 +198,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -229,7 +215,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFEventoPrazo() => m_FEventoPrazo;
     [XmlAttribute]
     public int FEventoPrazo
     {
@@ -242,7 +227,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFHora() => $"{m_FHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHora:HH:mm}";
     [XmlIgnore]
     public DateTime MHora => Convert.ToDateTime(m_FHora);
 
@@ -277,7 +261,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFCompromisso() => m_FCompromisso ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCompromisso
     {
@@ -290,7 +273,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFTipoCompromisso() => m_FTipoCompromisso;
     [XmlAttribute]
     public int FTipoCompromisso
     {
@@ -303,7 +285,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -316,7 +297,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFLiberado() => m_FLiberado;
     [XmlAttribute]
     public bool FLiberado
     {
@@ -329,7 +309,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFImportante() => m_FImportante;
     [XmlAttribute]
     public bool FImportante
     {
@@ -342,7 +321,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFConcluido() => m_FConcluido;
     [XmlAttribute]
     public bool FConcluido
     {
@@ -355,7 +333,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFArea() => m_FArea;
     [XmlAttribute]
     public int FArea
     {
@@ -368,7 +345,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFJustica() => m_FJustica;
     [XmlAttribute]
     public int FJustica
     {
@@ -381,7 +357,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -394,7 +369,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFIDHistorico() => m_FIDHistorico;
     [XmlAttribute]
     public int FIDHistorico
     {
@@ -407,7 +381,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFIDInsProcesso() => m_FIDInsProcesso;
     [XmlAttribute]
     public int FIDInsProcesso
     {
@@ -420,7 +393,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFUsuario() => m_FUsuario;
     [XmlAttribute]
     public int FUsuario
     {
@@ -433,7 +405,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFPreposto() => m_FPreposto;
     [XmlAttribute]
     public int FPreposto
     {
@@ -446,7 +417,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFQuemID() => m_FQuemID;
     [XmlAttribute]
     public int FQuemID
     {
@@ -459,7 +429,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFQuemCodigo() => m_FQuemCodigo;
     [XmlAttribute]
     public int FQuemCodigo
     {
@@ -472,7 +441,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFStatus() => m_FStatus ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FStatus
     {
@@ -485,7 +453,6 @@ public partial class DBAgenda
         }
     }
 
-    public decimal NFValor() => m_FValor;
     [XmlAttribute]
     public decimal FValor
     {
@@ -499,7 +466,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFDecisao() => m_FDecisao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDecisao
     {
@@ -512,7 +478,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFSempre() => m_FSempre;
     [XmlAttribute]
     public int FSempre
     {
@@ -525,7 +490,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFPrazoDias() => m_FPrazoDias;
     [XmlAttribute]
     public int FPrazoDias
     {
@@ -538,7 +502,6 @@ public partial class DBAgenda
         }
     }
 
-    public int NFProtocoloIntegrado() => m_FProtocoloIntegrado;
     [XmlAttribute]
     public int FProtocoloIntegrado
     {
@@ -551,7 +514,6 @@ public partial class DBAgenda
         }
     }
 
-    public string NFDataInicioPrazo() => $"{m_FDataInicioPrazo:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataInicioPrazo:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataInicioPrazo => Convert.ToDateTime(m_FDataInicioPrazo);
 
@@ -569,7 +531,6 @@ public partial class DBAgenda
         }
     }
 
-    public bool NFUsuarioCiente() => m_FUsuarioCiente;
     [XmlAttribute]
     public bool FUsuarioCiente
     {

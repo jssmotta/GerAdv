@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProDespesasEmpty } from "../../../Models/ProDespesas";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProDespesasInc from "../Inc/ProDespesas";
 import { IProDespesas } from "../../Interfaces/interface.ProDespesas";
 import { ProDespesasService } from "../../Services/ProDespesas.service";
 import { ProDespesasApi } from "../../Apis/ApiProDespesas";
@@ -16,11 +14,12 @@ import { ProDespesasGridMobileComponent } from "../GridsMobile/ProDespesas";
 import { ProDespesasGridDesktopComponent } from "../GridsDesktop/ProDespesas";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProDespesas } from "../../Filters/ProDespesas";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProDespesasWindow from "./ProDespesasWindow";
 
 const ProDespesasGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ProDespesasGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ProDespesasGridMobileComponent data={prodespesas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProDespesasGridDesktopComponent data={prodespesas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProDespesasGridMobileComponent data={prodespesas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProDespesasGridDesktopComponent data={prodespesas} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProDespesasWindow
           isOpen={showInc}

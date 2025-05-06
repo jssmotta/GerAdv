@@ -23,6 +23,7 @@ export interface AlarmSMS
 	excetodiasfelizes : boolean;
 	desktop : boolean;
 	alertardatahora : string;
+	guidexo : string;
 	emocao : number;
 	auditor?: Auditor | null;
 }
@@ -50,6 +51,7 @@ export function AlarmSMSEmpty(): IAlarmSMS {
 		excetodiasfelizes: false,
 		desktop: false,
 		alertardatahora: '',
+		guidexo: '',
 		emocao: 0,
 		auditor: null
     };

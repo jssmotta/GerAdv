@@ -1,12 +1,19 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IProcessOutputEngine } from '../../Interfaces/interface.ProcessOutputEngine';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IProcessOutputEngine } from '@/app/GerAdv_TS/ProcessOutputEngine/Interfaces/interface.ProcessOutputEngine';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
+
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ProcessOutputEngineFormProps {
     processoutputengineData: IProcessOutputEngine;
@@ -36,22 +43,37 @@ interface ProcessOutputEngineFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ProcessOutputEngineForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ProcessOutputEngineForm-${processoutputengineData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={processoutputengineData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessOutputEngineForm-${processoutputengineData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={processoutputengineData.nome}
+            placeholder={`Digite nome process output engine`}
             onChange={onChange}
             required
           />
@@ -106,7 +128,7 @@ value={processoutputengineData.output}
 onChange={onChange}               
 />
 
-<Checkbox label="Administrador" name="administrador" checked={processoutputengineData.administrador} onChange={onChange} />
+<InputCheckbox label="Administrador" name="administrador" checked={processoutputengineData.administrador} onChange={onChange} />
         
 <Input
 type="text"
@@ -118,7 +140,7 @@ value={processoutputengineData.outputsource}
 onChange={onChange}               
 />
 
-<Checkbox label="DisabledItem" name="disableditem" checked={processoutputengineData.disableditem} onChange={onChange} />
+<InputCheckbox label="DisabledItem" name="disableditem" checked={processoutputengineData.disableditem} onChange={onChange} />
         
 <Input
 type="text"
@@ -130,7 +152,7 @@ value={processoutputengineData.idmodulo}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="IsOnlyProcesso" name="isonlyprocesso" checked={processoutputengineData.isonlyprocesso} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="IsOnlyProcesso" name="isonlyprocesso" checked={processoutputengineData.isonlyprocesso} onChange={onChange} />
         
 <Input
 type="text"
@@ -142,21 +164,10 @@ value={processoutputengineData.myid}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processoutputrequest${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?processoutputengine=${processoutputengineData.id}`)}>Process Output Request</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AgendaRepetirDiasEmpty } from "../../../Models/AgendaRepetirDias";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AgendaRepetirDiasInc from "../Inc/AgendaRepetirDias";
 import { IAgendaRepetirDias } from "../../Interfaces/interface.AgendaRepetirDias";
 import { AgendaRepetirDiasService } from "../../Services/AgendaRepetirDias.service";
 import { AgendaRepetirDiasApi } from "../../Apis/ApiAgendaRepetirDias";
@@ -16,11 +14,12 @@ import { AgendaRepetirDiasGridMobileComponent } from "../GridsMobile/AgendaRepet
 import { AgendaRepetirDiasGridDesktopComponent } from "../GridsDesktop/AgendaRepetirDias";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAgendaRepetirDias } from "../../Filters/AgendaRepetirDias";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AgendaRepetirDiasWindow from "./AgendaRepetirDiasWindow";
 
 const AgendaRepetirDiasGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AgendaRepetirDiasGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AgendaRepetirDiasGridMobileComponent data={agendarepetirdias} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AgendaRepetirDiasGridDesktopComponent data={agendarepetirdias} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AgendaRepetirDiasGridMobileComponent data={agendarepetirdias} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AgendaRepetirDiasGridDesktopComponent data={agendarepetirdias} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AgendaRepetirDiasWindow
           isOpen={showInc}

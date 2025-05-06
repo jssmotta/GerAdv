@@ -8,6 +8,7 @@ public partial interface IAgendaRepetirReader
     AgendaRepetirResponse? Read(int id, SqlConnection oCnn);
     AgendaRepetirResponse? Read(string where, SqlConnection oCnn);
     AgendaRepetirResponse? Read(Entity.DBAgendaRepetir dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AgendaRepetirResponse? Read(DBAgendaRepetir dbRec);
 }
 

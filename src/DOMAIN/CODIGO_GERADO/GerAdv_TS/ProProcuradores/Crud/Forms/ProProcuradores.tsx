@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IProProcuradores } from '../../Interfaces/interface.ProProcuradores';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IProProcuradores } from '@/app/GerAdv_TS/ProProcuradores/Interfaces/interface.ProProcuradores';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
 import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface ProProcuradoresFormProps {
     proprocuradoresData: IProProcuradores;
@@ -83,24 +89,37 @@ if (getParamFromUrl("processos") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ProProcuradoresForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeAdvogados && (<h2>{nomeAdvogados}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ProProcuradoresForm-${proprocuradoresData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={proprocuradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProProcuradoresForm-${proprocuradoresData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={proprocuradoresData.nome}
+            placeholder={`Digite nome pro procuradores`}
             onChange={onChange}
             required
           />
@@ -129,22 +148,13 @@ value={proprocuradoresData.data}
 onChange={onChange}               
 />
 
-<Checkbox label="Substabelecimento" name="substabelecimento" checked={proprocuradoresData.substabelecimento} onChange={onChange} />
-<Checkbox label="Procuracao" name="procuracao" checked={proprocuradoresData.procuracao} onChange={onChange} />
+<InputCheckbox label="Substabelecimento" name="substabelecimento" checked={proprocuradoresData.substabelecimento} onChange={onChange} />
+<InputCheckbox label="Procuracao" name="procuracao" checked={proprocuradoresData.procuracao} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

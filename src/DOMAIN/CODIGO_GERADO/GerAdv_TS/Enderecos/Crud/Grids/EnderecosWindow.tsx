@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import EnderecosInc from "../Inc/Enderecos";
 import { IEnderecos } from "../../Interfaces/interface.Enderecos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const EnderecosWindow: React.FC<EnderecosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/enderecos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEnderecos?.id}`);
+            router.push(`/pages/enderecos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEnderecos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedEnderecos]);
@@ -42,7 +43,7 @@ const EnderecosWindow: React.FC<EnderecosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={732}
                     newWidth={1440}
                     id={(selectedEnderecos?.id ?? 0).toString()}

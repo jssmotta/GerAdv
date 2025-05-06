@@ -5,7 +5,7 @@ import { ProDepositosApi } from '../../Apis/ApiProDepositos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProDepositosFormProps } from '../../Interfaces/interface.ProDepositos';
 import { ProDepositosService } from '../../Services/ProDepositos.service';
 import { useProDepositosForm } from '../../Hooks/useProDepositosForm';

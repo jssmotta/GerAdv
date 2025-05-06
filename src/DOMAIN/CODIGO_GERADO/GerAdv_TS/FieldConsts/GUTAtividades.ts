@@ -8,4 +8,5 @@
 	dataconcluido = `DataConcluido`,
 	diasparainiciar = `DiasParaIniciar`,
 	minutospararealizar = `MinutosParaRealizar`,
+	guid = `GUID`,
 }

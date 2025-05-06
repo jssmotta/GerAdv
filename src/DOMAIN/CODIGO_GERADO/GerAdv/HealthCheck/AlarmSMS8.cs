@@ -72,7 +72,7 @@ public class AlarmSMSHealthCheck(IOptions<AppSettings> appSettings, AlarmSMSServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) alrDescricao,alrHora,alrMinuto,alrD1,alrD2,alrD3,alrD4,alrD5,alrD6,alrD7,alrEMail,alrDesativar,alrToday,alrExcetoDiasFelizes,alrDesktop,alrAlertarDataHora,alrOperador,alrAgenda,alrRecado,alrEmocao FROM dbo.AlarmSMS (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) alrDescricao,alrHora,alrMinuto,alrD1,alrD2,alrD3,alrD4,alrD5,alrD6,alrD7,alrEMail,alrDesativar,alrToday,alrExcetoDiasFelizes,alrDesktop,alrAlertarDataHora,alrOperador,alrGuidExo,alrAgenda,alrRecado,alrEmocao,alrGUID FROM dbo.AlarmSMS (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

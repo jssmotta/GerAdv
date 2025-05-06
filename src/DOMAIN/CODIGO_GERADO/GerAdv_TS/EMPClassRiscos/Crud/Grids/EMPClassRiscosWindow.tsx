@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import EMPClassRiscosInc from "../Inc/EMPClassRiscos";
 import { IEMPClassRiscos } from "../../Interfaces/interface.EMPClassRiscos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const EMPClassRiscosWindow: React.FC<EMPClassRiscosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/empclassriscos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEMPClassRiscos?.id}`);
+            router.push(`/pages/empclassriscos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEMPClassRiscos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedEMPClassRiscos]);
@@ -42,7 +43,7 @@ const EMPClassRiscosWindow: React.FC<EMPClassRiscosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedEMPClassRiscos?.id ?? 0).toString()}

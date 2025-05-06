@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { GUTMatrizEmpty } from "../../../Models/GUTMatriz";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import GUTMatrizInc from "../Inc/GUTMatriz";
 import { IGUTMatriz } from "../../Interfaces/interface.GUTMatriz";
 import { GUTMatrizService } from "../../Services/GUTMatriz.service";
 import { GUTMatrizApi } from "../../Apis/ApiGUTMatriz";
@@ -16,11 +14,12 @@ import { GUTMatrizGridMobileComponent } from "../GridsMobile/GUTMatriz";
 import { GUTMatrizGridDesktopComponent } from "../GridsDesktop/GUTMatriz";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterGUTMatriz } from "../../Filters/GUTMatriz";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import GUTMatrizWindow from "./GUTMatrizWindow";
 
 const GUTMatrizGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const GUTMatrizGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <GUTMatrizGridMobileComponent data={gutmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <GUTMatrizGridDesktopComponent data={gutmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <GUTMatrizGridMobileComponent data={gutmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <GUTMatrizGridDesktopComponent data={gutmatriz} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <GUTMatrizWindow
           isOpen={showInc}

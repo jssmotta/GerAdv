@@ -56,30 +56,6 @@ public static class ProcessosParadosEndpoints
 
             return Results.Ok(result);
         }).WithName("ProcessosParados_AddAndUpdate").WithDisplayName("Add or Update ProcessosParados");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProcessosParadosValidation validation, IProcessosParadosWriter writer, IProcessosReader processosReader, IOperadorReader operadorReader, IProcessosParadosService service) =>
-        {
-            logger.LogInfo("ProcessosParados", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProcessosParados", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProcessosParados_GetColumns").WithDisplayName("Get ProcessosParados Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProcessosParadosValidation validation, IProcessosParadosWriter writer, IProcessosReader processosReader, IOperadorReader operadorReader, IProcessosParadosService service) =>
-        {
-            logger.LogInfo("ProcessosParados", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProcessosParados", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProcessosParados_UpdateColumns").WithDisplayName("Update ProcessosParados Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProcessosParadosValidation validation, IProcessosParadosWriter writer, IProcessosReader processosReader, IOperadorReader operadorReader, IProcessosParadosService service) =>
         {
             logger.LogInfo("ProcessosParados", "Delete", $"id = {id}", uri);

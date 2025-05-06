@@ -5,7 +5,7 @@ import { EventoPrazoAgendaApi } from '../../Apis/ApiEventoPrazoAgenda';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IEventoPrazoAgendaFormProps } from '../../Interfaces/interface.EventoPrazoAgenda';
 import { EventoPrazoAgendaService } from '../../Services/EventoPrazoAgenda.service';
 import { useEventoPrazoAgendaForm } from '../../Hooks/useEventoPrazoAgendaForm';

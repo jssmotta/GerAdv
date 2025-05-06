@@ -19,7 +19,7 @@ public class SMSAliceValidation : ISMSAliceValidation
         if (await IsDuplicado(reg, service, uri))
             return $"SMSAlice '{reg.Nome}' já cadastrado.";
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
@@ -29,7 +29,7 @@ public class SMSAliceValidation : ISMSAliceValidation
         }
 
         // TipoEMail
-        if (reg.TipoEMail.IsEmptyIDNumber())
+        if (!reg.TipoEMail.IsEmptyIDNumber())
         {
             var regTipoEMail = tipoemailReader.Read(reg.TipoEMail, oCnn);
             if (regTipoEMail == null || regTipoEMail.Id != reg.TipoEMail)

@@ -5,7 +5,7 @@ import { GUTAtividadesApi } from '../../Apis/ApiGUTAtividades';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IGUTAtividadesFormProps } from '../../Interfaces/interface.GUTAtividades';
 import { GUTAtividadesService } from '../../Services/GUTAtividades.service';
 import { useGUTAtividadesForm } from '../../Hooks/useGUTAtividadesForm';

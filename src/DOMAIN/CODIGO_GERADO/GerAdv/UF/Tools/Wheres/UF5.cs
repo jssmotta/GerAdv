@@ -21,6 +21,7 @@ public partial class UF : IUFWhere
             Pais = dbRec.FPais,
             Top = dbRec.FTop,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

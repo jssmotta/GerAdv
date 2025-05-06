@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import UltimosProcessosInc from "../Inc/UltimosProcessos";
 import { IUltimosProcessos } from "../../Interfaces/interface.UltimosProcessos";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const UltimosProcessosWindow: React.FC<UltimosProcessosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/ultimosprocessos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedUltimosProcessos?.id}`);
+            router.push(`/pages/ultimosprocessos/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedUltimosProcessos?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedUltimosProcessos]);
@@ -42,7 +43,7 @@ const UltimosProcessosWindow: React.FC<UltimosProcessosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedUltimosProcessos?.id ?? 0).toString()}

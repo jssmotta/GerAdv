@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TribunalEmpty } from "../../../Models/Tribunal";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TribunalInc from "../Inc/Tribunal";
 import { ITribunal } from "../../Interfaces/interface.Tribunal";
 import { TribunalService } from "../../Services/Tribunal.service";
 import { TribunalApi } from "../../Apis/ApiTribunal";
@@ -16,11 +14,12 @@ import { TribunalGridMobileComponent } from "../GridsMobile/Tribunal";
 import { TribunalGridDesktopComponent } from "../GridsDesktop/Tribunal";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTribunal } from "../../Filters/Tribunal";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TribunalWindow from "./TribunalWindow";
 
 const TribunalGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TribunalGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TribunalGridMobileComponent data={tribunal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TribunalGridDesktopComponent data={tribunal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TribunalGridMobileComponent data={tribunal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TribunalGridDesktopComponent data={tribunal} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TribunalWindow
           isOpen={showInc}

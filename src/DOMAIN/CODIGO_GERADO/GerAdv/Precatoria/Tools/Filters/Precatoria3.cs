@@ -26,4 +26,7 @@ public partial class FilterPrecatoria
 
     [JsonPropertyName("obs")]
     public string OBS { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

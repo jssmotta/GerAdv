@@ -1,14 +1,20 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IOponentes } from '../../Interfaces/interface.Oponentes';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IOponentes } from '@/app/GerAdv_TS/Oponentes/Interfaces/interface.Oponentes';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
+import InputName from '@/app/components/Inputs/InputName';
 import InputCnpj from '@/app/components/Inputs/InputCnpj'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCep from '@/app/components/Inputs/InputCep'
 
@@ -40,22 +46,37 @@ interface OponentesFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('OponentesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`OponentesForm-${oponentesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={oponentesData} isSubmitting={isSubmitting} onClose={onClose} formId={`OponentesForm-${oponentesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={oponentesData.nome}
+            placeholder={`Digite nome oponentes`}
             onChange={onChange}
             required
           />
@@ -171,9 +192,9 @@ value={oponentesData.rg}
 onChange={onChange}               
 />
 
-<Checkbox label="Juridica" name="juridica" checked={oponentesData.juridica} onChange={onChange} />
-<Checkbox label="Tipo" name="tipo" checked={oponentesData.tipo} onChange={onChange} />
-<Checkbox label="Sexo" name="sexo" checked={oponentesData.sexo} onChange={onChange} />
+<InputCheckbox label="Juridica" name="juridica" checked={oponentesData.juridica} onChange={onChange} />
+<InputCheckbox label="Tipo" name="tipo" checked={oponentesData.tipo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={oponentesData.sexo} onChange={onChange} />
         
 <InputCpf
 type="text"
@@ -286,24 +307,12 @@ value={oponentesData.class}
 onChange={onChange}               
 />
 
-<Checkbox label="Top" name="top" checked={oponentesData.top} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gruposempresas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Grupos Empresas</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/oponentesreplegal${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Oponentes Rep Legal</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?oponentes=${oponentesData.id}`)}>Processos</div>
+<InputCheckbox label="Top" name="top" checked={oponentesData.top} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

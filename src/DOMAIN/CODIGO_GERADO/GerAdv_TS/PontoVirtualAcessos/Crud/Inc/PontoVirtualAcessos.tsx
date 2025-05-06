@@ -5,7 +5,7 @@ import { PontoVirtualAcessosApi } from '../../Apis/ApiPontoVirtualAcessos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IPontoVirtualAcessosFormProps } from '../../Interfaces/interface.PontoVirtualAcessos';
 import { PontoVirtualAcessosService } from '../../Services/PontoVirtualAcessos.service';
 import { usePontoVirtualAcessosForm } from '../../Hooks/usePontoVirtualAcessosForm';

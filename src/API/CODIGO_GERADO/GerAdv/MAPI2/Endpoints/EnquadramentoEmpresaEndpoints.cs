@@ -74,30 +74,6 @@ public static class EnquadramentoEmpresaEndpoints
 
             return Results.Ok(result);
         }).WithName("EnquadramentoEmpresa_AddAndUpdate").WithDisplayName("Add or Update EnquadramentoEmpresa");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IEnquadramentoEmpresaValidation validation, IEnquadramentoEmpresaWriter writer, IEnquadramentoEmpresaService service) =>
-        {
-            logger.LogInfo("EnquadramentoEmpresa", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("EnquadramentoEmpresa", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("EnquadramentoEmpresa_GetColumns").WithDisplayName("Get EnquadramentoEmpresa Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IEnquadramentoEmpresaValidation validation, IEnquadramentoEmpresaWriter writer, IEnquadramentoEmpresaService service) =>
-        {
-            logger.LogInfo("EnquadramentoEmpresa", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("EnquadramentoEmpresa", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("EnquadramentoEmpresa_UpdateColumns").WithDisplayName("Update EnquadramentoEmpresa Columns");
         group.MapDelete("/Delete", async (int id, string uri, IEnquadramentoEmpresaValidation validation, IEnquadramentoEmpresaWriter writer, IEnquadramentoEmpresaService service) =>
         {
             logger.LogInfo("EnquadramentoEmpresa", "Delete", $"id = {id}", uri);

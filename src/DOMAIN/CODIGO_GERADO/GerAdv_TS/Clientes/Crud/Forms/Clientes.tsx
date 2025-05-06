@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IClientes } from '../../Interfaces/interface.Clientes';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IClientes } from '@/app/GerAdv_TS/Clientes/Interfaces/interface.Clientes';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import RegimeTributacaoComboBox from '@/app/GerAdv_TS/RegimeTributacao/ComboBox/RegimeTributacao';
 import EnquadramentoEmpresaComboBox from '@/app/GerAdv_TS/EnquadramentoEmpresa/ComboBox/EnquadramentoEmpresa';
 import { RegimeTributacaoApi } from '@/app/GerAdv_TS/RegimeTributacao/Apis/ApiRegimeTributacao';
 import { EnquadramentoEmpresaApi } from '@/app/GerAdv_TS/EnquadramentoEmpresa/Apis/ApiEnquadramentoEmpresa';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCnpj from '@/app/components/Inputs/InputCnpj'
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCep from '@/app/components/Inputs/InputCep'
@@ -86,24 +92,37 @@ if (getParamFromUrl("enquadramentoempresa") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('ClientesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeRegimeTributacao && (<h2>{nomeRegimeTributacao}</h2>)}
-{nomeEnquadramentoEmpresa && (<h2>{nomeEnquadramentoEmpresa}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`ClientesForm-${clientesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={clientesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ClientesForm-${clientesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={clientesData.nome}
+            placeholder={`Digite nome clientes`}
             onChange={onChange}
             required
           />
@@ -148,7 +167,7 @@ value={clientesData.rgdataexp}
 onChange={onChange}               
 />
 
-<Checkbox label="Inativo" name="inativo" checked={clientesData.inativo} onChange={onChange} />
+<InputCheckbox label="Inativo" name="inativo" checked={clientesData.inativo} onChange={onChange} />
         
 <Input
 type="text"
@@ -160,7 +179,7 @@ value={clientesData.quemindicou}
 onChange={onChange}               
 />
 
-<Checkbox label="SendEMail" name="sendemail" checked={clientesData.sendemail} onChange={onChange} />
+<InputCheckbox label="SendEMail" name="sendemail" checked={clientesData.sendemail} onChange={onChange} />
         
 <Input
 type="text"
@@ -182,7 +201,7 @@ value={clientesData.idrep}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="Juridica" name="juridica" checked={clientesData.juridica} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Juridica" name="juridica" checked={clientesData.juridica} onChange={onChange} />
         
 <Input
 type="text"
@@ -204,7 +223,7 @@ value={clientesData.class}
 onChange={onChange}               
 />
 
-<Checkbox label="Tipo" name="tipo" checked={clientesData.tipo} onChange={onChange} />
+<InputCheckbox label="Tipo" name="tipo" checked={clientesData.tipo} onChange={onChange} />
         
 <Input
 type="text"
@@ -236,7 +255,7 @@ value={clientesData.qualificacao}
 onChange={onChange}               
 />
 
-<Checkbox label="Sexo" name="sexo" checked={clientesData.sexo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={clientesData.sexo} onChange={onChange} />
         
 <Input
 type="text"
@@ -279,7 +298,7 @@ value={clientesData.rg}
 onChange={onChange}               
 />
 
-<Checkbox label="TipoCaptacao" name="tipocaptacao" checked={clientesData.tipocaptacao} onChange={onChange} />
+<InputCheckbox label="TipoCaptacao" name="tipocaptacao" checked={clientesData.tipocaptacao} onChange={onChange} />
         
 <Input
 type="text"
@@ -382,7 +401,7 @@ value={clientesData.email}
 onChange={onChange}               
 />
 
-<Checkbox label="Obito" name="obito" checked={clientesData.obito} onChange={onChange} />
+<InputCheckbox label="Obito" name="obito" checked={clientesData.obito} onChange={onChange} />
         
 <Input
 type="text"
@@ -418,8 +437,8 @@ onChange={onChange}
             label={'Enquadramento Empresa'}
             />
 
-<Checkbox label="ReportECBOnly" name="reportecbonly" checked={clientesData.reportecbonly} onChange={onChange} />
-<Checkbox label="ProBono" name="probono" checked={clientesData.probono} onChange={onChange} />
+<InputCheckbox label="ReportECBOnly" name="reportecbonly" checked={clientesData.reportecbonly} onChange={onChange} />
+<InputCheckbox label="ProBono" name="probono" checked={clientesData.probono} onChange={onChange} />
 </div><div className="grid-container">        
 <Input
 type="text"
@@ -441,45 +460,12 @@ value={clientesData.pessoacontato}
 onChange={onChange}               
 />
 
-<Checkbox label="Ani" name="ani" checked={clientesData.ani} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agenda${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Agenda</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendafinanceiro${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Agenda Financeiro</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendarepetir${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Agenda Repetir</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/anexamentoregistros${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Anexamento Registros</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/clientessocios${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Clientes Socios</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/colaboradores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Colaboradores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contacorrente${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Conta Corrente</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contatocrm${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Contato C R M</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/contratos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Contratos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/dadosprocuracao${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Dados Procuracao</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/diario2${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Diario2</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gruposempresas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Grupos Empresas</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gruposempresascli${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Grupos Empresas Cli</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/honorariosdadoscontrato${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Honorarios Dados Contrato</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/horastrab${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Horas Trab</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/ligacoes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Ligacoes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/livrocaixaclientes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Livro Caixa Clientes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/operadores${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Operadores</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/preclientes${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Pre Clientes</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/processos${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Processos</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/prodespesas${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Pro Despesas</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/recados${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Recados</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/reuniao${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Reuniao</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/agendasemana${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?clientes=${clientesData.id}`)}>Agenda Semana</div>
+<InputCheckbox label="Ani" name="ani" checked={clientesData.ani} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

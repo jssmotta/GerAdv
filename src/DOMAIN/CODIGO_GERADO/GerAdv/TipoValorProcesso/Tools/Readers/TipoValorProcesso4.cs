@@ -36,7 +36,7 @@ public partial class TipoValorProcesso : ITipoValorProcessoReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipovalorprocesso;
     }
@@ -52,7 +52,7 @@ public partial class TipoValorProcesso : ITipoValorProcessoReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipovalorprocesso;
     }

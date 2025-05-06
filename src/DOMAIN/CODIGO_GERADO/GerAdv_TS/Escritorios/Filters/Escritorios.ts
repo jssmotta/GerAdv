@@ -16,6 +16,7 @@
  advresponsavel?: string;
  secretaria?: string;
  inscest?: string;
+ guid?: string;
 }
 
 export class FilterEscritoriosDefaults implements FilterEscritorios {
@@ -35,5 +36,6 @@ export class FilterEscritoriosDefaults implements FilterEscritorios {
     advresponsavel?: string = '';
     secretaria?: string = '';
     inscest?: string = '';
+    guid?: string = '';
 }
     

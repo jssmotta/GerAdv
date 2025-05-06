@@ -17,6 +17,7 @@ public class Objetos : IObjetosWriter
         dbRec.FArea = objetos.Area;
         dbRec.FNome = objetos.Nome;
         dbRec.FBold = objetos.Bold;
+        dbRec.FGUID = objetos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

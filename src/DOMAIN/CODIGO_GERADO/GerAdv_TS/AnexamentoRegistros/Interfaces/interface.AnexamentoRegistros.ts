@@ -4,6 +4,7 @@ export interface IAnexamentoRegistros {
     id: number;
  
 		cliente: number,
+		guidreg: string,
 		codigoreg: number,
 		idreg: number,
 		data: string,

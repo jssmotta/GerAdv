@@ -17,7 +17,7 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // Processos
-        if (reg.Processo.IsEmptyIDNumber())
+        if (!reg.Processo.IsEmptyIDNumber())
         {
             var regProcessos = processosReader.Read(reg.Processo, oCnn);
             if (regProcessos == null || regProcessos.Id != reg.Processo)
@@ -27,7 +27,7 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
         }
 
         // Instancia
-        if (reg.Instancia.IsEmptyIDNumber())
+        if (!reg.Instancia.IsEmptyIDNumber())
         {
             var regInstancia = instanciaReader.Read(reg.Instancia, oCnn);
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
@@ -37,7 +37,7 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
         }
 
         // TipoOrigemSucumbencia
-        if (reg.TipoOrigemSucumbencia.IsEmptyIDNumber())
+        if (!reg.TipoOrigemSucumbencia.IsEmptyIDNumber())
         {
             var regTipoOrigemSucumbencia = tipoorigemsucumbenciaReader.Read(reg.TipoOrigemSucumbencia, oCnn);
             if (regTipoOrigemSucumbencia == null || regTipoOrigemSucumbencia.Id != reg.TipoOrigemSucumbencia)

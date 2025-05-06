@@ -6,6 +6,7 @@ export interface IObjetos {
 	area : number;
 	nome : string;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

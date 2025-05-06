@@ -72,7 +72,7 @@ public class EMPClassRiscosHealthCheck(IOptions<AppSettings> appSettings, EMPCla
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ecrNome,ecrBold FROM dbo.EMPClassRiscos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ecrNome,ecrBold,ecrGUID FROM dbo.EMPClassRiscos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

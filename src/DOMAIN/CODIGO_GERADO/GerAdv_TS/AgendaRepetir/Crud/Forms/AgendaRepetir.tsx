@@ -1,11 +1,15 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IAgendaRepetir } from '../../Interfaces/interface.AgendaRepetir';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IAgendaRepetir } from '@/app/GerAdv_TS/AgendaRepetir/Interfaces/interface.AgendaRepetir';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
@@ -16,6 +20,8 @@ import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
 import { FuncionariosApi } from '@/app/GerAdv_TS/Funcionarios/Apis/ApiFuncionarios';
 import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface AgendaRepetirFormProps {
     agendarepetirData: IAgendaRepetir;
@@ -129,18 +135,28 @@ if (getParamFromUrl("processos") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('AgendaRepetirForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeAdvogados && (<h2>{nomeAdvogados}</h2>)}
-{nomeClientes && (<h2>{nomeClientes}</h2>)}
-{nomeFuncionarios && (<h2>{nomeFuncionarios}</h2>)}
-{nomeProcessos && (<h2>{nomeProcessos}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`AgendaRepetirForm-${agendarepetirData.id}`} onSubmit={onConfirm}>
+
+                <ButtonsCrud data={agendarepetirData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRepetirForm-${agendarepetirData.id}`} />
+
+                <div className="grid-container">
 
             <AdvogadosComboBox
             name={'advogado'}
@@ -190,7 +206,7 @@ onChange={onChange}
             label={'Processos'}
             />
 
-<Checkbox label="Pessoal" name="pessoal" checked={agendarepetirData.pessoal} onChange={onChange} />
+<InputCheckbox label="Pessoal" name="pessoal" checked={agendarepetirData.pessoal} onChange={onChange} />
         
 <Input
 type="text"
@@ -313,27 +329,18 @@ value={agendarepetirData.id4}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="Segunda" name="segunda" checked={agendarepetirData.segunda} onChange={onChange} />
-<Checkbox label="Quarta" name="quarta" checked={agendarepetirData.quarta} onChange={onChange} />
-<Checkbox label="Quinta" name="quinta" checked={agendarepetirData.quinta} onChange={onChange} />
-<Checkbox label="Sexta" name="sexta" checked={agendarepetirData.sexta} onChange={onChange} />
-<Checkbox label="Sabado" name="sabado" checked={agendarepetirData.sabado} onChange={onChange} />
-<Checkbox label="Domingo" name="domingo" checked={agendarepetirData.domingo} onChange={onChange} />
-<Checkbox label="Terca" name="terca" checked={agendarepetirData.terca} onChange={onChange} />
+</div><div className="grid-container"><InputCheckbox label="Segunda" name="segunda" checked={agendarepetirData.segunda} onChange={onChange} />
+<InputCheckbox label="Quarta" name="quarta" checked={agendarepetirData.quarta} onChange={onChange} />
+<InputCheckbox label="Quinta" name="quinta" checked={agendarepetirData.quinta} onChange={onChange} />
+<InputCheckbox label="Sexta" name="sexta" checked={agendarepetirData.sexta} onChange={onChange} />
+<InputCheckbox label="Sabado" name="sabado" checked={agendarepetirData.sabado} onChange={onChange} />
+<InputCheckbox label="Domingo" name="domingo" checked={agendarepetirData.domingo} onChange={onChange} />
+<InputCheckbox label="Terca" name="terca" checked={agendarepetirData.terca} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -74,30 +74,6 @@ public static class TiposAcaoEndpoints
 
             return Results.Ok(result);
         }).WithName("TiposAcao_AddAndUpdate").WithDisplayName("Add or Update TiposAcao");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ITiposAcaoValidation validation, ITiposAcaoWriter writer, ITiposAcaoService service) =>
-        {
-            logger.LogInfo("TiposAcao", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("TiposAcao", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("TiposAcao_GetColumns").WithDisplayName("Get TiposAcao Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ITiposAcaoValidation validation, ITiposAcaoWriter writer, ITiposAcaoService service) =>
-        {
-            logger.LogInfo("TiposAcao", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("TiposAcao", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("TiposAcao_UpdateColumns").WithDisplayName("Update TiposAcao Columns");
         group.MapDelete("/Delete", async (int id, string uri, ITiposAcaoValidation validation, ITiposAcaoWriter writer, ITiposAcaoService service) =>
         {
             logger.LogInfo("TiposAcao", "Delete", $"id = {id}", uri);

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ParceriaProcEmpty } from "../../../Models/ParceriaProc";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ParceriaProcInc from "../Inc/ParceriaProc";
 import { IParceriaProc } from "../../Interfaces/interface.ParceriaProc";
 import { ParceriaProcService } from "../../Services/ParceriaProc.service";
 import { ParceriaProcApi } from "../../Apis/ApiParceriaProc";
@@ -16,11 +14,12 @@ import { ParceriaProcGridMobileComponent } from "../GridsMobile/ParceriaProc";
 import { ParceriaProcGridDesktopComponent } from "../GridsDesktop/ParceriaProc";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterParceriaProc } from "../../Filters/ParceriaProc";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ParceriaProcWindow from "./ParceriaProcWindow";
 
 const ParceriaProcGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ParceriaProcGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ParceriaProcGridMobileComponent data={parceriaproc} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ParceriaProcGridDesktopComponent data={parceriaproc} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ParceriaProcGridMobileComponent data={parceriaproc} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ParceriaProcGridDesktopComponent data={parceriaproc} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ParceriaProcWindow
           isOpen={showInc}

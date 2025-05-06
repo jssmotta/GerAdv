@@ -25,6 +25,7 @@ public class ProcessOutputEngine : IProcessOutputEngineWriter
         dbRec.FIDModulo = processoutputengine.IDModulo;
         dbRec.FIsOnlyProcesso = processoutputengine.IsOnlyProcesso;
         dbRec.FMyID = processoutputengine.MyID;
+        dbRec.FGUID = processoutputengine.GUID;
         dbRec.Update(oCnn);
         return dbRec;
     }

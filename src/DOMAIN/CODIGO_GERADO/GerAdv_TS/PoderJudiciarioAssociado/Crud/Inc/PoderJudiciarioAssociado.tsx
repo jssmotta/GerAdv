@@ -5,7 +5,7 @@ import { PoderJudiciarioAssociadoApi } from '../../Apis/ApiPoderJudiciarioAssoci
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IPoderJudiciarioAssociadoFormProps } from '../../Interfaces/interface.PoderJudiciarioAssociado';
 import { PoderJudiciarioAssociadoService } from '../../Services/PoderJudiciarioAssociado.service';
 import { usePoderJudiciarioAssociadoForm } from '../../Hooks/usePoderJudiciarioAssociadoForm';

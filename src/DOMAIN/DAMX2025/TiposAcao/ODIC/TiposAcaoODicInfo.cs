@@ -41,7 +41,7 @@ public partial class DBTiposAcaoODicInfo : IODicInfo
     public static string TTabelaNome => DBTiposAcaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTiposAcaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold, DBTiposAcaoDicInfo.TacGUID, DBTiposAcaoDicInfo.TacQuemCad, DBTiposAcaoDicInfo.TacDtCad, DBTiposAcaoDicInfo.TacQuemAtu, DBTiposAcaoDicInfo.TacDtAtu, DBTiposAcaoDicInfo.TacVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold, DBTiposAcaoDicInfo.TacGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -57,7 +57,8 @@ public partial class DBTiposAcaoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "tacCodigo"
+            "tacCodigo",
+            "tacNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBTiposAcaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

@@ -5,6 +5,7 @@ export interface ICargosEsc {
 	percentual : number;
 	nome : string;
 	classificacao : number;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

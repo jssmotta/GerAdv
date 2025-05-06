@@ -5,7 +5,7 @@ import { CargosEscApi } from '../../Apis/ApiCargosEsc';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { ICargosEscFormProps } from '../../Interfaces/interface.CargosEsc';
 import { CargosEscService } from '../../Services/CargosEsc.service';
 import { useCargosEscForm } from '../../Hooks/useCargosEscForm';

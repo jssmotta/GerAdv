@@ -7,6 +7,7 @@ export interface IUF {
 	iduf : string;
 	top : boolean;
 	descricao : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

@@ -27,6 +27,7 @@ public class ProDespesas : IProDespesasWriter
         dbRec.FTipo = prodespesas.Tipo;
         dbRec.FHistorico = prodespesas.Historico;
         dbRec.FLivroCaixa = prodespesas.LivroCaixa;
+        dbRec.FGUID = prodespesas.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

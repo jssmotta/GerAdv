@@ -8,6 +8,7 @@ public partial interface IStatusTarefasReader
     StatusTarefasResponse? Read(int id, SqlConnection oCnn);
     StatusTarefasResponse? Read(string where, SqlConnection oCnn);
     StatusTarefasResponse? Read(Entity.DBStatusTarefas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     StatusTarefasResponse? Read(DBStatusTarefas dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class StatusTarefas : IStatusTarefasReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class StatusTarefas : IStatusTarefasReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

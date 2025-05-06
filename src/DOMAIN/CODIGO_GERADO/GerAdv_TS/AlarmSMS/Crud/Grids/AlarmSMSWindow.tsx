@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AlarmSMSInc from "../Inc/AlarmSMS";
 import { IAlarmSMS } from "../../Interfaces/interface.AlarmSMS";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AlarmSMSWindow: React.FC<AlarmSMSWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/alarmsms/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAlarmSMS?.id}`);
+            router.push(`/pages/alarmsms/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAlarmSMS?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAlarmSMS]);
@@ -42,8 +43,8 @@ const AlarmSMSWindow: React.FC<AlarmSMSWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
-                    newHeight={627}
+                    dimensions={dimensions ?? dimensionsEmpty}
+                    newHeight={650}
                     newWidth={1440}
                     id={(selectedAlarmSMS?.id ?? 0).toString()}
                 >

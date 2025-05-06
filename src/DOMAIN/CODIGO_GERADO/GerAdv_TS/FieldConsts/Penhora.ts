@@ -5,4 +5,5 @@
 	descricao = `Descricao`,
 	datapenhora = `DataPenhora`,
 	master = `Master`,
+	guid = `GUID`,
 }

@@ -13,7 +13,6 @@ public partial class DBPrecatoria
     private protected DateTime? m_FDtDist;
     [XmlIgnore]
     private protected bool m_FBold;
-    public string NFDtDist() => $"{m_FDtDist:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtDist:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDtDist => Convert.ToDateTime(m_FDtDist);
 
@@ -31,7 +30,6 @@ public partial class DBPrecatoria
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -44,7 +42,6 @@ public partial class DBPrecatoria
         }
     }
 
-    public string NFPrecatoria() => m_FPrecatoria ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPrecatoria
     {
@@ -57,7 +54,6 @@ public partial class DBPrecatoria
         }
     }
 
-    public string NFDeprecante() => m_FDeprecante ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDeprecante
     {
@@ -70,7 +66,6 @@ public partial class DBPrecatoria
         }
     }
 
-    public string NFDeprecado() => m_FDeprecado ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDeprecado
     {
@@ -83,7 +78,6 @@ public partial class DBPrecatoria
         }
     }
 
-    public string NFOBS() => m_FOBS ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOBS
     {
@@ -96,7 +90,6 @@ public partial class DBPrecatoria
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

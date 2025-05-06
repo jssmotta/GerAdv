@@ -44,6 +44,7 @@ public partial class Prepostos : IPrepostosWhere
             Etiqueta = dbRec.FEtiqueta,
             Ani = dbRec.FAni,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             prepostos.DtNasc = dbRec.FDtNasc;

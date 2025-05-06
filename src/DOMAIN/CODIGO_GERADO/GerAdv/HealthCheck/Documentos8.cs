@@ -72,7 +72,7 @@ public class DocumentosHealthCheck(IOptions<AppSettings> appSettings, Documentos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) docProcesso,docData,docObservacao FROM dbo.Documentos (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) docProcesso,docData,docObservacao,docGUID FROM dbo.Documentos (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

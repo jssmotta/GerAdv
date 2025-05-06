@@ -14,6 +14,7 @@
     valorjuroscorrigido?: number;
     valorfinal?: number;
  dataultimacorrecao?: string;
+ guid?: string;
 }
 
 export class FilterProValoresDefaults implements FilterProValores {
@@ -31,5 +32,6 @@ export class FilterProValoresDefaults implements FilterProValores {
     valorjuroscorrigido?: number = -2147483648;
     valorfinal?: number = -2147483648;
     dataultimacorrecao?: string = '';
+    guid?: string = '';
 }
     

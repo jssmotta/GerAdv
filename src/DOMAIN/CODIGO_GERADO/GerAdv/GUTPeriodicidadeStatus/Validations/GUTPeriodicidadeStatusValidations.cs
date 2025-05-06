@@ -15,7 +15,7 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
         if (reg == null)
             return "Objeto está nulo";
         // GUTAtividades
-        if (reg.GUTAtividade.IsEmptyIDNumber())
+        if (!reg.GUTAtividade.IsEmptyIDNumber())
         {
             var regGUTAtividades = gutatividadesReader.Read(reg.GUTAtividade, oCnn);
             if (regGUTAtividades == null || regGUTAtividades.Id != reg.GUTAtividade)

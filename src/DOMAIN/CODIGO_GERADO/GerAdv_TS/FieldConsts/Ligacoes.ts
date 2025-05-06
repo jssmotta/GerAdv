@@ -26,4 +26,5 @@
 	startscreen = `StartScreen`,
 	emotion = `Emotion`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

@@ -5,7 +5,7 @@ import { Diario2Api } from '../../Apis/ApiDiario2';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IDiario2FormProps } from '../../Interfaces/interface.Diario2';
 import { Diario2Service } from '../../Services/Diario2.service';
 import { useDiario2Form } from '../../Hooks/useDiario2Form';

@@ -7,6 +7,7 @@
  observacoes?: string;
     cliente?: number;
  icone?: string;
+ guid?: string;
 }
 
 export class FilterGruposEmpresasDefaults implements FilterGruposEmpresas {
@@ -17,5 +18,6 @@ export class FilterGruposEmpresasDefaults implements FilterGruposEmpresas {
     observacoes?: string = '';
     cliente?: number = -2147483648;
     icone?: string = '';
+    guid?: string = '';
 }
     

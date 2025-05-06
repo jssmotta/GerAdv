@@ -4,6 +4,7 @@
     processo?: number;
  nome?: string;
  nrointerno?: string;
+ guid?: string;
 }
 
 export class FilterProCDADefaults implements FilterProCDA {
@@ -11,5 +12,6 @@ export class FilterProCDADefaults implements FilterProCDA {
     processo?: number = -2147483648;
     nome?: string = '';
     nrointerno?: string = '';
+    guid?: string = '';
 }
     

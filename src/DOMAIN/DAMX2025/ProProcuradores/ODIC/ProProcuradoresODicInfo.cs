@@ -45,7 +45,7 @@ public partial class DBProProcuradoresODicInfo : IODicInfo
     public static string TTabelaNome => DBProProcuradoresDicInfo.TabelaNome;
     public static string TTablePrefix => DBProProcuradoresDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapBold, DBProProcuradoresDicInfo.PapGUID, DBProProcuradoresDicInfo.PapQuemCad, DBProProcuradoresDicInfo.PapDtCad, DBProProcuradoresDicInfo.PapQuemAtu, DBProProcuradoresDicInfo.PapDtAtu, DBProProcuradoresDicInfo.PapVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapBold, DBProProcuradoresDicInfo.PapGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

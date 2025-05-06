@@ -45,7 +45,7 @@ public partial class DBCidadeODicInfo : IODicInfo
     public static string TTabelaNome => DBCidadeDicInfo.TabelaNome;
     public static string TTablePrefix => DBCidadeDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBCidadeDicInfo.CidDDD, DBCidadeDicInfo.CidTop, DBCidadeDicInfo.CidComarca, DBCidadeDicInfo.CidCapital, DBCidadeDicInfo.CidNome, DBCidadeDicInfo.CidUF, DBCidadeDicInfo.CidSigla, DBCidadeDicInfo.CidGUID, DBCidadeDicInfo.CidQuemCad, DBCidadeDicInfo.CidDtCad, DBCidadeDicInfo.CidQuemAtu, DBCidadeDicInfo.CidDtAtu, DBCidadeDicInfo.CidVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBCidadeDicInfo.CidDDD, DBCidadeDicInfo.CidTop, DBCidadeDicInfo.CidComarca, DBCidadeDicInfo.CidCapital, DBCidadeDicInfo.CidNome, DBCidadeDicInfo.CidUF, DBCidadeDicInfo.CidSigla];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBCidadeDicInfo.CidDDD, DBCidadeDicInfo.CidTop, DBCidadeDicInfo.CidComarca, DBCidadeDicInfo.CidCapital, DBCidadeDicInfo.CidNome, DBCidadeDicInfo.CidUF, DBCidadeDicInfo.CidSigla, DBCidadeDicInfo.CidGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -61,7 +61,9 @@ public partial class DBCidadeODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "cidCodigo"
+            "cidCodigo",
+            "cidNome",
+            "cidUF"
         };
         var result = campos.Where(campo => !campo.Equals(DBCidadeDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

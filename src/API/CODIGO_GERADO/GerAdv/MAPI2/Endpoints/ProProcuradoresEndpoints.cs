@@ -74,30 +74,6 @@ public static class ProProcuradoresEndpoints
 
             return Results.Ok(result);
         }).WithName("ProProcuradores_AddAndUpdate").WithDisplayName("Add or Update ProProcuradores");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IProcessosReader processosReader, IProProcuradoresService service) =>
-        {
-            logger.LogInfo("ProProcuradores", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ProProcuradores", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ProProcuradores_GetColumns").WithDisplayName("Get ProProcuradores Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IProcessosReader processosReader, IProProcuradoresService service) =>
-        {
-            logger.LogInfo("ProProcuradores", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ProProcuradores", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ProProcuradores_UpdateColumns").WithDisplayName("Update ProProcuradores Columns");
         group.MapDelete("/Delete", async (int id, string uri, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IProcessosReader processosReader, IProProcuradoresService service) =>
         {
             logger.LogInfo("ProProcuradores", "Delete", $"id = {id}", uri);

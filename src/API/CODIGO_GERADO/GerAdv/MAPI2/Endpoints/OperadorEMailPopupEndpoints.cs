@@ -74,30 +74,6 @@ public static class OperadorEMailPopupEndpoints
 
             return Results.Ok(result);
         }).WithName("OperadorEMailPopup_AddAndUpdate").WithDisplayName("Add or Update OperadorEMailPopup");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IOperadorEMailPopupValidation validation, IOperadorEMailPopupWriter writer, IOperadorReader operadorReader, IOperadorEMailPopupService service) =>
-        {
-            logger.LogInfo("OperadorEMailPopup", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("OperadorEMailPopup", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("OperadorEMailPopup_GetColumns").WithDisplayName("Get OperadorEMailPopup Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IOperadorEMailPopupValidation validation, IOperadorEMailPopupWriter writer, IOperadorReader operadorReader, IOperadorEMailPopupService service) =>
-        {
-            logger.LogInfo("OperadorEMailPopup", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("OperadorEMailPopup", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("OperadorEMailPopup_UpdateColumns").WithDisplayName("Update OperadorEMailPopup Columns");
         group.MapDelete("/Delete", async (int id, string uri, IOperadorEMailPopupValidation validation, IOperadorEMailPopupWriter writer, IOperadorReader operadorReader, IOperadorEMailPopupService service) =>
         {
             logger.LogInfo("OperadorEMailPopup", "Delete", $"id = {id}", uri);

@@ -6,4 +6,5 @@ public partial interface IDBProCDA
     public string? FNome { get; set; }
     public string? FNroInterno { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

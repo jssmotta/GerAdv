@@ -13,7 +13,6 @@ public partial class DBRecados
     private protected DateTime? m_FHora, m_FData, m_FRetornoData;
     [XmlIgnore]
     private protected bool m_FConcluido, m_FUrgente, m_FImportante, m_FVoltara, m_FPessoal, m_FRetornar, m_FUploaded, m_FBIU, m_FAguardarRetorno, m_FAguardarRetornoOK, m_FNaoPublicavel, m_FIsContatoCRM, m_FTyped;
-    public string NFClienteNome() => m_FClienteNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FClienteNome
     {
@@ -26,7 +25,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFDe() => m_FDe ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDe
     {
@@ -39,7 +37,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFPara() => m_FPara ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FPara
     {
@@ -52,7 +49,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFAssunto() => m_FAssunto ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssunto
     {
@@ -65,7 +61,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFConcluido() => m_FConcluido;
     [XmlAttribute]
     public bool FConcluido
     {
@@ -78,7 +73,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -91,7 +85,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -104,7 +97,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFRecado() => m_FRecado ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRecado
     {
@@ -117,7 +109,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFUrgente() => m_FUrgente;
     [XmlAttribute]
     public bool FUrgente
     {
@@ -130,7 +121,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFImportante() => m_FImportante;
     [XmlAttribute]
     public bool FImportante
     {
@@ -143,7 +133,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFHora() => $"{m_FHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FHora:HH:mm}";
     [XmlIgnore]
     public DateTime MHora => Convert.ToDateTime(m_FHora);
 
@@ -178,7 +167,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -196,7 +184,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFVoltara() => m_FVoltara;
     [XmlAttribute]
     public bool FVoltara
     {
@@ -209,7 +196,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFPessoal() => m_FPessoal;
     [XmlAttribute]
     public bool FPessoal
     {
@@ -222,7 +208,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFRetornar() => m_FRetornar;
     [XmlAttribute]
     public bool FRetornar
     {
@@ -235,7 +220,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFRetornoData() => $"{m_FRetornoData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FRetornoData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MRetornoData => Convert.ToDateTime(m_FRetornoData);
 
@@ -253,7 +237,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFEmotion() => m_FEmotion;
     [XmlAttribute]
     public int FEmotion
     {
@@ -266,7 +249,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFInternetID() => m_FInternetID;
     [XmlAttribute]
     public int FInternetID
     {
@@ -279,7 +261,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFUploaded() => m_FUploaded;
     [XmlAttribute]
     public bool FUploaded
     {
@@ -292,7 +273,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFNatureza() => m_FNatureza;
     [XmlAttribute]
     public int FNatureza
     {
@@ -305,7 +285,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFBIU() => m_FBIU;
     [XmlAttribute]
     public bool FBIU
     {
@@ -318,7 +297,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFAguardarRetorno() => m_FAguardarRetorno;
     [XmlAttribute]
     public bool FAguardarRetorno
     {
@@ -331,7 +309,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFAguardarRetornoPara() => m_FAguardarRetornoPara ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAguardarRetornoPara
     {
@@ -344,7 +321,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFAguardarRetornoOK() => m_FAguardarRetornoOK;
     [XmlAttribute]
     public bool FAguardarRetornoOK
     {
@@ -357,7 +333,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFParaID() => m_FParaID;
     [XmlAttribute]
     public int FParaID
     {
@@ -370,7 +345,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFNaoPublicavel() => m_FNaoPublicavel;
     [XmlAttribute]
     public bool FNaoPublicavel
     {
@@ -383,7 +357,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFIsContatoCRM() => m_FIsContatoCRM;
     [XmlAttribute]
     public bool FIsContatoCRM
     {
@@ -396,7 +369,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFMasterID() => m_FMasterID;
     [XmlAttribute]
     public int FMasterID
     {
@@ -409,7 +381,6 @@ public partial class DBRecados
         }
     }
 
-    public string NFListaPara() => m_FListaPara ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FListaPara
     {
@@ -422,7 +393,6 @@ public partial class DBRecados
         }
     }
 
-    public bool NFTyped() => m_FTyped;
     [XmlAttribute]
     public bool FTyped
     {
@@ -435,7 +405,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFAssuntoRecado() => m_FAssuntoRecado;
     [XmlAttribute]
     public int FAssuntoRecado
     {
@@ -448,7 +417,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFHistorico() => m_FHistorico;
     [XmlAttribute]
     public int FHistorico
     {
@@ -461,7 +429,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFContatoCRM() => m_FContatoCRM;
     [XmlAttribute]
     public int FContatoCRM
     {
@@ -474,7 +441,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFLigacoes() => m_FLigacoes;
     [XmlAttribute]
     public int FLigacoes
     {
@@ -487,7 +453,6 @@ public partial class DBRecados
         }
     }
 
-    public int NFAgenda() => m_FAgenda;
     [XmlAttribute]
     public int FAgenda
     {

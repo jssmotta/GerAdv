@@ -47,7 +47,7 @@ public partial class DBGUTAtividadesODicInfo : IODicInfo
     public static string TTabelaNome => DBGUTAtividadesDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTAtividadesDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar, DBGUTAtividadesDicInfo.AgtGUID, DBGUTAtividadesDicInfo.AgtQuemCad, DBGUTAtividadesDicInfo.AgtDtCad, DBGUTAtividadesDicInfo.AgtQuemAtu, DBGUTAtividadesDicInfo.AgtDtAtu, DBGUTAtividadesDicInfo.AgtVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar, DBGUTAtividadesDicInfo.AgtGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

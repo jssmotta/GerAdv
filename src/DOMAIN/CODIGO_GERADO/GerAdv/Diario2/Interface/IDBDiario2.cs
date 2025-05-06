@@ -9,4 +9,5 @@ public partial interface IDBDiario2
     public string? FOcorrencia { get; set; }
     public int FCliente { get; set; }
     public bool FBold { get; set; }
+    public string? FGUID { get; set; }
 }

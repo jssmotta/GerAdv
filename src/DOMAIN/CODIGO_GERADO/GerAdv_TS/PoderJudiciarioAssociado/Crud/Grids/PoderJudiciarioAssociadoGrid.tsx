@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PoderJudiciarioAssociadoEmpty } from "../../../Models/PoderJudiciarioAssociado";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PoderJudiciarioAssociadoInc from "../Inc/PoderJudiciarioAssociado";
 import { IPoderJudiciarioAssociado } from "../../Interfaces/interface.PoderJudiciarioAssociado";
 import { PoderJudiciarioAssociadoService } from "../../Services/PoderJudiciarioAssociado.service";
 import { PoderJudiciarioAssociadoApi } from "../../Apis/ApiPoderJudiciarioAssociado";
@@ -16,11 +14,12 @@ import { PoderJudiciarioAssociadoGridMobileComponent } from "../GridsMobile/Pode
 import { PoderJudiciarioAssociadoGridDesktopComponent } from "../GridsDesktop/PoderJudiciarioAssociado";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPoderJudiciarioAssociado } from "../../Filters/PoderJudiciarioAssociado";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PoderJudiciarioAssociadoWindow from "./PoderJudiciarioAssociadoWindow";
 
 const PoderJudiciarioAssociadoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const PoderJudiciarioAssociadoGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <PoderJudiciarioAssociadoGridMobileComponent data={poderjudiciarioassociado} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PoderJudiciarioAssociadoGridDesktopComponent data={poderjudiciarioassociado} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PoderJudiciarioAssociadoGridMobileComponent data={poderjudiciarioassociado} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PoderJudiciarioAssociadoGridDesktopComponent data={poderjudiciarioassociado} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PoderJudiciarioAssociadoWindow
           isOpen={showInc}

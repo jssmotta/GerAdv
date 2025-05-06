@@ -8,6 +8,7 @@ public partial interface IPenhoraStatusReader
     PenhoraStatusResponse? Read(int id, SqlConnection oCnn);
     PenhoraStatusResponse? Read(string where, SqlConnection oCnn);
     PenhoraStatusResponse? Read(Entity.DBPenhoraStatus dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PenhoraStatusResponse? Read(DBPenhoraStatus dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class PenhoraStatus : IPenhoraStatusReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class PenhoraStatus : IPenhoraStatusReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

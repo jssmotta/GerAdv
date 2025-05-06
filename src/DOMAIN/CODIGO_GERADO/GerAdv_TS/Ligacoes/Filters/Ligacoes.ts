@@ -22,6 +22,7 @@
  ligarpara?: string;
     processo?: number;
     emotion?: number;
+ guid?: string;
 }
 
 export class FilterLigacoesDefaults implements FilterLigacoes {
@@ -47,5 +48,6 @@ export class FilterLigacoesDefaults implements FilterLigacoes {
     ligarpara?: string = '';
     processo?: number = -2147483648;
     emotion?: number = -2147483648;
+    guid?: string = '';
 }
     

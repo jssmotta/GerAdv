@@ -8,6 +8,7 @@ public partial interface IDocsRecebidosItensReader
     DocsRecebidosItensResponse? Read(int id, SqlConnection oCnn);
     DocsRecebidosItensResponse? Read(string where, SqlConnection oCnn);
     DocsRecebidosItensResponse? Read(Entity.DBDocsRecebidosItens dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     DocsRecebidosItensResponse? Read(DBDocsRecebidosItens dbRec);
 }
 
@@ -41,7 +42,7 @@ public partial class DocsRecebidosItens : IDocsRecebidosItensReader
             SeraDevolvido = dbRec.FSeraDevolvido,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -74,7 +75,7 @@ public partial class DocsRecebidosItens : IDocsRecebidosItensReader
             SeraDevolvido = dbRec.FSeraDevolvido,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

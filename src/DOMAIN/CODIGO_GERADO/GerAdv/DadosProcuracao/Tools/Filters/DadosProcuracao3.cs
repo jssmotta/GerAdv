@@ -32,4 +32,7 @@ public partial class FilterDadosProcuracao
 
     [JsonPropertyName("objeto")]
     public string Objeto { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

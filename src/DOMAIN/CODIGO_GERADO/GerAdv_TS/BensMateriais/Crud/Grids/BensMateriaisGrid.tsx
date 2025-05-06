@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { BensMateriaisEmpty } from "../../../Models/BensMateriais";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import BensMateriaisInc from "../Inc/BensMateriais";
 import { IBensMateriais } from "../../Interfaces/interface.BensMateriais";
 import { BensMateriaisService } from "../../Services/BensMateriais.service";
 import { BensMateriaisApi } from "../../Apis/ApiBensMateriais";
@@ -16,11 +14,12 @@ import { BensMateriaisGridMobileComponent } from "../GridsMobile/BensMateriais";
 import { BensMateriaisGridDesktopComponent } from "../GridsDesktop/BensMateriais";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterBensMateriais } from "../../Filters/BensMateriais";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import BensMateriaisWindow from "./BensMateriaisWindow";
 
 const BensMateriaisGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const BensMateriaisGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <BensMateriaisGridMobileComponent data={bensmateriais} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <BensMateriaisGridDesktopComponent data={bensmateriais} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <BensMateriaisGridMobileComponent data={bensmateriais} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <BensMateriaisGridDesktopComponent data={bensmateriais} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <BensMateriaisWindow
           isOpen={showInc}

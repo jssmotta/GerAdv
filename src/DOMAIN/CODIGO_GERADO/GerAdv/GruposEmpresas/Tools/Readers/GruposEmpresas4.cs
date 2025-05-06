@@ -8,6 +8,7 @@ public partial interface IGruposEmpresasReader
     GruposEmpresasResponse? Read(int id, SqlConnection oCnn);
     GruposEmpresasResponse? Read(string where, SqlConnection oCnn);
     GruposEmpresasResponse? Read(Entity.DBGruposEmpresas dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     GruposEmpresasResponse? Read(DBGruposEmpresas dbRec);
 }
 
@@ -43,7 +44,7 @@ public partial class GruposEmpresas : IGruposEmpresasReader
             Cliente = dbRec.FCliente,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -78,7 +79,7 @@ public partial class GruposEmpresas : IGruposEmpresasReader
             Cliente = dbRec.FCliente,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

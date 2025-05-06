@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AndCompInc from "../Inc/AndComp";
 import { IAndComp } from "../../Interfaces/interface.AndComp";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AndCompWindow: React.FC<AndCompWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/andcomp/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAndComp?.id}`);
+            router.push(`/pages/andcomp/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAndComp?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAndComp]);
@@ -42,7 +43,7 @@ const AndCompWindow: React.FC<AndCompWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedAndComp?.id ?? 0).toString()}

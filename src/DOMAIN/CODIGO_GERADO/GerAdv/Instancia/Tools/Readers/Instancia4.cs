@@ -8,6 +8,7 @@ public partial interface IInstanciaReader
     InstanciaResponse? Read(int id, SqlConnection oCnn);
     InstanciaResponse? Read(string where, SqlConnection oCnn);
     InstanciaResponse? Read(Entity.DBInstancia dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     InstanciaResponse? Read(DBInstancia dbRec);
 }
 
@@ -60,7 +61,7 @@ public partial class Instancia : IInstanciaReader
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             instancia.Data = dbRec.FData;
@@ -116,7 +117,7 @@ public partial class Instancia : IInstanciaReader
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             instancia.Data = dbRec.FData;

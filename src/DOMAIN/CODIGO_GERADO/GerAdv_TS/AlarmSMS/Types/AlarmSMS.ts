@@ -21,7 +21,9 @@ export interface IAlarmSMS {
 	excetodiasfelizes : boolean;
 	desktop : boolean;
 	alertardatahora : string;
+	guidexo : string;
 	emocao : number;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

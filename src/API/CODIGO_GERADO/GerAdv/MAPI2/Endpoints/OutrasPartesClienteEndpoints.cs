@@ -74,30 +74,6 @@ public static class OutrasPartesClienteEndpoints
 
             return Results.Ok(result);
         }).WithName("OutrasPartesCliente_AddAndUpdate").WithDisplayName("Add or Update OutrasPartesCliente");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IOutrasPartesClienteValidation validation, IOutrasPartesClienteWriter writer, IOutrasPartesClienteService service) =>
-        {
-            logger.LogInfo("OutrasPartesCliente", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("OutrasPartesCliente", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("OutrasPartesCliente_GetColumns").WithDisplayName("Get OutrasPartesCliente Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IOutrasPartesClienteValidation validation, IOutrasPartesClienteWriter writer, IOutrasPartesClienteService service) =>
-        {
-            logger.LogInfo("OutrasPartesCliente", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("OutrasPartesCliente", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("OutrasPartesCliente_UpdateColumns").WithDisplayName("Update OutrasPartesCliente Columns");
         group.MapDelete("/Delete", async (int id, string uri, IOutrasPartesClienteValidation validation, IOutrasPartesClienteWriter writer, IOutrasPartesClienteService service) =>
         {
             logger.LogInfo("OutrasPartesCliente", "Delete", $"id = {id}", uri);

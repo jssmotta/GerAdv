@@ -8,6 +8,7 @@ public partial interface IProcessosReader
     ProcessosResponse? Read(int id, SqlConnection oCnn);
     ProcessosResponse? Read(string where, SqlConnection oCnn);
     ProcessosResponse? Read(Entity.DBProcessos dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProcessosResponse? Read(DBProcessos dbRec);
 }
 
@@ -98,7 +99,7 @@ public partial class Processos : IProcessosReader
             ValorCondenacao = dbRec.FValorCondenacao,
             ValorCondenacaoCalculado = dbRec.FValorCondenacaoCalculado,
             ValorCondenacaoProvisorio = dbRec.FValorCondenacaoProvisorio,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataEntrada, out _))
             processos.DataEntrada = dbRec.FDataEntrada;
@@ -194,7 +195,7 @@ public partial class Processos : IProcessosReader
             ValorCondenacao = dbRec.FValorCondenacao,
             ValorCondenacaoCalculado = dbRec.FValorCondenacaoCalculado,
             ValorCondenacaoProvisorio = dbRec.FValorCondenacaoProvisorio,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataEntrada, out _))
             processos.DataEntrada = dbRec.FDataEntrada;

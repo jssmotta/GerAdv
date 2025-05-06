@@ -15,6 +15,7 @@ public class Area : IAreaWriter
         var dbRec = area.Id.IsEmptyIDNumber() ? new Entity.DBArea() : new Entity.DBArea(area.Id, oCnn);
         dbRec.FDescricao = area.Descricao;
         dbRec.FTop = area.Top;
+        dbRec.FGUID = area.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import PosicaoOutrasPartesInc from "../Inc/PosicaoOutrasPartes";
 import { IPosicaoOutrasPartes } from "../../Interfaces/interface.PosicaoOutrasPartes";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const PosicaoOutrasPartesWindow: React.FC<PosicaoOutrasPartesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/posicaooutraspartes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPosicaoOutrasPartes?.id}`);
+            router.push(`/pages/posicaooutraspartes/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedPosicaoOutrasPartes?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedPosicaoOutrasPartes]);
@@ -42,7 +43,7 @@ const PosicaoOutrasPartesWindow: React.FC<PosicaoOutrasPartesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedPosicaoOutrasPartes?.id ?? 0).toString()}

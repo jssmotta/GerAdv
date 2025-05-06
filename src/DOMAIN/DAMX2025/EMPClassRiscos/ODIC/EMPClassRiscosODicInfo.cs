@@ -40,7 +40,7 @@ public partial class DBEMPClassRiscosODicInfo : IODicInfo
     public static string TTabelaNome => DBEMPClassRiscosDicInfo.TabelaNome;
     public static string TTablePrefix => DBEMPClassRiscosDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBEMPClassRiscosDicInfo.EcrNome, DBEMPClassRiscosDicInfo.EcrBold, DBEMPClassRiscosDicInfo.EcrGUID, DBEMPClassRiscosDicInfo.EcrQuemCad, DBEMPClassRiscosDicInfo.EcrDtCad, DBEMPClassRiscosDicInfo.EcrQuemAtu, DBEMPClassRiscosDicInfo.EcrDtAtu, DBEMPClassRiscosDicInfo.EcrVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBEMPClassRiscosDicInfo.EcrNome, DBEMPClassRiscosDicInfo.EcrBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBEMPClassRiscosDicInfo.EcrNome, DBEMPClassRiscosDicInfo.EcrBold, DBEMPClassRiscosDicInfo.EcrGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

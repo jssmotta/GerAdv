@@ -72,7 +72,7 @@ public class TerceirosHealthCheck(IOptions<AppSettings> appSettings, TerceirosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) terProcesso,terNome,terSituacao,terCidade,terEndereco,terBairro,terCEP,terFone,terFax,terOBS,terEMail,terClass,terVaraForoComarca,terSexo,terBold FROM dbo.Terceiros (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) terProcesso,terNome,terSituacao,terCidade,terEndereco,terBairro,terCEP,terFone,terFax,terOBS,terEMail,terClass,terVaraForoComarca,terSexo,terBold,terGUID FROM dbo.Terceiros (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

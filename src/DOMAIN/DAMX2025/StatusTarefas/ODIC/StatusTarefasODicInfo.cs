@@ -39,7 +39,7 @@ public partial class DBStatusTarefasODicInfo : IODicInfo
     public static string TTabelaNome => DBStatusTarefasDicInfo.TabelaNome;
     public static string TTablePrefix => DBStatusTarefasDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBStatusTarefasDicInfo.SttNome, DBStatusTarefasDicInfo.SttGUID, DBStatusTarefasDicInfo.SttQuemCad, DBStatusTarefasDicInfo.SttDtCad, DBStatusTarefasDicInfo.SttQuemAtu, DBStatusTarefasDicInfo.SttDtAtu, DBStatusTarefasDicInfo.SttVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBStatusTarefasDicInfo.SttNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBStatusTarefasDicInfo.SttNome, DBStatusTarefasDicInfo.SttGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

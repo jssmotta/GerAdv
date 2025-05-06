@@ -3,7 +3,6 @@ import useSWR from 'swr';
 import { FilterProcessos } from "../Filters/Processos"
 import { Processos } from "../../Models/Processos";
 import { IProcessos } from '../Interfaces/interface.Processos';
-import { GetColumns, UpdateColumnsRequest } from "../../Models/Columns";
 import { decodeBase64Token, fetcher } from '@/app/tools/Fetcher';
 import { INotificationService, INotifySystemEntity, NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 
@@ -23,6 +22,7 @@ export class ProcessosApi {
             headers: {
                 Authorization: `Bearer ${decodeBase64Token(this.authorization)}`,
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',     
             },
         };
     }
@@ -65,14 +65,6 @@ export class ProcessosApi {
         const notificationEntity = this.createNotificationEntity(register.id, action);        
         this.notificationService.notify(notificationEntity);
         return result;
-    }
-
-    public async updateColumns(parameters: UpdateColumnsRequest): Promise<AxiosResponse> {
-        return axios.post(`${this.baseUrl}/UpdateColumns`, parameters, this.getHeaders());
-    }
-
-    public async getColumns(parameters: GetColumns): Promise<AxiosResponse> {
-        return axios.post(`${this.baseUrl}/GetColumns`, parameters, this.getHeaders());
     }
 
     public async delete(id: number): Promise<AxiosResponse> {
@@ -124,15 +116,6 @@ export class ProcessosApi {
     public useFilter(filtro: FilterProcessos) {
         const url = `${this.baseUrl}/Filter`;
         const key = `${url}::${this.authorization}::${JSON.stringify(filtro)}`;
-        return useSWR<Processos[]>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
-    }
-
-    public useGetColumns(parameters: GetColumns) {
-        const url = `${this.baseUrl}/GetColumns`;
-        const key = `${url}::${this.authorization}`;
         return useSWR<Processos[]>(key, fetcher, {
             revalidateOnFocus: false,
             revalidateOnReconnect: false

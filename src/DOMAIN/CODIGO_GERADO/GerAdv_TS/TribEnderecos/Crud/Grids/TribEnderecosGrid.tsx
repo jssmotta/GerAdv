@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TribEnderecosEmpty } from "../../../Models/TribEnderecos";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TribEnderecosInc from "../Inc/TribEnderecos";
 import { ITribEnderecos } from "../../Interfaces/interface.TribEnderecos";
 import { TribEnderecosService } from "../../Services/TribEnderecos.service";
 import { TribEnderecosApi } from "../../Apis/ApiTribEnderecos";
@@ -16,11 +14,12 @@ import { TribEnderecosGridMobileComponent } from "../GridsMobile/TribEnderecos";
 import { TribEnderecosGridDesktopComponent } from "../GridsDesktop/TribEnderecos";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTribEnderecos } from "../../Filters/TribEnderecos";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TribEnderecosWindow from "./TribEnderecosWindow";
 
 const TribEnderecosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const TribEnderecosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <TribEnderecosGridMobileComponent data={tribenderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TribEnderecosGridDesktopComponent data={tribenderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TribEnderecosGridMobileComponent data={tribenderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TribEnderecosGridDesktopComponent data={tribenderecos} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TribEnderecosWindow
           isOpen={showInc}

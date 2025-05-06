@@ -40,7 +40,7 @@ public partial class DBGUTAtividadesMatrizODicInfo : IODicInfo
     public static string TTabelaNome => DBGUTAtividadesMatrizDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTAtividadesMatrizDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBGUTAtividadesMatrizDicInfo.AmgGUTMatriz, DBGUTAtividadesMatrizDicInfo.AmgGUTAtividade, DBGUTAtividadesMatrizDicInfo.AmgGUID, DBGUTAtividadesMatrizDicInfo.AmgQuemCad, DBGUTAtividadesMatrizDicInfo.AmgDtCad, DBGUTAtividadesMatrizDicInfo.AmgQuemAtu, DBGUTAtividadesMatrizDicInfo.AmgDtAtu, DBGUTAtividadesMatrizDicInfo.AmgVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTAtividadesMatrizDicInfo.AmgGUTMatriz, DBGUTAtividadesMatrizDicInfo.AmgGUTAtividade];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTAtividadesMatrizDicInfo.AmgGUTMatriz, DBGUTAtividadesMatrizDicInfo.AmgGUTAtividade, DBGUTAtividadesMatrizDicInfo.AmgGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

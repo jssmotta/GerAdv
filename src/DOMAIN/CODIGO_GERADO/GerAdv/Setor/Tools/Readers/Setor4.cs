@@ -8,6 +8,7 @@ public partial interface ISetorReader
     SetorResponse? Read(int id, SqlConnection oCnn);
     SetorResponse? Read(string where, SqlConnection oCnn);
     SetorResponse? Read(Entity.DBSetor dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     SetorResponse? Read(DBSetor dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class Setor : ISetorReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class Setor : ISetorReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

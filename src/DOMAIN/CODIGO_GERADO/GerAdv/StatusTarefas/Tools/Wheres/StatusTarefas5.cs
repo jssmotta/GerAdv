@@ -17,6 +17,7 @@ public partial class StatusTarefas : IStatusTarefasWhere
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

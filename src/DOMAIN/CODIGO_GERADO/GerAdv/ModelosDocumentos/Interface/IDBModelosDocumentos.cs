@@ -18,4 +18,5 @@ public partial interface IDBModelosDocumentos
     public string? FTestemunhas { get; set; }
     public int FTipoModeloDocumento { get; set; }
     public string? FCSS { get; set; }
+    public string? FGUID { get; set; }
 }

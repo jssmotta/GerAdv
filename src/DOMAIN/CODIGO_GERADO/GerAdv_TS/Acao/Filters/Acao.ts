@@ -4,6 +4,7 @@
     justica?: number;
     area?: number;
  descricao?: string;
+ guid?: string;
 }
 
 export class FilterAcaoDefaults implements FilterAcao {
@@ -11,5 +12,6 @@ export class FilterAcaoDefaults implements FilterAcao {
     justica?: number = -2147483648;
     area?: number = -2147483648;
     descricao?: string = '';
+    guid?: string = '';
 }
     

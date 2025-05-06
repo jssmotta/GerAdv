@@ -74,30 +74,6 @@ public static class RamalEndpoints
 
             return Results.Ok(result);
         }).WithName("Ramal_AddAndUpdate").WithDisplayName("Add or Update Ramal");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IRamalValidation validation, IRamalWriter writer, IRamalService service) =>
-        {
-            logger.LogInfo("Ramal", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Ramal", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Ramal_GetColumns").WithDisplayName("Get Ramal Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IRamalValidation validation, IRamalWriter writer, IRamalService service) =>
-        {
-            logger.LogInfo("Ramal", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Ramal", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Ramal_UpdateColumns").WithDisplayName("Update Ramal Columns");
         group.MapDelete("/Delete", async (int id, string uri, IRamalValidation validation, IRamalWriter writer, IRamalService service) =>
         {
             logger.LogInfo("Ramal", "Delete", $"id = {id}", uri);

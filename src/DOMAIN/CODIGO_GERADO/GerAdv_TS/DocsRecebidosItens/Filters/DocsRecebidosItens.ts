@@ -4,6 +4,7 @@
     contatocrm?: number;
  nome?: string;
  observacoes?: string;
+ guid?: string;
 }
 
 export class FilterDocsRecebidosItensDefaults implements FilterDocsRecebidosItens {
@@ -11,5 +12,6 @@ export class FilterDocsRecebidosItensDefaults implements FilterDocsRecebidosIten
     contatocrm?: number = -2147483648;
     nome?: string = '';
     observacoes?: string = '';
+    guid?: string = '';
 }
     

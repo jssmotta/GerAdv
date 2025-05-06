@@ -74,4 +74,7 @@ public partial class FilterRecados
 
     [JsonPropertyName("agenda")]
     public int Agenda { get; set; } = -2147483648;
+
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
 }

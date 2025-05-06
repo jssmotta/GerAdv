@@ -5,7 +5,7 @@ import { GruposEmpresasCliApi } from '../../Apis/ApiGruposEmpresasCli';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IGruposEmpresasCliFormProps } from '../../Interfaces/interface.GruposEmpresasCli';
 import { GruposEmpresasCliService } from '../../Services/GruposEmpresasCli.service';
 import { useGruposEmpresasCliForm } from '../../Hooks/useGruposEmpresasCliForm';

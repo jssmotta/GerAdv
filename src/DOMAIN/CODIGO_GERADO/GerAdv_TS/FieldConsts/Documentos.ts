@@ -2,4 +2,5 @@
 {	processo = `Processo`,
 	data = `Data`,
 	observacao = `Observacao`,
+	guid = `GUID`,
 }

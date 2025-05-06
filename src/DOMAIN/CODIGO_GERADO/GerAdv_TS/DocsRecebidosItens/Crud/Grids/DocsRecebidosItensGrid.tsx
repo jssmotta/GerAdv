@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { DocsRecebidosItensEmpty } from "../../../Models/DocsRecebidosItens";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import DocsRecebidosItensInc from "../Inc/DocsRecebidosItens";
 import { IDocsRecebidosItens } from "../../Interfaces/interface.DocsRecebidosItens";
 import { DocsRecebidosItensService } from "../../Services/DocsRecebidosItens.service";
 import { DocsRecebidosItensApi } from "../../Apis/ApiDocsRecebidosItens";
@@ -16,11 +14,12 @@ import { DocsRecebidosItensGridMobileComponent } from "../GridsMobile/DocsRecebi
 import { DocsRecebidosItensGridDesktopComponent } from "../GridsDesktop/DocsRecebidosItens";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterDocsRecebidosItens } from "../../Filters/DocsRecebidosItens";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import DocsRecebidosItensWindow from "./DocsRecebidosItensWindow";
 
 const DocsRecebidosItensGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const DocsRecebidosItensGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <DocsRecebidosItensGridMobileComponent data={docsrecebidositens} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <DocsRecebidosItensGridDesktopComponent data={docsrecebidositens} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <DocsRecebidosItensGridMobileComponent data={docsrecebidositens} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <DocsRecebidosItensGridDesktopComponent data={docsrecebidositens} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <DocsRecebidosItensWindow
           isOpen={showInc}

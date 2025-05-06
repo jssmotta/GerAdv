@@ -5,7 +5,7 @@ import { ProCDAApi } from '../../Apis/ApiProCDA';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IProCDAFormProps } from '../../Interfaces/interface.ProCDA';
 import { ProCDAService } from '../../Services/ProCDA.service';
 import { useProCDAForm } from '../../Hooks/useProCDAForm';

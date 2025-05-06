@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProValoresEmpty } from "../../../Models/ProValores";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProValoresInc from "../Inc/ProValores";
 import { IProValores } from "../../Interfaces/interface.ProValores";
 import { ProValoresService } from "../../Services/ProValores.service";
 import { ProValoresApi } from "../../Apis/ApiProValores";
@@ -16,11 +14,12 @@ import { ProValoresGridMobileComponent } from "../GridsMobile/ProValores";
 import { ProValoresGridDesktopComponent } from "../GridsDesktop/ProValores";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProValores } from "../../Filters/ProValores";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProValoresWindow from "./ProValoresWindow";
 
 const ProValoresGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ProValoresGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ProValoresGridMobileComponent data={provalores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProValoresGridDesktopComponent data={provalores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProValoresGridMobileComponent data={provalores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProValoresGridDesktopComponent data={provalores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProValoresWindow
           isOpen={showInc}

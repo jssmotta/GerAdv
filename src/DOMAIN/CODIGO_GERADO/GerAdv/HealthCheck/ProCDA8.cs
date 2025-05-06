@@ -72,7 +72,7 @@ public class ProCDAHealthCheck(IOptions<AppSettings> appSettings, ProCDAService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pcdProcesso,pcdNome,pcdNroInterno,pcdBold FROM dbo.ProCDA (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) pcdProcesso,pcdNome,pcdNroInterno,pcdBold,pcdGUID FROM dbo.ProCDA (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -8,6 +8,7 @@ public partial interface IProSucumbenciaReader
     ProSucumbenciaResponse? Read(int id, SqlConnection oCnn);
     ProSucumbenciaResponse? Read(string where, SqlConnection oCnn);
     ProSucumbenciaResponse? Read(Entity.DBProSucumbencia dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProSucumbenciaResponse? Read(DBProSucumbencia dbRec);
 }
 
@@ -41,7 +42,7 @@ public partial class ProSucumbencia : IProSucumbenciaReader
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prosucumbencia.Data = dbRec.FData;
@@ -76,7 +77,7 @@ public partial class ProSucumbencia : IProSucumbenciaReader
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prosucumbencia.Data = dbRec.FData;

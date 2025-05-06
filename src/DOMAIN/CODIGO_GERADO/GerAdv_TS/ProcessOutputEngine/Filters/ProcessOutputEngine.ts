@@ -10,6 +10,7 @@
     outputsource?: number;
     idmodulo?: number;
     myid?: number;
+ guid?: string;
 }
 
 export class FilterProcessOutputEngineDefaults implements FilterProcessOutputEngine {
@@ -23,5 +24,6 @@ export class FilterProcessOutputEngineDefaults implements FilterProcessOutputEng
     outputsource?: number = -2147483648;
     idmodulo?: number = -2147483648;
     myid?: number = -2147483648;
+    guid?: string = '';
 }
     

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoCompromissoEmpty } from "../../../Models/TipoCompromisso";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoCompromissoInc from "../Inc/TipoCompromisso";
 import { ITipoCompromisso } from "../../Interfaces/interface.TipoCompromisso";
 import { TipoCompromissoService } from "../../Services/TipoCompromisso.service";
 import { TipoCompromissoApi } from "../../Apis/ApiTipoCompromisso";
@@ -16,11 +14,12 @@ import { TipoCompromissoGridMobileComponent } from "../GridsMobile/TipoCompromis
 import { TipoCompromissoGridDesktopComponent } from "../GridsDesktop/TipoCompromisso";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoCompromisso } from "../../Filters/TipoCompromisso";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoCompromissoWindow from "./TipoCompromissoWindow";
 
 const TipoCompromissoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoCompromissoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoCompromissoGridMobileComponent data={tipocompromisso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoCompromissoGridDesktopComponent data={tipocompromisso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoCompromissoGridMobileComponent data={tipocompromisso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoCompromissoGridDesktopComponent data={tipocompromisso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoCompromissoWindow
           isOpen={showInc}

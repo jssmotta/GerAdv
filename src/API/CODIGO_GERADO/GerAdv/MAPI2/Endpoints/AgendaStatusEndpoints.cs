@@ -56,30 +56,6 @@ public static class AgendaStatusEndpoints
 
             return Results.Ok(result);
         }).WithName("AgendaStatus_AddAndUpdate").WithDisplayName("Add or Update AgendaStatus");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IAgendaStatusValidation validation, IAgendaStatusWriter writer, IAgendaReader agendaReader, IAgendaStatusService service) =>
-        {
-            logger.LogInfo("AgendaStatus", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("AgendaStatus", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("AgendaStatus_GetColumns").WithDisplayName("Get AgendaStatus Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IAgendaStatusValidation validation, IAgendaStatusWriter writer, IAgendaReader agendaReader, IAgendaStatusService service) =>
-        {
-            logger.LogInfo("AgendaStatus", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("AgendaStatus", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("AgendaStatus_UpdateColumns").WithDisplayName("Update AgendaStatus Columns");
         group.MapDelete("/Delete", async (int id, string uri, IAgendaStatusValidation validation, IAgendaStatusWriter writer, IAgendaReader agendaReader, IAgendaStatusService service) =>
         {
             logger.LogInfo("AgendaStatus", "Delete", $"id = {id}", uri);

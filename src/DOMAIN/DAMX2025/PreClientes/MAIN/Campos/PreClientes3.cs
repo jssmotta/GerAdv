@@ -13,7 +13,6 @@ public partial class DBPreClientes
     private protected DateTime? m_FData;
     [XmlIgnore]
     private protected bool m_FInativo, m_FJuridica, m_FTipo, m_FTipoCaptacao;
-    public bool NFInativo() => m_FInativo;
     [XmlAttribute]
     public bool FInativo
     {
@@ -26,7 +25,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFQuemIndicou() => m_FQuemIndicou ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FQuemIndicou
     {
@@ -51,7 +49,6 @@ public partial class DBPreClientes
         }
     }
 
-    public int NFAdv() => m_FAdv;
     [XmlAttribute]
     public int FAdv
     {
@@ -64,7 +61,6 @@ public partial class DBPreClientes
         }
     }
 
-    public int NFIDRep() => m_FIDRep;
     [XmlAttribute]
     public int FIDRep
     {
@@ -77,7 +73,6 @@ public partial class DBPreClientes
         }
     }
 
-    public bool NFJuridica() => m_FJuridica;
     [XmlAttribute]
     public bool FJuridica
     {
@@ -90,7 +85,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFNomeFantasia() => m_FNomeFantasia ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNomeFantasia
     {
@@ -103,7 +97,6 @@ public partial class DBPreClientes
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -116,7 +109,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFInscEst() => m_FInscEst ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FInscEst
     {
@@ -129,7 +121,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFQualificacao() => m_FQualificacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FQualificacao
     {
@@ -142,7 +133,6 @@ public partial class DBPreClientes
         }
     }
 
-    public int NFIdade() => m_FIdade;
     [XmlAttribute]
     public int FIdade
     {
@@ -157,7 +147,6 @@ public partial class DBPreClientes
 
     public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
 
-    public string NFCNPJ() => m_FCNPJ ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -170,7 +159,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFRG() => m_FRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FRG
     {
@@ -183,7 +171,6 @@ public partial class DBPreClientes
         }
     }
 
-    public bool NFTipoCaptacao() => m_FTipoCaptacao;
     [XmlAttribute]
     public bool FTipoCaptacao
     {
@@ -196,7 +183,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFObservacao() => m_FObservacao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FObservacao
     {
@@ -209,7 +195,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFFax() => m_FFax ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFax
     {
@@ -222,7 +207,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFFone() => m_FFone ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FFone
     {
@@ -235,7 +219,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFData() => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MData => Convert.ToDateTime(m_FData);
 
@@ -253,7 +236,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFHomePage() => m_FHomePage ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FHomePage
     {
@@ -266,7 +248,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -279,7 +260,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFAssistido() => m_FAssistido ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssistido
     {
@@ -292,7 +272,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFAssRG() => m_FAssRG ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssRG
     {
@@ -305,7 +284,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFAssCPF() => m_FAssCPF ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssCPF
     {
@@ -318,7 +296,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFAssEndereco() => m_FAssEndereco ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FAssEndereco
     {
@@ -331,7 +308,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string NFCNH() => m_FCNH ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FCNH
     {

@@ -16,6 +16,14 @@ public class PaisesValidation : IPaisesValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Paises '{reg.Nome}' já cadastrado.";
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Paises reg, IPaisesService service, string uri)
+    {
+        var existingPaises = (await service.Filter(new Filters.FilterPaises { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingPaises != null && existingPaises.Id > 0 && existingPaises.Id != reg.Id;
     }
 }

@@ -56,30 +56,6 @@ public static class LivroCaixaEndpoints
 
             return Results.Ok(result);
         }).WithName("LivroCaixa_AddAndUpdate").WithDisplayName("Add or Update LivroCaixa");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, ILivroCaixaValidation validation, ILivroCaixaWriter writer, IProcessosReader processosReader, ILivroCaixaService service) =>
-        {
-            logger.LogInfo("LivroCaixa", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("LivroCaixa", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("LivroCaixa_GetColumns").WithDisplayName("Get LivroCaixa Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, ILivroCaixaValidation validation, ILivroCaixaWriter writer, IProcessosReader processosReader, ILivroCaixaService service) =>
-        {
-            logger.LogInfo("LivroCaixa", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("LivroCaixa", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("LivroCaixa_UpdateColumns").WithDisplayName("Update LivroCaixa Columns");
         group.MapDelete("/Delete", async (int id, string uri, ILivroCaixaValidation validation, ILivroCaixaWriter writer, IProcessosReader processosReader, ILivroCaixaService service) =>
         {
             logger.LogInfo("LivroCaixa", "Delete", $"id = {id}", uri);

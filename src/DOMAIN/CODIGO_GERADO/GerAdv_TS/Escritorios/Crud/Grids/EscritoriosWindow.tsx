@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import EscritoriosInc from "../Inc/Escritorios";
 import { IEscritorios } from "../../Interfaces/interface.Escritorios";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const EscritoriosWindow: React.FC<EscritoriosWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/escritorios/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEscritorios?.id}`);
+            router.push(`/pages/escritorios/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedEscritorios?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedEscritorios]);
@@ -42,7 +43,7 @@ const EscritoriosWindow: React.FC<EscritoriosWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={704}
                     newWidth={1440}
                     id={(selectedEscritorios?.id ?? 0).toString()}

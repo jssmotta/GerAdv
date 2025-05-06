@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { CargosEscClassEmpty } from "../../../Models/CargosEscClass";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import CargosEscClassInc from "../Inc/CargosEscClass";
 import { ICargosEscClass } from "../../Interfaces/interface.CargosEscClass";
 import { CargosEscClassService } from "../../Services/CargosEscClass.service";
 import { CargosEscClassApi } from "../../Apis/ApiCargosEscClass";
@@ -16,11 +14,12 @@ import { CargosEscClassGridMobileComponent } from "../GridsMobile/CargosEscClass
 import { CargosEscClassGridDesktopComponent } from "../GridsDesktop/CargosEscClass";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterCargosEscClass } from "../../Filters/CargosEscClass";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import CargosEscClassWindow from "./CargosEscClassWindow";
 
 const CargosEscClassGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const CargosEscClassGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <CargosEscClassGridMobileComponent data={cargosescclass} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <CargosEscClassGridDesktopComponent data={cargosescclass} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <CargosEscClassGridMobileComponent data={cargosescclass} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <CargosEscClassGridDesktopComponent data={cargosescclass} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <CargosEscClassWindow
           isOpen={showInc}

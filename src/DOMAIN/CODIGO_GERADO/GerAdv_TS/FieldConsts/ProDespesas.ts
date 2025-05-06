@@ -11,4 +11,5 @@
 	tipo = `Tipo`,
 	historico = `Historico`,
 	livrocaixa = `LivroCaixa`,
+	guid = `GUID`,
 }

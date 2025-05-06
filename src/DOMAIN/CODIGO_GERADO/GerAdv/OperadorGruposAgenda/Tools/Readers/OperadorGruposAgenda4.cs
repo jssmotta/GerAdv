@@ -8,6 +8,7 @@ public partial interface IOperadorGruposAgendaReader
     OperadorGruposAgendaResponse? Read(int id, SqlConnection oCnn);
     OperadorGruposAgendaResponse? Read(string where, SqlConnection oCnn);
     OperadorGruposAgendaResponse? Read(Entity.DBOperadorGruposAgenda dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     OperadorGruposAgendaResponse? Read(DBOperadorGruposAgenda dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class OperadorGruposAgenda : IOperadorGruposAgendaReader
             SQLWhere = dbRec.FSQLWhere ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Operador = dbRec.FOperador,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class OperadorGruposAgenda : IOperadorGruposAgendaReader
             SQLWhere = dbRec.FSQLWhere ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Operador = dbRec.FOperador,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

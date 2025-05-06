@@ -28,6 +28,7 @@
  data?: string;
  pasta?: string;
  class?: string;
+ guid?: string;
 }
 
 export class FilterFuncionariosDefaults implements FilterFuncionarios {
@@ -59,5 +60,6 @@ export class FilterFuncionariosDefaults implements FilterFuncionarios {
     data?: string = '';
     pasta?: string = '';
     class?: string = '';
+    guid?: string = '';
 }
     

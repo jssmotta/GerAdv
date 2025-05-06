@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { PenhoraEmpty } from "../../../Models/Penhora";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PenhoraInc from "../Inc/Penhora";
 import { IPenhora } from "../../Interfaces/interface.Penhora";
 import { PenhoraService } from "../../Services/Penhora.service";
 import { PenhoraApi } from "../../Apis/ApiPenhora";
@@ -16,11 +14,12 @@ import { PenhoraGridMobileComponent } from "../GridsMobile/Penhora";
 import { PenhoraGridDesktopComponent } from "../GridsDesktop/Penhora";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterPenhora } from "../../Filters/Penhora";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import PenhoraWindow from "./PenhoraWindow";
 
 const PenhoraGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const PenhoraGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <PenhoraGridMobileComponent data={penhora} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <PenhoraGridDesktopComponent data={penhora} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <PenhoraGridMobileComponent data={penhora} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <PenhoraGridDesktopComponent data={penhora} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <PenhoraWindow
           isOpen={showInc}

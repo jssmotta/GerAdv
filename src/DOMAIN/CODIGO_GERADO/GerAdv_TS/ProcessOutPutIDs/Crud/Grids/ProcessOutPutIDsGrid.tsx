@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProcessOutPutIDsEmpty } from "../../../Models/ProcessOutPutIDs";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProcessOutPutIDsInc from "../Inc/ProcessOutPutIDs";
 import { IProcessOutPutIDs } from "../../Interfaces/interface.ProcessOutPutIDs";
 import { ProcessOutPutIDsService } from "../../Services/ProcessOutPutIDs.service";
 import { ProcessOutPutIDsApi } from "../../Apis/ApiProcessOutPutIDs";
@@ -16,11 +14,12 @@ import { ProcessOutPutIDsGridMobileComponent } from "../GridsMobile/ProcessOutPu
 import { ProcessOutPutIDsGridDesktopComponent } from "../GridsDesktop/ProcessOutPutIDs";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProcessOutPutIDs } from "../../Filters/ProcessOutPutIDs";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProcessOutPutIDsWindow from "./ProcessOutPutIDsWindow";
 
 const ProcessOutPutIDsGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProcessOutPutIDsGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProcessOutPutIDsGridMobileComponent data={processoutputids} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProcessOutPutIDsGridDesktopComponent data={processoutputids} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProcessOutPutIDsGridMobileComponent data={processoutputids} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProcessOutPutIDsGridDesktopComponent data={processoutputids} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProcessOutPutIDsWindow
           isOpen={showInc}

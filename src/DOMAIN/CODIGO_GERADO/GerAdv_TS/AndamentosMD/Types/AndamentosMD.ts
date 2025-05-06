@@ -7,6 +7,7 @@ export interface IAndamentosMD {
 	andamento : number;
 	pathfull : string;
 	unc : string;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

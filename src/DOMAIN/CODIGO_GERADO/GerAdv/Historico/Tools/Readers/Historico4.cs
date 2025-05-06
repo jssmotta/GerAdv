@@ -8,6 +8,7 @@ public partial interface IHistoricoReader
     HistoricoResponse? Read(int id, SqlConnection oCnn);
     HistoricoResponse? Read(string where, SqlConnection oCnn);
     HistoricoResponse? Read(Entity.DBHistorico dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     HistoricoResponse? Read(DBHistorico dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class Historico : IHistoricoReader
         {
             Id = dbRec.ID,
             ExtraID = dbRec.FExtraID,
-            IDNE = dbRec.FIDNE,
+            IDNE = dbRec.FIDNE, 
             LiminarOrigem = dbRec.FLiminarOrigem,
             NaoPublicavel = dbRec.FNaoPublicavel,
             Processo = dbRec.FProcesso,
@@ -52,7 +53,7 @@ public partial class Historico : IHistoricoReader
             Resumido = dbRec.FResumido,
             StatusAndamento = dbRec.FStatusAndamento,
             Top = dbRec.FTop,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             historico.Data = dbRec.FData;
@@ -83,6 +84,7 @@ public partial class Historico : IHistoricoReader
             Id = dbRec.ID,
             ExtraID = dbRec.FExtraID,
             IDNE = dbRec.FIDNE,
+            GUID = dbRec.FExtraGUID ?? string.Empty,
             LiminarOrigem = dbRec.FLiminarOrigem,
             NaoPublicavel = dbRec.FNaoPublicavel,
             Processo = dbRec.FProcesso,
@@ -97,8 +99,7 @@ public partial class Historico : IHistoricoReader
             SAD = dbRec.FSAD,
             Resumido = dbRec.FResumido,
             StatusAndamento = dbRec.FStatusAndamento,
-            Top = dbRec.FTop,
-            Guid = dbRec.FGUID ?? string.Empty,
+            Top = dbRec.FTop
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             historico.Data = dbRec.FData;

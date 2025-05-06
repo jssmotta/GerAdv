@@ -113,17 +113,12 @@ const StatusAndamentoComboBox: React.FC<DadosSelectProps> = ({ name, value, setV
 
     return (
         <>
-            <style>
-                {`
-                    .${cssDado} { width: 390px; height: 38px; }                
-                `}
-            </style>
 
-            <div style={{ display: 'block' }} className={cssDado}>
-                <div style={{ display: 'block' }}>
+            <div className={`${cssDado} inputCombobox`}>
+                <div className='comboboxLabel'>
                     <span className='k-floating-label'>{label}<ModalInput selfClick={autoClick} value={() => getValueCurrent()} descricao='Nome/descrição (novo):' onAdd={handleAddDado} /></span>
                 </div>
-                <div style={{ display: 'block' }}>
+                <div className='comboboxBox'>
                     <ComboBox
                         name={name}
                         data={filteredDados ?? []}
@@ -138,7 +133,7 @@ const StatusAndamentoComboBox: React.FC<DadosSelectProps> = ({ name, value, setV
                     />
                 </div>
             </div>
-            <div style={{ clear: 'both' }}></div>
+            
         </>
     );
 };

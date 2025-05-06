@@ -74,30 +74,6 @@ public static class ClientesEndpoints
 
             return Results.Ok(result);
         }).WithName("Clientes_AddAndUpdate").WithDisplayName("Add or Update Clientes");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IClientesValidation validation, IClientesWriter writer, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IClientesService service) =>
-        {
-            logger.LogInfo("Clientes", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("Clientes", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("Clientes_GetColumns").WithDisplayName("Get Clientes Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IClientesValidation validation, IClientesWriter writer, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IClientesService service) =>
-        {
-            logger.LogInfo("Clientes", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("Clientes", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("Clientes_UpdateColumns").WithDisplayName("Update Clientes Columns");
         group.MapDelete("/Delete", async (int id, string uri, IClientesValidation validation, IClientesWriter writer, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IClientesService service) =>
         {
             logger.LogInfo("Clientes", "Delete", $"id = {id}", uri);

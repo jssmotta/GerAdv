@@ -5,7 +5,7 @@ import { HonorariosDadosContratoApi } from '../../Apis/ApiHonorariosDadosContrat
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IHonorariosDadosContratoFormProps } from '../../Interfaces/interface.HonorariosDadosContrato';
 import { HonorariosDadosContratoService } from '../../Services/HonorariosDadosContrato.service';
 import { useHonorariosDadosContratoForm } from '../../Hooks/useHonorariosDadosContratoForm';

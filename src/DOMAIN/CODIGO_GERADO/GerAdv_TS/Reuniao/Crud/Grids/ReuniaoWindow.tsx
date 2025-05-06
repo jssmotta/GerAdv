@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ReuniaoInc from "../Inc/Reuniao";
 import { IReuniao } from "../../Interfaces/interface.Reuniao";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ReuniaoWindow: React.FC<ReuniaoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/reuniao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedReuniao?.id}`);
+            router.push(`/pages/reuniao/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedReuniao?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedReuniao]);
@@ -42,7 +43,7 @@ const ReuniaoWindow: React.FC<ReuniaoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={596}
                     newWidth={1440}
                     id={(selectedReuniao?.id ?? 0).toString()}

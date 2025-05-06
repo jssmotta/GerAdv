@@ -16,8 +16,10 @@ public class OperadorValidation : IOperadorValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"Operador '{reg.Nome}' já cadastrado.";
         // StatusBiu
-        if (reg.StatusId.IsEmptyIDNumber())
+        if (!reg.StatusId.IsEmptyIDNumber())
         {
             var regStatusBiu = statusbiuReader.Read(reg.StatusId, oCnn);
             if (regStatusBiu == null || regStatusBiu.Id != reg.StatusId)
@@ -27,5 +29,10 @@ public class OperadorValidation : IOperadorValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Operador reg, IOperadorService service, string uri)
+    {
+        return false;
     }
 }

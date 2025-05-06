@@ -5,7 +5,7 @@ import { AcaoApi } from '../../Apis/ApiAcao';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IAcaoFormProps } from '../../Interfaces/interface.Acao';
 import { AcaoService } from '../../Services/Acao.service';
 import { useAcaoForm } from '../../Hooks/useAcaoForm';

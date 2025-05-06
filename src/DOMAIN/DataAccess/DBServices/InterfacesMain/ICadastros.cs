@@ -11,9 +11,7 @@ public interface ICadastrosAuditor : ICadastros
 /// </summary>
 public interface ICadastros
 {
-    void SetValueByNameField(string nomeCampo, object value);
-    object? GetValueByNameField(string nomeCampo);
-     void CarregarDadosBd(DataRow? dbRec);
+    void CarregarDadosBd(DataRow? dbRec);
     void CarregarDadosBd(SqlDataReader dbRec);
     void SetAuditor(int usuarioId);
     string ITabelaName();

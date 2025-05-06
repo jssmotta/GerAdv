@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProTipoBaixaInc from "../Inc/ProTipoBaixa";
 import { IProTipoBaixa } from "../../Interfaces/interface.ProTipoBaixa";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProTipoBaixaWindow: React.FC<ProTipoBaixaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/protipobaixa/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProTipoBaixa?.id}`);
+            router.push(`/pages/protipobaixa/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProTipoBaixa?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProTipoBaixa]);
@@ -42,7 +43,7 @@ const ProTipoBaixaWindow: React.FC<ProTipoBaixaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedProTipoBaixa?.id ?? 0).toString()}

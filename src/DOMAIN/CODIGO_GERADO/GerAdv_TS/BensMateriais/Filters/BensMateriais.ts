@@ -14,6 +14,7 @@
  dataterminodagarantiadaloja?: string;
  observacoes?: string;
  nomevendedor?: string;
+ guid?: string;
 }
 
 export class FilterBensMateriaisDefaults implements FilterBensMateriais {
@@ -31,5 +32,6 @@ export class FilterBensMateriaisDefaults implements FilterBensMateriais {
     dataterminodagarantiadaloja?: string = '';
     observacoes?: string = '';
     nomevendedor?: string = '';
+    guid?: string = '';
 }
     

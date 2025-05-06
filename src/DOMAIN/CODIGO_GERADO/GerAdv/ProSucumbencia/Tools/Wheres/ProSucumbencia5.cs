@@ -22,6 +22,7 @@ public partial class ProSucumbencia : IProSucumbenciaWhere
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prosucumbencia.Data = dbRec.FData;

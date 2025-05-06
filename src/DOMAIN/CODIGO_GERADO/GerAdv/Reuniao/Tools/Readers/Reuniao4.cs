@@ -8,6 +8,7 @@ public partial interface IReuniaoReader
     ReuniaoResponse? Read(int id, SqlConnection oCnn);
     ReuniaoResponse? Read(string where, SqlConnection oCnn);
     ReuniaoResponse? Read(Entity.DBReuniao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ReuniaoResponse? Read(DBReuniao dbRec);
 }
 
@@ -42,7 +43,7 @@ public partial class Reuniao : IReuniaoReader
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             reuniao.Data = dbRec.FData;
@@ -86,7 +87,7 @@ public partial class Reuniao : IReuniaoReader
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             reuniao.Data = dbRec.FData;

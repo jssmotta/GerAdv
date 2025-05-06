@@ -11,7 +11,6 @@ public partial class DBProCDA
     private protected string? m_FNome, m_FNroInterno;
     [XmlIgnore]
     private protected bool m_FBold;
-    public int NFProcesso() => m_FProcesso;
     [XmlAttribute]
     public int FProcesso
     {
@@ -24,7 +23,6 @@ public partial class DBProCDA
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -37,7 +35,6 @@ public partial class DBProCDA
         }
     }
 
-    public string NFNroInterno() => m_FNroInterno ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNroInterno
     {
@@ -50,7 +47,6 @@ public partial class DBProCDA
         }
     }
 
-    public bool NFBold() => m_FBold;
     [XmlAttribute]
     public bool FBold
     {

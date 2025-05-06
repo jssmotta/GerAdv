@@ -7,7 +7,6 @@ public partial class DBAndComp
     private protected bool pFldFAndamento, pFldFCompromisso;
     [XmlIgnore]
     private protected int m_FAndamento, m_FCompromisso;
-    public int NFAndamento() => m_FAndamento;
     [XmlAttribute]
     public int FAndamento
     {
@@ -20,7 +19,6 @@ public partial class DBAndComp
         }
     }
 
-    public int NFCompromisso() => m_FCompromisso;
     [XmlAttribute]
     public int FCompromisso
     {

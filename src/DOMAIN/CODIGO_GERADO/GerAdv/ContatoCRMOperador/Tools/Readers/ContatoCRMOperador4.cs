@@ -8,6 +8,7 @@ public partial interface IContatoCRMOperadorReader
     ContatoCRMOperadorResponse? Read(int id, SqlConnection oCnn);
     ContatoCRMOperadorResponse? Read(string where, SqlConnection oCnn);
     ContatoCRMOperadorResponse? Read(Entity.DBContatoCRMOperador dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ContatoCRMOperadorResponse? Read(DBContatoCRMOperador dbRec);
 }
 

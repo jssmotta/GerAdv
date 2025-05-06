@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { TipoRecursoEmpty } from "../../../Models/TipoRecurso";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import TipoRecursoInc from "../Inc/TipoRecurso";
 import { ITipoRecurso } from "../../Interfaces/interface.TipoRecurso";
 import { TipoRecursoService } from "../../Services/TipoRecurso.service";
 import { TipoRecursoApi } from "../../Apis/ApiTipoRecurso";
@@ -16,11 +14,12 @@ import { TipoRecursoGridMobileComponent } from "../GridsMobile/TipoRecurso";
 import { TipoRecursoGridDesktopComponent } from "../GridsDesktop/TipoRecurso";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterTipoRecurso } from "../../Filters/TipoRecurso";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import TipoRecursoWindow from "./TipoRecursoWindow";
 
 const TipoRecursoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const TipoRecursoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <TipoRecursoGridMobileComponent data={tiporecurso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <TipoRecursoGridDesktopComponent data={tiporecurso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <TipoRecursoGridMobileComponent data={tiporecurso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <TipoRecursoGridDesktopComponent data={tiporecurso} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <TipoRecursoWindow
           isOpen={showInc}

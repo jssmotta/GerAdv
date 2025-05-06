@@ -54,6 +54,7 @@ public class ClientesSocios : IClientesSociosWriter
         dbRec.FEtiqueta = clientessocios.Etiqueta;
         dbRec.FAni = clientessocios.Ani;
         dbRec.FBold = clientessocios.Bold;
+        dbRec.FGUID = clientessocios.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

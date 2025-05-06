@@ -7,7 +7,6 @@ public partial class DBTipoEndereco
     private protected bool pFldFDescricao;
     [XmlIgnore]
     private protected string? m_FDescricao;
-    public string NFDescricao() => m_FDescricao ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FDescricao
     {

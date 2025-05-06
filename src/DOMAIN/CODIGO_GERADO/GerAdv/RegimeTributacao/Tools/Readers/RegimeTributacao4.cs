@@ -8,6 +8,7 @@ public partial interface IRegimeTributacaoReader
     RegimeTributacaoResponse? Read(int id, SqlConnection oCnn);
     RegimeTributacaoResponse? Read(string where, SqlConnection oCnn);
     RegimeTributacaoResponse? Read(Entity.DBRegimeTributacao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     RegimeTributacaoResponse? Read(DBRegimeTributacao dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class RegimeTributacao : IRegimeTributacaoReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class RegimeTributacao : IRegimeTributacaoReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

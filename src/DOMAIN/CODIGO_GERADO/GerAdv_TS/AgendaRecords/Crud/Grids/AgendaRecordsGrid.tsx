@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { AgendaRecordsEmpty } from "../../../Models/AgendaRecords";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import AgendaRecordsInc from "../Inc/AgendaRecords";
 import { IAgendaRecords } from "../../Interfaces/interface.AgendaRecords";
 import { AgendaRecordsService } from "../../Services/AgendaRecords.service";
 import { AgendaRecordsApi } from "../../Apis/ApiAgendaRecords";
@@ -16,11 +14,12 @@ import { AgendaRecordsGridMobileComponent } from "../GridsMobile/AgendaRecords";
 import { AgendaRecordsGridDesktopComponent } from "../GridsDesktop/AgendaRecords";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterAgendaRecords } from "../../Filters/AgendaRecords";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import AgendaRecordsWindow from "./AgendaRecordsWindow";
 
 const AgendaRecordsGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const AgendaRecordsGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <AgendaRecordsGridMobileComponent data={agendarecords} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <AgendaRecordsGridDesktopComponent data={agendarecords} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <AgendaRecordsGridMobileComponent data={agendarecords} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <AgendaRecordsGridDesktopComponent data={agendarecords} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <AgendaRecordsWindow
           isOpen={showInc}

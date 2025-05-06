@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProCDAEmpty } from "../../../Models/ProCDA";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProCDAInc from "../Inc/ProCDA";
 import { IProCDA } from "../../Interfaces/interface.ProCDA";
 import { ProCDAService } from "../../Services/ProCDA.service";
 import { ProCDAApi } from "../../Apis/ApiProCDA";
@@ -16,11 +14,12 @@ import { ProCDAGridMobileComponent } from "../GridsMobile/ProCDA";
 import { ProCDAGridDesktopComponent } from "../GridsDesktop/ProCDA";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProCDA } from "../../Filters/ProCDA";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProCDAWindow from "./ProCDAWindow";
 
 const ProCDAGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProCDAGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProCDAGridMobileComponent data={procda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProCDAGridDesktopComponent data={procda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProCDAGridMobileComponent data={procda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProCDAGridDesktopComponent data={procda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProCDAWindow
           isOpen={showInc}

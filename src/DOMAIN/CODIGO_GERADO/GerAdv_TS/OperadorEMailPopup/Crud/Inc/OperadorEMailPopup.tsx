@@ -5,7 +5,7 @@ import { OperadorEMailPopupApi } from '../../Apis/ApiOperadorEMailPopup';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IOperadorEMailPopupFormProps } from '../../Interfaces/interface.OperadorEMailPopup';
 import { OperadorEMailPopupService } from '../../Services/OperadorEMailPopup.service';
 import { useOperadorEMailPopupForm } from '../../Hooks/useOperadorEMailPopupForm';

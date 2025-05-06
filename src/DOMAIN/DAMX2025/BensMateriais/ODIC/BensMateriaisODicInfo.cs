@@ -53,7 +53,7 @@ public partial class DBBensMateriaisODicInfo : IODicInfo
     public static string TTabelaNome => DBBensMateriaisDicInfo.TabelaNome;
     public static string TTablePrefix => DBBensMateriaisDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtBold, DBBensMateriaisDicInfo.BmtGUID, DBBensMateriaisDicInfo.BmtQuemCad, DBBensMateriaisDicInfo.BmtDtCad, DBBensMateriaisDicInfo.BmtQuemAtu, DBBensMateriaisDicInfo.BmtDtAtu, DBBensMateriaisDicInfo.BmtVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtBold, DBBensMateriaisDicInfo.BmtGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -69,7 +69,9 @@ public partial class DBBensMateriaisODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "bmtCodigo"
+            "bmtCodigo",
+            "bmtFornecedor",
+            "bmtNome"
         };
         var result = campos.Where(campo => !campo.Equals(DBBensMateriaisDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

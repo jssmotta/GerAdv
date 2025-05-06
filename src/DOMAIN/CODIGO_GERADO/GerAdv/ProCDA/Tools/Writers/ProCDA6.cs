@@ -17,6 +17,7 @@ public class ProCDA : IProCDAWriter
         dbRec.FNome = procda.Nome;
         dbRec.FNroInterno = procda.NroInterno;
         dbRec.FBold = procda.Bold;
+        dbRec.FGUID = procda.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

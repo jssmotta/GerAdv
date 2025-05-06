@@ -5,7 +5,7 @@ import { NENotasApi } from '../../Apis/ApiNENotas';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { INENotasFormProps } from '../../Interfaces/interface.NENotas';
 import { NENotasService } from '../../Services/NENotas.service';
 import { useNENotasForm } from '../../Hooks/useNENotasForm';

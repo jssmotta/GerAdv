@@ -47,7 +47,7 @@ public partial class DBTribunalODicInfo : IODicInfo
     public static string TTabelaNome => DBTribunalDicInfo.TabelaNome;
     public static string TTablePrefix => DBTribunalDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGUID, DBTribunalDicInfo.TriQuemCad, DBTribunalDicInfo.TriDtCad, DBTribunalDicInfo.TriQuemAtu, DBTribunalDicInfo.TriDtAtu, DBTribunalDicInfo.TriVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -63,7 +63,11 @@ public partial class DBTribunalODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "triCodigo"
+            "triArea",
+            "triCodigo",
+            "triDescricao",
+            "triInstancia",
+            "triJustica"
         };
         var result = campos.Where(campo => !campo.Equals(DBTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];

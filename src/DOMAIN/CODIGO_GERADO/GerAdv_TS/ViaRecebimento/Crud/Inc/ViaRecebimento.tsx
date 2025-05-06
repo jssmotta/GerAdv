@@ -5,7 +5,7 @@ import { ViaRecebimentoApi } from '../../Apis/ApiViaRecebimento';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IViaRecebimentoFormProps } from '../../Interfaces/interface.ViaRecebimento';
 import { ViaRecebimentoService } from '../../Services/ViaRecebimento.service';
 import { useViaRecebimentoForm } from '../../Hooks/useViaRecebimentoForm';

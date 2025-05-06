@@ -13,6 +13,7 @@ public class ContatoCRMView : IContatoCRMViewWriter
     public Entity.DBContatoCRMView Write(Models.ContatoCRMView contatocrmview, SqlConnection oCnn)
     {
         var dbRec = contatocrmview.Id.IsEmptyIDNumber() ? new Entity.DBContatoCRMView() : new Entity.DBContatoCRMView(contatocrmview.Id, oCnn);
+        
         if (contatocrmview.Data != null)
             dbRec.FData = contatocrmview.Data.ToString();
         dbRec.FIP = contatocrmview.IP;

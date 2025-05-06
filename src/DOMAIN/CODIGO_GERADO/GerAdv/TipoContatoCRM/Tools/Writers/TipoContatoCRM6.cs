@@ -15,6 +15,7 @@ public class TipoContatoCRM : ITipoContatoCRMWriter
         var dbRec = tipocontatocrm.Id.IsEmptyIDNumber() ? new Entity.DBTipoContatoCRM() : new Entity.DBTipoContatoCRM(tipocontatocrm.Id, oCnn);
         dbRec.FNome = tipocontatocrm.Nome;
         dbRec.FBold = tipocontatocrm.Bold;
+        dbRec.FGUID = tipocontatocrm.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

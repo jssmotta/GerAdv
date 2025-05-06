@@ -5,6 +5,7 @@
  nome?: string;
     processo?: number;
  data?: string;
+ guid?: string;
 }
 
 export class FilterProProcuradoresDefaults implements FilterProProcuradores {
@@ -13,5 +14,6 @@ export class FilterProProcuradoresDefaults implements FilterProProcuradores {
     nome?: string = '';
     processo?: number = -2147483648;
     data?: string = '';
+    guid?: string = '';
 }
     

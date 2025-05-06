@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import Auditor4KInc from "../Inc/Auditor4K";
 import { IAuditor4K } from "../../Interfaces/interface.Auditor4K";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const Auditor4KWindow: React.FC<Auditor4KWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/auditor4k/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAuditor4K?.id}`);
+            router.push(`/pages/auditor4k/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAuditor4K?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAuditor4K]);
@@ -42,7 +43,7 @@ const Auditor4KWindow: React.FC<Auditor4KWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedAuditor4K?.id ?? 0).toString()}

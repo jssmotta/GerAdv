@@ -19,7 +19,7 @@ public class ModelosDocumentosValidation : IModelosDocumentosValidation
         if (await IsDuplicado(reg, service, uri))
             return $"ModelosDocumentos '{reg.Nome}' já cadastrado.";
         // TipoModeloDocumento
-        if (reg.TipoModeloDocumento.IsEmptyIDNumber())
+        if (!reg.TipoModeloDocumento.IsEmptyIDNumber())
         {
             var regTipoModeloDocumento = tipomodelodocumentoReader.Read(reg.TipoModeloDocumento, oCnn);
             if (regTipoModeloDocumento == null || regTipoModeloDocumento.Id != reg.TipoModeloDocumento)

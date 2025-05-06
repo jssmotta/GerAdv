@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { SetorEmpty } from "../../../Models/Setor";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import SetorInc from "../Inc/Setor";
 import { ISetor } from "../../Interfaces/interface.Setor";
 import { SetorService } from "../../Services/Setor.service";
 import { SetorApi } from "../../Apis/ApiSetor";
@@ -16,11 +14,12 @@ import { SetorGridMobileComponent } from "../GridsMobile/Setor";
 import { SetorGridDesktopComponent } from "../GridsDesktop/Setor";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterSetor } from "../../Filters/Setor";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import SetorWindow from "./SetorWindow";
 
 const SetorGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const SetorGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <SetorGridMobileComponent data={setor} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <SetorGridDesktopComponent data={setor} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <SetorGridMobileComponent data={setor} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <SetorGridDesktopComponent data={setor} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <SetorWindow
           isOpen={showInc}

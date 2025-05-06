@@ -5,7 +5,7 @@ import { PaisesApi } from '../../Apis/ApiPaises';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IPaisesFormProps } from '../../Interfaces/interface.Paises';
 import { PaisesService } from '../../Services/Paises.service';
 import { usePaisesForm } from '../../Hooks/usePaisesForm';

@@ -15,6 +15,7 @@ public class ProTipoBaixa : IProTipoBaixaWriter
         var dbRec = protipobaixa.Id.IsEmptyIDNumber() ? new Entity.DBProTipoBaixa() : new Entity.DBProTipoBaixa(protipobaixa.Id, oCnn);
         dbRec.FNome = protipobaixa.Nome;
         dbRec.FBold = protipobaixa.Bold;
+        dbRec.FGUID = protipobaixa.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

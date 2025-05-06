@@ -13,7 +13,6 @@ public partial class DBOperadores
     private protected DateTime? m_FSuporteMaxAge;
     [XmlIgnore]
     private protected bool m_FEnviado, m_FCasa, m_FIsNovo, m_FAtivado, m_FAtualizarSenha;
-    public bool NFEnviado() => m_FEnviado;
     [XmlAttribute]
     public bool FEnviado
     {
@@ -26,7 +25,6 @@ public partial class DBOperadores
         }
     }
 
-    public bool NFCasa() => m_FCasa;
     [XmlAttribute]
     public bool FCasa
     {
@@ -39,7 +37,6 @@ public partial class DBOperadores
         }
     }
 
-    public int NFCasaID() => m_FCasaID;
     [XmlAttribute]
     public int FCasaID
     {
@@ -52,7 +49,6 @@ public partial class DBOperadores
         }
     }
 
-    public int NFCasaCodigo() => m_FCasaCodigo;
     [XmlAttribute]
     public int FCasaCodigo
     {
@@ -65,7 +61,6 @@ public partial class DBOperadores
         }
     }
 
-    public bool NFIsNovo() => m_FIsNovo;
     [XmlAttribute]
     public bool FIsNovo
     {
@@ -78,7 +73,6 @@ public partial class DBOperadores
         }
     }
 
-    public int NFCliente() => m_FCliente;
     [XmlAttribute]
     public int FCliente
     {
@@ -91,7 +85,6 @@ public partial class DBOperadores
         }
     }
 
-    public int NFGrupo() => m_FGrupo;
     [XmlAttribute]
     public int FGrupo
     {
@@ -104,7 +97,6 @@ public partial class DBOperadores
         }
     }
 
-    public string NFNome() => m_FNome ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FNome
     {
@@ -117,7 +109,6 @@ public partial class DBOperadores
         }
     }
 
-    public string NFEMail() => m_FEMail ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FEMail
     {
@@ -130,7 +121,6 @@ public partial class DBOperadores
         }
     }
 
-    public string NFSenha() => m_FSenha ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSenha
     {
@@ -143,7 +133,6 @@ public partial class DBOperadores
         }
     }
 
-    public bool NFAtivado() => m_FAtivado;
     [XmlAttribute]
     public bool FAtivado
     {
@@ -156,7 +145,6 @@ public partial class DBOperadores
         }
     }
 
-    public bool NFAtualizarSenha() => m_FAtualizarSenha;
     [XmlAttribute]
     public bool FAtualizarSenha
     {
@@ -169,7 +157,6 @@ public partial class DBOperadores
         }
     }
 
-    public string NFSenha256() => m_FSenha256 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSenha256
     {
@@ -182,7 +169,6 @@ public partial class DBOperadores
         }
     }
 
-    public string NFSuporteSenha256() => m_FSuporteSenha256 ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FSuporteSenha256
     {
@@ -195,7 +181,6 @@ public partial class DBOperadores
         }
     }
 
-    public string NFSuporteMaxAge() => $"{m_FSuporteMaxAge:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FSuporteMaxAge:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MSuporteMaxAge => Convert.ToDateTime(m_FSuporteMaxAge);
 

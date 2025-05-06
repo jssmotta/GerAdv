@@ -14,6 +14,7 @@ public class Atividades : IAtividadesWriter
     {
         var dbRec = atividades.Id.IsEmptyIDNumber() ? new Entity.DBAtividades() : new Entity.DBAtividades(atividades.Id, oCnn);
         dbRec.FDescricao = atividades.Descricao;
+        dbRec.FGUID = atividades.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

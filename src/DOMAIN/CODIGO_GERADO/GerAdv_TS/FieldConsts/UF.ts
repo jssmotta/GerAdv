@@ -4,4 +4,5 @@
 	iduf = `IdUF`,
 	top = `Top`,
 	descricao = `Descricao`,
+	guid = `GUID`,
 }

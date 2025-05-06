@@ -8,6 +8,7 @@ public partial interface IAnexamentoRegistrosReader
     AnexamentoRegistrosResponse? Read(int id, SqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(string where, SqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(Entity.DBAnexamentoRegistros dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(DBAnexamentoRegistros dbRec);
 }
 
@@ -36,9 +37,10 @@ public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
         {
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
+            GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             anexamentoregistros.Data = dbRec.FData;
@@ -68,9 +70,10 @@ public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
         {
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
+            GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             anexamentoregistros.Data = dbRec.FData;

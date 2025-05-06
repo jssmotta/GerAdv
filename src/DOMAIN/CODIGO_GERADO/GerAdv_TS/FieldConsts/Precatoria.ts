@@ -6,4 +6,5 @@
 	deprecado = `Deprecado`,
 	obs = `OBS`,
 	bold = `Bold`,
+	guid = `GUID`,
 }

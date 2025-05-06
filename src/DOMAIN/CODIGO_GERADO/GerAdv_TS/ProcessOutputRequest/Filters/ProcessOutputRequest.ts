@@ -5,6 +5,7 @@
     operador?: number;
     processo?: number;
     ultimoidtabelaexo?: number;
+ guid?: string;
 }
 
 export class FilterProcessOutputRequestDefaults implements FilterProcessOutputRequest {
@@ -13,5 +14,6 @@ export class FilterProcessOutputRequestDefaults implements FilterProcessOutputRe
     operador?: number = -2147483648;
     processo?: number = -2147483648;
     ultimoidtabelaexo?: number = -2147483648;
+    guid?: string = '';
 }
     

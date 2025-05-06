@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProcessOutputEngineInc from "../Inc/ProcessOutputEngine";
 import { IProcessOutputEngine } from "../../Interfaces/interface.ProcessOutputEngine";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProcessOutputEngineWindow: React.FC<ProcessOutputEngineWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/processoutputengine/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProcessOutputEngine?.id}`);
+            router.push(`/pages/processoutputengine/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProcessOutputEngine?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProcessOutputEngine]);
@@ -42,7 +43,7 @@ const ProcessOutputEngineWindow: React.FC<ProcessOutputEngineWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={563}
                     newWidth={1440}
                     id={(selectedProcessOutputEngine?.id ?? 0).toString()}

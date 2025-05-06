@@ -1,17 +1,23 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IGUTAtividades } from '../../Interfaces/interface.GUTAtividades';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IGUTAtividades } from '@/app/GerAdv_TS/GUTAtividades/Interfaces/interface.GUTAtividades';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import GUTPeriodicidadeComboBox from '@/app/GerAdv_TS/GUTPeriodicidade/ComboBox/GUTPeriodicidade';
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
 import { GUTPeriodicidadeApi } from '@/app/GerAdv_TS/GUTPeriodicidade/Apis/ApiGUTPeriodicidade';
 import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 
 interface GUTAtividadesFormProps {
     gutatividadesData: IGUTAtividades;
@@ -83,24 +89,37 @@ if (getParamFromUrl("operador") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('GUTAtividadesForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeGUTPeriodicidade && (<h2>{nomeGUTPeriodicidade}</h2>)}
-{nomeOperador && (<h2>{nomeOperador}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container5">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`GUTAtividadesForm-${gutatividadesData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={gutatividadesData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTAtividadesForm-${gutatividadesData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={gutatividadesData.nome}
+            placeholder={`Digite nome g u t atividades`}
             onChange={onChange}
             required
           />
@@ -139,7 +158,7 @@ onChange={onChange}
             label={'Operador'}
             />
 
-<Checkbox label="Concluido" name="concluido" checked={gutatividadesData.concluido} onChange={onChange} />
+<InputCheckbox label="Concluido" name="concluido" checked={gutatividadesData.concluido} onChange={onChange} />
         
 <Input
 type="text"
@@ -171,22 +190,10 @@ value={gutatividadesData.minutospararealizar}
 onChange={onChange}               
 />
 
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gutatividadesmatriz${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?gutatividades=${gutatividadesData.id}`)}>G U T Atividades Matriz</div>
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/gutperiodicidadestatus${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?gutatividades=${gutatividadesData.id}`)}>G U T Periodicidade Status</div>
-
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

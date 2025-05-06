@@ -8,6 +8,7 @@ public partial interface ILivroCaixaReader
     LivroCaixaResponse? Read(int id, SqlConnection oCnn);
     LivroCaixaResponse? Read(string where, SqlConnection oCnn);
     LivroCaixaResponse? Read(Entity.DBLivroCaixa dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     LivroCaixaResponse? Read(DBLivroCaixa dbRec);
 }
 

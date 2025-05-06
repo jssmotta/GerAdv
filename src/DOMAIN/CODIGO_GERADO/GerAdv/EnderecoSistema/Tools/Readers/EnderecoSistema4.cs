@@ -8,6 +8,7 @@ public partial interface IEnderecoSistemaReader
     EnderecoSistemaResponse? Read(int id, SqlConnection oCnn);
     EnderecoSistemaResponse? Read(string where, SqlConnection oCnn);
     EnderecoSistemaResponse? Read(Entity.DBEnderecoSistema dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     EnderecoSistemaResponse? Read(DBEnderecoSistema dbRec);
 }
 
@@ -48,7 +49,7 @@ public partial class EnderecoSistema : IEnderecoSistemaReader
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -88,7 +89,7 @@ public partial class EnderecoSistema : IEnderecoSistemaReader
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

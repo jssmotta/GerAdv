@@ -41,7 +41,7 @@ public partial class DBFaseODicInfo : IODicInfo
     public static string TTabelaNome => DBFaseDicInfo.TabelaNome;
     public static string TTablePrefix => DBFaseDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea, DBFaseDicInfo.FasGUID, DBFaseDicInfo.FasQuemCad, DBFaseDicInfo.FasDtCad, DBFaseDicInfo.FasQuemAtu, DBFaseDicInfo.FasDtAtu, DBFaseDicInfo.FasVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea, DBFaseDicInfo.FasGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

@@ -13,7 +13,6 @@ public partial class DBPontoVirtualAcessos
     private protected DateTime? m_FDataHora;
     [XmlIgnore]
     private protected bool m_FTipo;
-    public int NFOperador() => m_FOperador;
     [XmlAttribute]
     public int FOperador
     {
@@ -26,7 +25,6 @@ public partial class DBPontoVirtualAcessos
         }
     }
 
-    public string NFDataHora() => $"{m_FDataHora:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataHora:dd/MM/yyyy}";
     [XmlIgnore]
     public DateTime MDataHora => Convert.ToDateTime(m_FDataHora);
 
@@ -44,7 +42,6 @@ public partial class DBPontoVirtualAcessos
         }
     }
 
-    public bool NFTipo() => m_FTipo;
     [XmlAttribute]
     public bool FTipo
     {
@@ -57,7 +54,6 @@ public partial class DBPontoVirtualAcessos
         }
     }
 
-    public string NFOrigem() => m_FOrigem ?? string.Empty; // Nullable Helper String 1.0.6
     [XmlAttribute]
     public string? FOrigem
     {

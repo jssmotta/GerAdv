@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TipoEnderecoSistemaInc from "../Inc/TipoEnderecoSistema";
 import { ITipoEnderecoSistema } from "../../Interfaces/interface.TipoEnderecoSistema";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TipoEnderecoSistemaWindow: React.FC<TipoEnderecoSistemaWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tipoenderecosistema/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoEnderecoSistema?.id}`);
+            router.push(`/pages/tipoenderecosistema/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoEnderecoSistema?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTipoEnderecoSistema]);
@@ -42,7 +43,7 @@ const TipoEnderecoSistemaWindow: React.FC<TipoEnderecoSistemaWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTipoEnderecoSistema?.id ?? 0).toString()}

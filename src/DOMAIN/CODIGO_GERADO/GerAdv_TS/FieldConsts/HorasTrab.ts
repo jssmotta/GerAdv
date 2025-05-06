@@ -17,4 +17,5 @@
 	anexo = `Anexo`,
 	anexocomp = `AnexoComp`,
 	anexounc = `AnexoUNC`,
+	guid = `GUID`,
 }

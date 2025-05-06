@@ -5,7 +5,7 @@ import { EndTitApi } from '../../Apis/ApiEndTit';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IEndTitFormProps } from '../../Interfaces/interface.EndTit';
 import { EndTitService } from '../../Services/EndTit.service';
 import { useEndTitForm } from '../../Hooks/useEndTitForm';

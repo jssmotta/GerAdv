@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProcessosParadosEmpty } from "../../../Models/ProcessosParados";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProcessosParadosInc from "../Inc/ProcessosParados";
 import { IProcessosParados } from "../../Interfaces/interface.ProcessosParados";
 import { ProcessosParadosService } from "../../Services/ProcessosParados.service";
 import { ProcessosParadosApi } from "../../Apis/ApiProcessosParados";
@@ -16,11 +14,12 @@ import { ProcessosParadosGridMobileComponent } from "../GridsMobile/ProcessosPar
 import { ProcessosParadosGridDesktopComponent } from "../GridsDesktop/ProcessosParados";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProcessosParados } from "../../Filters/ProcessosParados";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProcessosParadosWindow from "./ProcessosParadosWindow";
 
 const ProcessosParadosGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ProcessosParadosGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ProcessosParadosGridMobileComponent data={processosparados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProcessosParadosGridDesktopComponent data={processosparados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProcessosParadosGridMobileComponent data={processosparados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProcessosParadosGridDesktopComponent data={processosparados} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProcessosParadosWindow
           isOpen={showInc}

@@ -8,6 +8,7 @@ public partial interface IAuditor4KReader
     Auditor4KResponse? Read(int id, SqlConnection oCnn);
     Auditor4KResponse? Read(string where, SqlConnection oCnn);
     Auditor4KResponse? Read(Entity.DBAuditor4K dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     Auditor4KResponse? Read(DBAuditor4K dbRec);
 }
 
@@ -36,7 +37,7 @@ public partial class Auditor4K : IAuditor4KReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -64,7 +65,7 @@ public partial class Auditor4K : IAuditor4KReader
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

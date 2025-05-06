@@ -72,7 +72,7 @@ public class UFHealthCheck(IOptions<AppSettings> appSettings, UFService ufServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ufDDD,ufID,ufPais,ufTop,ufDescricao FROM dbo.UF (NOLOCK);";
+                            tableCheck.CommandText = "SELECT TOP (1) ufDDD,ufID,ufPais,ufTop,ufDescricao,ufGUID FROM dbo.UF (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

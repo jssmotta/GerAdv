@@ -15,6 +15,9 @@ public partial class FilterHistorico
     [JsonPropertyName("idne")]
     public int IDNE { get; set; } = -2147483648;
 
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = string.Empty;
+
     [JsonPropertyName("liminarorigem")]
     public int LiminarOrigem { get; set; } = -2147483648;
 
@@ -44,4 +47,6 @@ public partial class FilterHistorico
 
     [JsonPropertyName("statusandamento")]
     public int StatusAndamento { get; set; } = -2147483648;
+
+    
 }

@@ -31,6 +31,7 @@ export interface IOponentes {
 	top : boolean;
 	etiqueta : boolean;
 	bold : boolean;
+	guid : string;
 	auditor?: Auditor | null;
 }
 

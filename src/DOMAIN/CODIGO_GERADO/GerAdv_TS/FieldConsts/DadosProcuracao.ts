@@ -7,4 +7,5 @@
 	pispasep = `PisPasep`,
 	remuneracao = `Remuneracao`,
 	objeto = `Objeto`,
+	guid = `GUID`,
 }

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { EventoPrazoAgendaEmpty } from "../../../Models/EventoPrazoAgenda";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import EventoPrazoAgendaInc from "../Inc/EventoPrazoAgenda";
 import { IEventoPrazoAgenda } from "../../Interfaces/interface.EventoPrazoAgenda";
 import { EventoPrazoAgendaService } from "../../Services/EventoPrazoAgenda.service";
 import { EventoPrazoAgendaApi } from "../../Apis/ApiEventoPrazoAgenda";
@@ -16,11 +14,12 @@ import { EventoPrazoAgendaGridMobileComponent } from "../GridsMobile/EventoPrazo
 import { EventoPrazoAgendaGridDesktopComponent } from "../GridsDesktop/EventoPrazoAgenda";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterEventoPrazoAgenda } from "../../Filters/EventoPrazoAgenda";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import EventoPrazoAgendaWindow from "./EventoPrazoAgendaWindow";
 
 const EventoPrazoAgendaGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const EventoPrazoAgendaGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <EventoPrazoAgendaGridMobileComponent data={eventoprazoagenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <EventoPrazoAgendaGridDesktopComponent data={eventoprazoagenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <EventoPrazoAgendaGridMobileComponent data={eventoprazoagenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <EventoPrazoAgendaGridDesktopComponent data={eventoprazoagenda} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <EventoPrazoAgendaWindow
           isOpen={showInc}

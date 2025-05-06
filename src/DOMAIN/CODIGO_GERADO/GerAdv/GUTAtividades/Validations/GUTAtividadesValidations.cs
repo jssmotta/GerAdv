@@ -17,7 +17,7 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         // GUTPeriodicidade
-        if (reg.GUTPeriodicidade.IsEmptyIDNumber())
+        if (!reg.GUTPeriodicidade.IsEmptyIDNumber())
         {
             var regGUTPeriodicidade = gutperiodicidadeReader.Read(reg.GUTPeriodicidade, oCnn);
             if (regGUTPeriodicidade == null || regGUTPeriodicidade.Id != reg.GUTPeriodicidade)
@@ -27,7 +27,7 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
         }
 
         // Operador
-        if (reg.Operador.IsEmptyIDNumber())
+        if (!reg.Operador.IsEmptyIDNumber())
         {
             var regOperador = operadorReader.Read(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)

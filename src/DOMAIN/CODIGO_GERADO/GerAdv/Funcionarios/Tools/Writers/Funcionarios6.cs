@@ -51,6 +51,7 @@ public class Funcionarios : IFuncionariosWriter
         dbRec.FEtiqueta = funcionarios.Etiqueta;
         dbRec.FAni = funcionarios.Ani;
         dbRec.FBold = funcionarios.Bold;
+        dbRec.FGUID = funcionarios.GUID;
         dbRec.AuditorQuem = auditorQuem;
         dbRec.Update(oCnn);
         return dbRec;

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import RitoInc from "../Inc/Rito";
 import { IRito } from "../../Interfaces/interface.Rito";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const RitoWindow: React.FC<RitoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/rito/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedRito?.id}`);
+            router.push(`/pages/rito/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedRito?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedRito]);
@@ -42,7 +43,7 @@ const RitoWindow: React.FC<RitoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedRito?.id ?? 0).toString()}

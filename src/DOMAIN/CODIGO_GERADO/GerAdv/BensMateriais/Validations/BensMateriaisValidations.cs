@@ -16,8 +16,10 @@ public class BensMateriaisValidation : IBensMateriaisValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
+        if (await IsDuplicado(reg, service, uri))
+            return $"BensMateriais '{reg.Nome}' já cadastrado.";
         // BensClassificacao
-        if (reg.BensClassificacao.IsEmptyIDNumber())
+        if (!reg.BensClassificacao.IsEmptyIDNumber())
         {
             var regBensClassificacao = bensclassificacaoReader.Read(reg.BensClassificacao, oCnn);
             if (regBensClassificacao == null || regBensClassificacao.Id != reg.BensClassificacao)
@@ -27,7 +29,7 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         }
 
         // Fornecedores
-        if (reg.Fornecedor.IsEmptyIDNumber())
+        if (!reg.Fornecedor.IsEmptyIDNumber())
         {
             var regFornecedores = fornecedoresReader.Read(reg.Fornecedor, oCnn);
             if (regFornecedores == null || regFornecedores.Id != reg.Fornecedor)
@@ -37,5 +39,11 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         }
 
         return string.Empty;
+    }
+
+    private async Task<bool> IsDuplicado(Models.BensMateriais reg, IBensMateriaisService service, string uri)
+    {
+        var existingBensMateriais = (await service.Filter(new Filters.FilterBensMateriais { Fornecedor = reg.Fornecedor, Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingBensMateriais != null && existingBensMateriais.Id > 0 && existingBensMateriais.Id != reg.Id;
     }
 }

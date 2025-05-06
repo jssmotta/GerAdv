@@ -1,15 +1,21 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IOponentesRepLegal } from '../../Interfaces/interface.OponentesRepLegal';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IOponentesRepLegal } from '@/app/GerAdv_TS/OponentesRepLegal/Interfaces/interface.OponentesRepLegal';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
 import OponentesComboBox from '@/app/GerAdv_TS/Oponentes/ComboBox/Oponentes';
 import { OponentesApi } from '@/app/GerAdv_TS/Oponentes/Apis/ApiOponentes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCep from '@/app/components/Inputs/InputCep'
 
@@ -62,23 +68,37 @@ if (getParamFromUrl("oponentes") > 0) {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('OponentesRepLegalForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
-  {nomeOponentes && (<h2>{nomeOponentes}</h2>)}
-
-    <div className="form-container">
+  
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`OponentesRepLegalForm-${oponentesreplegalData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={oponentesreplegalData} isSubmitting={isSubmitting} onClose={onClose} formId={`OponentesRepLegalForm-${oponentesreplegalData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={oponentesreplegalData.nome}
+            placeholder={`Digite nome oponentes rep legal`}
             onChange={onChange}
             required
           />
@@ -100,7 +120,7 @@ onChange={onChange}
             label={'Oponentes'}
             />
 
-<Checkbox label="Sexo" name="sexo" checked={oponentesreplegalData.sexo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={oponentesreplegalData.sexo} onChange={onChange} />
         
 <InputCpf
 type="text"
@@ -203,19 +223,10 @@ value={oponentesreplegalData.observacao}
 onChange={onChange}               
 />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

@@ -8,6 +8,7 @@ public partial interface IPoderJudiciarioAssociadoReader
     PoderJudiciarioAssociadoResponse? Read(int id, SqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(string where, SqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(Entity.DBPoderJudiciarioAssociado dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(DBPoderJudiciarioAssociado dbRec);
 }
 
@@ -48,7 +49,7 @@ public partial class PoderJudiciarioAssociado : IPoderJudiciarioAssociadoReader
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
             Tipo = dbRec.FTipo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -88,7 +89,7 @@ public partial class PoderJudiciarioAssociado : IPoderJudiciarioAssociadoReader
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
             Tipo = dbRec.FTipo,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

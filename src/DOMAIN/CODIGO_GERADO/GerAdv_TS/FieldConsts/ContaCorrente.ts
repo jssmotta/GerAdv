@@ -24,4 +24,5 @@
 	parcelaprincipalid = `ParcelaPrincipalID`,
 	hide = `Hide`,
 	datapgto = `DataPgto`,
+	guid = `GUID`,
 }

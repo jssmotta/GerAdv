@@ -7,6 +7,7 @@
  datapenhora?: string;
     penhorastatus?: number;
     master?: number;
+ guid?: string;
 }
 
 export class FilterPenhoraDefaults implements FilterPenhora {
@@ -17,5 +18,6 @@ export class FilterPenhoraDefaults implements FilterPenhora {
     datapenhora?: string = '';
     penhorastatus?: number = -2147483648;
     master?: number = -2147483648;
+    guid?: string = '';
 }
     

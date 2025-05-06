@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import NEPalavrasChavesInc from "../Inc/NEPalavrasChaves";
 import { INEPalavrasChaves } from "../../Interfaces/interface.NEPalavrasChaves";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const NEPalavrasChavesWindow: React.FC<NEPalavrasChavesWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/nepalavraschaves/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedNEPalavrasChaves?.id}`);
+            router.push(`/pages/nepalavraschaves/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedNEPalavrasChaves?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedNEPalavrasChaves]);
@@ -42,7 +43,7 @@ const NEPalavrasChavesWindow: React.FC<NEPalavrasChavesWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedNEPalavrasChaves?.id ?? 0).toString()}

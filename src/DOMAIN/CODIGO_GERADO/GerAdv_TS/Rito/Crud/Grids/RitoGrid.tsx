@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { RitoEmpty } from "../../../Models/Rito";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import RitoInc from "../Inc/Rito";
 import { IRito } from "../../Interfaces/interface.Rito";
 import { RitoService } from "../../Services/Rito.service";
 import { RitoApi } from "../../Apis/ApiRito";
@@ -16,11 +14,12 @@ import { RitoGridMobileComponent } from "../GridsMobile/Rito";
 import { RitoGridDesktopComponent } from "../GridsDesktop/Rito";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterRito } from "../../Filters/Rito";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import RitoWindow from "./RitoWindow";
 
 const RitoGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const RitoGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <RitoGridMobileComponent data={rito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <RitoGridDesktopComponent data={rito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <RitoGridMobileComponent data={rito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <RitoGridDesktopComponent data={rito} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <RitoWindow
           isOpen={showInc}

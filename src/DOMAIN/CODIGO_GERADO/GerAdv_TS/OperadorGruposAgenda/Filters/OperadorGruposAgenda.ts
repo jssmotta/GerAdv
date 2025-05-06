@@ -4,6 +4,7 @@
  sqlwhere?: string;
  nome?: string;
     operador?: number;
+ guid?: string;
 }
 
 export class FilterOperadorGruposAgendaDefaults implements FilterOperadorGruposAgenda {
@@ -11,5 +12,6 @@ export class FilterOperadorGruposAgendaDefaults implements FilterOperadorGruposA
     sqlwhere?: string = '';
     nome?: string = '';
     operador?: number = -2147483648;
+    guid?: string = '';
 }
     

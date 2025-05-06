@@ -1,4 +1,4 @@
-﻿using Domain.BaseCommon.Helpers; 
+﻿using Domain.BaseCommon.Helpers;
 
 namespace MenphisSI.GerAdv.HealthCheck;
 
@@ -8,28 +8,43 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
     private bool _disposed;
     private readonly string _uri = uri;
 
-//#if (!DEBUG)
-    private const int PHoraParaLembrar = 19;
-//#else
-//    private int PHoraParaLembrar = DateTime.Now.Hour; // Definido pela Magnanima Dra. Aliçar Ibrahim
-//#endif
+
+    private const int PHoraParaDia = 8;
+    private const int PHoraParaNovos = 19;
+
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
-    {       
+    {
+
+#if (DEBUG)
+        return CreateHealthyResult("Notificador operacional");
+#endif
         try
         {
-            if (DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
             {
-                if (DateTime.Now.Hour == PHoraParaLembrar)
-                {
-                    using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
-                    if (oCnn is null)
-                    {
-                        return CreateUnhealthyResult("Conexão não disponível");
-                    }
+                return CreateHealthyResult("Notificador operacional");
+            }
 
-                    _ = await SendNotificationsAndGetResult(oCnn);
+            if (DateTime.Now.Hour == PHoraParaDia)
+            {
+                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                if (oCnn is null)
+                {
+                    return CreateUnhealthyResult("Conexão não disponível");
                 }
+
+                _ = await SendNotificationsAndGetResult(E_TIPO_ENVIO.DIA, oCnn);
+            }
+            else if (DateTime.Now.Hour == PHoraParaNovos)
+            {
+                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                if (oCnn is null)
+                {
+                    return CreateUnhealthyResult("Conexão não disponível");
+                }
+
+                _ = await SendNotificationsAndGetResult(E_TIPO_ENVIO.NOVOS, oCnn);
             }
 
             return CreateHealthyResult("Notificador operacional");
@@ -41,18 +56,18 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
         }
     }
 
- 
-
-    private string GetScheduleKey()
+    private string GetScheduleKey(E_TIPO_ENVIO tipo)
     {
-        string key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now:dd/MM/yyyy}";        
-
+        string key = $"agenda-adv.net-sender-time-{_uri}-{tipo}-{DateTime.Now:dd/MM/yyyy}";
+#if (DEBUG)
+        key = $"agenda-advnet-sender-time-{_uri}-{DateTime.Now}";
+#endif
         return key;
     }
 
-    private async Task<HealthCheckResult> SendNotificationsAndGetResult(SqlConnection oCnn)
+    private async Task<HealthCheckResult> SendNotificationsAndGetResult(E_TIPO_ENVIO tipo, SqlConnection oCnn)
     {
-        string key = GetScheduleKey();
+        string key = GetScheduleKey(tipo);
 
         var dbOperator = new DBOperador { ID = 1 };
 
@@ -64,12 +79,12 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
         }
 
         // Marca como processado para evitar reprocessamento
-        using var writeConnection = await Configuracoes.GetConnectionByUriRwAsync(_uri); 
+        using var writeConnection = await Configuracoes.GetConnectionByUriRwAsync(_uri);
         dbOperator.WriteCfgBool(key, true, writeConnection);
 
         // Envia as notificações
         var notificationService = new EnvioNotificacoes();
-        int sentCount = notificationService.EnviarEmailsParaOperadores(uri, oCnn);
+        int sentCount = notificationService.EnviarEmailsParaOperadores(tipo, uri, oCnn);
 
         var data = new Dictionary<string, object>
     {

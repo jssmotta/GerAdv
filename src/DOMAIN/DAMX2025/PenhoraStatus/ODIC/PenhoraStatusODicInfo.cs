@@ -39,7 +39,7 @@ public partial class DBPenhoraStatusODicInfo : IODicInfo
     public static string TTabelaNome => DBPenhoraStatusDicInfo.TabelaNome;
     public static string TTablePrefix => DBPenhoraStatusDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBPenhoraStatusDicInfo.PhsNome, DBPenhoraStatusDicInfo.PhsGUID, DBPenhoraStatusDicInfo.PhsQuemCad, DBPenhoraStatusDicInfo.PhsDtCad, DBPenhoraStatusDicInfo.PhsQuemAtu, DBPenhoraStatusDicInfo.PhsDtAtu, DBPenhoraStatusDicInfo.PhsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBPenhoraStatusDicInfo.PhsNome];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBPenhoraStatusDicInfo.PhsNome, DBPenhoraStatusDicInfo.PhsGUID];
 
     public static List<DBInfoSystem> ListPk()
     {

@@ -5,7 +5,7 @@ import { RegimeTributacaoApi } from '../../Apis/ApiRegimeTributacao';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IRegimeTributacaoFormProps } from '../../Interfaces/interface.RegimeTributacao';
 import { RegimeTributacaoService } from '../../Services/RegimeTributacao.service';
 import { useRegimeTributacaoForm } from '../../Hooks/useRegimeTributacaoForm';

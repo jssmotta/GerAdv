@@ -1,13 +1,19 @@
-﻿"use client";
-import { Button, Checkbox, Input } from '@progress/kendo-react-all';
-import { IOutrasPartesCliente } from '../../Interfaces/interface.OutrasPartesCliente';
+﻿// Forms.tsx.txt
+"use client";
+import { Button, Input } from '@progress/kendo-react-all';
+import { IOutrasPartesCliente } from '@/app/GerAdv_TS/OutrasPartesCliente/Interfaces/interface.OutrasPartesCliente';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonsCrud from '@/app/components/Cruds/ButtonsCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputCpf from '@/app/components/Inputs/InputCpf'
 import InputCnpj from '@/app/components/Inputs/InputCnpj'
 import InputCep from '@/app/components/Inputs/InputCep'
@@ -40,27 +46,42 @@ interface OutrasPartesClienteFormProps {
     }
    };
 
+  const onPressSalvar = (e: any) => {
+    e.preventDefault();
+    if (!isSubmitting) {
+      const formElement = document.getElementById('OutrasPartesClienteForm');
+
+      if (formElement) {
+        const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(syntheticEvent);
+      }
+    }
+  };
+
   return (
   <>
   
-    <div className="form-container">
+        <div className="form-container">
        
-        <form onSubmit={onConfirm}>
-         
-         <div className="grid-container">
+            <form id={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} onSubmit={onConfirm}>
 
-    <Input
+                <ButtonsCrud data={outraspartesclienteData} isSubmitting={isSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} />
+
+                <div className="grid-container">
+
+    <InputName
             type="text"            
             id="nome"
             label="nome"
             className="inputIncNome"
             name="nome"
             value={outraspartesclienteData.nome}
+            placeholder={`Digite nome outras partes cliente`}
             onChange={onChange}
             required
           />
 
-          <Checkbox label="Terceirizado" name="terceirizado" checked={outraspartesclienteData.terceirizado} onChange={onChange} />
+                <InputCheckbox label="Terceirizado" name="terceirizado" checked={outraspartesclienteData.terceirizado} onChange={onChange} />
         
 <Input
 type="text"
@@ -72,8 +93,8 @@ value={outraspartesclienteData.clienteprincipal}
 onChange={onChange}               
 />
 
-<Checkbox label="Tipo" name="tipo" checked={outraspartesclienteData.tipo} onChange={onChange} />
-<Checkbox label="Sexo" name="sexo" checked={outraspartesclienteData.sexo} onChange={onChange} />
+<InputCheckbox label="Tipo" name="tipo" checked={outraspartesclienteData.tipo} onChange={onChange} />
+<InputCheckbox label="Sexo" name="sexo" checked={outraspartesclienteData.sexo} onChange={onChange} />
         
 <Input
 type="text"
@@ -226,22 +247,12 @@ value={outraspartesclienteData.class}
 onChange={onChange}               
 />
 
-</div><div className="grid-container"><Checkbox label="Ani" name="ani" checked={outraspartesclienteData.ani} onChange={onChange} />
-							<div className='relacionamentosLinks' onClick={()=> router.push(`/pages/parteclienteoutras${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?outraspartescliente=${outraspartesclienteData.id}`)}>Parte Cliente Outras</div>
+</div><div className="grid-container"><InputCheckbox label="Ani" name="ani" checked={outraspartesclienteData.ani} onChange={onChange} />
 
-          </div>
-           <div className="buttons-container">
-              <br />
-              <Button type="button" className="buttonSair" onClick={onClose}>
-                Cancelar
-              </Button>
-              &nbsp;&nbsp;
-              <Button type="submit" themeColor="primary" className="buttonOk" disabled={isSubmitting}>
-                Salvar
-              </Button>
-          </div>
-        </form>
-    </div>
+                </div>               
+            </form>
+        </div>
+        
     </>
      );
 };

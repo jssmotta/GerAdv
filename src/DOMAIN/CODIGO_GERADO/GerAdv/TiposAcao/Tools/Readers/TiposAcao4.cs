@@ -8,6 +8,7 @@ public partial interface ITiposAcaoReader
     TiposAcaoResponse? Read(int id, SqlConnection oCnn);
     TiposAcaoResponse? Read(string where, SqlConnection oCnn);
     TiposAcaoResponse? Read(Entity.DBTiposAcao dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TiposAcaoResponse? Read(DBTiposAcao dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class TiposAcao : ITiposAcaoReader
             Nome = dbRec.FNome ?? string.Empty,
             Inativo = dbRec.FInativo,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class TiposAcao : ITiposAcaoReader
             Nome = dbRec.FNome ?? string.Empty,
             Inativo = dbRec.FInativo,
             Bold = dbRec.FBold,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

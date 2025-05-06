@@ -8,6 +8,7 @@ public partial interface IForoReader
     ForoResponse? Read(int id, SqlConnection oCnn);
     ForoResponse? Read(string where, SqlConnection oCnn);
     ForoResponse? Read(Entity.DBForo dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ForoResponse? Read(DBForo dbRec);
 }
 

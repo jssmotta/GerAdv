@@ -5,7 +5,7 @@ import { RamalApi } from '../../Apis/ApiRamal';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { NotificationService } from '@/app/services/notification.service';
-import { NotificationComponent } from '@/app/components/NotificationComponent';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
 import { IRamalFormProps } from '../../Interfaces/interface.Ramal';
 import { RamalService } from '../../Services/Ramal.service';
 import { useRamalForm } from '../../Hooks/useRamalForm';

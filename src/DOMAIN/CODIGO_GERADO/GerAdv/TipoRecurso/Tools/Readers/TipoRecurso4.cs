@@ -8,6 +8,7 @@ public partial interface ITipoRecursoReader
     TipoRecursoResponse? Read(int id, SqlConnection oCnn);
     TipoRecursoResponse? Read(string where, SqlConnection oCnn);
     TipoRecursoResponse? Read(Entity.DBTipoRecurso dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     TipoRecursoResponse? Read(DBTipoRecurso dbRec);
 }
 
@@ -38,7 +39,7 @@ public partial class TipoRecurso : ITipoRecursoReader
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {
@@ -68,7 +69,7 @@ public partial class TipoRecurso : ITipoRecursoReader
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Guid = dbRec.FGUID ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

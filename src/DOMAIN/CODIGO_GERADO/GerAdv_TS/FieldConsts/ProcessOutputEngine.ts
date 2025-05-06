@@ -11,4 +11,5 @@
 	idmodulo = `IDModulo`,
 	isonlyprocesso = `IsOnlyProcesso`,
 	myid = `MyID`,
+	guid = `GUID`,
 }

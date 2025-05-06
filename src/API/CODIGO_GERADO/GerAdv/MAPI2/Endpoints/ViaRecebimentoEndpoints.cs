@@ -74,30 +74,6 @@ public static class ViaRecebimentoEndpoints
 
             return Results.Ok(result);
         }).WithName("ViaRecebimento_AddAndUpdate").WithDisplayName("Add or Update ViaRecebimento");
-        group.MapPost("/GetColumns", async (GetColumns parameters, string uri, IViaRecebimentoValidation validation, IViaRecebimentoWriter writer, IViaRecebimentoService service) =>
-        {
-            logger.LogInfo("ViaRecebimento", "GetColumns", $"id = {parameters.Id}", $"columns = {parameters.Columns}", uri);
-            var result = await service.GetColumns(parameters, uri);
-            if (result == null)
-            {
-                logger.LogWarn("ViaRecebimento", "GetColumns", $"No columns found for id = {parameters.Id}", uri);
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
-        }).WithName("ViaRecebimento_GetColumns").WithDisplayName("Get ViaRecebimento Columns");
-        group.MapPost("/UpdateColumns", async (UpdateColumnsRequest parameters, string uri, IViaRecebimentoValidation validation, IViaRecebimentoWriter writer, IViaRecebimentoService service) =>
-        {
-            logger.LogInfo("ViaRecebimento", "UpdateColumns", $"id = {parameters.Id}", $"parameters = {parameters}", uri);
-            var result = await service.UpdateColumns(parameters, uri);
-            if (!result)
-            {
-                logger.LogWarn("ViaRecebimento", "UpdateColumns", $"Failed to update columns for id = {parameters.Id}", uri);
-                return Results.BadRequest();
-            }
-
-            return Results.Ok();
-        }).WithName("ViaRecebimento_UpdateColumns").WithDisplayName("Update ViaRecebimento Columns");
         group.MapDelete("/Delete", async (int id, string uri, IViaRecebimentoValidation validation, IViaRecebimentoWriter writer, IViaRecebimentoService service) =>
         {
             logger.LogInfo("ViaRecebimento", "Delete", $"id = {id}", uri);

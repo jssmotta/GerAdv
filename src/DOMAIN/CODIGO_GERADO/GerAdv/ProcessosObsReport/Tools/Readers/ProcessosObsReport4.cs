@@ -8,6 +8,7 @@ public partial interface IProcessosObsReportReader
     ProcessosObsReportResponse? Read(int id, SqlConnection oCnn);
     ProcessosObsReportResponse? Read(string where, SqlConnection oCnn);
     ProcessosObsReportResponse? Read(Entity.DBProcessosObsReport dbRec);
+    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
     ProcessosObsReportResponse? Read(DBProcessosObsReport dbRec);
 }
 

@@ -3,4 +3,5 @@
 	operador = `Operador`,
 	processo = `Processo`,
 	ultimoidtabelaexo = `UltimoIdTabelaExo`,
+	guid = `GUID`,
 }

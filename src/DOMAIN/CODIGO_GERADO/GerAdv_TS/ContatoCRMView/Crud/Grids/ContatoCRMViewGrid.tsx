@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ContatoCRMViewEmpty } from "../../../Models/ContatoCRMView";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ContatoCRMViewInc from "../Inc/ContatoCRMView";
 import { IContatoCRMView } from "../../Interfaces/interface.ContatoCRMView";
 import { ContatoCRMViewService } from "../../Services/ContatoCRMView.service";
 import { ContatoCRMViewApi } from "../../Apis/ApiContatoCRMView";
@@ -16,11 +14,12 @@ import { ContatoCRMViewGridMobileComponent } from "../GridsMobile/ContatoCRMView
 import { ContatoCRMViewGridDesktopComponent } from "../GridsDesktop/ContatoCRMView";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterContatoCRMView } from "../../Filters/ContatoCRMView";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ContatoCRMViewWindow from "./ContatoCRMViewWindow";
 
 const ContatoCRMViewGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const ContatoCRMViewGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <ContatoCRMViewGridMobileComponent data={contatocrmview} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ContatoCRMViewGridDesktopComponent data={contatocrmview} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ContatoCRMViewGridMobileComponent data={contatocrmview} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ContatoCRMViewGridDesktopComponent data={contatocrmview} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ContatoCRMViewWindow
           isOpen={showInc}

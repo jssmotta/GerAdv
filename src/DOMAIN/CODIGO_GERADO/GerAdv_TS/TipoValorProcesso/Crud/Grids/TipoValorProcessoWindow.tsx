@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import TipoValorProcessoInc from "../Inc/TipoValorProcesso";
 import { ITipoValorProcesso } from "../../Interfaces/interface.TipoValorProcesso";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const TipoValorProcessoWindow: React.FC<TipoValorProcessoWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/tipovalorprocesso/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoValorProcesso?.id}`);
+            router.push(`/pages/tipovalorprocesso/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedTipoValorProcesso?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedTipoValorProcesso]);
@@ -42,7 +43,7 @@ const TipoValorProcessoWindow: React.FC<TipoValorProcessoWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedTipoValorProcesso?.id ?? 0).toString()}

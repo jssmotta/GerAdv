@@ -19,6 +19,7 @@ public partial class Rito : IRitoWhere
             Descricao = dbRec.FDescricao ?? string.Empty,
             Top = dbRec.FTop,
             Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
         var auditor = new Auditor
         {

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import ProProcuradoresInc from "../Inc/ProProcuradores";
 import { IProProcuradores } from "../../Interfaces/interface.ProProcuradores";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const ProProcuradoresWindow: React.FC<ProProcuradoresWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/proprocuradores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProProcuradores?.id}`);
+            router.push(`/pages/proprocuradores/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedProProcuradores?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedProProcuradores]);
@@ -42,7 +43,7 @@ const ProProcuradoresWindow: React.FC<ProProcuradoresWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={633}
                     newWidth={720}
                     id={(selectedProProcuradores?.id ?? 0).toString()}

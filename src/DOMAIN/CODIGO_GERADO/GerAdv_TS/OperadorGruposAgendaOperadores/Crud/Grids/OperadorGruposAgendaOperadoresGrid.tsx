@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { OperadorGruposAgendaOperadoresEmpty } from "../../../Models/OperadorGruposAgendaOperadores";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import OperadorGruposAgendaOperadoresInc from "../Inc/OperadorGruposAgendaOperadores";
 import { IOperadorGruposAgendaOperadores } from "../../Interfaces/interface.OperadorGruposAgendaOperadores";
 import { OperadorGruposAgendaOperadoresService } from "../../Services/OperadorGruposAgendaOperadores.service";
 import { OperadorGruposAgendaOperadoresApi } from "../../Apis/ApiOperadorGruposAgendaOperadores";
@@ -16,11 +14,12 @@ import { OperadorGruposAgendaOperadoresGridMobileComponent } from "../GridsMobil
 import { OperadorGruposAgendaOperadoresGridDesktopComponent } from "../GridsDesktop/OperadorGruposAgendaOperadores";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterOperadorGruposAgendaOperadores } from "../../Filters/OperadorGruposAgendaOperadores";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import OperadorGruposAgendaOperadoresWindow from "./OperadorGruposAgendaOperadoresWindow";
 
 const OperadorGruposAgendaOperadoresGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -117,8 +116,8 @@ const OperadorGruposAgendaOperadoresGrid: React.FC = () => {
       <>
             
         {isMobile ?
-           <OperadorGruposAgendaOperadoresGridMobileComponent data={operadorgruposagendaoperadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <OperadorGruposAgendaOperadoresGridDesktopComponent data={operadorgruposagendaoperadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <OperadorGruposAgendaOperadoresGridMobileComponent data={operadorgruposagendaoperadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <OperadorGruposAgendaOperadoresGridDesktopComponent data={operadorgruposagendaoperadores} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <OperadorGruposAgendaOperadoresWindow
           isOpen={showInc}

@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { ProcessOutputSourcesEmpty } from "../../../Models/ProcessOutputSources";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import ProcessOutputSourcesInc from "../Inc/ProcessOutputSources";
 import { IProcessOutputSources } from "../../Interfaces/interface.ProcessOutputSources";
 import { ProcessOutputSourcesService } from "../../Services/ProcessOutputSources.service";
 import { ProcessOutputSourcesApi } from "../../Apis/ApiProcessOutputSources";
@@ -16,11 +14,12 @@ import { ProcessOutputSourcesGridMobileComponent } from "../GridsMobile/ProcessO
 import { ProcessOutputSourcesGridDesktopComponent } from "../GridsDesktop/ProcessOutputSources";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterProcessOutputSources } from "../../Filters/ProcessOutputSources";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import ProcessOutputSourcesWindow from "./ProcessOutputSourcesWindow";
 
 const ProcessOutputSourcesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const ProcessOutputSourcesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <ProcessOutputSourcesGridMobileComponent data={processoutputsources} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <ProcessOutputSourcesGridDesktopComponent data={processoutputsources} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <ProcessOutputSourcesGridMobileComponent data={processoutputsources} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <ProcessOutputSourcesGridDesktopComponent data={processoutputsources} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <ProcessOutputSourcesWindow
           isOpen={showInc}

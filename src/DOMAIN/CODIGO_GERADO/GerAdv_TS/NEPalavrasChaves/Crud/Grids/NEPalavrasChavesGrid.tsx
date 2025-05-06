@@ -1,14 +1,12 @@
 ﻿//CrudGrid.tsx.txt
 "use client";
-import { EditWindow } from "@/app/components/EditWindow"; 
-import { AppGridToolbar } from "@/app/components/GridToolbar";
+import { AppGridToolbar } from "@/app/components/Cruds/GridToolbar";
 import { useIsMobile } from "@/app/context/MobileContext";
 import { useSystemContext } from "@/app/context/SystemContext";
 import { NEPalavrasChavesEmpty } from "../../../Models/NEPalavrasChaves";
 import { useWindow } from "@/app/hooks/useWindows";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import NEPalavrasChavesInc from "../Inc/NEPalavrasChaves";
 import { INEPalavrasChaves } from "../../Interfaces/interface.NEPalavrasChaves";
 import { NEPalavrasChavesService } from "../../Services/NEPalavrasChaves.service";
 import { NEPalavrasChavesApi } from "../../Apis/ApiNEPalavrasChaves";
@@ -16,11 +14,12 @@ import { NEPalavrasChavesGridMobileComponent } from "../GridsMobile/NEPalavrasCh
 import { NEPalavrasChavesGridDesktopComponent } from "../GridsDesktop/NEPalavrasChaves";
 import { getParamFromUrl } from "@/app/tools/helpers";
 import { FilterNEPalavrasChaves } from "../../Filters/NEPalavrasChaves";
-import { ConfirmationModal } from "@/app/components/ConfirmationModal";
+import { ConfirmationModal } from "@/app/components/Cruds/ConfirmationModal";
 import NEPalavrasChavesWindow from "./NEPalavrasChavesWindow";
 
 const NEPalavrasChavesGrid: React.FC = () => {
     const { systemContext } = useSystemContext();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const isMobile = useIsMobile();
     const router = useRouter();
     const dimensions = useWindow();
@@ -118,8 +117,8 @@ const NEPalavrasChavesGrid: React.FC = () => {
         <AppGridToolbar onAdd={handleAdd} />    
 
         {isMobile ?
-           <NEPalavrasChavesGridMobileComponent data={nepalavraschaves} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> :
-           <NEPalavrasChavesGridDesktopComponent data={nepalavraschaves} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} /> }       
+           <NEPalavrasChavesGridMobileComponent data={nepalavraschaves} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> :
+           <NEPalavrasChavesGridDesktopComponent data={nepalavraschaves} onRowClick={handleRowClick} onDeleteClick={onDeleteClick} setSelectedId={setSelectedId}  /> }       
      
         <NEPalavrasChavesWindow
           isOpen={showInc}

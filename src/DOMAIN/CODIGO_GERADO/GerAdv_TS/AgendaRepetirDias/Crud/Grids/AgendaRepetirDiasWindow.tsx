@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from "react";
-import { EditWindow } from "@/app/components/EditWindow";
+import { EditWindow } from "@/app/components/Cruds/EditWindow";
 import AgendaRepetirDiasInc from "../Inc/AgendaRepetirDias";
 import { IAgendaRepetirDias } from "../../Interfaces/interface.AgendaRepetirDias";
 import { useIsMobile } from "@/app/context/MobileContext";
@@ -27,11 +27,12 @@ const AgendaRepetirDiasWindow: React.FC<AgendaRepetirDiasWindowProps> = ({
 
     const router = useRouter();
     const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();
 
     useEffect(() => {
         if (!isOpen) return;
         if (isMobile) {
-            router.push(`/pages/agendarepetirdias/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaRepetirDias?.id}`);
+            router.push(`/pages/agendarepetirdias/inc${process.env.NEXT_PUBLIC_PAGE_HTML ?? ''}?id=${selectedAgendaRepetirDias?.id ?? '0'}`);
         }
 
     }, [isMobile, router, selectedAgendaRepetirDias]);
@@ -42,7 +43,7 @@ const AgendaRepetirDiasWindow: React.FC<AgendaRepetirDiasWindowProps> = ({
                 <EditWindow
                     isOpen={isOpen}
                     onClose={onClose}
-                    dimensions={dimensions ?? { width: 0, height: 0 }}
+                    dimensions={dimensions ?? dimensionsEmpty}
                     newHeight={445}
                     newWidth={720}
                     id={(selectedAgendaRepetirDias?.id ?? 0).toString()}

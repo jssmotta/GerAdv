@@ -42,7 +42,7 @@ public partial class DBSituacaoODicInfo : IODicInfo
     public static string TTabelaNome => DBSituacaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBSituacaoDicInfo.TablePrefix;
     public static List<DBInfoSystem> List => [DBSituacaoDicInfo.SitParte_Int, DBSituacaoDicInfo.SitParte_Opo, DBSituacaoDicInfo.SitTop, DBSituacaoDicInfo.SitBold, DBSituacaoDicInfo.SitGUID, DBSituacaoDicInfo.SitQuemCad, DBSituacaoDicInfo.SitDtCad, DBSituacaoDicInfo.SitQuemAtu, DBSituacaoDicInfo.SitDtAtu, DBSituacaoDicInfo.SitVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBSituacaoDicInfo.SitParte_Int, DBSituacaoDicInfo.SitParte_Opo, DBSituacaoDicInfo.SitTop, DBSituacaoDicInfo.SitBold];
+    public static List<DBInfoSystem> ListWithoutAuditor => [DBSituacaoDicInfo.SitParte_Int, DBSituacaoDicInfo.SitParte_Opo, DBSituacaoDicInfo.SitTop, DBSituacaoDicInfo.SitBold, DBSituacaoDicInfo.SitGUID];
 
     public static List<DBInfoSystem> ListPk()
     {
@@ -58,7 +58,9 @@ public partial class DBSituacaoODicInfo : IODicInfo
     {
         string[] campos =
         {
-            "sitCodigo"
+            "sitCodigo",
+            "sitParte_Int",
+            "sitParte_Opo"
         };
         var result = campos.Where(campo => !campo.Equals(DBSituacaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
         return result ?? [];
