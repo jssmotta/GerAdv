@@ -37,8 +37,7 @@ public partial class Historico : IHistoricoReader
         {
             Id = dbRec.ID,
             ExtraID = dbRec.FExtraID,
-            IDNE = dbRec.FIDNE,
-            GUID = dbRec.FExtraGUID ?? string.Empty,
+            IDNE = dbRec.FIDNE, 
             LiminarOrigem = dbRec.FLiminarOrigem,
             NaoPublicavel = dbRec.FNaoPublicavel,
             Processo = dbRec.FProcesso,
@@ -100,8 +99,7 @@ public partial class Historico : IHistoricoReader
             SAD = dbRec.FSAD,
             Resumido = dbRec.FResumido,
             StatusAndamento = dbRec.FStatusAndamento,
-            Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Top = dbRec.FTop
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             historico.Data = dbRec.FData;

@@ -123,11 +123,7 @@ public partial class Historico
     [JsonPropertyName("top")]
     public bool Top { get; set; }
 
-    /// <summary>
-    /// GUId - hisGUID - tamanho máximo: 100 
-    /// </summary>
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = "";
+  
 
     [JsonPropertyName("auditor")]
     public Auditor? Auditor { get; set; }

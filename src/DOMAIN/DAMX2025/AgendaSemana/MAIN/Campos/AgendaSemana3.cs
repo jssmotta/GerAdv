@@ -1,3 +1,5 @@
+
+
 namespace MenphisSI.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBAgendaSemana

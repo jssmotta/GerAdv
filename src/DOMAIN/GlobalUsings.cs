@@ -18,4 +18,5 @@ global using System.Xml.Serialization;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using MenphisSI.WebApi.BaseCommon.Helpers;
+global using System.Globalization;
 global using System.ComponentModel.DataAnnotations;
