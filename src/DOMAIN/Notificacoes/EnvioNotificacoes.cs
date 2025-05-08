@@ -160,7 +160,7 @@ ORDER BY vqaData;";
     }
 
     
-    public int EnviarEmailsParaOperadores(E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
+    public int EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
     {
         string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
         var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
