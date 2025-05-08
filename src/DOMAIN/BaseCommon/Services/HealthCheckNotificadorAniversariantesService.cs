@@ -13,12 +13,15 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
         try
         {
 
+#if (!DEBUG)
+
             if (IsNotDiaOperacional())
             {
                 return CreateHealthyResult("Notificador operacional");
             }
 
             if (IsHoraProcessamento())
+#endif
             {
                 using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)
@@ -73,8 +76,9 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
         // Envia as notificações
         var notificationService = new EnvioNotificacoesAniversariantes();
         int sentCount = notificationService.EnviarEmailsParaAdvogados(uri, oCnn);
+#if (!DEBUG)
         sentCount += notificationService.EnviarEmailsParaFuncionarios(uri, oCnn);
-
+#endif
         var data = new Dictionary<string, object>
     {
         { "EnviosRealizados", sentCount.ToString("N0") }

@@ -8,12 +8,25 @@ public class EnvioNotificacoesAniversariantes
 {
     private string ConteudoHtml(string operador, int advogado, string uri, SqlConnection oCnn)
     {
-        var ds = ObterAniversariantes(oCnn, uri, operador, advogado);
+        var ds = ObterAniversariantes(oCnn, uri, advogado);
         if (ds.Rows.Count == 0)
         {
             return "";
         }
-        return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count);
+        var sbRet = new StringBuilder();
+        sbRet.Append(ConteudoAgendaHtml(operador, advogado, uri, oCnn));
+        sbRet.AppendLine(CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count, "você está recebendo aviso de aniversariantes somente de clientes ativos que você tem algum processo ou compromisso em nome deles.", ""));
+        return sbRet.ToString();
+    }
+
+    private string ConteudoAgendaHtml(string operador, int advogado, string uri, SqlConnection oCnn)
+    {
+        var dsComAgenda = ObterAniversariantesComCompromissos(oCnn, uri, advogado);
+        if (dsComAgenda.Rows.Count == 0)
+        {
+            return "";
+        }
+        return CriarTabelaDaAgendaHtml(dsComAgenda, operador, dsComAgenda.Rows.Count, " a data ao lado do nome do cliente é a data do próximo compromisso que esse cliente possui agendado.", " com compromissos na agenda");
     }
 
     private string ConteudoHtmlFuncionarios(string operador, int advogado, string uri, SqlConnection oCnn)
@@ -23,7 +36,7 @@ public class EnvioNotificacoesAniversariantes
         {
             return "";
         }
-        return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count);
+        return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count, "você está recebendo aviso de aniversariantes somente de clientes ativos porque você é um colaborador com usuário Master.", "");
     }
 
     private void TestaViews(string uri)
@@ -64,48 +77,74 @@ END;
 
 
         using var conexao = Configuracoes.GetConnectionByUriRw(uri);
-        ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);        
+        ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
-
-    private DataTable ObterAniversariantes(
-        SqlConnection conexao,        
+    private DataTable ObterAniversariantesComCompromissos(
+        SqlConnection conexao,
         string uri,
-        string operador,
         int advogado,
         int nTry = 0)
     {
-        try
-        {
-            string whereClause = ConstruirCondicaoFiltro(advogado);
-            string operadorSanitizado = operador.Replace("'", "''");
 
-            string sql = $@"
+        string whereClause = ConstruirCondicaoFiltro(advogado);
+
+        string sql = $@"
+WITH ClientesNumerados AS (
+    SELECT 
+        cliNome + ' ' + FORMAT(ageData, 'dd/MM/yyyy') AS cliNome,  
+        mes, 
+        dia, 
+        ageData,
+		advCodigo,
+        ROW_NUMBER() OVER (PARTITION BY cliNome ORDER BY ageData) AS RowNum
+    FROM NotificarAniversariantes n
+    JOIN processos p ON p.proCliente = n.cliCodigo
+    JOIN agenda a ON a.ageProcesso = p.proCodigo 
+    WHERE a.ageData BETWEEN GETDATE() AND DATEADD(DAY, 7, GETDATE())
+)
+SELECT 
+    cliNome, 
+    mes, 
+    dia, 
+    ageData,
+	advCodigo
+FROM ClientesNumerados
+WHERE RowNum = 1 AND {whereClause}
+ORDER BY ageData;
+";
+
+        return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
+
+    }
+
+    private DataTable ObterAniversariantes(
+        SqlConnection conexao,
+        string uri,
+        int advogado,
+        int nTry = 0)
+    {
+
+        string whereClause = ConstruirCondicaoFiltro(advogado);
+
+        string sql = $@"
     SELECT distinct cliNome, mes, dia 
     FROM dbo.NotificarAniversariantes
     WHERE {whereClause}   
     ORDER BY mes, dia, cliNome;
 ";
 
-            return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
-        }
-        catch (Exception)
-        {
-            if (++nTry > 3)
-            {
-                throw;
-            }
+        return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
 
-            TestaViews(uri);
-            return ObterAniversariantes(conexao, uri, operador, advogado, nTry);
-        }
     }
-    
+
+
+
     private string ConstruirCondicaoFiltro(int advogado)
     {
         return $"advCodigo={advogado}";
     }
 
-    private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total)
+    private string CriarTabelaDaAgendaHtml(DataTable compromissos, string nome, int total, string mensagem, string extraHeader)
     {
         var estiloTabela = ObterEstiloTabelaCss();
         var builder = new StringBuilder(estiloTabela);
@@ -114,7 +153,7 @@ END;
         builder.AppendLine("<table class='tabAniversariantes'><thead>");
         builder.AppendLine("<tr>");
         builder.AppendLine($"<th width=\"4%\">#</th>");
-        builder.AppendLine($"<th width=\"78%\">Aniversariante{(total == 1 ? "" : "s")} nos próximos 7 dias</h1></th>");
+        builder.AppendLine($"<th width=\"78%\">Aniversariante{(total == 1 ? "" : "s")} nos próximos 7 dias {extraHeader}</h1></th>");
         builder.AppendLine("<th width=\"18%\">Dia/Mês </th>");
         builder.AppendLine("</tr>");
         builder.AppendLine("</thead>");
@@ -133,14 +172,19 @@ END;
         }
 
         builder.AppendLine("</table>");
-        builder.AppendLine($"<span><b>{nome.Split(' ')[0]}, você está recebendo aviso de aniversariantes somente de clientes ativos que você tem algum processo ou compromisso em nome deles.</b></span>");
+        if (mensagem.Length > 0) builder.AppendLine($"<span><b>{nome.Split(' ')[0]}, {mensagem}</b></span>");
         return builder.ToString();
     }
 
-    
+
     public int EnviarEmailsParaAdvogados(string uri, SqlConnection oCnn)
     {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And + DBOperadorDicInfo.CadIDSql(1);
+        TestaViews(uri);
+
+        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And +
+            DBOperadorDicInfo.ExcluidoSqlNao + TSql.And +
+            "operCadID=1 AND operCadCod IN (select distinct advCodigo from NotificarAniversariantes)";
+
         var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
         var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
@@ -157,14 +201,14 @@ END;
                                              : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtml(cNome, operador.FCadID, uri, oCnn);
+            var conteudoHtml = ConteudoHtml(cNome, operador.FCadCod, uri, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
                 continue;
             }
 
-#if (!DEBUG)
+ 
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
@@ -177,10 +221,9 @@ END;
             };
 
 
-            _ = servicoEmail.Send(email);
-#endif
-            if (count == 0)
-            {
+           _ = servicoEmail.Send(email);
+ 
+             
 #if (!DEBUG)
                 if (uri.ToUpper().Equals("IBRADV"))
 #endif
@@ -197,13 +240,11 @@ END;
                     _ = servicoEmail.Send(email2);
                 }
 
-            }
+            
 
             count++;
 
-        #if (DEBUG)
-            break;
-            #endif
+
         }
 
         return count;
@@ -375,7 +416,7 @@ END;
             _ = servicoEmail.Send(email);
 #endif 
             count++;
- 
+
         }
 
         return count;
@@ -390,7 +431,7 @@ END;
     {
         try
         {
-            
+
             string operadorSanitizado = operador.Replace("'", "''");
 
             string sql = $@"
