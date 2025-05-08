@@ -84,7 +84,7 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
 
         // Envia as notificações
         var notificationService = new EnvioNotificacoes();
-        int sentCount = notificationService.EnviarEmailsParaOperadores(tipo, uri, oCnn);
+        int sentCount = notificationService.EnviarEmailsParaAdvogados(tipo, uri, oCnn);
 
         var data = new Dictionary<string, object>
     {

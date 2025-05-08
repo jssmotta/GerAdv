@@ -16,6 +16,16 @@ public class EnvioNotificacoesAniversariantes
         return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count);
     }
 
+    private string ConteudoHtmlFuncionarios(string operador, int advogado, string uri, SqlConnection oCnn)
+    {
+        var ds = ObterAniversariantesFuncionarios(oCnn, uri, operador, advogado);
+        if (ds.Rows.Count == 0)
+        {
+            return "";
+        }
+        return CriarTabelaDaAgendaHtml(ds, operador, ds.Rows.Count);
+    }
+
     private void TestaViews(string uri)
     {
 
@@ -128,7 +138,7 @@ END;
     }
 
     
-    public int EnviarEmailsParaOperadores(string uri, SqlConnection oCnn)
+    public int EnviarEmailsParaAdvogados(string uri, SqlConnection oCnn)
     {
         string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And + DBOperadorDicInfo.CadIDSql(1);
         var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
@@ -322,6 +332,114 @@ END;
 }
 
    </style> ";
+    }
+
+    public int EnviarEmailsParaFuncionarios(string uri, SqlConnection oCnn)
+    {
+        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And + DBOperadorDicInfo.MasterSqlSim + TSql.And + DBOperadorDicInfo.CadIDSql(2);
+        var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
+        var servicoEmail = new SendEmailApi();
+        var assunto = "Aniversariantes próximos 7 dias";
+        var count = 0;
+
+        foreach (var operador in operadores)
+        {
+            if (string.IsNullOrEmpty(operador.FEMailNet) || string.IsNullOrEmpty(operador.FNome))
+            {
+                continue;
+            }
+
+            var cNome = operador.FCadID == 1 ? DBAdvogados.ListarN(operador.FCadCod, oCnn).FNome
+                                             : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
+            if (cNome == null || cNome.Equals("")) continue;
+
+            var conteudoHtml = ConteudoHtmlFuncionarios(cNome, operador.FCadID, uri, oCnn);
+
+            if (string.IsNullOrEmpty(conteudoHtml))
+            {
+                continue;
+            }
+
+#if (!DEBUG)
+
+            var email = new MenphisSI.Api.Models.SendEmail
+            {
+                ParaEmail = operador.FEMailNet,
+                ParaNome = cNome,
+                Assunto = assunto + " - " + cNome,
+                Mensagem = conteudoHtml,
+                NomeDoMail = "ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
+                Time2Live = 24
+            };
+
+            _ = servicoEmail.Send(email);
+#endif 
+            count++;
+ 
+        }
+
+        return count;
+    }
+
+    private DataTable ObterAniversariantesFuncionarios(
+    SqlConnection conexao,
+    string uri,
+    string operador,
+    int advogado,
+    int nTry = 0)
+    {
+        try
+        {
+            
+            string operadorSanitizado = operador.Replace("'", "''");
+
+            string sql = $@"
+    SELECT distinct cliNome, mes, dia 
+    FROM dbo.NotificarAniversariantesFuncionarios    
+    ORDER BY mes, dia, cliNome;
+";
+
+            return ConfiguracoesDBT.GetDataTable2(sql, conexao)!;
+        }
+        catch (Exception)
+        {
+            if (++nTry > 3)
+            {
+                throw;
+            }
+
+            TestaViewsFuncionarios(uri);
+            return ObterAniversariantesFuncionarios(conexao, uri, operador, advogado, nTry);
+        }
+    }
+
+    private void TestaViewsFuncionarios(string uri)
+    {
+
+        string createViewScript1 = $@"
+            IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'dbo.NotificarAniversariantesFuncionarios'))
+BEGIN
+    EXEC('CREATE VIEW [dbo].[NotificarAniversariantesFuncionarios] AS 
+            SELECT DISTINCT
+                c.cliCodigo,
+                c.cliNome,
+                DAY(c.cliDtNasc) as dia,
+	            MONTH(c.cliDtNasc) as mes                                
+            FROM
+                dbo.Clientes c
+            
+            WHERE	            
+                c.cliInativo=0 AND
+                MONTH(c.cliDtNasc) = MONTH(GETDATE()) AND
+                DAY(c.cliDtNasc) BETWEEN DAY(GETDATE()) AND DAY(DATEADD(DAY, 7, GETDATE()));	            
+            ');
+END;
+
+                    ;";
+
+
+        using var conexao = Configuracoes.GetConnectionByUriRw(uri);
+        ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
 
 }
