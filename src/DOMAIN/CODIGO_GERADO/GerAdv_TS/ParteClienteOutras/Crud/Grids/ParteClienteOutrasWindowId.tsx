@@ -1,0 +1,58 @@
+﻿// WindowId.tsx.txt
+import React, { useEffect, useMemo } from "react";
+import { useSystemContext } from "@/app/context/SystemContext";
+import { IParteClienteOutras } from "../../Interfaces/interface.ParteClienteOutras";
+import { ParteClienteOutrasService } from "../../Services/ParteClienteOutras.service";
+import { ParteClienteOutrasApi } from "../../Apis/ApiParteClienteOutras";
+import ParteClienteOutrasWindow from "./ParteClienteOutrasWindow";
+
+interface ParteClienteOutrasWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: () => void;
+    onError: () => void;
+}
+
+const ParteClienteOutrasWindowId: React.FC<ParteClienteOutrasWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const parteclienteoutrasService = useMemo(() => {
+        return new ParteClienteOutrasService(
+            new ParteClienteOutrasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IParteClienteOutras | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id) {
+                 const response = await parteclienteoutrasService.fetchParteClienteOutrasById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen, id]);
+     
+    return (
+        <>
+            {data && isOpen && (
+                <ParteClienteOutrasWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedParteClienteOutras={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
+};
+
+export default ParteClienteOutrasWindowId;

@@ -12,8 +12,8 @@ public partial class ContatoCRMViewResponse
     /// <summary>
     /// Sem descrição - ccwCGUID - tamanho máximo: 100 
     /// </summary>
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = "";
+    [JsonPropertyName("cguid")]
+    public string CGUID { get; set; } = "";
 
     /// <summary>
     /// Sem descrição - ccwData  

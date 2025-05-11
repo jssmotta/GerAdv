@@ -9,8 +9,8 @@ public partial class FilterContatoCRMView
     [JsonPropertyName("operator")]
     public string Operator { get; set; } = TSql.And;
 
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    [JsonPropertyName("cguid")]
+    public string CGUID { get; set; } = string.Empty;
 
     [JsonPropertyName("data")]
     public string Data { get; set; } = string.Empty;

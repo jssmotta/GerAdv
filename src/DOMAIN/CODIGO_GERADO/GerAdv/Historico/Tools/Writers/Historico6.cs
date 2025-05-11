@@ -15,7 +15,7 @@ public class Historico : IHistoricoWriter
         var dbRec = historico.Id.IsEmptyIDNumber() ? new Entity.DBHistorico() : new Entity.DBHistorico(historico.Id, oCnn);
         dbRec.FExtraID = historico.ExtraID;
         dbRec.FIDNE = historico.IDNE;
-        dbRec.FGUID = historico.GUID;
+        dbRec.FExtraGUID = historico.ExtraGUID;
         dbRec.FLiminarOrigem = historico.LiminarOrigem;
         dbRec.FNaoPublicavel = historico.NaoPublicavel;
         dbRec.FProcesso = historico.Processo;

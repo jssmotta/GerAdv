@@ -1,0 +1,17 @@
+﻿export enum FieldsForo
+{	cidade = `Cidade`,
+	email = `EMail`,
+	nome = `Nome`,
+	unico = `Unico`,
+	site = `Site`,
+	endereco = `Endereco`,
+	bairro = `Bairro`,
+	fone = `Fone`,
+	fax = `Fax`,
+	cep = `CEP`,
+	obs = `OBS`,
+	unicoconfirmado = `UnicoConfirmado`,
+	web = `Web`,
+	etiqueta = `Etiqueta`,
+	bold = `Bold`,
+}

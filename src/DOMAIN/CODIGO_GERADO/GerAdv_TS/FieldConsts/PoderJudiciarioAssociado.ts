@@ -1,0 +1,16 @@
+﻿export enum FieldsPoderJudiciarioAssociado
+{	justica = `Justica`,
+	area = `Area`,
+	tribunal = `Tribunal`,
+	foro = `Foro`,
+	cidade = `Cidade`,
+	justicanome = `JusticaNome`,
+	areanome = `AreaNome`,
+	tribunalnome = `TribunalNome`,
+	foronome = `ForoNome`,
+	subdivisaonome = `SubDivisaoNome`,
+	cidadenome = `CidadeNome`,
+	subdivisao = `SubDivisao`,
+	tipo = `Tipo`,
+	guid = `GUID`,
+}

@@ -26,6 +26,12 @@ public static class OperadorEndpoints
             var result = await service.GetAll(max, uri);
             return Results.Ok(result);
         }).WithName("Operador_GetAll").WithDisplayName("Get All Operador");
+        group.MapPost("/Filter", async (Filters.FilterOperador filtro, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>
+        {
+            logger.Info("Operador: Filter called with filtro = {0}, {1}", filtro, uri);
+            var result = await service.Filter(filtro, uri);
+            return Results.Ok(result);
+        }).WithName("Operador_Filter").WithDisplayName("Filter Operador");
         group.MapGet("/GetById/{id}", async (int id, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service, CancellationToken token) =>
         {
             logger.Info("Operador: GetById called with id = {0}, {1}", id, uri);
@@ -50,10 +56,10 @@ public static class OperadorEndpoints
 
             return Results.Ok(result);
         }).WithName("Operador_GetByName").WithDisplayName("Get Operador By Name");
-        group.MapGet("/GetListN", async (int max, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>
+        group.MapPost("/GetListN", async (int max, Filters.FilterOperador? filtro, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>
         {
-            logger.Info("Operador: GetListN called, max {0}, {1}", max, uri);
-            var result = await service.GetListN(max, uri);
+            logger.Info("Operador: GetListN called, max {0}, filtro {1}, {2}", max, filtro, uri);
+            var result = await service.GetListN(max, filtro, uri);
             return Results.Ok(result);
         }).WithName("Operador_GetListN").WithDisplayName("Get Operador List N");
         group.MapPost("/AddAndUpdate", async (Models.Operador regOperador, string uri, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IOperadorService service) =>

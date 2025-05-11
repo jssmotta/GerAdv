@@ -228,6 +228,8 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
             filtro.Operator = TSql.And;
         }
 
-        return "";
+        var cWhere = filtro.CGUID.IsEmpty() ? string.Empty : DBContatoCRMViewDicInfo.CGUIDSql(filtro.CGUID);
+        cWhere += filtro.IP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContatoCRMViewDicInfo.IPSql(filtro.IP);
+        return cWhere;
     }
 }

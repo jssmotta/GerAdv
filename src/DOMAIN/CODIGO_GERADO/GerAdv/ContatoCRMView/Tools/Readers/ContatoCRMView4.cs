@@ -35,7 +35,7 @@ public partial class ContatoCRMView : IContatoCRMViewReader
         var contatocrmview = new ContatoCRMViewResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FCGUID ?? string.Empty,
+            CGUID = dbRec.FCGUID ?? string.Empty,
             IP = dbRec.FIP ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))
@@ -53,7 +53,7 @@ public partial class ContatoCRMView : IContatoCRMViewReader
         var contatocrmview = new ContatoCRMViewResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FCGUID ?? string.Empty,
+            CGUID = dbRec.FCGUID ?? string.Empty,
             IP = dbRec.FIP ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FData, out _))

@@ -51,6 +51,36 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IOperado
         return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
     }
 
+    public async Task<IEnumerable<OperadorResponse>> Filter(Filters.FilterOperador filtro, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _uris))
+        {
+            throw new Exception("Operador: URI inválida");
+        }
+
+        return await Task.Run(() =>
+        {
+            using var scope = Configuracoes.CreateConnectionScope(uri);
+            var oCnn = scope.Connection;
+            if (oCnn == null)
+            {
+                return[];
+            }
+
+            var result = new List<OperadorResponse>();
+            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
+            var list = DBOperador.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
+            if (list != null)
+            {
+                foreach (var item in list)
+                    result.Add(reader.Read(item)!);
+            }
+
+            return result;
+        });
+    }
+
     public async Task<OperadorResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
@@ -193,7 +223,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IOperado
         });
     }
 
-    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromRoute, Required] string uri, CancellationToken token)
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperador? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _uris))
@@ -201,22 +231,22 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IOperado
             throw new Exception("Operador: URI inválida");
         }
 
-        var cWhere = string.Empty;
-        var cacheKey = $"{uri}-Operador-{max}-GetListN";
+        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
+        var cacheKey = $"{uri}-Operador-{max}-{cWhere.GetHashCode()}-GetListN";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, CancellationToken token)
+    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBOperador.ListarN("", DBOperadorDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in DBOperador.ListarN(cWhere, DBOperadorDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -254,5 +284,33 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IOperado
         {
             throw new ObjectDisposedException(GetType().Name);
         }
+    }
+
+    private static string WFiltro(Filters.FilterOperador filtro)
+    {
+        if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
+        {
+            filtro.Operator = TSql.And;
+        }
+
+        var cWhere = filtro.EMail.IsEmpty() ? string.Empty : DBOperadorDicInfo.EMailSql(filtro.EMail);
+        cWhere += filtro.Pasta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.PastaSql(filtro.Pasta);
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.NomeSql(filtro.Nome);
+        cWhere += filtro.Nick.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.NickSql(filtro.Nick);
+        cWhere += filtro.Ramal.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.RamalSql(filtro.Ramal);
+        cWhere += filtro.CadID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.CadIDSql(filtro.CadID);
+        cWhere += filtro.CadCod == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.CadCodSql(filtro.CadCod);
+        cWhere += filtro.Computador == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.ComputadorSql(filtro.Computador);
+        cWhere += filtro.MinhaDescricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.MinhaDescricaoSql(filtro.MinhaDescricao);
+        cWhere += filtro.EMailNet.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.EMailNetSql(filtro.EMailNet);
+        cWhere += filtro.OnlineIP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.OnlineIPSql(filtro.OnlineIP);
+        cWhere += filtro.StatusId == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.StatusIdSql(filtro.StatusId);
+        cWhere += filtro.StatusMessage.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.StatusMessageSql(filtro.StatusMessage);
+        cWhere += filtro.Senha256.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.Senha256Sql(filtro.Senha256);
+        cWhere += filtro.SuporteSenha256.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.SuporteSenha256Sql(filtro.SuporteSenha256);
+        cWhere += filtro.SuporteNomeSolicitante.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.SuporteNomeSolicitanteSql(filtro.SuporteNomeSolicitante);
+        cWhere += filtro.SuporteIpUltimoAcesso.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.SuporteIpUltimoAcessoSql(filtro.SuporteIpUltimoAcesso);
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBOperadorDicInfo.GUIDSql(filtro.GUID);
+        return cWhere;
     }
 }

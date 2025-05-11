@@ -54,8 +54,8 @@ public partial class HistoricoResponse
     /// <summary>
     /// Sem descrição - hisExtraGUID - tamanho máximo: 100 
     /// </summary>
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = "";
+    [JsonPropertyName("extraguid")]
+    public string ExtraGUID { get; set; } = "";
 
     /// <summary>
     /// Sem descrição - hisLiminarOrigem  
@@ -122,7 +122,12 @@ public partial class HistoricoResponse
     /// </summary>
     [JsonPropertyName("top")]
     public bool Top { get; set; }
- 
+
+    /// <summary>
+    /// GUId - hisGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 
     [JsonPropertyName("auditor")]
     public Auditor? Auditor { get; set; }

@@ -234,7 +234,7 @@ public partial class HistoricoService(IOptions<AppSettings> appSettings, IHistor
 
         var cWhere = filtro.ExtraID == -2147483648 ? string.Empty : DBHistoricoDicInfo.ExtraIDSql(filtro.ExtraID);
         cWhere += filtro.IDNE == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBHistoricoDicInfo.IDNESql(filtro.IDNE);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBHistoricoDicInfo.GUIDSql(filtro.GUID);
+        cWhere += filtro.ExtraGUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBHistoricoDicInfo.ExtraGUIDSql(filtro.ExtraGUID);
         cWhere += filtro.LiminarOrigem == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBHistoricoDicInfo.LiminarOrigemSql(filtro.LiminarOrigem);
         cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBHistoricoDicInfo.ProcessoSql(filtro.Processo);
         cWhere += filtro.Precatoria == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBHistoricoDicInfo.PrecatoriaSql(filtro.Precatoria);

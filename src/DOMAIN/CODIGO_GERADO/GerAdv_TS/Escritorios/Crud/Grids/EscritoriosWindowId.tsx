@@ -1,0 +1,58 @@
+﻿// WindowId.tsx.txt
+import React, { useEffect, useMemo } from "react";
+import { useSystemContext } from "@/app/context/SystemContext";
+import { IEscritorios } from "../../Interfaces/interface.Escritorios";
+import { EscritoriosService } from "../../Services/Escritorios.service";
+import { EscritoriosApi } from "../../Apis/ApiEscritorios";
+import EscritoriosWindow from "./EscritoriosWindow";
+
+interface EscritoriosWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: () => void;
+    onError: () => void;
+}
+
+const EscritoriosWindowId: React.FC<EscritoriosWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const escritoriosService = useMemo(() => {
+        return new EscritoriosService(
+            new EscritoriosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IEscritorios | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id) {
+                 const response = await escritoriosService.fetchEscritoriosById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen, id]);
+     
+    return (
+        <>
+            {data && isOpen && (
+                <EscritoriosWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedEscritorios={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
+};
+
+export default EscritoriosWindowId;

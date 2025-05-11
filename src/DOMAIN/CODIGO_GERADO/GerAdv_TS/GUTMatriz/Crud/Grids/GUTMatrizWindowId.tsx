@@ -1,0 +1,58 @@
+﻿// WindowId.tsx.txt
+import React, { useEffect, useMemo } from "react";
+import { useSystemContext } from "@/app/context/SystemContext";
+import { IGUTMatriz } from "../../Interfaces/interface.GUTMatriz";
+import { GUTMatrizService } from "../../Services/GUTMatriz.service";
+import { GUTMatrizApi } from "../../Apis/ApiGUTMatriz";
+import GUTMatrizWindow from "./GUTMatrizWindow";
+
+interface GUTMatrizWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: () => void;
+    onError: () => void;
+}
+
+const GUTMatrizWindowId: React.FC<GUTMatrizWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const gutmatrizService = useMemo(() => {
+        return new GUTMatrizService(
+            new GUTMatrizApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IGUTMatriz | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id) {
+                 const response = await gutmatrizService.fetchGUTMatrizById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen, id]);
+     
+    return (
+        <>
+            {data && isOpen && (
+                <GUTMatrizWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedGUTMatriz={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
+};
+
+export default GUTMatrizWindowId;

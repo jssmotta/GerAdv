@@ -19,6 +19,15 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Filter([FromBody] Filters.FilterOperador filtro, [FromRoute, Required] string uri)
+    {
+        _logger.Info("Operador: Filter called with filtro = {0}, {1}", filtro, uri);
+        var result = await _operadorService.Filter(filtro, uri);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -49,12 +58,12 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         return Ok(result);
     }
 
-    [HttpGet]
+    [HttpPost]
     [Authorize]
-    public async Task<IActionResult> GetListN([FromQuery] int max, [FromRoute, Required] string uri)
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperador? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"Operador: GetListN called, max {max},  uri");
-        var result = await _operadorService.GetListN(max, uri);
+        _logger.Info($"Operador: GetListN called, max {max}, {filtro} uri");
+        var result = await _operadorService.GetListN(max, filtro, uri);
         return Ok(result);
     }
 
