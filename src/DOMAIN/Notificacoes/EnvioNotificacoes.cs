@@ -156,7 +156,8 @@ ORDER BY vqaData;";
         }
 
         builder.AppendLine("</table>");
-        return builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"", "\"");
+        var result = builder.ToString().Replace("INFORMAR RESULTADO", "").Replace("<tr><td colspan=\"\"3\"\"", "<tr style=\"display:none;\"><td colspan=\"0\"").Replace("\"\"", "\"");
+        return result.Replace("MobileAndamentoRetorno.aspx?ageId=", "");
     }
 
     
