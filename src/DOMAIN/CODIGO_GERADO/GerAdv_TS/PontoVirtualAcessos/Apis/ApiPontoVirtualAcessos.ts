@@ -11,9 +11,9 @@ export class PontoVirtualAcessosApi {
     private baseUrl: string;
     private notificationService: INotificationService;
 
-    constructor(uri: string, authorization: string) {
+    constructor(uri: string, authorization: string, version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? '2')) {
         this.authorization = authorization;
-        this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API}/${uri}/PontoVirtualAcessos`;
+        this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${uri}/PontoVirtualAcessos`;
         this.notificationService = new NotificationService();
     }
 
@@ -42,7 +42,7 @@ export class PontoVirtualAcessosApi {
     }
 
     public async getById(id: number): Promise<AxiosResponse> {
-        return axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
+        return await axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
     }
 
     public async filter(filtro: FilterPontoVirtualAcessos): Promise<AxiosResponse> {
@@ -50,40 +50,60 @@ export class PontoVirtualAcessosApi {
     }
 
     public async addAndUpdate(regPontoVirtualAcessos: IPontoVirtualAcessos): Promise<AxiosResponse> {
-        var result = await axios.post(`${this.baseUrl}/AddAndUpdate`, regPontoVirtualAcessos as PontoVirtualAcessos, this.getHeaders());
-        var register = result.data as IPontoVirtualAcessos;        
-        const action = regPontoVirtualAcessos.id == 0 ? NotifySystemActions.ADD : NotifySystemActions.UPDATE;
-        const notificationEntity = this.createNotificationEntity(register.id, action);        
-        this.notificationService.notify(notificationEntity);
-        return result;
-    }
+        try {
+            var result = await axios.post(`${this.baseUrl}/AddAndUpdate`, regPontoVirtualAcessos as PontoVirtualAcessos, this.getHeaders());
+            var register = result.data as IPontoVirtualAcessos;        
+            const action = regPontoVirtualAcessos.id == 0 ? NotifySystemActions.ADD : NotifySystemActions.UPDATE;
+            const notificationEntity = this.createNotificationEntity(register.id, action);        
+            this.notificationService.notify(notificationEntity);
+            return result; } 
+        catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Erro de validação, o registro já existe
+                    const errorMessage = message || 'Verifique se o registro já existe!';
+                    this.notificationService.notify({
+                        entity: "PontoVirtualAcessos",
+                        id: regPontoVirtualAcessos.id,
+                        action: NotifySystemActions.ERROR,
+                        message: errorMessage
+                    });
 
-    public async delete(id: number): Promise<AxiosResponse> {
-        var result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
-        if (result.data) {
-            const notificationEntity = this.createNotificationEntity(id, NotifySystemActions.DELETE);        
-            this.notificationService.notify(notificationEntity);          
+                }
+            }
+            throw error;
         }
-        return result;
     }
 
-    // SWR Hooks
-    public useGetAll(max: number = 1000) {
-        const url = `${this.baseUrl}/GetAll?max=${max}`;
-        const key = `${url}::${this.authorization}`;
-        return useSWR<PontoVirtualAcessos[]>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
-    }
-
-    public useGetById(id: number) {
-        const url = `${this.baseUrl}/GetById/${id}`;
-        const key = `${url}::${this.authorization}`;
-        return useSWR<PontoVirtualAcessos>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
+    public async delete(id: number): Promise<AxiosResponse | void> {
+        try {
+            const result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
+             if (result.data) {
+                if (result.data.success === false) {
+                    throw new Error(result.data.message || 'Erro ao excluir.');
+                }
+                const notificationEntity = this.createNotificationEntity(id, NotifySystemActions.DELETE);
+                this.notificationService.notify(notificationEntity);
+            }
+            return result;
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+              if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Conflito, o registro está vinculado a outros registros
+                    const errorMessage = message|| 'Erro ao excluir o PontoVirtualAcessos. Verifique se ele não está vinculado a outros registros.';
+                    this.notificationService.notify({
+                        entity: "PontoVirtualAcessos",
+                        id: id,
+                        action: NotifySystemActions.ERROR,
+                        message: errorMessage
+                    });
+                    throw new Error(error.data.message || 'Erro ao excluir.');
+                }
+            }
+            throw error;                   
+        }
     }
 
     public useFilter(filtro: FilterPontoVirtualAcessos) {

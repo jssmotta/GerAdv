@@ -37,11 +37,11 @@ public partial class DBViaRecebimento
     }
 
 #region CarregarDados_ViaRecebimento
-    protected void Carregar(int id, SqlConnection? oCnn)
+    protected void Carregar(int id, MsiSqlConnection? oCnn)
     {
         if (id.IsEmptyIDNumber())
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM dbo.[ViaRecebimento] (NOLOCK) WHERE [vrbCodigo] = @ThisIDToLoad", oCnn);
+        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [vrbCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
         cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
         using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
         if (ds != null)

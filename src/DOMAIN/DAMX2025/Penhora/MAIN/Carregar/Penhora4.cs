@@ -231,11 +231,11 @@ public partial class DBPenhora
     }
 
 #region CarregarDados_Penhora
-    protected void Carregar(int id, SqlConnection? oCnn)
+    protected void Carregar(int id, MsiSqlConnection? oCnn)
     {
         if (id.IsEmptyIDNumber())
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM dbo.[Penhora] (NOLOCK) WHERE [phrCodigo] = @ThisIDToLoad", oCnn);
+        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [phrCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
         cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
         using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
         if (ds != null)

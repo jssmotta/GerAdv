@@ -22,9 +22,9 @@ public partial class DBProcessOutputRequest : VAuditor, ICadastros, IAuditor
     }
 
 #endregion
-    public DBProcessOutputRequest(in int nCodigo, SqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
+    public DBProcessOutputRequest(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     // REF. 250325
-    public DBProcessOutputRequest(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBProcessOutputRequest(MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;
@@ -32,7 +32,7 @@ public partial class DBProcessOutputRequest : VAuditor, ICadastros, IAuditor
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
                     CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
@@ -50,7 +50,7 @@ public partial class DBProcessOutputRequest : VAuditor, ICadastros, IAuditor
     }
 
 #if (forWeb)
-public int Update(SqlConnection? oCnn = null, int insertId = 0)
+public int Update(MsiSqlConnection? oCnn = null, int insertId = 0)
 {
     if (oCnn != null) return UpdateX(oCnn, insertId);
     using var cnn = Configuracoes.GetConnectionRw();
@@ -59,9 +59,9 @@ public int Update(SqlConnection? oCnn = null, int insertId = 0)
 #endif
 #region GravarDados_ProcessOutputRequest
 #if (forWeb)
-                private int UpdateX(SqlConnection? oCnn, int insertId = 0)
+                private int UpdateX(MsiSqlConnection? oCnn, int insertId = 0)
 #else
-    public int Update(SqlConnection? oCnn, int insertId = 0)
+    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
 #endif
     {
         var isInsert = insertId == 0 && ID == 0;

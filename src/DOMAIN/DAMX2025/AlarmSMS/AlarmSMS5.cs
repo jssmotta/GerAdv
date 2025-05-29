@@ -4,8 +4,8 @@ public partial class DBAlarmSMS
 {
     public const string CadastroGuid = "e4199787-a8be-4f50-80ad-03a0976af734";
 #region AdministrativeMethods_AlarmSMS
-    public bool DeletarItem(int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteSql($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM dbo.{PTabelaNome} WHERE alrCodigo={nId};", oCnn, oTrans);
+    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
+    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE alrCodigo={nId};", oCnn, oTrans);
 #endregion
     public const string PTabelaNome = "AlarmSMS";
     public const string CamposSqlX = " AlarmSMS.* ";

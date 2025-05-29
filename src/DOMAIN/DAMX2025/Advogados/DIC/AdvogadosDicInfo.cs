@@ -120,7 +120,7 @@ public static partial class DBAdvogadosDicInfo
     public static DBInfoSystem AdvOAB => new(0, PTabelaNome, CampoCodigo, OAB, 12, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
     public static DBInfoSystem AdvNomeCompleto => new(0, PTabelaNome, CampoCodigo, NomeCompleto, 50, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
     public static DBInfoSystem AdvEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, DevourerOne.PEndereco, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false);
-    public static DBInfoSystem AdvCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Captions.PCaption_Cidade, Captions.PCaption_CidadeUFPais, ETipoDadosSysteminfo.SysteminfoForeingkeyCidade, "cidCodigo", "Cidade", new DBCidadeODicInfo(), false);
+    public static DBInfoSystem AdvCidade => new(0, PTabelaNome, CampoCodigo, Cidade, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false); // DBI 11 
     public static DBInfoSystem AdvCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, DevourerOne.PCep, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false);
     public static DBInfoSystem AdvSexo => new(0, PTabelaNome, CampoCodigo, Sexo, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoBooleanSexo);
     public static DBInfoSystem AdvBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, DevourerOne.PBairro, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false);

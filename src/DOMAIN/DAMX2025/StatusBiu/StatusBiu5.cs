@@ -4,8 +4,8 @@ public partial class DBStatusBiu
 {
     public const string CadastroGuid = "4cd70e36-ade6-4065-9c10-425bdd3c8f31";
 #region AdministrativeMethods_StatusBiu
-    public bool DeletarItem(int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteSql($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM dbo.{PTabelaNome} WHERE stbCodigo={nId};", oCnn, oTrans);
+    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
+    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE stbCodigo={nId};", oCnn, oTrans);
 #endregion
     public const string PTabelaNome = "StatusBiu";
     public const string CamposSqlX = " StatusBiu.* ";

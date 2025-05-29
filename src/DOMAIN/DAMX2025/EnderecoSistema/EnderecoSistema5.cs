@@ -4,8 +4,8 @@ public partial class DBEnderecoSistema
 {
     public const string CadastroGuid = "4decbea7-1574-4bce-bf54-6b644c67ed74";
 #region AdministrativeMethods_EnderecoSistema
-    public bool DeletarItem(int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteSql($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM dbo.{PTabelaNome} WHERE estCodigo={nId};", oCnn, oTrans);
+    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
+    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE estCodigo={nId};", oCnn, oTrans);
 #endregion
     public const string PTabelaNome = "EnderecoSistema";
     public const string CamposSqlX = " EnderecoSistema.* ";

@@ -8,6 +8,9 @@ export interface Acao
 	area : number;
 	descricao : string;
 	auditor?: Auditor | null;
+	nomejustica?: string;
+	descricaoarea?: string;
+
 }
 
 export function AcaoEmpty(): IAcao {

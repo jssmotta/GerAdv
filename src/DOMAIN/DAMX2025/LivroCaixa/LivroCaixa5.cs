@@ -4,8 +4,8 @@ public partial class DBLivroCaixa
 {
     public const string CadastroGuid = "ae45879f-8100-41e3-9631-16f814096346";
 #region AdministrativeMethods_LivroCaixa
-    public bool DeletarItem(int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteSql($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM dbo.{PTabelaNome} WHERE livCodigo={nId};", oCnn, oTrans);
+    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
+    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE livCodigo={nId};", oCnn, oTrans);
 #endregion
     public const string PTabelaNome = "LivroCaixa";
     public const string CamposSqlX = " LivroCaixa.* ";

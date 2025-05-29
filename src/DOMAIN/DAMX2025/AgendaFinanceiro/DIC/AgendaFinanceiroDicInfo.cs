@@ -123,7 +123,7 @@ public static partial class DBAgendaFinanceiroDicInfo
     public static DBInfoSystem AgeIDCOB => new(0, PTabelaNome, CampoCodigo, IDCOB, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
     public static DBInfoSystem AgeIDNE => new(0, PTabelaNome, CampoCodigo, IDNE, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
     public static DBInfoSystem AgePrazoProvisionado => new(0, PTabelaNome, CampoCodigo, PrazoProvisionado, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
-    public static DBInfoSystem AgeCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Captions.PCaption_Cidade, Captions.PCaption_CidadeUFPais, ETipoDadosSysteminfo.SysteminfoForeingkeyCidade, "cidCodigo", "Cidade", new DBCidadeODicInfo(), false);
+    public static DBInfoSystem AgeCidade => new(0, PTabelaNome, CampoCodigo, Cidade, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false); // DBI 11 
     public static DBInfoSystem AgeOculto => new(0, PTabelaNome, CampoCodigo, Oculto, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
     public static DBInfoSystem AgeCartaPrecatoria => new(0, PTabelaNome, CampoCodigo, CartaPrecatoria, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
     public static DBInfoSystem AgeRepetirDias => new(0, PTabelaNome, CampoCodigo, RepetirDias, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);

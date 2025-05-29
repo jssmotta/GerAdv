@@ -11,10 +11,11 @@ public partial class DBAgendaSemana : XCodeIdBase
     }
 
 #endregion
-    public DBAgendaSemana(in int nCodigo, SqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
+    public DBAgendaSemana(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
 #region ListarDados_AgendaSemana
     public static IEnumerable<DBAgendaSemana> Listar(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         cSql.Append(PTabelaNome);
         if (cWhere.NotIsEmpty())
@@ -34,10 +35,9 @@ public partial class DBAgendaSemana : XCodeIdBase
             cSql.Append(cOrder);
         }
 
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };

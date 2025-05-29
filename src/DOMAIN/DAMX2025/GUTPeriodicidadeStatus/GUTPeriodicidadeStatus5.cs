@@ -4,8 +4,8 @@ public partial class DBGUTPeriodicidadeStatus
 {
     public const string CadastroGuid = "fa7f8699-bca9-44b5-90a9-e79e35ccaff2";
 #region AdministrativeMethods_GUTPeriodicidadeStatus
-    public bool DeletarItem(int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, SqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteSql($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM dbo.{PTabelaNome} WHERE pgsCodigo={nId};", oCnn, oTrans);
+    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
+    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE pgsCodigo={nId};", oCnn, oTrans);
 #endregion
     public const string PTabelaNome = "GUTPeriodicidadeStatus";
     public const string CamposSqlX = " GUTPeriodicidadeStatus.* ";

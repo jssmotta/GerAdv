@@ -43,6 +43,10 @@ export interface Advogados
 	ani : boolean;
 	bold : boolean;
 	auditor?: Auditor | null;
+	nomecargos?: string;
+	nomeescritorios?: string;
+	nomecidade?: string;
+
 }
 
 export function AdvogadosEmpty(): IAdvogados {

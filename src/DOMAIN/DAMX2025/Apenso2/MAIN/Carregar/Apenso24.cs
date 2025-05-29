@@ -147,11 +147,11 @@ public partial class DBApenso2
     }
 
 #region CarregarDados_Apenso2
-    protected void Carregar(int id, SqlConnection? oCnn)
+    protected void Carregar(int id, MsiSqlConnection? oCnn)
     {
         if (id.IsEmptyIDNumber())
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM dbo.[Apenso2] (NOLOCK) WHERE [ap2Codigo] = @ThisIDToLoad", oCnn);
+        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [ap2Codigo] = @ThisIDToLoad", oCnn?.InnerConnection);
         cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
         using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
         if (ds != null)

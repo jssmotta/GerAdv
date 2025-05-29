@@ -10,6 +10,7 @@ public partial class DBProDepositos
 #region ListarDados_ProDepositos
     public static async IAsyncEnumerable<DBProDepositos> ListarAsync(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         if (!cSqlMain.IsEmpty())
         {
@@ -17,7 +18,7 @@ public partial class DBProDepositos
         }
         else
         {
-            cSql.Append($"SELECT {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            cSql.Append($"SELECT {CamposSqlX} FROM {PTabelaNome.dbo(oTCnn)} (NOLOCK) ");
             if (!cWhere.IsEmpty())
             {
                 if (!cWhere.ToUpper().Contains(TSql.Where))
@@ -37,10 +38,9 @@ public partial class DBProDepositos
         }
 
         // checkpoint async 1.0
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };
@@ -53,6 +53,7 @@ public partial class DBProDepositos
 
     public static IEnumerable<DBProDepositos> Listar(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         if (!cSqlMain.IsEmpty())
         {
@@ -60,7 +61,7 @@ public partial class DBProDepositos
         }
         else
         {
-            cSql.Append($"SELECT {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            cSql.Append($"SELECT {CamposSqlX} FROM {PTabelaNome.dbo(oTCnn)} (NOLOCK) ");
             if (!cWhere.IsEmpty())
             {
                 if (!cWhere.ToUpper().Contains(TSql.Where))
@@ -79,10 +80,9 @@ public partial class DBProDepositos
             }
         }
 
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };

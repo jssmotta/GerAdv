@@ -2,8 +2,6 @@
 namespace MenphisSI.GerAdv;
 public static class Captions
 {
-    // Economizou:1348
+    // Economizou:1326
     public const string PCaption_Semdica = "Semdica";
-    public const string PCaption_Cidade = "Cidade";
-    public const string PCaption_CidadeUFPais = "CidadeUFPais";
 }

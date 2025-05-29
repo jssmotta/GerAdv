@@ -23,7 +23,7 @@ public partial class DBParteCliente : XCodeIdBase, ICadastros
 
 #endregion
 #if (forWeb)
-public int Update(SqlConnection? oCnn = null, int insertId = 0)
+public int Update(MsiSqlConnection? oCnn = null, int insertId = 0)
 {
     if (oCnn != null) return UpdateX(oCnn, insertId);
     using var cnn = Configuracoes.GetConnectionRw();
@@ -32,9 +32,9 @@ public int Update(SqlConnection? oCnn = null, int insertId = 0)
 #endif
 #region GravarDados_ParteCliente
 #if (forWeb)
-                private int UpdateX(SqlConnection? oCnn, int insertId = 0)
+                private int UpdateX(MsiSqlConnection? oCnn, int insertId = 0)
 #else
-    public int Update(SqlConnection? oCnn, int insertId = 0)
+    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
 #endif
     {
         var isInsert = insertId == 0 && ID == 0;

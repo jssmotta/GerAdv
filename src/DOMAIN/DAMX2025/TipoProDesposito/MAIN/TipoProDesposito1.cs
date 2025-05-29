@@ -22,8 +22,8 @@ public partial class DBTipoProDesposito : XCodeIdBase, ICadastros
     }
 
 #endregion
-    public DBTipoProDesposito(in int nCodigo, SqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
-    public DBTipoProDesposito(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBTipoProDesposito(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
+    public DBTipoProDesposito(in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;
@@ -39,13 +39,13 @@ public partial class DBTipoProDesposito : XCodeIdBase, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
                 CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM dbo.[{PTabelaNome}] (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
@@ -54,7 +54,7 @@ public partial class DBTipoProDesposito : XCodeIdBase, ICadastros
     }
 
     // ReSharper disable once UnusedParameter.Local
-    public DBTipoProDesposito(in string? sqlWhere, SqlConnection? oCnn)
+    public DBTipoProDesposito(in string? sqlWhere, MsiSqlConnection? oCnn)
     {
         using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
@@ -62,7 +62,7 @@ public partial class DBTipoProDesposito : XCodeIdBase, ICadastros
     }
 
 #if (forWeb)
-public int Update(SqlConnection? oCnn = null, int insertId = 0)
+public int Update(MsiSqlConnection? oCnn = null, int insertId = 0)
 {
     if (oCnn != null) return UpdateX(oCnn, insertId);
     using var cnn = Configuracoes.GetConnectionRw();
@@ -71,9 +71,9 @@ public int Update(SqlConnection? oCnn = null, int insertId = 0)
 #endif
 #region GravarDados_TipoProDesposito
 #if (forWeb)
-                private int UpdateX(SqlConnection? oCnn, int insertId = 0)
+                private int UpdateX(MsiSqlConnection? oCnn, int insertId = 0)
 #else
-    public int Update(SqlConnection? oCnn, int insertId = 0)
+    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
 #endif
     {
         var isInsert = insertId == 0 && ID == 0;

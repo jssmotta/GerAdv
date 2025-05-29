@@ -11,9 +11,9 @@ export class AgendaRelatorioApi {
     private baseUrl: string;
     private notificationService: INotificationService;
 
-    constructor(uri: string, authorization: string) {
+    constructor(uri: string, authorization: string, version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? '2')) {
         this.authorization = authorization;
-        this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API}/${uri}/AgendaRelatorio`;
+        this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${uri}/AgendaRelatorio`;
         this.notificationService = new NotificationService();
     }
 
@@ -42,21 +42,60 @@ export class AgendaRelatorioApi {
     }
 
     public async addAndUpdate(regAgendaRelatorio: IAgendaRelatorio): Promise<AxiosResponse> {
-        var result = await axios.post(`${this.baseUrl}/AddAndUpdate`, regAgendaRelatorio as AgendaRelatorio, this.getHeaders());
-        var register = result.data as IAgendaRelatorio;        
-        const action = regAgendaRelatorio.id == 0 ? NotifySystemActions.ADD : NotifySystemActions.UPDATE;
-        const notificationEntity = this.createNotificationEntity(register.id, action);        
-        this.notificationService.notify(notificationEntity);
-        return result;
+        try {
+            var result = await axios.post(`${this.baseUrl}/AddAndUpdate`, regAgendaRelatorio as AgendaRelatorio, this.getHeaders());
+            var register = result.data as IAgendaRelatorio;        
+            const action = regAgendaRelatorio.id == 0 ? NotifySystemActions.ADD : NotifySystemActions.UPDATE;
+            const notificationEntity = this.createNotificationEntity(register.id, action);        
+            this.notificationService.notify(notificationEntity);
+            return result; } 
+        catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Erro de validação, o registro já existe
+                    const errorMessage = message || 'Verifique se o registro já existe!';
+                    this.notificationService.notify({
+                        entity: "AgendaRelatorio",
+                        id: regAgendaRelatorio.id,
+                        action: NotifySystemActions.ERROR,
+                        message: errorMessage
+                    });
+
+                }
+            }
+            throw error;
+        }
     }
 
-    public async delete(id: number): Promise<AxiosResponse> {
-        var result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
-        if (result.data) {
-            const notificationEntity = this.createNotificationEntity(id, NotifySystemActions.DELETE);        
-            this.notificationService.notify(notificationEntity);          
+    public async delete(id: number): Promise<AxiosResponse | void> {
+        try {
+            const result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
+             if (result.data) {
+                if (result.data.success === false) {
+                    throw new Error(result.data.message || 'Erro ao excluir.');
+                }
+                const notificationEntity = this.createNotificationEntity(id, NotifySystemActions.DELETE);
+                this.notificationService.notify(notificationEntity);
+            }
+            return result;
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+              if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Conflito, o registro está vinculado a outros registros
+                    const errorMessage = message|| 'Erro ao excluir o AgendaRelatorio. Verifique se ele não está vinculado a outros registros.';
+                    this.notificationService.notify({
+                        entity: "AgendaRelatorio",
+                        id: id,
+                        action: NotifySystemActions.ERROR,
+                        message: errorMessage
+                    });
+                    throw new Error(error.data.message || 'Erro ao excluir.');
+                }
+            }
+            throw error;                   
         }
-        return result;
     }
 
     public useFilter(filtro: FilterAgendaRelatorio) {

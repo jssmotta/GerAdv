@@ -10,6 +10,7 @@ public partial class DBTribEnderecos
 #region ListarDados_TribEnderecos
     public static async IAsyncEnumerable<DBTribEnderecos> ListarAsync(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         if (!cSqlMain.IsEmpty())
         {
@@ -17,7 +18,7 @@ public partial class DBTribEnderecos
         }
         else
         {
-            cSql.Append($"SELECT {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            cSql.Append($"SELECT {CamposSqlX} FROM {PTabelaNome.dbo(oTCnn)} (NOLOCK) ");
             if (!cWhere.IsEmpty())
             {
                 if (!cWhere.ToUpper().Contains(TSql.Where))
@@ -37,10 +38,9 @@ public partial class DBTribEnderecos
         }
 
         // checkpoint async 1.0
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };
@@ -53,6 +53,7 @@ public partial class DBTribEnderecos
 
     public static IEnumerable<DBTribEnderecos> Listar(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         if (!cSqlMain.IsEmpty())
         {
@@ -60,7 +61,7 @@ public partial class DBTribEnderecos
         }
         else
         {
-            cSql.Append($"SELECT {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            cSql.Append($"SELECT {CamposSqlX} FROM {PTabelaNome.dbo(oTCnn)} (NOLOCK) ");
             if (!cWhere.IsEmpty())
             {
                 if (!cWhere.ToUpper().Contains(TSql.Where))
@@ -79,10 +80,9 @@ public partial class DBTribEnderecos
             }
         }
 
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };

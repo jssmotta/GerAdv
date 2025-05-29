@@ -1,7 +1,6 @@
 ﻿export enum FieldsClientesSocios
 {	cliente = `Cliente`,
 	cidade = `Cidade`,
-	cidadesocio = `CidadeSocio`,
 	somenterepresentante = `SomenteRepresentante`,
 	idade = `Idade`,
 	isrepresentantelegal = `IsRepresentanteLegal`,
@@ -29,6 +28,7 @@
 	enderecosocio = `EnderecoSocio`,
 	bairrosocio = `BairroSocio`,
 	cepsocio = `CEPSocio`,
+	cidadesocio = `CidadeSocio`,
 	rgdataexp = `RGDataExp`,
 	socioempresaadminsomente = `SocioEmpresaAdminSomente`,
 	tipo = `Tipo`,

@@ -3,17 +3,17 @@ namespace MenphisSI.GerAdv;
 public partial class DBTipoValorProcesso
 {
     // CodeNomeOnly 
-    public static DBNomeID ListarN(in int codigo, SqlConnection? oCnn)
+    public static DBNomeID ListarN(in int codigo, MsiSqlConnection? oCnn)
     {
-        using var cmd = new SqlCommand($"SELECT TOP 1 [{CampoNome}], [{CampoCodigo}] FROM dbo.[{PTabelaNome}]  (NOLOCK)  WHERE [{CampoCodigo}]=@CampoCodigo", oCnn);
+        using var cmd = new SqlCommand($"SELECT TOP 1 [{CampoNome}], [{CampoCodigo}] FROM {PTabelaNome.dbo(oCnn)}  (NOLOCK)  WHERE [{CampoCodigo}]=@CampoCodigo", oCnn?.InnerConnection);
         cmd.Parameters.AddWithValue("@CampoCodigo", codigo);
         using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
         return ds is null ? new DBNomeID() : new DBNomeID(ds.Rows.Count.IsEmptyIDNumber() ? 0 : Convert.ToInt32(ds.Rows[0][1]), ds.Rows.Count.IsEmptyIDNumber() ? "" : $"{ds.Rows[0][0]}");
     }
 
-    public static DBNomeID ListarN(in string cNome, SqlConnection? oCnn)
+    public static DBNomeID ListarN(in string cNome, MsiSqlConnection? oCnn)
     {
-        using var cmd = new SqlCommand($"SELECT TOP 1 [{CampoNome}], [{CampoCodigo}] FROM dbo.[{PTabelaNome}]  (NOLOCK)  WHERE [{CampoNome}] {DevourerConsts.MsiCollate} like @CampoNome", oCnn);
+        using var cmd = new SqlCommand($"SELECT TOP 1 [{CampoNome}], [{CampoCodigo}] FROM {PTabelaNome.dbo(oCnn)}  (NOLOCK)  WHERE [{CampoNome}] {DevourerConsts.MsiCollate} like @CampoNome", oCnn?.InnerConnection);
         cmd.Parameters.AddWithValue("@CampoNome", cNome.trim());
         using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
         return ds is null ? new DBNomeID() : new DBNomeID(ds.Rows.Count.IsEmptyIDNumber() ? 0 : Convert.ToInt32(ds.Rows[0][1]), ds.Rows.Count.IsEmptyIDNumber() ? "" : $"{ds.Rows[0][0]}");
@@ -24,10 +24,10 @@ public partial class DBTipoValorProcesso
         return ReadLocalAsync().Result;
         async Task<List<DBNomeID>> ReadLocalAsync()
         {
-            var sql = BuildSqlQuery(cWhere, cOrder, max);
             var result = new List<DBNomeID>(max); // Pr�-aloca para melhor performance
             await using var connection = ConfiguracoesDBT.GetConnection(cCnn);
-            await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection)
+            var sql = BuildSqlQuery(cWhere, cOrder, max, connection);
+            await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
             {
                 CommandTimeout = 0
             };
@@ -42,14 +42,14 @@ public partial class DBTipoValorProcesso
             return result;
         }
 
-        static string BuildSqlQuery(string whereClause, string orderClause, int max = 200)
+        static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
         {
             if (max <= 0)
             {
                 max = 200;
             }
 
-            var query = new StringBuilder(capacity: 200).Append($"SELECT TOP ({max}) {CampoCodigo}, {CampoNome} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            var query = new StringBuilder(capacity: 200).Append($"SELECT TOP ({max}) {CampoCodigo}, {CampoNome} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) ");
             if (!string.IsNullOrEmpty(whereClause))
             {
                 query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
@@ -73,10 +73,10 @@ public partial class DBTipoValorProcesso
         return ReadLocalAsync().Result;
         async Task<List<DBNomeID>> ReadLocalAsync()
         {
-            var sql = BuildSqlQuery(cWhere, cOrder, joinSql, max);
             var result = new List<DBNomeID>(1000); // Pr�-aloca para performance
             await using var connection = ConfiguracoesDBT.GetConnection(cCnn);
-            await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection)
+            var sql = BuildSqlQuery(cWhere, cOrder, joinSql, max, connection);
+            await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
             {
                 CommandTimeout = 0
             };
@@ -91,14 +91,14 @@ public partial class DBTipoValorProcesso
             return result;
         }
 
-        static string BuildSqlQuery(string whereClause, string orderClause, string joinSqlClause, int max)
+        static string BuildSqlQuery(string whereClause, string orderClause, string joinSqlClause, int max, MsiSqlConnection? oCnn)
         {
             if (max <= 0)
             {
                 max = 200;
             }
 
-            var query = new StringBuilder(capacity: 500).Append($"SELECT TOP ({max}) {CampoCodigo}, {CampoNome} FROM dbo.{PTabelaNome} (NOLOCK) ").Append(joinSqlClause);
+            var query = new StringBuilder(capacity: 500).Append($"SELECT TOP ({max}) {CampoCodigo}, {CampoNome} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) ").Append(joinSqlClause);
             if (!string.IsNullOrEmpty(whereClause))
             {
                 query.Append(!whereClause.Contains(TSql.Where, StringComparison.InvariantCultureIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
@@ -120,6 +120,7 @@ public partial class DBTipoValorProcesso
 #region ListarDados_TipoValorProcesso
     public static async IAsyncEnumerable<DBTipoValorProcesso> ListarAsync(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         if (!cSqlMain.IsEmpty())
         {
@@ -127,7 +128,7 @@ public partial class DBTipoValorProcesso
         }
         else
         {
-            cSql.Append($"SELECT {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            cSql.Append($"SELECT {CamposSqlX} FROM {PTabelaNome.dbo(oTCnn)} (NOLOCK) ");
             if (!cWhere.IsEmpty())
             {
                 if (!cWhere.ToUpper().Contains(TSql.Where))
@@ -152,10 +153,9 @@ public partial class DBTipoValorProcesso
         }
 
         // checkpoint async 1.0
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };
@@ -168,6 +168,7 @@ public partial class DBTipoValorProcesso
 
     public static IEnumerable<DBTipoValorProcesso> Listar(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {
+        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         var cSql = new StringBuilder(); // checkpoint 0x3
         if (!cSqlMain.IsEmpty())
         {
@@ -175,7 +176,7 @@ public partial class DBTipoValorProcesso
         }
         else
         {
-            cSql.Append($"SELECT {CamposSqlX} FROM dbo.{PTabelaNome} (NOLOCK) ");
+            cSql.Append($"SELECT {CamposSqlX} FROM {PTabelaNome.dbo(oTCnn)} (NOLOCK) ");
             if (!cWhere.IsEmpty())
             {
                 if (!cWhere.ToUpper().Contains(TSql.Where))
@@ -199,10 +200,9 @@ public partial class DBTipoValorProcesso
             }
         }
 
-        using var oTCnn = ConfiguracoesDBT.GetConnection(cCnn);
         using var cmd = new SqlCommand
         {
-            Connection = oTCnn,
+            Connection = oTCnn?.InnerConnection,
             CommandText = ConfiguracoesDBT.CmdSql(cSql.ToString()),
             CommandTimeout = 0
         };

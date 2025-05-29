@@ -11,9 +11,9 @@ export class ServicosApi {
     private baseUrl: string;
     private notificationService: INotificationService;
 
-    constructor(uri: string, authorization: string) {
+    constructor(uri: string, authorization: string, version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? '2')) {
         this.authorization = authorization;
-        this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API}/${uri}/Servicos`;
+        this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${uri}/Servicos`;
         this.notificationService = new NotificationService();
     }
 
@@ -42,11 +42,7 @@ export class ServicosApi {
     }
 
     public async getById(id: number): Promise<AxiosResponse> {
-        return axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
-    }
-
-    public async getByName(name: string): Promise<AxiosResponse> {
-        return axios.get(`${this.baseUrl}/GetByName/${name}`, this.getHeaders());
+        return await axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
     }
 
     public async getListN(max?: number, filtro?: FilterServicos): Promise<AxiosResponse> {
@@ -59,58 +55,60 @@ export class ServicosApi {
     }
 
     public async addAndUpdate(regServicos: IServicos): Promise<AxiosResponse> {
-        var result = await axios.post(`${this.baseUrl}/AddAndUpdate`, regServicos as Servicos, this.getHeaders());
-        var register = result.data as IServicos;        
-        const action = regServicos.id == 0 ? NotifySystemActions.ADD : NotifySystemActions.UPDATE;
-        const notificationEntity = this.createNotificationEntity(register.id, action);        
-        this.notificationService.notify(notificationEntity);
-        return result;
-    }
+        try {
+            var result = await axios.post(`${this.baseUrl}/AddAndUpdate`, regServicos as Servicos, this.getHeaders());
+            var register = result.data as IServicos;        
+            const action = regServicos.id == 0 ? NotifySystemActions.ADD : NotifySystemActions.UPDATE;
+            const notificationEntity = this.createNotificationEntity(register.id, action);        
+            this.notificationService.notify(notificationEntity);
+            return result; } 
+        catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Erro de validação, o registro já existe
+                    const errorMessage = message || 'Verifique se o registro já existe!';
+                    this.notificationService.notify({
+                        entity: "Servicos",
+                        id: regServicos.id,
+                        action: NotifySystemActions.ERROR,
+                        message: errorMessage
+                    });
 
-    public async delete(id: number): Promise<AxiosResponse> {
-        var result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
-        if (result.data) {
-            const notificationEntity = this.createNotificationEntity(id, NotifySystemActions.DELETE);        
-            this.notificationService.notify(notificationEntity);          
+                }
+            }
+            throw error;
         }
-        return result;
     }
 
-    // SWR Hooks
-    public useGetAll(max: number = 1000) {
-        const url = `${this.baseUrl}/GetAll?max=${max}`;
-        const key = `${url}::${this.authorization}`;
-        return useSWR<Servicos[]>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
-    }
-
-    public useGetById(id: number) {
-        const url = `${this.baseUrl}/GetById/${id}`;
-        const key = `${url}::${this.authorization}`;
-        return useSWR<Servicos>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
-    }
-
-    public useGetByName(name: string) {
-        const url = `${this.baseUrl}/GetByName/${name}`;
-        const key = `${url}::${this.authorization}`;
-        return useSWR<Servicos>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
-    }
-
-    public useGetListN(max: number = 200, filtro?: FilterServicos) {
-        const url = `${this.baseUrl}/GetListN/?max=${max}`;
-        const key = `${url}::${this.authorization}::${JSON.stringify(filtro)}`;
-        return useSWR<Servicos[]>(key, fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        });
+    public async delete(id: number): Promise<AxiosResponse | void> {
+        try {
+            const result = await axios.delete(`${this.baseUrl}/Delete?id=${id}`, this.getHeaders());
+             if (result.data) {
+                if (result.data.success === false) {
+                    throw new Error(result.data.message || 'Erro ao excluir.');
+                }
+                const notificationEntity = this.createNotificationEntity(id, NotifySystemActions.DELETE);
+                this.notificationService.notify(notificationEntity);
+            }
+            return result;
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+              if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Conflito, o registro está vinculado a outros registros
+                    const errorMessage = message|| 'Erro ao excluir o Servicos. Verifique se ele não está vinculado a outros registros.';
+                    this.notificationService.notify({
+                        entity: "Servicos",
+                        id: id,
+                        action: NotifySystemActions.ERROR,
+                        message: errorMessage
+                    });
+                    throw new Error(error.data.message || 'Erro ao excluir.');
+                }
+            }
+            throw error;                   
+        }
     }
 
     public useFilter(filtro: FilterServicos) {

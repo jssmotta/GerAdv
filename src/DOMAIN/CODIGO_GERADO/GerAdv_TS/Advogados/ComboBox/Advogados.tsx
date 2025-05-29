@@ -1,18 +1,19 @@
-﻿"use client";
-import React, { useEffect, useState } from 'react';
-import { ComboBox } from '@progress/kendo-react-all';
+﻿"use client"; 
+import React, { useEffect, useState, useRef } from 'react';
+import { ComboBox } from '@progress/kendo-react-dropdowns';
 import { AdvogadosEmpty } from '../../Models/Advogados';
 import { AdvogadosApi } from '../Apis/ApiAdvogados';
 import { NomeID } from '@/app/models/NomeID';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { DadosSelectProps } from '@/app/models/DadosSelectProps';
-import { subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import AdvogadosWindow from '../Crud/Grids/AdvogadosWindow';
 import { IAdvogados } from '../Interfaces/interface.Advogados';
 import { pencilIcon, plusIcon } from '@progress/kendo-svg-icons';
 import { SvgIcon } from '@progress/kendo-react-common';
+import { ActionAdicionar, ActionEditar } from '@/app/tools/crud';
 
-const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, label }) => {
+const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, label, dataForm }) => {
     const cssDado = 'advogadosInput';
     const { systemContext } = useSystemContext();
     const dadoApi = new AdvogadosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
@@ -20,33 +21,37 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, 
     const [displayValue, setDisplayValue] = useState<any>(value);
     const [isOpen, setIsOpen] = useState(false);
     const [addValue, setAddValue] = useState<IAdvogados | null>(null);
-    const [action, setAction] = useState('Adicionar');
-    const [editar, setEditar] = useState<IAdvogados | null>(null);
-    const [refresh, setRefresh] = useState(false);
+    const [action, setAction] = useState(ActionAdicionar);
+    const [editar, setEditar] = useState<IAdvogados | null>(null);    
+    const [waitChanges, setWaitChanges] = useState(false);
+    const waitChangesRef = useRef(waitChanges);
+
+    useEffect(() => {
+        waitChangesRef.current = waitChanges;
+    }, [waitChanges]);
 
     useEffect(() => {       
-        if (typeof value === 'number' && !isNaN(value)) {
+        if (typeof value === 'number' && !isNaN(value) && value > 0) {
             const fetchData = async () => {
                 const response = await dadoApi.getById(value); 
                 setDisplayValue({ id: response.data.id, nome: response.data.nome });
                 setEditar(response.data as IAdvogados);
-                setAction('Editar');
-                setRefresh(false);
+                setAction(ActionEditar);                
             };
             fetchData();
         }
         else {
-            setAction('Adicionar');
+            setAction(ActionAdicionar);
             setDisplayValue(value);
         }
-    }, [value, refresh]);
+    }, [value]);
 
     useEffect(() => {       
         if (displayValue && !isNaN(displayValue.id) && displayValue.id > 0) {
             const fetchData = async () => {
                 const response = await dadoApi.getById(displayValue.id);   
                 setEditar(response.data as IAdvogados);
-                setAction('Editar'); 
+                setAction(ActionEditar); 
             };
             fetchData();
         } 
@@ -70,10 +75,33 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, 
 
     React.useEffect(() => {
         const unsubscribe = subscribeToNotifications("Advogados", (entity) => {
-            fetchDados();
-            setRefresh(true);
-        });
-    
+      try {
+                fetchDados();                
+
+                if (entity.action === NotifySystemActions.DELETE) {
+                    setDisplayValue({ id: 0, nome: "" });
+                }
+                else {
+                    if (waitChangesRef.current) {
+                        setWaitChanges(false);
+                        const PTimetToRefresh = 500;
+                        setTimeout(() => {
+                            const fetchData = async () => {
+                                const response = await dadoApi.getById(entity.id);
+                                setDisplayValue({ id: response.data.id, nome: response.data.nome });
+                                setEditar(response.data as IAdvogados);
+                                setAction(ActionEditar);                                
+                            };
+                            fetchData();
+                        }, PTimetToRefresh);
+                    }
+                }
+            } catch (err) {
+                console.error("Erro no listener de notifica\u00e7\u00f5es:", err);
+            }
+
+            });  
+            
         return () => {
             unsubscribe();
         };
@@ -103,7 +131,7 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, 
     };
 
     const handleAddClick = () => {
-        if (action === 'Editar') {
+        if (action === ActionEditar) {
             setIsOpen(true);
             return;
         }
@@ -141,7 +169,7 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, 
 
     useEffect(() => { 
         if (displayValue===null) {
-            setAction('Adicionar');
+            setAction(ActionAdicionar);
         }
     }, [displayValue]);
 
@@ -158,8 +186,7 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, 
 
             <div className={`${cssDado} inputCombobox input-container`}>
                 <div className='comboboxLabel'>
-                    <span className='k-floating-label'>{label}
-                        <label className='input-combobox-action-svg-label' style={{display: 'block', float: 'right', width: '20px', marginRight: '5px', fontSize: '7.5pt'}} onClick={handleAddClick}>{<SvgIcon icon={action==="Editar" ? pencilIcon : plusIcon} />}</label>
+                    <span className='k-floating-label'>{label}                        
                     </span>
                 </div>
                 <div className='comboboxBox'>
@@ -174,7 +201,7 @@ const AdvogadosComboBox: React.FC<DadosSelectProps> = ({ name, value, setValue, 
                         filterable={true}
                         onFilterChange={handleFilterChange}
                         onChange={handleChange}
-                    />
+                    /><label title={action==="Editar" ? "Editar o item atual" : "Incluir/Adicionar novo item"} className={`input-combobox-action-svg-label-${action.toLocaleLowerCase()}`} onClick={handleAddClick}>{<SvgIcon icon={action==="Editar" ? pencilIcon : plusIcon} />}</label>
                 </div>
             </div>
             

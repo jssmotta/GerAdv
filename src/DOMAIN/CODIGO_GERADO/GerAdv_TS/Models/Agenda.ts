@@ -44,6 +44,17 @@ export interface Agenda
 	datainicioprazo : string;
 	usuariociente : boolean;
 	auditor?: Auditor | null;
+	nomecidade?: string;
+	nomeadvogados?: string;
+	nomefuncionarios?: string;
+	descricaotipocompromisso?: string;
+	nomeclientes?: string;
+	descricaoarea?: string;
+	nomejustica?: string;
+	nropastaprocessos?: string;
+	nomeoperador?: string;
+	nomeprepostos?: string;
+
 }
 
 export function AgendaEmpty(): IAgenda {

@@ -947,8 +947,8 @@ public class DicionarioDeDadosManagedDatabaseCode : IDicManager
         "AGENDASEMANA" => new DBAgendaSemanaODicInfo(),
         _ => null
     };
-    public ICadastros IGlobalObjectLoad(string tabela, string cWhere, SqlConnection? oCnn) => GlobalObjectLoad(tabela, cWhere, oCnn);
-    public ICadastros GlobalObjectLoad(string tabela, string cWhere, SqlConnection? oCnn) => tabela switch
+    public ICadastros IGlobalObjectLoad(string tabela, string cWhere, MsiSqlConnection? oCnn) => GlobalObjectLoad(tabela, cWhere, oCnn);
+    public ICadastros GlobalObjectLoad(string tabela, string cWhere, MsiSqlConnection? oCnn) => tabela switch
     {
         DBAcao.PTabelaNome => new DBAcao(sqlWhere: cWhere, oCnn: oCnn),
         DBAdvogados.PTabelaNome => new DBAdvogados(sqlWhere: cWhere, oCnn: oCnn),
@@ -1042,8 +1042,8 @@ public class DicionarioDeDadosManagedDatabaseCode : IDicManager
         DBUF.PTabelaNome => new DBUF(sqlWhere: cWhere, oCnn: oCnn),
         DBViaRecebimento.PTabelaNome => new DBViaRecebimento(sqlWhere: cWhere, oCnn: oCnn),
         _ => throw new Exception(tabela)};
-    public ICadastros IGlobalObjectLoad(string tabela, int id, SqlConnection? oCnn) => GlobalObjectLoad(tabela, id, oCnn);
-    public ICadastros GlobalObjectLoad(string tabela, int id, SqlConnection? oCnn) => tabela switch
+    public ICadastros IGlobalObjectLoad(string tabela, int id, MsiSqlConnection? oCnn) => GlobalObjectLoad(tabela, id, oCnn);
+    public ICadastros GlobalObjectLoad(string tabela, int id, MsiSqlConnection? oCnn) => tabela switch
     {
         DBAcao.PTabelaNome => new DBAcao(id, oCnn), // Acao
         DBAdvogados.PTabelaNome => new DBAdvogados(id, oCnn), // Advogados
