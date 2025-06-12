@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProObservacoesWriter
 {
-    Entity.DBProObservacoes Write(Models.ProObservacoes proobservacoes, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProObservacoes Write(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProObservacoes : IProObservacoesWriter
 {
-    public Entity.DBProObservacoes Write(Models.ProObservacoes proobservacoes, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProObservacoes] WHERE pobCodigo={proobservacoes.Id};", oCnn);
+    }
+
+    public Entity.DBProObservacoes Write(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = proobservacoes.Id.IsEmptyIDNumber() ? new Entity.DBProObservacoes() : new Entity.DBProObservacoes(proobservacoes.Id, oCnn);
         dbRec.FProcesso = proobservacoes.Processo;

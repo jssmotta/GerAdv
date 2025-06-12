@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface INECompromissosWriter
 {
-    Entity.DBNECompromissos Write(Models.NECompromissos necompromissos, int auditorQuem, SqlConnection oCnn);
+    Entity.DBNECompromissos Write(Models.NECompromissos necompromissos, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class NECompromissos : INECompromissosWriter
 {
-    public Entity.DBNECompromissos Write(Models.NECompromissos necompromissos, int auditorQuem, SqlConnection oCnn)
+    public void Delete(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[NECompromissos] WHERE ncpCodigo={necompromissos.Id};", oCnn);
+    }
+
+    public Entity.DBNECompromissos Write(Models.NECompromissos necompromissos, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = necompromissos.Id.IsEmptyIDNumber() ? new Entity.DBNECompromissos() : new Entity.DBNECompromissos(necompromissos.Id, oCnn);
         dbRec.FPalavraChave = necompromissos.PalavraChave;

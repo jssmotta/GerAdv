@@ -7,7 +7,7 @@ public partial class DBHistorico : MenphisSI.GerAdv.DBHistorico, IDBHistorico
     {
     }
 
-    public DBHistorico(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBHistorico(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBHistorico : MenphisSI.GerAdv.DBHistorico, IDBHistorico
     {
     }
 
-    public DBHistorico(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBHistorico(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

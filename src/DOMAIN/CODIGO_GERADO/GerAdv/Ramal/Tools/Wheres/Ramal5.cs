@@ -5,32 +5,20 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IRamalWhere
 {
-    RamalResponse Read(string where, SqlConnection oCnn);
+    RamalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Ramal : IRamalWhere
 {
-    public RamalResponse Read(string where, SqlConnection oCnn)
+    public RamalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBRamal(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBRamal(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var ramal = new RamalResponse
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Obs = dbRec.FObs ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        ramal.Auditor = auditor;
         return ramal;
     }
 }

@@ -7,7 +7,7 @@ public partial class DBViaRecebimento : MenphisSI.GerAdv.DBViaRecebimento, IDBVi
     {
     }
 
-    public DBViaRecebimento(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBViaRecebimento(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBViaRecebimento : MenphisSI.GerAdv.DBViaRecebimento, IDBVi
     {
     }
 
-    public DBViaRecebimento(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBViaRecebimento(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

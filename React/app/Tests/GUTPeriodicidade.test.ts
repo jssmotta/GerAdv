@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useGUTPeriodicidadeForm, useGUTPeriodicidadeList, useValidationsGUTPeriodicidade } from '../GerAdv_TS/GUTPeriodicidade/Hooks/hookGUTPeriodicidade';
+import { IGUTPeriodicidade } from '../GerAdv_TS/GUTPeriodicidade/Interfaces/interface.GUTPeriodicidade';
+import { IGUTPeriodicidadeService } from '../GerAdv_TS/GUTPeriodicidade/Services/GUTPeriodicidade.service';
+import { GUTPeriodicidadeTestEmpty } from '../GerAdv_TS/Models/GUTPeriodicidade';
+import { useGUTPeriodicidadeComboBox } from '../GerAdv_TS/GUTPeriodicidade/Hooks/hookGUTPeriodicidade';
+
+// Mock do serviço
+const mockGUTPeriodicidadeService: jest.Mocked<IGUTPeriodicidadeService> = {
+  fetchGUTPeriodicidadeById: jest.fn(),
+  saveGUTPeriodicidade: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteGUTPeriodicidade: jest.fn(),
+  validateGUTPeriodicidade: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialGUTPeriodicidade: IGUTPeriodicidade = { ...GUTPeriodicidadeTestEmpty() };
+
+describe('useGUTPeriodicidadeForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeForm(initialGUTPeriodicidade, mockGUTPeriodicidadeService)
+    );
+
+    expect(result.current.data).toEqual(initialGUTPeriodicidade);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeForm(initialGUTPeriodicidade, mockGUTPeriodicidadeService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo G U T Periodicidade',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo G U T Periodicidade');
+  });
+
+   test('deve carregar G U T Periodicidade por ID', async () => {
+    const mockGUTPeriodicidade = { ...initialGUTPeriodicidade, id: 1, nome: 'G U T Periodicidade Teste' };
+    mockGUTPeriodicidadeService.fetchGUTPeriodicidadeById.mockResolvedValue(mockGUTPeriodicidade);
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeForm(initialGUTPeriodicidade, mockGUTPeriodicidadeService)
+    );
+
+    await act(async () => {
+      await result.current.loadGUTPeriodicidade(1);
+    });
+
+    expect(mockGUTPeriodicidadeService.fetchGUTPeriodicidadeById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockGUTPeriodicidade);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar G U T Periodicidade', async () => {
+    const errorMessage = 'Erro ao carregar G U T Periodicidade';
+    mockGUTPeriodicidadeService.fetchGUTPeriodicidadeById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeForm(initialGUTPeriodicidade, mockGUTPeriodicidadeService)
+    );
+
+    await act(async () => {
+      await result.current.loadGUTPeriodicidade(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeForm(initialGUTPeriodicidade, mockGUTPeriodicidadeService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialGUTPeriodicidade, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialGUTPeriodicidade);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeForm(initialGUTPeriodicidade, mockGUTPeriodicidadeService)
+    );
+
+    await act(async () => {
+      await result.current.loadGUTPeriodicidade(0);
+    });
+
+    expect(mockGUTPeriodicidadeService.fetchGUTPeriodicidadeById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialGUTPeriodicidade);
+  });
+});
+
+describe('useGUTPeriodicidadeList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeList(mockGUTPeriodicidadeService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialGUTPeriodicidade, id: 1, nome: 'G U T Periodicidade 1' },
+      { ...initialGUTPeriodicidade, id: 2, nome: 'G U T Periodicidade 2' }
+    ];
+    mockGUTPeriodicidadeService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeList(mockGUTPeriodicidadeService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockGUTPeriodicidadeService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockGUTPeriodicidadeService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeList(mockGUTPeriodicidadeService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialGUTPeriodicidade, id: 1, nome: 'G U T Periodicidade Filtrado' }];
+    const filtro = { nome: 'G U T Periodicidade' };
+    mockGUTPeriodicidadeService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeList(mockGUTPeriodicidadeService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockGUTPeriodicidadeService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsGUTPeriodicidade', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsGUTPeriodicidade());
+
+    const validData = { ...initialGUTPeriodicidade, nome: 'G U T Periodicidade Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsGUTPeriodicidade());
+
+    const invalidData = { ...initialGUTPeriodicidade, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsGUTPeriodicidade());
+
+    const invalidData = { 
+      ...initialGUTPeriodicidade, 
+      nome: 'a'.repeat(20+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 20 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsGUTPeriodicidade());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialGUTPeriodicidade, id: 1, nome: 'G U T Periodicidade Teste' }];
+    mockGUTPeriodicidadeService.getAll.mockResolvedValue(mockData);
+    mockGUTPeriodicidadeService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useGUTPeriodicidadeList(mockGUTPeriodicidadeService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsGUTPeriodicidade()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'G U T Periodicidade Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'G U T Periodicidade Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'G U T Periodicidade 1' },
+      { id: 2, nome: 'G U T Periodicidade 2' }
+    ];
+    mockGUTPeriodicidadeService.getList.mockResolvedValue(mockOptions as IGUTPeriodicidade[]);
+
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'G U T Periodicidade 1' },
+        { id: 2, nome: 'G U T Periodicidade 2' }
+      ]);
+    });
+
+    expect(mockGUTPeriodicidadeService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'G U T Periodicidade ABC' },
+      { id: 2, nome: 'G U T Periodicidade XYZ' }
+    ];
+    mockGUTPeriodicidadeService.getList.mockResolvedValue(mockOptions as IGUTPeriodicidade[]);   
+
+
+ const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'G U T Periodicidade ABC' },
+        { id: 2, nome: 'G U T Periodicidade XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'G U T Periodicidade ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'G U T Periodicidade ABC' },
+      { id: 2, nome: 'G U T Periodicidade XYZ' }
+    ];
+    mockGUTPeriodicidadeService.getList.mockResolvedValue(mockOptions as IGUTPeriodicidade[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'G U T Periodicidade ABC' },
+        { id: 2, nome: 'G U T Periodicidade XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'G U T Periodicidade ABC' },
+          {id: 2, nome: 'G U T Periodicidade XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService)
+    );
+
+    const newValue = { id: 1, nome: 'G U T Periodicidade Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'G U T Periodicidade Inicial' };
+    
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useGUTPeriodicidadeComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'G U T Periodicidade Inicial' };
+    
+    const { result } = renderHook(() => 
+      useGUTPeriodicidadeComboBox(mockGUTPeriodicidadeService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGraphWriter
 {
-    Entity.DBGraph Write(Models.Graph graph, int auditorQuem, SqlConnection oCnn);
+    Entity.DBGraph Write(Models.Graph graph, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(GraphResponse graph, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Graph : IGraphWriter
 {
-    public Entity.DBGraph Write(Models.Graph graph, int auditorQuem, SqlConnection oCnn)
+    public void Delete(GraphResponse graph, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Graph] WHERE gphCodigo={graph.Id};", oCnn);
+    }
+
+    public Entity.DBGraph Write(Models.Graph graph, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = graph.Id.IsEmptyIDNumber() ? new Entity.DBGraph() : new Entity.DBGraph(graph.Id, oCnn);
         dbRec.FTabela = graph.Tabela;

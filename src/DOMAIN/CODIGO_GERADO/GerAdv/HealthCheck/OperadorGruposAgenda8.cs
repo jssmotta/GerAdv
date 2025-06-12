@@ -32,7 +32,7 @@ public class OperadorGruposAgendaHealthCheck(IOptions<AppSettings> appSettings, 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OperadorGruposAgendaHealthCheck(IOptions<AppSettings> appSettings, 
                         if (DBOperadorGruposAgendaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(groCodigo) FROM dbo.OperadorGruposAgenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(groCodigo) FROM {"OperadorGruposAgenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OperadorGruposAgendaHealthCheck(IOptions<AppSettings> appSettings, 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) groSQLWhere,groNome,groOperador,groGUID FROM dbo.OperadorGruposAgenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) groSQLWhere,groNome,groOperador,groGUID FROM {"OperadorGruposAgenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

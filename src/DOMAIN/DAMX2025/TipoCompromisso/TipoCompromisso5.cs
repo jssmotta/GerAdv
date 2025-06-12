@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBTipoCompromisso
 {
     public const string CadastroGuid = "0d3dd4e1-da59-44d0-a238-23af21e303ba";
-#region AdministrativeMethods_TipoCompromisso
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE tipCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "TipoCompromisso";
     public const string CamposSqlX = " TipoCompromisso.* ";
     public const string SensivelCamposSqlX = " TipoCompromisso.* ";

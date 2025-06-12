@@ -5,12 +5,29 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IFaseValidation
 {
-    Task<string> ValidateReg(Models.Fase reg, IFaseService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Fase reg, IFaseService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IFaseService service, IHistoricoService historicoService, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FaseValidation : IFaseValidation
 {
-    public async Task<string> ValidateReg(Models.Fase reg, IFaseService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IFaseService service, IHistoricoService historicoService, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var historicoExists = await historicoService.Filter(new Filters.FilterHistorico { Fase = id }, uri);
+        if (historicoExists != null && historicoExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.";
+        var prodepositosExists = await prodepositosService.Filter(new Filters.FilterProDepositos { Fase = id }, uri);
+        if (prodepositosExists != null && prodepositosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Fase reg, IFaseService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

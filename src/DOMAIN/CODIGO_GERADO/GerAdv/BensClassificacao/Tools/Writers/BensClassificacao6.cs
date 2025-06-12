@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IBensClassificacaoWriter
 {
-    Entity.DBBensClassificacao Write(Models.BensClassificacao bensclassificacao, int auditorQuem, SqlConnection oCnn);
+    Entity.DBBensClassificacao Write(Models.BensClassificacao bensclassificacao, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class BensClassificacao : IBensClassificacaoWriter
 {
-    public Entity.DBBensClassificacao Write(Models.BensClassificacao bensclassificacao, int auditorQuem, SqlConnection oCnn)
+    public void Delete(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[BensClassificacao] WHERE bcsCodigo={bensclassificacao.Id};", oCnn);
+    }
+
+    public Entity.DBBensClassificacao Write(Models.BensClassificacao bensclassificacao, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = bensclassificacao.Id.IsEmptyIDNumber() ? new Entity.DBBensClassificacao() : new Entity.DBBensClassificacao(bensclassificacao.Id, oCnn);
         dbRec.FNome = bensclassificacao.Nome;

@@ -38,7 +38,44 @@ public partial class NECompromissosResponse
     /// </summary>
     [JsonPropertyName("bold")]
     public bool Bold { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class NECompromissosResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ncpTipoCompromisso  
+    /// </summary>
+    [JsonPropertyName("tipocompromisso")]
+    public int TipoCompromisso { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ncpPalavraChave  
+    /// </summary>
+    [JsonPropertyName("palavrachave")]
+    public int PalavraChave { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ncpProvisionar  
+    /// </summary>
+    [JsonPropertyName("provisionar")]
+    public bool Provisionar { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ncpTextoCompromisso  
+    /// </summary>
+    [JsonPropertyName("textocompromisso")]
+    public string TextoCompromisso { get; set; } = "";
+
+    /// <summary>
+    /// Negritar - ncpBold  
+    /// </summary>
+    [JsonPropertyName("bold")]
+    public bool Bold { get; set; }
+
+    [JsonPropertyName("descricaotipocompromisso")]
+    public string DescricaoTipoCompromisso { get; set; } = string.Empty;
 }

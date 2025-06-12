@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ICidadeWriter
 {
-    Entity.DBCidade Write(Models.Cidade cidade, int auditorQuem, SqlConnection oCnn);
+    Entity.DBCidade Write(Models.Cidade cidade, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(CidadeResponse cidade, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Cidade : ICidadeWriter
 {
-    public Entity.DBCidade Write(Models.Cidade cidade, int auditorQuem, SqlConnection oCnn)
+    public void Delete(CidadeResponse cidade, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Cidade] WHERE cidCodigo={cidade.Id};", oCnn);
+    }
+
+    public Entity.DBCidade Write(Models.Cidade cidade, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = cidade.Id.IsEmptyIDNumber() ? new Entity.DBCidade() : new Entity.DBCidade(cidade.Id, oCnn);
         dbRec.FDDD = cidade.DDD;

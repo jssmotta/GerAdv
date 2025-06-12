@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IFaseWriter
 {
-    Entity.DBFase Write(Models.Fase fase, int auditorQuem, SqlConnection oCnn);
+    Entity.DBFase Write(Models.Fase fase, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(FaseResponse fase, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Fase : IFaseWriter
 {
-    public Entity.DBFase Write(Models.Fase fase, int auditorQuem, SqlConnection oCnn)
+    public void Delete(FaseResponse fase, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Fase] WHERE fasCodigo={fase.Id};", oCnn);
+    }
+
+    public Entity.DBFase Write(Models.Fase fase, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = fase.Id.IsEmptyIDNumber() ? new Entity.DBFase() : new Entity.DBFase(fase.Id, oCnn);
         dbRec.FDescricao = fase.Descricao;

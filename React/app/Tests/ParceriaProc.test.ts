@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useParceriaProcForm, useParceriaProcList, useValidationsParceriaProc } from '../GerAdv_TS/ParceriaProc/Hooks/hookParceriaProc';
+import { IParceriaProc } from '../GerAdv_TS/ParceriaProc/Interfaces/interface.ParceriaProc';
+import { IParceriaProcService } from '../GerAdv_TS/ParceriaProc/Services/ParceriaProc.service';
+import { ParceriaProcTestEmpty } from '../GerAdv_TS/Models/ParceriaProc';
+
+
+// Mock do serviço
+const mockParceriaProcService: jest.Mocked<IParceriaProcService> = {
+  fetchParceriaProcById: jest.fn(),
+  saveParceriaProc: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteParceriaProc: jest.fn(),
+  validateParceriaProc: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialParceriaProc: IParceriaProc = { ...ParceriaProcTestEmpty() };
+
+describe('useParceriaProcForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useParceriaProcForm(initialParceriaProc, mockParceriaProcService)
+    );
+
+    expect(result.current.data).toEqual(initialParceriaProc);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useParceriaProcForm(initialParceriaProc, mockParceriaProcService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'guid',
+        value: 'Novo Parceria Proc',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.guid).toBe('Novo Parceria Proc');
+  });
+
+   test('deve carregar Parceria Proc por ID', async () => {
+    const mockParceriaProc = { ...initialParceriaProc, id: 1, guid: 'Parceria Proc Teste' };
+    mockParceriaProcService.fetchParceriaProcById.mockResolvedValue(mockParceriaProc);
+
+    const { result } = renderHook(() => 
+      useParceriaProcForm(initialParceriaProc, mockParceriaProcService)
+    );
+
+    await act(async () => {
+      await result.current.loadParceriaProc(1);
+    });
+
+    expect(mockParceriaProcService.fetchParceriaProcById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockParceriaProc);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Parceria Proc', async () => {
+    const errorMessage = 'Erro ao carregar Parceria Proc';
+    mockParceriaProcService.fetchParceriaProcById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useParceriaProcForm(initialParceriaProc, mockParceriaProcService)
+    );
+
+    await act(async () => {
+      await result.current.loadParceriaProc(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useParceriaProcForm(initialParceriaProc, mockParceriaProcService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialParceriaProc, guid: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialParceriaProc);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useParceriaProcForm(initialParceriaProc, mockParceriaProcService)
+    );
+
+    await act(async () => {
+      await result.current.loadParceriaProc(0);
+    });
+
+    expect(mockParceriaProcService.fetchParceriaProcById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialParceriaProc);
+  });
+});
+
+describe('useParceriaProcList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useParceriaProcList(mockParceriaProcService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialParceriaProc, id: 1, guid: 'Parceria Proc 1' },
+      { ...initialParceriaProc, id: 2, guid: 'Parceria Proc 2' }
+    ];
+    mockParceriaProcService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useParceriaProcList(mockParceriaProcService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockParceriaProcService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockParceriaProcService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useParceriaProcList(mockParceriaProcService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialParceriaProc, id: 1, guid: 'Parceria Proc Filtrado' }];
+    const filtro = { guid: 'Parceria Proc' };
+    mockParceriaProcService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useParceriaProcList(mockParceriaProcService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockParceriaProcService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsParceriaProc', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsParceriaProc());
+
+    const validData = { ...initialParceriaProc, guid: 'Parceria Proc Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsParceriaProc());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialParceriaProc, id: 1, guid: 'Parceria Proc Teste' }];
+    mockParceriaProcService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useParceriaProcList(mockParceriaProcService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsParceriaProc()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

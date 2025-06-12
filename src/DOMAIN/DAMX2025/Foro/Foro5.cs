@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBForo
 {
     public const string CadastroGuid = "aa5d533f-cb3d-4a50-a25b-7cd521fc8dd7";
-#region AdministrativeMethods_Foro
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE forCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Foro";
     public const string CamposSqlX = " Foro.* ";
     public const string SensivelCamposSqlX = " Foro.* ";

@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IGruposEmpresasReader
 {
-    GruposEmpresasResponse? Read(int id, SqlConnection oCnn);
-    GruposEmpresasResponse? Read(string where, SqlConnection oCnn);
+    GruposEmpresasResponse? Read(int id, MsiSqlConnection oCnn);
+    GruposEmpresasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GruposEmpresasResponse? Read(Entity.DBGruposEmpresas dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GruposEmpresasResponse? Read(DBGruposEmpresas dbRec);
+    GruposEmpresasResponseAll? ReadAll(DBGruposEmpresas dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class GruposEmpresas : IGruposEmpresasReader
 {
-    public GruposEmpresasResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) grpCodigo, grpDescricao FROM {"GruposEmpresas".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}grpDescricao");
+        }
+
+        return query.ToString();
+    }
+
+    public GruposEmpresasResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBGruposEmpresas(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public GruposEmpresasResponse? Read(string where, SqlConnection oCnn)
+    public GruposEmpresasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGruposEmpresas(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGruposEmpresas(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -46,18 +75,6 @@ public partial class GruposEmpresas : IGruposEmpresasReader
             DespesaUnificada = dbRec.FDespesaUnificada,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gruposempresas.Auditor = auditor;
         return gruposempresas;
     }
 
@@ -81,18 +98,31 @@ public partial class GruposEmpresas : IGruposEmpresasReader
             DespesaUnificada = dbRec.FDespesaUnificada,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return gruposempresas;
+    }
+
+    public GruposEmpresasResponseAll? ReadAll(DBGruposEmpresas dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var gruposempresas = new GruposEmpresasResponseAll
+        {
+            Id = dbRec.ID,
+            EMail = dbRec.FEMail ?? string.Empty,
+            Inativo = dbRec.FInativo,
+            Oponente = dbRec.FOponente,
+            Descricao = dbRec.FDescricao ?? string.Empty,
+            Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Cliente = dbRec.FCliente,
+            Icone = dbRec.FIcone ?? string.Empty,
+            DespesaUnificada = dbRec.FDespesaUnificada,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gruposempresas.Auditor = auditor;
+        gruposempresas.NomeOponentes = dr["opoNome"]?.ToString() ?? string.Empty;
+        gruposempresas.NomeClientes = dr["cliNome"]?.ToString() ?? string.Empty;
         return gruposempresas;
     }
 }

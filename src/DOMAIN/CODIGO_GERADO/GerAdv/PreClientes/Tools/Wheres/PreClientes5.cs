@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IPreClientesWhere
 {
-    PreClientesResponse Read(string where, SqlConnection oCnn);
+    PreClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class PreClientes : IPreClientesWhere
 {
-    public PreClientesResponse Read(string where, SqlConnection oCnn)
+    public PreClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBPreClientes(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBPreClientes(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var preclientes = new PreClientesResponse
         {
             Id = dbRec.ID,
@@ -55,18 +55,6 @@ public partial class PreClientes : IPreClientesWhere
             preclientes.DtNasc = dbRec.FDtNasc;
         if (DateTime.TryParse(dbRec.FData, out _))
             preclientes.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        preclientes.Auditor = auditor;
         return preclientes;
     }
 }

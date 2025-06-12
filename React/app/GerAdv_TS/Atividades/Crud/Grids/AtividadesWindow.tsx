@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import AtividadesInc from '../Inc/Atividades';
+import { IAtividades } from '../../Interfaces/interface.Atividades';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { AtividadesEmpty } from '@/app/GerAdv_TS/Models/Atividades';
+import { useWindow } from '@/app/hooks/useWindows';
+interface AtividadesWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedAtividades?: IAtividades;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const AtividadesWindow: React.FC<AtividadesWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedAtividades, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Atividades'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedAtividades?.id ?? 0).toString()}
+>
+<AtividadesInc
+id={selectedAtividades?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowAtividades: React.FC<AtividadesWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<AtividadesWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedAtividades={AtividadesEmpty()}>
+</AtividadesWindow>
+)
+};
+export default AtividadesWindow;

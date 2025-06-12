@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPenhoraStatusWriter
 {
-    Entity.DBPenhoraStatus Write(Models.PenhoraStatus penhorastatus, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPenhoraStatus Write(Models.PenhoraStatus penhorastatus, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PenhoraStatusResponse penhorastatus, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class PenhoraStatus : IPenhoraStatusWriter
 {
-    public Entity.DBPenhoraStatus Write(Models.PenhoraStatus penhorastatus, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PenhoraStatusResponse penhorastatus, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[PenhoraStatus] WHERE phsCodigo={penhorastatus.Id};", oCnn);
+    }
+
+    public Entity.DBPenhoraStatus Write(Models.PenhoraStatus penhorastatus, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = penhorastatus.Id.IsEmptyIDNumber() ? new Entity.DBPenhoraStatus() : new Entity.DBPenhoraStatus(penhorastatus.Id, oCnn);
         dbRec.FNome = penhorastatus.Nome;

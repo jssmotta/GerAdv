@@ -1,0 +1,281 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useContaCorrenteForm, useContaCorrenteList, useValidationsContaCorrente } from '../GerAdv_TS/ContaCorrente/Hooks/hookContaCorrente';
+import { IContaCorrente } from '../GerAdv_TS/ContaCorrente/Interfaces/interface.ContaCorrente';
+import { IContaCorrenteService } from '../GerAdv_TS/ContaCorrente/Services/ContaCorrente.service';
+import { ContaCorrenteTestEmpty } from '../GerAdv_TS/Models/ContaCorrente';
+
+
+// Mock do serviço
+const mockContaCorrenteService: jest.Mocked<IContaCorrenteService> = {
+  fetchContaCorrenteById: jest.fn(),
+  saveContaCorrente: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteContaCorrente: jest.fn(),
+  validateContaCorrente: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialContaCorrente: IContaCorrente = { ...ContaCorrenteTestEmpty() };
+
+describe('useContaCorrenteForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    expect(result.current.data).toEqual(initialContaCorrente);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'historico',
+        value: 'Novo Conta Corrente',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.historico).toBe('Novo Conta Corrente');
+  });
+
+   test('deve carregar Conta Corrente por ID', async () => {
+    const mockContaCorrente = { ...initialContaCorrente, id: 1, historico: 'Conta Corrente Teste' };
+    mockContaCorrenteService.fetchContaCorrenteById.mockResolvedValue(mockContaCorrente);
+
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    await act(async () => {
+      await result.current.loadContaCorrente(1);
+    });
+
+    expect(mockContaCorrenteService.fetchContaCorrenteById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockContaCorrente);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Conta Corrente', async () => {
+    const errorMessage = 'Erro ao carregar Conta Corrente';
+    mockContaCorrenteService.fetchContaCorrenteById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    await act(async () => {
+      await result.current.loadContaCorrente(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialContaCorrente, historico: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialContaCorrente);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    await act(async () => {
+      await result.current.loadContaCorrente(0);
+    });
+
+    expect(mockContaCorrenteService.fetchContaCorrenteById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialContaCorrente);
+  });
+});
+
+describe('useContaCorrenteList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useContaCorrenteList(mockContaCorrenteService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialContaCorrente, id: 1, historico: 'Conta Corrente 1' },
+      { ...initialContaCorrente, id: 2, historico: 'Conta Corrente 2' }
+    ];
+    mockContaCorrenteService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useContaCorrenteList(mockContaCorrenteService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockContaCorrenteService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockContaCorrenteService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useContaCorrenteList(mockContaCorrenteService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialContaCorrente, id: 1, historico: 'Conta Corrente Filtrado' }];
+    const filtro = { historico: 'Conta Corrente' };
+    mockContaCorrenteService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useContaCorrenteList(mockContaCorrenteService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockContaCorrenteService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsContaCorrente', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsContaCorrente());
+
+    const validData = { ...initialContaCorrente, historico: 'Conta Corrente Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsContaCorrente());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialContaCorrente, id: 1, historico: 'Conta Corrente Teste' }];
+    mockContaCorrenteService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useContaCorrenteList(mockContaCorrenteService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsContaCorrente()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useContaCorrenteForm(initialContaCorrente, mockContaCorrenteService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'quitado',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.quitado).toBe(true);
+  });
+
+

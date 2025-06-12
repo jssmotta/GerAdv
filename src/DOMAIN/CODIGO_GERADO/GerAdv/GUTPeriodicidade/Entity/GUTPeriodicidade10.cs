@@ -7,7 +7,7 @@ public partial class DBGUTPeriodicidade : MenphisSI.GerAdv.DBGUTPeriodicidade, I
     {
     }
 
-    public DBGUTPeriodicidade(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBGUTPeriodicidade(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBGUTPeriodicidade : MenphisSI.GerAdv.DBGUTPeriodicidade, I
     {
     }
 
-    public DBGUTPeriodicidade(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBGUTPeriodicidade(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

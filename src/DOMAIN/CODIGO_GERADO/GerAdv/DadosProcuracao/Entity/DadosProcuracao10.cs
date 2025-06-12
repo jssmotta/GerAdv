@@ -7,7 +7,7 @@ public partial class DBDadosProcuracao : MenphisSI.GerAdv.DBDadosProcuracao, IDB
     {
     }
 
-    public DBDadosProcuracao(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBDadosProcuracao(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBDadosProcuracao : MenphisSI.GerAdv.DBDadosProcuracao, IDB
     {
     }
 
-    public DBDadosProcuracao(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBDadosProcuracao(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

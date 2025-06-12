@@ -7,7 +7,7 @@ public partial class DBReuniao : MenphisSI.GerAdv.DBReuniao, IDBReuniao
     {
     }
 
-    public DBReuniao(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBReuniao(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBReuniao : MenphisSI.GerAdv.DBReuniao, IDBReuniao
     {
     }
 
-    public DBReuniao(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBReuniao(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

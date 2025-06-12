@@ -1,0 +1,151 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IGUTTipo } from '@/app/GerAdv_TS/GUTTipo/Interfaces/interface.GUTTipo';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { GUTTipoApi } from '../../Apis/ApiGUTTipo';
+import { useValidationsGUTTipo } from '../../Hooks/hookGUTTipo';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface GUTTipoFormProps {
+  guttipoData: IGUTTipo;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const GUTTipoForm: React.FC<GUTTipoFormProps> = ({
+  guttipoData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new GUTTipoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsGUTTipo();
+
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
+
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        onSubmit(e);
+      } catch (error) {
+      console.error('Erro ao submeter formulário de GUTTipo:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`GUTTipoForm-${guttipoData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.error('Erro ao salvar GUTTipo diretamente:', error);
+    setIsSubmitting(false);
+    if (onError) onError();
+    }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = guttipoData?.id == 0 ? 'Editar GUTTipo' : 'Adicionar G U T Tipo';
+  }
+}, [guttipoData.id]);
+return (
+<>
+<style>
+  {!isMobile ? `
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    ` : ``}
+  </style>
+
+  <div className={isMobile ? 'form-container form-container-GUTTipo' : 'form-container5 form-container-GUTTipo'}>
+
+    <form className='formInputCadInc' id={`GUTTipoForm-${guttipoData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTTipo' data={guttipoData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTTipoForm-${guttipoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
+
+          <InputName
+          type='text'
+          id='nome'
+          label='Nome'
+          dataForm={guttipoData}
+          className='inputIncNome'
+          name='nome'
+          value={guttipoData.nome}
+          placeholder={`Informe Nome`}
+          onChange={onChange}
+          required
+          />
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='ordem'
+          label='Ordem'
+          dataForm={guttipoData}
+          className='inputIncNome'
+          name='ordem'
+          value={guttipoData.ordem}
+          onChange={onChange}
+          />
+
+        </div>
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTTipo' data={guttipoData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTTipoForm-${guttipoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/guttipo'} id={guttipoData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

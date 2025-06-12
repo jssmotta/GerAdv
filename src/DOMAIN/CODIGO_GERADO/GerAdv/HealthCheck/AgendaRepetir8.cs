@@ -32,7 +32,7 @@ public class AgendaRepetirHealthCheck(IOptions<AppSettings> appSettings, AgendaR
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AgendaRepetirHealthCheck(IOptions<AppSettings> appSettings, AgendaR
                         if (DBAgendaRepetirDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(rptCodigo) FROM dbo.AgendaRepetir (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(rptCodigo) FROM {"AgendaRepetir".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AgendaRepetirHealthCheck(IOptions<AppSettings> appSettings, AgendaR
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) rptAdvogado,rptCliente,rptDataFinal,rptFuncionario,rptHoraFinal,rptProcesso,rptPessoal,rptFrequencia,rptDia,rptMes,rptHora,rptIDQuem,rptIDQuem2,rptMensagem,rptIDTipo,rptID1,rptID2,rptID3,rptID4,rptSegunda,rptQuarta,rptQuinta,rptSexta,rptSabado,rptDomingo,rptTerca FROM dbo.AgendaRepetir (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) rptAdvogado,rptCliente,rptDataFinal,rptFuncionario,rptHoraFinal,rptProcesso,rptPessoal,rptFrequencia,rptDia,rptMes,rptHora,rptIDQuem,rptIDQuem2,rptMensagem,rptIDTipo,rptID1,rptID2,rptID3,rptID4,rptSegunda,rptQuarta,rptQuinta,rptSexta,rptSabado,rptDomingo,rptTerca FROM {"AgendaRepetir".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

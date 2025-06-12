@@ -14,7 +14,7 @@ public partial class AgendaStatusController(IAgendaStatusService agendastatusSer
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("AgendaStatus", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("AgendaStatus", "GetAll", $"max = {max}", uri);
         var result = await _agendastatusService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class AgendaStatusController(IAgendaStatusService agendastatusSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAgendaStatus filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("AgendaStatus: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("AgendaStatus: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _agendastatusService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class AgendaStatusController(IAgendaStatusService agendastatusSer
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("AgendaStatus: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("AgendaStatus: GetById called with id = {0}, {1}", id, uri);
         var result = await _agendastatusService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class AgendaStatusController(IAgendaStatusService agendastatusSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.AgendaStatus regAgendaStatus, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("AgendaStatus", "AddAndUpdate", regAgendaStatus, uri);
-        var result = await _agendastatusService.AddAndUpdate(regAgendaStatus, uri);
-        if (result == null)
+        //_logger.LogInfo("AgendaStatus", "AddAndUpdate", regAgendaStatus, uri);
+        try
         {
-            _logger.Warn("AgendaStatus: AddAndUpdate failed to add or update AgendaStatus, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _agendastatusService.AddAndUpdate(regAgendaStatus, uri);
+            if (result == null)
+            {
+                _logger.Warn("AgendaStatus: AddAndUpdate failed to add or update AgendaStatus, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "AgendaStatus: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("AgendaStatus: Delete called with id = {0}, {2}", id, uri);
-        var result = await _agendastatusService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("AgendaStatus: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No AgendaStatus found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _agendastatusService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No AgendaStatus found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "AgendaStatus: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useAreasJusticaForm, useAreasJusticaList, useValidationsAreasJustica } from '../GerAdv_TS/AreasJustica/Hooks/hookAreasJustica';
+import { IAreasJustica } from '../GerAdv_TS/AreasJustica/Interfaces/interface.AreasJustica';
+import { IAreasJusticaService } from '../GerAdv_TS/AreasJustica/Services/AreasJustica.service';
+import { AreasJusticaTestEmpty } from '../GerAdv_TS/Models/AreasJustica';
+
+
+// Mock do serviço
+const mockAreasJusticaService: jest.Mocked<IAreasJusticaService> = {
+  fetchAreasJusticaById: jest.fn(),
+  saveAreasJustica: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteAreasJustica: jest.fn(),
+  validateAreasJustica: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialAreasJustica: IAreasJustica = { ...AreasJusticaTestEmpty() };
+
+describe('useAreasJusticaForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useAreasJusticaForm(initialAreasJustica, mockAreasJusticaService)
+    );
+
+    expect(result.current.data).toEqual(initialAreasJustica);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useAreasJusticaForm(initialAreasJustica, mockAreasJusticaService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'campo',
+        value: 'Novo Areas Justica',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.campo).toBe('Novo Areas Justica');
+  });
+
+   test('deve carregar Areas Justica por ID', async () => {
+    const mockAreasJustica = { ...initialAreasJustica, id: 1, campo: 'Areas Justica Teste' };
+    mockAreasJusticaService.fetchAreasJusticaById.mockResolvedValue(mockAreasJustica);
+
+    const { result } = renderHook(() => 
+      useAreasJusticaForm(initialAreasJustica, mockAreasJusticaService)
+    );
+
+    await act(async () => {
+      await result.current.loadAreasJustica(1);
+    });
+
+    expect(mockAreasJusticaService.fetchAreasJusticaById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockAreasJustica);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Areas Justica', async () => {
+    const errorMessage = 'Erro ao carregar Areas Justica';
+    mockAreasJusticaService.fetchAreasJusticaById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAreasJusticaForm(initialAreasJustica, mockAreasJusticaService)
+    );
+
+    await act(async () => {
+      await result.current.loadAreasJustica(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useAreasJusticaForm(initialAreasJustica, mockAreasJusticaService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialAreasJustica, campo: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialAreasJustica);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useAreasJusticaForm(initialAreasJustica, mockAreasJusticaService)
+    );
+
+    await act(async () => {
+      await result.current.loadAreasJustica(0);
+    });
+
+    expect(mockAreasJusticaService.fetchAreasJusticaById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialAreasJustica);
+  });
+});
+
+describe('useAreasJusticaList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useAreasJusticaList(mockAreasJusticaService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialAreasJustica, id: 1, campo: 'Areas Justica 1' },
+      { ...initialAreasJustica, id: 2, campo: 'Areas Justica 2' }
+    ];
+    mockAreasJusticaService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAreasJusticaList(mockAreasJusticaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockAreasJusticaService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockAreasJusticaService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAreasJusticaList(mockAreasJusticaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialAreasJustica, id: 1, campo: 'Areas Justica Filtrado' }];
+    const filtro = { campo: 'Areas Justica' };
+    mockAreasJusticaService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAreasJusticaList(mockAreasJusticaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockAreasJusticaService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsAreasJustica', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsAreasJustica());
+
+    const validData = { ...initialAreasJustica, campo: 'Areas Justica Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsAreasJustica());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialAreasJustica, id: 1, campo: 'Areas Justica Teste' }];
+    mockAreasJusticaService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useAreasJusticaList(mockAreasJusticaService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsAreasJustica()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

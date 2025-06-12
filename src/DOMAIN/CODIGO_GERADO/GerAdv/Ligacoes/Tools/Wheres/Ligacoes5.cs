@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ILigacoesWhere
 {
-    LigacoesResponse Read(string where, SqlConnection oCnn);
+    LigacoesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Ligacoes : ILigacoesWhere
 {
-    public LigacoesResponse Read(string where, SqlConnection oCnn)
+    public LigacoesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBLigacoes(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBLigacoes(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var ligacoes = new LigacoesResponse
         {
             Id = dbRec.ID,
@@ -50,18 +50,6 @@ public partial class Ligacoes : ILigacoesWhere
             ligacoes.Data = dbRec.FData;
         if (DateTime.TryParse(dbRec.FHora, out _))
             ligacoes.Hora = dbRec.FHora;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        ligacoes.Auditor = auditor;
         return ligacoes;
     }
 }

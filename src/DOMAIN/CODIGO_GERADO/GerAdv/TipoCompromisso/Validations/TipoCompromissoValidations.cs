@@ -5,12 +5,32 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoCompromissoValidation
 {
-    Task<string> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoCompromissoValidation : ITipoCompromissoValidation
 {
-    public async Task<string> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { TipoCompromisso = id }, uri);
+        if (agendaExists != null && agendaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
+        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { TipoCompromisso = id }, uri);
+        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
+        var necompromissosExists = await necompromissosService.Filter(new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
+        if (necompromissosExists != null && necompromissosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela N E Compromissos associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

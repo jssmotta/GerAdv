@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface ILivroCaixaClientesReader
 {
-    LivroCaixaClientesResponse? Read(int id, SqlConnection oCnn);
-    LivroCaixaClientesResponse? Read(string where, SqlConnection oCnn);
+    LivroCaixaClientesResponse? Read(int id, MsiSqlConnection oCnn);
+    LivroCaixaClientesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     LivroCaixaClientesResponse? Read(Entity.DBLivroCaixaClientes dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     LivroCaixaClientesResponse? Read(DBLivroCaixaClientes dbRec);
+    LivroCaixaClientesResponseAll? ReadAll(DBLivroCaixaClientes dbRec, DataRow dr);
 }
 
 public partial class LivroCaixaClientes : ILivroCaixaClientesReader
 {
-    public LivroCaixaClientesResponse? Read(int id, SqlConnection oCnn)
+    public LivroCaixaClientesResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBLivroCaixaClientes(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public LivroCaixaClientesResponse? Read(string where, SqlConnection oCnn)
+    public LivroCaixaClientesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBLivroCaixaClientes(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBLivroCaixaClientes(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class LivroCaixaClientes : ILivroCaixaClientesReader
             Cliente = dbRec.FCliente,
             Lancado = dbRec.FLancado,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        livrocaixaclientes.Auditor = auditor;
         return livrocaixaclientes;
     }
 
@@ -69,18 +59,24 @@ public partial class LivroCaixaClientes : ILivroCaixaClientesReader
             Cliente = dbRec.FCliente,
             Lancado = dbRec.FLancado,
         };
-        var auditor = new Auditor
+        return livrocaixaclientes;
+    }
+
+    public LivroCaixaClientesResponseAll? ReadAll(DBLivroCaixaClientes dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var livrocaixaclientes = new LivroCaixaClientesResponseAll
+        {
+            Id = dbRec.ID,
+            LivroCaixa = dbRec.FLivroCaixa,
+            Cliente = dbRec.FCliente,
+            Lancado = dbRec.FLancado,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        livrocaixaclientes.Auditor = auditor;
+        livrocaixaclientes.NomeClientes = dr["cliNome"]?.ToString() ?? string.Empty;
         return livrocaixaclientes;
     }
 }

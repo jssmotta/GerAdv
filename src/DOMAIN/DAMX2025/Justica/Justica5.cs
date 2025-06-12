@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBJustica
 {
     public const string CadastroGuid = "30cab9c6-3b84-4ff5-a320-54fcc6ff8685";
-#region AdministrativeMethods_Justica
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE jusCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Justica";
     public const string CamposSqlX = " Justica.* ";
     public const string SensivelCamposSqlX = " Justica.* ";

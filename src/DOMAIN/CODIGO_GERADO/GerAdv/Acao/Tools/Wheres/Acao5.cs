@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAcaoWhere
 {
-    AcaoResponse Read(string where, SqlConnection oCnn);
+    AcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Acao : IAcaoWhere
 {
-    public AcaoResponse Read(string where, SqlConnection oCnn)
+    public AcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBAcao(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBAcao(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var acao = new AcaoResponse
         {
             Id = dbRec.ID,
@@ -21,18 +21,6 @@ public partial class Acao : IAcaoWhere
             Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        acao.Auditor = auditor;
         return acao;
     }
 }

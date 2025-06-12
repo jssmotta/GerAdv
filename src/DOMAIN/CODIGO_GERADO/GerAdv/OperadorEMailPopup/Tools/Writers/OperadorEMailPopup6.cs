@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadorEMailPopupWriter
 {
-    Entity.DBOperadorEMailPopup Write(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, SqlConnection oCnn);
+    Entity.DBOperadorEMailPopup Write(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class OperadorEMailPopup : IOperadorEMailPopupWriter
 {
-    public Entity.DBOperadorEMailPopup Write(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, SqlConnection oCnn)
+    public void Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[OperadorEMailPopup] WHERE oepCodigo={operadoremailpopup.Id};", oCnn);
+    }
+
+    public Entity.DBOperadorEMailPopup Write(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = operadoremailpopup.Id.IsEmptyIDNumber() ? new Entity.DBOperadorEMailPopup() : new Entity.DBOperadorEMailPopup(operadoremailpopup.Id, oCnn);
         dbRec.FOperador = operadoremailpopup.Operador;

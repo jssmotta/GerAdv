@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IProValoresReader
 {
-    ProValoresResponse? Read(int id, SqlConnection oCnn);
-    ProValoresResponse? Read(string where, SqlConnection oCnn);
+    ProValoresResponse? Read(int id, MsiSqlConnection oCnn);
+    ProValoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProValoresResponse? Read(Entity.DBProValores dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProValoresResponse? Read(DBProValores dbRec);
+    ProValoresResponseAll? ReadAll(DBProValores dbRec, DataRow dr);
 }
 
 public partial class ProValores : IProValoresReader
 {
-    public ProValoresResponse? Read(int id, SqlConnection oCnn)
+    public ProValoresResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBProValores(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ProValoresResponse? Read(string where, SqlConnection oCnn)
+    public ProValoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProValores(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProValores(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -54,18 +56,6 @@ public partial class ProValores : IProValoresReader
             provalores.Data = dbRec.FData;
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out _))
             provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        provalores.Auditor = auditor;
         return provalores;
     }
 
@@ -97,18 +87,39 @@ public partial class ProValores : IProValoresReader
             provalores.Data = dbRec.FData;
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out _))
             provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-        var auditor = new Auditor
+        return provalores;
+    }
+
+    public ProValoresResponseAll? ReadAll(DBProValores dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var provalores = new ProValoresResponseAll
+        {
+            Id = dbRec.ID,
+            Processo = dbRec.FProcesso,
+            TipoValorProcesso = dbRec.FTipoValorProcesso,
+            Indice = dbRec.FIndice ?? string.Empty,
+            Ignorar = dbRec.FIgnorar,
+            ValorOriginal = dbRec.FValorOriginal,
+            PercMulta = dbRec.FPercMulta,
+            ValorMulta = dbRec.FValorMulta,
+            PercJuros = dbRec.FPercJuros,
+            ValorOriginalCorrigidoIndice = dbRec.FValorOriginalCorrigidoIndice,
+            ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
+            ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
+            ValorFinal = dbRec.FValorFinal,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        provalores.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FData, out _))
+            provalores.Data = dbRec.FData;
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out _))
+            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
+        provalores.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
+        provalores.DescricaoTipoValorProcesso = dr["ptvDescricao"]?.ToString() ?? string.Empty;
         return provalores;
     }
 }

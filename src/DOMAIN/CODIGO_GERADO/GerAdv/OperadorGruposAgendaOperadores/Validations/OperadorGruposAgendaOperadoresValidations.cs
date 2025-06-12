@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IOperadorGruposAgendaOperadoresValidation
 {
-    Task<string> ValidateReg(Models.OperadorGruposAgendaOperadores reg, IOperadorGruposAgendaOperadoresService service, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.OperadorGruposAgendaOperadores reg, IOperadorGruposAgendaOperadoresService service, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IOperadorGruposAgendaOperadoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorGruposAgendaOperadoresValidation : IOperadorGruposAgendaOperadoresValidation
 {
-    public async Task<string> ValidateReg(Models.OperadorGruposAgendaOperadores reg, IOperadorGruposAgendaOperadoresService service, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IOperadorGruposAgendaOperadoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.OperadorGruposAgendaOperadores reg, IOperadorGruposAgendaOperadoresService service, IOperadorGruposAgendaReader operadorgruposagendaReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

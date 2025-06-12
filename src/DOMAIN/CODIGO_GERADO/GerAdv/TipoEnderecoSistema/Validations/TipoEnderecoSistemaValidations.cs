@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoEnderecoSistemaValidation
 {
-    Task<string> ValidateReg(Models.TipoEnderecoSistema reg, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoEnderecoSistema reg, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
 {
-    public async Task<string> ValidateReg(Models.TipoEnderecoSistema reg, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var enderecosistemaExists = await enderecosistemaService.Filter(new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id }, uri);
+        if (enderecosistemaExists != null && enderecosistemaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoEnderecoSistema reg, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

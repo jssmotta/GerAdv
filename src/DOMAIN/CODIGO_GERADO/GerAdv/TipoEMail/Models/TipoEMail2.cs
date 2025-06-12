@@ -15,3 +15,16 @@ public partial class TipoEMail
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = "";
 }
+
+[Serializable]
+public partial class TipoEMailAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - tmlNome - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
+}

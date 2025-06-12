@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoModeloDocumentoWriter
 {
-    Entity.DBTipoModeloDocumento Write(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTipoModeloDocumento Write(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TipoModeloDocumento : ITipoModeloDocumentoWriter
 {
-    public Entity.DBTipoModeloDocumento Write(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TipoModeloDocumento] WHERE tpdCodigo={tipomodelodocumento.Id};", oCnn);
+    }
+
+    public Entity.DBTipoModeloDocumento Write(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = tipomodelodocumento.Id.IsEmptyIDNumber() ? new Entity.DBTipoModeloDocumento() : new Entity.DBTipoModeloDocumento(tipomodelodocumento.Id, oCnn);
         dbRec.FNome = tipomodelodocumento.Nome;

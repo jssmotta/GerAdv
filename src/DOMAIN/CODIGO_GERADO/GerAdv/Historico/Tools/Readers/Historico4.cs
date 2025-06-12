@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IHistoricoReader
 {
-    HistoricoResponse? Read(int id, SqlConnection oCnn);
-    HistoricoResponse? Read(string where, SqlConnection oCnn);
+    HistoricoResponse? Read(int id, MsiSqlConnection oCnn);
+    HistoricoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     HistoricoResponse? Read(Entity.DBHistorico dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     HistoricoResponse? Read(DBHistorico dbRec);
+    HistoricoResponseAll? ReadAll(DBHistorico dbRec, DataRow dr);
 }
 
 public partial class Historico : IHistoricoReader
 {
-    public HistoricoResponse? Read(int id, SqlConnection oCnn)
+    public HistoricoResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBHistorico(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public HistoricoResponse? Read(string where, SqlConnection oCnn)
+    public HistoricoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBHistorico(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBHistorico(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -58,18 +60,6 @@ public partial class Historico : IHistoricoReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             historico.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        historico.Auditor = auditor;
         return historico;
     }
 
@@ -105,18 +95,44 @@ public partial class Historico : IHistoricoReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             historico.Data = dbRec.FData;
-        var auditor = new Auditor
+        return historico;
+    }
+
+    public HistoricoResponseAll? ReadAll(DBHistorico dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var historico = new HistoricoResponseAll
+        {
+            Id = dbRec.ID,
+            ExtraID = dbRec.FExtraID,
+            IDNE = dbRec.FIDNE,
+            ExtraGUID = dbRec.FExtraGUID ?? string.Empty,
+            LiminarOrigem = dbRec.FLiminarOrigem,
+            NaoPublicavel = dbRec.FNaoPublicavel,
+            Processo = dbRec.FProcesso,
+            Precatoria = dbRec.FPrecatoria,
+            Apenso = dbRec.FApenso,
+            IDInstProcesso = dbRec.FIDInstProcesso,
+            Fase = dbRec.FFase,
+            Observacao = dbRec.FObservacao ?? string.Empty,
+            Agendado = dbRec.FAgendado,
+            Concluido = dbRec.FConcluido,
+            MesmaAgenda = dbRec.FMesmaAgenda,
+            SAD = dbRec.FSAD,
+            Resumido = dbRec.FResumido,
+            StatusAndamento = dbRec.FStatusAndamento,
+            Top = dbRec.FTop,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        historico.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FData, out _))
+            historico.Data = dbRec.FData;
+        historico.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
+        historico.DescricaoFase = dr["fasDescricao"]?.ToString() ?? string.Empty;
+        historico.NomeStatusAndamento = dr["sanNome"]?.ToString() ?? string.Empty;
         return historico;
     }
 }

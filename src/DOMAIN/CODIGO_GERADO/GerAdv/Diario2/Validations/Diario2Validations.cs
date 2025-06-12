@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IDiario2Validation
 {
-    Task<string> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class Diario2Validation : IDiario2Validation
 {
-    public async Task<string> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

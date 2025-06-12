@@ -20,7 +20,23 @@ public partial class Auditor4KResponse
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class Auditor4KResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - audNome - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
+
+    /// <summary>
+    /// GUId - audGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 }

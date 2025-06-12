@@ -7,7 +7,7 @@ public partial class DBStatusBiu : MenphisSI.GerAdv.DBStatusBiu, IDBStatusBiu
     {
     }
 
-    public DBStatusBiu(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBStatusBiu(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBStatusBiu : MenphisSI.GerAdv.DBStatusBiu, IDBStatusBiu
     {
     }
 
-    public DBStatusBiu(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBStatusBiu(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

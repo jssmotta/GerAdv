@@ -1,0 +1,75 @@
+﻿// Tracking: CrudInc.tsx.txt
+'use client';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { GUTTipoApi } from '../../Apis/ApiGUTTipo';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { NotificationService } from '@/app/services/notification.service';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
+import { IGUTTipoFormProps } from '../../Interfaces/interface.GUTTipo';
+import { GUTTipoService } from '../../Services/GUTTipo.service';
+import { useGUTTipoForm, useValidationsGUTTipo } from '../../Hooks/hookGUTTipo';
+import { GUTTipoEmpty } from '../../../Models/GUTTipo';
+import { GUTTipoForm } from '../Forms/GUTTipo';
+
+const GUTTipoInc: React.FC<IGUTTipoFormProps> = ({ id, onClose, onError, onSuccess }) => {
+  const { systemContext } = useSystemContext();
+  const isMobile = useIsMobile();
+  const router = useRouter();
+  const guttipoService = new GUTTipoService(
+  new GUTTipoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+);
+const notificationService = new NotificationService();
+const { data, handleChange, loadGUTTipo } = useGUTTipoForm(
+GUTTipoEmpty(), 
+guttipoService
+);
+useEffect(() => {
+  loadGUTTipo(id);
+}, [id]);
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const savedGUTTipo = await guttipoService.saveGUTTipo(data);
+    if (savedGUTTipo.id) {
+      notificationService.showNotification('Registro salvo com sucesso!', 'success');
+      const PDelayApiWrite = 333;
+      setTimeout(() => {
+        if (onSuccess) {
+          onSuccess(savedGUTTipo);
+        }
+      }, PDelayApiWrite);
+    } else {
+    if (onError) {
+      onError();
+    }
+    notificationService.showNotification('Error salvando registro.', 'error');
+  }
+} catch (error) {
+if (onError) {
+  onError();
+}
+notificationService.showNotification('Error salvando registro.', 'error');
+}
+};
+const handleReload = () => {
+  loadGUTTipo(id);
+};
+return (
+<>
+<NotificationComponent notificationService={notificationService} />
+<GUTTipoForm
+guttipoData={data}
+onChange={handleChange}
+onSubmit={handleSubmit}
+onClose={onClose}
+onError={onError}
+onReload={handleReload}
+onSuccess={onSuccess}
+/>
+</>
+);
+};
+export default GUTTipoInc;

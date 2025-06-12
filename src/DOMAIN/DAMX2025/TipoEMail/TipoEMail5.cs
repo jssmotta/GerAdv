@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBTipoEMail
 {
     public const string CadastroGuid = "40956813-2d7f-43b2-9ed6-e8a8925ae02b";
-#region AdministrativeMethods_TipoEMail
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE tmlCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "TipoEMail";
     public const string CamposSqlX = " TipoEMail.* ";
     public const string SensivelCamposSqlX = " TipoEMail.* ";

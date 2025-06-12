@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IHistoricoWriter
 {
-    Entity.DBHistorico Write(Models.Historico historico, int auditorQuem, SqlConnection oCnn);
+    Entity.DBHistorico Write(Models.Historico historico, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(HistoricoResponse historico, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Historico : IHistoricoWriter
 {
-    public Entity.DBHistorico Write(Models.Historico historico, int auditorQuem, SqlConnection oCnn)
+    public void Delete(HistoricoResponse historico, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Historico] WHERE hisCodigo={historico.Id};", oCnn);
+    }
+
+    public Entity.DBHistorico Write(Models.Historico historico, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = historico.Id.IsEmptyIDNumber() ? new Entity.DBHistorico() : new Entity.DBHistorico(historico.Id, oCnn);
         dbRec.FExtraID = historico.ExtraID;

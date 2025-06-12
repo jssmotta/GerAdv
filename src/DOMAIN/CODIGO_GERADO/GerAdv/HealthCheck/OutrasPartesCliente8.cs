@@ -32,7 +32,7 @@ public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, O
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, O
                         if (DBOutrasPartesClienteDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(opcCodigo) FROM dbo.OutrasPartesCliente (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(opcCodigo) FROM {"OutrasPartesCliente".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, O
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) opcNome,opcTerceirizado,opcClientePrincipal,opcTipo,opcSexo,opcDtNasc,opcCPF,opcRG,opcCNPJ,opcInscEst,opcNomeFantasia,opcEndereco,opcCidade,opcCEP,opcBairro,opcFone,opcFax,opcEMail,opcSite,opcClass,opcEtiqueta,opcAni,opcBold,opcGUID FROM dbo.OutrasPartesCliente (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) opcNome,opcTerceirizado,opcClientePrincipal,opcTipo,opcSexo,opcDtNasc,opcCPF,opcRG,opcCNPJ,opcInscEst,opcNomeFantasia,opcEndereco,opcCidade,opcCEP,opcBairro,opcFone,opcFax,opcEMail,opcSite,opcClass,opcEtiqueta,opcAni,opcBold,opcGUID FROM {"OutrasPartesCliente".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

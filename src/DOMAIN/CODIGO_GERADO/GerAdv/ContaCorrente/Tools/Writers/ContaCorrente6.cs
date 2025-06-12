@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IContaCorrenteWriter
 {
-    Entity.DBContaCorrente Write(Models.ContaCorrente contacorrente, int auditorQuem, SqlConnection oCnn);
+    Entity.DBContaCorrente Write(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ContaCorrente : IContaCorrenteWriter
 {
-    public Entity.DBContaCorrente Write(Models.ContaCorrente contacorrente, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ContaCorrente] WHERE ctoCodigo={contacorrente.Id};", oCnn);
+    }
+
+    public Entity.DBContaCorrente Write(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = contacorrente.Id.IsEmptyIDNumber() ? new Entity.DBContaCorrente() : new Entity.DBContaCorrente(contacorrente.Id, oCnn);
         dbRec.FCIAcordo = contacorrente.CIAcordo;

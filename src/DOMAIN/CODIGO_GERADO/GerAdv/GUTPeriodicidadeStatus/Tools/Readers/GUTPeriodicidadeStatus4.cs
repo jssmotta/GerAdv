@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IGUTPeriodicidadeStatusReader
 {
-    GUTPeriodicidadeStatusResponse? Read(int id, SqlConnection oCnn);
-    GUTPeriodicidadeStatusResponse? Read(string where, SqlConnection oCnn);
+    GUTPeriodicidadeStatusResponse? Read(int id, MsiSqlConnection oCnn);
+    GUTPeriodicidadeStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GUTPeriodicidadeStatusResponse? Read(Entity.DBGUTPeriodicidadeStatus dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GUTPeriodicidadeStatusResponse? Read(DBGUTPeriodicidadeStatus dbRec);
+    GUTPeriodicidadeStatusResponseAll? ReadAll(DBGUTPeriodicidadeStatus dbRec, DataRow dr);
 }
 
 public partial class GUTPeriodicidadeStatus : IGUTPeriodicidadeStatusReader
 {
-    public GUTPeriodicidadeStatusResponse? Read(int id, SqlConnection oCnn)
+    public GUTPeriodicidadeStatusResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBGUTPeriodicidadeStatus(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public GUTPeriodicidadeStatusResponse? Read(string where, SqlConnection oCnn)
+    public GUTPeriodicidadeStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGUTPeriodicidadeStatus(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGUTPeriodicidadeStatus(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -41,18 +43,6 @@ public partial class GUTPeriodicidadeStatus : IGUTPeriodicidadeStatusReader
         };
         if (DateTime.TryParse(dbRec.FDataRealizado, out _))
             gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gutperiodicidadestatus.Auditor = auditor;
         return gutperiodicidadestatus;
     }
 
@@ -71,18 +61,25 @@ public partial class GUTPeriodicidadeStatus : IGUTPeriodicidadeStatusReader
         };
         if (DateTime.TryParse(dbRec.FDataRealizado, out _))
             gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-        var auditor = new Auditor
+        return gutperiodicidadestatus;
+    }
+
+    public GUTPeriodicidadeStatusResponseAll? ReadAll(DBGUTPeriodicidadeStatus dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var gutperiodicidadestatus = new GUTPeriodicidadeStatusResponseAll
+        {
+            Id = dbRec.ID,
+            GUTAtividade = dbRec.FGUTAtividade,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gutperiodicidadestatus.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FDataRealizado, out _))
+            gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
+        gutperiodicidadestatus.NomeGUTAtividades = dr["agtNome"]?.ToString() ?? string.Empty;
         return gutperiodicidadestatus;
     }
 }

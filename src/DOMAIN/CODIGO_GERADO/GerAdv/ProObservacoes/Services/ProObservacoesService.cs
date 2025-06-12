@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IProObservacoesReader reader, IProObservacoesValidation validation, IProObservacoesWriter writer, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IProObservacoesService, IDisposable
+public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IProObservacoesReader reader, IProObservacoesValidation validation, IProObservacoesWriter writer, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProObservacoesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ProObservacoesResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ProObservacoesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProObservacoes: URI inválida");
@@ -26,72 +27,72 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ProObservacoesResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ProObservacoesResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBProObservacoes.SensivelCamposSqlX} 
-                   FROM {DBProObservacoes.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBProObservacoesDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBProObservacoes>(max);
-        await foreach (var item in DBProObservacoes.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBProObservacoes.SensivelCamposSqlX}, proNroPasta
+                   FROM {DBProObservacoes.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pobProcesso
+ 
+                   {where}
+                   ORDER BY pobNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ProObservacoesResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBProObservacoes(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var proobservacoes = reader.ReadAll(dbRec, item);
+                if (proobservacoes != null)
+                {
+                    lista.Add(proobservacoes);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ProObservacoesResponse>> Filter(Filters.FilterProObservacoes filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ProObservacoesResponseAll>> Filter(Filters.FilterProObservacoes filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ProObservacoes: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-ProObservacoes-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ProObservacoesResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBProObservacoes.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ProObservacoesResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProObservacoes: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ProObservacoesResponse();
         }
@@ -101,39 +102,24 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-ProObservacoes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ProObservacoes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ProObservacoes - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ProObservacoes - {uri}-: GetById");
         }
     }
 
-    private async Task<ProObservacoesResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ProObservacoesResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ProObservacoesResponse?> AddAndUpdate([FromBody] Models.ProObservacoes regProObservacoes, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProObservacoes: URI inválida");
@@ -147,8 +133,7 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +153,82 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
     public async Task<ProObservacoesResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProObservacoes: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var proobservacoes = reader.Read(id, oCnn);
-            if (proobservacoes != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBProObservacoes().DeletarItem(proobservacoes.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var proobservacoes = reader.Read(id, oCnn);
+            try
+            {
+                if (proobservacoes != null)
+                {
+                    writer.Delete(proobservacoes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return proobservacoes;
         });
     }
 
-    public async Task<ProObservacoesResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProObservacoes: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBProObservacoesDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProObservacoes? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ProObservacoes: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-ProObservacoes-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ProObservacoes-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBProObservacoes.ListarN(cWhere, DBProObservacoesDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBProObservacoesDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,17 +268,38 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
         }
     }
 
-    private static string WFiltro(Filters.FilterProObservacoes filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProObservacoes filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Processo == -2147483648 ? string.Empty : DBProObservacoesDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProObservacoesDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.Observacoes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProObservacoesDicInfo.ObservacoesSql(filtro.Observacoes);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProObservacoesDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Observacoes))
+        {
+            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Observacoes)}", filtro.Observacoes));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Processo == int.MinValue ? string.Empty : $"{DBProObservacoesDicInfo.Processo} = @{nameof(DBProObservacoesDicInfo.Processo)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProObservacoesDicInfo.Nome} = @{nameof(DBProObservacoesDicInfo.Nome)}";
+        cWhere += filtro.Observacoes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProObservacoesDicInfo.Observacoes} = @{nameof(DBProObservacoesDicInfo.Observacoes)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProObservacoesDicInfo.GUID} = @{nameof(DBProObservacoesDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

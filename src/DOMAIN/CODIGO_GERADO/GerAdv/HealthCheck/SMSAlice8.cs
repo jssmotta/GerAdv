@@ -32,7 +32,7 @@ public class SMSAliceHealthCheck(IOptions<AppSettings> appSettings, SMSAliceServ
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class SMSAliceHealthCheck(IOptions<AppSettings> appSettings, SMSAliceServ
                         if (DBSMSAliceDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(smaCodigo) FROM dbo.SMSAlice (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(smaCodigo) FROM {"SMSAlice".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class SMSAliceHealthCheck(IOptions<AppSettings> appSettings, SMSAliceServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) smaOperador,smaNome,smaTipoEMail,smaGUID FROM dbo.SMSAlice (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) smaOperador,smaNome,smaTipoEMail,smaGUID FROM {"SMSAlice".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

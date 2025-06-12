@@ -1,0 +1,281 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useAlertasEnviadosForm, useAlertasEnviadosList, useValidationsAlertasEnviados } from '../GerAdv_TS/AlertasEnviados/Hooks/hookAlertasEnviados';
+import { IAlertasEnviados } from '../GerAdv_TS/AlertasEnviados/Interfaces/interface.AlertasEnviados';
+import { IAlertasEnviadosService } from '../GerAdv_TS/AlertasEnviados/Services/AlertasEnviados.service';
+import { AlertasEnviadosTestEmpty } from '../GerAdv_TS/Models/AlertasEnviados';
+
+
+// Mock do serviço
+const mockAlertasEnviadosService: jest.Mocked<IAlertasEnviadosService> = {
+  fetchAlertasEnviadosById: jest.fn(),
+  saveAlertasEnviados: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteAlertasEnviados: jest.fn(),
+  validateAlertasEnviados: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialAlertasEnviados: IAlertasEnviados = { ...AlertasEnviadosTestEmpty() };
+
+describe('useAlertasEnviadosForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    expect(result.current.data).toEqual(initialAlertasEnviados);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'campo',
+        value: 'Novo Alertas Enviados',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.campo).toBe('Novo Alertas Enviados');
+  });
+
+   test('deve carregar Alertas Enviados por ID', async () => {
+    const mockAlertasEnviados = { ...initialAlertasEnviados, id: 1, campo: 'Alertas Enviados Teste' };
+    mockAlertasEnviadosService.fetchAlertasEnviadosById.mockResolvedValue(mockAlertasEnviados);
+
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    await act(async () => {
+      await result.current.loadAlertasEnviados(1);
+    });
+
+    expect(mockAlertasEnviadosService.fetchAlertasEnviadosById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockAlertasEnviados);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Alertas Enviados', async () => {
+    const errorMessage = 'Erro ao carregar Alertas Enviados';
+    mockAlertasEnviadosService.fetchAlertasEnviadosById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    await act(async () => {
+      await result.current.loadAlertasEnviados(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialAlertasEnviados, campo: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialAlertasEnviados);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    await act(async () => {
+      await result.current.loadAlertasEnviados(0);
+    });
+
+    expect(mockAlertasEnviadosService.fetchAlertasEnviadosById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialAlertasEnviados);
+  });
+});
+
+describe('useAlertasEnviadosList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useAlertasEnviadosList(mockAlertasEnviadosService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialAlertasEnviados, id: 1, campo: 'Alertas Enviados 1' },
+      { ...initialAlertasEnviados, id: 2, campo: 'Alertas Enviados 2' }
+    ];
+    mockAlertasEnviadosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAlertasEnviadosList(mockAlertasEnviadosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockAlertasEnviadosService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockAlertasEnviadosService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAlertasEnviadosList(mockAlertasEnviadosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialAlertasEnviados, id: 1, campo: 'Alertas Enviados Filtrado' }];
+    const filtro = { campo: 'Alertas Enviados' };
+    mockAlertasEnviadosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAlertasEnviadosList(mockAlertasEnviadosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockAlertasEnviadosService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsAlertasEnviados', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsAlertasEnviados());
+
+    const validData = { ...initialAlertasEnviados, campo: 'Alertas Enviados Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsAlertasEnviados());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialAlertasEnviados, id: 1, campo: 'Alertas Enviados Teste' }];
+    mockAlertasEnviadosService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useAlertasEnviadosList(mockAlertasEnviadosService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsAlertasEnviados()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useAlertasEnviadosForm(initialAlertasEnviados, mockAlertasEnviadosService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'visualizado',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.visualizado).toBe(true);
+  });
+
+

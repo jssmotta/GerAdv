@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IDiario2Writer
 {
-    Entity.DBDiario2 Write(Models.Diario2 diario2, int auditorQuem, SqlConnection oCnn);
+    Entity.DBDiario2 Write(Models.Diario2 diario2, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(Diario2Response diario2, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Diario2 : IDiario2Writer
 {
-    public Entity.DBDiario2 Write(Models.Diario2 diario2, int auditorQuem, SqlConnection oCnn)
+    public void Delete(Diario2Response diario2, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Diario2] WHERE diaCodigo={diario2.Id};", oCnn);
+    }
+
+    public Entity.DBDiario2 Write(Models.Diario2 diario2, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = diario2.Id.IsEmptyIDNumber() ? new Entity.DBDiario2() : new Entity.DBDiario2(diario2.Id, oCnn);
         if (diario2.Data != null)

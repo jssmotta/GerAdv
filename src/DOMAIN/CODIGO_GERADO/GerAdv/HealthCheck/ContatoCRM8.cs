@@ -32,7 +32,7 @@ public class ContatoCRMHealthCheck(IOptions<AppSettings> appSettings, ContatoCRM
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ContatoCRMHealthCheck(IOptions<AppSettings> appSettings, ContatoCRM
                         if (DBContatoCRMDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ctcCodigo) FROM dbo.ContatoCRM (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ctcCodigo) FROM {"ContatoCRM".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ContatoCRMHealthCheck(IOptions<AppSettings> appSettings, ContatoCRM
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ctcAgeClienteAvisado,ctcDocsViaRecebimento,ctcNaoPublicavel,ctcNotificar,ctcOcultar,ctcAssunto,ctcIsDocsRecebidos,ctcQuemNotificou,ctcDataNotificou,ctcOperador,ctcCliente,ctcHoraNotificou,ctcObjetoNotificou,ctcPessoaContato,ctcData,ctcTempo,ctcHoraInicial,ctcHoraFinal,ctcProcesso,ctcImportante,ctcUrgente,ctcGerarHoraTrabalhada,ctcExibirNoTopo,ctcTipoContatoCRM,ctcContato,ctcEmocao,ctcContinuar,ctcBold,ctcGUID FROM dbo.ContatoCRM (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ctcAgeClienteAvisado,ctcDocsViaRecebimento,ctcNaoPublicavel,ctcNotificar,ctcOcultar,ctcAssunto,ctcIsDocsRecebidos,ctcQuemNotificou,ctcDataNotificou,ctcOperador,ctcCliente,ctcHoraNotificou,ctcObjetoNotificou,ctcPessoaContato,ctcData,ctcTempo,ctcHoraInicial,ctcHoraFinal,ctcProcesso,ctcImportante,ctcUrgente,ctcGerarHoraTrabalhada,ctcExibirNoTopo,ctcTipoContatoCRM,ctcContato,ctcEmocao,ctcContinuar,ctcBold,ctcGUID FROM {"ContatoCRM".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

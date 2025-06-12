@@ -14,7 +14,7 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("PenhoraStatus", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("PenhoraStatus", "GetAll", $"max = {max}", uri);
         var result = await _penhorastatusService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPenhoraStatus filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("PenhoraStatus: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("PenhoraStatus: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _penhorastatusService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("PenhoraStatus: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("PenhoraStatus: GetById called with id = {0}, {1}", id, uri);
         var result = await _penhorastatusService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("PenhoraStatus: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _penhorastatusService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No PenhoraStatus found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPenhoraStatus? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"PenhoraStatus: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"PenhoraStatus: GetListN called, max {max}, {filtro} uri");
         var result = await _penhorastatusService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.PenhoraStatus regPenhoraStatus, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("PenhoraStatus", "AddAndUpdate", regPenhoraStatus, uri);
-        var result = await _penhorastatusService.AddAndUpdate(regPenhoraStatus, uri);
-        if (result == null)
+        //_logger.LogInfo("PenhoraStatus", "AddAndUpdate", regPenhoraStatus, uri);
+        try
         {
-            _logger.Warn("PenhoraStatus: AddAndUpdate failed to add or update PenhoraStatus, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _penhorastatusService.AddAndUpdate(regPenhoraStatus, uri);
+            if (result == null)
+            {
+                _logger.Warn("PenhoraStatus: AddAndUpdate failed to add or update PenhoraStatus, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "PenhoraStatus: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("PenhoraStatus: Delete called with id = {0}, {2}", id, uri);
-        var result = await _penhorastatusService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("PenhoraStatus: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No PenhoraStatus found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _penhorastatusService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No PenhoraStatus found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "PenhoraStatus: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

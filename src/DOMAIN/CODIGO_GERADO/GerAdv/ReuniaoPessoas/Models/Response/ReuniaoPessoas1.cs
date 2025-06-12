@@ -20,7 +20,26 @@ public partial class ReuniaoPessoasResponse
     /// </summary>
     [JsonPropertyName("operador")]
     public int Operador { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class ReuniaoPessoasResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - rnpReuniao  
+    /// </summary>
+    [JsonPropertyName("reuniao")]
+    public int Reuniao { get; set; }
+
+    /// <summary>
+    /// Sem descrição - rnpOperador  
+    /// </summary>
+    [JsonPropertyName("operador")]
+    public int Operador { get; set; }
+
+    [JsonPropertyName("nomeoperador")]
+    public string NomeOperador { get; set; } = string.Empty;
 }

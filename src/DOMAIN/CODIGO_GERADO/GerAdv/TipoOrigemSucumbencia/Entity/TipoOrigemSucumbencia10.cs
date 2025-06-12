@@ -7,7 +7,7 @@ public partial class DBTipoOrigemSucumbencia : MenphisSI.GerAdv.DBTipoOrigemSucu
     {
     }
 
-    public DBTipoOrigemSucumbencia(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBTipoOrigemSucumbencia(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBTipoOrigemSucumbencia : MenphisSI.GerAdv.DBTipoOrigemSucu
     {
     }
 
-    public DBTipoOrigemSucumbencia(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBTipoOrigemSucumbencia(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

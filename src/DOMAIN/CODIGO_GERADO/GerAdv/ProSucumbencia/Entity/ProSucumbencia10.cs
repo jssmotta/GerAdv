@@ -7,7 +7,7 @@ public partial class DBProSucumbencia : MenphisSI.GerAdv.DBProSucumbencia, IDBPr
     {
     }
 
-    public DBProSucumbencia(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProSucumbencia(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProSucumbencia : MenphisSI.GerAdv.DBProSucumbencia, IDBPr
     {
     }
 
-    public DBProSucumbencia(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProSucumbencia(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

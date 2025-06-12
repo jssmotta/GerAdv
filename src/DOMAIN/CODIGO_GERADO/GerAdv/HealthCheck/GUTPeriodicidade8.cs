@@ -32,7 +32,7 @@ public class GUTPeriodicidadeHealthCheck(IOptions<AppSettings> appSettings, GUTP
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class GUTPeriodicidadeHealthCheck(IOptions<AppSettings> appSettings, GUTP
                         if (DBGUTPeriodicidadeDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pcgCodigo) FROM dbo.GUTPeriodicidade (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pcgCodigo) FROM {"GUTPeriodicidade".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class GUTPeriodicidadeHealthCheck(IOptions<AppSettings> appSettings, GUTP
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pcgNome,pcgIntervaloDias,pcgGUID FROM dbo.GUTPeriodicidade (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pcgNome,pcgIntervaloDias,pcgGUID FROM {"GUTPeriodicidade".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

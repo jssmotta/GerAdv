@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoValorProcessoWriter
 {
-    Entity.DBTipoValorProcesso Write(Models.TipoValorProcesso tipovalorprocesso, SqlConnection oCnn);
+    Entity.DBTipoValorProcesso Write(Models.TipoValorProcesso tipovalorprocesso, MsiSqlConnection oCnn);
+    void Delete(TipoValorProcessoResponse tipovalorprocesso, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TipoValorProcesso : ITipoValorProcessoWriter
 {
-    public Entity.DBTipoValorProcesso Write(Models.TipoValorProcesso tipovalorprocesso, SqlConnection oCnn)
+    public void Delete(TipoValorProcessoResponse tipovalorprocesso, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TipoValorProcesso] WHERE ptvCodigo={tipovalorprocesso.Id};", oCnn);
+    }
+
+    public Entity.DBTipoValorProcesso Write(Models.TipoValorProcesso tipovalorprocesso, MsiSqlConnection oCnn)
     {
         var dbRec = tipovalorprocesso.Id.IsEmptyIDNumber() ? new Entity.DBTipoValorProcesso() : new Entity.DBTipoValorProcesso(tipovalorprocesso.Id, oCnn);
         dbRec.FDescricao = tipovalorprocesso.Descricao;

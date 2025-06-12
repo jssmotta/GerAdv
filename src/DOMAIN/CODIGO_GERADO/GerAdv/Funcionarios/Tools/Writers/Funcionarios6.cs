@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IFuncionariosWriter
 {
-    Entity.DBFuncionarios Write(Models.Funcionarios funcionarios, int auditorQuem, SqlConnection oCnn);
+    Entity.DBFuncionarios Write(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Funcionarios : IFuncionariosWriter
 {
-    public Entity.DBFuncionarios Write(Models.Funcionarios funcionarios, int auditorQuem, SqlConnection oCnn)
+    public void Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Funcionarios] WHERE funCodigo={funcionarios.Id};", oCnn);
+    }
+
+    public Entity.DBFuncionarios Write(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = funcionarios.Id.IsEmptyIDNumber() ? new Entity.DBFuncionarios() : new Entity.DBFuncionarios(funcionarios.Id, oCnn);
         dbRec.FEMailPro = funcionarios.EMailPro;

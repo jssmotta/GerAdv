@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IColaboradoresWhere
 {
-    ColaboradoresResponse Read(string where, SqlConnection oCnn);
+    ColaboradoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Colaboradores : IColaboradoresWhere
 {
-    public ColaboradoresResponse Read(string where, SqlConnection oCnn)
+    public ColaboradoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBColaboradores(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBColaboradores(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var colaboradores = new ColaboradoresResponse
         {
             Id = dbRec.ID,
@@ -38,18 +38,6 @@ public partial class Colaboradores : IColaboradoresWhere
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             colaboradores.DtNasc = dbRec.FDtNasc;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        colaboradores.Auditor = auditor;
         return colaboradores;
     }
 }

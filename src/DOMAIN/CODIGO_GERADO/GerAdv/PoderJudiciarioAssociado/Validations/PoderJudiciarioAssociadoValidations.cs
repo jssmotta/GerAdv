@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IPoderJudiciarioAssociadoValidation
 {
-    Task<string> ValidateReg(Models.PoderJudiciarioAssociado reg, IPoderJudiciarioAssociadoService service, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.PoderJudiciarioAssociado reg, IPoderJudiciarioAssociadoService service, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IPoderJudiciarioAssociadoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValidation
 {
-    public async Task<string> ValidateReg(Models.PoderJudiciarioAssociado reg, IPoderJudiciarioAssociadoService service, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IPoderJudiciarioAssociadoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.PoderJudiciarioAssociado reg, IPoderJudiciarioAssociadoService service, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
@@ -51,6 +62,16 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
             if (regForo == null || regForo.Id != reg.Foro)
             {
                 return $"Foro não encontrado ({regForo?.Id}).";
+            }
+        }
+
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
             }
         }
 

@@ -14,7 +14,7 @@ public partial class RecadosController(IRecadosService recadosService) : Control
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Recados", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("Recados", "GetAll", $"max = {max}", uri);
         var result = await _recadosService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class RecadosController(IRecadosService recadosService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterRecados filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("Recados: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("Recados: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _recadosService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class RecadosController(IRecadosService recadosService) : Control
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("Recados: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("Recados: GetById called with id = {0}, {1}", id, uri);
         var result = await _recadosService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class RecadosController(IRecadosService recadosService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Recados regRecados, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Recados", "AddAndUpdate", regRecados, uri);
-        var result = await _recadosService.AddAndUpdate(regRecados, uri);
-        if (result == null)
+        //_logger.LogInfo("Recados", "AddAndUpdate", regRecados, uri);
+        try
         {
-            _logger.Warn("Recados: AddAndUpdate failed to add or update Recados, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _recadosService.AddAndUpdate(regRecados, uri);
+            if (result == null)
+            {
+                _logger.Warn("Recados: AddAndUpdate failed to add or update Recados, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Recados: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("Recados: Delete called with id = {0}, {2}", id, uri);
-        var result = await _recadosService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("Recados: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No Recados found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _recadosService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No Recados found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Recados: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IOponentesRepLegalValidation
 {
-    Task<string> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OponentesRepLegalValidation : IOponentesRepLegalValidation
 {
-    public async Task<string> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
@@ -28,11 +39,23 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
             }
         }
 
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
+            }
+        }
+
         return string.Empty;
     }
 
     private async Task<bool> IsCpfDuplicado(Models.OponentesRepLegal reg, IOponentesRepLegalService service, string uri)
     {
+        if (reg.CPF.Length == 0)
+            return false;
         var existingOponentesRepLegal = (await service.Filter(new Filters.FilterOponentesRepLegal { CPF = reg.CPF }, uri)).FirstOrDefault();
         return existingOponentesRepLegal != null && existingOponentesRepLegal.Id > 0 && existingOponentesRepLegal.Id != reg.Id;
     }

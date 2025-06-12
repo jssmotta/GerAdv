@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPenhoraWriter
 {
-    Entity.DBPenhora Write(Models.Penhora penhora, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPenhora Write(Models.Penhora penhora, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PenhoraResponse penhora, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Penhora : IPenhoraWriter
 {
-    public Entity.DBPenhora Write(Models.Penhora penhora, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PenhoraResponse penhora, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Penhora] WHERE phrCodigo={penhora.Id};", oCnn);
+    }
+
+    public Entity.DBPenhora Write(Models.Penhora penhora, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = penhora.Id.IsEmptyIDNumber() ? new Entity.DBPenhora() : new Entity.DBPenhora(penhora.Id, oCnn);
         dbRec.FProcesso = penhora.Processo;

@@ -32,7 +32,7 @@ public class JusticaHealthCheck(IOptions<AppSettings> appSettings, JusticaServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class JusticaHealthCheck(IOptions<AppSettings> appSettings, JusticaServic
                         if (DBJusticaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(jusCodigo) FROM dbo.Justica (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(jusCodigo) FROM {"Justica".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class JusticaHealthCheck(IOptions<AppSettings> appSettings, JusticaServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) jusNome,jusBold,jusGUID FROM dbo.Justica (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) jusNome,jusBold,jusGUID FROM {"Justica".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

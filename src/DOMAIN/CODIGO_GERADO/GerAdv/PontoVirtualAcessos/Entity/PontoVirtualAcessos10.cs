@@ -7,7 +7,7 @@ public partial class DBPontoVirtualAcessos : MenphisSI.GerAdv.DBPontoVirtualAces
     {
     }
 
-    public DBPontoVirtualAcessos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBPontoVirtualAcessos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBPontoVirtualAcessos : MenphisSI.GerAdv.DBPontoVirtualAces
     {
     }
 
-    public DBPontoVirtualAcessos(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBPontoVirtualAcessos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

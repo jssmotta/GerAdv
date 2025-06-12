@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IEMPClassRiscosReader
 {
-    EMPClassRiscosResponse? Read(int id, SqlConnection oCnn);
-    EMPClassRiscosResponse? Read(string where, SqlConnection oCnn);
+    EMPClassRiscosResponse? Read(int id, MsiSqlConnection oCnn);
+    EMPClassRiscosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EMPClassRiscosResponse? Read(Entity.DBEMPClassRiscos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EMPClassRiscosResponse? Read(DBEMPClassRiscos dbRec);
+    EMPClassRiscosResponseAll? ReadAll(DBEMPClassRiscos dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class EMPClassRiscos : IEMPClassRiscosReader
 {
-    public EMPClassRiscosResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) ecrCodigo, ecrNome FROM {"EMPClassRiscos".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}ecrNome");
+        }
+
+        return query.ToString();
+    }
+
+    public EMPClassRiscosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBEMPClassRiscos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public EMPClassRiscosResponse? Read(string where, SqlConnection oCnn)
+    public EMPClassRiscosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBEMPClassRiscos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBEMPClassRiscos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +69,6 @@ public partial class EMPClassRiscos : IEMPClassRiscosReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        empclassriscos.Auditor = auditor;
         return empclassriscos;
     }
 
@@ -69,18 +86,23 @@ public partial class EMPClassRiscos : IEMPClassRiscosReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return empclassriscos;
+    }
+
+    public EMPClassRiscosResponseAll? ReadAll(DBEMPClassRiscos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var empclassriscos = new EMPClassRiscosResponseAll
+        {
+            Id = dbRec.ID,
+            Nome = dbRec.FNome ?? string.Empty,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        empclassriscos.Auditor = auditor;
         return empclassriscos;
     }
 }

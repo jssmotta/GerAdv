@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import ParteClienteOutrasInc from '../Inc/ParteClienteOutras';
+import { IParteClienteOutras } from '../../Interfaces/interface.ParteClienteOutras';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { ParteClienteOutrasEmpty } from '@/app/GerAdv_TS/Models/ParteClienteOutras';
+import { useWindow } from '@/app/hooks/useWindows';
+interface ParteClienteOutrasWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedParteClienteOutras?: IParteClienteOutras;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const ParteClienteOutrasWindow: React.FC<ParteClienteOutrasWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedParteClienteOutras, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Parte Cliente Outras'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedParteClienteOutras?.id ?? 0).toString()}
+>
+<ParteClienteOutrasInc
+id={selectedParteClienteOutras?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowParteClienteOutras: React.FC<ParteClienteOutrasWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<ParteClienteOutrasWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedParteClienteOutras={ParteClienteOutrasEmpty()}>
+</ParteClienteOutrasWindow>
+)
+};
+export default ParteClienteOutrasWindow;

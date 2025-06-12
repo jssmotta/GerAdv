@@ -32,7 +32,7 @@ public class ParteClienteOutrasHealthCheck(IOptions<AppSettings> appSettings, Pa
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ParteClienteOutrasHealthCheck(IOptions<AppSettings> appSettings, Pa
                         if (DBParteClienteOutrasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pcoCodigo) FROM dbo.ParteClienteOutras (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pcoCodigo) FROM {"ParteClienteOutras".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ParteClienteOutrasHealthCheck(IOptions<AppSettings> appSettings, Pa
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pcoCliente,pcoProcesso,pcoPrimeiraReclamada FROM dbo.ParteClienteOutras (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pcoCliente,pcoProcesso,pcoPrimeiraReclamada FROM {"ParteClienteOutras".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

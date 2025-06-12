@@ -32,7 +32,7 @@ public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, Client
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, Client
                         if (DBClientesSociosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(cscCodigo) FROM dbo.ClientesSocios (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(cscCodigo) FROM {"ClientesSocios".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, Client
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cscSomenteRepresentante,cscIdade,cscIsRepresentanteLegal,cscQualificacao,cscSexo,cscDtNasc,cscNome,cscSite,cscRepresentanteLegal,cscCliente,cscEndereco,cscBairro,cscCEP,cscCidade,cscRG,cscCPF,cscFone,cscParticipacao,cscCargo,cscEMail,cscObs,cscCNH,cscDataContrato,cscCNPJ,cscInscEst,cscSocioEmpresaAdminNome,cscEnderecoSocio,cscBairroSocio,cscCEPSocio,cscCidadeSocio,cscRGDataExp,cscSocioEmpresaAdminSomente,cscTipo,cscFax,cscClass,cscEtiqueta,cscAni,cscBold,cscGUID FROM dbo.ClientesSocios (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) cscSomenteRepresentante,cscIdade,cscIsRepresentanteLegal,cscQualificacao,cscSexo,cscDtNasc,cscNome,cscSite,cscRepresentanteLegal,cscCliente,cscEndereco,cscBairro,cscCEP,cscCidade,cscRG,cscCPF,cscFone,cscParticipacao,cscCargo,cscEMail,cscObs,cscCNH,cscDataContrato,cscCNPJ,cscInscEst,cscSocioEmpresaAdminNome,cscEnderecoSocio,cscBairroSocio,cscCEPSocio,cscCidadeSocio,cscRGDataExp,cscSocioEmpresaAdminSomente,cscTipo,cscFax,cscClass,cscEtiqueta,cscAni,cscBold,cscGUID FROM {"ClientesSocios".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

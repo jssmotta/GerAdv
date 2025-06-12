@@ -15,3 +15,16 @@ public partial class TipoOrigemSucumbencia
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = "";
 }
+
+[Serializable]
+public partial class TipoOrigemSucumbenciaAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - tosNome - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
+}

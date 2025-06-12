@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IOperadorGruposAgendaValidation
 {
-    Task<string> ValidateReg(Models.OperadorGruposAgenda reg, IOperadorGruposAgendaService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.OperadorGruposAgenda reg, IOperadorGruposAgendaService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IOperadorGruposAgendaService service, IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
 {
-    public async Task<string> ValidateReg(Models.OperadorGruposAgenda reg, IOperadorGruposAgendaService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IOperadorGruposAgendaService service, IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var operadorgruposagendaoperadoresExists = await operadorgruposagendaoperadoresService.Filter(new Filters.FilterOperadorGruposAgendaOperadores { OperadorGruposAgenda = id }, uri);
+        if (operadorgruposagendaoperadoresExists != null && operadorgruposagendaoperadoresExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda Operadores associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.OperadorGruposAgenda reg, IOperadorGruposAgendaService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

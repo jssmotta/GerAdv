@@ -39,7 +39,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -68,7 +68,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
                         if (DBAcaoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(acaCodigo) FROM dbo.Acao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(acaCodigo) FROM {"Acao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -79,7 +79,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) acaJustica,acaArea,acaDescricao,acaGUID FROM dbo.Acao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) acaJustica,acaArea,acaDescricao,acaGUID FROM {"Acao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -14,7 +14,7 @@ public partial class ContatoCRMOperadorController(IContatoCRMOperadorService con
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("ContatoCRMOperador", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("ContatoCRMOperador", "GetAll", $"max = {max}", uri);
         var result = await _contatocrmoperadorService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class ContatoCRMOperadorController(IContatoCRMOperadorService con
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterContatoCRMOperador filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("ContatoCRMOperador: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("ContatoCRMOperador: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _contatocrmoperadorService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class ContatoCRMOperadorController(IContatoCRMOperadorService con
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("ContatoCRMOperador: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("ContatoCRMOperador: GetById called with id = {0}, {1}", id, uri);
         var result = await _contatocrmoperadorService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class ContatoCRMOperadorController(IContatoCRMOperadorService con
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ContatoCRMOperador regContatoCRMOperador, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("ContatoCRMOperador", "AddAndUpdate", regContatoCRMOperador, uri);
-        var result = await _contatocrmoperadorService.AddAndUpdate(regContatoCRMOperador, uri);
-        if (result == null)
+        //_logger.LogInfo("ContatoCRMOperador", "AddAndUpdate", regContatoCRMOperador, uri);
+        try
         {
-            _logger.Warn("ContatoCRMOperador: AddAndUpdate failed to add or update ContatoCRMOperador, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _contatocrmoperadorService.AddAndUpdate(regContatoCRMOperador, uri);
+            if (result == null)
+            {
+                _logger.Warn("ContatoCRMOperador: AddAndUpdate failed to add or update ContatoCRMOperador, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ContatoCRMOperador: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("ContatoCRMOperador: Delete called with id = {0}, {2}", id, uri);
-        var result = await _contatocrmoperadorService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("ContatoCRMOperador: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No ContatoCRMOperador found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _contatocrmoperadorService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No ContatoCRMOperador found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ContatoCRMOperador: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -32,7 +32,7 @@ public class EMPClassRiscosHealthCheck(IOptions<AppSettings> appSettings, EMPCla
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class EMPClassRiscosHealthCheck(IOptions<AppSettings> appSettings, EMPCla
                         if (DBEMPClassRiscosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ecrCodigo) FROM dbo.EMPClassRiscos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ecrCodigo) FROM {"EMPClassRiscos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class EMPClassRiscosHealthCheck(IOptions<AppSettings> appSettings, EMPCla
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ecrNome,ecrBold,ecrGUID FROM dbo.EMPClassRiscos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ecrNome,ecrBold,ecrGUID FROM {"EMPClassRiscos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

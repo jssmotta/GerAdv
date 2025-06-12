@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IOperadorGrupoReader
 {
-    OperadorGrupoResponse? Read(int id, SqlConnection oCnn);
-    OperadorGrupoResponse? Read(string where, SqlConnection oCnn);
+    OperadorGrupoResponse? Read(int id, MsiSqlConnection oCnn);
+    OperadorGrupoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadorGrupoResponse? Read(Entity.DBOperadorGrupo dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadorGrupoResponse? Read(DBOperadorGrupo dbRec);
+    OperadorGrupoResponseAll? ReadAll(DBOperadorGrupo dbRec, DataRow dr);
 }
 
 public partial class OperadorGrupo : IOperadorGrupoReader
 {
-    public OperadorGrupoResponse? Read(int id, SqlConnection oCnn)
+    public OperadorGrupoResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBOperadorGrupo(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public OperadorGrupoResponse? Read(string where, SqlConnection oCnn)
+    public OperadorGrupoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOperadorGrupo(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOperadorGrupo(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class OperadorGrupo : IOperadorGrupoReader
             Grupo = dbRec.FGrupo,
             Inativo = dbRec.FInativo,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadorgrupo.Auditor = auditor;
         return operadorgrupo;
     }
 
@@ -69,18 +59,24 @@ public partial class OperadorGrupo : IOperadorGrupoReader
             Grupo = dbRec.FGrupo,
             Inativo = dbRec.FInativo,
         };
-        var auditor = new Auditor
+        return operadorgrupo;
+    }
+
+    public OperadorGrupoResponseAll? ReadAll(DBOperadorGrupo dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var operadorgrupo = new OperadorGrupoResponseAll
+        {
+            Id = dbRec.ID,
+            Operador = dbRec.FOperador,
+            Grupo = dbRec.FGrupo,
+            Inativo = dbRec.FInativo,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadorgrupo.Auditor = auditor;
+        operadorgrupo.NomeOperador = dr["operNome"]?.ToString() ?? string.Empty;
         return operadorgrupo;
     }
 }

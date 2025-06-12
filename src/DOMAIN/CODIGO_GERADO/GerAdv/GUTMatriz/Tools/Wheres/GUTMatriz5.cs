@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IGUTMatrizWhere
 {
-    GUTMatrizResponse Read(string where, SqlConnection oCnn);
+    GUTMatrizResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class GUTMatriz : IGUTMatrizWhere
 {
-    public GUTMatrizResponse Read(string where, SqlConnection oCnn)
+    public GUTMatrizResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGUTMatriz(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGUTMatriz(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var gutmatriz = new GUTMatrizResponse
         {
             Id = dbRec.ID,

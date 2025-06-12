@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IGUTPeriodicidadeWhere
 {
-    GUTPeriodicidadeResponse Read(string where, SqlConnection oCnn);
+    GUTPeriodicidadeResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class GUTPeriodicidade : IGUTPeriodicidadeWhere
 {
-    public GUTPeriodicidadeResponse Read(string where, SqlConnection oCnn)
+    public GUTPeriodicidadeResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGUTPeriodicidade(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGUTPeriodicidade(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var gutperiodicidade = new GUTPeriodicidadeResponse
         {
             Id = dbRec.ID,
@@ -20,18 +20,6 @@ public partial class GUTPeriodicidade : IGUTPeriodicidadeWhere
             IntervaloDias = dbRec.FIntervaloDias,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gutperiodicidade.Auditor = auditor;
         return gutperiodicidade;
     }
 }

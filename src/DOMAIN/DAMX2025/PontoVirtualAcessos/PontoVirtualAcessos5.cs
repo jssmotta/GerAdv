@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBPontoVirtualAcessos
 {
     public const string CadastroGuid = "6f7ee8e0-f602-4112-b6af-20f86aa95d21";
-#region AdministrativeMethods_PontoVirtualAcessos
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE pvaCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "PontoVirtualAcessos";
     public const string CamposSqlX = " PontoVirtualAcessos.* ";
     public const string SensivelCamposSqlX = " PontoVirtualAcessos.* ";

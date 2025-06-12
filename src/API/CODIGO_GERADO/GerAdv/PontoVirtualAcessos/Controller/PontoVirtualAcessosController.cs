@@ -14,7 +14,7 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("PontoVirtualAcessos", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("PontoVirtualAcessos", "GetAll", $"max = {max}", uri);
         var result = await _pontovirtualacessosService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPontoVirtualAcessos filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("PontoVirtualAcessos: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("PontoVirtualAcessos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _pontovirtualacessosService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("PontoVirtualAcessos: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("PontoVirtualAcessos: GetById called with id = {0}, {1}", id, uri);
         var result = await _pontovirtualacessosService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.PontoVirtualAcessos regPontoVirtualAcessos, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("PontoVirtualAcessos", "AddAndUpdate", regPontoVirtualAcessos, uri);
-        var result = await _pontovirtualacessosService.AddAndUpdate(regPontoVirtualAcessos, uri);
-        if (result == null)
+        //_logger.LogInfo("PontoVirtualAcessos", "AddAndUpdate", regPontoVirtualAcessos, uri);
+        try
         {
-            _logger.Warn("PontoVirtualAcessos: AddAndUpdate failed to add or update PontoVirtualAcessos, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _pontovirtualacessosService.AddAndUpdate(regPontoVirtualAcessos, uri);
+            if (result == null)
+            {
+                _logger.Warn("PontoVirtualAcessos: AddAndUpdate failed to add or update PontoVirtualAcessos, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "PontoVirtualAcessos: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("PontoVirtualAcessos: Delete called with id = {0}, {2}", id, uri);
-        var result = await _pontovirtualacessosService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("PontoVirtualAcessos: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No PontoVirtualAcessos found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _pontovirtualacessosService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No PontoVirtualAcessos found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "PontoVirtualAcessos: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

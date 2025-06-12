@@ -7,7 +7,7 @@ public partial class DBAgendaRepetir : MenphisSI.GerAdv.DBAgendaRepetir, IDBAgen
     {
     }
 
-    public DBAgendaRepetir(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAgendaRepetir(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAgendaRepetir : MenphisSI.GerAdv.DBAgendaRepetir, IDBAgen
     {
     }
 
-    public DBAgendaRepetir(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAgendaRepetir(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

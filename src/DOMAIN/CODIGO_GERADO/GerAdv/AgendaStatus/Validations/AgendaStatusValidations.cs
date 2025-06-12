@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAgendaStatusValidation
 {
-    Task<string> ValidateReg(Models.AgendaStatus reg, IAgendaStatusService service, IAgendaReader agendaReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.AgendaStatus reg, IAgendaStatusService service, IAgendaReader agendaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IAgendaStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AgendaStatusValidation : IAgendaStatusValidation
 {
-    public async Task<string> ValidateReg(Models.AgendaStatus reg, IAgendaStatusService service, IAgendaReader agendaReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IAgendaStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.AgendaStatus reg, IAgendaStatusService service, IAgendaReader agendaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

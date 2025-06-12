@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGUTAtividadesWriter
 {
-    Entity.DBGUTAtividades Write(Models.GUTAtividades gutatividades, int auditorQuem, SqlConnection oCnn);
+    Entity.DBGUTAtividades Write(Models.GUTAtividades gutatividades, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class GUTAtividades : IGUTAtividadesWriter
 {
-    public Entity.DBGUTAtividades Write(Models.GUTAtividades gutatividades, int auditorQuem, SqlConnection oCnn)
+    public void Delete(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[GUTAtividades] WHERE agtCodigo={gutatividades.Id};", oCnn);
+    }
+
+    public Entity.DBGUTAtividades Write(Models.GUTAtividades gutatividades, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = gutatividades.Id.IsEmptyIDNumber() ? new Entity.DBGUTAtividades() : new Entity.DBGUTAtividades(gutatividades.Id, oCnn);
         dbRec.FNome = gutatividades.Nome;

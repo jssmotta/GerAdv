@@ -32,7 +32,7 @@ public class ProTipoBaixaHealthCheck(IOptions<AppSettings> appSettings, ProTipoB
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProTipoBaixaHealthCheck(IOptions<AppSettings> appSettings, ProTipoB
                         if (DBProTipoBaixaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ptxCodigo) FROM dbo.ProTipoBaixa (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ptxCodigo) FROM {"ProTipoBaixa".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProTipoBaixaHealthCheck(IOptions<AppSettings> appSettings, ProTipoB
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ptxNome,ptxBold,ptxGUID FROM dbo.ProTipoBaixa (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ptxNome,ptxBold,ptxGUID FROM {"ProTipoBaixa".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

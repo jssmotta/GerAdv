@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITribunalWriter
 {
-    Entity.DBTribunal Write(Models.Tribunal tribunal, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTribunal Write(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Tribunal : ITribunalWriter
 {
-    public Entity.DBTribunal Write(Models.Tribunal tribunal, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Tribunal] WHERE triCodigo={tribunal.Id};", oCnn);
+    }
+
+    public Entity.DBTribunal Write(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = tribunal.Id.IsEmptyIDNumber() ? new Entity.DBTribunal() : new Entity.DBTribunal(tribunal.Id, oCnn);
         dbRec.FNome = tribunal.Nome;

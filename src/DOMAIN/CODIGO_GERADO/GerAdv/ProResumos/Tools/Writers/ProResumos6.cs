@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProResumosWriter
 {
-    Entity.DBProResumos Write(Models.ProResumos proresumos, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProResumos Write(Models.ProResumos proresumos, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProResumosResponse proresumos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProResumos : IProResumosWriter
 {
-    public Entity.DBProResumos Write(Models.ProResumos proresumos, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProResumosResponse proresumos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProResumos] WHERE prsCodigo={proresumos.Id};", oCnn);
+    }
+
+    public Entity.DBProResumos Write(Models.ProResumos proresumos, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = proresumos.Id.IsEmptyIDNumber() ? new Entity.DBProResumos() : new Entity.DBProResumos(proresumos.Id, oCnn);
         dbRec.FProcesso = proresumos.Processo;

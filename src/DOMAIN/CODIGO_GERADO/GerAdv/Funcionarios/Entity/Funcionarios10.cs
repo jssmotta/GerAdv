@@ -7,7 +7,7 @@ public partial class DBFuncionarios : MenphisSI.GerAdv.DBFuncionarios, IDBFuncio
     {
     }
 
-    public DBFuncionarios(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBFuncionarios(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBFuncionarios : MenphisSI.GerAdv.DBFuncionarios, IDBFuncio
     {
     }
 
-    public DBFuncionarios(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBFuncionarios(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

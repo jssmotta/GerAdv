@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IContatoCRMOperadorReader
 {
-    ContatoCRMOperadorResponse? Read(int id, SqlConnection oCnn);
-    ContatoCRMOperadorResponse? Read(string where, SqlConnection oCnn);
+    ContatoCRMOperadorResponse? Read(int id, MsiSqlConnection oCnn);
+    ContatoCRMOperadorResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ContatoCRMOperadorResponse? Read(Entity.DBContatoCRMOperador dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ContatoCRMOperadorResponse? Read(DBContatoCRMOperador dbRec);
+    ContatoCRMOperadorResponseAll? ReadAll(DBContatoCRMOperador dbRec, DataRow dr);
 }
 
 public partial class ContatoCRMOperador : IContatoCRMOperadorReader
 {
-    public ContatoCRMOperadorResponse? Read(int id, SqlConnection oCnn)
+    public ContatoCRMOperadorResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBContatoCRMOperador(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ContatoCRMOperadorResponse? Read(string where, SqlConnection oCnn)
+    public ContatoCRMOperadorResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBContatoCRMOperador(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBContatoCRMOperador(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class ContatoCRMOperador : IContatoCRMOperadorReader
             CargoEsc = dbRec.FCargoEsc,
             Operador = dbRec.FOperador,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        contatocrmoperador.Auditor = auditor;
         return contatocrmoperador;
     }
 
@@ -69,18 +59,24 @@ public partial class ContatoCRMOperador : IContatoCRMOperadorReader
             CargoEsc = dbRec.FCargoEsc,
             Operador = dbRec.FOperador,
         };
-        var auditor = new Auditor
+        return contatocrmoperador;
+    }
+
+    public ContatoCRMOperadorResponseAll? ReadAll(DBContatoCRMOperador dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var contatocrmoperador = new ContatoCRMOperadorResponseAll
+        {
+            Id = dbRec.ID,
+            ContatoCRM = dbRec.FContatoCRM,
+            CargoEsc = dbRec.FCargoEsc,
+            Operador = dbRec.FOperador,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        contatocrmoperador.Auditor = auditor;
+        contatocrmoperador.NomeOperador = dr["operNome"]?.ToString() ?? string.Empty;
         return contatocrmoperador;
     }
 }

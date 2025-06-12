@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAcaoValidation
 {
-    Task<string> ValidateReg(Models.Acao reg, IAcaoService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Acao reg, IAcaoService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IAcaoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AcaoValidation : IAcaoValidation
 {
-    public async Task<string> ValidateReg(Models.Acao reg, IAcaoService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IAcaoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var instanciaExists = await instanciaService.Filter(new Filters.FilterInstancia { Acao = id }, uri);
+        if (instanciaExists != null && instanciaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Acao reg, IAcaoService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

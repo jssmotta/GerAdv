@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOutrasPartesClienteWhere
 {
-    OutrasPartesClienteResponse Read(string where, SqlConnection oCnn);
+    OutrasPartesClienteResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class OutrasPartesCliente : IOutrasPartesClienteWhere
 {
-    public OutrasPartesClienteResponse Read(string where, SqlConnection oCnn)
+    public OutrasPartesClienteResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOutrasPartesCliente(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOutrasPartesCliente(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var outraspartescliente = new OutrasPartesClienteResponse
         {
             Id = dbRec.ID,
@@ -42,18 +42,6 @@ public partial class OutrasPartesCliente : IOutrasPartesClienteWhere
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             outraspartescliente.DtNasc = dbRec.FDtNasc;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        outraspartescliente.Auditor = auditor;
         return outraspartescliente;
     }
 }

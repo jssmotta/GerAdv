@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IDadosProcuracaoWriter
 {
-    Entity.DBDadosProcuracao Write(Models.DadosProcuracao dadosprocuracao, int auditorQuem, SqlConnection oCnn);
+    Entity.DBDadosProcuracao Write(Models.DadosProcuracao dadosprocuracao, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(DadosProcuracaoResponse dadosprocuracao, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class DadosProcuracao : IDadosProcuracaoWriter
 {
-    public Entity.DBDadosProcuracao Write(Models.DadosProcuracao dadosprocuracao, int auditorQuem, SqlConnection oCnn)
+    public void Delete(DadosProcuracaoResponse dadosprocuracao, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[DadosProcuracao] WHERE prcCodigo={dadosprocuracao.Id};", oCnn);
+    }
+
+    public Entity.DBDadosProcuracao Write(Models.DadosProcuracao dadosprocuracao, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = dadosprocuracao.Id.IsEmptyIDNumber() ? new Entity.DBDadosProcuracao() : new Entity.DBDadosProcuracao(dadosprocuracao.Id, oCnn);
         dbRec.FCliente = dadosprocuracao.Cliente;

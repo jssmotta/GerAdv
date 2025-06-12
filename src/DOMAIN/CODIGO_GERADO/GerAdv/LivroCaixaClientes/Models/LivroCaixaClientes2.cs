@@ -26,7 +26,32 @@ public partial class LivroCaixaClientes
     /// </summary>
     [JsonPropertyName("lancado")]
     public bool Lancado { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class LivroCaixaClientesAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - lccLivroCaixa  
+    /// </summary>
+    [JsonPropertyName("livrocaixa")]
+    public int LivroCaixa { get; set; }
+
+    /// <summary>
+    /// Sem descrição - lccCliente  
+    /// </summary>
+    [JsonPropertyName("cliente")]
+    public int Cliente { get; set; }
+
+    /// <summary>
+    /// Sem descrição - lccLancado  
+    /// </summary>
+    [JsonPropertyName("lancado")]
+    public bool Lancado { get; set; }
+
+    [JsonPropertyName("nomeclientes")]
+    public string NomeClientes { get; set; } = string.Empty;
 }

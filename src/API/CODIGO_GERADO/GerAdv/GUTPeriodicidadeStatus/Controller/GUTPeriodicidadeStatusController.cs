@@ -14,7 +14,7 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("GUTPeriodicidadeStatus", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("GUTPeriodicidadeStatus", "GetAll", $"max = {max}", uri);
         var result = await _gutperiodicidadestatusService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTPeriodicidadeStatus filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("GUTPeriodicidadeStatus: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("GUTPeriodicidadeStatus: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _gutperiodicidadestatusService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("GUTPeriodicidadeStatus: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("GUTPeriodicidadeStatus: GetById called with id = {0}, {1}", id, uri);
         var result = await _gutperiodicidadestatusService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("GUTPeriodicidadeStatus", "AddAndUpdate", regGUTPeriodicidadeStatus, uri);
-        var result = await _gutperiodicidadestatusService.AddAndUpdate(regGUTPeriodicidadeStatus, uri);
-        if (result == null)
+        //_logger.LogInfo("GUTPeriodicidadeStatus", "AddAndUpdate", regGUTPeriodicidadeStatus, uri);
+        try
         {
-            _logger.Warn("GUTPeriodicidadeStatus: AddAndUpdate failed to add or update GUTPeriodicidadeStatus, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _gutperiodicidadestatusService.AddAndUpdate(regGUTPeriodicidadeStatus, uri);
+            if (result == null)
+            {
+                _logger.Warn("GUTPeriodicidadeStatus: AddAndUpdate failed to add or update GUTPeriodicidadeStatus, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GUTPeriodicidadeStatus: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("GUTPeriodicidadeStatus: Delete called with id = {0}, {2}", id, uri);
-        var result = await _gutperiodicidadestatusService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("GUTPeriodicidadeStatus: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No GUTPeriodicidadeStatus found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _gutperiodicidadestatusService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No GUTPeriodicidadeStatus found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GUTPeriodicidadeStatus: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

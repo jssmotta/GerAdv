@@ -7,7 +7,7 @@ public partial class DBAlertasEnviados : MenphisSI.GerAdv.DBAlertasEnviados, IDB
     {
     }
 
-    public DBAlertasEnviados(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAlertasEnviados(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAlertasEnviados : MenphisSI.GerAdv.DBAlertasEnviados, IDB
     {
     }
 
-    public DBAlertasEnviados(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAlertasEnviados(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

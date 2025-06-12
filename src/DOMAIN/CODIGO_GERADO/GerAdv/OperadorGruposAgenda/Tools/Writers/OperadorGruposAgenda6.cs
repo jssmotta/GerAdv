@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadorGruposAgendaWriter
 {
-    Entity.DBOperadorGruposAgenda Write(Models.OperadorGruposAgenda operadorgruposagenda, int auditorQuem, SqlConnection oCnn);
+    Entity.DBOperadorGruposAgenda Write(Models.OperadorGruposAgenda operadorgruposagenda, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(OperadorGruposAgendaResponse operadorgruposagenda, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class OperadorGruposAgenda : IOperadorGruposAgendaWriter
 {
-    public Entity.DBOperadorGruposAgenda Write(Models.OperadorGruposAgenda operadorgruposagenda, int auditorQuem, SqlConnection oCnn)
+    public void Delete(OperadorGruposAgendaResponse operadorgruposagenda, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[OperadorGruposAgenda] WHERE groCodigo={operadorgruposagenda.Id};", oCnn);
+    }
+
+    public Entity.DBOperadorGruposAgenda Write(Models.OperadorGruposAgenda operadorgruposagenda, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = operadorgruposagenda.Id.IsEmptyIDNumber() ? new Entity.DBOperadorGruposAgenda() : new Entity.DBOperadorGruposAgenda(operadorgruposagenda.Id, oCnn);
         dbRec.FSQLWhere = operadorgruposagenda.SQLWhere;

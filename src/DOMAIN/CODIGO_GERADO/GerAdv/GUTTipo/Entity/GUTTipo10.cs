@@ -7,7 +7,7 @@ public partial class DBGUTTipo : MenphisSI.GerAdv.DBGUTTipo, IDBGUTTipo
     {
     }
 
-    public DBGUTTipo(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBGUTTipo(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBGUTTipo : MenphisSI.GerAdv.DBGUTTipo, IDBGUTTipo
     {
     }
 
-    public DBGUTTipo(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBGUTTipo(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

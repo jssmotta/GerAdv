@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBTipoEnderecoSistema
 {
     public const string CadastroGuid = "1db43792-de67-49ad-b041-ca8c06c2fa38";
-#region AdministrativeMethods_TipoEnderecoSistema
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE tesCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "TipoEnderecoSistema";
     public const string CamposSqlX = " TipoEnderecoSistema.* ";
     public const string SensivelCamposSqlX = " TipoEnderecoSistema.* ";

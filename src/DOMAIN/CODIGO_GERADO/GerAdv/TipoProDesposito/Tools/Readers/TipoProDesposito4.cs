@@ -5,23 +5,51 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface ITipoProDespositoReader
 {
-    TipoProDespositoResponse? Read(int id, SqlConnection oCnn);
-    TipoProDespositoResponse? Read(string where, SqlConnection oCnn);
+    TipoProDespositoResponse? Read(int id, MsiSqlConnection oCnn);
+    TipoProDespositoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TipoProDespositoResponse? Read(Entity.DBTipoProDesposito dbRec);
     TipoProDespositoResponse? Read(DBTipoProDesposito dbRec);
+    TipoProDespositoResponseAll? ReadAll(DBTipoProDesposito dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class TipoProDesposito : ITipoProDespositoReader
 {
-    public TipoProDespositoResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) tpdCodigo, tpdNome FROM {"TipoProDesposito".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}tpdNome");
+        }
+
+        return query.ToString();
+    }
+
+    public TipoProDespositoResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBTipoProDesposito(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public TipoProDespositoResponse? Read(string where, SqlConnection oCnn)
+    public TipoProDespositoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTipoProDesposito(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTipoProDesposito(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -48,6 +76,21 @@ public partial class TipoProDesposito : ITipoProDespositoReader
         }
 
         var tipoprodesposito = new TipoProDespositoResponse
+        {
+            Id = dbRec.ID,
+            Nome = dbRec.FNome ?? string.Empty,
+        };
+        return tipoprodesposito;
+    }
+
+    public TipoProDespositoResponseAll? ReadAll(DBTipoProDesposito dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var tipoprodesposito = new TipoProDespositoResponseAll
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,

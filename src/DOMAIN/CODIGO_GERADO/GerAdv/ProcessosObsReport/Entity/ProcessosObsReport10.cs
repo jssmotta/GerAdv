@@ -7,7 +7,7 @@ public partial class DBProcessosObsReport : MenphisSI.GerAdv.DBProcessosObsRepor
     {
     }
 
-    public DBProcessosObsReport(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProcessosObsReport(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProcessosObsReport : MenphisSI.GerAdv.DBProcessosObsRepor
     {
     }
 
-    public DBProcessosObsReport(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBProcessosObsReport(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

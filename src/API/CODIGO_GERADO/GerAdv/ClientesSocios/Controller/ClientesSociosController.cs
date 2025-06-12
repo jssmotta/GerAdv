@@ -14,7 +14,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("ClientesSocios", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("ClientesSocios", "GetAll", $"max = {max}", uri);
         var result = await _clientessociosService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterClientesSocios filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("ClientesSocios: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("ClientesSocios: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _clientessociosService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("ClientesSocios: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("ClientesSocios: GetById called with id = {0}, {1}", id, uri);
         var result = await _clientessociosService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("ClientesSocios: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _clientessociosService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No ClientesSocios found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterClientesSocios? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"ClientesSocios: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"ClientesSocios: GetListN called, max {max}, {filtro} uri");
         var result = await _clientessociosService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("ClientesSocios", "AddAndUpdate", regClientesSocios, uri);
-        var result = await _clientessociosService.AddAndUpdate(regClientesSocios, uri);
-        if (result == null)
+        //_logger.LogInfo("ClientesSocios", "AddAndUpdate", regClientesSocios, uri);
+        try
         {
-            _logger.Warn("ClientesSocios: AddAndUpdate failed to add or update ClientesSocios, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _clientessociosService.AddAndUpdate(regClientesSocios, uri);
+            if (result == null)
+            {
+                _logger.Warn("ClientesSocios: AddAndUpdate failed to add or update ClientesSocios, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ClientesSocios: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("ClientesSocios: Delete called with id = {0}, {2}", id, uri);
-        var result = await _clientessociosService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("ClientesSocios: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No ClientesSocios found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _clientessociosService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No ClientesSocios found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ClientesSocios: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

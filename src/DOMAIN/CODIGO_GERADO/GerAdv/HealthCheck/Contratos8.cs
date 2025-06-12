@@ -32,7 +32,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
                         if (DBContratosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(cttCodigo) FROM dbo.Contratos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(cttCodigo) FROM {"Contratos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttBold,cttGUID FROM dbo.Contratos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttBold,cttGUID FROM {"Contratos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

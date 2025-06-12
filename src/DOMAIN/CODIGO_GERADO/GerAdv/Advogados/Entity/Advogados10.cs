@@ -7,7 +7,7 @@ public partial class DBAdvogados : MenphisSI.GerAdv.DBAdvogados, IDBAdvogados
     {
     }
 
-    public DBAdvogados(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAdvogados(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAdvogados : MenphisSI.GerAdv.DBAdvogados, IDBAdvogados
     {
     }
 
-    public DBAdvogados(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBAdvogados(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAgendaRecordsWriter
 {
-    Entity.DBAgendaRecords Write(Models.AgendaRecords agendarecords, SqlConnection oCnn);
+    Entity.DBAgendaRecords Write(Models.AgendaRecords agendarecords, MsiSqlConnection oCnn);
+    void Delete(AgendaRecordsResponse agendarecords, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AgendaRecords : IAgendaRecordsWriter
 {
-    public Entity.DBAgendaRecords Write(Models.AgendaRecords agendarecords, SqlConnection oCnn)
+    public void Delete(AgendaRecordsResponse agendarecords, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AgendaRecords] WHERE ragCodigo={agendarecords.Id};", oCnn);
+    }
+
+    public Entity.DBAgendaRecords Write(Models.AgendaRecords agendarecords, MsiSqlConnection oCnn)
     {
         var dbRec = agendarecords.Id.IsEmptyIDNumber() ? new Entity.DBAgendaRecords() : new Entity.DBAgendaRecords(agendarecords.Id, oCnn);
         dbRec.FAgenda = agendarecords.Agenda;

@@ -32,7 +32,7 @@ public class Apenso2HealthCheck(IOptions<AppSettings> appSettings, Apenso2Servic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class Apenso2HealthCheck(IOptions<AppSettings> appSettings, Apenso2Servic
                         if (DBApenso2DicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ap2Codigo) FROM dbo.Apenso2 (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ap2Codigo) FROM {"Apenso2".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class Apenso2HealthCheck(IOptions<AppSettings> appSettings, Apenso2Servic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ap2Processo,ap2Apensado FROM dbo.Apenso2 (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ap2Processo,ap2Apensado FROM {"Apenso2".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

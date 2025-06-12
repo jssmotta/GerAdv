@@ -1,0 +1,141 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IServicos } from '@/app/GerAdv_TS/Servicos/Interfaces/interface.Servicos';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { ServicosApi } from '../../Apis/ApiServicos';
+import { useValidationsServicos } from '../../Hooks/hookServicos';
+import InputDescription from '@/app/components/Inputs/InputDescription';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+interface ServicosFormProps {
+  servicosData: IServicos;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const ServicosForm: React.FC<ServicosFormProps> = ({
+  servicosData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new ServicosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsServicos();
+
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
+
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        onSubmit(e);
+      } catch (error) {
+      console.error('Erro ao submeter formulário de Servicos:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`ServicosForm-${servicosData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.error('Erro ao salvar Servicos diretamente:', error);
+    setIsSubmitting(false);
+    if (onError) onError();
+    }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = servicosData?.id == 0 ? 'Editar Servicos' : 'Adicionar Serviço';
+  }
+}, [servicosData.id]);
+return (
+<>
+<style>
+  {!isMobile ? `
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    ` : ``}
+  </style>
+
+  <div className={isMobile ? 'form-container form-container-Servicos' : 'form-container5 form-container-Servicos'}>
+
+    <form className='formInputCadInc' id={`ServicosForm-${servicosData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Servicos' data={servicosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ServicosForm-${servicosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
+
+          <InputDescription
+          type='text'
+          id='descricao'
+          label='serviço'
+          dataForm={servicosData}
+          className='inputIncNome'
+          name='descricao'
+          value={servicosData.descricao}
+          placeholder={`Digite nome serviço`}
+          onChange={onChange}
+          required
+          disabled={servicosData.id > 0}
+          />
+          <InputCheckbox dataForm={servicosData} label='Cobrar' name='cobrar' checked={servicosData.cobrar} onChange={onChange} />
+          <InputCheckbox dataForm={servicosData} label='Basico' name='basico' checked={servicosData.basico} onChange={onChange} />
+        </div>
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Servicos' data={servicosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ServicosForm-${servicosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/servicos'} id={servicosData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

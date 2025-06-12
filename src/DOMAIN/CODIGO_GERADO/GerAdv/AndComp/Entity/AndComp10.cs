@@ -7,7 +7,7 @@ public partial class DBAndComp : MenphisSI.GerAdv.DBAndComp, IDBAndComp
     {
     }
 
-    public DBAndComp(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAndComp(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAndComp : MenphisSI.GerAdv.DBAndComp, IDBAndComp
     {
     }
 
-    public DBAndComp(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAndComp(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -1,0 +1,112 @@
+﻿'use client';
+import { CRUD_CONSTANTS } from '@/app/tools/crud';
+import { CidadeApi, CidadeApiError } from '../Apis/ApiCidade';
+import { FilterCidade } from '../Filters/Cidade';
+import { ICidade } from '../Interfaces/interface.Cidade';
+
+export class CidadeValidator {
+  static validateCidade(cidade: ICidade): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Atualmente não há validações de regras de negócio específicas
+    // Todas as validações são feitas nos inputs correspondentes
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+export interface ICidadeService {
+  fetchCidadeById: (id: number) => Promise<ICidade>;
+  saveCidade: (cidade: ICidade) => Promise<ICidade>;  
+  getList: (filtro?: FilterCidade) => Promise<ICidade[]>;
+  getAll: (filtro?: FilterCidade) => Promise<ICidade[]>;
+  deleteCidade: (id: number) => Promise<void>;
+  validateCidade: (cidade: ICidade) => { isValid: boolean; errors: string[] };
+}
+
+export class CidadeService implements ICidadeService {
+  constructor(private api: CidadeApi) {}
+
+  async fetchCidadeById(id: number): Promise<ICidade> {
+    if (id <= 0) {
+      throw new CidadeApiError('ID inválido', 400, 'INVALID_ID');
+    }
+
+    try {
+      const response = await this.api.getById(id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof CidadeApiError) {
+        throw error;
+      }
+      throw new CidadeApiError('Erro ao buscar cidade', 500, 'FETCH_ERROR', error);
+    }
+  }
+
+  async saveCidade(cidade: ICidade): Promise<ICidade> {    
+    const validation = this.validateCidade(cidade);
+    if (!validation.isValid) {
+      throw new CidadeApiError(
+        `Dados inválidos: ${validation.errors.join(', ')}`,
+        400,
+        'VALIDATION_ERROR'
+      );
+    }
+
+    try {
+      const response = await this.api.addAndUpdate(cidade);
+      return response.data;
+    } catch (error) {
+      if (error instanceof CidadeApiError) {
+        throw error;
+      }
+      throw new CidadeApiError('Erro ao salvar cidade', 500, 'SAVE_ERROR', error);
+    }
+  }
+
+  
+    async getList(filtro?: FilterCidade): Promise<ICidade[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching cidade list:', error);
+      return [];
+    }
+  }
+
+ 
+ 
+
+  async getAll(filtro?: FilterCidade): Promise<ICidade[]> {
+    try {
+      const response = await this.api.filter(filtro ?? {});
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching all cidade:', error);
+      return [];
+    }
+  }
+
+  async deleteCidade(id: number): Promise<void> {
+    if (id <= 0) {
+      throw new CidadeApiError('ID inválido para exclusão', 400, 'INVALID_ID');
+    }
+
+    try {
+      await this.api.delete(id);
+    } catch (error) {
+      if (error instanceof CidadeApiError) {
+        throw error;
+      }
+      throw new CidadeApiError('Erro ao excluir cidade', 500, 'DELETE_ERROR', error);
+    }
+  }
+
+  validateCidade(cidade: ICidade): { isValid: boolean; errors: string[] } {
+    return CidadeValidator.validateCidade(cidade);
+  }
+}

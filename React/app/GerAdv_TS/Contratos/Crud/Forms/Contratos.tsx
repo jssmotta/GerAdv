@@ -1,0 +1,508 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IContratos } from '@/app/GerAdv_TS/Contratos/Interfaces/interface.Contratos';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { ContratosApi } from '../../Apis/ApiContratos';
+import { useValidationsContratos } from '../../Hooks/hookContratos';
+import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
+import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
+import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
+import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+interface ContratosFormProps {
+  contratosData: IContratos;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const ContratosForm: React.FC<ContratosFormProps> = ({
+  contratosData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new ContratosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsContratos();
+const [nomeProcessos, setNomeProcessos] = useState('');
+const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeClientes, setNomeClientes] = useState('');
+const clientesApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeAdvogados, setNomeAdvogados] = useState('');
+const advogadosApi = new AdvogadosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('processos') > 0) {
+  if (contratosData.id === 0 && contratosData.processo == 0) {
+    processosApi
+    .getById(getParamFromUrl('processos'))
+    .then((response) => {
+      setNomeProcessos(response.data.nropasta);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    contratosData.processo = getParamFromUrl('processos');
+  }
+}
+
+if (getParamFromUrl('clientes') > 0) {
+  if (contratosData.id === 0 && contratosData.cliente == 0) {
+    clientesApi
+    .getById(getParamFromUrl('clientes'))
+    .then((response) => {
+      setNomeClientes(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    contratosData.cliente = getParamFromUrl('clientes');
+  }
+}
+
+if (getParamFromUrl('advogados') > 0) {
+  if (contratosData.id === 0 && contratosData.advogado == 0) {
+    advogadosApi
+    .getById(getParamFromUrl('advogados'))
+    .then((response) => {
+      setNomeAdvogados(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    contratosData.advogado = getParamFromUrl('advogados');
+  }
+}
+const addValorProcesso = (e: any) => {
+  if (e?.id>0)
+    contratosData.processo = e.id;
+  };
+  const addValorCliente = (e: any) => {
+    if (e?.id>0)
+      contratosData.cliente = e.id;
+    };
+    const addValorAdvogado = (e: any) => {
+      if (e?.id>0)
+        contratosData.advogado = e.id;
+      };
+      const onConfirm = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+
+          if (!isSubmitting) {
+            setIsSubmitting(true);
+
+            try {
+              onSubmit(e);
+            } catch (error) {
+            console.error('Erro ao submeter formulário de Contratos:', error);
+            setIsSubmitting(false);
+            if (onError) onError();
+            }
+          }
+        };
+        const handleCancel = () => {
+          if (onReload) {
+            onReload(); // Recarrega os dados originais
+          } else {
+          onClose(); // Comportamento padrão se não há callback de recarga
+        }
+      };
+
+      const handleDirectSave = () => {
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            const syntheticEvent = {
+              preventDefault: () => { }, 
+              target: document.getElementById(`ContratosForm-${contratosData.id}`)
+            } as unknown as React.FormEvent;
+
+            onSubmit(syntheticEvent);
+          } catch (error) {
+          console.error('Erro ao salvar Contratos diretamente:', error);
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = contratosData?.id == 0 ? 'Editar Contratos' : 'Adicionar Contratos';
+        }
+      }, [contratosData.id]);
+      return (
+      <>
+      <style>
+        {!isMobile ? `
+          @media (max-width: 1366px) {
+            html {
+              zoom: 0.8 !important;
+            }
+          }
+          ` : ``}
+        </style>
+
+        <div className={isMobile ? 'form-container form-container-Contratos' : 'form-container form-container-Contratos'}>
+
+          <form className='formInputCadInc' id={`ContratosForm-${contratosData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
+
+
+                <ProcessosComboBox
+                name={'processo'}
+                dataForm={contratosData}
+                value={contratosData.processo}
+                setValue={addValorProcesso}
+                label={'Processos'}
+                />
+
+                <ClientesComboBox
+                name={'cliente'}
+                dataForm={contratosData}
+                value={contratosData.cliente}
+                setValue={addValorCliente}
+                label={'Clientes'}
+                />
+
+                <AdvogadosComboBox
+                name={'advogado'}
+                dataForm={contratosData}
+                value={contratosData.advogado}
+                setValue={addValorAdvogado}
+                label={'Advogados'}
+                />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dia'
+                label='Dia'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='dia'
+                value={contratosData.dia}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='valor'
+                label='Valor'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='valor'
+                value={contratosData.valor}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='datainicio'
+                label='DataInicio'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='datainicio'
+                value={contratosData.datainicio}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='datatermino'
+                label='DataTermino'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='datatermino'
+                value={contratosData.datatermino}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={contratosData} label='OcultarRelatorio' name='ocultarrelatorio' checked={contratosData.ocultarrelatorio} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='percescritorio'
+                label='PercEscritorio'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='percescritorio'
+                value={contratosData.percescritorio}
+                onChange={onChange}
+                />
+
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='valorconsultoria'
+                label='ValorConsultoria'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='valorconsultoria'
+                value={contratosData.valorconsultoria}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='tipocobranca'
+                label='TipoCobranca'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='tipocobranca'
+                value={contratosData.tipocobranca}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='protestar'
+                label='Protestar'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='protestar'
+                value={contratosData.protestar}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={5}
+                id='juros'
+                label='Juros'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='juros'
+                value={contratosData.juros}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='valorrealizavel'
+                label='ValorRealizavel'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='valorrealizavel'
+                value={contratosData.valorrealizavel}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={15}
+                id='documento'
+                label='DOCUMENTO'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='documento'
+                value={contratosData.documento}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='email'
+                maxLength={300}
+                id='email1'
+                label='EMail1'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='email1'
+                value={contratosData.email1}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='email'
+                maxLength={300}
+                id='email2'
+                label='EMail2'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='email2'
+                value={contratosData.email2}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='email'
+                maxLength={300}
+                id='email3'
+                label='EMail3'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='email3'
+                value={contratosData.email3}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='pessoa1'
+                label='Pessoa1'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='pessoa1'
+                value={contratosData.pessoa1}
+                onChange={onChange}
+                />
+
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='pessoa2'
+                label='Pessoa2'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='pessoa2'
+                value={contratosData.pessoa2}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='pessoa3'
+                label='Pessoa3'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='pessoa3'
+                value={contratosData.pessoa3}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='obs'
+                label='OBS'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='obs'
+                value={contratosData.obs}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='clientecontrato'
+                label='ClienteContrato'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='clientecontrato'
+                value={contratosData.clientecontrato}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='idextrangeiro'
+                label='IdExtrangeiro'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='idextrangeiro'
+                value={contratosData.idextrangeiro}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='chavecontrato'
+                label='ChaveContrato'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='chavecontrato'
+                value={contratosData.chavecontrato}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={contratosData} label='Avulso' name='avulso' checked={contratosData.avulso} onChange={onChange} />
+                <InputCheckbox dataForm={contratosData} label='Suspenso' name='suspenso' checked={contratosData.suspenso} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={10}
+                id='multa'
+                label='Multa'
+                dataForm={contratosData}
+                className='inputIncNome'
+                name='multa'
+                value={contratosData.multa}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/contratos'} id={contratosData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

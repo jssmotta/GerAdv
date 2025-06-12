@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoEMailWhere
 {
-    TipoEMailResponse Read(string where, SqlConnection oCnn);
+    TipoEMailResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class TipoEMail : ITipoEMailWhere
 {
-    public TipoEMailResponse Read(string where, SqlConnection oCnn)
+    public TipoEMailResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTipoEMail(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTipoEMail(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var tipoemail = new TipoEMailResponse
         {
             Id = dbRec.ID,

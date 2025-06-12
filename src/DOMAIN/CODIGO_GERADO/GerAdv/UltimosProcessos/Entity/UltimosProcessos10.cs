@@ -7,7 +7,7 @@ public partial class DBUltimosProcessos : MenphisSI.GerAdv.DBUltimosProcessos, I
     {
     }
 
-    public DBUltimosProcessos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBUltimosProcessos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBUltimosProcessos : MenphisSI.GerAdv.DBUltimosProcessos, I
     {
     }
 
-    public DBUltimosProcessos(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBUltimosProcessos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

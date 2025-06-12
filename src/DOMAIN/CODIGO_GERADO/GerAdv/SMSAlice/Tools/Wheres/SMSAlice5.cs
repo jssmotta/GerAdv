@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ISMSAliceWhere
 {
-    SMSAliceResponse Read(string where, SqlConnection oCnn);
+    SMSAliceResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class SMSAlice : ISMSAliceWhere
 {
-    public SMSAliceResponse Read(string where, SqlConnection oCnn)
+    public SMSAliceResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBSMSAlice(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBSMSAlice(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var smsalice = new SMSAliceResponse
         {
             Id = dbRec.ID,
@@ -21,18 +21,6 @@ public partial class SMSAlice : ISMSAliceWhere
             TipoEMail = dbRec.FTipoEMail,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        smsalice.Auditor = auditor;
         return smsalice;
     }
 }

@@ -1,0 +1,112 @@
+﻿'use client';
+import { CRUD_CONSTANTS } from '@/app/tools/crud';
+import { SMSAliceApi, SMSAliceApiError } from '../Apis/ApiSMSAlice';
+import { FilterSMSAlice } from '../Filters/SMSAlice';
+import { ISMSAlice } from '../Interfaces/interface.SMSAlice';
+
+export class SMSAliceValidator {
+  static validateSMSAlice(smsalice: ISMSAlice): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Atualmente não há validações de regras de negócio específicas
+    // Todas as validações são feitas nos inputs correspondentes
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+export interface ISMSAliceService {
+  fetchSMSAliceById: (id: number) => Promise<ISMSAlice>;
+  saveSMSAlice: (smsalice: ISMSAlice) => Promise<ISMSAlice>;  
+  getList: (filtro?: FilterSMSAlice) => Promise<ISMSAlice[]>;
+  getAll: (filtro?: FilterSMSAlice) => Promise<ISMSAlice[]>;
+  deleteSMSAlice: (id: number) => Promise<void>;
+  validateSMSAlice: (smsalice: ISMSAlice) => { isValid: boolean; errors: string[] };
+}
+
+export class SMSAliceService implements ISMSAliceService {
+  constructor(private api: SMSAliceApi) {}
+
+  async fetchSMSAliceById(id: number): Promise<ISMSAlice> {
+    if (id <= 0) {
+      throw new SMSAliceApiError('ID inválido', 400, 'INVALID_ID');
+    }
+
+    try {
+      const response = await this.api.getById(id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof SMSAliceApiError) {
+        throw error;
+      }
+      throw new SMSAliceApiError('Erro ao buscar smsalice', 500, 'FETCH_ERROR', error);
+    }
+  }
+
+  async saveSMSAlice(smsalice: ISMSAlice): Promise<ISMSAlice> {    
+    const validation = this.validateSMSAlice(smsalice);
+    if (!validation.isValid) {
+      throw new SMSAliceApiError(
+        `Dados inválidos: ${validation.errors.join(', ')}`,
+        400,
+        'VALIDATION_ERROR'
+      );
+    }
+
+    try {
+      const response = await this.api.addAndUpdate(smsalice);
+      return response.data;
+    } catch (error) {
+      if (error instanceof SMSAliceApiError) {
+        throw error;
+      }
+      throw new SMSAliceApiError('Erro ao salvar smsalice', 500, 'SAVE_ERROR', error);
+    }
+  }
+
+  
+    async getList(filtro?: FilterSMSAlice): Promise<ISMSAlice[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching smsalice list:', error);
+      return [];
+    }
+  }
+
+ 
+ 
+
+  async getAll(filtro?: FilterSMSAlice): Promise<ISMSAlice[]> {
+    try {
+      const response = await this.api.filter(filtro ?? {});
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching all smsalice:', error);
+      return [];
+    }
+  }
+
+  async deleteSMSAlice(id: number): Promise<void> {
+    if (id <= 0) {
+      throw new SMSAliceApiError('ID inválido para exclusão', 400, 'INVALID_ID');
+    }
+
+    try {
+      await this.api.delete(id);
+    } catch (error) {
+      if (error instanceof SMSAliceApiError) {
+        throw error;
+      }
+      throw new SMSAliceApiError('Erro ao excluir smsalice', 500, 'DELETE_ERROR', error);
+    }
+  }
+
+  validateSMSAlice(smsalice: ISMSAlice): { isValid: boolean; errors: string[] } {
+    return SMSAliceValidator.validateSMSAlice(smsalice);
+  }
+}

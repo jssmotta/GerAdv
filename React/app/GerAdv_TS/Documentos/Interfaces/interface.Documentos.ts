@@ -1,0 +1,24 @@
+﻿'use client';
+
+export interface IDocumentos {
+// 202501251
+    id: number;
+ 
+	processo: number,
+	data: string,
+	observacao: string,
+}
+
+export interface IDocumentosFormProps {
+  id: number;
+  onClose: () => void;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+
+export interface IDocumentosIncProps {
+    id: number;
+    onClose: () => void;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}

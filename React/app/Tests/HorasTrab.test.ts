@@ -1,0 +1,281 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useHorasTrabForm, useHorasTrabList, useValidationsHorasTrab } from '../GerAdv_TS/HorasTrab/Hooks/hookHorasTrab';
+import { IHorasTrab } from '../GerAdv_TS/HorasTrab/Interfaces/interface.HorasTrab';
+import { IHorasTrabService } from '../GerAdv_TS/HorasTrab/Services/HorasTrab.service';
+import { HorasTrabTestEmpty } from '../GerAdv_TS/Models/HorasTrab';
+
+
+// Mock do serviço
+const mockHorasTrabService: jest.Mocked<IHorasTrabService> = {
+  fetchHorasTrabById: jest.fn(),
+  saveHorasTrab: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteHorasTrab: jest.fn(),
+  validateHorasTrab: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialHorasTrab: IHorasTrab = { ...HorasTrabTestEmpty() };
+
+describe('useHorasTrabForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    expect(result.current.data).toEqual(initialHorasTrab);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'hrini',
+        value: 'Novo Horas Trab',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.hrini).toBe('Novo Horas Trab');
+  });
+
+   test('deve carregar Horas Trab por ID', async () => {
+    const mockHorasTrab = { ...initialHorasTrab, id: 1, hrini: 'Horas Trab Teste' };
+    mockHorasTrabService.fetchHorasTrabById.mockResolvedValue(mockHorasTrab);
+
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    await act(async () => {
+      await result.current.loadHorasTrab(1);
+    });
+
+    expect(mockHorasTrabService.fetchHorasTrabById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockHorasTrab);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Horas Trab', async () => {
+    const errorMessage = 'Erro ao carregar Horas Trab';
+    mockHorasTrabService.fetchHorasTrabById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    await act(async () => {
+      await result.current.loadHorasTrab(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialHorasTrab, hrini: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialHorasTrab);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    await act(async () => {
+      await result.current.loadHorasTrab(0);
+    });
+
+    expect(mockHorasTrabService.fetchHorasTrabById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialHorasTrab);
+  });
+});
+
+describe('useHorasTrabList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useHorasTrabList(mockHorasTrabService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialHorasTrab, id: 1, hrini: 'Horas Trab 1' },
+      { ...initialHorasTrab, id: 2, hrini: 'Horas Trab 2' }
+    ];
+    mockHorasTrabService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useHorasTrabList(mockHorasTrabService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockHorasTrabService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockHorasTrabService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useHorasTrabList(mockHorasTrabService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialHorasTrab, id: 1, hrini: 'Horas Trab Filtrado' }];
+    const filtro = { hrini: 'Horas Trab' };
+    mockHorasTrabService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useHorasTrabList(mockHorasTrabService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockHorasTrabService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsHorasTrab', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsHorasTrab());
+
+    const validData = { ...initialHorasTrab, hrini: 'Horas Trab Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsHorasTrab());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialHorasTrab, id: 1, hrini: 'Horas Trab Teste' }];
+    mockHorasTrabService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useHorasTrabList(mockHorasTrabService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsHorasTrab()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useHorasTrabForm(initialHorasTrab, mockHorasTrabService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'honorario',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.honorario).toBe(true);
+  });
+
+

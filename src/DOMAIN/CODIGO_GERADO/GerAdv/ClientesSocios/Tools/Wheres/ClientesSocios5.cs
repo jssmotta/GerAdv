@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IClientesSociosWhere
 {
-    ClientesSociosResponse Read(string where, SqlConnection oCnn);
+    ClientesSociosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class ClientesSocios : IClientesSociosWhere
 {
-    public ClientesSociosResponse Read(string where, SqlConnection oCnn)
+    public ClientesSociosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBClientesSocios(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBClientesSocios(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var clientessocios = new ClientesSociosResponse
         {
             Id = dbRec.ID,
@@ -59,18 +59,6 @@ public partial class ClientesSocios : IClientesSociosWhere
             clientessocios.DataContrato = dbRec.FDataContrato;
         if (DateTime.TryParse(dbRec.FRGDataExp, out _))
             clientessocios.RGDataExp = dbRec.FRGDataExp;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        clientessocios.Auditor = auditor;
         return clientessocios;
     }
 }

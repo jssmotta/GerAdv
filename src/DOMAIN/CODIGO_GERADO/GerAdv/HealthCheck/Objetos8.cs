@@ -32,7 +32,7 @@ public class ObjetosHealthCheck(IOptions<AppSettings> appSettings, ObjetosServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ObjetosHealthCheck(IOptions<AppSettings> appSettings, ObjetosServic
                         if (DBObjetosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ojtCodigo) FROM dbo.Objetos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ojtCodigo) FROM {"Objetos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ObjetosHealthCheck(IOptions<AppSettings> appSettings, ObjetosServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ojtJustica,ojtArea,ojtNome,ojtBold,ojtGUID FROM dbo.Objetos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ojtJustica,ojtArea,ojtNome,ojtBold,ojtGUID FROM {"Objetos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

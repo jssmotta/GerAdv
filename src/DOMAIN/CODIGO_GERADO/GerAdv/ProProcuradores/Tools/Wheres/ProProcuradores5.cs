@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProProcuradoresWhere
 {
-    ProProcuradoresResponse Read(string where, SqlConnection oCnn);
+    ProProcuradoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class ProProcuradores : IProProcuradoresWhere
 {
-    public ProProcuradoresResponse Read(string where, SqlConnection oCnn)
+    public ProProcuradoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProProcuradores(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProProcuradores(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var proprocuradores = new ProProcuradoresResponse
         {
             Id = dbRec.ID,
@@ -26,18 +26,6 @@ public partial class ProProcuradores : IProProcuradoresWhere
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proprocuradores.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        proprocuradores.Auditor = auditor;
         return proprocuradores;
     }
 }

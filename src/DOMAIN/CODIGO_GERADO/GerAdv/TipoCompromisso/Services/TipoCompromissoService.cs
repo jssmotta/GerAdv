@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, ITipoCompromissoReader reader, ITipoCompromissoValidation validation, ITipoCompromissoWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache) : ITipoCompromissoService, IDisposable
+public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, ITipoCompromissoReader reader, ITipoCompromissoValidation validation, ITipoCompromissoWriter writer, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, INECompromissosService necompromissosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoCompromissoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<TipoCompromissoResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<TipoCompromissoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TipoCompromisso: URI inválida");
@@ -26,72 +27,71 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<TipoCompromissoResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<TipoCompromissoResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBTipoCompromisso.SensivelCamposSqlX} 
-                   FROM {DBTipoCompromisso.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBTipoCompromissoDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBTipoCompromisso>(max);
-        await foreach (var item in DBTipoCompromisso.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBTipoCompromisso.SensivelCamposSqlX}
+                   FROM {DBTipoCompromisso.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                    
+                   {where}
+                   ORDER BY tipDescricao
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<TipoCompromissoResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBTipoCompromisso(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var tipocompromisso = reader.ReadAll(dbRec, item);
+                if (tipocompromisso != null)
+                {
+                    lista.Add(tipocompromisso);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<TipoCompromissoResponse>> Filter(Filters.FilterTipoCompromisso filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<TipoCompromissoResponseAll>> Filter(Filters.FilterTipoCompromisso filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("TipoCompromisso: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-TipoCompromisso-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<TipoCompromissoResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBTipoCompromisso.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<TipoCompromissoResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("TipoCompromisso: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new TipoCompromissoResponse();
         }
@@ -101,39 +101,24 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-TipoCompromisso-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-TipoCompromisso-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"TipoCompromisso - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"TipoCompromisso - {uri}-: GetById");
         }
     }
 
-    private async Task<TipoCompromissoResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<TipoCompromissoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<TipoCompromissoResponse?> AddAndUpdate([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TipoCompromisso: URI inválida");
@@ -147,8 +132,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +152,82 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
     public async Task<TipoCompromissoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TipoCompromisso: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var tipocompromisso = reader.Read(id, oCnn);
-            if (tipocompromisso != null)
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, necompromissosService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBTipoCompromisso().DeletarItem(tipocompromisso.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var tipocompromisso = reader.Read(id, oCnn);
+            try
+            {
+                if (tipocompromisso != null)
+                {
+                    writer.Delete(tipocompromisso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return tipocompromisso;
         });
     }
 
-    public async Task<TipoCompromissoResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("TipoCompromisso: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBTipoCompromissoDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoCompromisso? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("TipoCompromisso: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-TipoCompromisso-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-TipoCompromisso-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBTipoCompromisso.ListarN(cWhere, DBTipoCompromissoDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBTipoCompromissoDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,16 +267,32 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private static string WFiltro(Filters.FilterTipoCompromisso filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoCompromisso filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Icone == -2147483648 ? string.Empty : DBTipoCompromissoDicInfo.IconeSql(filtro.Icone);
-        cWhere += filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTipoCompromissoDicInfo.DescricaoSql(filtro.Descricao);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTipoCompromissoDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Icone != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTipoCompromissoDicInfo.Icone)}", filtro.Icone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Descricao))
+        {
+            parameters.Add(new($"@{nameof(DBTipoCompromissoDicInfo.Descricao)}", filtro.Descricao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBTipoCompromissoDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Icone == int.MinValue ? string.Empty : $"{DBTipoCompromissoDicInfo.Icone} = @{nameof(DBTipoCompromissoDicInfo.Icone)}";
+        cWhere += filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTipoCompromissoDicInfo.Descricao} = @{nameof(DBTipoCompromissoDicInfo.Descricao)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTipoCompromissoDicInfo.GUID} = @{nameof(DBTipoCompromissoDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

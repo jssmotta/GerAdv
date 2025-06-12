@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoModeloDocumentoValidation
 {
-    Task<string> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
 {
-    public async Task<string> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var modelosdocumentosExists = await modelosdocumentosService.Filter(new Filters.FilterModelosDocumentos { TipoModeloDocumento = id }, uri);
+        if (modelosdocumentosExists != null && modelosdocumentosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Modelos Documentos associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

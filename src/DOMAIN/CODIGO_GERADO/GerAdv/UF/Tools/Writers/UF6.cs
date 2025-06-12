@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IUFWriter
 {
-    Entity.DBUF Write(Models.UF uf, int auditorQuem, SqlConnection oCnn);
+    Entity.DBUF Write(Models.UF uf, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(UFResponse uf, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class UF : IUFWriter
 {
-    public Entity.DBUF Write(Models.UF uf, int auditorQuem, SqlConnection oCnn)
+    public void Delete(UFResponse uf, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[UF] WHERE ufCodigo={uf.Id};", oCnn);
+    }
+
+    public Entity.DBUF Write(Models.UF uf, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = uf.Id.IsEmptyIDNumber() ? new Entity.DBUF() : new Entity.DBUF(uf.Id, oCnn);
         dbRec.FDDD = uf.DDD;

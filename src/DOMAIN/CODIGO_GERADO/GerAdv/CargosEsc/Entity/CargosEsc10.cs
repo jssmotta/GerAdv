@@ -7,7 +7,7 @@ public partial class DBCargosEsc : MenphisSI.GerAdv.DBCargosEsc, IDBCargosEsc
     {
     }
 
-    public DBCargosEsc(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBCargosEsc(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBCargosEsc : MenphisSI.GerAdv.DBCargosEsc, IDBCargosEsc
     {
     }
 
-    public DBCargosEsc(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBCargosEsc(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

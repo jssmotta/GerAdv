@@ -32,7 +32,7 @@ public class ProObservacoesHealthCheck(IOptions<AppSettings> appSettings, ProObs
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProObservacoesHealthCheck(IOptions<AppSettings> appSettings, ProObs
                         if (DBProObservacoesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pobCodigo) FROM dbo.ProObservacoes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pobCodigo) FROM {"ProObservacoes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProObservacoesHealthCheck(IOptions<AppSettings> appSettings, ProObs
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pobProcesso,pobNome,pobObservacoes,pobData,pobGUID FROM dbo.ProObservacoes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pobProcesso,pobNome,pobObservacoes,pobData,pobGUID FROM {"ProObservacoes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

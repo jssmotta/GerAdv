@@ -20,7 +20,23 @@ public partial class AtividadesResponse
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class AtividadesResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - atvDescricao - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
+
+    /// <summary>
+    /// GUId - atvGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 }

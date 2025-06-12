@@ -32,7 +32,7 @@ public class PreClientesHealthCheck(IOptions<AppSettings> appSettings, PreClient
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PreClientesHealthCheck(IOptions<AppSettings> appSettings, PreClient
                         if (DBPreClientesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(cliCodigo) FROM dbo.PreClientes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(cliCodigo) FROM {"PreClientes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PreClientesHealthCheck(IOptions<AppSettings> appSettings, PreClient
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cliInativo,cliQuemIndicou,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliAssistido,cliAssRG,cliAssCPF,cliAssEndereco,cliCNH,cliEtiqueta,cliAni,cliBold FROM dbo.PreClientes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) cliInativo,cliQuemIndicou,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliAssistido,cliAssRG,cliAssCPF,cliAssEndereco,cliCNH,cliEtiqueta,cliAni,cliBold FROM {"PreClientes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -7,7 +7,7 @@ public partial class DBParteClienteOutras : MenphisSI.GerAdv.DBParteClienteOutra
     {
     }
 
-    public DBParteClienteOutras(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBParteClienteOutras(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBParteClienteOutras : MenphisSI.GerAdv.DBParteClienteOutra
     {
     }
 
-    public DBParteClienteOutras(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBParteClienteOutras(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

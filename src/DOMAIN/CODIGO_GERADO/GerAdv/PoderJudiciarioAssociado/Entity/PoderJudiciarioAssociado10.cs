@@ -7,7 +7,7 @@ public partial class DBPoderJudiciarioAssociado : MenphisSI.GerAdv.DBPoderJudici
     {
     }
 
-    public DBPoderJudiciarioAssociado(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBPoderJudiciarioAssociado(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBPoderJudiciarioAssociado : MenphisSI.GerAdv.DBPoderJudici
     {
     }
 
-    public DBPoderJudiciarioAssociado(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBPoderJudiciarioAssociado(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

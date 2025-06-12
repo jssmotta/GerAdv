@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ISetorValidation
 {
-    Task<string> ValidateReg(Models.Setor reg, ISetorService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Setor reg, ISetorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ISetorService service, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class SetorValidation : ISetorValidation
 {
-    public async Task<string> ValidateReg(Models.Setor reg, ISetorService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ISetorService service, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var prepostosExists = await prepostosService.Filter(new Filters.FilterPrepostos { Setor = id }, uri);
+        if (prepostosExists != null && prepostosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Setor reg, ISetorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

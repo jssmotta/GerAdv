@@ -7,7 +7,7 @@ public partial class DBProCDA : MenphisSI.GerAdv.DBProCDA, IDBProCDA
     {
     }
 
-    public DBProCDA(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProCDA(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProCDA : MenphisSI.GerAdv.DBProCDA, IDBProCDA
     {
     }
 
-    public DBProCDA(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProCDA(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

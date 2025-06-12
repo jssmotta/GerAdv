@@ -20,7 +20,23 @@ public partial class Setor
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class SetorAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - setDescricao - tamanho máximo: 40 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
+
+    /// <summary>
+    /// GUId - setGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 }

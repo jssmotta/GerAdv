@@ -7,7 +7,7 @@ public partial class DBClientes : MenphisSI.GerAdv.DBClientes, IDBClientes
     {
     }
 
-    public DBClientes(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBClientes(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBClientes : MenphisSI.GerAdv.DBClientes, IDBClientes
     {
     }
 
-    public DBClientes(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBClientes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

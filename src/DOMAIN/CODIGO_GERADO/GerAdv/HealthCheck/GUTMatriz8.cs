@@ -32,7 +32,7 @@ public class GUTMatrizHealthCheck(IOptions<AppSettings> appSettings, GUTMatrizSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class GUTMatrizHealthCheck(IOptions<AppSettings> appSettings, GUTMatrizSe
                         if (DBGUTMatrizDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(gutCodigo) FROM dbo.GUTMatriz (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(gutCodigo) FROM {"GUTMatriz".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class GUTMatrizHealthCheck(IOptions<AppSettings> appSettings, GUTMatrizSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) gutDescricao,gutGUTTipo,gutValor FROM dbo.GUTMatriz (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) gutDescricao,gutGUTTipo,gutValor FROM {"GUTMatriz".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

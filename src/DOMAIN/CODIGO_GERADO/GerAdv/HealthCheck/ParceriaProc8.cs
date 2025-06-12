@@ -32,7 +32,7 @@ public class ParceriaProcHealthCheck(IOptions<AppSettings> appSettings, Parceria
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ParceriaProcHealthCheck(IOptions<AppSettings> appSettings, Parceria
                         if (DBParceriaProcDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(parCodigo) FROM dbo.ParceriaProc (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(parCodigo) FROM {"ParceriaProc".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ParceriaProcHealthCheck(IOptions<AppSettings> appSettings, Parceria
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) parAdvogado,parProcesso,parGUID FROM dbo.ParceriaProc (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) parAdvogado,parProcesso,parGUID FROM {"ParceriaProc".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -5,23 +5,24 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface ITribEnderecosReader
 {
-    TribEnderecosResponse? Read(int id, SqlConnection oCnn);
-    TribEnderecosResponse? Read(string where, SqlConnection oCnn);
+    TribEnderecosResponse? Read(int id, MsiSqlConnection oCnn);
+    TribEnderecosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TribEnderecosResponse? Read(Entity.DBTribEnderecos dbRec);
     TribEnderecosResponse? Read(DBTribEnderecos dbRec);
+    TribEnderecosResponseAll? ReadAll(DBTribEnderecos dbRec, DataRow dr);
 }
 
 public partial class TribEnderecos : ITribEnderecosReader
 {
-    public TribEnderecosResponse? Read(int id, SqlConnection oCnn)
+    public TribEnderecosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBTribEnderecos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public TribEnderecosResponse? Read(string where, SqlConnection oCnn)
+    public TribEnderecosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTribEnderecos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTribEnderecos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -38,7 +39,7 @@ public partial class TribEnderecos : ITribEnderecosReader
             Tribunal = dbRec.FTribunal,
             Cidade = dbRec.FCidade,
             Endereco = dbRec.FEndereco ?? string.Empty,
-            CEP = dbRec.FCEP ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
@@ -59,11 +60,34 @@ public partial class TribEnderecos : ITribEnderecosReader
             Tribunal = dbRec.FTribunal,
             Cidade = dbRec.FCidade,
             Endereco = dbRec.FEndereco ?? string.Empty,
-            CEP = dbRec.FCEP ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
         };
+        return tribenderecos;
+    }
+
+    public TribEnderecosResponseAll? ReadAll(DBTribEnderecos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var tribenderecos = new TribEnderecosResponseAll
+        {
+            Id = dbRec.ID,
+            Tribunal = dbRec.FTribunal,
+            Cidade = dbRec.FCidade,
+            Endereco = dbRec.FEndereco ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
+            Fone = dbRec.FFone ?? string.Empty,
+            Fax = dbRec.FFax ?? string.Empty,
+            OBS = dbRec.FOBS ?? string.Empty,
+        };
+        tribenderecos.NomeTribunal = dr["triNome"]?.ToString() ?? string.Empty;
+        tribenderecos.NomeCidade = dr["cidNome"]?.ToString() ?? string.Empty;
         return tribenderecos;
     }
 }

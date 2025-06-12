@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, IEnderecoSistemaReader reader, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IEnderecoSistemaService, IDisposable
+public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, IEnderecoSistemaReader reader, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IEnderecoSistemaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<EnderecoSistemaResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<EnderecoSistemaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("EnderecoSistema: URI inválida");
@@ -26,72 +27,74 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<EnderecoSistemaResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<EnderecoSistemaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBEnderecoSistema.SensivelCamposSqlX} 
-                   FROM {DBEnderecoSistema.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBEnderecoSistemaDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBEnderecoSistema>(max);
-        await foreach (var item in DBEnderecoSistema.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBEnderecoSistema.SensivelCamposSqlX}, tesNome,proNroPasta,cidNome
+                   FROM {DBEnderecoSistema.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"TipoEnderecoSistema".dbo(oCnn)} (NOLOCK) ON tesCodigo=estTipoEnderecoSistema
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=estProcesso
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=estCidade
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<EnderecoSistemaResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBEnderecoSistema(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var enderecosistema = reader.ReadAll(dbRec, item);
+                if (enderecosistema != null)
+                {
+                    lista.Add(enderecosistema);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<EnderecoSistemaResponse>> Filter(Filters.FilterEnderecoSistema filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<EnderecoSistemaResponseAll>> Filter(Filters.FilterEnderecoSistema filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("EnderecoSistema: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-EnderecoSistema-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<EnderecoSistemaResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBEnderecoSistema.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<EnderecoSistemaResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("EnderecoSistema: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new EnderecoSistemaResponse();
         }
@@ -101,39 +104,24 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-EnderecoSistema-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-EnderecoSistema-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"EnderecoSistema - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"EnderecoSistema - {uri}-: GetById");
         }
     }
 
-    private async Task<EnderecoSistemaResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<EnderecoSistemaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<EnderecoSistemaResponse?> AddAndUpdate([FromBody] Models.EnderecoSistema regEnderecoSistema, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("EnderecoSistema: URI inválida");
@@ -147,14 +135,13 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, processosReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"EnderecoSistema: {validade}");
@@ -168,31 +155,47 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
     public async Task<EnderecoSistemaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("EnderecoSistema: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var enderecosistema = reader.Read(id, oCnn);
-            if (enderecosistema != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBEnderecoSistema().DeletarItem(enderecosistema.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var enderecosistema = reader.Read(id, oCnn);
+            try
+            {
+                if (enderecosistema != null)
+                {
+                    writer.Delete(enderecosistema, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return enderecosistema;
@@ -225,27 +228,98 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private static string WFiltro(Filters.FilterEnderecoSistema filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEnderecoSistema filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Cadastro == -2147483648 ? string.Empty : DBEnderecoSistemaDicInfo.CadastroSql(filtro.Cadastro);
-        cWhere += filtro.CadastroExCod == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.CadastroExCodSql(filtro.CadastroExCod);
-        cWhere += filtro.TipoEnderecoSistema == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.TipoEnderecoSistemaSql(filtro.TipoEnderecoSistema);
-        cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.Motivo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.MotivoSql(filtro.Motivo);
-        cWhere += filtro.ContatoNoLocal.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.ContatoNoLocalSql(filtro.ContatoNoLocal);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.EnderecoSql(filtro.Endereco);
-        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.BairroSql(filtro.Bairro);
-        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.CEPSql(filtro.CEP);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.FaxSql(filtro.Fax);
-        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.ObservacaoSql(filtro.Observacao);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBEnderecoSistemaDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Cadastro != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Cadastro)}", filtro.Cadastro));
+        }
+
+        if (filtro.CadastroExCod != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}", filtro.CadastroExCod));
+        }
+
+        if (filtro.TipoEnderecoSistema != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.TipoEnderecoSistema)}", filtro.TipoEnderecoSistema));
+        }
+
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Motivo))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Motivo)}", filtro.Motivo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.ContatoNoLocal))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.ContatoNoLocal)}", filtro.ContatoNoLocal));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Endereco))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Endereco)}", filtro.Endereco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Bairro))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Bairro)}", filtro.Bairro));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CEP))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.CEP)}", filtro.CEP));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fax))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Fax)}", filtro.Fax));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Observacao))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Observacao)}", filtro.Observacao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Cadastro == int.MinValue ? string.Empty : $"{DBEnderecoSistemaDicInfo.Cadastro} = @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}";
+        cWhere += filtro.CadastroExCod == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.CadastroExCod} = @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}";
+        cWhere += filtro.TipoEnderecoSistema == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.TipoEnderecoSistema} = @{nameof(DBEnderecoSistemaDicInfo.TipoEnderecoSistema)}";
+        cWhere += filtro.Processo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Processo} = @{nameof(DBEnderecoSistemaDicInfo.Processo)}";
+        cWhere += filtro.Motivo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Motivo} = @{nameof(DBEnderecoSistemaDicInfo.Motivo)}";
+        cWhere += filtro.ContatoNoLocal.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.ContatoNoLocal} = @{nameof(DBEnderecoSistemaDicInfo.ContatoNoLocal)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Cidade} = @{nameof(DBEnderecoSistemaDicInfo.Cidade)}";
+        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Endereco} = @{nameof(DBEnderecoSistemaDicInfo.Endereco)}";
+        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Bairro} = @{nameof(DBEnderecoSistemaDicInfo.Bairro)}";
+        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.CEP} = @{nameof(DBEnderecoSistemaDicInfo.CEP)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Fone} = @{nameof(DBEnderecoSistemaDicInfo.Fone)}";
+        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Fax} = @{nameof(DBEnderecoSistemaDicInfo.Fax)}";
+        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.Observacao} = @{nameof(DBEnderecoSistemaDicInfo.Observacao)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBEnderecoSistemaDicInfo.GUID} = @{nameof(DBEnderecoSistemaDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

@@ -1,0 +1,275 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IReuniao } from '@/app/GerAdv_TS/Reuniao/Interfaces/interface.Reuniao';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { ReuniaoApi } from '../../Apis/ApiReuniao';
+import { useValidationsReuniao } from '../../Hooks/hookReuniao';
+import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
+import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+interface ReuniaoFormProps {
+  reuniaoData: IReuniao;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const ReuniaoForm: React.FC<ReuniaoFormProps> = ({
+  reuniaoData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new ReuniaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsReuniao();
+const [nomeClientes, setNomeClientes] = useState('');
+const clientesApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('clientes') > 0) {
+  if (reuniaoData.id === 0 && reuniaoData.cliente == 0) {
+    clientesApi
+    .getById(getParamFromUrl('clientes'))
+    .then((response) => {
+      setNomeClientes(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    reuniaoData.cliente = getParamFromUrl('clientes');
+  }
+}
+const addValorCliente = (e: any) => {
+  if (e?.id>0)
+    reuniaoData.cliente = e.id;
+  };
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.error('Erro ao submeter formulário de Reuniao:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`ReuniaoForm-${reuniaoData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.error('Erro ao salvar Reuniao diretamente:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = reuniaoData?.id == 0 ? 'Editar Reuniao' : 'Adicionar Reuniao';
+    }
+  }, [reuniaoData.id]);
+  return (
+  <>
+  <style>
+    {!isMobile ? `
+      @media (max-width: 1366px) {
+        html {
+          zoom: 0.8 !important;
+        }
+      }
+      ` : ``}
+    </style>
+
+    <div className={isMobile ? 'form-container form-container-Reuniao' : 'form-container form-container-Reuniao'}>
+
+      <form className='formInputCadInc' id={`ReuniaoForm-${reuniaoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Reuniao' data={reuniaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+
+            <ClientesComboBox
+            name={'cliente'}
+            dataForm={reuniaoData}
+            value={reuniaoData.cliente}
+            setValue={addValorCliente}
+            label={'Clientes'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='idagenda'
+            label='IDAgenda'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='idagenda'
+            value={reuniaoData.idagenda}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='data'
+            label='Data'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='data'
+            value={reuniaoData.data}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='pauta'
+            label='Pauta'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='pauta'
+            value={reuniaoData.pauta}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='ata'
+            label='ATA'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='ata'
+            value={reuniaoData.ata}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='horainicial'
+            label='HoraInicial'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='horainicial'
+            value={reuniaoData.horainicial}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='horafinal'
+            label='HoraFinal'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='horafinal'
+            value={reuniaoData.horafinal}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={reuniaoData} label='Externa' name='externa' checked={reuniaoData.externa} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='horasaida'
+            label='HoraSaida'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='horasaida'
+            value={reuniaoData.horasaida}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='horaretorno'
+            label='HoraRetorno'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='horaretorno'
+            value={reuniaoData.horaretorno}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='principaisdecisoes'
+            label='PrincipaisDecisoes'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='principaisdecisoes'
+            value={reuniaoData.principaisdecisoes}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Reuniao' data={reuniaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/reuniao'} id={reuniaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

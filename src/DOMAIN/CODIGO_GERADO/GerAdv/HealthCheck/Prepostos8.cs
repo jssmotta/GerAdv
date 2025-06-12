@@ -32,7 +32,7 @@ public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosSe
                         if (DBPrepostosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(preCodigo) FROM dbo.Prepostos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(preCodigo) FROM {"Prepostos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) preNome,preFuncao,preSetor,preDtNasc,preQualificacao,preSexo,preIdade,preCPF,preRG,prePeriodo_Ini,prePeriodo_Fim,preRegistro,preCTPSNumero,preCTPSSerie,preCTPSDtEmissao,prePIS,preSalario,preLiberaAgenda,preObservacao,preEndereco,preBairro,preCidade,preCEP,preFone,preFax,preEMail,prePai,preMae,preClass,preEtiqueta,preAni,preBold,preGUID FROM dbo.Prepostos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) preNome,preFuncao,preSetor,preDtNasc,preQualificacao,preSexo,preIdade,preCPF,preRG,prePeriodo_Ini,prePeriodo_Fim,preRegistro,preCTPSNumero,preCTPSSerie,preCTPSDtEmissao,prePIS,preSalario,preLiberaAgenda,preObservacao,preEndereco,preBairro,preCidade,preCEP,preFone,preFax,preEMail,prePai,preMae,preClass,preEtiqueta,preAni,preBold,preGUID FROM {"Prepostos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

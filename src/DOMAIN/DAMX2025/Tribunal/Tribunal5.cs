@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBTribunal
 {
     public const string CadastroGuid = "77af9337-0d36-4e64-a96b-cc6a70933537";
-#region AdministrativeMethods_Tribunal
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE triCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Tribunal";
     public const string CamposSqlX = " Tribunal.* ";
     public const string SensivelCamposSqlX = " Tribunal.* ";

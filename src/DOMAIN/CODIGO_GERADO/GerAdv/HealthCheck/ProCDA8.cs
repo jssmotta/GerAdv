@@ -32,7 +32,7 @@ public class ProCDAHealthCheck(IOptions<AppSettings> appSettings, ProCDAService 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProCDAHealthCheck(IOptions<AppSettings> appSettings, ProCDAService 
                         if (DBProCDADicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pcdCodigo) FROM dbo.ProCDA (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pcdCodigo) FROM {"ProCDA".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProCDAHealthCheck(IOptions<AppSettings> appSettings, ProCDAService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pcdProcesso,pcdNome,pcdNroInterno,pcdBold,pcdGUID FROM dbo.ProCDA (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pcdProcesso,pcdNome,pcdNroInterno,pcdBold,pcdGUID FROM {"ProCDA".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -32,7 +32,7 @@ public class RegimeTributacaoHealthCheck(IOptions<AppSettings> appSettings, Regi
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class RegimeTributacaoHealthCheck(IOptions<AppSettings> appSettings, Regi
                         if (DBRegimeTributacaoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(rdtCodigo) FROM dbo.RegimeTributacao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(rdtCodigo) FROM {"RegimeTributacao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class RegimeTributacaoHealthCheck(IOptions<AppSettings> appSettings, Regi
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) rdtNome,rdtGUID FROM dbo.RegimeTributacao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) rdtNome,rdtGUID FROM {"RegimeTributacao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

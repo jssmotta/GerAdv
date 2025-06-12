@@ -7,7 +7,7 @@ public partial class DBProValores : MenphisSI.GerAdv.DBProValores, IDBProValores
     {
     }
 
-    public DBProValores(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProValores(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProValores : MenphisSI.GerAdv.DBProValores, IDBProValores
     {
     }
 
-    public DBProValores(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBProValores(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

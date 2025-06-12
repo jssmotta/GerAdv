@@ -1,0 +1,169 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IGUTPeriodicidadeStatus } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Interfaces/interface.GUTPeriodicidadeStatus';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { GUTPeriodicidadeStatusApi } from '../../Apis/ApiGUTPeriodicidadeStatus';
+import { useValidationsGUTPeriodicidadeStatus } from '../../Hooks/hookGUTPeriodicidadeStatus';
+import GUTAtividadesComboBox from '@/app/GerAdv_TS/GUTAtividades/ComboBox/GUTAtividades';
+import { GUTAtividadesApi } from '@/app/GerAdv_TS/GUTAtividades/Apis/ApiGUTAtividades';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface GUTPeriodicidadeStatusFormProps {
+  gutperiodicidadestatusData: IGUTPeriodicidadeStatus;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const GUTPeriodicidadeStatusForm: React.FC<GUTPeriodicidadeStatusFormProps> = ({
+  gutperiodicidadestatusData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new GUTPeriodicidadeStatusApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsGUTPeriodicidadeStatus();
+const [nomeGUTAtividades, setNomeGUTAtividades] = useState('');
+const gutatividadesApi = new GUTAtividadesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('gutatividades') > 0) {
+  if (gutperiodicidadestatusData.id === 0 && gutperiodicidadestatusData.gutatividade == 0) {
+    gutatividadesApi
+    .getById(getParamFromUrl('gutatividades'))
+    .then((response) => {
+      setNomeGUTAtividades(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    gutperiodicidadestatusData.gutatividade = getParamFromUrl('gutatividades');
+  }
+}
+const addValorGUTAtividade = (e: any) => {
+  if (e?.id>0)
+    gutperiodicidadestatusData.gutatividade = e.id;
+  };
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.error('Erro ao submeter formulário de GUTPeriodicidadeStatus:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.error('Erro ao salvar GUTPeriodicidadeStatus diretamente:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = gutperiodicidadestatusData?.id == 0 ? 'Editar GUTPeriodicidadeStatus' : 'Adicionar G U T Periodicidade Status';
+    }
+  }, [gutperiodicidadestatusData.id]);
+  return (
+  <>
+  <style>
+    {!isMobile ? `
+      @media (max-width: 1366px) {
+        html {
+          zoom: 0.8 !important;
+        }
+      }
+      ` : ``}
+    </style>
+
+    <div className={isMobile ? 'form-container form-container-GUTPeriodicidadeStatus' : 'form-container5 form-container-GUTPeriodicidadeStatus'}>
+
+      <form className='formInputCadInc' id={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTPeriodicidadeStatus' data={gutperiodicidadestatusData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+
+            <GUTAtividadesComboBox
+            name={'gutatividade'}
+            dataForm={gutperiodicidadestatusData}
+            value={gutperiodicidadestatusData.gutatividade}
+            setValue={addValorGUTAtividade}
+            label={'G U T Atividades'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='datarealizado'
+            label='DataRealizado'
+            dataForm={gutperiodicidadestatusData}
+            className='inputIncNome'
+            name='datarealizado'
+            value={gutperiodicidadestatusData.datarealizado}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTPeriodicidadeStatus' data={gutperiodicidadestatusData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/gutperiodicidadestatus'} id={gutperiodicidadestatusData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

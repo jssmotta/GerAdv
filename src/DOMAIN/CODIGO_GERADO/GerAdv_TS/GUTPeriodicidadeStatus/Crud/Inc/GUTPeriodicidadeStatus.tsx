@@ -1,0 +1,75 @@
+﻿// Tracking: CrudInc.tsx.txt
+'use client';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { GUTPeriodicidadeStatusApi } from '../../Apis/ApiGUTPeriodicidadeStatus';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { NotificationService } from '@/app/services/notification.service';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
+import { IGUTPeriodicidadeStatusFormProps } from '../../Interfaces/interface.GUTPeriodicidadeStatus';
+import { GUTPeriodicidadeStatusService } from '../../Services/GUTPeriodicidadeStatus.service';
+import { useGUTPeriodicidadeStatusForm, useValidationsGUTPeriodicidadeStatus } from '../../Hooks/hookGUTPeriodicidadeStatus';
+import { GUTPeriodicidadeStatusEmpty } from '../../../Models/GUTPeriodicidadeStatus';
+import { GUTPeriodicidadeStatusForm } from '../Forms/GUTPeriodicidadeStatus';
+
+const GUTPeriodicidadeStatusInc: React.FC<IGUTPeriodicidadeStatusFormProps> = ({ id, onClose, onError, onSuccess }) => {
+  const { systemContext } = useSystemContext();
+  const isMobile = useIsMobile();
+  const router = useRouter();
+  const gutperiodicidadestatusService = new GUTPeriodicidadeStatusService(
+  new GUTPeriodicidadeStatusApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+);
+const notificationService = new NotificationService();
+const { data, handleChange, loadGUTPeriodicidadeStatus } = useGUTPeriodicidadeStatusForm(
+GUTPeriodicidadeStatusEmpty(), 
+gutperiodicidadestatusService
+);
+useEffect(() => {
+  loadGUTPeriodicidadeStatus(id);
+}, [id]);
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const savedGUTPeriodicidadeStatus = await gutperiodicidadestatusService.saveGUTPeriodicidadeStatus(data);
+    if (savedGUTPeriodicidadeStatus.id) {
+      notificationService.showNotification('Registro salvo com sucesso!', 'success');
+      const PDelayApiWrite = 333;
+      setTimeout(() => {
+        if (onSuccess) {
+          onSuccess(savedGUTPeriodicidadeStatus);
+        }
+      }, PDelayApiWrite);
+    } else {
+    if (onError) {
+      onError();
+    }
+    notificationService.showNotification('Error salvando registro.', 'error');
+  }
+} catch (error) {
+if (onError) {
+  onError();
+}
+notificationService.showNotification('Error salvando registro.', 'error');
+}
+};
+const handleReload = () => {
+  loadGUTPeriodicidadeStatus(id);
+};
+return (
+<>
+<NotificationComponent notificationService={notificationService} />
+<GUTPeriodicidadeStatusForm
+gutperiodicidadestatusData={data}
+onChange={handleChange}
+onSubmit={handleSubmit}
+onClose={onClose}
+onError={onError}
+onReload={handleReload}
+onSuccess={onSuccess}
+/>
+</>
+);
+};
+export default GUTPeriodicidadeStatusInc;

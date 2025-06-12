@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ICargosEscClassValidation
 {
-    Task<string> ValidateReg(Models.CargosEscClass reg, ICargosEscClassService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.CargosEscClass reg, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class CargosEscClassValidation : ICargosEscClassValidation
 {
-    public async Task<string> ValidateReg(Models.CargosEscClass reg, ICargosEscClassService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.CargosEscClass reg, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

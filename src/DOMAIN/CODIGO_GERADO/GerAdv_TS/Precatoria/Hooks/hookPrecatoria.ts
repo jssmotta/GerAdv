@@ -1,0 +1,174 @@
+﻿'use client';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { IPrecatoriaService } from '../Services/Precatoria.service';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { IPrecatoria } from '../Interfaces/interface.Precatoria';
+import { isValidDate } from '@/app/tools/datetime';
+
+export const usePrecatoriaForm = (
+  initialPrecatoria: IPrecatoria,
+  dataService: IPrecatoriaService
+) => {
+  const [data, setData] = useState<IPrecatoria>(initialPrecatoria);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = useCallback((e: any) => {
+    const { name, value, type, checked } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));    
+  }, []);
+
+  const loadPrecatoria = useCallback(async (id: number) => {
+    if (!id || id === 0) {
+      setData(initialPrecatoria);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const dados = await dataService.fetchPrecatoriaById(id);
+      setData(dados);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Precatoria';
+      setError(errorMessage);
+      console.log('Erro ao carregar Precatoria');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService, initialPrecatoria]);
+
+  const resetForm = useCallback(() => {
+    setData(initialPrecatoria);
+    setError(null);
+  }, [initialPrecatoria]);
+
+  const returnValue = useMemo(() => ({
+    data,
+    loading,
+    error,
+    handleChange,
+    loadPrecatoria,
+    resetForm,
+    setData
+  }), [data, loading, error, handleChange, loadPrecatoria, resetForm]);
+  return returnValue;
+};
+
+
+export const usePrecatoriaNotifications = (
+  onUpdate?: (entity: any) => void,
+  onDelete?: (entity: any) => void,
+  onAdd?: (entity: any) => void
+) => {
+  const callbacksRef = useRef({ onUpdate, onDelete, onAdd });
+  
+  useEffect(() => {
+    callbacksRef.current = { onUpdate, onDelete, onAdd };
+  }, [onUpdate, onDelete, onAdd]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications('Precatoria', (entity) => {
+      try {
+        const { onUpdate, onDelete, onAdd } = callbacksRef.current;
+        
+        switch (entity.action) {
+          case NotifySystemActions.DELETE:
+            onDelete?.(entity);
+            break;
+          case NotifySystemActions.UPDATE:
+            onUpdate?.(entity);
+            break;
+          case NotifySystemActions.ADD:
+            onAdd?.(entity);
+            break;
+        }
+      } catch (err) {
+        console.log('Erro no listener de notificações.');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+};
+
+
+export const usePrecatoriaList = (dataService: IPrecatoriaService) => {
+  const [data, setData] = useState<IPrecatoria[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (filtro?: any) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await dataService.getAll(filtro);
+      setData(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar precatoria';
+      setError(errorMessage);
+      console.log('Erro ao carregar precatoria');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService]);
+
+  const refreshData = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+  
+  usePrecatoriaNotifications(
+    refreshData, // onUpdate
+    refreshData, // onDelete  
+    refreshData  // onAdd
+  );
+   
+
+  return {
+    data,
+    loading,
+    error,
+    fetchData,
+    refreshData
+  };
+};
+
+
+export function useValidationsPrecatoria() {
+  function validate(data: IPrecatoria): { isValid: boolean; message: string } {
+    if (!data) return { isValid: false, message: 'Dados não informados.' };
+    
+      try {
+   
+        if (data.precatoriax.length > 25) { 
+                                             return { isValid: false, message: 'O campo Precatoria não pode ter mais de 25 caracteres.' };
+                                         } 
+if (data.deprecante.length > 60) { 
+                                             return { isValid: false, message: 'O campo Deprecante não pode ter mais de 60 caracteres.' };
+                                         } 
+if (data.deprecado.length > 60) { 
+                                             return { isValid: false, message: 'O campo Deprecado não pode ter mais de 60 caracteres.' };
+                                         } 
+if (data.obs.length > 2147483647) { 
+                                             return { isValid: false, message: 'O campo OBS não pode ter mais de 2147483647 caracteres.' };
+                                         } 
+
+
+
+        return { isValid: true, message: '' };
+
+         } catch (error) {
+          return { isValid: true, message: 'Erro ao validar os dados.' };
+    }
+
+  }
+
+  return { validate };
+}

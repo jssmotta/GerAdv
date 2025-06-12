@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadorGrupoWriter
 {
-    Entity.DBOperadorGrupo Write(Models.OperadorGrupo operadorgrupo, int auditorQuem, SqlConnection oCnn);
+    Entity.DBOperadorGrupo Write(Models.OperadorGrupo operadorgrupo, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(OperadorGrupoResponse operadorgrupo, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class OperadorGrupo : IOperadorGrupoWriter
 {
-    public Entity.DBOperadorGrupo Write(Models.OperadorGrupo operadorgrupo, int auditorQuem, SqlConnection oCnn)
+    public void Delete(OperadorGrupoResponse operadorgrupo, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[OperadorGrupo] WHERE ogrCodigo={operadorgrupo.Id};", oCnn);
+    }
+
+    public Entity.DBOperadorGrupo Write(Models.OperadorGrupo operadorgrupo, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = operadorgrupo.Id.IsEmptyIDNumber() ? new Entity.DBOperadorGrupo() : new Entity.DBOperadorGrupo(operadorgrupo.Id, oCnn);
         dbRec.FOperador = operadorgrupo.Operador;

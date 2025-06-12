@@ -1,0 +1,342 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IEscritorios } from '@/app/GerAdv_TS/Escritorios/Interfaces/interface.Escritorios';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { EscritoriosApi } from '../../Apis/ApiEscritorios';
+import { useValidationsEscritorios } from '../../Hooks/hookEscritorios';
+import CidadeComboBox from '@/app/GerAdv_TS/Cidade/ComboBox/Cidade';
+import { CidadeApi } from '@/app/GerAdv_TS/Cidade/Apis/ApiCidade';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCnpj from '@/app/components/Inputs/InputCnpj'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCep from '@/app/components/Inputs/InputCep'
+interface EscritoriosFormProps {
+  escritoriosData: IEscritorios;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const EscritoriosForm: React.FC<EscritoriosFormProps> = ({
+  escritoriosData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new EscritoriosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsEscritorios();
+const [nomeCidade, setNomeCidade] = useState('');
+const cidadeApi = new CidadeApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('cidade') > 0) {
+  if (escritoriosData.id === 0 && escritoriosData.cidade == 0) {
+    cidadeApi
+    .getById(getParamFromUrl('cidade'))
+    .then((response) => {
+      setNomeCidade(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    escritoriosData.cidade = getParamFromUrl('cidade');
+  }
+}
+const addValorCidade = (e: any) => {
+  if (e?.id>0)
+    escritoriosData.cidade = e.id;
+  };
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.error('Erro ao submeter formulário de Escritorios:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`EscritoriosForm-${escritoriosData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.error('Erro ao salvar Escritorios diretamente:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = escritoriosData?.id == 0 ? 'Editar Escritorios' : 'Adicionar Escritorios';
+    }
+  }, [escritoriosData.id]);
+  return (
+  <>
+  <style>
+    {!isMobile ? `
+      @media (max-width: 1366px) {
+        html {
+          zoom: 0.8 !important;
+        }
+      }
+      ` : ``}
+    </style>
+
+    <div className={isMobile ? 'form-container form-container-Escritorios' : 'form-container form-container-Escritorios'}>
+
+      <form className='formInputCadInc' id={`EscritoriosForm-${escritoriosData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Escritorios' data={escritoriosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EscritoriosForm-${escritoriosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='nome'
+            value={escritoriosData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputCnpj
+            type='text'
+            id='cnpj'
+            label='CNPJ'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='cnpj'
+            value={escritoriosData.cnpj}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={escritoriosData} label='Casa' name='casa' checked={escritoriosData.casa} onChange={onChange} />
+            <InputCheckbox dataForm={escritoriosData} label='Parceria' name='parceria' checked={escritoriosData.parceria} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={15}
+            id='oab'
+            label='OAB'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='oab'
+            value={escritoriosData.oab}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={50}
+            id='endereco'
+            label='Endereco'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='endereco'
+            value={escritoriosData.endereco}
+            onChange={onChange}
+            />
+
+
+            <CidadeComboBox
+            name={'cidade'}
+            dataForm={escritoriosData}
+            value={escritoriosData.cidade}
+            setValue={addValorCidade}
+            label={'Cidade'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={30}
+            id='bairro'
+            label='Bairro'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='bairro'
+            value={escritoriosData.bairro}
+            onChange={onChange}
+            />
+
+
+            <InputCep
+            type='text'
+            id='cep'
+            label='CEP'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='cep'
+            value={escritoriosData.cep}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='fone'
+            label='Fone'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='fone'
+            value={escritoriosData.fone}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='fax'
+            label='Fax'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='fax'
+            value={escritoriosData.fax}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={200}
+            id='site'
+            label='Site'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='site'
+            value={escritoriosData.site}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='email'
+            maxLength={100}
+            id='email'
+            label='EMail'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='email'
+            value={escritoriosData.email}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='obs'
+            label='OBS'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='obs'
+            value={escritoriosData.obs}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={80}
+            id='advresponsavel'
+            label='AdvResponsavel'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='advresponsavel'
+            value={escritoriosData.advresponsavel}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={80}
+            id='secretaria'
+            label='Secretaria'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='secretaria'
+            value={escritoriosData.secretaria}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={15}
+            id='inscest'
+            label='InscEst'
+            dataForm={escritoriosData}
+            className='inputIncNome'
+            name='inscest'
+            value={escritoriosData.inscest}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={escritoriosData} label='Correspondente' name='correspondente' checked={escritoriosData.correspondente} onChange={onChange} />
+            <InputCheckbox dataForm={escritoriosData} label='Top' name='top' checked={escritoriosData.top} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Escritorios' data={escritoriosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EscritoriosForm-${escritoriosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/escritorios'} id={escritoriosData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

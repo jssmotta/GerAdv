@@ -7,7 +7,7 @@ public partial class DBPaises : MenphisSI.GerAdv.DBPaises, IDBPaises
     {
     }
 
-    public DBPaises(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBPaises(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBPaises : MenphisSI.GerAdv.DBPaises, IDBPaises
     {
     }
 
-    public DBPaises(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBPaises(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

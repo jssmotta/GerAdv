@@ -32,7 +32,7 @@ public class AgendaRecordsHealthCheck(IOptions<AppSettings> appSettings, AgendaR
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AgendaRecordsHealthCheck(IOptions<AppSettings> appSettings, AgendaR
                         if (DBAgendaRecordsDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ragCodigo) FROM dbo.AgendaRecords (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ragCodigo) FROM {"AgendaRecords".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AgendaRecordsHealthCheck(IOptions<AppSettings> appSettings, AgendaR
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ragAgenda,ragJulgador,ragClientesSocios,ragPerito,ragColaborador,ragForo,ragAviso1,ragAviso2,ragAviso3,ragCrmAviso1,ragCrmAviso2,ragCrmAviso3,ragDataAviso1,ragDataAviso2,ragDataAviso3 FROM dbo.AgendaRecords (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ragAgenda,ragJulgador,ragClientesSocios,ragPerito,ragColaborador,ragForo,ragAviso1,ragAviso2,ragAviso3,ragCrmAviso1,ragCrmAviso2,ragCrmAviso3,ragDataAviso1,ragDataAviso2,ragDataAviso3 FROM {"AgendaRecords".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

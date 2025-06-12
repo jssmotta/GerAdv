@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IStatusBiuValidation
 {
-    Task<string> ValidateReg(Models.StatusBiu reg, IStatusBiuService service, ITipoStatusBiuReader tipostatusbiuReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.StatusBiu reg, IStatusBiuService service, ITipoStatusBiuReader tipostatusbiuReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IStatusBiuService service, IOperadorService operadorService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class StatusBiuValidation : IStatusBiuValidation
 {
-    public async Task<string> ValidateReg(Models.StatusBiu reg, IStatusBiuService service, ITipoStatusBiuReader tipostatusbiuReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IStatusBiuService service, IOperadorService operadorService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var operadorExists = await operadorService.Filter(new Filters.FilterOperador { StatusId = id }, uri);
+        if (operadorExists != null && operadorExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Operador associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.StatusBiu reg, IStatusBiuService service, ITipoStatusBiuReader tipostatusbiuReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

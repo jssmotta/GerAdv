@@ -32,7 +32,7 @@ public class OperadoresHealthCheck(IOptions<AppSettings> appSettings, Operadores
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OperadoresHealthCheck(IOptions<AppSettings> appSettings, Operadores
                         if (DBOperadoresDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(operCodigo) FROM dbo.Operadores (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(operCodigo) FROM {"Operadores".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OperadoresHealthCheck(IOptions<AppSettings> appSettings, Operadores
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) operEnviado,operCasa,operCasaID,operCasaCodigo,operIsNovo,operCliente,operGrupo,operNome,operEMail,operSenha,operAtivado,operAtualizarSenha,operSenha256,operSuporteSenha256,operSuporteMaxAge FROM dbo.Operadores (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) operEnviado,operCasa,operCasaID,operCasaCodigo,operIsNovo,operCliente,operGrupo,operNome,operEMail,operSenha,operAtivado,operAtualizarSenha,operSenha256,operSuporteSenha256,operSuporteMaxAge FROM {"Operadores".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

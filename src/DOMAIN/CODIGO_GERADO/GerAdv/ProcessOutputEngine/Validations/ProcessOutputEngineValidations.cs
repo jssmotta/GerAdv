@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProcessOutputEngineValidation
 {
-    Task<string> ValidateReg(Models.ProcessOutputEngine reg, IProcessOutputEngineService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.ProcessOutputEngine reg, IProcessOutputEngineService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
 {
-    public async Task<string> ValidateReg(Models.ProcessOutputEngine reg, IProcessOutputEngineService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var processoutputrequestExists = await processoutputrequestService.Filter(new Filters.FilterProcessOutputRequest { ProcessOutputEngine = id }, uri);
+        if (processoutputrequestExists != null && processoutputrequestExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.ProcessOutputEngine reg, IProcessOutputEngineService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

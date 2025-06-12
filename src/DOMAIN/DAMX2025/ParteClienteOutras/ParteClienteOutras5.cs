@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBParteClienteOutras
 {
     public const string CadastroGuid = "644f1875-f250-412b-87f8-963e6f3ca497";
-#region AdministrativeMethods_ParteClienteOutras
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE pcoCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "ParteClienteOutras";
     public const string CamposSqlX = " ParteClienteOutras.* ";
     public const string SensivelCamposSqlX = " ParteClienteOutras.* ";

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITribEnderecosWriter
 {
-    Entity.DBTribEnderecos Write(Models.TribEnderecos tribenderecos, SqlConnection oCnn);
+    Entity.DBTribEnderecos Write(Models.TribEnderecos tribenderecos, MsiSqlConnection oCnn);
+    void Delete(TribEnderecosResponse tribenderecos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TribEnderecos : ITribEnderecosWriter
 {
-    public Entity.DBTribEnderecos Write(Models.TribEnderecos tribenderecos, SqlConnection oCnn)
+    public void Delete(TribEnderecosResponse tribenderecos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TribEnderecos] WHERE treCodigo={tribenderecos.Id};", oCnn);
+    }
+
+    public Entity.DBTribEnderecos Write(Models.TribEnderecos tribenderecos, MsiSqlConnection oCnn)
     {
         var dbRec = tribenderecos.Id.IsEmptyIDNumber() ? new Entity.DBTribEnderecos() : new Entity.DBTribEnderecos(tribenderecos.Id, oCnn);
         dbRec.FTribunal = tribenderecos.Tribunal;

@@ -7,7 +7,7 @@ public partial class DBApenso2 : MenphisSI.GerAdv.DBApenso2, IDBApenso2
     {
     }
 
-    public DBApenso2(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBApenso2(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBApenso2 : MenphisSI.GerAdv.DBApenso2, IDBApenso2
     {
     }
 
-    public DBApenso2(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBApenso2(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

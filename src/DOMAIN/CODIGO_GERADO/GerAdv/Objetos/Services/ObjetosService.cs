@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosReader reader, IObjetosValidation validation, IObjetosWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IObjetosService, IDisposable
+public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosReader reader, IObjetosValidation validation, IObjetosWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IObjetosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ObjetosResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ObjetosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Objetos: URI inválida");
@@ -26,72 +27,73 @@ public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosR
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ObjetosResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ObjetosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBObjetos.SensivelCamposSqlX} 
-                   FROM {DBObjetos.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBObjetosDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBObjetos>(max);
-        await foreach (var item in DBObjetos.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBObjetos.SensivelCamposSqlX}, jusNome,areDescricao
+                   FROM {DBObjetos.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=ojtJustica
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=ojtArea
+ 
+                   {where}
+                   ORDER BY ojtNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ObjetosResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBObjetos(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var objetos = reader.ReadAll(dbRec, item);
+                if (objetos != null)
+                {
+                    lista.Add(objetos);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ObjetosResponse>> Filter(Filters.FilterObjetos filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ObjetosResponseAll>> Filter(Filters.FilterObjetos filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Objetos: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Objetos-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ObjetosResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBObjetos.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ObjetosResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Objetos: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ObjetosResponse();
         }
@@ -101,39 +103,24 @@ public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosR
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Objetos-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Objetos-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Objetos - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Objetos - {uri}-: GetById");
         }
     }
 
-    private async Task<ObjetosResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ObjetosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ObjetosResponse?> AddAndUpdate([FromBody] Models.Objetos regObjetos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Objetos: URI inválida");
@@ -147,8 +134,7 @@ public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosR
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +154,82 @@ public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosR
     public async Task<ObjetosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Objetos: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var objetos = reader.Read(id, oCnn);
-            if (objetos != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBObjetos().DeletarItem(objetos.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var objetos = reader.Read(id, oCnn);
+            try
+            {
+                if (objetos != null)
+                {
+                    writer.Delete(objetos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return objetos;
         });
     }
 
-    public async Task<ObjetosResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Objetos: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBObjetosDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterObjetos? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Objetos: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Objetos-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Objetos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBObjetos.ListarN(cWhere, DBObjetosDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBObjetosDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,17 +269,38 @@ public partial class ObjetosService(IOptions<AppSettings> appSettings, IObjetosR
         }
     }
 
-    private static string WFiltro(Filters.FilterObjetos filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterObjetos filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Justica == -2147483648 ? string.Empty : DBObjetosDicInfo.JusticaSql(filtro.Justica);
-        cWhere += filtro.Area == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBObjetosDicInfo.AreaSql(filtro.Area);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBObjetosDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBObjetosDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Justica != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBObjetosDicInfo.Justica)}", filtro.Justica));
+        }
+
+        if (filtro.Area != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBObjetosDicInfo.Area)}", filtro.Area));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBObjetosDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBObjetosDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Justica == int.MinValue ? string.Empty : $"{DBObjetosDicInfo.Justica} = @{nameof(DBObjetosDicInfo.Justica)}";
+        cWhere += filtro.Area == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBObjetosDicInfo.Area} = @{nameof(DBObjetosDicInfo.Area)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBObjetosDicInfo.Nome} = @{nameof(DBObjetosDicInfo.Nome)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBObjetosDicInfo.GUID} = @{nameof(DBObjetosDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

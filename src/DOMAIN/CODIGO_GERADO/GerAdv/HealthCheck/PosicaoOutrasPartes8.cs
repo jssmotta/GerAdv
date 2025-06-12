@@ -32,7 +32,7 @@ public class PosicaoOutrasPartesHealthCheck(IOptions<AppSettings> appSettings, P
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PosicaoOutrasPartesHealthCheck(IOptions<AppSettings> appSettings, P
                         if (DBPosicaoOutrasPartesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(posCodigo) FROM dbo.PosicaoOutrasPartes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(posCodigo) FROM {"PosicaoOutrasPartes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PosicaoOutrasPartesHealthCheck(IOptions<AppSettings> appSettings, P
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) posDescricao,posBold,posGUID FROM dbo.PosicaoOutrasPartes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) posDescricao,posBold,posGUID FROM {"PosicaoOutrasPartes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

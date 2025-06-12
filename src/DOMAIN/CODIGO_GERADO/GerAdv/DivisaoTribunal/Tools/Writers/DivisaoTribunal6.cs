@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IDivisaoTribunalWriter
 {
-    Entity.DBDivisaoTribunal Write(Models.DivisaoTribunal divisaotribunal, int auditorQuem, SqlConnection oCnn);
+    Entity.DBDivisaoTribunal Write(Models.DivisaoTribunal divisaotribunal, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(DivisaoTribunalResponse divisaotribunal, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class DivisaoTribunal : IDivisaoTribunalWriter
 {
-    public Entity.DBDivisaoTribunal Write(Models.DivisaoTribunal divisaotribunal, int auditorQuem, SqlConnection oCnn)
+    public void Delete(DivisaoTribunalResponse divisaotribunal, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[DivisaoTribunal] WHERE divCodigo={divisaotribunal.Id};", oCnn);
+    }
+
+    public Entity.DBDivisaoTribunal Write(Models.DivisaoTribunal divisaotribunal, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = divisaotribunal.Id.IsEmptyIDNumber() ? new Entity.DBDivisaoTribunal() : new Entity.DBDivisaoTribunal(divisaotribunal.Id, oCnn);
         dbRec.FNumCodigo = divisaotribunal.NumCodigo;

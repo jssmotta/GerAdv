@@ -32,7 +32,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
                         if (DBInstanciaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(insCodigo) FROM dbo.Instancia (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(insCodigo) FROM {"Instancia".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA,insGUID FROM dbo.Instancia (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA,insGUID FROM {"Instancia".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

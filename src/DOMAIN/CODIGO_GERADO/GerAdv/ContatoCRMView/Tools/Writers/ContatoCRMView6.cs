@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IContatoCRMViewWriter
 {
-    Entity.DBContatoCRMView Write(Models.ContatoCRMView contatocrmview, SqlConnection oCnn);
+    Entity.DBContatoCRMView Write(Models.ContatoCRMView contatocrmview, MsiSqlConnection oCnn);
+    void Delete(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ContatoCRMView : IContatoCRMViewWriter
 {
-    public Entity.DBContatoCRMView Write(Models.ContatoCRMView contatocrmview, SqlConnection oCnn)
+    public void Delete(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ContatoCRMView] WHERE ccwCodigo={contatocrmview.Id};", oCnn);
+    }
+
+    public Entity.DBContatoCRMView Write(Models.ContatoCRMView contatocrmview, MsiSqlConnection oCnn)
     {
         var dbRec = contatocrmview.Id.IsEmptyIDNumber() ? new Entity.DBContatoCRMView() : new Entity.DBContatoCRMView(contatocrmview.Id, oCnn);
         dbRec.FCGUID = contatocrmview.CGUID;

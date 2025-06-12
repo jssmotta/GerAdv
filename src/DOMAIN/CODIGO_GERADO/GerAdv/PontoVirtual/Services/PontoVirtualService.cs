@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPontoVirtualReader reader, IPontoVirtualValidation validation, IPontoVirtualWriter writer, IOperadorReader operadorReader, HybridCache cache) : IPontoVirtualService, IDisposable
+public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPontoVirtualReader reader, IPontoVirtualValidation validation, IPontoVirtualWriter writer, IOperadorReader operadorReader, HybridCache cache, IMemoryCache memory) : IPontoVirtualService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<PontoVirtualResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<PontoVirtualResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PontoVirtual: URI inválida");
@@ -25,72 +26,71 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPon
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<PontoVirtualResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<PontoVirtualResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBPontoVirtual.SensivelCamposSqlX} 
-                   FROM {DBPontoVirtual.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBPontoVirtualDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBPontoVirtual>(max);
-        await foreach (var item in DBPontoVirtual.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBPontoVirtual.SensivelCamposSqlX}, operNome
+                   FROM {DBPontoVirtual.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=pvtOperador
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<PontoVirtualResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBPontoVirtual(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var pontovirtual = reader.ReadAll(dbRec, item);
+                if (pontovirtual != null)
+                {
+                    lista.Add(pontovirtual);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<PontoVirtualResponse>> Filter(Filters.FilterPontoVirtual filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<PontoVirtualResponseAll>> Filter(Filters.FilterPontoVirtual filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("PontoVirtual: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-PontoVirtual-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<PontoVirtualResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBPontoVirtual.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<PontoVirtualResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("PontoVirtual: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new PontoVirtualResponse();
         }
@@ -100,36 +100,23 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPon
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-PontoVirtual-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-PontoVirtual-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"PontoVirtual - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"PontoVirtual - {uri}-: GetById");
         }
     }
 
-    private async Task<PontoVirtualResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<PontoVirtualResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<PontoVirtualResponse?> AddAndUpdate([FromBody] Models.PontoVirtual regPontoVirtual, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PontoVirtual: URI inválida");
@@ -143,8 +130,7 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPon
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -164,31 +150,47 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPon
     public async Task<PontoVirtualResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PontoVirtual: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var pontovirtual = reader.Read(id, oCnn);
-            if (pontovirtual != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBPontoVirtual().DeletarItem(pontovirtual.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var pontovirtual = reader.Read(id, oCnn);
+            try
+            {
+                if (pontovirtual != null)
+                {
+                    writer.Delete(pontovirtual, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return pontovirtual;
@@ -221,15 +223,26 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPon
         }
     }
 
-    private static string WFiltro(Filters.FilterPontoVirtual filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPontoVirtual filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Operador == -2147483648 ? string.Empty : DBPontoVirtualDicInfo.OperadorSql(filtro.Operador);
-        cWhere += filtro.Key.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPontoVirtualDicInfo.KeySql(filtro.Key);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Operador != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.Operador)}", filtro.Operador));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Key))
+        {
+            parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.Key)}", filtro.Key));
+        }
+
+        var cWhere = filtro.Operador == int.MinValue ? string.Empty : $"{DBPontoVirtualDicInfo.Operador} = @{nameof(DBPontoVirtualDicInfo.Operador)}";
+        cWhere += filtro.Key.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPontoVirtualDicInfo.Key} = @{nameof(DBPontoVirtualDicInfo.Key)}";
+        return (cWhere, parameters);
     }
 }

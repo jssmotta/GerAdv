@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface ISituacaoReader
 {
-    SituacaoResponse? Read(int id, SqlConnection oCnn);
-    SituacaoResponse? Read(string where, SqlConnection oCnn);
+    SituacaoResponse? Read(int id, MsiSqlConnection oCnn);
+    SituacaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     SituacaoResponse? Read(Entity.DBSituacao dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     SituacaoResponse? Read(DBSituacao dbRec);
+    SituacaoResponseAll? ReadAll(DBSituacao dbRec, DataRow dr);
 }
 
 public partial class Situacao : ISituacaoReader
 {
-    public SituacaoResponse? Read(int id, SqlConnection oCnn)
+    public SituacaoResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBSituacao(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public SituacaoResponse? Read(string where, SqlConnection oCnn)
+    public SituacaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBSituacao(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBSituacao(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -42,18 +44,6 @@ public partial class Situacao : ISituacaoReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        situacao.Auditor = auditor;
         return situacao;
     }
 
@@ -73,18 +63,25 @@ public partial class Situacao : ISituacaoReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return situacao;
+    }
+
+    public SituacaoResponseAll? ReadAll(DBSituacao dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var situacao = new SituacaoResponseAll
+        {
+            Id = dbRec.ID,
+            Parte_Int = dbRec.FParte_Int ?? string.Empty,
+            Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
+            Top = dbRec.FTop,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        situacao.Auditor = auditor;
         return situacao;
     }
 }

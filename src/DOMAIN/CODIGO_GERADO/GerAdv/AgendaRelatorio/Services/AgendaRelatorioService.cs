@@ -3,10 +3,11 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, IAgendaRelatorioReader reader, IAgendaRelatorioValidation validation, IProcessosReader processosReader, HybridCache cache) : IAgendaRelatorioService, IDisposable
+public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, IAgendaRelatorioReader reader, IAgendaRelatorioValidation validation, IProcessosReader processosReader, HybridCache cache, IMemoryCache memory) : IAgendaRelatorioService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
     public void Dispose()
     {

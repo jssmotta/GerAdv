@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoesReader reader, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : ILigacoesService, IDisposable
+public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoesReader reader, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, IRecadosService recadosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ILigacoesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<LigacoesResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<LigacoesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Ligacoes: URI inválida");
@@ -26,72 +27,74 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<LigacoesResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<LigacoesResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBLigacoes.SensivelCamposSqlX} 
-                   FROM {DBLigacoes.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBLigacoesDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBLigacoes>(max);
-        await foreach (var item in DBLigacoes.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBLigacoes.SensivelCamposSqlX}, cliNome,ramNome,proNroPasta
+                   FROM {DBLigacoes.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ligCliente
+LEFT JOIN {"Ramal".dbo(oCnn)} (NOLOCK) ON ramCodigo=ligRamal
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ligProcesso
+ 
+                   {where}
+                   ORDER BY ligNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<LigacoesResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBLigacoes(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var ligacoes = reader.ReadAll(dbRec, item);
+                if (ligacoes != null)
+                {
+                    lista.Add(ligacoes);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<LigacoesResponse>> Filter(Filters.FilterLigacoes filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<LigacoesResponseAll>> Filter(Filters.FilterLigacoes filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Ligacoes: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Ligacoes-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<LigacoesResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBLigacoes.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<LigacoesResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Ligacoes: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new LigacoesResponse();
         }
@@ -101,39 +104,24 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Ligacoes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Ligacoes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Ligacoes - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Ligacoes - {uri}-: GetById");
         }
     }
 
-    private async Task<LigacoesResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<LigacoesResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<LigacoesResponse?> AddAndUpdate([FromBody] Models.Ligacoes regLigacoes, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Ligacoes: URI inválida");
@@ -147,8 +135,7 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +155,82 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
     public async Task<LigacoesResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Ligacoes: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var ligacoes = reader.Read(id, oCnn);
-            if (ligacoes != null)
+            var deleteValidation = await validation.CanDelete(id, this, recadosService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBLigacoes().DeletarItem(ligacoes.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var ligacoes = reader.Read(id, oCnn);
+            try
+            {
+                if (ligacoes != null)
+                {
+                    writer.Delete(ligacoes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return ligacoes;
         });
     }
 
-    public async Task<LigacoesResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Ligacoes: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBLigacoesDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterLigacoes? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Ligacoes: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Ligacoes-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Ligacoes-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBLigacoes.ListarN(cWhere, DBLigacoesDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBLigacoesDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,30 +270,116 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
         }
     }
 
-    private static string WFiltro(Filters.FilterLigacoes filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterLigacoes filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Assunto.IsEmpty() ? string.Empty : DBLigacoesDicInfo.AssuntoSql(filtro.Assunto);
-        cWhere += filtro.AgeClienteAvisado == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.AgeClienteAvisadoSql(filtro.AgeClienteAvisado);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Contato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.ContatoSql(filtro.Contato);
-        cWhere += filtro.QuemID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.QuemIDSql(filtro.QuemID);
-        cWhere += filtro.Telefonista == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.TelefonistaSql(filtro.Telefonista);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.QuemCodigo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.QuemCodigoSql(filtro.QuemCodigo);
-        cWhere += filtro.Solicitante == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.SolicitanteSql(filtro.Solicitante);
-        cWhere += filtro.Para.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.ParaSql(filtro.Para);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.Ramal == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.RamalSql(filtro.Ramal);
-        cWhere += filtro.Status.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.StatusSql(filtro.Status);
-        cWhere += filtro.LigarPara.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.LigarParaSql(filtro.LigarPara);
-        cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.Emotion == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.EmotionSql(filtro.Emotion);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBLigacoesDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.Assunto))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Assunto)}", filtro.Assunto));
+        }
+
+        if (filtro.AgeClienteAvisado != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.AgeClienteAvisado)}", filtro.AgeClienteAvisado));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Contato))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Contato)}", filtro.Contato));
+        }
+
+        if (filtro.QuemID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.QuemID)}", filtro.QuemID));
+        }
+
+        if (filtro.Telefonista != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Telefonista)}", filtro.Telefonista));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (filtro.QuemCodigo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.QuemCodigo)}", filtro.QuemCodigo));
+        }
+
+        if (filtro.Solicitante != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Solicitante)}", filtro.Solicitante));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Para))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Para)}", filtro.Para));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (filtro.Ramal != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Ramal)}", filtro.Ramal));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Status))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Status)}", filtro.Status));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.LigarPara))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.LigarPara)}", filtro.LigarPara));
+        }
+
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (filtro.Emotion != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Emotion)}", filtro.Emotion));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Assunto.IsEmpty() ? string.Empty : $"{DBLigacoesDicInfo.Assunto} = @{nameof(DBLigacoesDicInfo.Assunto)}";
+        cWhere += filtro.AgeClienteAvisado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.AgeClienteAvisado} = @{nameof(DBLigacoesDicInfo.AgeClienteAvisado)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Cliente} = @{nameof(DBLigacoesDicInfo.Cliente)}";
+        cWhere += filtro.Contato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Contato} = @{nameof(DBLigacoesDicInfo.Contato)}";
+        cWhere += filtro.QuemID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.QuemID} = @{nameof(DBLigacoesDicInfo.QuemID)}";
+        cWhere += filtro.Telefonista == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Telefonista} = @{nameof(DBLigacoesDicInfo.Telefonista)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Nome} = @{nameof(DBLigacoesDicInfo.Nome)}";
+        cWhere += filtro.QuemCodigo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.QuemCodigo} = @{nameof(DBLigacoesDicInfo.QuemCodigo)}";
+        cWhere += filtro.Solicitante == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Solicitante} = @{nameof(DBLigacoesDicInfo.Solicitante)}";
+        cWhere += filtro.Para.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Para} = @{nameof(DBLigacoesDicInfo.Para)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Fone} = @{nameof(DBLigacoesDicInfo.Fone)}";
+        cWhere += filtro.Ramal == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Ramal} = @{nameof(DBLigacoesDicInfo.Ramal)}";
+        cWhere += filtro.Status.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Status} = @{nameof(DBLigacoesDicInfo.Status)}";
+        cWhere += filtro.LigarPara.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.LigarPara} = @{nameof(DBLigacoesDicInfo.LigarPara)}";
+        cWhere += filtro.Processo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Processo} = @{nameof(DBLigacoesDicInfo.Processo)}";
+        cWhere += filtro.Emotion == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.Emotion} = @{nameof(DBLigacoesDicInfo.Emotion)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBLigacoesDicInfo.GUID} = @{nameof(DBLigacoesDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

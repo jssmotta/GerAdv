@@ -15,3 +15,16 @@ public partial class ViaRecebimentoResponse
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = "";
 }
+
+[Serializable]
+public partial class ViaRecebimentoResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - vrbNome - tamanho máximo: 80 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
+}

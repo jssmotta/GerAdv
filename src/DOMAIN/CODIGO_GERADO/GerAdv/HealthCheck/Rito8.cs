@@ -32,7 +32,7 @@ public class RitoHealthCheck(IOptions<AppSettings> appSettings, RitoService rito
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class RitoHealthCheck(IOptions<AppSettings> appSettings, RitoService rito
                         if (DBRitoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ritCodigo) FROM dbo.Rito (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ritCodigo) FROM {"Rito".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class RitoHealthCheck(IOptions<AppSettings> appSettings, RitoService rito
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ritDescricao,ritTop,ritBold,ritGUID FROM dbo.Rito (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ritDescricao,ritTop,ritBold,ritGUID FROM {"Rito".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

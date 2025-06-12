@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOponentesRepLegalWhere
 {
-    OponentesRepLegalResponse Read(string where, SqlConnection oCnn);
+    OponentesRepLegalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class OponentesRepLegal : IOponentesRepLegalWhere
 {
-    public OponentesRepLegalResponse Read(string where, SqlConnection oCnn)
+    public OponentesRepLegalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOponentesRepLegal(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOponentesRepLegal(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var oponentesreplegal = new OponentesRepLegalResponse
         {
             Id = dbRec.ID,
@@ -32,18 +32,6 @@ public partial class OponentesRepLegal : IOponentesRepLegalWhere
             Observacao = dbRec.FObservacao ?? string.Empty,
             Bold = dbRec.FBold,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        oponentesreplegal.Auditor = auditor;
         return oponentesreplegal;
     }
 }

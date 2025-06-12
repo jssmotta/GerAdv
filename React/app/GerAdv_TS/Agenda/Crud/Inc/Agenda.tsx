@@ -1,0 +1,75 @@
+﻿// Tracking: CrudInc.tsx.txt
+'use client';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { AgendaApi } from '../../Apis/ApiAgenda';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { NotificationService } from '@/app/services/notification.service';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
+import { IAgendaFormProps } from '../../Interfaces/interface.Agenda';
+import { AgendaService } from '../../Services/Agenda.service';
+import { useAgendaForm, useValidationsAgenda } from '../../Hooks/hookAgenda';
+import { AgendaEmpty } from '../../../Models/Agenda';
+import { AgendaForm } from '../Forms/Agenda';
+
+const AgendaInc: React.FC<IAgendaFormProps> = ({ id, onClose, onError, onSuccess }) => {
+  const { systemContext } = useSystemContext();
+  const isMobile = useIsMobile();
+  const router = useRouter();
+  const agendaService = new AgendaService(
+  new AgendaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+);
+const notificationService = new NotificationService();
+const { data, handleChange, loadAgenda } = useAgendaForm(
+AgendaEmpty(), 
+agendaService
+);
+useEffect(() => {
+  loadAgenda(id);
+}, [id]);
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const savedAgenda = await agendaService.saveAgenda(data);
+    if (savedAgenda.id) {
+      notificationService.showNotification('Registro salvo com sucesso!', 'success');
+      const PDelayApiWrite = 333;
+      setTimeout(() => {
+        if (onSuccess) {
+          onSuccess(savedAgenda);
+        }
+      }, PDelayApiWrite);
+    } else {
+    if (onError) {
+      onError();
+    }
+    notificationService.showNotification('Error salvando registro.', 'error');
+  }
+} catch (error) {
+if (onError) {
+  onError();
+}
+notificationService.showNotification('Error salvando registro.', 'error');
+}
+};
+const handleReload = () => {
+  loadAgenda(id);
+};
+return (
+<>
+<NotificationComponent notificationService={notificationService} />
+<AgendaForm
+agendaData={data}
+onChange={handleChange}
+onSubmit={handleSubmit}
+onClose={onClose}
+onError={onError}
+onReload={handleReload}
+onSuccess={onSuccess}
+/>
+</>
+);
+};
+export default AgendaInc;

@@ -24,15 +24,16 @@ public partial class DBApenso2 : VAuditor, ICadastros, IAuditor
 #endregion
     public DBApenso2(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     // REF. 250325
-    public DBApenso2(MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBApenso2(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
+        // Tracking: 250605-3
         if (oCnn is null)
             return;
         if (string.IsNullOrEmpty(fullSql))
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
                     CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }

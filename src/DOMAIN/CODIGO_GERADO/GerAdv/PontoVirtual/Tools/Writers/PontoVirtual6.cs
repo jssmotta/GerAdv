@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPontoVirtualWriter
 {
-    Entity.DBPontoVirtual Write(Models.PontoVirtual pontovirtual, SqlConnection oCnn);
+    Entity.DBPontoVirtual Write(Models.PontoVirtual pontovirtual, MsiSqlConnection oCnn);
+    void Delete(PontoVirtualResponse pontovirtual, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class PontoVirtual : IPontoVirtualWriter
 {
-    public Entity.DBPontoVirtual Write(Models.PontoVirtual pontovirtual, SqlConnection oCnn)
+    public void Delete(PontoVirtualResponse pontovirtual, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[PontoVirtual] WHERE pvtCodigo={pontovirtual.Id};", oCnn);
+    }
+
+    public Entity.DBPontoVirtual Write(Models.PontoVirtual pontovirtual, MsiSqlConnection oCnn)
     {
         var dbRec = pontovirtual.Id.IsEmptyIDNumber() ? new Entity.DBPontoVirtual() : new Entity.DBPontoVirtual(pontovirtual.Id, oCnn);
         if (pontovirtual.HoraEntrada != null)

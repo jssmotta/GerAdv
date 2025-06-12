@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAlarmSMSWhere
 {
-    AlarmSMSResponse Read(string where, SqlConnection oCnn);
+    AlarmSMSResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class AlarmSMS : IAlarmSMSWhere
 {
-    public AlarmSMSResponse Read(string where, SqlConnection oCnn)
+    public AlarmSMSResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBAlarmSMS(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBAlarmSMS(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var alarmsms = new AlarmSMSResponse
         {
             Id = dbRec.ID,
@@ -41,18 +41,6 @@ public partial class AlarmSMS : IAlarmSMSWhere
             alarmsms.Today = dbRec.FToday;
         if (DateTime.TryParse(dbRec.FAlertarDataHora, out _))
             alarmsms.AlertarDataHora = dbRec.FAlertarDataHora;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        alarmsms.Auditor = auditor;
         return alarmsms;
     }
 }

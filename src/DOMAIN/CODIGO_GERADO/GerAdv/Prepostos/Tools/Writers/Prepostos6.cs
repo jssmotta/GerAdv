@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPrepostosWriter
 {
-    Entity.DBPrepostos Write(Models.Prepostos prepostos, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPrepostos Write(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Prepostos : IPrepostosWriter
 {
-    public Entity.DBPrepostos Write(Models.Prepostos prepostos, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Prepostos] WHERE preCodigo={prepostos.Id};", oCnn);
+    }
+
+    public Entity.DBPrepostos Write(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = prepostos.Id.IsEmptyIDNumber() ? new Entity.DBPrepostos() : new Entity.DBPrepostos(prepostos.Id, oCnn);
         dbRec.FNome = prepostos.Nome;

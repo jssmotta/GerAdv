@@ -32,7 +32,7 @@ public class DadosProcuracaoHealthCheck(IOptions<AppSettings> appSettings, Dados
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class DadosProcuracaoHealthCheck(IOptions<AppSettings> appSettings, Dados
                         if (DBDadosProcuracaoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(prcCodigo) FROM dbo.DadosProcuracao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(prcCodigo) FROM {"DadosProcuracao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class DadosProcuracaoHealthCheck(IOptions<AppSettings> appSettings, Dados
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) prcCliente,prcEstadoCivil,prcNacionalidade,prcProfissao,prcCTPS,prcPisPasep,prcRemuneracao,prcObjeto,prcGUID FROM dbo.DadosProcuracao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) prcCliente,prcEstadoCivil,prcNacionalidade,prcProfissao,prcCTPS,prcPisPasep,prcRemuneracao,prcObjeto,prcGUID FROM {"DadosProcuracao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -1,0 +1,178 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IAgendaRepetirDias } from '@/app/GerAdv_TS/AgendaRepetirDias/Interfaces/interface.AgendaRepetirDias';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { AgendaRepetirDiasApi } from '../../Apis/ApiAgendaRepetirDias';
+import { useValidationsAgendaRepetirDias } from '../../Hooks/hookAgendaRepetirDias';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface AgendaRepetirDiasFormProps {
+  agendarepetirdiasData: IAgendaRepetirDias;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const AgendaRepetirDiasForm: React.FC<AgendaRepetirDiasFormProps> = ({
+  agendarepetirdiasData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new AgendaRepetirDiasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsAgendaRepetirDias();
+
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
+
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        onSubmit(e);
+      } catch (error) {
+      console.error('Erro ao submeter formulário de AgendaRepetirDias:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`AgendaRepetirDiasForm-${agendarepetirdiasData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.error('Erro ao salvar AgendaRepetirDias diretamente:', error);
+    setIsSubmitting(false);
+    if (onError) onError();
+    }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = agendarepetirdiasData?.id == 0 ? 'Editar AgendaRepetirDias' : 'Adicionar Agenda Repetir Dias';
+  }
+}, [agendarepetirdiasData.id]);
+return (
+<>
+<style>
+  {!isMobile ? `
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    ` : ``}
+  </style>
+
+  <div className={isMobile ? 'form-container form-container-AgendaRepetirDias' : 'form-container5 form-container-AgendaRepetirDias'}>
+
+    <form className='formInputCadInc' id={`AgendaRepetirDiasForm-${agendarepetirdiasData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AgendaRepetirDias' data={agendarepetirdiasData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRepetirDiasForm-${agendarepetirdiasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='horafinal'
+          label='HoraFinal'
+          dataForm={agendarepetirdiasData}
+          className='inputIncNome'
+          name='horafinal'
+          value={agendarepetirdiasData.horafinal}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='master'
+          label='Master'
+          dataForm={agendarepetirdiasData}
+          className='inputIncNome'
+          name='master'
+          value={agendarepetirdiasData.master}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='dia'
+          label='Dia'
+          dataForm={agendarepetirdiasData}
+          className='inputIncNome'
+          name='dia'
+          value={agendarepetirdiasData.dia}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='hora'
+          label='Hora'
+          dataForm={agendarepetirdiasData}
+          className='inputIncNome'
+          name='hora'
+          value={agendarepetirdiasData.hora}
+          onChange={onChange}
+          />
+
+        </div>
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRepetirDias' data={agendarepetirdiasData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRepetirDiasForm-${agendarepetirdiasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/agendarepetirdias'} id={agendarepetirdiasData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

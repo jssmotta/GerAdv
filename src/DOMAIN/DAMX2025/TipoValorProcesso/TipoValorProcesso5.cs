@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBTipoValorProcesso
 {
     public const string CadastroGuid = "f3fca6bf-e589-477e-9b6f-2de37b128bdc";
-#region AdministrativeMethods_TipoValorProcesso
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE ptvCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "TipoValorProcesso";
     public const string CamposSqlX = " TipoValorProcesso.* ";
     public const string SensivelCamposSqlX = " TipoValorProcesso.* ";

@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import AgendaStatusInc from '../Inc/AgendaStatus';
+import { IAgendaStatus } from '../../Interfaces/interface.AgendaStatus';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { AgendaStatusEmpty } from '@/app/GerAdv_TS/Models/AgendaStatus';
+import { useWindow } from '@/app/hooks/useWindows';
+interface AgendaStatusWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedAgendaStatus?: IAgendaStatus;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const AgendaStatusWindow: React.FC<AgendaStatusWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedAgendaStatus, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Agenda Status'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedAgendaStatus?.id ?? 0).toString()}
+>
+<AgendaStatusInc
+id={selectedAgendaStatus?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowAgendaStatus: React.FC<AgendaStatusWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<AgendaStatusWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedAgendaStatus={AgendaStatusEmpty()}>
+</AgendaStatusWindow>
+)
+};
+export default AgendaStatusWindow;

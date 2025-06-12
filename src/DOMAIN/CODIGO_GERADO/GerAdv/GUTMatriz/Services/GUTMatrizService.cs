@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMatrizReader reader, IGUTMatrizValidation validation, IGUTMatrizWriter writer, IGUTTipoReader guttipoReader, HybridCache cache) : IGUTMatrizService, IDisposable
+public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMatrizReader reader, IGUTMatrizValidation validation, IGUTMatrizWriter writer, IGUTTipoReader guttipoReader, IGUTAtividadesMatrizService gutatividadesmatrizService, HybridCache cache, IMemoryCache memory) : IGUTMatrizService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<GUTMatrizResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<GUTMatrizResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("GUTMatriz: URI inválida");
@@ -25,72 +26,71 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<GUTMatrizResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<GUTMatrizResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBGUTMatriz.SensivelCamposSqlX} 
-                   FROM {DBGUTMatriz.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBGUTMatrizDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBGUTMatriz>(max);
-        await foreach (var item in DBGUTMatriz.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBGUTMatriz.SensivelCamposSqlX}, gttNome
+                   FROM {DBGUTMatriz.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"GUTTipo".dbo(oCnn)} (NOLOCK) ON gttCodigo=gutGUTTipo
+ 
+                   {where}
+                   ORDER BY gutDescricao
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<GUTMatrizResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBGUTMatriz(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var gutmatriz = reader.ReadAll(dbRec, item);
+                if (gutmatriz != null)
+                {
+                    lista.Add(gutmatriz);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<GUTMatrizResponse>> Filter(Filters.FilterGUTMatriz filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<GUTMatrizResponseAll>> Filter(Filters.FilterGUTMatriz filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("GUTMatriz: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-GUTMatriz-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<GUTMatrizResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBGUTMatriz.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<GUTMatrizResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("GUTMatriz: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new GUTMatrizResponse();
         }
@@ -100,36 +100,23 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-GUTMatriz-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-GUTMatriz-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"GUTMatriz - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"GUTMatriz - {uri}-: GetById");
         }
     }
 
-    private async Task<GUTMatrizResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<GUTMatrizResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<GUTMatrizResponse?> AddAndUpdate([FromBody] Models.GUTMatriz regGUTMatriz, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("GUTMatriz: URI inválida");
@@ -143,8 +130,7 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -164,86 +150,75 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
     public async Task<GUTMatrizResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("GUTMatriz: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var gutmatriz = reader.Read(id, oCnn);
-            if (gutmatriz != null)
+            var deleteValidation = await validation.CanDelete(id, this, gutatividadesmatrizService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBGUTMatriz().DeletarItem(gutmatriz.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var gutmatriz = reader.Read(id, oCnn);
+            try
+            {
+                if (gutmatriz != null)
+                {
+                    writer.Delete(gutmatriz, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return gutmatriz;
         });
     }
 
-    public async Task<GUTMatrizResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("GUTMatriz: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBGUTMatrizDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTMatriz? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-1
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            throw new Exception("GUTMatriz: URI inválida");
-        }
-
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-GUTMatriz-{max}-{cWhere.GetHashCode()}-GetListN";
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-GUTMatriz-{max}-{where.GetHashCode()}-{parameters.GetHashCode()}GetListN";
         var entryOptions = new HybridCacheEntryOptions
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBGUTMatriz.ListarN(cWhere, DBGUTMatrizDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBGUTMatrizDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -283,16 +258,32 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
         }
     }
 
-    private static string WFiltro(Filters.FilterGUTMatriz filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTMatriz filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Descricao.IsEmpty() ? string.Empty : DBGUTMatrizDicInfo.DescricaoSql(filtro.Descricao);
-        cWhere += filtro.GUTTipo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBGUTMatrizDicInfo.GUTTipoSql(filtro.GUTTipo);
-        cWhere += filtro.Valor == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBGUTMatrizDicInfo.ValorSql(filtro.Valor);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.Descricao))
+        {
+            parameters.Add(new($"@{nameof(DBGUTMatrizDicInfo.Descricao)}", filtro.Descricao));
+        }
+
+        if (filtro.GUTTipo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBGUTMatrizDicInfo.GUTTipo)}", filtro.GUTTipo));
+        }
+
+        if (filtro.Valor != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBGUTMatrizDicInfo.Valor)}", filtro.Valor));
+        }
+
+        var cWhere = filtro.Descricao.IsEmpty() ? string.Empty : $"{DBGUTMatrizDicInfo.Descricao} = @{nameof(DBGUTMatrizDicInfo.Descricao)}";
+        cWhere += filtro.GUTTipo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBGUTMatrizDicInfo.GUTTipo} = @{nameof(DBGUTMatrizDicInfo.GUTTipo)}";
+        cWhere += filtro.Valor == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBGUTMatrizDicInfo.Valor} = @{nameof(DBGUTMatrizDicInfo.Valor)}";
+        return (cWhere, parameters);
     }
 }

@@ -5,15 +5,51 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAgendaValidation
 {
-    Task<string> ValidateReg(Models.Agenda reg, IAgendaService service, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IAgendaService service, IAgenda2AgendaService agenda2agendaService, IAgendaRecordsService agendarecordsService, IAgendaStatusService agendastatusService, IAlarmSMSService alarmsmsService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AgendaValidation : IAgendaValidation
 {
-    public async Task<string> ValidateReg(Models.Agenda reg, IAgendaService service, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IAgendaService service, IAgenda2AgendaService agenda2agendaService, IAgendaRecordsService agendarecordsService, IAgendaStatusService agendastatusService, IAlarmSMSService alarmsmsService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var agenda2agendaExists = await agenda2agendaService.Filter(new Filters.FilterAgenda2Agenda { Agenda = id }, uri);
+        if (agenda2agendaExists != null && agenda2agendaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda2 Agenda associados a ele.";
+        var agendarecordsExists = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Agenda = id }, uri);
+        if (agendarecordsExists != null && agendarecordsExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Records associados a ele.";
+        var agendastatusExists = await agendastatusService.Filter(new Filters.FilterAgendaStatus { Agenda = id }, uri);
+        if (agendastatusExists != null && agendastatusExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Status associados a ele.";
+        var alarmsmsExists = await alarmsmsService.Filter(new Filters.FilterAlarmSMS { Agenda = id }, uri);
+        if (alarmsmsExists != null && alarmsmsExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Alarm S M S associados a ele.";
+        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Agenda = id }, uri);
+        if (recadosExists != null && recadosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
+            }
+        }
+
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IHorasTrabWriter
 {
-    Entity.DBHorasTrab Write(Models.HorasTrab horastrab, int auditorQuem, SqlConnection oCnn);
+    Entity.DBHorasTrab Write(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class HorasTrab : IHorasTrabWriter
 {
-    public Entity.DBHorasTrab Write(Models.HorasTrab horastrab, int auditorQuem, SqlConnection oCnn)
+    public void Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[HorasTrab] WHERE htbCodigo={horastrab.Id};", oCnn);
+    }
+
+    public Entity.DBHorasTrab Write(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = horastrab.Id.IsEmptyIDNumber() ? new Entity.DBHorasTrab() : new Entity.DBHorasTrab(horastrab.Id, oCnn);
         dbRec.FIDContatoCRM = horastrab.IDContatoCRM;

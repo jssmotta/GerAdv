@@ -7,7 +7,7 @@ public partial class DBJustica : MenphisSI.GerAdv.DBJustica, IDBJustica
     {
     }
 
-    public DBJustica(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBJustica(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBJustica : MenphisSI.GerAdv.DBJustica, IDBJustica
     {
     }
 
-    public DBJustica(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBJustica(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

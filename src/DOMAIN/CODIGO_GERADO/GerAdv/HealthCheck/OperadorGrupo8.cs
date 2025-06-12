@@ -32,7 +32,7 @@ public class OperadorGrupoHealthCheck(IOptions<AppSettings> appSettings, Operado
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OperadorGrupoHealthCheck(IOptions<AppSettings> appSettings, Operado
                         if (DBOperadorGrupoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ogrCodigo) FROM dbo.OperadorGrupo (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ogrCodigo) FROM {"OperadorGrupo".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OperadorGrupoHealthCheck(IOptions<AppSettings> appSettings, Operado
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ogrOperador,ogrGrupo,ogrInativo FROM dbo.OperadorGrupo (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ogrOperador,ogrGrupo,ogrInativo FROM {"OperadorGrupo".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -26,7 +26,29 @@ public partial class AreaResponse
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class AreaResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - areDescricao - tamanho máximo: 40 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - areTop  
+    /// </summary>
+    [JsonPropertyName("top")]
+    public bool Top { get; set; }
+
+    /// <summary>
+    /// GUId - areGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 }

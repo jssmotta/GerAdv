@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IPenhoraStatusReader
 {
-    PenhoraStatusResponse? Read(int id, SqlConnection oCnn);
-    PenhoraStatusResponse? Read(string where, SqlConnection oCnn);
+    PenhoraStatusResponse? Read(int id, MsiSqlConnection oCnn);
+    PenhoraStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PenhoraStatusResponse? Read(Entity.DBPenhoraStatus dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PenhoraStatusResponse? Read(DBPenhoraStatus dbRec);
+    PenhoraStatusResponseAll? ReadAll(DBPenhoraStatus dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class PenhoraStatus : IPenhoraStatusReader
 {
-    public PenhoraStatusResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) phsCodigo, phsNome FROM {"PenhoraStatus".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}phsNome");
+        }
+
+        return query.ToString();
+    }
+
+    public PenhoraStatusResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBPenhoraStatus(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public PenhoraStatusResponse? Read(string where, SqlConnection oCnn)
+    public PenhoraStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBPenhoraStatus(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBPenhoraStatus(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -39,18 +68,6 @@ public partial class PenhoraStatus : IPenhoraStatusReader
             Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        penhorastatus.Auditor = auditor;
         return penhorastatus;
     }
 
@@ -67,18 +84,22 @@ public partial class PenhoraStatus : IPenhoraStatusReader
             Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return penhorastatus;
+    }
+
+    public PenhoraStatusResponseAll? ReadAll(DBPenhoraStatus dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var penhorastatus = new PenhoraStatusResponseAll
+        {
+            Id = dbRec.ID,
+            Nome = dbRec.FNome ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        penhorastatus.Auditor = auditor;
         return penhorastatus;
     }
 }

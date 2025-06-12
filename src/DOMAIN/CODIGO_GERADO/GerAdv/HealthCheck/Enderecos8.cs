@@ -32,7 +32,7 @@ public class EnderecosHealthCheck(IOptions<AppSettings> appSettings, EnderecosSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class EnderecosHealthCheck(IOptions<AppSettings> appSettings, EnderecosSe
                         if (DBEnderecosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(endCodigo) FROM dbo.Enderecos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(endCodigo) FROM {"Enderecos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class EnderecosHealthCheck(IOptions<AppSettings> appSettings, EnderecosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) endTopIndex,endDescricao,endContato,endDtNasc,endEndereco,endBairro,endPrivativo,endAddContato,endCEP,endOAB,endOBS,endFone,endFax,endTratamento,endCidade,endSite,endEMail,endQuem,endQuemIndicou,endReportECBOnly,endEtiqueta,endAni,endBold,endGUID FROM dbo.Enderecos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) endTopIndex,endDescricao,endContato,endDtNasc,endEndereco,endBairro,endPrivativo,endAddContato,endCEP,endOAB,endOBS,endFone,endFax,endTratamento,endCidade,endSite,endEMail,endQuem,endQuemIndicou,endReportECBOnly,endEtiqueta,endAni,endBold,endGUID FROM {"Enderecos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -32,7 +32,7 @@ public class ModelosDocumentosHealthCheck(IOptions<AppSettings> appSettings, Mod
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ModelosDocumentosHealthCheck(IOptions<AppSettings> appSettings, Mod
                         if (DBModelosDocumentosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(mdcCodigo) FROM dbo.ModelosDocumentos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(mdcCodigo) FROM {"ModelosDocumentos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ModelosDocumentosHealthCheck(IOptions<AppSettings> appSettings, Mod
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) mdcNome,mdcRemuneracao,mdcAssinatura,mdcHeader,mdcFooter,mdcExtra1,mdcExtra2,mdcExtra3,mdcOutorgante,mdcOutorgados,mdcPoderes,mdcObjeto,mdcTitulo,mdcTestemunhas,mdcTipoModeloDocumento,mdcCSS,mdcGUID FROM dbo.ModelosDocumentos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) mdcNome,mdcRemuneracao,mdcAssinatura,mdcHeader,mdcFooter,mdcExtra1,mdcExtra2,mdcExtra3,mdcOutorgante,mdcOutorgados,mdcPoderes,mdcObjeto,mdcTitulo,mdcTestemunhas,mdcTipoModeloDocumento,mdcCSS,mdcGUID FROM {"ModelosDocumentos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

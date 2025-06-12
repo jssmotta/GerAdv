@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBPrepostos
 {
     public const string CadastroGuid = "0f515911-252a-4cbf-bc7c-14488179be6f";
-#region AdministrativeMethods_Prepostos
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE preCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Prepostos";
     public const string CamposSqlX = " Prepostos.* ";
     public const string SensivelCamposSqlX = " Prepostos.* ";

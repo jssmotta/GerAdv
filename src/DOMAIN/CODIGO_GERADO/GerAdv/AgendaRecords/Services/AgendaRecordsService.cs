@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAgendaRecordsReader reader, IAgendaRecordsValidation validation, IAgendaRecordsWriter writer, IAgendaReader agendaReader, IClientesSociosReader clientessociosReader, IColaboradoresReader colaboradoresReader, IForoReader foroReader, HybridCache cache) : IAgendaRecordsService, IDisposable
+public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAgendaRecordsReader reader, IAgendaRecordsValidation validation, IAgendaRecordsWriter writer, IAgendaReader agendaReader, IClientesSociosReader clientessociosReader, IColaboradoresReader colaboradoresReader, IForoReader foroReader, HybridCache cache, IMemoryCache memory) : IAgendaRecordsService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<AgendaRecordsResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<AgendaRecordsResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaRecords: URI inválida");
@@ -25,72 +26,74 @@ public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAg
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<AgendaRecordsResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<AgendaRecordsResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBAgendaRecords.SensivelCamposSqlX} 
-                   FROM {DBAgendaRecords.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBAgendaRecordsDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBAgendaRecords>(max);
-        await foreach (var item in DBAgendaRecords.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBAgendaRecords.SensivelCamposSqlX}, cscNome,colNome,forNome
+                   FROM {DBAgendaRecords.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=ragAgenda
+LEFT JOIN {"ClientesSocios".dbo(oCnn)} (NOLOCK) ON cscCodigo=ragClientesSocios
+LEFT JOIN {"Colaboradores".dbo(oCnn)} (NOLOCK) ON colCodigo=ragColaborador
+LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=ragForo
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<AgendaRecordsResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBAgendaRecords(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var agendarecords = reader.ReadAll(dbRec, item);
+                if (agendarecords != null)
+                {
+                    lista.Add(agendarecords);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<AgendaRecordsResponse>> Filter(Filters.FilterAgendaRecords filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<AgendaRecordsResponseAll>> Filter(Filters.FilterAgendaRecords filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("AgendaRecords: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-AgendaRecords-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<AgendaRecordsResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBAgendaRecords.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<AgendaRecordsResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("AgendaRecords: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new AgendaRecordsResponse();
         }
@@ -100,36 +103,23 @@ public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAg
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-AgendaRecords-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-AgendaRecords-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"AgendaRecords - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"AgendaRecords - {uri}-: GetById");
         }
     }
 
-    private async Task<AgendaRecordsResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<AgendaRecordsResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<AgendaRecordsResponse?> AddAndUpdate([FromBody] Models.AgendaRecords regAgendaRecords, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaRecords: URI inválida");
@@ -143,8 +133,7 @@ public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAg
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -164,31 +153,47 @@ public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAg
     public async Task<AgendaRecordsResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaRecords: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var agendarecords = reader.Read(id, oCnn);
-            if (agendarecords != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBAgendaRecords().DeletarItem(agendarecords.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var agendarecords = reader.Read(id, oCnn);
+            try
+            {
+                if (agendarecords != null)
+                {
+                    writer.Delete(agendarecords, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return agendarecords;
@@ -221,22 +226,68 @@ public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAg
         }
     }
 
-    private static string WFiltro(Filters.FilterAgendaRecords filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgendaRecords filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Agenda == -2147483648 ? string.Empty : DBAgendaRecordsDicInfo.AgendaSql(filtro.Agenda);
-        cWhere += filtro.Julgador == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.JulgadorSql(filtro.Julgador);
-        cWhere += filtro.ClientesSocios == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.ClientesSociosSql(filtro.ClientesSocios);
-        cWhere += filtro.Perito == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.PeritoSql(filtro.Perito);
-        cWhere += filtro.Colaborador == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.ColaboradorSql(filtro.Colaborador);
-        cWhere += filtro.Foro == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.ForoSql(filtro.Foro);
-        cWhere += filtro.CrmAviso1 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.CrmAviso1Sql(filtro.CrmAviso1);
-        cWhere += filtro.CrmAviso2 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.CrmAviso2Sql(filtro.CrmAviso2);
-        cWhere += filtro.CrmAviso3 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRecordsDicInfo.CrmAviso3Sql(filtro.CrmAviso3);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Agenda != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.Agenda)}", filtro.Agenda));
+        }
+
+        if (filtro.Julgador != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.Julgador)}", filtro.Julgador));
+        }
+
+        if (filtro.ClientesSocios != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.ClientesSocios)}", filtro.ClientesSocios));
+        }
+
+        if (filtro.Perito != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.Perito)}", filtro.Perito));
+        }
+
+        if (filtro.Colaborador != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.Colaborador)}", filtro.Colaborador));
+        }
+
+        if (filtro.Foro != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.Foro)}", filtro.Foro));
+        }
+
+        if (filtro.CrmAviso1 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.CrmAviso1)}", filtro.CrmAviso1));
+        }
+
+        if (filtro.CrmAviso2 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.CrmAviso2)}", filtro.CrmAviso2));
+        }
+
+        if (filtro.CrmAviso3 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRecordsDicInfo.CrmAviso3)}", filtro.CrmAviso3));
+        }
+
+        var cWhere = filtro.Agenda == int.MinValue ? string.Empty : $"{DBAgendaRecordsDicInfo.Agenda} = @{nameof(DBAgendaRecordsDicInfo.Agenda)}";
+        cWhere += filtro.Julgador == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.Julgador} = @{nameof(DBAgendaRecordsDicInfo.Julgador)}";
+        cWhere += filtro.ClientesSocios == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.ClientesSocios} = @{nameof(DBAgendaRecordsDicInfo.ClientesSocios)}";
+        cWhere += filtro.Perito == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.Perito} = @{nameof(DBAgendaRecordsDicInfo.Perito)}";
+        cWhere += filtro.Colaborador == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.Colaborador} = @{nameof(DBAgendaRecordsDicInfo.Colaborador)}";
+        cWhere += filtro.Foro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.Foro} = @{nameof(DBAgendaRecordsDicInfo.Foro)}";
+        cWhere += filtro.CrmAviso1 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.CrmAviso1} = @{nameof(DBAgendaRecordsDicInfo.CrmAviso1)}";
+        cWhere += filtro.CrmAviso2 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.CrmAviso2} = @{nameof(DBAgendaRecordsDicInfo.CrmAviso2)}";
+        cWhere += filtro.CrmAviso3 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRecordsDicInfo.CrmAviso3} = @{nameof(DBAgendaRecordsDicInfo.CrmAviso3)}";
+        return (cWhere, parameters);
     }
 }

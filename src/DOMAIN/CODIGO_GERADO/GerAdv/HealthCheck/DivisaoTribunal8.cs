@@ -32,7 +32,7 @@ public class DivisaoTribunalHealthCheck(IOptions<AppSettings> appSettings, Divis
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class DivisaoTribunalHealthCheck(IOptions<AppSettings> appSettings, Divis
                         if (DBDivisaoTribunalDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(divCodigo) FROM dbo.DivisaoTribunal (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(divCodigo) FROM {"DivisaoTribunal".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class DivisaoTribunalHealthCheck(IOptions<AppSettings> appSettings, Divis
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) divNumCodigo,divJustica,divNomeEspecial,divArea,divCidade,divForo,divTribunal,divCodigoDiv,divEndereco,divFone,divFax,divCEP,divObs,divEMail,divAndar,divEtiqueta,divBold,divGUID FROM dbo.DivisaoTribunal (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) divNumCodigo,divJustica,divNomeEspecial,divArea,divCidade,divForo,divTribunal,divCodigoDiv,divEndereco,divFone,divFax,divCEP,divObs,divEMail,divAndar,divEtiqueta,divBold,divGUID FROM {"DivisaoTribunal".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

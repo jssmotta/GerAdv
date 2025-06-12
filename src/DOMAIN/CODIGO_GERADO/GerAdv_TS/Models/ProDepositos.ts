@@ -1,0 +1,43 @@
+﻿import { IProDepositos } from '../ProDepositos/Interfaces/interface.ProDepositos';
+export interface ProDepositos
+{
+    id: number;
+	processo : number;
+	fase : number;
+	tipoprodesposito : number;
+	data : string;
+	valor : number;
+	nropastaprocessos?: string;
+	descricaofase?: string;
+	nometipoprodesposito?: string;
+
+}
+
+
+export function ProDepositosEmpty(): IProDepositos {
+// 20250604
+    
+    return {
+        id: 0,
+		processo: 0,
+		fase: 0,
+		tipoprodesposito: 0,
+		data: '',
+		valor: 0,
+    };
+}
+
+export function ProDepositosTestEmpty(): IProDepositos {
+// 20250604
+    
+    return {
+        id: 1,
+		processo: 1,
+		fase: 1,
+		tipoprodesposito: 1,
+		data: 'X',
+		valor: 1,
+    };
+}
+
+

@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IEnderecosReader
 {
-    EnderecosResponse? Read(int id, SqlConnection oCnn);
-    EnderecosResponse? Read(string where, SqlConnection oCnn);
+    EnderecosResponse? Read(int id, MsiSqlConnection oCnn);
+    EnderecosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EnderecosResponse? Read(Entity.DBEnderecos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EnderecosResponse? Read(DBEnderecos dbRec);
+    EnderecosResponseAll? ReadAll(DBEnderecos dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class Enderecos : IEnderecosReader
 {
-    public EnderecosResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) endCodigo, endDescricao FROM {"Enderecos".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}endDescricao");
+        }
+
+        return query.ToString();
+    }
+
+    public EnderecosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBEnderecos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public EnderecosResponse? Read(string where, SqlConnection oCnn)
+    public EnderecosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBEnderecos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBEnderecos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -43,7 +72,7 @@ public partial class Enderecos : IEnderecosReader
             Bairro = dbRec.FBairro ?? string.Empty,
             Privativo = dbRec.FPrivativo,
             AddContato = dbRec.FAddContato,
-            CEP = dbRec.FCEP ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             OAB = dbRec.FOAB ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
@@ -62,18 +91,6 @@ public partial class Enderecos : IEnderecosReader
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             enderecos.DtNasc = dbRec.FDtNasc;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        enderecos.Auditor = auditor;
         return enderecos;
     }
 
@@ -94,7 +111,7 @@ public partial class Enderecos : IEnderecosReader
             Bairro = dbRec.FBairro ?? string.Empty,
             Privativo = dbRec.FPrivativo,
             AddContato = dbRec.FAddContato,
-            CEP = dbRec.FCEP ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             OAB = dbRec.FOAB ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
@@ -113,18 +130,46 @@ public partial class Enderecos : IEnderecosReader
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             enderecos.DtNasc = dbRec.FDtNasc;
-        var auditor = new Auditor
+        return enderecos;
+    }
+
+    public EnderecosResponseAll? ReadAll(DBEnderecos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var enderecos = new EnderecosResponseAll
+        {
+            Id = dbRec.ID,
+            TopIndex = dbRec.FTopIndex,
+            Descricao = dbRec.FDescricao ?? string.Empty,
+            Contato = dbRec.FContato ?? string.Empty,
+            Endereco = dbRec.FEndereco ?? string.Empty,
+            Bairro = dbRec.FBairro ?? string.Empty,
+            Privativo = dbRec.FPrivativo,
+            AddContato = dbRec.FAddContato,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
+            OAB = dbRec.FOAB ?? string.Empty,
+            OBS = dbRec.FOBS ?? string.Empty,
+            Fone = dbRec.FFone ?? string.Empty,
+            Fax = dbRec.FFax ?? string.Empty,
+            Tratamento = dbRec.FTratamento ?? string.Empty,
+            Cidade = dbRec.FCidade,
+            Site = dbRec.FSite ?? string.Empty,
+            EMail = dbRec.FEMail ?? string.Empty,
+            Quem = dbRec.FQuem,
+            QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
+            ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        enderecos.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FDtNasc, out _))
+            enderecos.DtNasc = dbRec.FDtNasc;
+        enderecos.NomeCidade = dr["cidNome"]?.ToString() ?? string.Empty;
         return enderecos;
     }
 }

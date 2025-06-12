@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOperadorGruposAgendaWhere
 {
-    OperadorGruposAgendaResponse Read(string where, SqlConnection oCnn);
+    OperadorGruposAgendaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class OperadorGruposAgenda : IOperadorGruposAgendaWhere
 {
-    public OperadorGruposAgendaResponse Read(string where, SqlConnection oCnn)
+    public OperadorGruposAgendaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOperadorGruposAgenda(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOperadorGruposAgenda(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var operadorgruposagenda = new OperadorGruposAgendaResponse
         {
             Id = dbRec.ID,
@@ -21,18 +21,6 @@ public partial class OperadorGruposAgenda : IOperadorGruposAgendaWhere
             Operador = dbRec.FOperador,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadorgruposagenda.Auditor = auditor;
         return operadorgruposagenda;
     }
 }

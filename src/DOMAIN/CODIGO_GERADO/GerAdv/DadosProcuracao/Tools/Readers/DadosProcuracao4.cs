@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IDadosProcuracaoReader
 {
-    DadosProcuracaoResponse? Read(int id, SqlConnection oCnn);
-    DadosProcuracaoResponse? Read(string where, SqlConnection oCnn);
+    DadosProcuracaoResponse? Read(int id, MsiSqlConnection oCnn);
+    DadosProcuracaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DadosProcuracaoResponse? Read(Entity.DBDadosProcuracao dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DadosProcuracaoResponse? Read(DBDadosProcuracao dbRec);
+    DadosProcuracaoResponseAll? ReadAll(DBDadosProcuracao dbRec, DataRow dr);
 }
 
 public partial class DadosProcuracao : IDadosProcuracaoReader
 {
-    public DadosProcuracaoResponse? Read(int id, SqlConnection oCnn)
+    public DadosProcuracaoResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBDadosProcuracao(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public DadosProcuracaoResponse? Read(string where, SqlConnection oCnn)
+    public DadosProcuracaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBDadosProcuracao(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBDadosProcuracao(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -46,18 +48,6 @@ public partial class DadosProcuracao : IDadosProcuracaoReader
             Objeto = dbRec.FObjeto ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        dadosprocuracao.Auditor = auditor;
         return dadosprocuracao;
     }
 
@@ -81,18 +71,30 @@ public partial class DadosProcuracao : IDadosProcuracaoReader
             Objeto = dbRec.FObjeto ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return dadosprocuracao;
+    }
+
+    public DadosProcuracaoResponseAll? ReadAll(DBDadosProcuracao dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var dadosprocuracao = new DadosProcuracaoResponseAll
+        {
+            Id = dbRec.ID,
+            Cliente = dbRec.FCliente,
+            EstadoCivil = dbRec.FEstadoCivil ?? string.Empty,
+            Nacionalidade = dbRec.FNacionalidade ?? string.Empty,
+            Profissao = dbRec.FProfissao ?? string.Empty,
+            CTPS = dbRec.FCTPS ?? string.Empty,
+            PisPasep = dbRec.FPisPasep ?? string.Empty,
+            Remuneracao = dbRec.FRemuneracao ?? string.Empty,
+            Objeto = dbRec.FObjeto ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        dadosprocuracao.Auditor = auditor;
+        dadosprocuracao.NomeClientes = dr["cliNome"]?.ToString() ?? string.Empty;
         return dadosprocuracao;
     }
 }

@@ -32,7 +32,7 @@ public class LivroCaixaHealthCheck(IOptions<AppSettings> appSettings, LivroCaixa
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class LivroCaixaHealthCheck(IOptions<AppSettings> appSettings, LivroCaixa
                         if (DBLivroCaixaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(livCodigo) FROM dbo.LivroCaixa (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(livCodigo) FROM {"LivroCaixa".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class LivroCaixaHealthCheck(IOptions<AppSettings> appSettings, LivroCaixa
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) livIDDes,livPessoal,livAjuste,livIDHon,livIDHonParc,livIDHonSuc,livData,livProcesso,livValor,livTipo,livHistorico,livGrupo FROM dbo.LivroCaixa (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) livIDDes,livPessoal,livAjuste,livIDHon,livIDHonParc,livIDHonSuc,livData,livProcesso,livValor,livTipo,livHistorico,livGrupo FROM {"LivroCaixa".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

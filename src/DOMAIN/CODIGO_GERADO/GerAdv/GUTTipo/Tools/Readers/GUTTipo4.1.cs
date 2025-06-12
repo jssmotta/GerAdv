@@ -5,41 +5,56 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial class GUTTipo
 {
-    private static bool _checkIndex;
-    public async Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn)
+    public async Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn)
     {
-        if (!_checkIndex)
-        {
-            CreateIdx(uri);
-        }
-
-        string query = @"
-SELECT TOP 1 
-    FORMAT(
-        CASE 
-            WHEN gttDtAtu IS NULL THEN gttDtCad 
-            WHEN gttDtAtu > gttDtCad THEN gttDtAtu 
-            ELSE gttDtCad 
-        END, 'yyyy-MM-dd-HH-mm') AS data
-FROM dbo.GUTTipo WITH (NOLOCK, INDEX = idx_GUTTipo_Auditor)
+        string query = $@"
+SELECT TOP (1) 
+    FORMAT(gttDtAtu, 'yyyy-MM-dd-HH-mm-ss')
+FROM {oCnn.UseDbo}.GUTTipo WITH (NOLOCK, INDEX = idx_GUTTipo_AuditorDtAtu)
 WHERE gttCodigo = @id
 OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
-        using var cmd = new SqlCommand(query, oCnn);
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
         cmd.Parameters.AddWithValue("@id", id);
         var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
         return dataFormatada;
     }
 
-    private static void CreateIdx(string uri)
+    public async Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        _checkIndex = true;
-        using var oCnnRw = Configuracoes.GetConnectionByUriRw(uri);
-        if (oCnnRw is null)
-            return;
-        ConfiguracoesDBT.ExecuteSqlCreate(@"IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_GUTTipo_Auditor' AND object_id = OBJECT_ID('dbo.GUTTipo'))
-                BEGIN
-                    CREATE INDEX idx_GUTTipo_Auditor ON dbo.GUTTipo(gttCodigo, gttDtCad, gttDtAtu);
-                END
-                ", oCnnRw);
+        string query = $@"
+SELECT TOP (1) 
+    FORMAT(
+        CASE 
+            WHEN gttDtAtu IS NULL THEN gttDtCad 
+            WHEN gttDtAtu > gttDtCad THEN gttDtAtu 
+            ELSE gttDtCad 
+        END, 'yyyy-MM-dd-HH-mm-ss') AS data
+FROM {oCnn.UseDbo}.GUTTipo WITH (NOLOCK)
+        {(cWhere.Equals("") ? "" : $" WHERE {cWhere}")}
+ORDER BY 
+    CASE 
+        WHEN gttDtAtu IS NULL THEN gttDtCad 
+        WHEN gttDtAtu > gttDtCad THEN gttDtAtu 
+        ELSE gttDtCad 
+    END DESC;";
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
+        foreach (var param in parameters)
+        {
+            if (!cmd.Parameters.Contains(param.ParameterName))
+            {
+                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                {
+                    SqlDbType = param.SqlDbType,
+                    Direction = param.Direction,
+                    Size = param.Size,
+                    Precision = param.Precision,
+                    Scale = param.Scale
+                };
+                cmd.Parameters.Add(newParam);
+            }
+        }
+
+        var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
+        return dataFormatada;
     }
 }

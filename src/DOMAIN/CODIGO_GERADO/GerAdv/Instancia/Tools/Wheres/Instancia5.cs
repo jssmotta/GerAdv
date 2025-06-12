@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IInstanciaWhere
 {
-    InstanciaResponse Read(string where, SqlConnection oCnn);
+    InstanciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Instancia : IInstanciaWhere
 {
-    public InstanciaResponse Read(string where, SqlConnection oCnn)
+    public InstanciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBInstancia(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBInstancia(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var instancia = new InstanciaResponse
         {
             Id = dbRec.ID,
@@ -47,18 +47,6 @@ public partial class Instancia : IInstanciaWhere
             instancia.Data = dbRec.FData;
         if (DateTime.TryParse(dbRec.FZKeyQuando, out _))
             instancia.ZKeyQuando = dbRec.FZKeyQuando;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        instancia.Auditor = auditor;
         return instancia;
     }
 }

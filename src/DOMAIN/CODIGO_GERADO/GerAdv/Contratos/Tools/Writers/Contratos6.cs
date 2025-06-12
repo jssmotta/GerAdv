@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IContratosWriter
 {
-    Entity.DBContratos Write(Models.Contratos contratos, int auditorQuem, SqlConnection oCnn);
+    Entity.DBContratos Write(Models.Contratos contratos, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Contratos : IContratosWriter
 {
-    public Entity.DBContratos Write(Models.Contratos contratos, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Contratos] WHERE cttCodigo={contratos.Id};", oCnn);
+    }
+
+    public Entity.DBContratos Write(Models.Contratos contratos, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = contratos.Id.IsEmptyIDNumber() ? new Entity.DBContratos() : new Entity.DBContratos(contratos.Id, oCnn);
         dbRec.FProcesso = contratos.Processo;

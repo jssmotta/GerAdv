@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import GruposEmpresasInc from '../Inc/GruposEmpresas';
+import { IGruposEmpresas } from '../../Interfaces/interface.GruposEmpresas';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { GruposEmpresasEmpty } from '@/app/GerAdv_TS/Models/GruposEmpresas';
+import { useWindow } from '@/app/hooks/useWindows';
+interface GruposEmpresasWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedGruposEmpresas?: IGruposEmpresas;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const GruposEmpresasWindow: React.FC<GruposEmpresasWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedGruposEmpresas, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Grupos Empresas'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={725}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedGruposEmpresas?.id ?? 0).toString()}
+>
+<GruposEmpresasInc
+id={selectedGruposEmpresas?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowGruposEmpresas: React.FC<GruposEmpresasWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<GruposEmpresasWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedGruposEmpresas={GruposEmpresasEmpty()}>
+</GruposEmpresasWindow>
+)
+};
+export default GruposEmpresasWindow;

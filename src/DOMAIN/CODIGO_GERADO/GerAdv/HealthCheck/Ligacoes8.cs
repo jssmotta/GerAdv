@@ -32,7 +32,7 @@ public class LigacoesHealthCheck(IOptions<AppSettings> appSettings, LigacoesServ
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class LigacoesHealthCheck(IOptions<AppSettings> appSettings, LigacoesServ
                         if (DBLigacoesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ligCodigo) FROM dbo.Ligacoes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ligCodigo) FROM {"Ligacoes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class LigacoesHealthCheck(IOptions<AppSettings> appSettings, LigacoesServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ligAssunto,ligAgeClienteAvisado,ligCelular,ligCliente,ligContato,ligDataRealizada,ligQuemID,ligTelefonista,ligUltimoAviso,ligHoraFinal,ligNome,ligQuemCodigo,ligSolicitante,ligPara,ligFone,ligRamal,ligParticular,ligRealizada,ligStatus,ligData,ligHora,ligUrgente,ligLigarPara,ligProcesso,ligStartScreen,ligEmotion,ligBold,ligGUID FROM dbo.Ligacoes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ligAssunto,ligAgeClienteAvisado,ligCelular,ligCliente,ligContato,ligDataRealizada,ligQuemID,ligTelefonista,ligUltimoAviso,ligHoraFinal,ligNome,ligQuemCodigo,ligSolicitante,ligPara,ligFone,ligRamal,ligParticular,ligRealizada,ligStatus,ligData,ligHora,ligUrgente,ligLigarPara,ligProcesso,ligStartScreen,ligEmotion,ligBold,ligGUID FROM {"Ligacoes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

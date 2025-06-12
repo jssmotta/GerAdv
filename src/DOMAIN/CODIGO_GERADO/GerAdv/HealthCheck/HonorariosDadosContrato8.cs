@@ -32,7 +32,7 @@ public class HonorariosDadosContratoHealthCheck(IOptions<AppSettings> appSetting
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class HonorariosDadosContratoHealthCheck(IOptions<AppSettings> appSetting
                         if (DBHonorariosDadosContratoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(hdcCodigo) FROM dbo.HonorariosDadosContrato (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(hdcCodigo) FROM {"HonorariosDadosContrato".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class HonorariosDadosContratoHealthCheck(IOptions<AppSettings> appSetting
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) hdcCliente,hdcFixo,hdcVariavel,hdcPercSucesso,hdcProcesso,hdcArquivoContrato,hdcTextoContrato,hdcValorFixo,hdcObservacao,hdcDataContrato,hdcGUID FROM dbo.HonorariosDadosContrato (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) hdcCliente,hdcFixo,hdcVariavel,hdcPercSucesso,hdcProcesso,hdcArquivoContrato,hdcTextoContrato,hdcValorFixo,hdcObservacao,hdcDataContrato,hdcGUID FROM {"HonorariosDadosContrato".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

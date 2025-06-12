@@ -14,7 +14,7 @@ public partial class SMSAliceController(ISMSAliceService smsaliceService) : Cont
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("SMSAlice", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("SMSAlice", "GetAll", $"max = {max}", uri);
         var result = await _smsaliceService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class SMSAliceController(ISMSAliceService smsaliceService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterSMSAlice filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("SMSAlice: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("SMSAlice: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _smsaliceService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class SMSAliceController(ISMSAliceService smsaliceService) : Cont
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("SMSAlice: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("SMSAlice: GetById called with id = {0}, {1}", id, uri);
         var result = await _smsaliceService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class SMSAliceController(ISMSAliceService smsaliceService) : Cont
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("SMSAlice: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _smsaliceService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No SMSAlice found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterSMSAlice? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"SMSAlice: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"SMSAlice: GetListN called, max {max}, {filtro} uri");
         var result = await _smsaliceService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class SMSAliceController(ISMSAliceService smsaliceService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.SMSAlice regSMSAlice, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("SMSAlice", "AddAndUpdate", regSMSAlice, uri);
-        var result = await _smsaliceService.AddAndUpdate(regSMSAlice, uri);
-        if (result == null)
+        //_logger.LogInfo("SMSAlice", "AddAndUpdate", regSMSAlice, uri);
+        try
         {
-            _logger.Warn("SMSAlice: AddAndUpdate failed to add or update SMSAlice, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _smsaliceService.AddAndUpdate(regSMSAlice, uri);
+            if (result == null)
+            {
+                _logger.Warn("SMSAlice: AddAndUpdate failed to add or update SMSAlice, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "SMSAlice: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("SMSAlice: Delete called with id = {0}, {2}", id, uri);
-        var result = await _smsaliceService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("SMSAlice: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No SMSAlice found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _smsaliceService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No SMSAlice found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "SMSAlice: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -7,7 +7,7 @@ public partial class DBAreasJustica : MenphisSI.GerAdv.DBAreasJustica, IDBAreasJ
     {
     }
 
-    public DBAreasJustica(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAreasJustica(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAreasJustica : MenphisSI.GerAdv.DBAreasJustica, IDBAreasJ
     {
     }
 
-    public DBAreasJustica(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAreasJustica(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

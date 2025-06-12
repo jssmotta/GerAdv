@@ -32,7 +32,7 @@ public class ProPartesHealthCheck(IOptions<AppSettings> appSettings, ProPartesSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProPartesHealthCheck(IOptions<AppSettings> appSettings, ProPartesSe
                         if (DBProPartesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(oppCodigo) FROM dbo.ProPartes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(oppCodigo) FROM {"ProPartes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProPartesHealthCheck(IOptions<AppSettings> appSettings, ProPartesSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) oppParte,oppProcesso FROM dbo.ProPartes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) oppParte,oppProcesso FROM {"ProPartes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

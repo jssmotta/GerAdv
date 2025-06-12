@@ -32,7 +32,7 @@ public class OponentesHealthCheck(IOptions<AppSettings> appSettings, OponentesSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OponentesHealthCheck(IOptions<AppSettings> appSettings, OponentesSe
                         if (DBOponentesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(opoCodigo) FROM dbo.Oponentes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(opoCodigo) FROM {"Oponentes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OponentesHealthCheck(IOptions<AppSettings> appSettings, OponentesSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) opoEMPFuncao,opoCTPSNumero,opoSite,opoCTPSSerie,opoNome,opoAdv,opoEMPCliente,opoIDRep,opoPIS,opoContato,opoCNPJ,opoRG,opoJuridica,opoTipo,opoSexo,opoCPF,opoEndereco,opoFone,opoFax,opoCidade,opoBairro,opoCEP,opoInscEst,opoObservacao,opoEMail,opoClass,opoTop,opoEtiqueta,opoBold,opoGUID FROM dbo.Oponentes (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) opoEMPFuncao,opoCTPSNumero,opoSite,opoCTPSSerie,opoNome,opoAdv,opoEMPCliente,opoIDRep,opoPIS,opoContato,opoCNPJ,opoRG,opoJuridica,opoTipo,opoSexo,opoCPF,opoEndereco,opoFone,opoFax,opoCidade,opoBairro,opoCEP,opoInscEst,opoObservacao,opoEMail,opoClass,opoTop,opoEtiqueta,opoBold,opoGUID FROM {"Oponentes".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -1,0 +1,410 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IDivisaoTribunal } from '@/app/GerAdv_TS/DivisaoTribunal/Interfaces/interface.DivisaoTribunal';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { DivisaoTribunalApi } from '../../Apis/ApiDivisaoTribunal';
+import { useValidationsDivisaoTribunal } from '../../Hooks/hookDivisaoTribunal';
+import JusticaComboBox from '@/app/GerAdv_TS/Justica/ComboBox/Justica';
+import AreaComboBox from '@/app/GerAdv_TS/Area/ComboBox/Area';
+import CidadeComboBox from '@/app/GerAdv_TS/Cidade/ComboBox/Cidade';
+import ForoComboBox from '@/app/GerAdv_TS/Foro/ComboBox/Foro';
+import TribunalComboBox from '@/app/GerAdv_TS/Tribunal/ComboBox/Tribunal';
+import { JusticaApi } from '@/app/GerAdv_TS/Justica/Apis/ApiJustica';
+import { AreaApi } from '@/app/GerAdv_TS/Area/Apis/ApiArea';
+import { CidadeApi } from '@/app/GerAdv_TS/Cidade/Apis/ApiCidade';
+import { ForoApi } from '@/app/GerAdv_TS/Foro/Apis/ApiForo';
+import { TribunalApi } from '@/app/GerAdv_TS/Tribunal/Apis/ApiTribunal';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCep from '@/app/components/Inputs/InputCep'
+interface DivisaoTribunalFormProps {
+  divisaotribunalData: IDivisaoTribunal;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const DivisaoTribunalForm: React.FC<DivisaoTribunalFormProps> = ({
+  divisaotribunalData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new DivisaoTribunalApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsDivisaoTribunal();
+const [nomeJustica, setNomeJustica] = useState('');
+const justicaApi = new JusticaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeArea, setNomeArea] = useState('');
+const areaApi = new AreaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeCidade, setNomeCidade] = useState('');
+const cidadeApi = new CidadeApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeForo, setNomeForo] = useState('');
+const foroApi = new ForoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeTribunal, setNomeTribunal] = useState('');
+const tribunalApi = new TribunalApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('justica') > 0) {
+  if (divisaotribunalData.id === 0 && divisaotribunalData.justica == 0) {
+    justicaApi
+    .getById(getParamFromUrl('justica'))
+    .then((response) => {
+      setNomeJustica(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    divisaotribunalData.justica = getParamFromUrl('justica');
+  }
+}
+
+if (getParamFromUrl('area') > 0) {
+  if (divisaotribunalData.id === 0 && divisaotribunalData.area == 0) {
+    areaApi
+    .getById(getParamFromUrl('area'))
+    .then((response) => {
+      setNomeArea(response.data.descricao);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    divisaotribunalData.area = getParamFromUrl('area');
+  }
+}
+
+if (getParamFromUrl('cidade') > 0) {
+  if (divisaotribunalData.id === 0 && divisaotribunalData.cidade == 0) {
+    cidadeApi
+    .getById(getParamFromUrl('cidade'))
+    .then((response) => {
+      setNomeCidade(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    divisaotribunalData.cidade = getParamFromUrl('cidade');
+  }
+}
+
+if (getParamFromUrl('foro') > 0) {
+  if (divisaotribunalData.id === 0 && divisaotribunalData.foro == 0) {
+    foroApi
+    .getById(getParamFromUrl('foro'))
+    .then((response) => {
+      setNomeForo(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    divisaotribunalData.foro = getParamFromUrl('foro');
+  }
+}
+
+if (getParamFromUrl('tribunal') > 0) {
+  if (divisaotribunalData.id === 0 && divisaotribunalData.tribunal == 0) {
+    tribunalApi
+    .getById(getParamFromUrl('tribunal'))
+    .then((response) => {
+      setNomeTribunal(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    divisaotribunalData.tribunal = getParamFromUrl('tribunal');
+  }
+}
+const addValorJustica = (e: any) => {
+  if (e?.id>0)
+    divisaotribunalData.justica = e.id;
+  };
+  const addValorArea = (e: any) => {
+    if (e?.id>0)
+      divisaotribunalData.area = e.id;
+    };
+    const addValorCidade = (e: any) => {
+      if (e?.id>0)
+        divisaotribunalData.cidade = e.id;
+      };
+      const addValorForo = (e: any) => {
+        if (e?.id>0)
+          divisaotribunalData.foro = e.id;
+        };
+        const addValorTribunal = (e: any) => {
+          if (e?.id>0)
+            divisaotribunalData.tribunal = e.id;
+          };
+          const onConfirm = (e: React.FormEvent) => {
+            e.preventDefault();
+            if (e.stopPropagation) e.stopPropagation();
+
+              if (!isSubmitting) {
+                setIsSubmitting(true);
+
+                try {
+                  onSubmit(e);
+                } catch (error) {
+                console.error('Erro ao submeter formulário de DivisaoTribunal:', error);
+                setIsSubmitting(false);
+                if (onError) onError();
+                }
+              }
+            };
+            const handleCancel = () => {
+              if (onReload) {
+                onReload(); // Recarrega os dados originais
+              } else {
+              onClose(); // Comportamento padrão se não há callback de recarga
+            }
+          };
+
+          const handleDirectSave = () => {
+            if (!isSubmitting) {
+              setIsSubmitting(true);
+
+              try {
+                const syntheticEvent = {
+                  preventDefault: () => { }, 
+                  target: document.getElementById(`DivisaoTribunalForm-${divisaotribunalData.id}`)
+                } as unknown as React.FormEvent;
+
+                onSubmit(syntheticEvent);
+              } catch (error) {
+              console.error('Erro ao salvar DivisaoTribunal diretamente:', error);
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = divisaotribunalData?.id == 0 ? 'Editar DivisaoTribunal' : 'Adicionar Divisao Tribunal';
+            }
+          }, [divisaotribunalData.id]);
+          return (
+          <>
+          <style>
+            {!isMobile ? `
+              @media (max-width: 1366px) {
+                html {
+                  zoom: 0.8 !important;
+                }
+              }
+              ` : ``}
+            </style>
+
+            <div className={isMobile ? 'form-container form-container-DivisaoTribunal' : 'form-container form-container-DivisaoTribunal'}>
+
+              <form className='formInputCadInc' id={`DivisaoTribunalForm-${divisaotribunalData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='DivisaoTribunal' data={divisaotribunalData} isSubmitting={isSubmitting} onClose={onClose} formId={`DivisaoTribunalForm-${divisaotribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
+
+
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='numcodigo'
+                    label='NumCodigo'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='numcodigo'
+                    value={divisaotribunalData.numcodigo}
+                    onChange={onChange}
+                    />
+
+
+                    <JusticaComboBox
+                    name={'justica'}
+                    dataForm={divisaotribunalData}
+                    value={divisaotribunalData.justica}
+                    setValue={addValorJustica}
+                    label={'Justica'}
+                    />
+
+                    <InputInput
+                    type='text'
+                    maxLength={255}
+                    id='nomeespecial'
+                    label='NomeEspecial'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='nomeespecial'
+                    value={divisaotribunalData.nomeespecial}
+                    onChange={onChange}
+                    />
+
+
+                    <AreaComboBox
+                    name={'area'}
+                    dataForm={divisaotribunalData}
+                    value={divisaotribunalData.area}
+                    setValue={addValorArea}
+                    label={'Area'}
+                    />
+
+                    <CidadeComboBox
+                    name={'cidade'}
+                    dataForm={divisaotribunalData}
+                    value={divisaotribunalData.cidade}
+                    setValue={addValorCidade}
+                    label={'Cidade'}
+                    />
+
+                    <ForoComboBox
+                    name={'foro'}
+                    dataForm={divisaotribunalData}
+                    value={divisaotribunalData.foro}
+                    setValue={addValorForo}
+                    label={'Foro'}
+                    />
+
+                    <TribunalComboBox
+                    name={'tribunal'}
+                    dataForm={divisaotribunalData}
+                    value={divisaotribunalData.tribunal}
+                    setValue={addValorTribunal}
+                    label={'Tribunal'}
+                    />
+
+                    <InputInput
+                    type='text'
+                    maxLength={5}
+                    id='codigodiv'
+                    label='CodigoDiv'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='codigodiv'
+                    value={divisaotribunalData.codigodiv}
+                    onChange={onChange}
+                    />
+
+
+                    <InputInput
+                    type='text'
+                    maxLength={40}
+                    id='endereco'
+                    label='Endereco'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='endereco'
+                    value={divisaotribunalData.endereco}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={divisaotribunalData.fone}
+                    onChange={onChange}
+                    />
+
+
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fax'
+                    label='Fax'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='fax'
+                    value={divisaotribunalData.fax}
+                    onChange={onChange}
+                    />
+
+
+                    <InputCep
+                    type='text'
+                    id='cep'
+                    label='CEP'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='cep'
+                    value={divisaotribunalData.cep}
+                    onChange={onChange}
+                    />
+
+
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='obs'
+                    label='Obs'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='obs'
+                    value={divisaotribunalData.obs}
+                    onChange={onChange}
+                    />
+
+
+                    <InputInput
+                    type='email'
+                    maxLength={150}
+                    id='email'
+                    label='EMail'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='email'
+                    value={divisaotribunalData.email}
+                    onChange={onChange}
+                    />
+
+
+                    <InputInput
+                    type='text'
+                    maxLength={12}
+                    id='andar'
+                    label='Andar'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='andar'
+                    value={divisaotribunalData.andar}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='DivisaoTribunal' data={divisaotribunalData} isSubmitting={isSubmitting} onClose={onClose} formId={`DivisaoTribunalForm-${divisaotribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/divisaotribunal'} id={divisaotribunalData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

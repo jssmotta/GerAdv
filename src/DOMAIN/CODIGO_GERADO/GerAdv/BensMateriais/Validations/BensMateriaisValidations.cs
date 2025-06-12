@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IBensMateriaisValidation
 {
-    Task<string> ValidateReg(Models.BensMateriais reg, IBensMateriaisService service, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.BensMateriais reg, IBensMateriaisService service, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IBensMateriaisService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class BensMateriaisValidation : IBensMateriaisValidation
 {
-    public async Task<string> ValidateReg(Models.BensMateriais reg, IBensMateriaisService service, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IBensMateriaisService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.BensMateriais reg, IBensMateriaisService service, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
@@ -35,6 +46,16 @@ public class BensMateriaisValidation : IBensMateriaisValidation
             if (regFornecedores == null || regFornecedores.Id != reg.Fornecedor)
             {
                 return $"Fornecedores não encontrado ({regFornecedores?.Id}).";
+            }
+        }
+
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
             }
         }
 

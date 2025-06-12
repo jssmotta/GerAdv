@@ -5,23 +5,24 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IContatoCRMViewReader
 {
-    ContatoCRMViewResponse? Read(int id, SqlConnection oCnn);
-    ContatoCRMViewResponse? Read(string where, SqlConnection oCnn);
+    ContatoCRMViewResponse? Read(int id, MsiSqlConnection oCnn);
+    ContatoCRMViewResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ContatoCRMViewResponse? Read(Entity.DBContatoCRMView dbRec);
     ContatoCRMViewResponse? Read(DBContatoCRMView dbRec);
+    ContatoCRMViewResponseAll? ReadAll(DBContatoCRMView dbRec, DataRow dr);
 }
 
 public partial class ContatoCRMView : IContatoCRMViewReader
 {
-    public ContatoCRMViewResponse? Read(int id, SqlConnection oCnn)
+    public ContatoCRMViewResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBContatoCRMView(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ContatoCRMViewResponse? Read(string where, SqlConnection oCnn)
+    public ContatoCRMViewResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBContatoCRMView(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBContatoCRMView(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -51,6 +52,24 @@ public partial class ContatoCRMView : IContatoCRMViewReader
         }
 
         var contatocrmview = new ContatoCRMViewResponse
+        {
+            Id = dbRec.ID,
+            CGUID = dbRec.FCGUID ?? string.Empty,
+            IP = dbRec.FIP ?? string.Empty,
+        };
+        if (DateTime.TryParse(dbRec.FData, out _))
+            contatocrmview.Data = dbRec.FData;
+        return contatocrmview;
+    }
+
+    public ContatoCRMViewResponseAll? ReadAll(DBContatoCRMView dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var contatocrmview = new ContatoCRMViewResponseAll
         {
             Id = dbRec.ID,
             CGUID = dbRec.FCGUID ?? string.Empty,

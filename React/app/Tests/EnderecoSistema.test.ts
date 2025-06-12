@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useEnderecoSistemaForm, useEnderecoSistemaList, useValidationsEnderecoSistema } from '../GerAdv_TS/EnderecoSistema/Hooks/hookEnderecoSistema';
+import { IEnderecoSistema } from '../GerAdv_TS/EnderecoSistema/Interfaces/interface.EnderecoSistema';
+import { IEnderecoSistemaService } from '../GerAdv_TS/EnderecoSistema/Services/EnderecoSistema.service';
+import { EnderecoSistemaTestEmpty } from '../GerAdv_TS/Models/EnderecoSistema';
+
+
+// Mock do serviço
+const mockEnderecoSistemaService: jest.Mocked<IEnderecoSistemaService> = {
+  fetchEnderecoSistemaById: jest.fn(),
+  saveEnderecoSistema: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteEnderecoSistema: jest.fn(),
+  validateEnderecoSistema: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialEnderecoSistema: IEnderecoSistema = { ...EnderecoSistemaTestEmpty() };
+
+describe('useEnderecoSistemaForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useEnderecoSistemaForm(initialEnderecoSistema, mockEnderecoSistemaService)
+    );
+
+    expect(result.current.data).toEqual(initialEnderecoSistema);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useEnderecoSistemaForm(initialEnderecoSistema, mockEnderecoSistemaService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'motivo',
+        value: 'Novo Endereco Sistema',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.motivo).toBe('Novo Endereco Sistema');
+  });
+
+   test('deve carregar Endereco Sistema por ID', async () => {
+    const mockEnderecoSistema = { ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema Teste' };
+    mockEnderecoSistemaService.fetchEnderecoSistemaById.mockResolvedValue(mockEnderecoSistema);
+
+    const { result } = renderHook(() => 
+      useEnderecoSistemaForm(initialEnderecoSistema, mockEnderecoSistemaService)
+    );
+
+    await act(async () => {
+      await result.current.loadEnderecoSistema(1);
+    });
+
+    expect(mockEnderecoSistemaService.fetchEnderecoSistemaById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockEnderecoSistema);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Endereco Sistema', async () => {
+    const errorMessage = 'Erro ao carregar Endereco Sistema';
+    mockEnderecoSistemaService.fetchEnderecoSistemaById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useEnderecoSistemaForm(initialEnderecoSistema, mockEnderecoSistemaService)
+    );
+
+    await act(async () => {
+      await result.current.loadEnderecoSistema(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useEnderecoSistemaForm(initialEnderecoSistema, mockEnderecoSistemaService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialEnderecoSistema, motivo: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialEnderecoSistema);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useEnderecoSistemaForm(initialEnderecoSistema, mockEnderecoSistemaService)
+    );
+
+    await act(async () => {
+      await result.current.loadEnderecoSistema(0);
+    });
+
+    expect(mockEnderecoSistemaService.fetchEnderecoSistemaById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialEnderecoSistema);
+  });
+});
+
+describe('useEnderecoSistemaList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useEnderecoSistemaList(mockEnderecoSistemaService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema 1' },
+      { ...initialEnderecoSistema, id: 2, motivo: 'Endereco Sistema 2' }
+    ];
+    mockEnderecoSistemaService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useEnderecoSistemaList(mockEnderecoSistemaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockEnderecoSistemaService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockEnderecoSistemaService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useEnderecoSistemaList(mockEnderecoSistemaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema Filtrado' }];
+    const filtro = { motivo: 'Endereco Sistema' };
+    mockEnderecoSistemaService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useEnderecoSistemaList(mockEnderecoSistemaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockEnderecoSistemaService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsEnderecoSistema', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsEnderecoSistema());
+
+    const validData = { ...initialEnderecoSistema, motivo: 'Endereco Sistema Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsEnderecoSistema());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema Teste' }];
+    mockEnderecoSistemaService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useEnderecoSistemaList(mockEnderecoSistemaService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsEnderecoSistema()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

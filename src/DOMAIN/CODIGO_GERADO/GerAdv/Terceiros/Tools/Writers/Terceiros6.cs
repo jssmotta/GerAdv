@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITerceirosWriter
 {
-    Entity.DBTerceiros Write(Models.Terceiros terceiros, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTerceiros Write(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Terceiros : ITerceirosWriter
 {
-    public Entity.DBTerceiros Write(Models.Terceiros terceiros, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Terceiros] WHERE terCodigo={terceiros.Id};", oCnn);
+    }
+
+    public Entity.DBTerceiros Write(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = terceiros.Id.IsEmptyIDNumber() ? new Entity.DBTerceiros() : new Entity.DBTerceiros(terceiros.Id, oCnn);
         dbRec.FProcesso = terceiros.Processo;

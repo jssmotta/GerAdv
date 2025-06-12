@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IProResumosReader
 {
-    ProResumosResponse? Read(int id, SqlConnection oCnn);
-    ProResumosResponse? Read(string where, SqlConnection oCnn);
+    ProResumosResponse? Read(int id, MsiSqlConnection oCnn);
+    ProResumosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProResumosResponse? Read(Entity.DBProResumos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProResumosResponse? Read(DBProResumos dbRec);
+    ProResumosResponseAll? ReadAll(DBProResumos dbRec, DataRow dr);
 }
 
 public partial class ProResumos : IProResumosReader
 {
-    public ProResumosResponse? Read(int id, SqlConnection oCnn)
+    public ProResumosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBProResumos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ProResumosResponse? Read(string where, SqlConnection oCnn)
+    public ProResumosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProResumos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProResumos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -44,18 +46,6 @@ public partial class ProResumos : IProResumosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proresumos.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        proresumos.Auditor = auditor;
         return proresumos;
     }
 
@@ -77,18 +67,28 @@ public partial class ProResumos : IProResumosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             proresumos.Data = dbRec.FData;
-        var auditor = new Auditor
+        return proresumos;
+    }
+
+    public ProResumosResponseAll? ReadAll(DBProResumos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var proresumos = new ProResumosResponseAll
+        {
+            Id = dbRec.ID,
+            Processo = dbRec.FProcesso,
+            Resumo = dbRec.FResumo ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        proresumos.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FData, out _))
+            proresumos.Data = dbRec.FData;
+        proresumos.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return proresumos;
     }
 }

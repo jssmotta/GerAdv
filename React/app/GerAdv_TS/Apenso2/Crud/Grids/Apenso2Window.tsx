@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import Apenso2Inc from '../Inc/Apenso2';
+import { IApenso2 } from '../../Interfaces/interface.Apenso2';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { Apenso2Empty } from '@/app/GerAdv_TS/Models/Apenso2';
+import { useWindow } from '@/app/hooks/useWindows';
+interface Apenso2WindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedApenso2?: IApenso2;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const Apenso2Window: React.FC<Apenso2WindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedApenso2, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Apenso2'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedApenso2?.id ?? 0).toString()}
+>
+<Apenso2Inc
+id={selectedApenso2?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowApenso2: React.FC<Apenso2WindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<Apenso2Window
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedApenso2={Apenso2Empty()}>
+</Apenso2Window>
+)
+};
+export default Apenso2Window;

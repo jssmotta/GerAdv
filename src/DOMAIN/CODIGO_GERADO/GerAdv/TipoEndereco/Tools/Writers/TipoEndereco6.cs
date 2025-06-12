@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoEnderecoWriter
 {
-    Entity.DBTipoEndereco Write(Models.TipoEndereco tipoendereco, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTipoEndereco Write(Models.TipoEndereco tipoendereco, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TipoEndereco : ITipoEnderecoWriter
 {
-    public Entity.DBTipoEndereco Write(Models.TipoEndereco tipoendereco, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TipoEndereco] WHERE tipCodigo={tipoendereco.Id};", oCnn);
+    }
+
+    public Entity.DBTipoEndereco Write(Models.TipoEndereco tipoendereco, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = tipoendereco.Id.IsEmptyIDNumber() ? new Entity.DBTipoEndereco() : new Entity.DBTipoEndereco(tipoendereco.Id, oCnn);
         dbRec.FDescricao = tipoendereco.Descricao;

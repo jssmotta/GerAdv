@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProSucumbenciaWriter
 {
-    Entity.DBProSucumbencia Write(Models.ProSucumbencia prosucumbencia, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProSucumbencia Write(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProSucumbencia : IProSucumbenciaWriter
 {
-    public Entity.DBProSucumbencia Write(Models.ProSucumbencia prosucumbencia, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProSucumbencia] WHERE scbCodigo={prosucumbencia.Id};", oCnn);
+    }
+
+    public Entity.DBProSucumbencia Write(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = prosucumbencia.Id.IsEmptyIDNumber() ? new Entity.DBProSucumbencia() : new Entity.DBProSucumbencia(prosucumbencia.Id, oCnn);
         dbRec.FProcesso = prosucumbencia.Processo;

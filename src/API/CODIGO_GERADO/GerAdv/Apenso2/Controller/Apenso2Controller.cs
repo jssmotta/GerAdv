@@ -14,7 +14,7 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Apenso2", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("Apenso2", "GetAll", $"max = {max}", uri);
         var result = await _apenso2Service.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterApenso2 filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("Apenso2: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("Apenso2: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _apenso2Service.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("Apenso2: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("Apenso2: GetById called with id = {0}, {1}", id, uri);
         var result = await _apenso2Service.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Apenso2 regApenso2, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Apenso2", "AddAndUpdate", regApenso2, uri);
-        var result = await _apenso2Service.AddAndUpdate(regApenso2, uri);
-        if (result == null)
+        //_logger.LogInfo("Apenso2", "AddAndUpdate", regApenso2, uri);
+        try
         {
-            _logger.Warn("Apenso2: AddAndUpdate failed to add or update Apenso2, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _apenso2Service.AddAndUpdate(regApenso2, uri);
+            if (result == null)
+            {
+                _logger.Warn("Apenso2: AddAndUpdate failed to add or update Apenso2, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Apenso2: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("Apenso2: Delete called with id = {0}, {2}", id, uri);
-        var result = await _apenso2Service.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("Apenso2: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No Apenso2 found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _apenso2Service.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No Apenso2 found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Apenso2: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

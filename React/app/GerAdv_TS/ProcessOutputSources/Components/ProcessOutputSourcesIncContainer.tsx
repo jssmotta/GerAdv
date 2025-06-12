@@ -1,0 +1,22 @@
+﻿'use client';
+import { INavigator } from '@/app/interfaces/INavigator';
+import ProcessOutputSourcesInc from '../Crud/Inc/ProcessOutputSources';
+import { getParamFromUrl } from '@/app/tools/helpers';
+interface ProcessOutputSourcesIncContainerProps {
+  id: number;
+  navigator: INavigator;
+}
+const ProcessOutputSourcesIncContainer: React.FC<ProcessOutputSourcesIncContainerProps> = ({ id, navigator }) => {
+  const handleClose = () => {};
+  const handleSuccess = () => {};
+  const handleError = () => {};
+  return (
+  <ProcessOutputSourcesInc
+  id={id}
+  onClose={handleClose}
+  onSuccess={handleSuccess}
+  onError={handleError}
+  />
+);
+};
+export default ProcessOutputSourcesIncContainer;

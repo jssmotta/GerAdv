@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPoderJudiciarioAssociadoWriter
 {
-    Entity.DBPoderJudiciarioAssociado Write(Models.PoderJudiciarioAssociado poderjudiciarioassociado, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPoderJudiciarioAssociado Write(Models.PoderJudiciarioAssociado poderjudiciarioassociado, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PoderJudiciarioAssociadoResponse poderjudiciarioassociado, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class PoderJudiciarioAssociado : IPoderJudiciarioAssociadoWriter
 {
-    public Entity.DBPoderJudiciarioAssociado Write(Models.PoderJudiciarioAssociado poderjudiciarioassociado, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PoderJudiciarioAssociadoResponse poderjudiciarioassociado, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[PoderJudiciarioAssociado] WHERE pjaCodigo={poderjudiciarioassociado.Id};", oCnn);
+    }
+
+    public Entity.DBPoderJudiciarioAssociado Write(Models.PoderJudiciarioAssociado poderjudiciarioassociado, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = poderjudiciarioassociado.Id.IsEmptyIDNumber() ? new Entity.DBPoderJudiciarioAssociado() : new Entity.DBPoderJudiciarioAssociado(poderjudiciarioassociado.Id, oCnn);
         dbRec.FJustica = poderjudiciarioassociado.Justica;

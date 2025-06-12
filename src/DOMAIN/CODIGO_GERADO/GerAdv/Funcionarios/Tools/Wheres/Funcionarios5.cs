@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IFuncionariosWhere
 {
-    FuncionariosResponse Read(string where, SqlConnection oCnn);
+    FuncionariosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Funcionarios : IFuncionariosWhere
 {
-    public FuncionariosResponse Read(string where, SqlConnection oCnn)
+    public FuncionariosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBFuncionarios(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBFuncionarios(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var funcionarios = new FuncionariosResponse
         {
             Id = dbRec.ID,
@@ -56,18 +56,6 @@ public partial class Funcionarios : IFuncionariosWhere
             funcionarios.DtNasc = dbRec.FDtNasc;
         if (DateTime.TryParse(dbRec.FData, out _))
             funcionarios.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        funcionarios.Auditor = auditor;
         return funcionarios;
     }
 }

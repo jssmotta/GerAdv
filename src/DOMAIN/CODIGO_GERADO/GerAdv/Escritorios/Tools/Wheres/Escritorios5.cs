@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IEscritoriosWhere
 {
-    EscritoriosResponse Read(string where, SqlConnection oCnn);
+    EscritoriosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Escritorios : IEscritoriosWhere
 {
-    public EscritoriosResponse Read(string where, SqlConnection oCnn)
+    public EscritoriosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBEscritorios(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBEscritorios(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var escritorios = new EscritoriosResponse
         {
             Id = dbRec.ID,
@@ -39,18 +39,6 @@ public partial class Escritorios : IEscritoriosWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        escritorios.Auditor = auditor;
         return escritorios;
     }
 }

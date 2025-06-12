@@ -7,7 +7,7 @@ public partial class DBPreClientes : MenphisSI.GerAdv.DBPreClientes, IDBPreClien
     {
     }
 
-    public DBPreClientes(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBPreClientes(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBPreClientes : MenphisSI.GerAdv.DBPreClientes, IDBPreClien
     {
     }
 
-    public DBPreClientes(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBPreClientes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

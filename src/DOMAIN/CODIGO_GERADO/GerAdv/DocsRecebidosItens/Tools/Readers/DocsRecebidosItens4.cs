@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IDocsRecebidosItensReader
 {
-    DocsRecebidosItensResponse? Read(int id, SqlConnection oCnn);
-    DocsRecebidosItensResponse? Read(string where, SqlConnection oCnn);
+    DocsRecebidosItensResponse? Read(int id, MsiSqlConnection oCnn);
+    DocsRecebidosItensResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DocsRecebidosItensResponse? Read(Entity.DBDocsRecebidosItens dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DocsRecebidosItensResponse? Read(DBDocsRecebidosItens dbRec);
+    DocsRecebidosItensResponseAll? ReadAll(DBDocsRecebidosItens dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class DocsRecebidosItens : IDocsRecebidosItensReader
 {
-    public DocsRecebidosItensResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) driCodigo, driNome FROM {"DocsRecebidosItens".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}driNome");
+        }
+
+        return query.ToString();
+    }
+
+    public DocsRecebidosItensResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBDocsRecebidosItens(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public DocsRecebidosItensResponse? Read(string where, SqlConnection oCnn)
+    public DocsRecebidosItensResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBDocsRecebidosItens(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBDocsRecebidosItens(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -44,18 +73,6 @@ public partial class DocsRecebidosItens : IDocsRecebidosItensReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        docsrecebidositens.Auditor = auditor;
         return docsrecebidositens;
     }
 
@@ -77,18 +94,27 @@ public partial class DocsRecebidosItens : IDocsRecebidosItensReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return docsrecebidositens;
+    }
+
+    public DocsRecebidosItensResponseAll? ReadAll(DBDocsRecebidosItens dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var docsrecebidositens = new DocsRecebidosItensResponseAll
+        {
+            Id = dbRec.ID,
+            ContatoCRM = dbRec.FContatoCRM,
+            Nome = dbRec.FNome ?? string.Empty,
+            Devolvido = dbRec.FDevolvido,
+            SeraDevolvido = dbRec.FSeraDevolvido,
+            Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        docsrecebidositens.Auditor = auditor;
         return docsrecebidositens;
     }
 }

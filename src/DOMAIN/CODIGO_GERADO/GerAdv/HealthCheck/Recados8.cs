@@ -32,7 +32,7 @@ public class RecadosHealthCheck(IOptions<AppSettings> appSettings, RecadosServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class RecadosHealthCheck(IOptions<AppSettings> appSettings, RecadosServic
                         if (DBRecadosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(recCodigo) FROM dbo.Recados (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(recCodigo) FROM {"Recados".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class RecadosHealthCheck(IOptions<AppSettings> appSettings, RecadosServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) recClienteNome,recDe,recPara,recAssunto,recConcluido,recProcesso,recCliente,recRecado,recUrgente,recImportante,recHora,recData,recVoltara,recPessoal,recRetornar,recRetornoData,recEmotion,recInternetID,recUploaded,recNatureza,recBIU,recAguardarRetorno,recAguardarRetornoPara,recAguardarRetornoOK,recParaID,recNaoPublicavel,recIsContatoCRM,recMasterID,recListaPara,recTyped,recAssuntoRecado,recHistorico,recContatoCRM,recLigacoes,recAgenda,recGUID FROM dbo.Recados (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) recClienteNome,recDe,recPara,recAssunto,recConcluido,recProcesso,recCliente,recRecado,recUrgente,recImportante,recHora,recData,recVoltara,recPessoal,recRetornar,recRetornoData,recEmotion,recInternetID,recUploaded,recNatureza,recBIU,recAguardarRetorno,recAguardarRetornoPara,recAguardarRetornoOK,recParaID,recNaoPublicavel,recIsContatoCRM,recMasterID,recListaPara,recTyped,recAssuntoRecado,recHistorico,recContatoCRM,recLigacoes,recAgenda,recGUID FROM {"Recados".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

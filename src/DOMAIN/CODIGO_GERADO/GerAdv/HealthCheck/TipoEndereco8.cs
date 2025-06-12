@@ -32,7 +32,7 @@ public class TipoEnderecoHealthCheck(IOptions<AppSettings> appSettings, TipoEnde
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class TipoEnderecoHealthCheck(IOptions<AppSettings> appSettings, TipoEnde
                         if (DBTipoEnderecoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(tipCodigo) FROM dbo.TipoEndereco (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(tipCodigo) FROM {"TipoEndereco".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class TipoEnderecoHealthCheck(IOptions<AppSettings> appSettings, TipoEnde
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) tipDescricao,tipGUID FROM dbo.TipoEndereco (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) tipDescricao,tipGUID FROM {"TipoEndereco".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

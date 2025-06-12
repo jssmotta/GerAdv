@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEventoPrazoAgendaWriter
 {
-    Entity.DBEventoPrazoAgenda Write(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, SqlConnection oCnn);
+    Entity.DBEventoPrazoAgenda Write(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class EventoPrazoAgenda : IEventoPrazoAgendaWriter
 {
-    public Entity.DBEventoPrazoAgenda Write(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, SqlConnection oCnn)
+    public void Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[EventoPrazoAgenda] WHERE epaCodigo={eventoprazoagenda.Id};", oCnn);
+    }
+
+    public Entity.DBEventoPrazoAgenda Write(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = eventoprazoagenda.Id.IsEmptyIDNumber() ? new Entity.DBEventoPrazoAgenda() : new Entity.DBEventoPrazoAgenda(eventoprazoagenda.Id, oCnn);
         dbRec.FNome = eventoprazoagenda.Nome;

@@ -7,7 +7,7 @@ public partial class DBAgendaFinanceiro : MenphisSI.GerAdv.DBAgendaFinanceiro, I
     {
     }
 
-    public DBAgendaFinanceiro(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAgendaFinanceiro(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAgendaFinanceiro : MenphisSI.GerAdv.DBAgendaFinanceiro, I
     {
     }
 
-    public DBAgendaFinanceiro(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAgendaFinanceiro(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

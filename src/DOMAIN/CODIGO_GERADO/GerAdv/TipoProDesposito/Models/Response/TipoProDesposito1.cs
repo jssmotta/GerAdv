@@ -15,3 +15,16 @@ public partial class TipoProDespositoResponse
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = "";
 }
+
+[Serializable]
+public partial class TipoProDespositoResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - tpdNome - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
+}

@@ -14,7 +14,7 @@ public partial class TipoStatusBiuController(ITipoStatusBiuService tipostatusbiu
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoStatusBiu", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("TipoStatusBiu", "GetAll", $"max = {max}", uri);
         var result = await _tipostatusbiuService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class TipoStatusBiuController(ITipoStatusBiuService tipostatusbiu
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoStatusBiu filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoStatusBiu: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("TipoStatusBiu: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipostatusbiuService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class TipoStatusBiuController(ITipoStatusBiuService tipostatusbiu
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("TipoStatusBiu: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("TipoStatusBiu: GetById called with id = {0}, {1}", id, uri);
         var result = await _tipostatusbiuService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class TipoStatusBiuController(ITipoStatusBiuService tipostatusbiu
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("TipoStatusBiu: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _tipostatusbiuService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No TipoStatusBiu found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoStatusBiu? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"TipoStatusBiu: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"TipoStatusBiu: GetListN called, max {max}, {filtro} uri");
         var result = await _tipostatusbiuService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class TipoStatusBiuController(ITipoStatusBiuService tipostatusbiu
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoStatusBiu regTipoStatusBiu, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoStatusBiu", "AddAndUpdate", regTipoStatusBiu, uri);
-        var result = await _tipostatusbiuService.AddAndUpdate(regTipoStatusBiu, uri);
-        if (result == null)
+        //_logger.LogInfo("TipoStatusBiu", "AddAndUpdate", regTipoStatusBiu, uri);
+        try
         {
-            _logger.Warn("TipoStatusBiu: AddAndUpdate failed to add or update TipoStatusBiu, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _tipostatusbiuService.AddAndUpdate(regTipoStatusBiu, uri);
+            if (result == null)
+            {
+                _logger.Warn("TipoStatusBiu: AddAndUpdate failed to add or update TipoStatusBiu, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoStatusBiu: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoStatusBiu: Delete called with id = {0}, {2}", id, uri);
-        var result = await _tipostatusbiuService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("TipoStatusBiu: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No TipoStatusBiu found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _tipostatusbiuService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No TipoStatusBiu found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoStatusBiu: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBGUTAtividades
 {
     public const string CadastroGuid = "e7a4d6ee-0997-47e2-b930-ca18cfda4159";
-#region AdministrativeMethods_GUTAtividades
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE agtCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "GUTAtividades";
     public const string CamposSqlX = " GUTAtividades.* ";
     public const string SensivelCamposSqlX = " GUTAtividades.* ";

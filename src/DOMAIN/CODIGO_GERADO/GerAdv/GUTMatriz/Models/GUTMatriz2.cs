@@ -27,3 +27,31 @@ public partial class GUTMatriz
     [JsonPropertyName("valor")]
     public int Valor { get; set; }
 }
+
+[Serializable]
+public partial class GUTMatrizAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - gutGUTTipo  
+    /// </summary>
+    [JsonPropertyName("guttipo")]
+    public int GUTTipo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - gutDescricao - tamanho máximo: 150 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - gutValor  
+    /// </summary>
+    [JsonPropertyName("valor")]
+    public int Valor { get; set; }
+
+    [JsonPropertyName("nomeguttipo")]
+    public string NomeGUTTipo { get; set; } = string.Empty;
+}

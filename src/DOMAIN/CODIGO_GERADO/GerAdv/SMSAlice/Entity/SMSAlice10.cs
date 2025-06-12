@@ -7,7 +7,7 @@ public partial class DBSMSAlice : MenphisSI.GerAdv.DBSMSAlice, IDBSMSAlice
     {
     }
 
-    public DBSMSAlice(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBSMSAlice(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBSMSAlice : MenphisSI.GerAdv.DBSMSAlice, IDBSMSAlice
     {
     }
 
-    public DBSMSAlice(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBSMSAlice(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

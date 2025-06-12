@@ -7,7 +7,7 @@ public partial class DBProcessos : MenphisSI.GerAdv.DBProcessos, IDBProcessos
     {
     }
 
-    public DBProcessos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProcessos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProcessos : MenphisSI.GerAdv.DBProcessos, IDBProcessos
     {
     }
 
-    public DBProcessos(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProcessos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

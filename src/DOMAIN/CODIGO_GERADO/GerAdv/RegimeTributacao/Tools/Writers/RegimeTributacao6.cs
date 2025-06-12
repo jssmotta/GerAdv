@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IRegimeTributacaoWriter
 {
-    Entity.DBRegimeTributacao Write(Models.RegimeTributacao regimetributacao, int auditorQuem, SqlConnection oCnn);
+    Entity.DBRegimeTributacao Write(Models.RegimeTributacao regimetributacao, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(RegimeTributacaoResponse regimetributacao, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class RegimeTributacao : IRegimeTributacaoWriter
 {
-    public Entity.DBRegimeTributacao Write(Models.RegimeTributacao regimetributacao, int auditorQuem, SqlConnection oCnn)
+    public void Delete(RegimeTributacaoResponse regimetributacao, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[RegimeTributacao] WHERE rdtCodigo={regimetributacao.Id};", oCnn);
+    }
+
+    public Entity.DBRegimeTributacao Write(Models.RegimeTributacao regimetributacao, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = regimetributacao.Id.IsEmptyIDNumber() ? new Entity.DBRegimeTributacao() : new Entity.DBRegimeTributacao(regimetributacao.Id, oCnn);
         dbRec.FNome = regimetributacao.Nome;

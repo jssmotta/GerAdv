@@ -32,7 +32,7 @@ public class NENotasHealthCheck(IOptions<AppSettings> appSettings, NENotasServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class NENotasHealthCheck(IOptions<AppSettings> appSettings, NENotasServic
                         if (DBNENotasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(nepCodigo) FROM dbo.NENotas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(nepCodigo) FROM {"NENotas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class NENotasHealthCheck(IOptions<AppSettings> appSettings, NENotasServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) nepApenso,nepPrecatoria,nepInstancia,nepMovPro,nepNome,nepNotaExpedida,nepRevisada,nepProcesso,nepPalavraChave,nepData,nepNotaPublicada FROM dbo.NENotas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) nepApenso,nepPrecatoria,nepInstancia,nepMovPro,nepNome,nepNotaExpedida,nepRevisada,nepProcesso,nepPalavraChave,nepData,nepNotaPublicada FROM {"NENotas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

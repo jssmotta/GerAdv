@@ -7,7 +7,7 @@ public partial class DBTipoEnderecoSistema : MenphisSI.GerAdv.DBTipoEnderecoSist
     {
     }
 
-    public DBTipoEnderecoSistema(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBTipoEnderecoSistema(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBTipoEnderecoSistema : MenphisSI.GerAdv.DBTipoEnderecoSist
     {
     }
 
-    public DBTipoEnderecoSistema(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBTipoEnderecoSistema(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

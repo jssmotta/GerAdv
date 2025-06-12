@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProPartesWriter
 {
-    Entity.DBProPartes Write(Models.ProPartes propartes, SqlConnection oCnn);
+    Entity.DBProPartes Write(Models.ProPartes propartes, MsiSqlConnection oCnn);
+    void Delete(ProPartesResponse propartes, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProPartes : IProPartesWriter
 {
-    public Entity.DBProPartes Write(Models.ProPartes propartes, SqlConnection oCnn)
+    public void Delete(ProPartesResponse propartes, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProPartes] WHERE oppCodigo={propartes.Id};", oCnn);
+    }
+
+    public Entity.DBProPartes Write(Models.ProPartes propartes, MsiSqlConnection oCnn)
     {
         var dbRec = propartes.Id.IsEmptyIDNumber() ? new Entity.DBProPartes() : new Entity.DBProPartes(propartes.Id, oCnn);
         dbRec.FParte = propartes.Parte;

@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IViaRecebimentoWhere
 {
-    ViaRecebimentoResponse Read(string where, SqlConnection oCnn);
+    ViaRecebimentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class ViaRecebimento : IViaRecebimentoWhere
 {
-    public ViaRecebimentoResponse Read(string where, SqlConnection oCnn)
+    public ViaRecebimentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBViaRecebimento(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBViaRecebimento(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var viarecebimento = new ViaRecebimentoResponse
         {
             Id = dbRec.ID,

@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IRamalValidation
 {
-    Task<string> ValidateReg(Models.Ramal reg, IRamalService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Ramal reg, IRamalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IRamalService service, ILigacoesService ligacoesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class RamalValidation : IRamalValidation
 {
-    public async Task<string> ValidateReg(Models.Ramal reg, IRamalService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IRamalService service, ILigacoesService ligacoesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var ligacoesExists = await ligacoesService.Filter(new Filters.FilterLigacoes { Ramal = id }, uri);
+        if (ligacoesExists != null && ligacoesExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Ramal reg, IRamalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

@@ -32,7 +32,41 @@ public partial class FaseResponse
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class FaseResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - fasJustica  
+    /// </summary>
+    [JsonPropertyName("justica")]
+    public int Justica { get; set; }
+
+    /// <summary>
+    /// Sem descrição - fasArea  
+    /// </summary>
+    [JsonPropertyName("area")]
+    public int Area { get; set; }
+
+    /// <summary>
+    /// Sem descrição - fasDescricao - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
+
+    /// <summary>
+    /// GUId - fasGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
+
+    [JsonPropertyName("nomejustica")]
+    public string NomeJustica { get; set; } = string.Empty;
+
+    [JsonPropertyName("descricaoarea")]
+    public string DescricaoArea { get; set; } = string.Empty;
 }

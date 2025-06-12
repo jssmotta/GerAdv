@@ -32,7 +32,7 @@ public class TipoRecursoHealthCheck(IOptions<AppSettings> appSettings, TipoRecur
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class TipoRecursoHealthCheck(IOptions<AppSettings> appSettings, TipoRecur
                         if (DBTipoRecursoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(trcCodigo) FROM dbo.TipoRecurso (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(trcCodigo) FROM {"TipoRecurso".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class TipoRecursoHealthCheck(IOptions<AppSettings> appSettings, TipoRecur
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) trcJustica,trcArea,trcDescricao,trcGUID FROM dbo.TipoRecurso (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) trcJustica,trcArea,trcDescricao,trcGUID FROM {"TipoRecurso".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

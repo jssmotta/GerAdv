@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useUltimosProcessosForm, useUltimosProcessosList, useValidationsUltimosProcessos } from '../GerAdv_TS/UltimosProcessos/Hooks/hookUltimosProcessos';
+import { IUltimosProcessos } from '../GerAdv_TS/UltimosProcessos/Interfaces/interface.UltimosProcessos';
+import { IUltimosProcessosService } from '../GerAdv_TS/UltimosProcessos/Services/UltimosProcessos.service';
+import { UltimosProcessosTestEmpty } from '../GerAdv_TS/Models/UltimosProcessos';
+
+
+// Mock do serviço
+const mockUltimosProcessosService: jest.Mocked<IUltimosProcessosService> = {
+  fetchUltimosProcessosById: jest.fn(),
+  saveUltimosProcessos: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteUltimosProcessos: jest.fn(),
+  validateUltimosProcessos: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialUltimosProcessos: IUltimosProcessos = { ...UltimosProcessosTestEmpty() };
+
+describe('useUltimosProcessosForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useUltimosProcessosForm(initialUltimosProcessos, mockUltimosProcessosService)
+    );
+
+    expect(result.current.data).toEqual(initialUltimosProcessos);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useUltimosProcessosForm(initialUltimosProcessos, mockUltimosProcessosService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'campo',
+        value: 'Novo Ultimos Processos',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.campo).toBe('Novo Ultimos Processos');
+  });
+
+   test('deve carregar Ultimos Processos por ID', async () => {
+    const mockUltimosProcessos = { ...initialUltimosProcessos, id: 1, campo: 'Ultimos Processos Teste' };
+    mockUltimosProcessosService.fetchUltimosProcessosById.mockResolvedValue(mockUltimosProcessos);
+
+    const { result } = renderHook(() => 
+      useUltimosProcessosForm(initialUltimosProcessos, mockUltimosProcessosService)
+    );
+
+    await act(async () => {
+      await result.current.loadUltimosProcessos(1);
+    });
+
+    expect(mockUltimosProcessosService.fetchUltimosProcessosById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockUltimosProcessos);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Ultimos Processos', async () => {
+    const errorMessage = 'Erro ao carregar Ultimos Processos';
+    mockUltimosProcessosService.fetchUltimosProcessosById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useUltimosProcessosForm(initialUltimosProcessos, mockUltimosProcessosService)
+    );
+
+    await act(async () => {
+      await result.current.loadUltimosProcessos(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useUltimosProcessosForm(initialUltimosProcessos, mockUltimosProcessosService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialUltimosProcessos, campo: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialUltimosProcessos);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useUltimosProcessosForm(initialUltimosProcessos, mockUltimosProcessosService)
+    );
+
+    await act(async () => {
+      await result.current.loadUltimosProcessos(0);
+    });
+
+    expect(mockUltimosProcessosService.fetchUltimosProcessosById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialUltimosProcessos);
+  });
+});
+
+describe('useUltimosProcessosList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useUltimosProcessosList(mockUltimosProcessosService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialUltimosProcessos, id: 1, campo: 'Ultimos Processos 1' },
+      { ...initialUltimosProcessos, id: 2, campo: 'Ultimos Processos 2' }
+    ];
+    mockUltimosProcessosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useUltimosProcessosList(mockUltimosProcessosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockUltimosProcessosService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockUltimosProcessosService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useUltimosProcessosList(mockUltimosProcessosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialUltimosProcessos, id: 1, campo: 'Ultimos Processos Filtrado' }];
+    const filtro = { campo: 'Ultimos Processos' };
+    mockUltimosProcessosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useUltimosProcessosList(mockUltimosProcessosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockUltimosProcessosService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsUltimosProcessos', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsUltimosProcessos());
+
+    const validData = { ...initialUltimosProcessos, campo: 'Ultimos Processos Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsUltimosProcessos());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialUltimosProcessos, id: 1, campo: 'Ultimos Processos Teste' }];
+    mockUltimosProcessosService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useUltimosProcessosList(mockUltimosProcessosService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsUltimosProcessos()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

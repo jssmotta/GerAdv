@@ -33,3 +33,37 @@ public partial class PontoVirtualResponse
     [JsonPropertyName("key")]
     public string Key { get; set; } = "";
 }
+
+[Serializable]
+public partial class PontoVirtualResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pvtOperador  
+    /// </summary>
+    [JsonPropertyName("operador")]
+    public int Operador { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pvtHoraEntrada  
+    /// </summary>
+    [JsonPropertyName("horaentrada")]
+    public string HoraEntrada { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - pvtHoraSaida  
+    /// </summary>
+    [JsonPropertyName("horasaida")]
+    public string HoraSaida { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - pvtKey - tamanho máximo: 23 
+    /// </summary>
+    [JsonPropertyName("key")]
+    public string Key { get; set; } = "";
+
+    [JsonPropertyName("nomeoperador")]
+    public string NomeOperador { get; set; } = string.Empty;
+}

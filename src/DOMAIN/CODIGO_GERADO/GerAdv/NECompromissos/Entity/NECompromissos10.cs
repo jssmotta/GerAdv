@@ -7,7 +7,7 @@ public partial class DBNECompromissos : MenphisSI.GerAdv.DBNECompromissos, IDBNE
     {
     }
 
-    public DBNECompromissos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBNECompromissos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBNECompromissos : MenphisSI.GerAdv.DBNECompromissos, IDBNE
     {
     }
 
-    public DBNECompromissos(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBNECompromissos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

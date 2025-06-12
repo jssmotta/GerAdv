@@ -7,7 +7,7 @@ public partial class DBEndTit : MenphisSI.GerAdv.DBEndTit, IDBEndTit
     {
     }
 
-    public DBEndTit(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBEndTit(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBEndTit : MenphisSI.GerAdv.DBEndTit, IDBEndTit
     {
     }
 
-    public DBEndTit(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBEndTit(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

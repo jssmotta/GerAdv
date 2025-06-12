@@ -7,7 +7,7 @@ public partial class DBCargos : MenphisSI.GerAdv.DBCargos, IDBCargos
     {
     }
 
-    public DBCargos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBCargos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBCargos : MenphisSI.GerAdv.DBCargos, IDBCargos
     {
     }
 
-    public DBCargos(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBCargos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

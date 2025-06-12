@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IUltimosProcessosWriter
 {
-    Entity.DBUltimosProcessos Write(Models.UltimosProcessos ultimosprocessos, SqlConnection oCnn);
+    Entity.DBUltimosProcessos Write(Models.UltimosProcessos ultimosprocessos, MsiSqlConnection oCnn);
+    void Delete(UltimosProcessosResponse ultimosprocessos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class UltimosProcessos : IUltimosProcessosWriter
 {
-    public Entity.DBUltimosProcessos Write(Models.UltimosProcessos ultimosprocessos, SqlConnection oCnn)
+    public void Delete(UltimosProcessosResponse ultimosprocessos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[UltimosProcessos] WHERE ultCodigo={ultimosprocessos.Id};", oCnn);
+    }
+
+    public Entity.DBUltimosProcessos Write(Models.UltimosProcessos ultimosprocessos, MsiSqlConnection oCnn)
     {
         var dbRec = ultimosprocessos.Id.IsEmptyIDNumber() ? new Entity.DBUltimosProcessos() : new Entity.DBUltimosProcessos(ultimosprocessos.Id, oCnn);
         dbRec.FProcesso = ultimosprocessos.Processo;

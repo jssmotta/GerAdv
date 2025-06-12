@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IFuncaoWriter
 {
-    Entity.DBFuncao Write(Models.Funcao funcao, int auditorQuem, SqlConnection oCnn);
+    Entity.DBFuncao Write(Models.Funcao funcao, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(FuncaoResponse funcao, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Funcao : IFuncaoWriter
 {
-    public Entity.DBFuncao Write(Models.Funcao funcao, int auditorQuem, SqlConnection oCnn)
+    public void Delete(FuncaoResponse funcao, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Funcao] WHERE funCodigo={funcao.Id};", oCnn);
+    }
+
+    public Entity.DBFuncao Write(Models.Funcao funcao, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = funcao.Id.IsEmptyIDNumber() ? new Entity.DBFuncao() : new Entity.DBFuncao(funcao.Id, oCnn);
         dbRec.FDescricao = funcao.Descricao;

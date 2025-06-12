@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import PrecatoriaInc from '../Inc/Precatoria';
+import { IPrecatoria } from '../../Interfaces/interface.Precatoria';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { PrecatoriaEmpty } from '@/app/GerAdv_TS/Models/Precatoria';
+import { useWindow } from '@/app/hooks/useWindows';
+interface PrecatoriaWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedPrecatoria?: IPrecatoria;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const PrecatoriaWindow: React.FC<PrecatoriaWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedPrecatoria, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Precatoria'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={699}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedPrecatoria?.id ?? 0).toString()}
+>
+<PrecatoriaInc
+id={selectedPrecatoria?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowPrecatoria: React.FC<PrecatoriaWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<PrecatoriaWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedPrecatoria={PrecatoriaEmpty()}>
+</PrecatoriaWindow>
+)
+};
+export default PrecatoriaWindow;

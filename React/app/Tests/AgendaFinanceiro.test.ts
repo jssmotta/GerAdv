@@ -1,0 +1,281 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useAgendaFinanceiroForm, useAgendaFinanceiroList, useValidationsAgendaFinanceiro } from '../GerAdv_TS/AgendaFinanceiro/Hooks/hookAgendaFinanceiro';
+import { IAgendaFinanceiro } from '../GerAdv_TS/AgendaFinanceiro/Interfaces/interface.AgendaFinanceiro';
+import { IAgendaFinanceiroService } from '../GerAdv_TS/AgendaFinanceiro/Services/AgendaFinanceiro.service';
+import { AgendaFinanceiroTestEmpty } from '../GerAdv_TS/Models/AgendaFinanceiro';
+
+
+// Mock do serviço
+const mockAgendaFinanceiroService: jest.Mocked<IAgendaFinanceiroService> = {
+  fetchAgendaFinanceiroById: jest.fn(),
+  saveAgendaFinanceiro: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteAgendaFinanceiro: jest.fn(),
+  validateAgendaFinanceiro: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialAgendaFinanceiro: IAgendaFinanceiro = { ...AgendaFinanceiroTestEmpty() };
+
+describe('useAgendaFinanceiroForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    expect(result.current.data).toEqual(initialAgendaFinanceiro);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'compromisso',
+        value: 'Novo Agenda Financeiro',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.compromisso).toBe('Novo Agenda Financeiro');
+  });
+
+   test('deve carregar Agenda Financeiro por ID', async () => {
+    const mockAgendaFinanceiro = { ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro Teste' };
+    mockAgendaFinanceiroService.fetchAgendaFinanceiroById.mockResolvedValue(mockAgendaFinanceiro);
+
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    await act(async () => {
+      await result.current.loadAgendaFinanceiro(1);
+    });
+
+    expect(mockAgendaFinanceiroService.fetchAgendaFinanceiroById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockAgendaFinanceiro);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Agenda Financeiro', async () => {
+    const errorMessage = 'Erro ao carregar Agenda Financeiro';
+    mockAgendaFinanceiroService.fetchAgendaFinanceiroById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    await act(async () => {
+      await result.current.loadAgendaFinanceiro(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialAgendaFinanceiro, compromisso: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialAgendaFinanceiro);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    await act(async () => {
+      await result.current.loadAgendaFinanceiro(0);
+    });
+
+    expect(mockAgendaFinanceiroService.fetchAgendaFinanceiroById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialAgendaFinanceiro);
+  });
+});
+
+describe('useAgendaFinanceiroList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroList(mockAgendaFinanceiroService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro 1' },
+      { ...initialAgendaFinanceiro, id: 2, compromisso: 'Agenda Financeiro 2' }
+    ];
+    mockAgendaFinanceiroService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroList(mockAgendaFinanceiroService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockAgendaFinanceiroService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockAgendaFinanceiroService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroList(mockAgendaFinanceiroService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro Filtrado' }];
+    const filtro = { compromisso: 'Agenda Financeiro' };
+    mockAgendaFinanceiroService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroList(mockAgendaFinanceiroService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockAgendaFinanceiroService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsAgendaFinanceiro', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsAgendaFinanceiro());
+
+    const validData = { ...initialAgendaFinanceiro, compromisso: 'Agenda Financeiro Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsAgendaFinanceiro());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro Teste' }];
+    mockAgendaFinanceiroService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useAgendaFinanceiroList(mockAgendaFinanceiroService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsAgendaFinanceiro()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useAgendaFinanceiroForm(initialAgendaFinanceiro, mockAgendaFinanceiroService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'liberado',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.liberado).toBe(true);
+  });
+
+

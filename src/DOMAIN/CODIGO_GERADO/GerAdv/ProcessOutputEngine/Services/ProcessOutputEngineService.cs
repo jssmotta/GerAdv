@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProcessOutputEngineService(IOptions<AppSettings> appSettings, IProcessOutputEngineReader reader, IProcessOutputEngineValidation validation, IProcessOutputEngineWriter writer, HybridCache cache) : IProcessOutputEngineService, IDisposable
+public partial class ProcessOutputEngineService(IOptions<AppSettings> appSettings, IProcessOutputEngineReader reader, IProcessOutputEngineValidation validation, IProcessOutputEngineWriter writer, IProcessOutputRequestService processoutputrequestService, HybridCache cache, IMemoryCache memory) : IProcessOutputEngineService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ProcessOutputEngineResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ProcessOutputEngineResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProcessOutputEngine: URI inválida");
@@ -25,72 +26,70 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ProcessOutputEngineResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ProcessOutputEngineResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBProcessOutputEngine.SensivelCamposSqlX} 
-                   FROM {DBProcessOutputEngine.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBProcessOutputEngineDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBProcessOutputEngine>(max);
-        await foreach (var item in DBProcessOutputEngine.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBProcessOutputEngine.SensivelCamposSqlX}
+                   FROM {DBProcessOutputEngine.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                    
+                   {where}
+                   ORDER BY poeNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ProcessOutputEngineResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBProcessOutputEngine(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var processoutputengine = reader.ReadAll(dbRec, item);
+                if (processoutputengine != null)
+                {
+                    lista.Add(processoutputengine);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ProcessOutputEngineResponse>> Filter(Filters.FilterProcessOutputEngine filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ProcessOutputEngineResponseAll>> Filter(Filters.FilterProcessOutputEngine filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ProcessOutputEngine: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-ProcessOutputEngine-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ProcessOutputEngineResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBProcessOutputEngine.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ProcessOutputEngineResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProcessOutputEngine: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ProcessOutputEngineResponse();
         }
@@ -100,36 +99,23 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-ProcessOutputEngine-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ProcessOutputEngine-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ProcessOutputEngine - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ProcessOutputEngine - {uri}-: GetById");
         }
     }
 
-    private async Task<ProcessOutputEngineResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ProcessOutputEngineResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ProcessOutputEngineResponse?> AddAndUpdate([FromBody] Models.ProcessOutputEngine regProcessOutputEngine, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProcessOutputEngine: URI inválida");
@@ -143,8 +129,7 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -164,86 +149,75 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
     public async Task<ProcessOutputEngineResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProcessOutputEngine: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var processoutputengine = reader.Read(id, oCnn);
-            if (processoutputengine != null)
+            var deleteValidation = await validation.CanDelete(id, this, processoutputrequestService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBProcessOutputEngine().DeletarItem(processoutputengine.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var processoutputengine = reader.Read(id, oCnn);
+            try
+            {
+                if (processoutputengine != null)
+                {
+                    writer.Delete(processoutputengine, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return processoutputengine;
         });
     }
 
-    public async Task<ProcessOutputEngineResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProcessOutputEngine: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBProcessOutputEngineDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessOutputEngine? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-1
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            throw new Exception("ProcessOutputEngine: URI inválida");
-        }
-
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-ProcessOutputEngine-{max}-{cWhere.GetHashCode()}-GetListN";
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-ProcessOutputEngine-{max}-{where.GetHashCode()}-{parameters.GetHashCode()}GetListN";
         var entryOptions = new HybridCacheEntryOptions
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBProcessOutputEngine.ListarN(cWhere, DBProcessOutputEngineDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBProcessOutputEngineDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -283,23 +257,74 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
         }
     }
 
-    private static string WFiltro(Filters.FilterProcessOutputEngine filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessOutputEngine filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : DBProcessOutputEngineDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.Database.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.DatabaseSql(filtro.Database);
-        cWhere += filtro.Tabela.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.TabelaSql(filtro.Tabela);
-        cWhere += filtro.Campo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.CampoSql(filtro.Campo);
-        cWhere += filtro.Valor.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.ValorSql(filtro.Valor);
-        cWhere += filtro.Output.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.OutputSql(filtro.Output);
-        cWhere += filtro.OutputSource == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.OutputSourceSql(filtro.OutputSource);
-        cWhere += filtro.IDModulo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.IDModuloSql(filtro.IDModulo);
-        cWhere += filtro.MyID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.MyIDSql(filtro.MyID);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessOutputEngineDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Database))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.Database)}", filtro.Database));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Tabela))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.Tabela)}", filtro.Tabela));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Campo))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.Campo)}", filtro.Campo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Valor))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.Valor)}", filtro.Valor));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Output))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.Output)}", filtro.Output));
+        }
+
+        if (filtro.OutputSource != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.OutputSource)}", filtro.OutputSource));
+        }
+
+        if (filtro.IDModulo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.IDModulo)}", filtro.IDModulo));
+        }
+
+        if (filtro.MyID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.MyID)}", filtro.MyID));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputEngineDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : $"{DBProcessOutputEngineDicInfo.Nome} = @{nameof(DBProcessOutputEngineDicInfo.Nome)}";
+        cWhere += filtro.Database.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.Database} = @{nameof(DBProcessOutputEngineDicInfo.Database)}";
+        cWhere += filtro.Tabela.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.Tabela} = @{nameof(DBProcessOutputEngineDicInfo.Tabela)}";
+        cWhere += filtro.Campo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.Campo} = @{nameof(DBProcessOutputEngineDicInfo.Campo)}";
+        cWhere += filtro.Valor.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.Valor} = @{nameof(DBProcessOutputEngineDicInfo.Valor)}";
+        cWhere += filtro.Output.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.Output} = @{nameof(DBProcessOutputEngineDicInfo.Output)}";
+        cWhere += filtro.OutputSource == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.OutputSource} = @{nameof(DBProcessOutputEngineDicInfo.OutputSource)}";
+        cWhere += filtro.IDModulo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.IDModulo} = @{nameof(DBProcessOutputEngineDicInfo.IDModulo)}";
+        cWhere += filtro.MyID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.MyID} = @{nameof(DBProcessOutputEngineDicInfo.MyID)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessOutputEngineDicInfo.GUID} = @{nameof(DBProcessOutputEngineDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

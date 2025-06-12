@@ -26,7 +26,32 @@ public partial class GUTPeriodicidadeStatus
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class GUTPeriodicidadeStatusAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pgsGUTAtividade  
+    /// </summary>
+    [JsonPropertyName("gutatividade")]
+    public int GUTAtividade { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pgsDataRealizado  
+    /// </summary>
+    [JsonPropertyName("datarealizado")]
+    public string DataRealizado { get; set; } = "";
+
+    /// <summary>
+    /// GUId - pgsGUID - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
+
+    [JsonPropertyName("nomegutatividades")]
+    public string NomeGUTAtividades { get; set; } = string.Empty;
 }

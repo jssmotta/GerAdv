@@ -7,7 +7,7 @@ public partial class DBSetor : MenphisSI.GerAdv.DBSetor, IDBSetor
     {
     }
 
-    public DBSetor(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBSetor(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBSetor : MenphisSI.GerAdv.DBSetor, IDBSetor
     {
     }
 
-    public DBSetor(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBSetor(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

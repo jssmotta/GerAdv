@@ -1,0 +1,463 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useGruposEmpresasForm, useGruposEmpresasList, useValidationsGruposEmpresas } from '../GerAdv_TS/GruposEmpresas/Hooks/hookGruposEmpresas';
+import { IGruposEmpresas } from '../GerAdv_TS/GruposEmpresas/Interfaces/interface.GruposEmpresas';
+import { IGruposEmpresasService } from '../GerAdv_TS/GruposEmpresas/Services/GruposEmpresas.service';
+import { GruposEmpresasTestEmpty } from '../GerAdv_TS/Models/GruposEmpresas';
+import { useGruposEmpresasComboBox } from '../GerAdv_TS/GruposEmpresas/Hooks/hookGruposEmpresas';
+
+// Mock do serviço
+const mockGruposEmpresasService: jest.Mocked<IGruposEmpresasService> = {
+  fetchGruposEmpresasById: jest.fn(),
+  saveGruposEmpresas: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteGruposEmpresas: jest.fn(),
+  validateGruposEmpresas: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialGruposEmpresas: IGruposEmpresas = { ...GruposEmpresasTestEmpty() };
+
+describe('useGruposEmpresasForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    expect(result.current.data).toEqual(initialGruposEmpresas);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'descricao',
+        value: 'Novo Grupos Empresas',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.descricao).toBe('Novo Grupos Empresas');
+  });
+
+   test('deve carregar Grupos Empresas por ID', async () => {
+    const mockGruposEmpresas = { ...initialGruposEmpresas, id: 1, descricao: 'Grupos Empresas Teste' };
+    mockGruposEmpresasService.fetchGruposEmpresasById.mockResolvedValue(mockGruposEmpresas);
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    await act(async () => {
+      await result.current.loadGruposEmpresas(1);
+    });
+
+    expect(mockGruposEmpresasService.fetchGruposEmpresasById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockGruposEmpresas);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Grupos Empresas', async () => {
+    const errorMessage = 'Erro ao carregar Grupos Empresas';
+    mockGruposEmpresasService.fetchGruposEmpresasById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    await act(async () => {
+      await result.current.loadGruposEmpresas(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialGruposEmpresas, descricao: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialGruposEmpresas);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    await act(async () => {
+      await result.current.loadGruposEmpresas(0);
+    });
+
+    expect(mockGruposEmpresasService.fetchGruposEmpresasById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialGruposEmpresas);
+  });
+});
+
+describe('useGruposEmpresasList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasList(mockGruposEmpresasService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialGruposEmpresas, id: 1, descricao: 'Grupos Empresas 1' },
+      { ...initialGruposEmpresas, id: 2, descricao: 'Grupos Empresas 2' }
+    ];
+    mockGruposEmpresasService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasList(mockGruposEmpresasService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockGruposEmpresasService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockGruposEmpresasService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasList(mockGruposEmpresasService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialGruposEmpresas, id: 1, descricao: 'Grupos Empresas Filtrado' }];
+    const filtro = { descricao: 'Grupos Empresas' };
+    mockGruposEmpresasService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasList(mockGruposEmpresasService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockGruposEmpresasService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsGruposEmpresas', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsGruposEmpresas());
+
+    const validData = { ...initialGruposEmpresas, descricao: 'Grupos Empresas Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar descricao vazio', () => {
+    const { result } = renderHook(() => useValidationsGruposEmpresas());
+
+    const invalidData = { ...initialGruposEmpresas, descricao: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Descricao não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar descricao muito longo', () => {
+    const { result } = renderHook(() => useValidationsGruposEmpresas());
+
+    const invalidData = { 
+      ...initialGruposEmpresas, 
+      descricao: 'a'.repeat(50+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Descricao não pode ter mais de 50 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsGruposEmpresas());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialGruposEmpresas, id: 1, descricao: 'Grupos Empresas Teste' }];
+    mockGruposEmpresasService.getAll.mockResolvedValue(mockData);
+    mockGruposEmpresasService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useGruposEmpresasList(mockGruposEmpresasService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsGruposEmpresas()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Grupos Empresas Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Grupos Empresas Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasForm(initialGruposEmpresas, mockGruposEmpresasService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'inativo',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.inativo).toBe(true);
+  });
+
+
+  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Grupos Empresas 1' },
+      { id: 2, descricao: 'Grupos Empresas 2' }
+    ];
+    mockGruposEmpresasService.getList.mockResolvedValue(mockOptions as IGruposEmpresas[]);
+
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Grupos Empresas 1' },
+        { id: 2, nome: 'Grupos Empresas 2' }
+      ]);
+    });
+
+    expect(mockGruposEmpresasService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Grupos Empresas ABC' },
+      { id: 2, descricao: 'Grupos Empresas XYZ' }
+    ];
+    mockGruposEmpresasService.getList.mockResolvedValue(mockOptions as IGruposEmpresas[]);   
+
+
+ const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Grupos Empresas ABC' },
+        { id: 2, nome: 'Grupos Empresas XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Grupos Empresas ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Grupos Empresas ABC' },
+      { id: 2, descricao: 'Grupos Empresas XYZ' }
+    ];
+    mockGruposEmpresasService.getList.mockResolvedValue(mockOptions as IGruposEmpresas[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Grupos Empresas ABC' },
+        { id: 2, nome: 'Grupos Empresas XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Grupos Empresas ABC' },
+          {id: 2, nome: 'Grupos Empresas XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService)
+    );
+
+    const newValue = { id: 1, descricao: 'Grupos Empresas Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, descricao: 'Grupos Empresas Inicial' };
+    
+    const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useGruposEmpresasComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, descricao: 'Grupos Empresas Inicial' };
+    
+    const { result } = renderHook(() => 
+      useGruposEmpresasComboBox(mockGruposEmpresasService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

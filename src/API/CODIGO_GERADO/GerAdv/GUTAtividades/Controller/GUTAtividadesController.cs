@@ -14,7 +14,7 @@ public partial class GUTAtividadesController(IGUTAtividadesService gutatividades
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("GUTAtividades", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("GUTAtividades", "GetAll", $"max = {max}", uri);
         var result = await _gutatividadesService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class GUTAtividadesController(IGUTAtividadesService gutatividades
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTAtividades filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("GUTAtividades: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("GUTAtividades: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _gutatividadesService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class GUTAtividadesController(IGUTAtividadesService gutatividades
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("GUTAtividades: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("GUTAtividades: GetById called with id = {0}, {1}", id, uri);
         var result = await _gutatividadesService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class GUTAtividadesController(IGUTAtividadesService gutatividades
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("GUTAtividades: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _gutatividadesService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No GUTAtividades found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTAtividades? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"GUTAtividades: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"GUTAtividades: GetListN called, max {max}, {filtro} uri");
         var result = await _gutatividadesService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class GUTAtividadesController(IGUTAtividadesService gutatividades
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.GUTAtividades regGUTAtividades, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("GUTAtividades", "AddAndUpdate", regGUTAtividades, uri);
-        var result = await _gutatividadesService.AddAndUpdate(regGUTAtividades, uri);
-        if (result == null)
+        //_logger.LogInfo("GUTAtividades", "AddAndUpdate", regGUTAtividades, uri);
+        try
         {
-            _logger.Warn("GUTAtividades: AddAndUpdate failed to add or update GUTAtividades, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _gutatividadesService.AddAndUpdate(regGUTAtividades, uri);
+            if (result == null)
+            {
+                _logger.Warn("GUTAtividades: AddAndUpdate failed to add or update GUTAtividades, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GUTAtividades: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("GUTAtividades: Delete called with id = {0}, {2}", id, uri);
-        var result = await _gutatividadesService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("GUTAtividades: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No GUTAtividades found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _gutatividadesService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No GUTAtividades found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GUTAtividades: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

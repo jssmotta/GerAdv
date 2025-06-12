@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBPaises
 {
     public const string CadastroGuid = "89c91314-ee22-4255-9853-b50afcf4b408";
-#region AdministrativeMethods_Paises
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE paiCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Paises";
     public const string CamposSqlX = " Paises.* ";
     public const string SensivelCamposSqlX = " Paises.* ";

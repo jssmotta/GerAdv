@@ -32,7 +32,7 @@ public class ProResumosHealthCheck(IOptions<AppSettings> appSettings, ProResumos
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProResumosHealthCheck(IOptions<AppSettings> appSettings, ProResumos
                         if (DBProResumosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(prsCodigo) FROM dbo.ProResumos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(prsCodigo) FROM {"ProResumos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProResumosHealthCheck(IOptions<AppSettings> appSettings, ProResumos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) prsProcesso,prsData,prsResumo,prsTipoResumo,prsBold,prsGUID FROM dbo.ProResumos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) prsProcesso,prsData,prsResumo,prsTipoResumo,prsBold,prsGUID FROM {"ProResumos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

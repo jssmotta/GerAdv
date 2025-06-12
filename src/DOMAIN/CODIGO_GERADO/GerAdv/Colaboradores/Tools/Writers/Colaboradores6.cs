@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IColaboradoresWriter
 {
-    Entity.DBColaboradores Write(Models.Colaboradores colaboradores, int auditorQuem, SqlConnection oCnn);
+    Entity.DBColaboradores Write(Models.Colaboradores colaboradores, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Colaboradores : IColaboradoresWriter
 {
-    public Entity.DBColaboradores Write(Models.Colaboradores colaboradores, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Colaboradores] WHERE colCodigo={colaboradores.Id};", oCnn);
+    }
+
+    public Entity.DBColaboradores Write(Models.Colaboradores colaboradores, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = colaboradores.Id.IsEmptyIDNumber() ? new Entity.DBColaboradores() : new Entity.DBColaboradores(colaboradores.Id, oCnn);
         dbRec.FCargo = colaboradores.Cargo;

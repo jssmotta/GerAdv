@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IContaCorrenteReader reader, IContaCorrenteValidation validation, IContaCorrenteWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IContaCorrenteService, IDisposable
+public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IContaCorrenteReader reader, IContaCorrenteValidation validation, IContaCorrenteWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IContaCorrenteService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ContaCorrenteResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ContaCorrenteResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ContaCorrente: URI inválida");
@@ -26,72 +27,73 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, ICo
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ContaCorrenteResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ContaCorrenteResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBContaCorrente.SensivelCamposSqlX} 
-                   FROM {DBContaCorrente.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBContaCorrenteDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBContaCorrente>(max);
-        await foreach (var item in DBContaCorrente.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBContaCorrente.SensivelCamposSqlX}, proNroPasta,cliNome
+                   FROM {DBContaCorrente.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ctoProcesso
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ctoCliente
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ContaCorrenteResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBContaCorrente(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var contacorrente = reader.ReadAll(dbRec, item);
+                if (contacorrente != null)
+                {
+                    lista.Add(contacorrente);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ContaCorrenteResponse>> Filter(Filters.FilterContaCorrente filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ContaCorrenteResponseAll>> Filter(Filters.FilterContaCorrente filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ContaCorrente: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-ContaCorrente-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ContaCorrenteResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBContaCorrente.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ContaCorrenteResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ContaCorrente: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ContaCorrenteResponse();
         }
@@ -101,39 +103,24 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, ICo
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-ContaCorrente-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ContaCorrente-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ContaCorrente - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ContaCorrente - {uri}-: GetById");
         }
     }
 
-    private async Task<ContaCorrenteResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ContaCorrenteResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ContaCorrenteResponse?> AddAndUpdate([FromBody] Models.ContaCorrente regContaCorrente, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ContaCorrente: URI inválida");
@@ -147,8 +134,7 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, ICo
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,31 +154,47 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, ICo
     public async Task<ContaCorrenteResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ContaCorrente: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var contacorrente = reader.Read(id, oCnn);
-            if (contacorrente != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBContaCorrente().DeletarItem(contacorrente.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var contacorrente = reader.Read(id, oCnn);
+            try
+            {
+                if (contacorrente != null)
+                {
+                    writer.Delete(contacorrente, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return contacorrente;
@@ -225,26 +227,92 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, ICo
         }
     }
 
-    private static string WFiltro(Filters.FilterContaCorrente filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterContaCorrente filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.CIAcordo == -2147483648 ? string.Empty : DBContaCorrenteDicInfo.CIAcordoSql(filtro.CIAcordo);
-        cWhere += filtro.IDContrato == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.IDContratoSql(filtro.IDContrato);
-        cWhere += filtro.QuitadoID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.QuitadoIDSql(filtro.QuitadoID);
-        cWhere += filtro.DebitoID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.DebitoIDSql(filtro.DebitoID);
-        cWhere += filtro.LivroCaixaID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.LivroCaixaIDSql(filtro.LivroCaixaID);
-        cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.ParcelaX == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.ParcelaXSql(filtro.ParcelaX);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Historico.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.HistoricoSql(filtro.Historico);
-        cWhere += filtro.IDHTrab == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.IDHTrabSql(filtro.IDHTrab);
-        cWhere += filtro.NroParcelas == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.NroParcelasSql(filtro.NroParcelas);
-        cWhere += filtro.ParcelaPrincipalID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.ParcelaPrincipalIDSql(filtro.ParcelaPrincipalID);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContaCorrenteDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.CIAcordo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.CIAcordo)}", filtro.CIAcordo));
+        }
+
+        if (filtro.IDContrato != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.IDContrato)}", filtro.IDContrato));
+        }
+
+        if (filtro.QuitadoID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.QuitadoID)}", filtro.QuitadoID));
+        }
+
+        if (filtro.DebitoID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.DebitoID)}", filtro.DebitoID));
+        }
+
+        if (filtro.LivroCaixaID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.LivroCaixaID)}", filtro.LivroCaixaID));
+        }
+
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (filtro.ParcelaX != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.ParcelaX)}", filtro.ParcelaX));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Historico))
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.Historico)}", filtro.Historico));
+        }
+
+        if (filtro.IDHTrab != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.IDHTrab)}", filtro.IDHTrab));
+        }
+
+        if (filtro.NroParcelas != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.NroParcelas)}", filtro.NroParcelas));
+        }
+
+        if (filtro.ParcelaPrincipalID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.ParcelaPrincipalID)}", filtro.ParcelaPrincipalID));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.CIAcordo == int.MinValue ? string.Empty : $"{DBContaCorrenteDicInfo.CIAcordo} = @{nameof(DBContaCorrenteDicInfo.CIAcordo)}";
+        cWhere += filtro.IDContrato == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.IDContrato} = @{nameof(DBContaCorrenteDicInfo.IDContrato)}";
+        cWhere += filtro.QuitadoID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.QuitadoID} = @{nameof(DBContaCorrenteDicInfo.QuitadoID)}";
+        cWhere += filtro.DebitoID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.DebitoID} = @{nameof(DBContaCorrenteDicInfo.DebitoID)}";
+        cWhere += filtro.LivroCaixaID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.LivroCaixaID} = @{nameof(DBContaCorrenteDicInfo.LivroCaixaID)}";
+        cWhere += filtro.Processo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.Processo} = @{nameof(DBContaCorrenteDicInfo.Processo)}";
+        cWhere += filtro.ParcelaX == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.ParcelaX} = @{nameof(DBContaCorrenteDicInfo.ParcelaX)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.Cliente} = @{nameof(DBContaCorrenteDicInfo.Cliente)}";
+        cWhere += filtro.Historico.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.Historico} = @{nameof(DBContaCorrenteDicInfo.Historico)}";
+        cWhere += filtro.IDHTrab == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.IDHTrab} = @{nameof(DBContaCorrenteDicInfo.IDHTrab)}";
+        cWhere += filtro.NroParcelas == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.NroParcelas} = @{nameof(DBContaCorrenteDicInfo.NroParcelas)}";
+        cWhere += filtro.ParcelaPrincipalID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.ParcelaPrincipalID} = @{nameof(DBContaCorrenteDicInfo.ParcelaPrincipalID)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContaCorrenteDicInfo.GUID} = @{nameof(DBContaCorrenteDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

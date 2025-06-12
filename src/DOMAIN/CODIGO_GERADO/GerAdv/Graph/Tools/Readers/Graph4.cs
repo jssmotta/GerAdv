@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IGraphReader
 {
-    GraphResponse? Read(int id, SqlConnection oCnn);
-    GraphResponse? Read(string where, SqlConnection oCnn);
+    GraphResponse? Read(int id, MsiSqlConnection oCnn);
+    GraphResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GraphResponse? Read(Entity.DBGraph dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GraphResponse? Read(DBGraph dbRec);
+    GraphResponseAll? ReadAll(DBGraph dbRec, DataRow dr);
 }
 
 public partial class Graph : IGraphReader
 {
-    public GraphResponse? Read(int id, SqlConnection oCnn)
+    public GraphResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBGraph(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public GraphResponse? Read(string where, SqlConnection oCnn)
+    public GraphResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGraph(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGraph(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -41,18 +43,6 @@ public partial class Graph : IGraphReader
             Imagem = dbRec.FImagem,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        graph.Auditor = auditor;
         return graph;
     }
 
@@ -71,18 +61,24 @@ public partial class Graph : IGraphReader
             Imagem = dbRec.FImagem,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return graph;
+    }
+
+    public GraphResponseAll? ReadAll(DBGraph dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var graph = new GraphResponseAll
+        {
+            Id = dbRec.ID,
+            Tabela = dbRec.FTabela ?? string.Empty,
+            TabelaId = dbRec.FTabelaId,
+            Imagem = dbRec.FImagem,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        graph.Auditor = auditor;
         return graph;
     }
 }

@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IEnderecosWhere
 {
-    EnderecosResponse Read(string where, SqlConnection oCnn);
+    EnderecosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Enderecos : IEnderecosWhere
 {
-    public EnderecosResponse Read(string where, SqlConnection oCnn)
+    public EnderecosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBEnderecos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBEnderecos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var enderecos = new EnderecosResponse
         {
             Id = dbRec.ID,
@@ -42,18 +42,6 @@ public partial class Enderecos : IEnderecosWhere
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out _))
             enderecos.DtNasc = dbRec.FDtNasc;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        enderecos.Auditor = auditor;
         return enderecos;
     }
 }

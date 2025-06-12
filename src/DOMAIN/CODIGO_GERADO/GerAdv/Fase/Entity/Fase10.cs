@@ -7,7 +7,7 @@ public partial class DBFase : MenphisSI.GerAdv.DBFase, IDBFase
     {
     }
 
-    public DBFase(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBFase(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBFase : MenphisSI.GerAdv.DBFase, IDBFase
     {
     }
 
-    public DBFase(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBFase(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

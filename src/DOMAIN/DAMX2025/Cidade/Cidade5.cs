@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBCidade
 {
     public const string CadastroGuid = "91c4691e-a73c-4ed9-9b6f-4db05b38c736";
-#region AdministrativeMethods_Cidade
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE cidCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Cidade";
     public const string CamposSqlX = " Cidade.* ";
     public const string SensivelCamposSqlX = " Cidade.* ";

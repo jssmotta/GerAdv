@@ -32,7 +32,7 @@ public class ProcessOutPutIDsHealthCheck(IOptions<AppSettings> appSettings, Proc
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProcessOutPutIDsHealthCheck(IOptions<AppSettings> appSettings, Proc
                         if (DBProcessOutPutIDsDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(poiCodigo) FROM dbo.ProcessOutPutIDs (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(poiCodigo) FROM {"ProcessOutPutIDs".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProcessOutPutIDsHealthCheck(IOptions<AppSettings> appSettings, Proc
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) poiNome,poiGUID FROM dbo.ProcessOutPutIDs (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) poiNome,poiGUID FROM {"ProcessOutPutIDs".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

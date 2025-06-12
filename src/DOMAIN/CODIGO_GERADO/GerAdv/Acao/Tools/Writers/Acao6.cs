@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAcaoWriter
 {
-    Entity.DBAcao Write(Models.Acao acao, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAcao Write(Models.Acao acao, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AcaoResponse acao, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Acao : IAcaoWriter
 {
-    public Entity.DBAcao Write(Models.Acao acao, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AcaoResponse acao, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Acao] WHERE acaCodigo={acao.Id};", oCnn);
+    }
+
+    public Entity.DBAcao Write(Models.Acao acao, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = acao.Id.IsEmptyIDNumber() ? new Entity.DBAcao() : new Entity.DBAcao(acao.Id, oCnn);
         dbRec.FJustica = acao.Justica;

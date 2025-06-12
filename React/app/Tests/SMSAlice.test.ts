@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useSMSAliceForm, useSMSAliceList, useValidationsSMSAlice } from '../GerAdv_TS/SMSAlice/Hooks/hookSMSAlice';
+import { ISMSAlice } from '../GerAdv_TS/SMSAlice/Interfaces/interface.SMSAlice';
+import { ISMSAliceService } from '../GerAdv_TS/SMSAlice/Services/SMSAlice.service';
+import { SMSAliceTestEmpty } from '../GerAdv_TS/Models/SMSAlice';
+import { useSMSAliceComboBox } from '../GerAdv_TS/SMSAlice/Hooks/hookSMSAlice';
+
+// Mock do serviço
+const mockSMSAliceService: jest.Mocked<ISMSAliceService> = {
+  fetchSMSAliceById: jest.fn(),
+  saveSMSAlice: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteSMSAlice: jest.fn(),
+  validateSMSAlice: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialSMSAlice: ISMSAlice = { ...SMSAliceTestEmpty() };
+
+describe('useSMSAliceForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useSMSAliceForm(initialSMSAlice, mockSMSAliceService)
+    );
+
+    expect(result.current.data).toEqual(initialSMSAlice);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useSMSAliceForm(initialSMSAlice, mockSMSAliceService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo S M S Alice',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo S M S Alice');
+  });
+
+   test('deve carregar S M S Alice por ID', async () => {
+    const mockSMSAlice = { ...initialSMSAlice, id: 1, nome: 'S M S Alice Teste' };
+    mockSMSAliceService.fetchSMSAliceById.mockResolvedValue(mockSMSAlice);
+
+    const { result } = renderHook(() => 
+      useSMSAliceForm(initialSMSAlice, mockSMSAliceService)
+    );
+
+    await act(async () => {
+      await result.current.loadSMSAlice(1);
+    });
+
+    expect(mockSMSAliceService.fetchSMSAliceById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockSMSAlice);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar S M S Alice', async () => {
+    const errorMessage = 'Erro ao carregar S M S Alice';
+    mockSMSAliceService.fetchSMSAliceById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useSMSAliceForm(initialSMSAlice, mockSMSAliceService)
+    );
+
+    await act(async () => {
+      await result.current.loadSMSAlice(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useSMSAliceForm(initialSMSAlice, mockSMSAliceService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialSMSAlice, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialSMSAlice);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useSMSAliceForm(initialSMSAlice, mockSMSAliceService)
+    );
+
+    await act(async () => {
+      await result.current.loadSMSAlice(0);
+    });
+
+    expect(mockSMSAliceService.fetchSMSAliceById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialSMSAlice);
+  });
+});
+
+describe('useSMSAliceList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useSMSAliceList(mockSMSAliceService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialSMSAlice, id: 1, nome: 'S M S Alice 1' },
+      { ...initialSMSAlice, id: 2, nome: 'S M S Alice 2' }
+    ];
+    mockSMSAliceService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useSMSAliceList(mockSMSAliceService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockSMSAliceService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockSMSAliceService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useSMSAliceList(mockSMSAliceService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialSMSAlice, id: 1, nome: 'S M S Alice Filtrado' }];
+    const filtro = { nome: 'S M S Alice' };
+    mockSMSAliceService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useSMSAliceList(mockSMSAliceService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockSMSAliceService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsSMSAlice', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsSMSAlice());
+
+    const validData = { ...initialSMSAlice, nome: 'S M S Alice Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsSMSAlice());
+
+    const invalidData = { ...initialSMSAlice, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsSMSAlice());
+
+    const invalidData = { 
+      ...initialSMSAlice, 
+      nome: 'a'.repeat(150+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 150 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsSMSAlice());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialSMSAlice, id: 1, nome: 'S M S Alice Teste' }];
+    mockSMSAliceService.getAll.mockResolvedValue(mockData);
+    mockSMSAliceService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useSMSAliceList(mockSMSAliceService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsSMSAlice()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'S M S Alice Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'S M S Alice Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'S M S Alice 1' },
+      { id: 2, nome: 'S M S Alice 2' }
+    ];
+    mockSMSAliceService.getList.mockResolvedValue(mockOptions as ISMSAlice[]);
+
+
+    const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'S M S Alice 1' },
+        { id: 2, nome: 'S M S Alice 2' }
+      ]);
+    });
+
+    expect(mockSMSAliceService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'S M S Alice ABC' },
+      { id: 2, nome: 'S M S Alice XYZ' }
+    ];
+    mockSMSAliceService.getList.mockResolvedValue(mockOptions as ISMSAlice[]);   
+
+
+ const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'S M S Alice ABC' },
+        { id: 2, nome: 'S M S Alice XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'S M S Alice ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'S M S Alice ABC' },
+      { id: 2, nome: 'S M S Alice XYZ' }
+    ];
+    mockSMSAliceService.getList.mockResolvedValue(mockOptions as ISMSAlice[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'S M S Alice ABC' },
+        { id: 2, nome: 'S M S Alice XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'S M S Alice ABC' },
+          {id: 2, nome: 'S M S Alice XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService)
+    );
+
+    const newValue = { id: 1, nome: 'S M S Alice Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'S M S Alice Inicial' };
+    
+    const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useSMSAliceComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'S M S Alice Inicial' };
+    
+    const { result } = renderHook(() => 
+      useSMSAliceComboBox(mockSMSAliceService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

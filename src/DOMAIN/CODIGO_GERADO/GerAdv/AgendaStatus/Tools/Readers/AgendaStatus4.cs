@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IAgendaStatusReader
 {
-    AgendaStatusResponse? Read(int id, SqlConnection oCnn);
-    AgendaStatusResponse? Read(string where, SqlConnection oCnn);
+    AgendaStatusResponse? Read(int id, MsiSqlConnection oCnn);
+    AgendaStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AgendaStatusResponse? Read(Entity.DBAgendaStatus dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AgendaStatusResponse? Read(DBAgendaStatus dbRec);
+    AgendaStatusResponseAll? ReadAll(DBAgendaStatus dbRec, DataRow dr);
 }
 
 public partial class AgendaStatus : IAgendaStatusReader
 {
-    public AgendaStatusResponse? Read(int id, SqlConnection oCnn)
+    public AgendaStatusResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBAgendaStatus(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public AgendaStatusResponse? Read(string where, SqlConnection oCnn)
+    public AgendaStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBAgendaStatus(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBAgendaStatus(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -39,18 +41,6 @@ public partial class AgendaStatus : IAgendaStatusReader
             Agenda = dbRec.FAgenda,
             Completed = dbRec.FCompleted,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        agendastatus.Auditor = auditor;
         return agendastatus;
     }
 
@@ -67,18 +57,22 @@ public partial class AgendaStatus : IAgendaStatusReader
             Agenda = dbRec.FAgenda,
             Completed = dbRec.FCompleted,
         };
-        var auditor = new Auditor
+        return agendastatus;
+    }
+
+    public AgendaStatusResponseAll? ReadAll(DBAgendaStatus dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var agendastatus = new AgendaStatusResponseAll
+        {
+            Id = dbRec.ID,
+            Agenda = dbRec.FAgenda,
+            Completed = dbRec.FCompleted,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        agendastatus.Auditor = auditor;
         return agendastatus;
     }
 }

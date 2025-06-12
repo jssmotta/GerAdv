@@ -1,0 +1,75 @@
+﻿// Tracking: CrudInc.tsx.txt
+'use client';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { AcaoApi } from '../../Apis/ApiAcao';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { NotificationService } from '@/app/services/notification.service';
+import { NotificationComponent } from '@/app/components/Cruds/NotificationComponent';
+import { IAcaoFormProps } from '../../Interfaces/interface.Acao';
+import { AcaoService } from '../../Services/Acao.service';
+import { useAcaoForm, useValidationsAcao } from '../../Hooks/hookAcao';
+import { AcaoEmpty } from '../../../Models/Acao';
+import { AcaoForm } from '../Forms/Acao';
+
+const AcaoInc: React.FC<IAcaoFormProps> = ({ id, onClose, onError, onSuccess }) => {
+  const { systemContext } = useSystemContext();
+  const isMobile = useIsMobile();
+  const router = useRouter();
+  const acaoService = new AcaoService(
+  new AcaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+);
+const notificationService = new NotificationService();
+const { data, handleChange, loadAcao } = useAcaoForm(
+AcaoEmpty(), 
+acaoService
+);
+useEffect(() => {
+  loadAcao(id);
+}, [id]);
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const savedAcao = await acaoService.saveAcao(data);
+    if (savedAcao.id) {
+      notificationService.showNotification('Registro salvo com sucesso!', 'success');
+      const PDelayApiWrite = 333;
+      setTimeout(() => {
+        if (onSuccess) {
+          onSuccess(savedAcao);
+        }
+      }, PDelayApiWrite);
+    } else {
+    if (onError) {
+      onError();
+    }
+    notificationService.showNotification('Error salvando registro.', 'error');
+  }
+} catch (error) {
+if (onError) {
+  onError();
+}
+notificationService.showNotification('Error salvando registro.', 'error');
+}
+};
+const handleReload = () => {
+  loadAcao(id);
+};
+return (
+<>
+<NotificationComponent notificationService={notificationService} />
+<AcaoForm
+acaoData={data}
+onChange={handleChange}
+onSubmit={handleSubmit}
+onClose={onClose}
+onError={onError}
+onReload={handleReload}
+onSuccess={onSuccess}
+/>
+</>
+);
+};
+export default AcaoInc;

@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IColaboradoresReader reader, IColaboradoresValidation validation, IColaboradoresWriter writer, ICargosReader cargosReader, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IColaboradoresService, IDisposable
+public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IColaboradoresReader reader, IColaboradoresValidation validation, IColaboradoresWriter writer, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, IAgendaRecordsService agendarecordsService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IColaboradoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ColaboradoresResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ColaboradoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Colaboradores: URI inválida");
@@ -26,72 +27,74 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, ICo
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ColaboradoresResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ColaboradoresResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBColaboradores.SensivelCamposSqlX} 
-                   FROM {DBColaboradores.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBColaboradoresDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBColaboradores>(max);
-        await foreach (var item in DBColaboradores.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBColaboradores.SensivelCamposSqlX}, carNome,cliNome,cidNome
+                   FROM {DBColaboradores.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON carCodigo=colCargo
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=colCliente
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=colCidade
+ 
+                   {where}
+                   ORDER BY colNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ColaboradoresResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBColaboradores(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var colaboradores = reader.ReadAll(dbRec, item);
+                if (colaboradores != null)
+                {
+                    lista.Add(colaboradores);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ColaboradoresResponse>> Filter(Filters.FilterColaboradores filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ColaboradoresResponseAll>> Filter(Filters.FilterColaboradores filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Colaboradores: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Colaboradores-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ColaboradoresResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBColaboradores.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ColaboradoresResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Colaboradores: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ColaboradoresResponse();
         }
@@ -101,39 +104,24 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, ICo
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Colaboradores-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Colaboradores-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Colaboradores - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Colaboradores - {uri}-: GetById");
         }
     }
 
-    private async Task<ColaboradoresResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ColaboradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ColaboradoresResponse?> AddAndUpdate([FromBody] Models.Colaboradores regColaboradores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Colaboradores: URI inválida");
@@ -147,14 +135,13 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, ICo
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"Colaboradores: {validade}");
@@ -168,86 +155,82 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, ICo
     public async Task<ColaboradoresResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Colaboradores: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var colaboradores = reader.Read(id, oCnn);
-            if (colaboradores != null)
+            var deleteValidation = await validation.CanDelete(id, this, agendarecordsService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBColaboradores().DeletarItem(colaboradores.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var colaboradores = reader.Read(id, oCnn);
+            try
+            {
+                if (colaboradores != null)
+                {
+                    writer.Delete(colaboradores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return colaboradores;
         });
     }
 
-    public async Task<ColaboradoresResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Colaboradores: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBColaboradoresDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterColaboradores? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Colaboradores: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Colaboradores-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Colaboradores-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBColaboradores.ListarN(cWhere, DBColaboradoresDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBColaboradoresDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,28 +270,104 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, ICo
         }
     }
 
-    private static string WFiltro(Filters.FilterColaboradores filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterColaboradores filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Cargo == -2147483648 ? string.Empty : DBColaboradoresDicInfo.CargoSql(filtro.Cargo);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.CPFSql(filtro.CPF);
-        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.RGSql(filtro.RG);
-        cWhere += filtro.Idade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.IdadeSql(filtro.Idade);
-        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.EnderecoSql(filtro.Endereco);
-        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.BairroSql(filtro.Bairro);
-        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.CEPSql(filtro.CEP);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.ObservacaoSql(filtro.Observacao);
-        cWhere += filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.EMailSql(filtro.EMail);
-        cWhere += filtro.CNH.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.CNHSql(filtro.CNH);
-        cWhere += filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBColaboradoresDicInfo.ClassSql(filtro.Class);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Cargo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Cargo)}", filtro.Cargo));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CPF))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.CPF)}", filtro.CPF));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.RG))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.RG)}", filtro.RG));
+        }
+
+        if (filtro.Idade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Idade)}", filtro.Idade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Endereco))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Endereco)}", filtro.Endereco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Bairro))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Bairro)}", filtro.Bairro));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CEP))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.CEP)}", filtro.CEP));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Observacao))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Observacao)}", filtro.Observacao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.EMail))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.EMail)}", filtro.EMail));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CNH))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.CNH)}", filtro.CNH));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Class))
+        {
+            parameters.Add(new($"@{nameof(DBColaboradoresDicInfo.Class)}", filtro.Class));
+        }
+
+        var cWhere = filtro.Cargo == int.MinValue ? string.Empty : $"{DBColaboradoresDicInfo.Cargo} = @{nameof(DBColaboradoresDicInfo.Cargo)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Cliente} = @{nameof(DBColaboradoresDicInfo.Cliente)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Nome} = @{nameof(DBColaboradoresDicInfo.Nome)}";
+        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.CPF} = @{nameof(DBColaboradoresDicInfo.CPF)}";
+        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.RG} = @{nameof(DBColaboradoresDicInfo.RG)}";
+        cWhere += filtro.Idade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Idade} = @{nameof(DBColaboradoresDicInfo.Idade)}";
+        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Endereco} = @{nameof(DBColaboradoresDicInfo.Endereco)}";
+        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Bairro} = @{nameof(DBColaboradoresDicInfo.Bairro)}";
+        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.CEP} = @{nameof(DBColaboradoresDicInfo.CEP)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Cidade} = @{nameof(DBColaboradoresDicInfo.Cidade)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Fone} = @{nameof(DBColaboradoresDicInfo.Fone)}";
+        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Observacao} = @{nameof(DBColaboradoresDicInfo.Observacao)}";
+        cWhere += filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.EMail} = @{nameof(DBColaboradoresDicInfo.EMail)}";
+        cWhere += filtro.CNH.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.CNH} = @{nameof(DBColaboradoresDicInfo.CNH)}";
+        cWhere += filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBColaboradoresDicInfo.Class} = @{nameof(DBColaboradoresDicInfo.Class)}";
+        return (cWhere, parameters);
     }
 }

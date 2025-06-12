@@ -32,7 +32,7 @@ public class PontoVirtualAcessosHealthCheck(IOptions<AppSettings> appSettings, P
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PontoVirtualAcessosHealthCheck(IOptions<AppSettings> appSettings, P
                         if (DBPontoVirtualAcessosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pvaCodigo) FROM dbo.PontoVirtualAcessos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pvaCodigo) FROM {"PontoVirtualAcessos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PontoVirtualAcessosHealthCheck(IOptions<AppSettings> appSettings, P
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pvaOperador,pvaDataHora,pvaTipo,pvaOrigem FROM dbo.PontoVirtualAcessos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pvaOperador,pvaDataHora,pvaTipo,pvaOrigem FROM {"PontoVirtualAcessos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

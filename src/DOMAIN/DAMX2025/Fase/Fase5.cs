@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBFase
 {
     public const string CadastroGuid = "08919325-19aa-467a-965a-f723bd4e9c41";
-#region AdministrativeMethods_Fase
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE fasCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Fase";
     public const string CamposSqlX = " Fase.* ";
     public const string SensivelCamposSqlX = " Fase.* ";

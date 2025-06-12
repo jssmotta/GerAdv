@@ -32,7 +32,7 @@ public class Agenda2AgendaHealthCheck(IOptions<AppSettings> appSettings, Agenda2
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class Agenda2AgendaHealthCheck(IOptions<AppSettings> appSettings, Agenda2
                         if (DBAgenda2AgendaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ag2Codigo) FROM dbo.Agenda2Agenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ag2Codigo) FROM {"Agenda2Agenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class Agenda2AgendaHealthCheck(IOptions<AppSettings> appSettings, Agenda2
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ag2Master,ag2Agenda FROM dbo.Agenda2Agenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ag2Master,ag2Agenda FROM {"Agenda2Agenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

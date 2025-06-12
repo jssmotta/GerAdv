@@ -32,7 +32,7 @@ public class GraphHealthCheck(IOptions<AppSettings> appSettings, GraphService gr
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class GraphHealthCheck(IOptions<AppSettings> appSettings, GraphService gr
                         if (DBGraphDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(gphCodigo) FROM dbo.Graph (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(gphCodigo) FROM {"Graph".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class GraphHealthCheck(IOptions<AppSettings> appSettings, GraphService gr
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) gphTabela,gphTabelaId,gphImagem,gphGUID FROM dbo.Graph (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) gphTabela,gphTabelaId,gphImagem,gphGUID FROM {"Graph".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

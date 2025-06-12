@@ -7,7 +7,7 @@ public partial class DBProResumos : MenphisSI.GerAdv.DBProResumos, IDBProResumos
     {
     }
 
-    public DBProResumos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProResumos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProResumos : MenphisSI.GerAdv.DBProResumos, IDBProResumos
     {
     }
 
-    public DBProResumos(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBProResumos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

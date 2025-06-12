@@ -1,0 +1,57 @@
+﻿// WindowId.tsx.txt
+import React, { useEffect, useMemo } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { ILivroCaixa } from '../../Interfaces/interface.LivroCaixa';
+import { LivroCaixaService } from '../../Services/LivroCaixa.service';
+import { LivroCaixaApi } from '../../Apis/ApiLivroCaixa';
+import LivroCaixaWindow from './LivroCaixaWindow';
+import {LivroCaixaEmpty } from '@/app/GerAdv_TS/Models/LivroCaixa';
+interface LivroCaixaWindowIdProps {
+  isOpen: boolean;
+  onClose: () => void;
+  id?: number;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const LivroCaixaWindowId: React.FC<LivroCaixaWindowIdProps> = ({
+  isOpen, 
+  onClose, 
+  id, 
+  onSuccess, 
+  onError, 
+}) => {
+const { systemContext } = useSystemContext();
+const livrocaixaService = useMemo(() => {
+  return new LivroCaixaService(
+  new LivroCaixaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+);
+}, [systemContext?.Uri, systemContext?.Token]);
+const [data, setData] = React.useState<ILivroCaixa | null>(null);
+useEffect(() => {
+  const fetchData = async () => {
+    if (id !== null && id === 0) {
+      setData(LivroCaixaEmpty() as ILivroCaixa);
+      return;
+    }
+    if (id) {
+      const response = await livrocaixaService.fetchLivroCaixaById(id??0);
+      setData(response);
+    }
+  };
+  fetchData();
+}, [isOpen]);
+
+return (
+<>
+{data && isOpen && (
+  <LivroCaixaWindow
+  isOpen={isOpen}
+  onClose={onClose}
+  selectedLivroCaixa={data}
+  onSuccess={onSuccess}
+  onError={onError} />
+  )}
+</>
+);
+};
+export default LivroCaixaWindowId;

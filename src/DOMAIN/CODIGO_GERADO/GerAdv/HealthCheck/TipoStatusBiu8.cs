@@ -32,7 +32,7 @@ public class TipoStatusBiuHealthCheck(IOptions<AppSettings> appSettings, TipoSta
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class TipoStatusBiuHealthCheck(IOptions<AppSettings> appSettings, TipoSta
                         if (DBTipoStatusBiuDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(tsbCodigo) FROM dbo.TipoStatusBiu (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(tsbCodigo) FROM {"TipoStatusBiu".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class TipoStatusBiuHealthCheck(IOptions<AppSettings> appSettings, TipoSta
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) tsbNome FROM dbo.TipoStatusBiu (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) tsbNome FROM {"TipoStatusBiu".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

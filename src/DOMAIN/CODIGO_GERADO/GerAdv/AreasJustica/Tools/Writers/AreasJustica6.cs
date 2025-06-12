@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAreasJusticaWriter
 {
-    Entity.DBAreasJustica Write(Models.AreasJustica areasjustica, SqlConnection oCnn);
+    Entity.DBAreasJustica Write(Models.AreasJustica areasjustica, MsiSqlConnection oCnn);
+    void Delete(AreasJusticaResponse areasjustica, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AreasJustica : IAreasJusticaWriter
 {
-    public Entity.DBAreasJustica Write(Models.AreasJustica areasjustica, SqlConnection oCnn)
+    public void Delete(AreasJusticaResponse areasjustica, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AreasJustica] WHERE arjCodigo={areasjustica.Id};", oCnn);
+    }
+
+    public Entity.DBAreasJustica Write(Models.AreasJustica areasjustica, MsiSqlConnection oCnn)
     {
         var dbRec = areasjustica.Id.IsEmptyIDNumber() ? new Entity.DBAreasJustica() : new Entity.DBAreasJustica(areasjustica.Id, oCnn);
         dbRec.FArea = areasjustica.Area;

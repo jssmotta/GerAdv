@@ -32,7 +32,7 @@ public class BensClassificacaoHealthCheck(IOptions<AppSettings> appSettings, Ben
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class BensClassificacaoHealthCheck(IOptions<AppSettings> appSettings, Ben
                         if (DBBensClassificacaoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(bcsCodigo) FROM dbo.BensClassificacao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(bcsCodigo) FROM {"BensClassificacao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class BensClassificacaoHealthCheck(IOptions<AppSettings> appSettings, Ben
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) bcsNome,bcsBold,bcsGUID FROM dbo.BensClassificacao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) bcsNome,bcsBold,bcsGUID FROM {"BensClassificacao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

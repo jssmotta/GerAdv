@@ -32,7 +32,7 @@ public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosSe
                         if (DBAdvogadosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(advCodigo) FROM dbo.Advogados (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(advCodigo) FROM {"Advogados".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) advCargo,advEMailPro,advCPF,advNome,advRG,advCasa,advNomeMae,advEscritorio,advEstagiario,advOAB,advNomeCompleto,advEndereco,advCidade,advCEP,advSexo,advBairro,advCTPSSerie,advCTPS,advFone,advFax,advComissao,advDtInicio,advDtFim,advDtNasc,advSalario,advSecretaria,advTextoProcuracao,advEMail,advEspecializacao,advPasta,advObservacao,advContaBancaria,advParcTop,advClass,advTop,advEtiqueta,advAni,advBold,advGUID FROM dbo.Advogados (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) advCargo,advEMailPro,advCPF,advNome,advRG,advCasa,advNomeMae,advEscritorio,advEstagiario,advOAB,advNomeCompleto,advEndereco,advCidade,advCEP,advSexo,advBairro,advCTPSSerie,advCTPS,advFone,advFax,advComissao,advDtInicio,advDtFim,advDtNasc,advSalario,advSecretaria,advTextoProcuracao,advEMail,advEspecializacao,advPasta,advObservacao,advContaBancaria,advParcTop,advClass,advTop,advEtiqueta,advAni,advBold,advGUID FROM {"Advogados".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

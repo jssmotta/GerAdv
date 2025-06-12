@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAdvogadosWriter
 {
-    Entity.DBAdvogados Write(Models.Advogados advogados, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAdvogados Write(Models.Advogados advogados, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Advogados : IAdvogadosWriter
 {
-    public Entity.DBAdvogados Write(Models.Advogados advogados, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Advogados] WHERE advCodigo={advogados.Id};", oCnn);
+    }
+
+    public Entity.DBAdvogados Write(Models.Advogados advogados, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = advogados.Id.IsEmptyIDNumber() ? new Entity.DBAdvogados() : new Entity.DBAdvogados(advogados.Id, oCnn);
         dbRec.FCargo = advogados.Cargo;

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IRecadosWriter
 {
-    Entity.DBRecados Write(Models.Recados recados, int auditorQuem, SqlConnection oCnn);
+    Entity.DBRecados Write(Models.Recados recados, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(RecadosResponse recados, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Recados : IRecadosWriter
 {
-    public Entity.DBRecados Write(Models.Recados recados, int auditorQuem, SqlConnection oCnn)
+    public void Delete(RecadosResponse recados, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Recados] WHERE recCodigo={recados.Id};", oCnn);
+    }
+
+    public Entity.DBRecados Write(Models.Recados recados, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = recados.Id.IsEmptyIDNumber() ? new Entity.DBRecados() : new Entity.DBRecados(recados.Id, oCnn);
         dbRec.FClienteNome = recados.ClienteNome;

@@ -14,7 +14,17 @@ public partial class Cargos
     /// </summary>
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class CargosAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - carNome - tamanho máximo: 80 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
 }

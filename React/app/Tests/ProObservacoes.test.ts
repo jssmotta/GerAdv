@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useProObservacoesForm, useProObservacoesList, useValidationsProObservacoes } from '../GerAdv_TS/ProObservacoes/Hooks/hookProObservacoes';
+import { IProObservacoes } from '../GerAdv_TS/ProObservacoes/Interfaces/interface.ProObservacoes';
+import { IProObservacoesService } from '../GerAdv_TS/ProObservacoes/Services/ProObservacoes.service';
+import { ProObservacoesTestEmpty } from '../GerAdv_TS/Models/ProObservacoes';
+import { useProObservacoesComboBox } from '../GerAdv_TS/ProObservacoes/Hooks/hookProObservacoes';
+
+// Mock do serviço
+const mockProObservacoesService: jest.Mocked<IProObservacoesService> = {
+  fetchProObservacoesById: jest.fn(),
+  saveProObservacoes: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteProObservacoes: jest.fn(),
+  validateProObservacoes: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialProObservacoes: IProObservacoes = { ...ProObservacoesTestEmpty() };
+
+describe('useProObservacoesForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useProObservacoesForm(initialProObservacoes, mockProObservacoesService)
+    );
+
+    expect(result.current.data).toEqual(initialProObservacoes);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useProObservacoesForm(initialProObservacoes, mockProObservacoesService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo Pro Observacoes',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo Pro Observacoes');
+  });
+
+   test('deve carregar Pro Observacoes por ID', async () => {
+    const mockProObservacoes = { ...initialProObservacoes, id: 1, nome: 'Pro Observacoes Teste' };
+    mockProObservacoesService.fetchProObservacoesById.mockResolvedValue(mockProObservacoes);
+
+    const { result } = renderHook(() => 
+      useProObservacoesForm(initialProObservacoes, mockProObservacoesService)
+    );
+
+    await act(async () => {
+      await result.current.loadProObservacoes(1);
+    });
+
+    expect(mockProObservacoesService.fetchProObservacoesById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockProObservacoes);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Pro Observacoes', async () => {
+    const errorMessage = 'Erro ao carregar Pro Observacoes';
+    mockProObservacoesService.fetchProObservacoesById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProObservacoesForm(initialProObservacoes, mockProObservacoesService)
+    );
+
+    await act(async () => {
+      await result.current.loadProObservacoes(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useProObservacoesForm(initialProObservacoes, mockProObservacoesService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialProObservacoes, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialProObservacoes);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useProObservacoesForm(initialProObservacoes, mockProObservacoesService)
+    );
+
+    await act(async () => {
+      await result.current.loadProObservacoes(0);
+    });
+
+    expect(mockProObservacoesService.fetchProObservacoesById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialProObservacoes);
+  });
+});
+
+describe('useProObservacoesList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProObservacoesList(mockProObservacoesService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialProObservacoes, id: 1, nome: 'Pro Observacoes 1' },
+      { ...initialProObservacoes, id: 2, nome: 'Pro Observacoes 2' }
+    ];
+    mockProObservacoesService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProObservacoesList(mockProObservacoesService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockProObservacoesService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockProObservacoesService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProObservacoesList(mockProObservacoesService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialProObservacoes, id: 1, nome: 'Pro Observacoes Filtrado' }];
+    const filtro = { nome: 'Pro Observacoes' };
+    mockProObservacoesService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProObservacoesList(mockProObservacoesService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockProObservacoesService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsProObservacoes', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsProObservacoes());
+
+    const validData = { ...initialProObservacoes, nome: 'Pro Observacoes Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsProObservacoes());
+
+    const invalidData = { ...initialProObservacoes, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsProObservacoes());
+
+    const invalidData = { 
+      ...initialProObservacoes, 
+      nome: 'a'.repeat(255+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 255 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsProObservacoes());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialProObservacoes, id: 1, nome: 'Pro Observacoes Teste' }];
+    mockProObservacoesService.getAll.mockResolvedValue(mockData);
+    mockProObservacoesService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useProObservacoesList(mockProObservacoesService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsProObservacoes()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro Observacoes Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro Observacoes Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro Observacoes 1' },
+      { id: 2, nome: 'Pro Observacoes 2' }
+    ];
+    mockProObservacoesService.getList.mockResolvedValue(mockOptions as IProObservacoes[]);
+
+
+    const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro Observacoes 1' },
+        { id: 2, nome: 'Pro Observacoes 2' }
+      ]);
+    });
+
+    expect(mockProObservacoesService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro Observacoes ABC' },
+      { id: 2, nome: 'Pro Observacoes XYZ' }
+    ];
+    mockProObservacoesService.getList.mockResolvedValue(mockOptions as IProObservacoes[]);   
+
+
+ const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro Observacoes ABC' },
+        { id: 2, nome: 'Pro Observacoes XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Pro Observacoes ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro Observacoes ABC' },
+      { id: 2, nome: 'Pro Observacoes XYZ' }
+    ];
+    mockProObservacoesService.getList.mockResolvedValue(mockOptions as IProObservacoes[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro Observacoes ABC' },
+        { id: 2, nome: 'Pro Observacoes XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Pro Observacoes ABC' },
+          {id: 2, nome: 'Pro Observacoes XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService)
+    );
+
+    const newValue = { id: 1, nome: 'Pro Observacoes Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'Pro Observacoes Inicial' };
+    
+    const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useProObservacoesComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'Pro Observacoes Inicial' };
+    
+    const { result } = renderHook(() => 
+      useProObservacoesComboBox(mockProObservacoesService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

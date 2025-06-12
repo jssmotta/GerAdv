@@ -14,7 +14,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Operador", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("Operador", "GetAll", $"max = {max}", uri);
         var result = await _operadorService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOperador filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("Operador: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("Operador: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _operadorService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("Operador: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("Operador: GetById called with id = {0}, {1}", id, uri);
         var result = await _operadorService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("Operador: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _operadorService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No Operador found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperador? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"Operador: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"Operador: GetListN called, max {max}, {filtro} uri");
         var result = await _operadorService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class OperadorController(IOperadorService operadorService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Operador regOperador, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Operador", "AddAndUpdate", regOperador, uri);
-        var result = await _operadorService.AddAndUpdate(regOperador, uri);
-        if (result == null)
+        //_logger.LogInfo("Operador", "AddAndUpdate", regOperador, uri);
+        try
         {
-            _logger.Warn("Operador: AddAndUpdate failed to add or update Operador, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _operadorService.AddAndUpdate(regOperador, uri);
+            if (result == null)
+            {
+                _logger.Warn("Operador: AddAndUpdate failed to add or update Operador, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Operador: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("Operador: Delete called with id = {0}, {2}", id, uri);
-        var result = await _operadorService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("Operador: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No Operador found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _operadorService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No Operador found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Operador: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -7,7 +7,7 @@ public partial class DBDocsRecebidosItens : MenphisSI.GerAdv.DBDocsRecebidosIten
     {
     }
 
-    public DBDocsRecebidosItens(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBDocsRecebidosItens(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBDocsRecebidosItens : MenphisSI.GerAdv.DBDocsRecebidosIten
     {
     }
 
-    public DBDocsRecebidosItens(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBDocsRecebidosItens(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

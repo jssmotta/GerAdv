@@ -14,7 +14,17 @@ public partial class FuncaoResponse
     /// </summary>
     [JsonPropertyName("descricao")]
     public string Descricao { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class FuncaoResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - funDescricao - tamanho máximo: 40 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
 }

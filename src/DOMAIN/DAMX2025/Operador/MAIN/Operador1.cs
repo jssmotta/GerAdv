@@ -24,8 +24,9 @@ public partial class DBOperador : VSexo, ICadastrosAuditor, IAuditor
 
 #endregion
     public DBOperador(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
-    public DBOperador(in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBOperador(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
+        // Tracking: 250605-0
         if (oCnn is null)
             return;
         if (string.IsNullOrEmpty(fullSql) && !string.IsNullOrEmpty(cNome))
@@ -40,7 +41,7 @@ public partial class DBOperador : VSexo, ICadastrosAuditor, IAuditor
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
                 CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }

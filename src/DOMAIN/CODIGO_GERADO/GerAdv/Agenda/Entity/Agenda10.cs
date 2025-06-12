@@ -7,7 +7,7 @@ public partial class DBAgenda : MenphisSI.GerAdv.DBAgenda, IDBAgenda
     {
     }
 
-    public DBAgenda(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAgenda(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAgenda : MenphisSI.GerAdv.DBAgenda, IDBAgenda
     {
     }
 
-    public DBAgenda(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAgenda(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

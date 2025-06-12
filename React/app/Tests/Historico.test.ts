@@ -1,0 +1,281 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useHistoricoForm, useHistoricoList, useValidationsHistorico } from '../GerAdv_TS/Historico/Hooks/hookHistorico';
+import { IHistorico } from '../GerAdv_TS/Historico/Interfaces/interface.Historico';
+import { IHistoricoService } from '../GerAdv_TS/Historico/Services/Historico.service';
+import { HistoricoTestEmpty } from '../GerAdv_TS/Models/Historico';
+
+
+// Mock do serviço
+const mockHistoricoService: jest.Mocked<IHistoricoService> = {
+  fetchHistoricoById: jest.fn(),
+  saveHistorico: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteHistorico: jest.fn(),
+  validateHistorico: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialHistorico: IHistorico = { ...HistoricoTestEmpty() };
+
+describe('useHistoricoForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    expect(result.current.data).toEqual(initialHistorico);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'extraguid',
+        value: 'Novo Historico',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.extraguid).toBe('Novo Historico');
+  });
+
+   test('deve carregar Historico por ID', async () => {
+    const mockHistorico = { ...initialHistorico, id: 1, extraguid: 'Historico Teste' };
+    mockHistoricoService.fetchHistoricoById.mockResolvedValue(mockHistorico);
+
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    await act(async () => {
+      await result.current.loadHistorico(1);
+    });
+
+    expect(mockHistoricoService.fetchHistoricoById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockHistorico);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Historico', async () => {
+    const errorMessage = 'Erro ao carregar Historico';
+    mockHistoricoService.fetchHistoricoById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    await act(async () => {
+      await result.current.loadHistorico(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialHistorico, extraguid: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialHistorico);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    await act(async () => {
+      await result.current.loadHistorico(0);
+    });
+
+    expect(mockHistoricoService.fetchHistoricoById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialHistorico);
+  });
+});
+
+describe('useHistoricoList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useHistoricoList(mockHistoricoService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialHistorico, id: 1, extraguid: 'Historico 1' },
+      { ...initialHistorico, id: 2, extraguid: 'Historico 2' }
+    ];
+    mockHistoricoService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useHistoricoList(mockHistoricoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockHistoricoService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockHistoricoService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useHistoricoList(mockHistoricoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialHistorico, id: 1, extraguid: 'Historico Filtrado' }];
+    const filtro = { extraguid: 'Historico' };
+    mockHistoricoService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useHistoricoList(mockHistoricoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockHistoricoService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsHistorico', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsHistorico());
+
+    const validData = { ...initialHistorico, extraguid: 'Historico Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsHistorico());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialHistorico, id: 1, extraguid: 'Historico Teste' }];
+    mockHistoricoService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useHistoricoList(mockHistoricoService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsHistorico()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useHistoricoForm(initialHistorico, mockHistoricoService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'naopublicavel',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.naopublicavel).toBe(true);
+  });
+
+

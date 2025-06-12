@@ -20,7 +20,23 @@ public partial class AgendaStatus
     /// </summary>
     [JsonPropertyName("completed")]
     public int Completed { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class AgendaStatusAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - astAgenda  
+    /// </summary>
+    [JsonPropertyName("agenda")]
+    public int Agenda { get; set; }
+
+    /// <summary>
+    /// Sem descrição - astCompleted  
+    /// </summary>
+    [JsonPropertyName("completed")]
+    public int Completed { get; set; }
 }

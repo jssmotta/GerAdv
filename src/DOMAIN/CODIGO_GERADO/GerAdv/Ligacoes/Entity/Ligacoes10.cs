@@ -7,7 +7,7 @@ public partial class DBLigacoes : MenphisSI.GerAdv.DBLigacoes, IDBLigacoes
     {
     }
 
-    public DBLigacoes(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBLigacoes(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBLigacoes : MenphisSI.GerAdv.DBLigacoes, IDBLigacoes
     {
     }
 
-    public DBLigacoes(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBLigacoes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

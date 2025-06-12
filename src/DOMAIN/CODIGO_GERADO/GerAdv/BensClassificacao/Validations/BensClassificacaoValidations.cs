@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IBensClassificacaoValidation
 {
-    Task<string> ValidateReg(Models.BensClassificacao reg, IBensClassificacaoService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.BensClassificacao reg, IBensClassificacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IBensClassificacaoService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class BensClassificacaoValidation : IBensClassificacaoValidation
 {
-    public async Task<string> ValidateReg(Models.BensClassificacao reg, IBensClassificacaoService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IBensClassificacaoService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var bensmateriaisExists = await bensmateriaisService.Filter(new Filters.FilterBensMateriais { BensClassificacao = id }, uri);
+        if (bensmateriaisExists != null && bensmateriaisExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.BensClassificacao reg, IBensClassificacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

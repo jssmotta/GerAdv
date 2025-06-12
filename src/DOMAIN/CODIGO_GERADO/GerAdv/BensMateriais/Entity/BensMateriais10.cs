@@ -7,7 +7,7 @@ public partial class DBBensMateriais : MenphisSI.GerAdv.DBBensMateriais, IDBBens
     {
     }
 
-    public DBBensMateriais(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBBensMateriais(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBBensMateriais : MenphisSI.GerAdv.DBBensMateriais, IDBBens
     {
     }
 
-    public DBBensMateriais(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBBensMateriais(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

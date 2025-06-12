@@ -14,7 +14,7 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("LivroCaixa", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("LivroCaixa", "GetAll", $"max = {max}", uri);
         var result = await _livrocaixaService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterLivroCaixa filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("LivroCaixa: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("LivroCaixa: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _livrocaixaService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("LivroCaixa: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("LivroCaixa: GetById called with id = {0}, {1}", id, uri);
         var result = await _livrocaixaService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.LivroCaixa regLivroCaixa, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("LivroCaixa", "AddAndUpdate", regLivroCaixa, uri);
-        var result = await _livrocaixaService.AddAndUpdate(regLivroCaixa, uri);
-        if (result == null)
+        //_logger.LogInfo("LivroCaixa", "AddAndUpdate", regLivroCaixa, uri);
+        try
         {
-            _logger.Warn("LivroCaixa: AddAndUpdate failed to add or update LivroCaixa, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _livrocaixaService.AddAndUpdate(regLivroCaixa, uri);
+            if (result == null)
+            {
+                _logger.Warn("LivroCaixa: AddAndUpdate failed to add or update LivroCaixa, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "LivroCaixa: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("LivroCaixa: Delete called with id = {0}, {2}", id, uri);
-        var result = await _livrocaixaService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("LivroCaixa: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No LivroCaixa found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _livrocaixaService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No LivroCaixa found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "LivroCaixa: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

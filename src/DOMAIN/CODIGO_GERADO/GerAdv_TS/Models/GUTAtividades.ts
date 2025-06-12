@@ -1,0 +1,54 @@
+﻿import { IGUTAtividades } from '../GUTAtividades/Interfaces/interface.GUTAtividades';
+export interface GUTAtividades
+{
+    id: number;
+	gutperiodicidade : number;
+	operador : number;
+	nome : string;
+	observacao : string;
+	gutgrupo : number;
+	concluido : boolean;
+	dataconcluido : string;
+	diasparainiciar : number;
+	minutospararealizar : number;
+	nomegutperiodicidade?: string;
+	nomeoperador?: string;
+
+}
+
+
+export function GUTAtividadesEmpty(): IGUTAtividades {
+// 20250604
+    
+    return {
+        id: 0,
+		gutperiodicidade: 0,
+		operador: 0,
+		nome: '',
+		observacao: '',
+		gutgrupo: 0,
+		concluido: false,
+		dataconcluido: '',
+		diasparainiciar: 0,
+		minutospararealizar: 0,
+    };
+}
+
+export function GUTAtividadesTestEmpty(): IGUTAtividades {
+// 20250604
+    
+    return {
+        id: 1,
+		gutperiodicidade: 1,
+		operador: 1,
+		nome: 'X',
+		observacao: 'X',
+		gutgrupo: 1,
+		concluido: true,
+		dataconcluido: 'X',
+		diasparainiciar: 1,
+		minutospararealizar: 1,
+    };
+}
+
+

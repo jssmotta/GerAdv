@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAndCompWriter
 {
-    Entity.DBAndComp Write(Models.AndComp andcomp, SqlConnection oCnn);
+    Entity.DBAndComp Write(Models.AndComp andcomp, MsiSqlConnection oCnn);
+    void Delete(AndCompResponse andcomp, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AndComp : IAndCompWriter
 {
-    public Entity.DBAndComp Write(Models.AndComp andcomp, SqlConnection oCnn)
+    public void Delete(AndCompResponse andcomp, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AndComp] WHERE acpCodigo={andcomp.Id};", oCnn);
+    }
+
+    public Entity.DBAndComp Write(Models.AndComp andcomp, MsiSqlConnection oCnn)
     {
         var dbRec = andcomp.Id.IsEmptyIDNumber() ? new Entity.DBAndComp() : new Entity.DBAndComp(andcomp.Id, oCnn);
         dbRec.FAndamento = andcomp.Andamento;

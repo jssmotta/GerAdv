@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IRitoWriter
 {
-    Entity.DBRito Write(Models.Rito rito, int auditorQuem, SqlConnection oCnn);
+    Entity.DBRito Write(Models.Rito rito, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(RitoResponse rito, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Rito : IRitoWriter
 {
-    public Entity.DBRito Write(Models.Rito rito, int auditorQuem, SqlConnection oCnn)
+    public void Delete(RitoResponse rito, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Rito] WHERE ritCodigo={rito.Id};", oCnn);
+    }
+
+    public Entity.DBRito Write(Models.Rito rito, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = rito.Id.IsEmptyIDNumber() ? new Entity.DBRito() : new Entity.DBRito(rito.Id, oCnn);
         dbRec.FDescricao = rito.Descricao;

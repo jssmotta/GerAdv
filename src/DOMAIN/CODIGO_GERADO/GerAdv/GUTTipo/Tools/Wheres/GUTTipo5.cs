@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IGUTTipoWhere
 {
-    GUTTipoResponse Read(string where, SqlConnection oCnn);
+    GUTTipoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class GUTTipo : IGUTTipoWhere
 {
-    public GUTTipoResponse Read(string where, SqlConnection oCnn)
+    public GUTTipoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGUTTipo(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGUTTipo(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var guttipo = new GUTTipoResponse
         {
             Id = dbRec.ID,
@@ -20,18 +20,6 @@ public partial class GUTTipo : IGUTTipoWhere
             Ordem = dbRec.FOrdem,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        guttipo.Auditor = auditor;
         return guttipo;
     }
 }

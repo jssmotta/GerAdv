@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IProDepositosReader
 {
-    ProDepositosResponse? Read(int id, SqlConnection oCnn);
-    ProDepositosResponse? Read(string where, SqlConnection oCnn);
+    ProDepositosResponse? Read(int id, MsiSqlConnection oCnn);
+    ProDepositosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProDepositosResponse? Read(Entity.DBProDepositos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProDepositosResponse? Read(DBProDepositos dbRec);
+    ProDepositosResponseAll? ReadAll(DBProDepositos dbRec, DataRow dr);
 }
 
 public partial class ProDepositos : IProDepositosReader
 {
-    public ProDepositosResponse? Read(int id, SqlConnection oCnn)
+    public ProDepositosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBProDepositos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ProDepositosResponse? Read(string where, SqlConnection oCnn)
+    public ProDepositosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProDepositos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProDepositos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -43,18 +45,6 @@ public partial class ProDepositos : IProDepositosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prodepositos.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        prodepositos.Auditor = auditor;
         return prodepositos;
     }
 
@@ -75,18 +65,29 @@ public partial class ProDepositos : IProDepositosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prodepositos.Data = dbRec.FData;
-        var auditor = new Auditor
+        return prodepositos;
+    }
+
+    public ProDepositosResponseAll? ReadAll(DBProDepositos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var prodepositos = new ProDepositosResponseAll
+        {
+            Id = dbRec.ID,
+            Processo = dbRec.FProcesso,
+            Fase = dbRec.FFase,
+            Valor = dbRec.FValor,
+            TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        prodepositos.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FData, out _))
+            prodepositos.Data = dbRec.FData;
+        prodepositos.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
+        prodepositos.DescricaoFase = dr["fasDescricao"]?.ToString() ?? string.Empty;
+        prodepositos.NomeTipoProDesposito = dr["tpdNome"]?.ToString() ?? string.Empty;
         return prodepositos;
     }
 }

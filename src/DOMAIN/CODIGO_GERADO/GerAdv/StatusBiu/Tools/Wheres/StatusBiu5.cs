@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IStatusBiuWhere
 {
-    StatusBiuResponse Read(string where, SqlConnection oCnn);
+    StatusBiuResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class StatusBiu : IStatusBiuWhere
 {
-    public StatusBiuResponse Read(string where, SqlConnection oCnn)
+    public StatusBiuResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBStatusBiu(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBStatusBiu(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var statusbiu = new StatusBiuResponse
         {
             Id = dbRec.ID,

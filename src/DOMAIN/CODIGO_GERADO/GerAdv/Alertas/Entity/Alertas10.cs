@@ -7,7 +7,7 @@ public partial class DBAlertas : MenphisSI.GerAdv.DBAlertas, IDBAlertas
     {
     }
 
-    public DBAlertas(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAlertas(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAlertas : MenphisSI.GerAdv.DBAlertas, IDBAlertas
     {
     }
 
-    public DBAlertas(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBAlertas(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -32,7 +32,7 @@ public class OponentesRepLegalHealthCheck(IOptions<AppSettings> appSettings, Opo
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OponentesRepLegalHealthCheck(IOptions<AppSettings> appSettings, Opo
                         if (DBOponentesRepLegalDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(oprCodigo) FROM dbo.OponentesRepLegal (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(oprCodigo) FROM {"OponentesRepLegal".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OponentesRepLegalHealthCheck(IOptions<AppSettings> appSettings, Opo
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) oprNome,oprFone,oprOponente,oprSexo,oprCPF,oprRG,oprEndereco,oprBairro,oprCEP,oprCidade,oprFax,oprEMail,oprSite,oprObservacao,oprBold FROM dbo.OponentesRepLegal (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) oprNome,oprFone,oprOponente,oprSexo,oprCPF,oprRG,oprEndereco,oprBairro,oprCEP,oprCidade,oprFax,oprEMail,oprSite,oprObservacao,oprBold FROM {"OponentesRepLegal".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

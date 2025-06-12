@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ICargosEscWriter
 {
-    Entity.DBCargosEsc Write(Models.CargosEsc cargosesc, int auditorQuem, SqlConnection oCnn);
+    Entity.DBCargosEsc Write(Models.CargosEsc cargosesc, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class CargosEsc : ICargosEscWriter
 {
-    public Entity.DBCargosEsc Write(Models.CargosEsc cargosesc, int auditorQuem, SqlConnection oCnn)
+    public void Delete(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[CargosEsc] WHERE cgeCodigo={cargosesc.Id};", oCnn);
+    }
+
+    public Entity.DBCargosEsc Write(Models.CargosEsc cargosesc, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = cargosesc.Id.IsEmptyIDNumber() ? new Entity.DBCargosEsc() : new Entity.DBCargosEsc(cargosesc.Id, oCnn);
         dbRec.FPercentual = cargosesc.Percentual;

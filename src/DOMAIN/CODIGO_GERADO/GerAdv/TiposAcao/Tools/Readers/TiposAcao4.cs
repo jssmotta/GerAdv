@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface ITiposAcaoReader
 {
-    TiposAcaoResponse? Read(int id, SqlConnection oCnn);
-    TiposAcaoResponse? Read(string where, SqlConnection oCnn);
+    TiposAcaoResponse? Read(int id, MsiSqlConnection oCnn);
+    TiposAcaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TiposAcaoResponse? Read(Entity.DBTiposAcao dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TiposAcaoResponse? Read(DBTiposAcao dbRec);
+    TiposAcaoResponseAll? ReadAll(DBTiposAcao dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class TiposAcao : ITiposAcaoReader
 {
-    public TiposAcaoResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) tacCodigo, tacNome FROM {"TiposAcao".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}tacNome");
+        }
+
+        return query.ToString();
+    }
+
+    public TiposAcaoResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBTiposAcao(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public TiposAcaoResponse? Read(string where, SqlConnection oCnn)
+    public TiposAcaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTiposAcao(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTiposAcao(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -41,18 +70,6 @@ public partial class TiposAcao : ITiposAcaoReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        tiposacao.Auditor = auditor;
         return tiposacao;
     }
 
@@ -71,18 +88,24 @@ public partial class TiposAcao : ITiposAcaoReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return tiposacao;
+    }
+
+    public TiposAcaoResponseAll? ReadAll(DBTiposAcao dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var tiposacao = new TiposAcaoResponseAll
+        {
+            Id = dbRec.ID,
+            Nome = dbRec.FNome ?? string.Empty,
+            Inativo = dbRec.FInativo,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        tiposacao.Auditor = auditor;
         return tiposacao;
     }
 }

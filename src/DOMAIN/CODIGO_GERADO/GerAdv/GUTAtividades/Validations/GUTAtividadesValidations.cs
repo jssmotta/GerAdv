@@ -5,12 +5,29 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IGUTAtividadesValidation
 {
-    Task<string> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTAtividadesValidation : IGUTAtividadesValidation
 {
-    public async Task<string> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var gutatividadesmatrizExists = await gutatividadesmatrizService.Filter(new Filters.FilterGUTAtividadesMatriz { GUTAtividade = id }, uri);
+        if (gutatividadesmatrizExists != null && gutatividadesmatrizExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.";
+        var gutperiodicidadestatusExists = await gutperiodicidadestatusService.Filter(new Filters.FilterGUTPeriodicidadeStatus { GUTAtividade = id }, uri);
+        if (gutperiodicidadestatusExists != null && gutperiodicidadestatusExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela G U T Periodicidade Status associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

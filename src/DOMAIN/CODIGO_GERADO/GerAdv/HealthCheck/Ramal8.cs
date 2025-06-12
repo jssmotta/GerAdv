@@ -32,7 +32,7 @@ public class RamalHealthCheck(IOptions<AppSettings> appSettings, RamalService ra
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class RamalHealthCheck(IOptions<AppSettings> appSettings, RamalService ra
                         if (DBRamalDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ramCodigo) FROM dbo.Ramal (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ramCodigo) FROM {"Ramal".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class RamalHealthCheck(IOptions<AppSettings> appSettings, RamalService ra
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ramNome,ramObs FROM dbo.Ramal (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ramNome,ramObs FROM {"Ramal".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

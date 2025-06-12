@@ -5,12 +5,23 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProProcuradoresValidation
 {
-    Task<string> ValidateReg(Models.ProProcuradores reg, IProProcuradoresService service, IAdvogadosReader advogadosReader, IProcessosReader processosReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.ProProcuradores reg, IProProcuradoresService service, IAdvogadosReader advogadosReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IProProcuradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProProcuradoresValidation : IProProcuradoresValidation
 {
-    public async Task<string> ValidateReg(Models.ProProcuradores reg, IProProcuradoresService service, IAdvogadosReader advogadosReader, IProcessosReader processosReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IProProcuradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.ProProcuradores reg, IProProcuradoresService service, IAdvogadosReader advogadosReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

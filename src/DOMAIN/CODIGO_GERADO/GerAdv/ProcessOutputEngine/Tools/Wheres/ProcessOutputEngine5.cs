@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProcessOutputEngineWhere
 {
-    ProcessOutputEngineResponse Read(string where, SqlConnection oCnn);
+    ProcessOutputEngineResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class ProcessOutputEngine : IProcessOutputEngineWhere
 {
-    public ProcessOutputEngineResponse Read(string where, SqlConnection oCnn)
+    public ProcessOutputEngineResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProcessOutputEngine(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProcessOutputEngine(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var processoutputengine = new ProcessOutputEngineResponse
         {
             Id = dbRec.ID,

@@ -32,7 +32,7 @@ public class FaseHealthCheck(IOptions<AppSettings> appSettings, FaseService fase
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class FaseHealthCheck(IOptions<AppSettings> appSettings, FaseService fase
                         if (DBFaseDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(fasCodigo) FROM dbo.Fase (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(fasCodigo) FROM {"Fase".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class FaseHealthCheck(IOptions<AppSettings> appSettings, FaseService fase
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) fasDescricao,fasJustica,fasArea,fasGUID FROM dbo.Fase (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) fasDescricao,fasJustica,fasArea,fasGUID FROM {"Fase".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

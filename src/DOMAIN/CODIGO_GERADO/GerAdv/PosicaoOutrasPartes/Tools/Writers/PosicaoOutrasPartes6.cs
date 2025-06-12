@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPosicaoOutrasPartesWriter
 {
-    Entity.DBPosicaoOutrasPartes Write(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPosicaoOutrasPartes Write(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class PosicaoOutrasPartes : IPosicaoOutrasPartesWriter
 {
-    public Entity.DBPosicaoOutrasPartes Write(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[PosicaoOutrasPartes] WHERE posCodigo={posicaooutraspartes.Id};", oCnn);
+    }
+
+    public Entity.DBPosicaoOutrasPartes Write(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = posicaooutraspartes.Id.IsEmptyIDNumber() ? new Entity.DBPosicaoOutrasPartes() : new Entity.DBPosicaoOutrasPartes(posicaooutraspartes.Id, oCnn);
         dbRec.FDescricao = posicaooutraspartes.Descricao;

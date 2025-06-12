@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IPrecatoriaReader
 {
-    PrecatoriaResponse? Read(int id, SqlConnection oCnn);
-    PrecatoriaResponse? Read(string where, SqlConnection oCnn);
+    PrecatoriaResponse? Read(int id, MsiSqlConnection oCnn);
+    PrecatoriaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PrecatoriaResponse? Read(Entity.DBPrecatoria dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PrecatoriaResponse? Read(DBPrecatoria dbRec);
+    PrecatoriaResponseAll? ReadAll(DBPrecatoria dbRec, DataRow dr);
 }
 
 public partial class Precatoria : IPrecatoriaReader
 {
-    public PrecatoriaResponse? Read(int id, SqlConnection oCnn)
+    public PrecatoriaResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBPrecatoria(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public PrecatoriaResponse? Read(string where, SqlConnection oCnn)
+    public PrecatoriaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBPrecatoria(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBPrecatoria(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -46,18 +48,6 @@ public partial class Precatoria : IPrecatoriaReader
         };
         if (DateTime.TryParse(dbRec.FDtDist, out _))
             precatoria.DtDist = dbRec.FDtDist;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        precatoria.Auditor = auditor;
         return precatoria;
     }
 
@@ -81,18 +71,30 @@ public partial class Precatoria : IPrecatoriaReader
         };
         if (DateTime.TryParse(dbRec.FDtDist, out _))
             precatoria.DtDist = dbRec.FDtDist;
-        var auditor = new Auditor
+        return precatoria;
+    }
+
+    public PrecatoriaResponseAll? ReadAll(DBPrecatoria dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var precatoria = new PrecatoriaResponseAll
+        {
+            Id = dbRec.ID,
+            Processo = dbRec.FProcesso,
+            PrecatoriaX = dbRec.FPrecatoria ?? string.Empty,
+            Deprecante = dbRec.FDeprecante ?? string.Empty,
+            Deprecado = dbRec.FDeprecado ?? string.Empty,
+            OBS = dbRec.FOBS ?? string.Empty,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        precatoria.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FDtDist, out _))
+            precatoria.DtDist = dbRec.FDtDist;
+        precatoria.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return precatoria;
     }
 }

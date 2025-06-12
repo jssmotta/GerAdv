@@ -32,7 +32,7 @@ public class ColaboradoresHealthCheck(IOptions<AppSettings> appSettings, Colabor
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ColaboradoresHealthCheck(IOptions<AppSettings> appSettings, Colabor
                         if (DBColaboradoresDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(colCodigo) FROM dbo.Colaboradores (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(colCodigo) FROM {"Colaboradores".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ColaboradoresHealthCheck(IOptions<AppSettings> appSettings, Colabor
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) colCargo,colCliente,colSexo,colNome,colCPF,colRG,colDtNasc,colIdade,colEndereco,colBairro,colCEP,colCidade,colFone,colObservacao,colEMail,colCNH,colClass,colEtiqueta,colAni,colBold FROM dbo.Colaboradores (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) colCargo,colCliente,colSexo,colNome,colCPF,colRG,colDtNasc,colIdade,colEndereco,colBairro,colCEP,colCidade,colFone,colObservacao,colEMail,colCNH,colClass,colEtiqueta,colAni,colBold FROM {"Colaboradores".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

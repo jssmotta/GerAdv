@@ -32,7 +32,7 @@ public class ForoHealthCheck(IOptions<AppSettings> appSettings, ForoService foro
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ForoHealthCheck(IOptions<AppSettings> appSettings, ForoService foro
                         if (DBForoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(forCodigo) FROM dbo.Foro (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(forCodigo) FROM {"Foro".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ForoHealthCheck(IOptions<AppSettings> appSettings, ForoService foro
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) forEMail,forNome,forUnico,forCidade,forSite,forEndereco,forBairro,forFone,forFax,forCEP,forOBS,forUnicoConfirmado,forWeb,forEtiqueta,forBold FROM dbo.Foro (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) forEMail,forNome,forUnico,forCidade,forSite,forEndereco,forBairro,forFone,forFax,forCEP,forOBS,forUnicoConfirmado,forWeb,forEtiqueta,forBold FROM {"Foro".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

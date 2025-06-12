@@ -1,0 +1,112 @@
+﻿'use client';
+import { CRUD_CONSTANTS } from '@/app/tools/crud';
+import { Auditor4KApi, Auditor4KApiError } from '../Apis/ApiAuditor4K';
+import { FilterAuditor4K } from '../Filters/Auditor4K';
+import { IAuditor4K } from '../Interfaces/interface.Auditor4K';
+
+export class Auditor4KValidator {
+  static validateAuditor4K(auditor4k: IAuditor4K): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Atualmente não há validações de regras de negócio específicas
+    // Todas as validações são feitas nos inputs correspondentes
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+export interface IAuditor4KService {
+  fetchAuditor4KById: (id: number) => Promise<IAuditor4K>;
+  saveAuditor4K: (auditor4k: IAuditor4K) => Promise<IAuditor4K>;  
+  getList: (filtro?: FilterAuditor4K) => Promise<IAuditor4K[]>;
+  getAll: (filtro?: FilterAuditor4K) => Promise<IAuditor4K[]>;
+  deleteAuditor4K: (id: number) => Promise<void>;
+  validateAuditor4K: (auditor4k: IAuditor4K) => { isValid: boolean; errors: string[] };
+}
+
+export class Auditor4KService implements IAuditor4KService {
+  constructor(private api: Auditor4KApi) {}
+
+  async fetchAuditor4KById(id: number): Promise<IAuditor4K> {
+    if (id <= 0) {
+      throw new Auditor4KApiError('ID inválido', 400, 'INVALID_ID');
+    }
+
+    try {
+      const response = await this.api.getById(id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Auditor4KApiError) {
+        throw error;
+      }
+      throw new Auditor4KApiError('Erro ao buscar auditor4k', 500, 'FETCH_ERROR', error);
+    }
+  }
+
+  async saveAuditor4K(auditor4k: IAuditor4K): Promise<IAuditor4K> {    
+    const validation = this.validateAuditor4K(auditor4k);
+    if (!validation.isValid) {
+      throw new Auditor4KApiError(
+        `Dados inválidos: ${validation.errors.join(', ')}`,
+        400,
+        'VALIDATION_ERROR'
+      );
+    }
+
+    try {
+      const response = await this.api.addAndUpdate(auditor4k);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Auditor4KApiError) {
+        throw error;
+      }
+      throw new Auditor4KApiError('Erro ao salvar auditor4k', 500, 'SAVE_ERROR', error);
+    }
+  }
+
+  
+    async getList(filtro?: FilterAuditor4K): Promise<IAuditor4K[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching auditor4k list:', error);
+      return [];
+    }
+  }
+
+ 
+ 
+
+  async getAll(filtro?: FilterAuditor4K): Promise<IAuditor4K[]> {
+    try {
+      const response = await this.api.filter(filtro ?? {});
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching all auditor4k:', error);
+      return [];
+    }
+  }
+
+  async deleteAuditor4K(id: number): Promise<void> {
+    if (id <= 0) {
+      throw new Auditor4KApiError('ID inválido para exclusão', 400, 'INVALID_ID');
+    }
+
+    try {
+      await this.api.delete(id);
+    } catch (error) {
+      if (error instanceof Auditor4KApiError) {
+        throw error;
+      }
+      throw new Auditor4KApiError('Erro ao excluir auditor4k', 500, 'DELETE_ERROR', error);
+    }
+  }
+
+  validateAuditor4K(auditor4k: IAuditor4K): { isValid: boolean; errors: string[] } {
+    return Auditor4KValidator.validateAuditor4K(auditor4k);
+  }
+}

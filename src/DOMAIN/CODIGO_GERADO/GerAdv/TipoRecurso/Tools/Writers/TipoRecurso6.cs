@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoRecursoWriter
 {
-    Entity.DBTipoRecurso Write(Models.TipoRecurso tiporecurso, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTipoRecurso Write(Models.TipoRecurso tiporecurso, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TipoRecursoResponse tiporecurso, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TipoRecurso : ITipoRecursoWriter
 {
-    public Entity.DBTipoRecurso Write(Models.TipoRecurso tiporecurso, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TipoRecursoResponse tiporecurso, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TipoRecurso] WHERE trcCodigo={tiporecurso.Id};", oCnn);
+    }
+
+    public Entity.DBTipoRecurso Write(Models.TipoRecurso tiporecurso, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = tiporecurso.Id.IsEmptyIDNumber() ? new Entity.DBTipoRecurso() : new Entity.DBTipoRecurso(tiporecurso.Id, oCnn);
         dbRec.FJustica = tiporecurso.Justica;

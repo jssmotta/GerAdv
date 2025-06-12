@@ -7,7 +7,7 @@ public partial class DBOponentes : MenphisSI.GerAdv.DBOponentes, IDBOponentes
     {
     }
 
-    public DBOponentes(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBOponentes(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBOponentes : MenphisSI.GerAdv.DBOponentes, IDBOponentes
     {
     }
 
-    public DBOponentes(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBOponentes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

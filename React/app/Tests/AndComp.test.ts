@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useAndCompForm, useAndCompList, useValidationsAndComp } from '../GerAdv_TS/AndComp/Hooks/hookAndComp';
+import { IAndComp } from '../GerAdv_TS/AndComp/Interfaces/interface.AndComp';
+import { IAndCompService } from '../GerAdv_TS/AndComp/Services/AndComp.service';
+import { AndCompTestEmpty } from '../GerAdv_TS/Models/AndComp';
+
+
+// Mock do serviço
+const mockAndCompService: jest.Mocked<IAndCompService> = {
+  fetchAndCompById: jest.fn(),
+  saveAndComp: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteAndComp: jest.fn(),
+  validateAndComp: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialAndComp: IAndComp = { ...AndCompTestEmpty() };
+
+describe('useAndCompForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useAndCompForm(initialAndComp, mockAndCompService)
+    );
+
+    expect(result.current.data).toEqual(initialAndComp);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useAndCompForm(initialAndComp, mockAndCompService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'campo',
+        value: 'Novo And Comp',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.campo).toBe('Novo And Comp');
+  });
+
+   test('deve carregar And Comp por ID', async () => {
+    const mockAndComp = { ...initialAndComp, id: 1, campo: 'And Comp Teste' };
+    mockAndCompService.fetchAndCompById.mockResolvedValue(mockAndComp);
+
+    const { result } = renderHook(() => 
+      useAndCompForm(initialAndComp, mockAndCompService)
+    );
+
+    await act(async () => {
+      await result.current.loadAndComp(1);
+    });
+
+    expect(mockAndCompService.fetchAndCompById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockAndComp);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar And Comp', async () => {
+    const errorMessage = 'Erro ao carregar And Comp';
+    mockAndCompService.fetchAndCompById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAndCompForm(initialAndComp, mockAndCompService)
+    );
+
+    await act(async () => {
+      await result.current.loadAndComp(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useAndCompForm(initialAndComp, mockAndCompService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialAndComp, campo: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialAndComp);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useAndCompForm(initialAndComp, mockAndCompService)
+    );
+
+    await act(async () => {
+      await result.current.loadAndComp(0);
+    });
+
+    expect(mockAndCompService.fetchAndCompById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialAndComp);
+  });
+});
+
+describe('useAndCompList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useAndCompList(mockAndCompService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialAndComp, id: 1, campo: 'And Comp 1' },
+      { ...initialAndComp, id: 2, campo: 'And Comp 2' }
+    ];
+    mockAndCompService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAndCompList(mockAndCompService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockAndCompService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockAndCompService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAndCompList(mockAndCompService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialAndComp, id: 1, campo: 'And Comp Filtrado' }];
+    const filtro = { campo: 'And Comp' };
+    mockAndCompService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAndCompList(mockAndCompService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockAndCompService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsAndComp', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsAndComp());
+
+    const validData = { ...initialAndComp, campo: 'And Comp Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsAndComp());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialAndComp, id: 1, campo: 'And Comp Teste' }];
+    mockAndCompService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useAndCompList(mockAndCompService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsAndComp()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

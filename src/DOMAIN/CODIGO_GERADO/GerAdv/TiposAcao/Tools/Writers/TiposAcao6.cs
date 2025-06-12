@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITiposAcaoWriter
 {
-    Entity.DBTiposAcao Write(Models.TiposAcao tiposacao, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTiposAcao Write(Models.TiposAcao tiposacao, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TiposAcao : ITiposAcaoWriter
 {
-    public Entity.DBTiposAcao Write(Models.TiposAcao tiposacao, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TiposAcao] WHERE tacCodigo={tiposacao.Id};", oCnn);
+    }
+
+    public Entity.DBTiposAcao Write(Models.TiposAcao tiposacao, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = tiposacao.Id.IsEmptyIDNumber() ? new Entity.DBTiposAcao() : new Entity.DBTiposAcao(tiposacao.Id, oCnn);
         dbRec.FNome = tiposacao.Nome;

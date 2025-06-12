@@ -7,7 +7,7 @@ public partial class DBContratos : MenphisSI.GerAdv.DBContratos, IDBContratos
     {
     }
 
-    public DBContratos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBContratos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBContratos : MenphisSI.GerAdv.DBContratos, IDBContratos
     {
     }
 
-    public DBContratos(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBContratos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

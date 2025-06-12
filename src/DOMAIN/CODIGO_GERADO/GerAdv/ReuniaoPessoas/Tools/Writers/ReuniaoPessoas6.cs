@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IReuniaoPessoasWriter
 {
-    Entity.DBReuniaoPessoas Write(Models.ReuniaoPessoas reuniaopessoas, int auditorQuem, SqlConnection oCnn);
+    Entity.DBReuniaoPessoas Write(Models.ReuniaoPessoas reuniaopessoas, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ReuniaoPessoasResponse reuniaopessoas, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ReuniaoPessoas : IReuniaoPessoasWriter
 {
-    public Entity.DBReuniaoPessoas Write(Models.ReuniaoPessoas reuniaopessoas, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ReuniaoPessoasResponse reuniaopessoas, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ReuniaoPessoas] WHERE rnpCodigo={reuniaopessoas.Id};", oCnn);
+    }
+
+    public Entity.DBReuniaoPessoas Write(Models.ReuniaoPessoas reuniaopessoas, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = reuniaopessoas.Id.IsEmptyIDNumber() ? new Entity.DBReuniaoPessoas() : new Entity.DBReuniaoPessoas(reuniaopessoas.Id, oCnn);
         dbRec.FReuniao = reuniaopessoas.Reuniao;

@@ -7,7 +7,7 @@ public partial class DBDivisaoTribunal : MenphisSI.GerAdv.DBDivisaoTribunal, IDB
     {
     }
 
-    public DBDivisaoTribunal(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBDivisaoTribunal(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBDivisaoTribunal : MenphisSI.GerAdv.DBDivisaoTribunal, IDB
     {
     }
 
-    public DBDivisaoTribunal(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBDivisaoTribunal(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ISMSAliceWriter
 {
-    Entity.DBSMSAlice Write(Models.SMSAlice smsalice, int auditorQuem, SqlConnection oCnn);
+    Entity.DBSMSAlice Write(Models.SMSAlice smsalice, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(SMSAliceResponse smsalice, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class SMSAlice : ISMSAliceWriter
 {
-    public Entity.DBSMSAlice Write(Models.SMSAlice smsalice, int auditorQuem, SqlConnection oCnn)
+    public void Delete(SMSAliceResponse smsalice, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[SMSAlice] WHERE smaCodigo={smsalice.Id};", oCnn);
+    }
+
+    public Entity.DBSMSAlice Write(Models.SMSAlice smsalice, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = smsalice.Id.IsEmptyIDNumber() ? new Entity.DBSMSAlice() : new Entity.DBSMSAlice(smsalice.Id, oCnn);
         dbRec.FOperador = smsalice.Operador;

@@ -7,7 +7,7 @@ public partial class DBEventoPrazoAgenda : MenphisSI.GerAdv.DBEventoPrazoAgenda,
     {
     }
 
-    public DBEventoPrazoAgenda(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBEventoPrazoAgenda(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBEventoPrazoAgenda : MenphisSI.GerAdv.DBEventoPrazoAgenda,
     {
     }
 
-    public DBEventoPrazoAgenda(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBEventoPrazoAgenda(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

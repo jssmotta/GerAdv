@@ -7,7 +7,7 @@ public partial class DBOperador : MenphisSI.GerAdv.DBOperador, IDBOperador
     {
     }
 
-    public DBOperador(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBOperador(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBOperador : MenphisSI.GerAdv.DBOperador, IDBOperador
     {
     }
 
-    public DBOperador(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBOperador(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

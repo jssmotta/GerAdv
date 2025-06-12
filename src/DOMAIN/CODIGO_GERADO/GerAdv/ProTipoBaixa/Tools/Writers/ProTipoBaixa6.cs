@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProTipoBaixaWriter
 {
-    Entity.DBProTipoBaixa Write(Models.ProTipoBaixa protipobaixa, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProTipoBaixa Write(Models.ProTipoBaixa protipobaixa, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProTipoBaixaResponse protipobaixa, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProTipoBaixa : IProTipoBaixaWriter
 {
-    public Entity.DBProTipoBaixa Write(Models.ProTipoBaixa protipobaixa, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProTipoBaixaResponse protipobaixa, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProTipoBaixa] WHERE ptxCodigo={protipobaixa.Id};", oCnn);
+    }
+
+    public Entity.DBProTipoBaixa Write(Models.ProTipoBaixa protipobaixa, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = protipobaixa.Id.IsEmptyIDNumber() ? new Entity.DBProTipoBaixa() : new Entity.DBProTipoBaixa(protipobaixa.Id, oCnn);
         dbRec.FNome = protipobaixa.Nome;

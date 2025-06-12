@@ -7,7 +7,7 @@ public partial class DBProcessOutputSources : MenphisSI.GerAdv.DBProcessOutputSo
     {
     }
 
-    public DBProcessOutputSources(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProcessOutputSources(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProcessOutputSources : MenphisSI.GerAdv.DBProcessOutputSo
     {
     }
 
-    public DBProcessOutputSources(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProcessOutputSources(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

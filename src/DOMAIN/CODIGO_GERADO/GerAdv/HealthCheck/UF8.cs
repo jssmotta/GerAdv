@@ -32,7 +32,7 @@ public class UFHealthCheck(IOptions<AppSettings> appSettings, UFService ufServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class UFHealthCheck(IOptions<AppSettings> appSettings, UFService ufServic
                         if (DBUFDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ufCodigo) FROM dbo.UF (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ufCodigo) FROM {"UF".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class UFHealthCheck(IOptions<AppSettings> appSettings, UFService ufServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ufDDD,ufID,ufPais,ufTop,ufDescricao,ufGUID FROM dbo.UF (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ufDDD,ufID,ufPais,ufTop,ufDescricao,ufGUID FROM {"UF".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

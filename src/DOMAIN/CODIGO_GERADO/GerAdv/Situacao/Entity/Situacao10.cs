@@ -7,7 +7,7 @@ public partial class DBSituacao : MenphisSI.GerAdv.DBSituacao, IDBSituacao
     {
     }
 
-    public DBSituacao(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBSituacao(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBSituacao : MenphisSI.GerAdv.DBSituacao, IDBSituacao
     {
     }
 
-    public DBSituacao(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBSituacao(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

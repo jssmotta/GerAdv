@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAlertasEnviadosWriter
 {
-    Entity.DBAlertasEnviados Write(Models.AlertasEnviados alertasenviados, SqlConnection oCnn);
+    Entity.DBAlertasEnviados Write(Models.AlertasEnviados alertasenviados, MsiSqlConnection oCnn);
+    void Delete(AlertasEnviadosResponse alertasenviados, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AlertasEnviados : IAlertasEnviadosWriter
 {
-    public Entity.DBAlertasEnviados Write(Models.AlertasEnviados alertasenviados, SqlConnection oCnn)
+    public void Delete(AlertasEnviadosResponse alertasenviados, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AlertasEnviados] WHERE aloCodigo={alertasenviados.Id};", oCnn);
+    }
+
+    public Entity.DBAlertasEnviados Write(Models.AlertasEnviados alertasenviados, MsiSqlConnection oCnn)
     {
         var dbRec = alertasenviados.Id.IsEmptyIDNumber() ? new Entity.DBAlertasEnviados() : new Entity.DBAlertasEnviados(alertasenviados.Id, oCnn);
         dbRec.FOperador = alertasenviados.Operador;

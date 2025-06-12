@@ -32,7 +32,7 @@ public class CargosHealthCheck(IOptions<AppSettings> appSettings, CargosService 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class CargosHealthCheck(IOptions<AppSettings> appSettings, CargosService 
                         if (DBCargosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(carCodigo) FROM dbo.Cargos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(carCodigo) FROM {"Cargos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class CargosHealthCheck(IOptions<AppSettings> appSettings, CargosService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) carNome FROM dbo.Cargos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) carNome FROM {"Cargos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

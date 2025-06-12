@@ -32,7 +32,7 @@ public class AgendaRelatorioHealthCheck(IOptions<AppSettings> appSettings, Agend
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AgendaRelatorioHealthCheck(IOptions<AppSettings> appSettings, Agend
                         if (DBAgendaRelatorioDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(vqaCodigo) FROM dbo.AgendaRelatorio (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(vqaCodigo) FROM {"AgendaRelatorio".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AgendaRelatorioHealthCheck(IOptions<AppSettings> appSettings, Agend
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) vqaData,vqaProcesso,xxxParaNome,xxxParaPessoas,xxxBoxAudiencia,xxxBoxAudienciaMobile,xxxNomeAdvogado,xxxNomeForo,xxxNomeJustica,xxxNomeArea FROM dbo.AgendaRelatorio (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) vqaData,vqaProcesso,xxxParaNome,xxxParaPessoas,xxxBoxAudiencia,xxxBoxAudienciaMobile,xxxNomeAdvogado,xxxNomeForo,xxxNomeJustica,xxxNomeArea FROM {"AgendaRelatorio".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

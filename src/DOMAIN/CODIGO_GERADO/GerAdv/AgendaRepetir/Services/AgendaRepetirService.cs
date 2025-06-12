@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAgendaRepetirReader reader, IAgendaRepetirValidation validation, IAgendaRepetirWriter writer, IAdvogadosReader advogadosReader, IClientesReader clientesReader, IFuncionariosReader funcionariosReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IAgendaRepetirService, IDisposable
+public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAgendaRepetirReader reader, IAgendaRepetirValidation validation, IAgendaRepetirWriter writer, IAdvogadosReader advogadosReader, IClientesReader clientesReader, IFuncionariosReader funcionariosReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAgendaRepetirService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<AgendaRepetirResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<AgendaRepetirResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaRepetir: URI inválida");
@@ -26,72 +27,75 @@ public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAg
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<AgendaRepetirResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<AgendaRepetirResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBAgendaRepetir.SensivelCamposSqlX} 
-                   FROM {DBAgendaRepetir.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBAgendaRepetirDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBAgendaRepetir>(max);
-        await foreach (var item in DBAgendaRepetir.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBAgendaRepetir.SensivelCamposSqlX}, advNome,cliNome,funNome,proNroPasta
+                   FROM {DBAgendaRepetir.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=rptAdvogado
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=rptCliente
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=rptFuncionario
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=rptProcesso
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<AgendaRepetirResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBAgendaRepetir(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var agendarepetir = reader.ReadAll(dbRec, item);
+                if (agendarepetir != null)
+                {
+                    lista.Add(agendarepetir);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<AgendaRepetirResponse>> Filter(Filters.FilterAgendaRepetir filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<AgendaRepetirResponseAll>> Filter(Filters.FilterAgendaRepetir filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("AgendaRepetir: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-AgendaRepetir-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<AgendaRepetirResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBAgendaRepetir.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<AgendaRepetirResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("AgendaRepetir: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new AgendaRepetirResponse();
         }
@@ -101,39 +105,24 @@ public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAg
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-AgendaRepetir-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-AgendaRepetir-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"AgendaRepetir - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"AgendaRepetir - {uri}-: GetById");
         }
     }
 
-    private async Task<AgendaRepetirResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<AgendaRepetirResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<AgendaRepetirResponse?> AddAndUpdate([FromBody] Models.AgendaRepetir regAgendaRepetir, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaRepetir: URI inválida");
@@ -147,8 +136,7 @@ public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAg
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,31 +156,47 @@ public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAg
     public async Task<AgendaRepetirResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaRepetir: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var agendarepetir = reader.Read(id, oCnn);
-            if (agendarepetir != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBAgendaRepetir().DeletarItem(agendarepetir.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var agendarepetir = reader.Read(id, oCnn);
+            try
+            {
+                if (agendarepetir != null)
+                {
+                    writer.Delete(agendarepetir, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return agendarepetir;
@@ -225,28 +229,104 @@ public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAg
         }
     }
 
-    private static string WFiltro(Filters.FilterAgendaRepetir filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgendaRepetir filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Advogado == -2147483648 ? string.Empty : DBAgendaRepetirDicInfo.AdvogadoSql(filtro.Advogado);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Funcionario == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.FuncionarioSql(filtro.Funcionario);
-        cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.Frequencia == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.FrequenciaSql(filtro.Frequencia);
-        cWhere += filtro.Dia == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.DiaSql(filtro.Dia);
-        cWhere += filtro.Mes == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.MesSql(filtro.Mes);
-        cWhere += filtro.IDQuem == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.IDQuemSql(filtro.IDQuem);
-        cWhere += filtro.IDQuem2 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.IDQuem2Sql(filtro.IDQuem2);
-        cWhere += filtro.Mensagem.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.MensagemSql(filtro.Mensagem);
-        cWhere += filtro.IDTipo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.IDTipoSql(filtro.IDTipo);
-        cWhere += filtro.ID1 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.ID1Sql(filtro.ID1);
-        cWhere += filtro.ID2 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.ID2Sql(filtro.ID2);
-        cWhere += filtro.ID3 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.ID3Sql(filtro.ID3);
-        cWhere += filtro.ID4 == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaRepetirDicInfo.ID4Sql(filtro.ID4);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Advogado != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Advogado)}", filtro.Advogado));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (filtro.Funcionario != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Funcionario)}", filtro.Funcionario));
+        }
+
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (filtro.Frequencia != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Frequencia)}", filtro.Frequencia));
+        }
+
+        if (filtro.Dia != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Dia)}", filtro.Dia));
+        }
+
+        if (filtro.Mes != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Mes)}", filtro.Mes));
+        }
+
+        if (filtro.IDQuem != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.IDQuem)}", filtro.IDQuem));
+        }
+
+        if (filtro.IDQuem2 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.IDQuem2)}", filtro.IDQuem2));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Mensagem))
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.Mensagem)}", filtro.Mensagem));
+        }
+
+        if (filtro.IDTipo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.IDTipo)}", filtro.IDTipo));
+        }
+
+        if (filtro.ID1 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.ID1)}", filtro.ID1));
+        }
+
+        if (filtro.ID2 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.ID2)}", filtro.ID2));
+        }
+
+        if (filtro.ID3 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.ID3)}", filtro.ID3));
+        }
+
+        if (filtro.ID4 != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaRepetirDicInfo.ID4)}", filtro.ID4));
+        }
+
+        var cWhere = filtro.Advogado == int.MinValue ? string.Empty : $"{DBAgendaRepetirDicInfo.Advogado} = @{nameof(DBAgendaRepetirDicInfo.Advogado)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Cliente} = @{nameof(DBAgendaRepetirDicInfo.Cliente)}";
+        cWhere += filtro.Funcionario == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Funcionario} = @{nameof(DBAgendaRepetirDicInfo.Funcionario)}";
+        cWhere += filtro.Processo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Processo} = @{nameof(DBAgendaRepetirDicInfo.Processo)}";
+        cWhere += filtro.Frequencia == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Frequencia} = @{nameof(DBAgendaRepetirDicInfo.Frequencia)}";
+        cWhere += filtro.Dia == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Dia} = @{nameof(DBAgendaRepetirDicInfo.Dia)}";
+        cWhere += filtro.Mes == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Mes} = @{nameof(DBAgendaRepetirDicInfo.Mes)}";
+        cWhere += filtro.IDQuem == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.IDQuem} = @{nameof(DBAgendaRepetirDicInfo.IDQuem)}";
+        cWhere += filtro.IDQuem2 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.IDQuem2} = @{nameof(DBAgendaRepetirDicInfo.IDQuem2)}";
+        cWhere += filtro.Mensagem.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.Mensagem} = @{nameof(DBAgendaRepetirDicInfo.Mensagem)}";
+        cWhere += filtro.IDTipo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.IDTipo} = @{nameof(DBAgendaRepetirDicInfo.IDTipo)}";
+        cWhere += filtro.ID1 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.ID1} = @{nameof(DBAgendaRepetirDicInfo.ID1)}";
+        cWhere += filtro.ID2 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.ID2} = @{nameof(DBAgendaRepetirDicInfo.ID2)}";
+        cWhere += filtro.ID3 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.ID3} = @{nameof(DBAgendaRepetirDicInfo.ID3)}";
+        cWhere += filtro.ID4 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaRepetirDicInfo.ID4} = @{nameof(DBAgendaRepetirDicInfo.ID4)}";
+        return (cWhere, parameters);
     }
 }

@@ -21,3 +21,22 @@ public partial class AndComp
     [JsonPropertyName("compromisso")]
     public int Compromisso { get; set; }
 }
+
+[Serializable]
+public partial class AndCompAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - acpAndamento  
+    /// </summary>
+    [JsonPropertyName("andamento")]
+    public int Andamento { get; set; }
+
+    /// <summary>
+    /// Sem descrição - acpCompromisso  
+    /// </summary>
+    [JsonPropertyName("compromisso")]
+    public int Compromisso { get; set; }
+}

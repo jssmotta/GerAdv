@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface ICidadeReader
 {
-    CidadeResponse? Read(int id, SqlConnection oCnn);
-    CidadeResponse? Read(string where, SqlConnection oCnn);
+    CidadeResponse? Read(int id, MsiSqlConnection oCnn);
+    CidadeResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     CidadeResponse? Read(Entity.DBCidade dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     CidadeResponse? Read(DBCidade dbRec);
+    CidadeResponseAll? ReadAll(DBCidade dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class Cidade : ICidadeReader
 {
-    public CidadeResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) cidCodigo, cidNome FROM {"Cidade".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}cidNome");
+        }
+
+        return query.ToString();
+    }
+
+    public CidadeResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBCidade(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public CidadeResponse? Read(string where, SqlConnection oCnn)
+    public CidadeResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBCidade(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBCidade(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -45,18 +74,6 @@ public partial class Cidade : ICidadeReader
             Sigla = dbRec.FSigla ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        cidade.Auditor = auditor;
         return cidade;
     }
 
@@ -79,18 +96,29 @@ public partial class Cidade : ICidadeReader
             Sigla = dbRec.FSigla ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return cidade;
+    }
+
+    public CidadeResponseAll? ReadAll(DBCidade dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var cidade = new CidadeResponseAll
+        {
+            Id = dbRec.ID,
+            DDD = dbRec.FDDD ?? string.Empty,
+            Top = dbRec.FTop,
+            Comarca = dbRec.FComarca,
+            Capital = dbRec.FCapital,
+            Nome = dbRec.FNome ?? string.Empty,
+            UF = dbRec.FUF,
+            Sigla = dbRec.FSigla ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        cidade.Auditor = auditor;
+        cidade.IDUF = dr["ufID"]?.ToString() ?? string.Empty;
         return cidade;
     }
 }

@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAreaWhere
 {
-    AreaResponse Read(string where, SqlConnection oCnn);
+    AreaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Area : IAreaWhere
 {
-    public AreaResponse Read(string where, SqlConnection oCnn)
+    public AreaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBArea(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBArea(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var area = new AreaResponse
         {
             Id = dbRec.ID,
@@ -20,18 +20,6 @@ public partial class Area : IAreaWhere
             Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        area.Auditor = auditor;
         return area;
     }
 }

@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import ProDespesasInc from '../Inc/ProDespesas';
+import { IProDespesas } from '../../Interfaces/interface.ProDespesas';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { ProDespesasEmpty } from '@/app/GerAdv_TS/Models/ProDespesas';
+import { useWindow } from '@/app/hooks/useWindows';
+interface ProDespesasWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedProDespesas?: IProDespesas;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const ProDespesasWindow: React.FC<ProDespesasWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedProDespesas, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Pro Despesas'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={585}
+  newWidth={1250}
+  mobile={isMobile}
+  id={(selectedProDespesas?.id ?? 0).toString()}
+>
+<ProDespesasInc
+id={selectedProDespesas?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowProDespesas: React.FC<ProDespesasWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<ProDespesasWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedProDespesas={ProDespesasEmpty()}>
+</ProDespesasWindow>
+)
+};
+export default ProDespesasWindow;

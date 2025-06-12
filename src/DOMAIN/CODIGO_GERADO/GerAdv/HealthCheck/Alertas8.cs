@@ -32,7 +32,7 @@ public class AlertasHealthCheck(IOptions<AppSettings> appSettings, AlertasServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AlertasHealthCheck(IOptions<AppSettings> appSettings, AlertasServic
                         if (DBAlertasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(altCodigo) FROM dbo.Alertas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(altCodigo) FROM {"Alertas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AlertasHealthCheck(IOptions<AppSettings> appSettings, AlertasServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) altNome,altData,altOperador,altDataAte FROM dbo.Alertas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) altNome,altData,altOperador,altDataAte FROM {"Alertas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAndamentosMDWriter
 {
-    Entity.DBAndamentosMD Write(Models.AndamentosMD andamentosmd, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAndamentosMD Write(Models.AndamentosMD andamentosmd, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AndamentosMDResponse andamentosmd, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AndamentosMD : IAndamentosMDWriter
 {
-    public Entity.DBAndamentosMD Write(Models.AndamentosMD andamentosmd, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AndamentosMDResponse andamentosmd, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AndamentosMD] WHERE amdCodigo={andamentosmd.Id};", oCnn);
+    }
+
+    public Entity.DBAndamentosMD Write(Models.AndamentosMD andamentosmd, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = andamentosmd.Id.IsEmptyIDNumber() ? new Entity.DBAndamentosMD() : new Entity.DBAndamentosMD(andamentosmd.Id, oCnn);
         dbRec.FNome = andamentosmd.Nome;

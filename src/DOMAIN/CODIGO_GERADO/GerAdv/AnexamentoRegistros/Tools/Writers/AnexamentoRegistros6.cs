@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAnexamentoRegistrosWriter
 {
-    Entity.DBAnexamentoRegistros Write(Models.AnexamentoRegistros anexamentoregistros, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAnexamentoRegistros Write(Models.AnexamentoRegistros anexamentoregistros, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AnexamentoRegistrosResponse anexamentoregistros, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AnexamentoRegistros : IAnexamentoRegistrosWriter
 {
-    public Entity.DBAnexamentoRegistros Write(Models.AnexamentoRegistros anexamentoregistros, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AnexamentoRegistrosResponse anexamentoregistros, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AnexamentoRegistros] WHERE axrCodigo={anexamentoregistros.Id};", oCnn);
+    }
+
+    public Entity.DBAnexamentoRegistros Write(Models.AnexamentoRegistros anexamentoregistros, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = anexamentoregistros.Id.IsEmptyIDNumber() ? new Entity.DBAnexamentoRegistros() : new Entity.DBAnexamentoRegistros(anexamentoregistros.Id, oCnn);
         dbRec.FCliente = anexamentoregistros.Cliente;

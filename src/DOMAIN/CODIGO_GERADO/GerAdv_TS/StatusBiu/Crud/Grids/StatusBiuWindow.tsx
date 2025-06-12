@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import StatusBiuInc from '../Inc/StatusBiu';
+import { IStatusBiu } from '../../Interfaces/interface.StatusBiu';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { StatusBiuEmpty } from '@/app/GerAdv_TS/Models/StatusBiu';
+import { useWindow } from '@/app/hooks/useWindows';
+interface StatusBiuWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedStatusBiu?: IStatusBiu;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const StatusBiuWindow: React.FC<StatusBiuWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedStatusBiu, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Status Biu'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedStatusBiu?.id ?? 0).toString()}
+>
+<StatusBiuInc
+id={selectedStatusBiu?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowStatusBiu: React.FC<StatusBiuWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<StatusBiuWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedStatusBiu={StatusBiuEmpty()}>
+</StatusBiuWindow>
+)
+};
+export default StatusBiuWindow;

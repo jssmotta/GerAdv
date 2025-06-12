@@ -7,7 +7,7 @@ public partial class DBPrecatoria : MenphisSI.GerAdv.DBPrecatoria, IDBPrecatoria
     {
     }
 
-    public DBPrecatoria(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBPrecatoria(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBPrecatoria : MenphisSI.GerAdv.DBPrecatoria, IDBPrecatoria
     {
     }
 
-    public DBPrecatoria(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBPrecatoria(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

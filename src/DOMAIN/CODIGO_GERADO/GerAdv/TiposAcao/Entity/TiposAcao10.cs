@@ -7,7 +7,7 @@ public partial class DBTiposAcao : MenphisSI.GerAdv.DBTiposAcao, IDBTiposAcao
     {
     }
 
-    public DBTiposAcao(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBTiposAcao(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBTiposAcao : MenphisSI.GerAdv.DBTiposAcao, IDBTiposAcao
     {
     }
 
-    public DBTiposAcao(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBTiposAcao(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

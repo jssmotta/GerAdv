@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import EMPClassRiscosInc from '../Inc/EMPClassRiscos';
+import { IEMPClassRiscos } from '../../Interfaces/interface.EMPClassRiscos';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { EMPClassRiscosEmpty } from '@/app/GerAdv_TS/Models/EMPClassRiscos';
+import { useWindow } from '@/app/hooks/useWindows';
+interface EMPClassRiscosWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedEMPClassRiscos?: IEMPClassRiscos;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const EMPClassRiscosWindow: React.FC<EMPClassRiscosWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedEMPClassRiscos, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='E M P Class Riscos'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedEMPClassRiscos?.id ?? 0).toString()}
+>
+<EMPClassRiscosInc
+id={selectedEMPClassRiscos?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowEMPClassRiscos: React.FC<EMPClassRiscosWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<EMPClassRiscosWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedEMPClassRiscos={EMPClassRiscosEmpty()}>
+</EMPClassRiscosWindow>
+)
+};
+export default EMPClassRiscosWindow;

@@ -14,7 +14,7 @@ public partial class LigacoesController(ILigacoesService ligacoesService) : Cont
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Ligacoes", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("Ligacoes", "GetAll", $"max = {max}", uri);
         var result = await _ligacoesService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class LigacoesController(ILigacoesService ligacoesService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterLigacoes filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("Ligacoes: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("Ligacoes: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _ligacoesService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class LigacoesController(ILigacoesService ligacoesService) : Cont
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("Ligacoes: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("Ligacoes: GetById called with id = {0}, {1}", id, uri);
         var result = await _ligacoesService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class LigacoesController(ILigacoesService ligacoesService) : Cont
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("Ligacoes: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _ligacoesService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No Ligacoes found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterLigacoes? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"Ligacoes: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"Ligacoes: GetListN called, max {max}, {filtro} uri");
         var result = await _ligacoesService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class LigacoesController(ILigacoesService ligacoesService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Ligacoes regLigacoes, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Ligacoes", "AddAndUpdate", regLigacoes, uri);
-        var result = await _ligacoesService.AddAndUpdate(regLigacoes, uri);
-        if (result == null)
+        //_logger.LogInfo("Ligacoes", "AddAndUpdate", regLigacoes, uri);
+        try
         {
-            _logger.Warn("Ligacoes: AddAndUpdate failed to add or update Ligacoes, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _ligacoesService.AddAndUpdate(regLigacoes, uri);
+            if (result == null)
+            {
+                _logger.Warn("Ligacoes: AddAndUpdate failed to add or update Ligacoes, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Ligacoes: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("Ligacoes: Delete called with id = {0}, {2}", id, uri);
-        var result = await _ligacoesService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("Ligacoes: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No Ligacoes found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _ligacoesService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No Ligacoes found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Ligacoes: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

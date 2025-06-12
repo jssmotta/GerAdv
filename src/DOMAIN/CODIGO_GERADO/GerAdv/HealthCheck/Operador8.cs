@@ -32,7 +32,7 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
                         if (DBOperadorDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(operCodigo) FROM dbo.Operador (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(operCodigo) FROM {"Operador".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) operEMail,operPasta,operTelefonista,operMaster,operNome,operNick,operRamal,operCadID,operCadCod,operExcluido,operSituacao,operComputador,operMinhaDescricao,operUltimoLogoff,operEMailNet,operOnlineIP,operOnLine,operSysOp,operStatusId,operStatusMessage,operIsFinanceiro,operTop,operSexo,operBasico,operExterno,operSenha256,operEMailConfirmado,operDataLimiteReset,operSuporteSenha256,operSuporteMaxAge,operSuporteNomeSolicitante,operSuporteUltimoAcesso,operSuporteIpUltimoAcesso,operGUID FROM dbo.Operador (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) operEMail,operPasta,operTelefonista,operMaster,operNome,operNick,operRamal,operCadID,operCadCod,operExcluido,operSituacao,operComputador,operMinhaDescricao,operUltimoLogoff,operEMailNet,operOnlineIP,operOnLine,operSysOp,operStatusId,operStatusMessage,operIsFinanceiro,operTop,operSexo,operBasico,operExterno,operSenha256,operEMailConfirmado,operDataLimiteReset,operSuporteSenha256,operSuporteMaxAge,operSuporteNomeSolicitante,operSuporteUltimoAcesso,operSuporteIpUltimoAcesso,operGUID FROM {"Operador".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

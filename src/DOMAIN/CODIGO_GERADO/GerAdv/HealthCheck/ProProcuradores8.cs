@@ -32,7 +32,7 @@ public class ProProcuradoresHealthCheck(IOptions<AppSettings> appSettings, ProPr
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProProcuradoresHealthCheck(IOptions<AppSettings> appSettings, ProPr
                         if (DBProProcuradoresDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(papCodigo) FROM dbo.ProProcuradores (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(papCodigo) FROM {"ProProcuradores".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProProcuradoresHealthCheck(IOptions<AppSettings> appSettings, ProPr
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) papAdvogado,papNome,papProcesso,papData,papSubstabelecimento,papProcuracao,papBold,papGUID FROM dbo.ProProcuradores (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) papAdvogado,papNome,papProcesso,papData,papSubstabelecimento,papProcuracao,papBold,papGUID FROM {"ProProcuradores".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

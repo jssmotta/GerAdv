@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoOrigemSucumbenciaWhere
 {
-    TipoOrigemSucumbenciaResponse Read(string where, SqlConnection oCnn);
+    TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class TipoOrigemSucumbencia : ITipoOrigemSucumbenciaWhere
 {
-    public TipoOrigemSucumbenciaResponse Read(string where, SqlConnection oCnn)
+    public TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTipoOrigemSucumbencia(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTipoOrigemSucumbencia(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var tipoorigemsucumbencia = new TipoOrigemSucumbenciaResponse
         {
             Id = dbRec.ID,

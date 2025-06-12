@@ -7,7 +7,7 @@ public partial class DBNENotas : MenphisSI.GerAdv.DBNENotas, IDBNENotas
     {
     }
 
-    public DBNENotas(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBNENotas(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBNENotas : MenphisSI.GerAdv.DBNENotas, IDBNENotas
     {
     }
 
-    public DBNENotas(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBNENotas(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

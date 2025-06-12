@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOperadorEMailPopupWhere
 {
-    OperadorEMailPopupResponse Read(string where, SqlConnection oCnn);
+    OperadorEMailPopupResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class OperadorEMailPopup : IOperadorEMailPopupWhere
 {
-    public OperadorEMailPopupResponse Read(string where, SqlConnection oCnn)
+    public OperadorEMailPopupResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOperadorEMailPopup(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOperadorEMailPopup(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var operadoremailpopup = new OperadorEMailPopupResponse
         {
             Id = dbRec.ID,
@@ -28,18 +28,6 @@ public partial class OperadorEMailPopup : IOperadorEMailPopupWhere
             Assinatura = dbRec.FAssinatura ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadoremailpopup.Auditor = auditor;
         return operadoremailpopup;
     }
 }

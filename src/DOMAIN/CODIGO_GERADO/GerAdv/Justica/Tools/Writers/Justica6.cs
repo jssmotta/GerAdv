@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IJusticaWriter
 {
-    Entity.DBJustica Write(Models.Justica justica, int auditorQuem, SqlConnection oCnn);
+    Entity.DBJustica Write(Models.Justica justica, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(JusticaResponse justica, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Justica : IJusticaWriter
 {
-    public Entity.DBJustica Write(Models.Justica justica, int auditorQuem, SqlConnection oCnn)
+    public void Delete(JusticaResponse justica, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Justica] WHERE jusCodigo={justica.Id};", oCnn);
+    }
+
+    public Entity.DBJustica Write(Models.Justica justica, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = justica.Id.IsEmptyIDNumber() ? new Entity.DBJustica() : new Entity.DBJustica(justica.Id, oCnn);
         dbRec.FNome = justica.Nome;

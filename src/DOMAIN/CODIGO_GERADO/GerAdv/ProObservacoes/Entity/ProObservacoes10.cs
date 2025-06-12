@@ -7,7 +7,7 @@ public partial class DBProObservacoes : MenphisSI.GerAdv.DBProObservacoes, IDBPr
     {
     }
 
-    public DBProObservacoes(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProObservacoes(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProObservacoes : MenphisSI.GerAdv.DBProObservacoes, IDBPr
     {
     }
 
-    public DBProObservacoes(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProObservacoes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

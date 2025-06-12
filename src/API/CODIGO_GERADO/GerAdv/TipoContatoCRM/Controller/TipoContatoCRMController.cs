@@ -14,7 +14,7 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoContatoCRM", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("TipoContatoCRM", "GetAll", $"max = {max}", uri);
         var result = await _tipocontatocrmService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoContatoCRM filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoContatoCRM: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("TipoContatoCRM: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipocontatocrmService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("TipoContatoCRM: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("TipoContatoCRM: GetById called with id = {0}, {1}", id, uri);
         var result = await _tipocontatocrmService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("TipoContatoCRM: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _tipocontatocrmService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No TipoContatoCRM found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoContatoCRM? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"TipoContatoCRM: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"TipoContatoCRM: GetListN called, max {max}, {filtro} uri");
         var result = await _tipocontatocrmService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoContatoCRM regTipoContatoCRM, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoContatoCRM", "AddAndUpdate", regTipoContatoCRM, uri);
-        var result = await _tipocontatocrmService.AddAndUpdate(regTipoContatoCRM, uri);
-        if (result == null)
+        //_logger.LogInfo("TipoContatoCRM", "AddAndUpdate", regTipoContatoCRM, uri);
+        try
         {
-            _logger.Warn("TipoContatoCRM: AddAndUpdate failed to add or update TipoContatoCRM, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _tipocontatocrmService.AddAndUpdate(regTipoContatoCRM, uri);
+            if (result == null)
+            {
+                _logger.Warn("TipoContatoCRM: AddAndUpdate failed to add or update TipoContatoCRM, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoContatoCRM: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoContatoCRM: Delete called with id = {0}, {2}", id, uri);
-        var result = await _tipocontatocrmService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("TipoContatoCRM: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No TipoContatoCRM found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _tipocontatocrmService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No TipoContatoCRM found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoContatoCRM: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

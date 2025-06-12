@@ -5,12 +5,32 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IContatoCRMValidation
 {
-    Task<string> ValidateReg(Models.ContatoCRM reg, IContatoCRMService service, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.ContatoCRM reg, IContatoCRMService service, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IContatoCRMService service, IContatoCRMOperadorService contatocrmoperadorService, IDocsRecebidosItensService docsrecebidositensService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ContatoCRMValidation : IContatoCRMValidation
 {
-    public async Task<string> ValidateReg(Models.ContatoCRM reg, IContatoCRMService service, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IContatoCRMService service, IContatoCRMOperadorService contatocrmoperadorService, IDocsRecebidosItensService docsrecebidositensService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var contatocrmoperadorExists = await contatocrmoperadorService.Filter(new Filters.FilterContatoCRMOperador { ContatoCRM = id }, uri);
+        if (contatocrmoperadorExists != null && contatocrmoperadorExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Contato C R M Operador associados a ele.";
+        var docsrecebidositensExists = await docsrecebidositensService.Filter(new Filters.FilterDocsRecebidosItens { ContatoCRM = id }, uri);
+        if (docsrecebidositensExists != null && docsrecebidositensExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Docs Recebidos Itens associados a ele.";
+        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { ContatoCRM = id }, uri);
+        if (recadosExists != null && recadosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.ContatoCRM reg, IContatoCRMService service, IOperadorReader operadorReader, IClientesReader clientesReader, IProcessosReader processosReader, ITipoContatoCRMReader tipocontatocrmReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

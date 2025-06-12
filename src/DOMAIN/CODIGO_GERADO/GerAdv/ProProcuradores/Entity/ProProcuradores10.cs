@@ -7,7 +7,7 @@ public partial class DBProProcuradores : MenphisSI.GerAdv.DBProProcuradores, IDB
     {
     }
 
-    public DBProProcuradores(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProProcuradores(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProProcuradores : MenphisSI.GerAdv.DBProProcuradores, IDB
     {
     }
 
-    public DBProProcuradores(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProProcuradores(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

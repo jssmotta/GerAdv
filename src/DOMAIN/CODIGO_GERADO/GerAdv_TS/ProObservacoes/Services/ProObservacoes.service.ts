@@ -1,0 +1,112 @@
+﻿'use client';
+import { CRUD_CONSTANTS } from '@/app/tools/crud';
+import { ProObservacoesApi, ProObservacoesApiError } from '../Apis/ApiProObservacoes';
+import { FilterProObservacoes } from '../Filters/ProObservacoes';
+import { IProObservacoes } from '../Interfaces/interface.ProObservacoes';
+
+export class ProObservacoesValidator {
+  static validateProObservacoes(proobservacoes: IProObservacoes): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Atualmente não há validações de regras de negócio específicas
+    // Todas as validações são feitas nos inputs correspondentes
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+export interface IProObservacoesService {
+  fetchProObservacoesById: (id: number) => Promise<IProObservacoes>;
+  saveProObservacoes: (proobservacoes: IProObservacoes) => Promise<IProObservacoes>;  
+  getList: (filtro?: FilterProObservacoes) => Promise<IProObservacoes[]>;
+  getAll: (filtro?: FilterProObservacoes) => Promise<IProObservacoes[]>;
+  deleteProObservacoes: (id: number) => Promise<void>;
+  validateProObservacoes: (proobservacoes: IProObservacoes) => { isValid: boolean; errors: string[] };
+}
+
+export class ProObservacoesService implements IProObservacoesService {
+  constructor(private api: ProObservacoesApi) {}
+
+  async fetchProObservacoesById(id: number): Promise<IProObservacoes> {
+    if (id <= 0) {
+      throw new ProObservacoesApiError('ID inválido', 400, 'INVALID_ID');
+    }
+
+    try {
+      const response = await this.api.getById(id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof ProObservacoesApiError) {
+        throw error;
+      }
+      throw new ProObservacoesApiError('Erro ao buscar proobservacoes', 500, 'FETCH_ERROR', error);
+    }
+  }
+
+  async saveProObservacoes(proobservacoes: IProObservacoes): Promise<IProObservacoes> {    
+    const validation = this.validateProObservacoes(proobservacoes);
+    if (!validation.isValid) {
+      throw new ProObservacoesApiError(
+        `Dados inválidos: ${validation.errors.join(', ')}`,
+        400,
+        'VALIDATION_ERROR'
+      );
+    }
+
+    try {
+      const response = await this.api.addAndUpdate(proobservacoes);
+      return response.data;
+    } catch (error) {
+      if (error instanceof ProObservacoesApiError) {
+        throw error;
+      }
+      throw new ProObservacoesApiError('Erro ao salvar proobservacoes', 500, 'SAVE_ERROR', error);
+    }
+  }
+
+  
+    async getList(filtro?: FilterProObservacoes): Promise<IProObservacoes[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching proobservacoes list:', error);
+      return [];
+    }
+  }
+
+ 
+ 
+
+  async getAll(filtro?: FilterProObservacoes): Promise<IProObservacoes[]> {
+    try {
+      const response = await this.api.filter(filtro ?? {});
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching all proobservacoes:', error);
+      return [];
+    }
+  }
+
+  async deleteProObservacoes(id: number): Promise<void> {
+    if (id <= 0) {
+      throw new ProObservacoesApiError('ID inválido para exclusão', 400, 'INVALID_ID');
+    }
+
+    try {
+      await this.api.delete(id);
+    } catch (error) {
+      if (error instanceof ProObservacoesApiError) {
+        throw error;
+      }
+      throw new ProObservacoesApiError('Erro ao excluir proobservacoes', 500, 'DELETE_ERROR', error);
+    }
+  }
+
+  validateProObservacoes(proobservacoes: IProObservacoes): { isValid: boolean; errors: string[] } {
+    return ProObservacoesValidator.validateProObservacoes(proobservacoes);
+  }
+}

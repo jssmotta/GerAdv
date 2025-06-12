@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoOrigemSucumbenciaValidation
 {
-    Task<string> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
 {
-    public async Task<string> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var prosucumbenciaExists = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id }, uri);
+        if (prosucumbenciaExists != null && prosucumbenciaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

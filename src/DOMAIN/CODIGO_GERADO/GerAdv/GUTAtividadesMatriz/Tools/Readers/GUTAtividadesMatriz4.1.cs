@@ -5,41 +5,56 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial class GUTAtividadesMatriz
 {
-    private static bool _checkIndex;
-    public async Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn)
+    public async Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn)
     {
-        if (!_checkIndex)
-        {
-            CreateIdx(uri);
-        }
-
-        string query = @"
-SELECT TOP 1 
-    FORMAT(
-        CASE 
-            WHEN amgDtAtu IS NULL THEN amgDtCad 
-            WHEN amgDtAtu > amgDtCad THEN amgDtAtu 
-            ELSE amgDtCad 
-        END, 'yyyy-MM-dd-HH-mm') AS data
-FROM dbo.GUTAtividadesMatriz WITH (NOLOCK, INDEX = idx_GUTAtividadesMatriz_Auditor)
+        string query = $@"
+SELECT TOP (1) 
+    FORMAT(amgDtAtu, 'yyyy-MM-dd-HH-mm-ss')
+FROM {oCnn.UseDbo}.GUTAtividadesMatriz WITH (NOLOCK, INDEX = idx_GUTAtividadesMatriz_AuditorDtAtu)
 WHERE amgCodigo = @id
 OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
-        using var cmd = new SqlCommand(query, oCnn);
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
         cmd.Parameters.AddWithValue("@id", id);
         var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
         return dataFormatada;
     }
 
-    private static void CreateIdx(string uri)
+    public async Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        _checkIndex = true;
-        using var oCnnRw = Configuracoes.GetConnectionByUriRw(uri);
-        if (oCnnRw is null)
-            return;
-        ConfiguracoesDBT.ExecuteSqlCreate(@"IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_GUTAtividadesMatriz_Auditor' AND object_id = OBJECT_ID('dbo.GUTAtividadesMatriz'))
-                BEGIN
-                    CREATE INDEX idx_GUTAtividadesMatriz_Auditor ON dbo.GUTAtividadesMatriz(amgCodigo, amgDtCad, amgDtAtu);
-                END
-                ", oCnnRw);
+        string query = $@"
+SELECT TOP (1) 
+    FORMAT(
+        CASE 
+            WHEN amgDtAtu IS NULL THEN amgDtCad 
+            WHEN amgDtAtu > amgDtCad THEN amgDtAtu 
+            ELSE amgDtCad 
+        END, 'yyyy-MM-dd-HH-mm-ss') AS data
+FROM {oCnn.UseDbo}.GUTAtividadesMatriz WITH (NOLOCK)
+        {(cWhere.Equals("") ? "" : $" WHERE {cWhere}")}
+ORDER BY 
+    CASE 
+        WHEN amgDtAtu IS NULL THEN amgDtCad 
+        WHEN amgDtAtu > amgDtCad THEN amgDtAtu 
+        ELSE amgDtCad 
+    END DESC;";
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
+        foreach (var param in parameters)
+        {
+            if (!cmd.Parameters.Contains(param.ParameterName))
+            {
+                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                {
+                    SqlDbType = param.SqlDbType,
+                    Direction = param.Direction,
+                    Size = param.Size,
+                    Precision = param.Precision,
+                    Scale = param.Scale
+                };
+                cmd.Parameters.Add(newParam);
+            }
+        }
+
+        var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
+        return dataFormatada;
     }
 }

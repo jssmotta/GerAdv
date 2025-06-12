@@ -1,0 +1,62 @@
+﻿import { IOperadorEMailPopup } from '../OperadorEMailPopup/Interfaces/interface.OperadorEMailPopup';
+export interface OperadorEMailPopup
+{
+    id: number;
+	operador : number;
+	nome : string;
+	senha : string;
+	smtp : string;
+	pop3 : string;
+	autenticacao : boolean;
+	descricao : string;
+	usuario : string;
+	portasmtp : number;
+	portapop3 : number;
+	assinatura : string;
+	senha256 : string;
+	nomeoperador?: string;
+
+}
+
+
+export function OperadorEMailPopupEmpty(): IOperadorEMailPopup {
+// 20250604
+    
+    return {
+        id: 0,
+		operador: 0,
+		nome: '',
+		senha: '',
+		smtp: '',
+		pop3: '',
+		autenticacao: false,
+		descricao: '',
+		usuario: '',
+		portasmtp: 0,
+		portapop3: 0,
+		assinatura: '',
+		senha256: '',
+    };
+}
+
+export function OperadorEMailPopupTestEmpty(): IOperadorEMailPopup {
+// 20250604
+    
+    return {
+        id: 1,
+		operador: 1,
+		nome: 'X',
+		senha: 'X',
+		smtp: 'X',
+		pop3: 'X',
+		autenticacao: true,
+		descricao: 'X',
+		usuario: 'X',
+		portasmtp: 1,
+		portapop3: 1,
+		assinatura: 'X',
+		senha256: 'X',
+    };
+}
+
+

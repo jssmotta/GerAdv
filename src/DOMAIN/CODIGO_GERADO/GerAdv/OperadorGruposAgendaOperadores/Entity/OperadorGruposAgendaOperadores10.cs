@@ -7,7 +7,7 @@ public partial class DBOperadorGruposAgendaOperadores : MenphisSI.GerAdv.DBOpera
     {
     }
 
-    public DBOperadorGruposAgendaOperadores(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBOperadorGruposAgendaOperadores(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBOperadorGruposAgendaOperadores : MenphisSI.GerAdv.DBOpera
     {
     }
 
-    public DBOperadorGruposAgendaOperadores(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBOperadorGruposAgendaOperadores(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

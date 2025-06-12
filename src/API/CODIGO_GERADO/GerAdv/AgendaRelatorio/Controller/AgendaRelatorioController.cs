@@ -14,7 +14,7 @@ public partial class AgendaRelatorioController(IAgendaRelatorioService agendarel
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("AgendaRelatorio: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("AgendaRelatorio: GetById called with id = {0}, {1}", id, uri);
         var result = await _agendarelatorioService.GetById(id, uri, token);
         if (result == null)
         {

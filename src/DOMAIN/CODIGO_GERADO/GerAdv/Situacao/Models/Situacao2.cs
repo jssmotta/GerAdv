@@ -38,7 +38,41 @@ public partial class Situacao
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class SituacaoAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - sitParte_Int - tamanho máximo: 30 
+    /// </summary>
+    [JsonPropertyName("parte_int")]
+    public string Parte_Int { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - sitParte_Opo - tamanho máximo: 30 
+    /// </summary>
+    [JsonPropertyName("parte_opo")]
+    public string Parte_Opo { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - sitTop  
+    /// </summary>
+    [JsonPropertyName("top")]
+    public bool Top { get; set; }
+
+    /// <summary>
+    /// Negritar - sitBold  
+    /// </summary>
+    [JsonPropertyName("bold")]
+    public bool Bold { get; set; }
+
+    /// <summary>
+    /// GUId - sitGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 }

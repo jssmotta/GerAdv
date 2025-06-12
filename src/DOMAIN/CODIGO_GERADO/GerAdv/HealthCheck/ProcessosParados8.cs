@@ -32,7 +32,7 @@ public class ProcessosParadosHealthCheck(IOptions<AppSettings> appSettings, Proc
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProcessosParadosHealthCheck(IOptions<AppSettings> appSettings, Proc
                         if (DBProcessosParadosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pprCodigo) FROM dbo.ProcessosParados (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pprCodigo) FROM {"ProcessosParados".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProcessosParadosHealthCheck(IOptions<AppSettings> appSettings, Proc
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pprProcesso,pprSemana,pprAno,pprDataHora,pprOperador,pprDataHistorico,pprDataNENotas FROM dbo.ProcessosParados (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pprProcesso,pprSemana,pprAno,pprDataHora,pprOperador,pprDataHistorico,pprDataNENotas FROM {"ProcessosParados".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

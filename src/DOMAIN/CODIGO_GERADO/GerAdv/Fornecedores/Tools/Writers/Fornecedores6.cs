@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IFornecedoresWriter
 {
-    Entity.DBFornecedores Write(Models.Fornecedores fornecedores, int auditorQuem, SqlConnection oCnn);
+    Entity.DBFornecedores Write(Models.Fornecedores fornecedores, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Fornecedores : IFornecedoresWriter
 {
-    public Entity.DBFornecedores Write(Models.Fornecedores fornecedores, int auditorQuem, SqlConnection oCnn)
+    public void Delete(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Fornecedores] WHERE forCodigo={fornecedores.Id};", oCnn);
+    }
+
+    public Entity.DBFornecedores Write(Models.Fornecedores fornecedores, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = fornecedores.Id.IsEmptyIDNumber() ? new Entity.DBFornecedores() : new Entity.DBFornecedores(fornecedores.Id, oCnn);
         dbRec.FGrupo = fornecedores.Grupo;

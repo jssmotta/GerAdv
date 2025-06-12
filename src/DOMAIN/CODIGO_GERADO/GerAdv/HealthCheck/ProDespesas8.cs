@@ -32,7 +32,7 @@ public class ProDespesasHealthCheck(IOptions<AppSettings> appSettings, ProDespes
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProDespesasHealthCheck(IOptions<AppSettings> appSettings, ProDespes
                         if (DBProDespesasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(desCodigo) FROM dbo.ProDespesas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(desCodigo) FROM {"ProDespesas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProDespesasHealthCheck(IOptions<AppSettings> appSettings, ProDespes
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) desLigacaoID,desCliente,desCorrigido,desData,desValorOriginal,desProcesso,desQuitado,desDataCorrecao,desValor,desTipo,desHistorico,desLivroCaixa,desGUID FROM dbo.ProDespesas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) desLigacaoID,desCliente,desCorrigido,desData,desValorOriginal,desProcesso,desQuitado,desDataCorrecao,desValor,desTipo,desHistorico,desLivroCaixa,desGUID FROM {"ProDespesas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

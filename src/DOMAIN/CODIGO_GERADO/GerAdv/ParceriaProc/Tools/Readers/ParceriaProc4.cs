@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IParceriaProcReader
 {
-    ParceriaProcResponse? Read(int id, SqlConnection oCnn);
-    ParceriaProcResponse? Read(string where, SqlConnection oCnn);
+    ParceriaProcResponse? Read(int id, MsiSqlConnection oCnn);
+    ParceriaProcResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ParceriaProcResponse? Read(Entity.DBParceriaProc dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ParceriaProcResponse? Read(DBParceriaProc dbRec);
+    ParceriaProcResponseAll? ReadAll(DBParceriaProc dbRec, DataRow dr);
 }
 
 public partial class ParceriaProc : IParceriaProcReader
 {
-    public ParceriaProcResponse? Read(int id, SqlConnection oCnn)
+    public ParceriaProcResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBParceriaProc(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ParceriaProcResponse? Read(string where, SqlConnection oCnn)
+    public ParceriaProcResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBParceriaProc(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBParceriaProc(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class ParceriaProc : IParceriaProcReader
             Processo = dbRec.FProcesso,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        parceriaproc.Auditor = auditor;
         return parceriaproc;
     }
 
@@ -69,18 +59,25 @@ public partial class ParceriaProc : IParceriaProcReader
             Processo = dbRec.FProcesso,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return parceriaproc;
+    }
+
+    public ParceriaProcResponseAll? ReadAll(DBParceriaProc dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var parceriaproc = new ParceriaProcResponseAll
+        {
+            Id = dbRec.ID,
+            Advogado = dbRec.FAdvogado,
+            Processo = dbRec.FProcesso,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        parceriaproc.Auditor = auditor;
+        parceriaproc.NomeAdvogados = dr["advNome"]?.ToString() ?? string.Empty;
+        parceriaproc.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return parceriaproc;
     }
 }

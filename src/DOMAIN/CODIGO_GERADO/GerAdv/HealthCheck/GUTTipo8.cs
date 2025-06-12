@@ -32,7 +32,7 @@ public class GUTTipoHealthCheck(IOptions<AppSettings> appSettings, GUTTipoServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class GUTTipoHealthCheck(IOptions<AppSettings> appSettings, GUTTipoServic
                         if (DBGUTTipoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(gttCodigo) FROM dbo.GUTTipo (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(gttCodigo) FROM {"GUTTipo".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class GUTTipoHealthCheck(IOptions<AppSettings> appSettings, GUTTipoServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) gttNome,gttOrdem,gttGUID FROM dbo.GUTTipo (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) gttNome,gttOrdem,gttGUID FROM {"GUTTipo".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

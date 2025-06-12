@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useProcessosObsReportForm, useProcessosObsReportList, useValidationsProcessosObsReport } from '../GerAdv_TS/ProcessosObsReport/Hooks/hookProcessosObsReport';
+import { IProcessosObsReport } from '../GerAdv_TS/ProcessosObsReport/Interfaces/interface.ProcessosObsReport';
+import { IProcessosObsReportService } from '../GerAdv_TS/ProcessosObsReport/Services/ProcessosObsReport.service';
+import { ProcessosObsReportTestEmpty } from '../GerAdv_TS/Models/ProcessosObsReport';
+
+
+// Mock do serviço
+const mockProcessosObsReportService: jest.Mocked<IProcessosObsReportService> = {
+  fetchProcessosObsReportById: jest.fn(),
+  saveProcessosObsReport: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteProcessosObsReport: jest.fn(),
+  validateProcessosObsReport: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialProcessosObsReport: IProcessosObsReport = { ...ProcessosObsReportTestEmpty() };
+
+describe('useProcessosObsReportForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useProcessosObsReportForm(initialProcessosObsReport, mockProcessosObsReportService)
+    );
+
+    expect(result.current.data).toEqual(initialProcessosObsReport);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useProcessosObsReportForm(initialProcessosObsReport, mockProcessosObsReportService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'observacao',
+        value: 'Novo Processos Obs Report',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.observacao).toBe('Novo Processos Obs Report');
+  });
+
+   test('deve carregar Processos Obs Report por ID', async () => {
+    const mockProcessosObsReport = { ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report Teste' };
+    mockProcessosObsReportService.fetchProcessosObsReportById.mockResolvedValue(mockProcessosObsReport);
+
+    const { result } = renderHook(() => 
+      useProcessosObsReportForm(initialProcessosObsReport, mockProcessosObsReportService)
+    );
+
+    await act(async () => {
+      await result.current.loadProcessosObsReport(1);
+    });
+
+    expect(mockProcessosObsReportService.fetchProcessosObsReportById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockProcessosObsReport);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Processos Obs Report', async () => {
+    const errorMessage = 'Erro ao carregar Processos Obs Report';
+    mockProcessosObsReportService.fetchProcessosObsReportById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProcessosObsReportForm(initialProcessosObsReport, mockProcessosObsReportService)
+    );
+
+    await act(async () => {
+      await result.current.loadProcessosObsReport(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useProcessosObsReportForm(initialProcessosObsReport, mockProcessosObsReportService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialProcessosObsReport, observacao: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialProcessosObsReport);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useProcessosObsReportForm(initialProcessosObsReport, mockProcessosObsReportService)
+    );
+
+    await act(async () => {
+      await result.current.loadProcessosObsReport(0);
+    });
+
+    expect(mockProcessosObsReportService.fetchProcessosObsReportById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialProcessosObsReport);
+  });
+});
+
+describe('useProcessosObsReportList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProcessosObsReportList(mockProcessosObsReportService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report 1' },
+      { ...initialProcessosObsReport, id: 2, observacao: 'Processos Obs Report 2' }
+    ];
+    mockProcessosObsReportService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProcessosObsReportList(mockProcessosObsReportService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockProcessosObsReportService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockProcessosObsReportService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProcessosObsReportList(mockProcessosObsReportService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report Filtrado' }];
+    const filtro = { observacao: 'Processos Obs Report' };
+    mockProcessosObsReportService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProcessosObsReportList(mockProcessosObsReportService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockProcessosObsReportService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsProcessosObsReport', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsProcessosObsReport());
+
+    const validData = { ...initialProcessosObsReport, observacao: 'Processos Obs Report Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsProcessosObsReport());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report Teste' }];
+    mockProcessosObsReportService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useProcessosObsReportList(mockProcessosObsReportService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsProcessosObsReport()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

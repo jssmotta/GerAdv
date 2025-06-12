@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IServicosWhere
 {
-    ServicosResponse Read(string where, SqlConnection oCnn);
+    ServicosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Servicos : IServicosWhere
 {
-    public ServicosResponse Read(string where, SqlConnection oCnn)
+    public ServicosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBServicos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBServicos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var servicos = new ServicosResponse
         {
             Id = dbRec.ID,
@@ -21,18 +21,6 @@ public partial class Servicos : IServicosWhere
             Basico = dbRec.FBasico,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        servicos.Auditor = auditor;
         return servicos;
     }
 }

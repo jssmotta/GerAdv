@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProCDAWriter
 {
-    Entity.DBProCDA Write(Models.ProCDA procda, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProCDA Write(Models.ProCDA procda, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProCDA : IProCDAWriter
 {
-    public Entity.DBProCDA Write(Models.ProCDA procda, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProCDA] WHERE pcdCodigo={procda.Id};", oCnn);
+    }
+
+    public Entity.DBProCDA Write(Models.ProCDA procda, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = procda.Id.IsEmptyIDNumber() ? new Entity.DBProCDA() : new Entity.DBProCDA(procda.Id, oCnn);
         dbRec.FProcesso = procda.Processo;

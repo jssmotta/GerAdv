@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IAdvogadosService, IDisposable
+public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IAgendaRepetirService agendarepetirService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProcessosService processosService, IProProcuradoresService proprocuradoresService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAdvogadosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<AdvogadosResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<AdvogadosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Advogados: URI inválida");
@@ -26,72 +27,74 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvoga
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<AdvogadosResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<AdvogadosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBAdvogados.SensivelCamposSqlX} 
-                   FROM {DBAdvogados.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBAdvogadosDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBAdvogados>(max);
-        await foreach (var item in DBAdvogados.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBAdvogados.SensivelCamposSqlX}, carNome,escNome,cidNome
+                   FROM {DBAdvogados.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON carCodigo=advCargo
+LEFT JOIN {"Escritorios".dbo(oCnn)} (NOLOCK) ON escCodigo=advEscritorio
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=advCidade
+ 
+                   {where}
+                   ORDER BY advNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<AdvogadosResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBAdvogados(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var advogados = reader.ReadAll(dbRec, item);
+                if (advogados != null)
+                {
+                    lista.Add(advogados);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<AdvogadosResponse>> Filter(Filters.FilterAdvogados filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<AdvogadosResponseAll>> Filter(Filters.FilterAdvogados filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Advogados: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Advogados-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<AdvogadosResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBAdvogados.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<AdvogadosResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Advogados: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new AdvogadosResponse();
         }
@@ -101,39 +104,24 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvoga
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Advogados-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Advogados-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Advogados - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Advogados - {uri}-: GetById");
         }
     }
 
-    private async Task<AdvogadosResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<AdvogadosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<AdvogadosResponse?> AddAndUpdate([FromBody] Models.Advogados regAdvogados, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Advogados: URI inválida");
@@ -147,14 +135,13 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvoga
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regAdvogados, this, cargosReader, escritoriosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAdvogados, this, cargosReader, escritoriosReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"Advogados: {validade}");
@@ -168,86 +155,82 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvoga
     public async Task<AdvogadosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Advogados: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var advogados = reader.Read(id, oCnn);
-            if (advogados != null)
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, agendaquemService, agendarepetirService, contratosService, horastrabService, parceriaprocService, processosService, proprocuradoresService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBAdvogados().DeletarItem(advogados.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var advogados = reader.Read(id, oCnn);
+            try
+            {
+                if (advogados != null)
+                {
+                    writer.Delete(advogados, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return advogados;
         });
     }
 
-    public async Task<AdvogadosResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Advogados: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBAdvogadosDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAdvogados? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Advogados: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Advogados-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Advogados-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBAdvogados.ListarN(cWhere, DBAdvogadosDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBAdvogadosDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,40 +270,176 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvoga
         }
     }
 
-    private static string WFiltro(Filters.FilterAdvogados filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAdvogados filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Cargo == -2147483648 ? string.Empty : DBAdvogadosDicInfo.CargoSql(filtro.Cargo);
-        cWhere += filtro.EMailPro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.EMailProSql(filtro.EMailPro);
-        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.CPFSql(filtro.CPF);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.RGSql(filtro.RG);
-        cWhere += filtro.NomeMae.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.NomeMaeSql(filtro.NomeMae);
-        cWhere += filtro.Escritorio == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.EscritorioSql(filtro.Escritorio);
-        cWhere += filtro.OAB.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.OABSql(filtro.OAB);
-        cWhere += filtro.NomeCompleto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.NomeCompletoSql(filtro.NomeCompleto);
-        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.EnderecoSql(filtro.Endereco);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.CEPSql(filtro.CEP);
-        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.BairroSql(filtro.Bairro);
-        cWhere += filtro.CTPSSerie.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.CTPSSerieSql(filtro.CTPSSerie);
-        cWhere += filtro.CTPS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.CTPSSql(filtro.CTPS);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.FaxSql(filtro.Fax);
-        cWhere += filtro.Comissao == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.ComissaoSql(filtro.Comissao);
-        cWhere += filtro.Secretaria.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.SecretariaSql(filtro.Secretaria);
-        cWhere += filtro.TextoProcuracao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.TextoProcuracaoSql(filtro.TextoProcuracao);
-        cWhere += filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.EMailSql(filtro.EMail);
-        cWhere += filtro.Especializacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.EspecializacaoSql(filtro.Especializacao);
-        cWhere += filtro.Pasta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.PastaSql(filtro.Pasta);
-        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.ObservacaoSql(filtro.Observacao);
-        cWhere += filtro.ContaBancaria.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.ContaBancariaSql(filtro.ContaBancaria);
-        cWhere += filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.ClassSql(filtro.Class);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAdvogadosDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Cargo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Cargo)}", filtro.Cargo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.EMailPro))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.EMailPro)}", filtro.EMailPro));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CPF))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CPF)}", filtro.CPF));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.RG))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.RG)}", filtro.RG));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NomeMae))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.NomeMae)}", filtro.NomeMae));
+        }
+
+        if (filtro.Escritorio != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Escritorio)}", filtro.Escritorio));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.OAB))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.OAB)}", filtro.OAB));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NomeCompleto))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.NomeCompleto)}", filtro.NomeCompleto));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Endereco))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Endereco)}", filtro.Endereco));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CEP))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CEP)}", filtro.CEP));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Bairro))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Bairro)}", filtro.Bairro));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CTPSSerie))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CTPSSerie)}", filtro.CTPSSerie));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CTPS))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CTPS)}", filtro.CTPS));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fax))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Fax)}", filtro.Fax));
+        }
+
+        if (filtro.Comissao != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Comissao)}", filtro.Comissao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Secretaria))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Secretaria)}", filtro.Secretaria));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.TextoProcuracao))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.TextoProcuracao)}", filtro.TextoProcuracao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.EMail))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.EMail)}", filtro.EMail));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Especializacao))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Especializacao)}", filtro.Especializacao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Pasta))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Pasta)}", filtro.Pasta));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Observacao))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Observacao)}", filtro.Observacao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.ContaBancaria))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.ContaBancaria)}", filtro.ContaBancaria));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Class))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Class)}", filtro.Class));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Cargo == int.MinValue ? string.Empty : $"{DBAdvogadosDicInfo.Cargo} = @{nameof(DBAdvogadosDicInfo.Cargo)}";
+        cWhere += filtro.EMailPro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.EMailPro} = @{nameof(DBAdvogadosDicInfo.EMailPro)}";
+        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.CPF} = @{nameof(DBAdvogadosDicInfo.CPF)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Nome} = @{nameof(DBAdvogadosDicInfo.Nome)}";
+        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.RG} = @{nameof(DBAdvogadosDicInfo.RG)}";
+        cWhere += filtro.NomeMae.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.NomeMae} = @{nameof(DBAdvogadosDicInfo.NomeMae)}";
+        cWhere += filtro.Escritorio == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Escritorio} = @{nameof(DBAdvogadosDicInfo.Escritorio)}";
+        cWhere += filtro.OAB.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.OAB} = @{nameof(DBAdvogadosDicInfo.OAB)}";
+        cWhere += filtro.NomeCompleto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.NomeCompleto} = @{nameof(DBAdvogadosDicInfo.NomeCompleto)}";
+        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Endereco} = @{nameof(DBAdvogadosDicInfo.Endereco)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Cidade} = @{nameof(DBAdvogadosDicInfo.Cidade)}";
+        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.CEP} = @{nameof(DBAdvogadosDicInfo.CEP)}";
+        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Bairro} = @{nameof(DBAdvogadosDicInfo.Bairro)}";
+        cWhere += filtro.CTPSSerie.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.CTPSSerie} = @{nameof(DBAdvogadosDicInfo.CTPSSerie)}";
+        cWhere += filtro.CTPS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.CTPS} = @{nameof(DBAdvogadosDicInfo.CTPS)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Fone} = @{nameof(DBAdvogadosDicInfo.Fone)}";
+        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Fax} = @{nameof(DBAdvogadosDicInfo.Fax)}";
+        cWhere += filtro.Comissao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Comissao} = @{nameof(DBAdvogadosDicInfo.Comissao)}";
+        cWhere += filtro.Secretaria.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Secretaria} = @{nameof(DBAdvogadosDicInfo.Secretaria)}";
+        cWhere += filtro.TextoProcuracao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.TextoProcuracao} = @{nameof(DBAdvogadosDicInfo.TextoProcuracao)}";
+        cWhere += filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.EMail} = @{nameof(DBAdvogadosDicInfo.EMail)}";
+        cWhere += filtro.Especializacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Especializacao} = @{nameof(DBAdvogadosDicInfo.Especializacao)}";
+        cWhere += filtro.Pasta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Pasta} = @{nameof(DBAdvogadosDicInfo.Pasta)}";
+        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Observacao} = @{nameof(DBAdvogadosDicInfo.Observacao)}";
+        cWhere += filtro.ContaBancaria.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.ContaBancaria} = @{nameof(DBAdvogadosDicInfo.ContaBancaria)}";
+        cWhere += filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.Class} = @{nameof(DBAdvogadosDicInfo.Class)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAdvogadosDicInfo.GUID} = @{nameof(DBAdvogadosDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

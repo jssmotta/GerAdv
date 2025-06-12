@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProcessosService(IOptions<AppSettings> appSettings, IProcessosReader reader, IProcessosValidation validation, IProcessosWriter writer, IAdvogadosReader advogadosReader, IJusticaReader justicaReader, IPrepostosReader prepostosReader, IClientesReader clientesReader, IOponentesReader oponentesReader, IAreaReader areaReader, ISituacaoReader situacaoReader, IRitoReader ritoReader, IAtividadesReader atividadesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IProcessosService, IDisposable
+public partial class ProcessosService(IOptions<AppSettings> appSettings, IProcessosReader reader, IProcessosValidation validation, IProcessosWriter writer, IAdvogadosReader advogadosReader, IJusticaReader justicaReader, IPrepostosReader prepostosReader, IClientesReader clientesReader, IOponentesReader oponentesReader, IAreaReader areaReader, ICidadeReader cidadeReader, ISituacaoReader situacaoReader, IRitoReader ritoReader, IAtividadesReader atividadesReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaRepetirService agendarepetirService, IAndamentosMDService andamentosmdService, IApensoService apensoService, IApenso2Service apenso2Service, IContaCorrenteService contacorrenteService, IContatoCRMService contatocrmService, IContratosService contratosService, IDocumentosService documentosService, IEnderecoSistemaService enderecosistemaService, IHistoricoService historicoService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, IInstanciaService instanciaService, ILigacoesService ligacoesService, ILivroCaixaService livrocaixaService, INENotasService nenotasService, IParceriaProcService parceriaprocService, IParteClienteOutrasService parteclienteoutrasService, IPenhoraService penhoraService, IPrecatoriaService precatoriaService, IProCDAService procdaService, IProcessosObsReportService processosobsreportService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, IProDepositosService prodepositosService, IProDespesasService prodespesasService, IProObservacoesService proobservacoesService, IProPartesService propartesService, IProProcuradoresService proprocuradoresService, IProResumosService proresumosService, IProSucumbenciaService prosucumbenciaService, IProValoresService provaloresService, IRecadosService recadosService, ITerceirosService terceirosService, IUltimosProcessosService ultimosprocessosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProcessosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ProcessosResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ProcessosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Processos: URI inválida");
@@ -26,72 +27,82 @@ public partial class ProcessosService(IOptions<AppSettings> appSettings, IProces
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ProcessosResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ProcessosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBProcessos.SensivelCamposSqlX} 
-                   FROM {DBProcessos.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBProcessosDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBProcessos>(max);
-        await foreach (var item in DBProcessos.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBProcessos.SensivelCamposSqlX}, advNome,jusNome,advNome,preNome,cliNome,opoNome,areDescricao,cidNome,ritDescricao,atvDescricao
+                   FROM {DBProcessos.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=proAdvOpo
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=proJustica
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=proAdvogado
+LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=proPreposto
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=proCliente
+LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON opoCodigo=proOponente
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=proArea
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=proCidade
+LEFT JOIN {"Situacao".dbo(oCnn)} (NOLOCK) ON sitCodigo=proSituacao
+LEFT JOIN {"Rito".dbo(oCnn)} (NOLOCK) ON ritCodigo=proRito
+LEFT JOIN {"Atividades".dbo(oCnn)} (NOLOCK) ON atvCodigo=proAtividade
+ 
+                   {where}
+                   ORDER BY proNroPasta
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ProcessosResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBProcessos(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var processos = reader.ReadAll(dbRec, item);
+                if (processos != null)
+                {
+                    lista.Add(processos);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ProcessosResponse>> Filter(Filters.FilterProcessos filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ProcessosResponseAll>> Filter(Filters.FilterProcessos filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Processos: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Processos-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ProcessosResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBProcessos.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ProcessosResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Processos: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ProcessosResponse();
         }
@@ -101,39 +112,24 @@ public partial class ProcessosService(IOptions<AppSettings> appSettings, IProces
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Processos-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Processos-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Processos - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Processos - {uri}-: GetById");
         }
     }
 
-    private async Task<ProcessosResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ProcessosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ProcessosResponse?> AddAndUpdate([FromBody] Models.Processos regProcessos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Processos: URI inválida");
@@ -147,14 +143,13 @@ public partial class ProcessosService(IOptions<AppSettings> appSettings, IProces
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regProcessos, this, advogadosReader, justicaReader, prepostosReader, clientesReader, oponentesReader, areaReader, situacaoReader, ritoReader, atividadesReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessos, this, advogadosReader, justicaReader, prepostosReader, clientesReader, oponentesReader, areaReader, cidadeReader, situacaoReader, ritoReader, atividadesReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"Processos: {validade}");
@@ -168,86 +163,82 @@ public partial class ProcessosService(IOptions<AppSettings> appSettings, IProces
     public async Task<ProcessosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Processos: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var processos = reader.Read(id, oCnn);
-            if (processos != null)
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, agendarepetirService, andamentosmdService, apensoService, apenso2Service, contacorrenteService, contatocrmService, contratosService, documentosService, enderecosistemaService, historicoService, honorariosdadoscontratoService, horastrabService, instanciaService, ligacoesService, livrocaixaService, nenotasService, parceriaprocService, parteclienteoutrasService, penhoraService, precatoriaService, procdaService, processosobsreportService, processosparadosService, processoutputrequestService, prodepositosService, prodespesasService, proobservacoesService, propartesService, proprocuradoresService, proresumosService, prosucumbenciaService, provaloresService, recadosService, terceirosService, ultimosprocessosService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBProcessos().DeletarItem(processos.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var processos = reader.Read(id, oCnn);
+            try
+            {
+                if (processos != null)
+                {
+                    writer.Delete(processos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return processos;
         });
     }
 
-    public async Task<ProcessosResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Processos: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBProcessosDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessos? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Processos: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Processos-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Processos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBProcessos.ListarN(cWhere, DBProcessosDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBProcessosDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,43 +278,194 @@ public partial class ProcessosService(IOptions<AppSettings> appSettings, IProces
         }
     }
 
-    private static string WFiltro(Filters.FilterProcessos filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessos filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.AdvParc == -2147483648 ? string.Empty : DBProcessosDicInfo.AdvParcSql(filtro.AdvParc);
-        cWhere += filtro.TipoBaixa == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.TipoBaixaSql(filtro.TipoBaixa);
-        cWhere += filtro.ClassRisco == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ClassRiscoSql(filtro.ClassRisco);
-        cWhere += filtro.ObsBCX.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ObsBCXSql(filtro.ObsBCX);
-        cWhere += filtro.NroExtra.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.NroExtraSql(filtro.NroExtra);
-        cWhere += filtro.AdvOpo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.AdvOpoSql(filtro.AdvOpo);
-        cWhere += filtro.Justica == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.JusticaSql(filtro.Justica);
-        cWhere += filtro.Advogado == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.AdvogadoSql(filtro.Advogado);
-        cWhere += filtro.NroCaixa.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.NroCaixaSql(filtro.NroCaixa);
-        cWhere += filtro.Preposto == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.PrepostoSql(filtro.Preposto);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Oponente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.OponenteSql(filtro.Oponente);
-        cWhere += filtro.Area == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.AreaSql(filtro.Area);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.Situacao == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.SituacaoSql(filtro.Situacao);
-        cWhere += filtro.Rito == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.RitoSql(filtro.Rito);
-        cWhere += filtro.Fato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.FatoSql(filtro.Fato);
-        cWhere += filtro.NroPasta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.NroPastaSql(filtro.NroPasta);
-        cWhere += filtro.Atividade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.AtividadeSql(filtro.Atividade);
-        cWhere += filtro.CaixaMorto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.CaixaMortoSql(filtro.CaixaMorto);
-        cWhere += filtro.MotivoBaixa.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.MotivoBaixaSql(filtro.MotivoBaixa);
-        cWhere += filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.OBSSql(filtro.OBS);
-        cWhere += filtro.ZKey.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ZKeySql(filtro.ZKey);
-        cWhere += filtro.ZKeyQuem == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ZKeyQuemSql(filtro.ZKeyQuem);
-        cWhere += filtro.Resumo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ResumoSql(filtro.Resumo);
-        cWhere += filtro.NroContrato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.NroContratoSql(filtro.NroContrato);
-        cWhere += filtro.PercProbExitoJustificativa.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.PercProbExitoJustificativaSql(filtro.PercProbExitoJustificativa);
-        cWhere += filtro.FaseAuditoria == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.FaseAuditoriaSql(filtro.FaseAuditoria);
-        cWhere += filtro.ValorCondenacaoProvisorio == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.ValorCondenacaoProvisorioSql(filtro.ValorCondenacaoProvisorio);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProcessosDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.AdvParc != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.AdvParc)}", filtro.AdvParc));
+        }
+
+        if (filtro.TipoBaixa != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.TipoBaixa)}", filtro.TipoBaixa));
+        }
+
+        if (filtro.ClassRisco != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.ClassRisco)}", filtro.ClassRisco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.ObsBCX))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.ObsBCX)}", filtro.ObsBCX));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NroExtra))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.NroExtra)}", filtro.NroExtra));
+        }
+
+        if (filtro.AdvOpo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.AdvOpo)}", filtro.AdvOpo));
+        }
+
+        if (filtro.Justica != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Justica)}", filtro.Justica));
+        }
+
+        if (filtro.Advogado != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Advogado)}", filtro.Advogado));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NroCaixa))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.NroCaixa)}", filtro.NroCaixa));
+        }
+
+        if (filtro.Preposto != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Preposto)}", filtro.Preposto));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (filtro.Oponente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Oponente)}", filtro.Oponente));
+        }
+
+        if (filtro.Area != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Area)}", filtro.Area));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (filtro.Situacao != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Situacao)}", filtro.Situacao));
+        }
+
+        if (filtro.Rito != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Rito)}", filtro.Rito));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fato))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Fato)}", filtro.Fato));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NroPasta))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.NroPasta)}", filtro.NroPasta));
+        }
+
+        if (filtro.Atividade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Atividade)}", filtro.Atividade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CaixaMorto))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.CaixaMorto)}", filtro.CaixaMorto));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.MotivoBaixa))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.MotivoBaixa)}", filtro.MotivoBaixa));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.OBS))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.OBS)}", filtro.OBS));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.ZKey))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.ZKey)}", filtro.ZKey));
+        }
+
+        if (filtro.ZKeyQuem != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.ZKeyQuem)}", filtro.ZKeyQuem));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Resumo))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.Resumo)}", filtro.Resumo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NroContrato))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.NroContrato)}", filtro.NroContrato));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.PercProbExitoJustificativa))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.PercProbExitoJustificativa)}", filtro.PercProbExitoJustificativa));
+        }
+
+        if (filtro.FaseAuditoria != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.FaseAuditoria)}", filtro.FaseAuditoria));
+        }
+
+        if (filtro.ValorCondenacaoProvisorio != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.ValorCondenacaoProvisorio)}", filtro.ValorCondenacaoProvisorio));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBProcessosDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.AdvParc == int.MinValue ? string.Empty : $"{DBProcessosDicInfo.AdvParc} = @{nameof(DBProcessosDicInfo.AdvParc)}";
+        cWhere += filtro.TipoBaixa == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.TipoBaixa} = @{nameof(DBProcessosDicInfo.TipoBaixa)}";
+        cWhere += filtro.ClassRisco == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.ClassRisco} = @{nameof(DBProcessosDicInfo.ClassRisco)}";
+        cWhere += filtro.ObsBCX.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.ObsBCX} = @{nameof(DBProcessosDicInfo.ObsBCX)}";
+        cWhere += filtro.NroExtra.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.NroExtra} = @{nameof(DBProcessosDicInfo.NroExtra)}";
+        cWhere += filtro.AdvOpo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.AdvOpo} = @{nameof(DBProcessosDicInfo.AdvOpo)}";
+        cWhere += filtro.Justica == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Justica} = @{nameof(DBProcessosDicInfo.Justica)}";
+        cWhere += filtro.Advogado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Advogado} = @{nameof(DBProcessosDicInfo.Advogado)}";
+        cWhere += filtro.NroCaixa.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.NroCaixa} = @{nameof(DBProcessosDicInfo.NroCaixa)}";
+        cWhere += filtro.Preposto == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Preposto} = @{nameof(DBProcessosDicInfo.Preposto)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Cliente} = @{nameof(DBProcessosDicInfo.Cliente)}";
+        cWhere += filtro.Oponente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Oponente} = @{nameof(DBProcessosDicInfo.Oponente)}";
+        cWhere += filtro.Area == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Area} = @{nameof(DBProcessosDicInfo.Area)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Cidade} = @{nameof(DBProcessosDicInfo.Cidade)}";
+        cWhere += filtro.Situacao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Situacao} = @{nameof(DBProcessosDicInfo.Situacao)}";
+        cWhere += filtro.Rito == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Rito} = @{nameof(DBProcessosDicInfo.Rito)}";
+        cWhere += filtro.Fato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Fato} = @{nameof(DBProcessosDicInfo.Fato)}";
+        cWhere += filtro.NroPasta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.NroPasta} = @{nameof(DBProcessosDicInfo.NroPasta)}";
+        cWhere += filtro.Atividade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Atividade} = @{nameof(DBProcessosDicInfo.Atividade)}";
+        cWhere += filtro.CaixaMorto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.CaixaMorto} = @{nameof(DBProcessosDicInfo.CaixaMorto)}";
+        cWhere += filtro.MotivoBaixa.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.MotivoBaixa} = @{nameof(DBProcessosDicInfo.MotivoBaixa)}";
+        cWhere += filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.OBS} = @{nameof(DBProcessosDicInfo.OBS)}";
+        cWhere += filtro.ZKey.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.ZKey} = @{nameof(DBProcessosDicInfo.ZKey)}";
+        cWhere += filtro.ZKeyQuem == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.ZKeyQuem} = @{nameof(DBProcessosDicInfo.ZKeyQuem)}";
+        cWhere += filtro.Resumo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.Resumo} = @{nameof(DBProcessosDicInfo.Resumo)}";
+        cWhere += filtro.NroContrato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.NroContrato} = @{nameof(DBProcessosDicInfo.NroContrato)}";
+        cWhere += filtro.PercProbExitoJustificativa.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.PercProbExitoJustificativa} = @{nameof(DBProcessosDicInfo.PercProbExitoJustificativa)}";
+        cWhere += filtro.FaseAuditoria == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.FaseAuditoria} = @{nameof(DBProcessosDicInfo.FaseAuditoria)}";
+        cWhere += filtro.ValorCondenacaoProvisorio == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.ValorCondenacaoProvisorio} = @{nameof(DBProcessosDicInfo.ValorCondenacaoProvisorio)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProcessosDicInfo.GUID} = @{nameof(DBProcessosDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

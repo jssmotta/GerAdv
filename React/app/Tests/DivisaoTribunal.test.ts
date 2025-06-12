@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useDivisaoTribunalForm, useDivisaoTribunalList, useValidationsDivisaoTribunal } from '../GerAdv_TS/DivisaoTribunal/Hooks/hookDivisaoTribunal';
+import { IDivisaoTribunal } from '../GerAdv_TS/DivisaoTribunal/Interfaces/interface.DivisaoTribunal';
+import { IDivisaoTribunalService } from '../GerAdv_TS/DivisaoTribunal/Services/DivisaoTribunal.service';
+import { DivisaoTribunalTestEmpty } from '../GerAdv_TS/Models/DivisaoTribunal';
+
+
+// Mock do serviço
+const mockDivisaoTribunalService: jest.Mocked<IDivisaoTribunalService> = {
+  fetchDivisaoTribunalById: jest.fn(),
+  saveDivisaoTribunal: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteDivisaoTribunal: jest.fn(),
+  validateDivisaoTribunal: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialDivisaoTribunal: IDivisaoTribunal = { ...DivisaoTribunalTestEmpty() };
+
+describe('useDivisaoTribunalForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useDivisaoTribunalForm(initialDivisaoTribunal, mockDivisaoTribunalService)
+    );
+
+    expect(result.current.data).toEqual(initialDivisaoTribunal);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useDivisaoTribunalForm(initialDivisaoTribunal, mockDivisaoTribunalService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nomeespecial',
+        value: 'Novo Divisao Tribunal',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nomeespecial).toBe('Novo Divisao Tribunal');
+  });
+
+   test('deve carregar Divisao Tribunal por ID', async () => {
+    const mockDivisaoTribunal = { ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal Teste' };
+    mockDivisaoTribunalService.fetchDivisaoTribunalById.mockResolvedValue(mockDivisaoTribunal);
+
+    const { result } = renderHook(() => 
+      useDivisaoTribunalForm(initialDivisaoTribunal, mockDivisaoTribunalService)
+    );
+
+    await act(async () => {
+      await result.current.loadDivisaoTribunal(1);
+    });
+
+    expect(mockDivisaoTribunalService.fetchDivisaoTribunalById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockDivisaoTribunal);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Divisao Tribunal', async () => {
+    const errorMessage = 'Erro ao carregar Divisao Tribunal';
+    mockDivisaoTribunalService.fetchDivisaoTribunalById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useDivisaoTribunalForm(initialDivisaoTribunal, mockDivisaoTribunalService)
+    );
+
+    await act(async () => {
+      await result.current.loadDivisaoTribunal(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useDivisaoTribunalForm(initialDivisaoTribunal, mockDivisaoTribunalService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialDivisaoTribunal, nomeespecial: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialDivisaoTribunal);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useDivisaoTribunalForm(initialDivisaoTribunal, mockDivisaoTribunalService)
+    );
+
+    await act(async () => {
+      await result.current.loadDivisaoTribunal(0);
+    });
+
+    expect(mockDivisaoTribunalService.fetchDivisaoTribunalById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialDivisaoTribunal);
+  });
+});
+
+describe('useDivisaoTribunalList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useDivisaoTribunalList(mockDivisaoTribunalService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal 1' },
+      { ...initialDivisaoTribunal, id: 2, nomeespecial: 'Divisao Tribunal 2' }
+    ];
+    mockDivisaoTribunalService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useDivisaoTribunalList(mockDivisaoTribunalService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockDivisaoTribunalService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockDivisaoTribunalService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useDivisaoTribunalList(mockDivisaoTribunalService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal Filtrado' }];
+    const filtro = { nomeespecial: 'Divisao Tribunal' };
+    mockDivisaoTribunalService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useDivisaoTribunalList(mockDivisaoTribunalService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockDivisaoTribunalService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsDivisaoTribunal', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsDivisaoTribunal());
+
+    const validData = { ...initialDivisaoTribunal, nomeespecial: 'Divisao Tribunal Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsDivisaoTribunal());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal Teste' }];
+    mockDivisaoTribunalService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useDivisaoTribunalList(mockDivisaoTribunalService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsDivisaoTribunal()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

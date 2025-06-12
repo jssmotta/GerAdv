@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useTipoRecursoForm, useTipoRecursoList, useValidationsTipoRecurso } from '../GerAdv_TS/TipoRecurso/Hooks/hookTipoRecurso';
+import { ITipoRecurso } from '../GerAdv_TS/TipoRecurso/Interfaces/interface.TipoRecurso';
+import { ITipoRecursoService } from '../GerAdv_TS/TipoRecurso/Services/TipoRecurso.service';
+import { TipoRecursoTestEmpty } from '../GerAdv_TS/Models/TipoRecurso';
+import { useTipoRecursoComboBox } from '../GerAdv_TS/TipoRecurso/Hooks/hookTipoRecurso';
+
+// Mock do serviço
+const mockTipoRecursoService: jest.Mocked<ITipoRecursoService> = {
+  fetchTipoRecursoById: jest.fn(),
+  saveTipoRecurso: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteTipoRecurso: jest.fn(),
+  validateTipoRecurso: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialTipoRecurso: ITipoRecurso = { ...TipoRecursoTestEmpty() };
+
+describe('useTipoRecursoForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoForm(initialTipoRecurso, mockTipoRecursoService)
+    );
+
+    expect(result.current.data).toEqual(initialTipoRecurso);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoForm(initialTipoRecurso, mockTipoRecursoService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'descricao',
+        value: 'Novo Tipo Recurso',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.descricao).toBe('Novo Tipo Recurso');
+  });
+
+   test('deve carregar Tipo Recurso por ID', async () => {
+    const mockTipoRecurso = { ...initialTipoRecurso, id: 1, descricao: 'Tipo Recurso Teste' };
+    mockTipoRecursoService.fetchTipoRecursoById.mockResolvedValue(mockTipoRecurso);
+
+    const { result } = renderHook(() => 
+      useTipoRecursoForm(initialTipoRecurso, mockTipoRecursoService)
+    );
+
+    await act(async () => {
+      await result.current.loadTipoRecurso(1);
+    });
+
+    expect(mockTipoRecursoService.fetchTipoRecursoById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockTipoRecurso);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Tipo Recurso', async () => {
+    const errorMessage = 'Erro ao carregar Tipo Recurso';
+    mockTipoRecursoService.fetchTipoRecursoById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useTipoRecursoForm(initialTipoRecurso, mockTipoRecursoService)
+    );
+
+    await act(async () => {
+      await result.current.loadTipoRecurso(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoForm(initialTipoRecurso, mockTipoRecursoService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialTipoRecurso, descricao: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialTipoRecurso);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoForm(initialTipoRecurso, mockTipoRecursoService)
+    );
+
+    await act(async () => {
+      await result.current.loadTipoRecurso(0);
+    });
+
+    expect(mockTipoRecursoService.fetchTipoRecursoById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialTipoRecurso);
+  });
+});
+
+describe('useTipoRecursoList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoList(mockTipoRecursoService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialTipoRecurso, id: 1, descricao: 'Tipo Recurso 1' },
+      { ...initialTipoRecurso, id: 2, descricao: 'Tipo Recurso 2' }
+    ];
+    mockTipoRecursoService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useTipoRecursoList(mockTipoRecursoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockTipoRecursoService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockTipoRecursoService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useTipoRecursoList(mockTipoRecursoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialTipoRecurso, id: 1, descricao: 'Tipo Recurso Filtrado' }];
+    const filtro = { descricao: 'Tipo Recurso' };
+    mockTipoRecursoService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useTipoRecursoList(mockTipoRecursoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockTipoRecursoService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsTipoRecurso', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsTipoRecurso());
+
+    const validData = { ...initialTipoRecurso, descricao: 'Tipo Recurso Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar descricao vazio', () => {
+    const { result } = renderHook(() => useValidationsTipoRecurso());
+
+    const invalidData = { ...initialTipoRecurso, descricao: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Descricao não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar descricao muito longo', () => {
+    const { result } = renderHook(() => useValidationsTipoRecurso());
+
+    const invalidData = { 
+      ...initialTipoRecurso, 
+      descricao: 'a'.repeat(50+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Descricao não pode ter mais de 50 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsTipoRecurso());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialTipoRecurso, id: 1, descricao: 'Tipo Recurso Teste' }];
+    mockTipoRecursoService.getAll.mockResolvedValue(mockData);
+    mockTipoRecursoService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useTipoRecursoList(mockTipoRecursoService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsTipoRecurso()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Tipo Recurso Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Tipo Recurso Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Tipo Recurso 1' },
+      { id: 2, descricao: 'Tipo Recurso 2' }
+    ];
+    mockTipoRecursoService.getList.mockResolvedValue(mockOptions as ITipoRecurso[]);
+
+
+    const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Tipo Recurso 1' },
+        { id: 2, nome: 'Tipo Recurso 2' }
+      ]);
+    });
+
+    expect(mockTipoRecursoService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Tipo Recurso ABC' },
+      { id: 2, descricao: 'Tipo Recurso XYZ' }
+    ];
+    mockTipoRecursoService.getList.mockResolvedValue(mockOptions as ITipoRecurso[]);   
+
+
+ const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Tipo Recurso ABC' },
+        { id: 2, nome: 'Tipo Recurso XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Tipo Recurso ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Tipo Recurso ABC' },
+      { id: 2, descricao: 'Tipo Recurso XYZ' }
+    ];
+    mockTipoRecursoService.getList.mockResolvedValue(mockOptions as ITipoRecurso[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Tipo Recurso ABC' },
+        { id: 2, nome: 'Tipo Recurso XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Tipo Recurso ABC' },
+          {id: 2, nome: 'Tipo Recurso XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService)
+    );
+
+    const newValue = { id: 1, descricao: 'Tipo Recurso Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, descricao: 'Tipo Recurso Inicial' };
+    
+    const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useTipoRecursoComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, descricao: 'Tipo Recurso Inicial' };
+    
+    const { result } = renderHook(() => 
+      useTipoRecursoComboBox(mockTipoRecursoService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

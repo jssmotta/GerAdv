@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoEMailValidation
 {
-    Task<string> ValidateReg(Models.TipoEMail reg, ITipoEMailService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoEMail reg, ITipoEMailService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoEMailService service, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoEMailValidation : ITipoEMailValidation
 {
-    public async Task<string> ValidateReg(Models.TipoEMail reg, ITipoEMailService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoEMailService service, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var smsaliceExists = await smsaliceService.Filter(new Filters.FilterSMSAlice { TipoEMail = id }, uri);
+        if (smsaliceExists != null && smsaliceExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoEMail reg, ITipoEMailService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

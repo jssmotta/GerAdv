@@ -7,7 +7,7 @@ public partial class DBContatoCRM : MenphisSI.GerAdv.DBContatoCRM, IDBContatoCRM
     {
     }
 
-    public DBContatoCRM(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBContatoCRM(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBContatoCRM : MenphisSI.GerAdv.DBContatoCRM, IDBContatoCRM
     {
     }
 
-    public DBContatoCRM(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBContatoCRM(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IServicosValidation
 {
-    Task<string> ValidateReg(Models.Servicos reg, IServicosService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Servicos reg, IServicosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IServicosService service, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ServicosValidation : IServicosValidation
 {
-    public async Task<string> ValidateReg(Models.Servicos reg, IServicosService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IServicosService service, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var horastrabExists = await horastrabService.Filter(new Filters.FilterHorasTrab { Servico = id }, uri);
+        if (horastrabExists != null && horastrabExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Servicos reg, IServicosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

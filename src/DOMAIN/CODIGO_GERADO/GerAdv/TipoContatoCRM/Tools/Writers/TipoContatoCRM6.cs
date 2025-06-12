@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoContatoCRMWriter
 {
-    Entity.DBTipoContatoCRM Write(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, SqlConnection oCnn);
+    Entity.DBTipoContatoCRM Write(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TipoContatoCRM : ITipoContatoCRMWriter
 {
-    public Entity.DBTipoContatoCRM Write(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, SqlConnection oCnn)
+    public void Delete(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TipoContatoCRM] WHERE tccCodigo={tipocontatocrm.Id};", oCnn);
+    }
+
+    public Entity.DBTipoContatoCRM Write(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = tipocontatocrm.Id.IsEmptyIDNumber() ? new Entity.DBTipoContatoCRM() : new Entity.DBTipoContatoCRM(tipocontatocrm.Id, oCnn);
         dbRec.FNome = tipocontatocrm.Nome;

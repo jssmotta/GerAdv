@@ -32,7 +32,7 @@ public class CidadeHealthCheck(IOptions<AppSettings> appSettings, CidadeService 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class CidadeHealthCheck(IOptions<AppSettings> appSettings, CidadeService 
                         if (DBCidadeDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(cidCodigo) FROM dbo.Cidade (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(cidCodigo) FROM {"Cidade".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class CidadeHealthCheck(IOptions<AppSettings> appSettings, CidadeService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) cidDDD,cidTop,cidComarca,cidCapital,cidNome,cidUF,cidSigla,cidGUID FROM dbo.Cidade (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) cidDDD,cidTop,cidComarca,cidCapital,cidNome,cidUF,cidSigla,cidGUID FROM {"Cidade".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

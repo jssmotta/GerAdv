@@ -32,7 +32,7 @@ public class UltimosProcessosHealthCheck(IOptions<AppSettings> appSettings, Ulti
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class UltimosProcessosHealthCheck(IOptions<AppSettings> appSettings, Ulti
                         if (DBUltimosProcessosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ultCodigo) FROM dbo.UltimosProcessos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ultCodigo) FROM {"UltimosProcessos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class UltimosProcessosHealthCheck(IOptions<AppSettings> appSettings, Ulti
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ultProcesso,ultQuando,ultQuem FROM dbo.UltimosProcessos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ultProcesso,ultQuando,ultQuem FROM {"UltimosProcessos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

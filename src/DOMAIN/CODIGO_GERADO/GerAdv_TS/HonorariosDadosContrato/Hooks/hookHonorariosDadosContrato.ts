@@ -1,0 +1,171 @@
+﻿'use client';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { IHonorariosDadosContratoService } from '../Services/HonorariosDadosContrato.service';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { IHonorariosDadosContrato } from '../Interfaces/interface.HonorariosDadosContrato';
+import { isValidDate } from '@/app/tools/datetime';
+
+export const useHonorariosDadosContratoForm = (
+  initialHonorariosDadosContrato: IHonorariosDadosContrato,
+  dataService: IHonorariosDadosContratoService
+) => {
+  const [data, setData] = useState<IHonorariosDadosContrato>(initialHonorariosDadosContrato);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = useCallback((e: any) => {
+    const { name, value, type, checked } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));    
+  }, []);
+
+  const loadHonorariosDadosContrato = useCallback(async (id: number) => {
+    if (!id || id === 0) {
+      setData(initialHonorariosDadosContrato);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const dados = await dataService.fetchHonorariosDadosContratoById(id);
+      setData(dados);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Honorarios Dados Contrato';
+      setError(errorMessage);
+      console.log('Erro ao carregar Honorarios Dados Contrato');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService, initialHonorariosDadosContrato]);
+
+  const resetForm = useCallback(() => {
+    setData(initialHonorariosDadosContrato);
+    setError(null);
+  }, [initialHonorariosDadosContrato]);
+
+  const returnValue = useMemo(() => ({
+    data,
+    loading,
+    error,
+    handleChange,
+    loadHonorariosDadosContrato,
+    resetForm,
+    setData
+  }), [data, loading, error, handleChange, loadHonorariosDadosContrato, resetForm]);
+  return returnValue;
+};
+
+
+export const useHonorariosDadosContratoNotifications = (
+  onUpdate?: (entity: any) => void,
+  onDelete?: (entity: any) => void,
+  onAdd?: (entity: any) => void
+) => {
+  const callbacksRef = useRef({ onUpdate, onDelete, onAdd });
+  
+  useEffect(() => {
+    callbacksRef.current = { onUpdate, onDelete, onAdd };
+  }, [onUpdate, onDelete, onAdd]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications('HonorariosDadosContrato', (entity) => {
+      try {
+        const { onUpdate, onDelete, onAdd } = callbacksRef.current;
+        
+        switch (entity.action) {
+          case NotifySystemActions.DELETE:
+            onDelete?.(entity);
+            break;
+          case NotifySystemActions.UPDATE:
+            onUpdate?.(entity);
+            break;
+          case NotifySystemActions.ADD:
+            onAdd?.(entity);
+            break;
+        }
+      } catch (err) {
+        console.log('Erro no listener de notificações.');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+};
+
+
+export const useHonorariosDadosContratoList = (dataService: IHonorariosDadosContratoService) => {
+  const [data, setData] = useState<IHonorariosDadosContrato[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (filtro?: any) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await dataService.getAll(filtro);
+      setData(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar honorariosdadoscontrato';
+      setError(errorMessage);
+      console.log('Erro ao carregar honorariosdadoscontrato');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService]);
+
+  const refreshData = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+  
+  useHonorariosDadosContratoNotifications(
+    refreshData, // onUpdate
+    refreshData, // onDelete  
+    refreshData  // onAdd
+  );
+   
+
+  return {
+    data,
+    loading,
+    error,
+    fetchData,
+    refreshData
+  };
+};
+
+
+export function useValidationsHonorariosDadosContrato() {
+  function validate(data: IHonorariosDadosContrato): { isValid: boolean; message: string } {
+    if (!data) return { isValid: false, message: 'Dados não informados.' };
+    
+      try {
+   
+        if (data.arquivocontrato.length > 2048) { 
+                                             return { isValid: false, message: 'O campo ArquivoContrato não pode ter mais de 2048 caracteres.' };
+                                         } 
+if (data.textocontrato.length > 2147483647) { 
+                                             return { isValid: false, message: 'O campo TextoContrato não pode ter mais de 2147483647 caracteres.' };
+                                         } 
+if (data.observacao.length > 2048) { 
+                                             return { isValid: false, message: 'O campo Observacao não pode ter mais de 2048 caracteres.' };
+                                         } 
+
+
+
+        return { isValid: true, message: '' };
+
+         } catch (error) {
+          return { isValid: true, message: 'Erro ao validar os dados.' };
+    }
+
+  }
+
+  return { validate };
+}

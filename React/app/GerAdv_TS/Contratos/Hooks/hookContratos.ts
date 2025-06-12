@@ -1,0 +1,198 @@
+﻿'use client';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { IContratosService } from '../Services/Contratos.service';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { IContratos } from '../Interfaces/interface.Contratos';
+import { isValidDate } from '@/app/tools/datetime';
+
+export const useContratosForm = (
+  initialContratos: IContratos,
+  dataService: IContratosService
+) => {
+  const [data, setData] = useState<IContratos>(initialContratos);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = useCallback((e: any) => {
+    const { name, value, type, checked } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));    
+  }, []);
+
+  const loadContratos = useCallback(async (id: number) => {
+    if (!id || id === 0) {
+      setData(initialContratos);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const dados = await dataService.fetchContratosById(id);
+      setData(dados);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Contratos';
+      setError(errorMessage);
+      console.log('Erro ao carregar Contratos');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService, initialContratos]);
+
+  const resetForm = useCallback(() => {
+    setData(initialContratos);
+    setError(null);
+  }, [initialContratos]);
+
+  const returnValue = useMemo(() => ({
+    data,
+    loading,
+    error,
+    handleChange,
+    loadContratos,
+    resetForm,
+    setData
+  }), [data, loading, error, handleChange, loadContratos, resetForm]);
+  return returnValue;
+};
+
+
+export const useContratosNotifications = (
+  onUpdate?: (entity: any) => void,
+  onDelete?: (entity: any) => void,
+  onAdd?: (entity: any) => void
+) => {
+  const callbacksRef = useRef({ onUpdate, onDelete, onAdd });
+  
+  useEffect(() => {
+    callbacksRef.current = { onUpdate, onDelete, onAdd };
+  }, [onUpdate, onDelete, onAdd]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications('Contratos', (entity) => {
+      try {
+        const { onUpdate, onDelete, onAdd } = callbacksRef.current;
+        
+        switch (entity.action) {
+          case NotifySystemActions.DELETE:
+            onDelete?.(entity);
+            break;
+          case NotifySystemActions.UPDATE:
+            onUpdate?.(entity);
+            break;
+          case NotifySystemActions.ADD:
+            onAdd?.(entity);
+            break;
+        }
+      } catch (err) {
+        console.log('Erro no listener de notificações.');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+};
+
+
+export const useContratosList = (dataService: IContratosService) => {
+  const [data, setData] = useState<IContratos[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (filtro?: any) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await dataService.getAll(filtro);
+      setData(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar contratos';
+      setError(errorMessage);
+      console.log('Erro ao carregar contratos');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService]);
+
+  const refreshData = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+  
+  useContratosNotifications(
+    refreshData, // onUpdate
+    refreshData, // onDelete  
+    refreshData  // onAdd
+  );
+   
+
+  return {
+    data,
+    loading,
+    error,
+    fetchData,
+    refreshData
+  };
+};
+
+
+export function useValidationsContratos() {
+  function validate(data: IContratos): { isValid: boolean; message: string } {
+    if (!data) return { isValid: false, message: 'Dados não informados.' };
+    
+      try {
+   
+        if (data.protestar.length > 50) { 
+                                             return { isValid: false, message: 'O campo Protestar não pode ter mais de 50 caracteres.' };
+                                         } 
+if (data.juros.length > 5) { 
+                                             return { isValid: false, message: 'O campo Juros não pode ter mais de 5 caracteres.' };
+                                         } 
+if (data.documento.length > 15) { 
+                                             return { isValid: false, message: 'O campo DOCUMENTO não pode ter mais de 15 caracteres.' };
+                                         } 
+if (data.email1.length > 300) { 
+                                             return { isValid: false, message: 'O campo EMail1 não pode ter mais de 300 caracteres.' };
+                                         } 
+if (data.email2.length > 300) { 
+                                             return { isValid: false, message: 'O campo EMail2 não pode ter mais de 300 caracteres.' };
+                                         } 
+if (data.email3.length > 300) { 
+                                             return { isValid: false, message: 'O campo EMail3 não pode ter mais de 300 caracteres.' };
+                                         } 
+if (data.pessoa1.length > 100) { 
+                                             return { isValid: false, message: 'O campo Pessoa1 não pode ter mais de 100 caracteres.' };
+                                         } 
+if (data.pessoa2.length > 100) { 
+                                             return { isValid: false, message: 'O campo Pessoa2 não pode ter mais de 100 caracteres.' };
+                                         } 
+if (data.pessoa3.length > 100) { 
+                                             return { isValid: false, message: 'O campo Pessoa3 não pode ter mais de 100 caracteres.' };
+                                         } 
+if (data.obs.length > 2147483647) { 
+                                             return { isValid: false, message: 'O campo OBS não pode ter mais de 2147483647 caracteres.' };
+                                         } 
+if (data.chavecontrato.length > 50) { 
+                                             return { isValid: false, message: 'O campo ChaveContrato não pode ter mais de 50 caracteres.' };
+                                         } 
+if (data.multa.length > 10) { 
+                                             return { isValid: false, message: 'O campo Multa não pode ter mais de 10 caracteres.' };
+                                         } 
+
+
+
+        return { isValid: true, message: '' };
+
+         } catch (error) {
+          return { isValid: true, message: 'Erro ao validar os dados.' };
+    }
+
+  }
+
+  return { validate };
+}

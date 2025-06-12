@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProcessOutputEngineWriter
 {
-    Entity.DBProcessOutputEngine Write(Models.ProcessOutputEngine processoutputengine, SqlConnection oCnn);
+    Entity.DBProcessOutputEngine Write(Models.ProcessOutputEngine processoutputengine, MsiSqlConnection oCnn);
+    void Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProcessOutputEngine : IProcessOutputEngineWriter
 {
-    public Entity.DBProcessOutputEngine Write(Models.ProcessOutputEngine processoutputengine, SqlConnection oCnn)
+    public void Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProcessOutputEngine] WHERE poeCodigo={processoutputengine.Id};", oCnn);
+    }
+
+    public Entity.DBProcessOutputEngine Write(Models.ProcessOutputEngine processoutputengine, MsiSqlConnection oCnn)
     {
         var dbRec = processoutputengine.Id.IsEmptyIDNumber() ? new Entity.DBProcessOutputEngine() : new Entity.DBProcessOutputEngine(processoutputengine.Id, oCnn);
         dbRec.FNome = processoutputengine.Nome;

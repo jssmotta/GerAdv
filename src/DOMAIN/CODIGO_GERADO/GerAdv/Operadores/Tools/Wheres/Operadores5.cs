@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOperadoresWhere
 {
-    OperadoresResponse Read(string where, SqlConnection oCnn);
+    OperadoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Operadores : IOperadoresWhere
 {
-    public OperadoresResponse Read(string where, SqlConnection oCnn)
+    public OperadoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOperadores(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOperadores(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var operadores = new OperadoresResponse
         {
             Id = dbRec.ID,
@@ -29,18 +29,6 @@ public partial class Operadores : IOperadoresWhere
         };
         if (DateTime.TryParse(dbRec.FSuporteMaxAge, out _))
             operadores.SuporteMaxAge = dbRec.FSuporteMaxAge;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadores.Auditor = auditor;
         return operadores;
     }
 }

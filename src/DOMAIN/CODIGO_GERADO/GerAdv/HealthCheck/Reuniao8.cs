@@ -32,7 +32,7 @@ public class ReuniaoHealthCheck(IOptions<AppSettings> appSettings, ReuniaoServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ReuniaoHealthCheck(IOptions<AppSettings> appSettings, ReuniaoServic
                         if (DBReuniaoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(renCodigo) FROM dbo.Reuniao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(renCodigo) FROM {"Reuniao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ReuniaoHealthCheck(IOptions<AppSettings> appSettings, ReuniaoServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) renCliente,renIDAgenda,renData,renPauta,renATA,renHoraInicial,renHoraFinal,renExterna,renHoraSaida,renHoraRetorno,renPrincipaisDecisoes,renBold,renGUID FROM dbo.Reuniao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) renCliente,renIDAgenda,renData,renPauta,renATA,renHoraInicial,renHoraFinal,renExterna,renHoraSaida,renHoraRetorno,renPrincipaisDecisoes,renBold,renGUID FROM {"Reuniao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

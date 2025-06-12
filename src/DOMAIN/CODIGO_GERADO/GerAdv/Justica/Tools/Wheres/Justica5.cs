@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IJusticaWhere
 {
-    JusticaResponse Read(string where, SqlConnection oCnn);
+    JusticaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Justica : IJusticaWhere
 {
-    public JusticaResponse Read(string where, SqlConnection oCnn)
+    public JusticaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBJustica(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBJustica(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var justica = new JusticaResponse
         {
             Id = dbRec.ID,
@@ -20,18 +20,6 @@ public partial class Justica : IJusticaWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        justica.Auditor = auditor;
         return justica;
     }
 }

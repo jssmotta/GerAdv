@@ -1,0 +1,36 @@
+﻿import { IParteClienteOutras } from '../ParteClienteOutras/Interfaces/interface.ParteClienteOutras';
+export interface ParteClienteOutras
+{
+    id: number;
+	cliente : number;
+	processo : number;
+	primeirareclamada : boolean;
+	nomeoutraspartescliente?: string;
+	nropastaprocessos?: string;
+
+}
+
+
+export function ParteClienteOutrasEmpty(): IParteClienteOutras {
+// 20250604
+    
+    return {
+        id: 0,
+		cliente: 0,
+		processo: 0,
+		primeirareclamada: false,
+    };
+}
+
+export function ParteClienteOutrasTestEmpty(): IParteClienteOutras {
+// 20250604
+    
+    return {
+        id: 1,
+		cliente: 1,
+		processo: 1,
+		primeirareclamada: true,
+    };
+}
+
+

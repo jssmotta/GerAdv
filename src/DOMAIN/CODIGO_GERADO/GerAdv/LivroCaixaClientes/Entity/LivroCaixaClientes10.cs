@@ -7,7 +7,7 @@ public partial class DBLivroCaixaClientes : MenphisSI.GerAdv.DBLivroCaixaCliente
     {
     }
 
-    public DBLivroCaixaClientes(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBLivroCaixaClientes(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBLivroCaixaClientes : MenphisSI.GerAdv.DBLivroCaixaCliente
     {
     }
 
-    public DBLivroCaixaClientes(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBLivroCaixaClientes(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

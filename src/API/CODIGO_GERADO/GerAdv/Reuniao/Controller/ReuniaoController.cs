@@ -14,7 +14,7 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Reuniao", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("Reuniao", "GetAll", $"max = {max}", uri);
         var result = await _reuniaoService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterReuniao filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("Reuniao: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("Reuniao: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _reuniaoService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("Reuniao: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("Reuniao: GetById called with id = {0}, {1}", id, uri);
         var result = await _reuniaoService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Reuniao regReuniao, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Reuniao", "AddAndUpdate", regReuniao, uri);
-        var result = await _reuniaoService.AddAndUpdate(regReuniao, uri);
-        if (result == null)
+        //_logger.LogInfo("Reuniao", "AddAndUpdate", regReuniao, uri);
+        try
         {
-            _logger.Warn("Reuniao: AddAndUpdate failed to add or update Reuniao, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _reuniaoService.AddAndUpdate(regReuniao, uri);
+            if (result == null)
+            {
+                _logger.Warn("Reuniao: AddAndUpdate failed to add or update Reuniao, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Reuniao: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("Reuniao: Delete called with id = {0}, {2}", id, uri);
-        var result = await _reuniaoService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("Reuniao: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No Reuniao found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _reuniaoService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No Reuniao found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Reuniao: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

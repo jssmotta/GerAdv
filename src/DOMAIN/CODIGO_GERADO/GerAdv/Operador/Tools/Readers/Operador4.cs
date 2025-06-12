@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IOperadorReader
 {
-    OperadorResponse? Read(int id, SqlConnection oCnn);
-    OperadorResponse? Read(string where, SqlConnection oCnn);
+    OperadorResponse? Read(int id, MsiSqlConnection oCnn);
+    OperadorResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadorResponse? Read(Entity.DBOperador dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadorResponse? Read(DBOperador dbRec);
+    OperadorResponseAll? ReadAll(DBOperador dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class Operador : IOperadorReader
 {
-    public OperadorResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) operCodigo, operNome FROM {"Operador".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}operNome");
+        }
+
+        return query.ToString();
+    }
+
+    public OperadorResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBOperador(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public OperadorResponse? Read(string where, SqlConnection oCnn)
+    public OperadorResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOperador(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOperador(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -73,18 +102,6 @@ public partial class Operador : IOperadorReader
             operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
         if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out _))
             operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operador.Auditor = auditor;
         if (dbRec.FSenha256.Equals("111111".GetHashCode2()))
         {
             operador.StatusMessage = "Senha Resetada";
@@ -140,23 +157,61 @@ public partial class Operador : IOperadorReader
             operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
         if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out _))
             operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operador.Auditor = auditor;
         if (dbRec.FSenha256.Equals("111111".GetHashCode2()))
         {
             operador.StatusMessage = "Senha Resetada";
         }
 
+        return operador;
+    }
+
+    public OperadorResponseAll? ReadAll(DBOperador dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var operador = new OperadorResponseAll
+        {
+            Id = dbRec.ID,
+            EMail = dbRec.FEMail ?? string.Empty,
+            Pasta = dbRec.FPasta ?? string.Empty,
+            Telefonista = dbRec.FTelefonista,
+            Master = dbRec.FMaster,
+            Nome = dbRec.FNome ?? string.Empty,
+            Nick = dbRec.FNick ?? string.Empty,
+            Ramal = dbRec.FRamal ?? string.Empty,
+            CadID = dbRec.FCadID,
+            CadCod = dbRec.FCadCod,
+            Excluido = dbRec.FExcluido,
+            Situacao = dbRec.FSituacao,
+            Computador = dbRec.FComputador,
+            MinhaDescricao = dbRec.FMinhaDescricao ?? string.Empty,
+            EMailNet = dbRec.FEMailNet ?? string.Empty,
+            OnlineIP = dbRec.FOnlineIP ?? string.Empty,
+            OnLine = dbRec.FOnLine,
+            SysOp = dbRec.FSysOp,
+            StatusId = dbRec.FStatusId,
+            StatusMessage = dbRec.FStatusMessage ?? string.Empty,
+            IsFinanceiro = dbRec.FIsFinanceiro,
+            Top = dbRec.FTop,
+            Sexo = dbRec.FSexo,
+            Basico = dbRec.FBasico,
+            Externo = dbRec.FExterno,
+            EMailConfirmado = dbRec.FEMailConfirmado,
+            SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
+            SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
+        };
+        if (DateTime.TryParse(dbRec.FUltimoLogoff, out _))
+            operador.UltimoLogoff = dbRec.FUltimoLogoff;
+        if (DateTime.TryParse(dbRec.FDataLimiteReset, out _))
+            operador.DataLimiteReset = dbRec.FDataLimiteReset;
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out _))
+            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out _))
+            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
         return operador;
     }
 }

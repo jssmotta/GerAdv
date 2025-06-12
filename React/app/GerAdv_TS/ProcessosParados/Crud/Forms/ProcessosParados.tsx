@@ -1,0 +1,252 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IProcessosParados } from '@/app/GerAdv_TS/ProcessosParados/Interfaces/interface.ProcessosParados';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { ProcessosParadosApi } from '../../Apis/ApiProcessosParados';
+import { useValidationsProcessosParados } from '../../Hooks/hookProcessosParados';
+import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
+import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
+import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
+import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface ProcessosParadosFormProps {
+  processosparadosData: IProcessosParados;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const ProcessosParadosForm: React.FC<ProcessosParadosFormProps> = ({
+  processosparadosData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new ProcessosParadosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsProcessosParados();
+const [nomeProcessos, setNomeProcessos] = useState('');
+const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeOperador, setNomeOperador] = useState('');
+const operadorApi = new OperadorApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('processos') > 0) {
+  if (processosparadosData.id === 0 && processosparadosData.processo == 0) {
+    processosApi
+    .getById(getParamFromUrl('processos'))
+    .then((response) => {
+      setNomeProcessos(response.data.nropasta);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    processosparadosData.processo = getParamFromUrl('processos');
+  }
+}
+
+if (getParamFromUrl('operador') > 0) {
+  if (processosparadosData.id === 0 && processosparadosData.operador == 0) {
+    operadorApi
+    .getById(getParamFromUrl('operador'))
+    .then((response) => {
+      setNomeOperador(response.data.rnome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    processosparadosData.operador = getParamFromUrl('operador');
+  }
+}
+const addValorProcesso = (e: any) => {
+  if (e?.id>0)
+    processosparadosData.processo = e.id;
+  };
+  const addValorOperador = (e: any) => {
+    if (e?.id>0)
+      processosparadosData.operador = e.id;
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.error('Erro ao submeter formulário de ProcessosParados:', error);
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`ProcessosParadosForm-${processosparadosData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
+        } catch (error) {
+        console.error('Erro ao salvar ProcessosParados diretamente:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    useEffect(() => {
+      const el = document.querySelector('.nameFormMobile');
+      if (el) {
+        el.textContent = processosparadosData?.id == 0 ? 'Editar ProcessosParados' : 'Adicionar Processos Parados';
+      }
+    }, [processosparadosData.id]);
+    return (
+    <>
+    <style>
+      {!isMobile ? `
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        ` : ``}
+      </style>
+
+      <div className={isMobile ? 'form-container form-container-ProcessosParados' : 'form-container5 form-container-ProcessosParados'}>
+
+        <form className='formInputCadInc' id={`ProcessosParadosForm-${processosparadosData.id}`} onSubmit={onConfirm}>
+          {!isMobile && (
+            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessosParados' data={processosparadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosParadosForm-${processosparadosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <div className='grid-container'>
+
+
+              <ProcessosComboBox
+              name={'processo'}
+              dataForm={processosparadosData}
+              value={processosparadosData.processo}
+              setValue={addValorProcesso}
+              label={'Processos'}
+              />
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='semana'
+              label='Semana'
+              dataForm={processosparadosData}
+              className='inputIncNome'
+              name='semana'
+              value={processosparadosData.semana}
+              onChange={onChange}
+              />
+
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='ano'
+              label='Ano'
+              dataForm={processosparadosData}
+              className='inputIncNome'
+              name='ano'
+              value={processosparadosData.ano}
+              onChange={onChange}
+              />
+
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='datahora'
+              label='DataHora'
+              dataForm={processosparadosData}
+              className='inputIncNome'
+              name='datahora'
+              value={processosparadosData.datahora}
+              onChange={onChange}
+              />
+
+
+              <OperadorComboBox
+              name={'operador'}
+              dataForm={processosparadosData}
+              value={processosparadosData.operador}
+              setValue={addValorOperador}
+              label={'Operador'}
+              />
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='datahistorico'
+              label='DataHistorico'
+              dataForm={processosparadosData}
+              className='inputIncNome'
+              name='datahistorico'
+              value={processosparadosData.datahistorico}
+              onChange={onChange}
+              />
+
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='datanenotas'
+              label='DataNENotas'
+              dataForm={processosparadosData}
+              className='inputIncNome'
+              name='datanenotas'
+              value={processosparadosData.datanenotas}
+              onChange={onChange}
+              />
+
+            </div>
+          </form>
+
+
+          {isMobile && (
+            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessosParados' data={processosparadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosParadosForm-${processosparadosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <DeleteButton page={'/pages/processosparados'} id={processosparadosData.id} closeModel={onClose} dadoApi={dadoApi} />
+          </div>
+          <div className='form-spacer'></div>
+          </>
+        );
+      };

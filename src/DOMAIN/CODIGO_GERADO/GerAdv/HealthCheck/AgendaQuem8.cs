@@ -32,7 +32,7 @@ public class AgendaQuemHealthCheck(IOptions<AppSettings> appSettings, AgendaQuem
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AgendaQuemHealthCheck(IOptions<AppSettings> appSettings, AgendaQuem
                         if (DBAgendaQuemDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(agqCodigo) FROM dbo.AgendaQuem (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(agqCodigo) FROM {"AgendaQuem".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AgendaQuemHealthCheck(IOptions<AppSettings> appSettings, AgendaQuem
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) agqIDAgenda,agqAdvogado,agqFuncionario,agqPreposto FROM dbo.AgendaQuem (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) agqIDAgenda,agqAdvogado,agqFuncionario,agqPreposto FROM {"AgendaQuem".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -1,0 +1,165 @@
+﻿'use client';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { IProResumosService } from '../Services/ProResumos.service';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { IProResumos } from '../Interfaces/interface.ProResumos';
+import { isValidDate } from '@/app/tools/datetime';
+
+export const useProResumosForm = (
+  initialProResumos: IProResumos,
+  dataService: IProResumosService
+) => {
+  const [data, setData] = useState<IProResumos>(initialProResumos);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = useCallback((e: any) => {
+    const { name, value, type, checked } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));    
+  }, []);
+
+  const loadProResumos = useCallback(async (id: number) => {
+    if (!id || id === 0) {
+      setData(initialProResumos);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const dados = await dataService.fetchProResumosById(id);
+      setData(dados);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Resumos';
+      setError(errorMessage);
+      console.log('Erro ao carregar Pro Resumos');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService, initialProResumos]);
+
+  const resetForm = useCallback(() => {
+    setData(initialProResumos);
+    setError(null);
+  }, [initialProResumos]);
+
+  const returnValue = useMemo(() => ({
+    data,
+    loading,
+    error,
+    handleChange,
+    loadProResumos,
+    resetForm,
+    setData
+  }), [data, loading, error, handleChange, loadProResumos, resetForm]);
+  return returnValue;
+};
+
+
+export const useProResumosNotifications = (
+  onUpdate?: (entity: any) => void,
+  onDelete?: (entity: any) => void,
+  onAdd?: (entity: any) => void
+) => {
+  const callbacksRef = useRef({ onUpdate, onDelete, onAdd });
+  
+  useEffect(() => {
+    callbacksRef.current = { onUpdate, onDelete, onAdd };
+  }, [onUpdate, onDelete, onAdd]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications('ProResumos', (entity) => {
+      try {
+        const { onUpdate, onDelete, onAdd } = callbacksRef.current;
+        
+        switch (entity.action) {
+          case NotifySystemActions.DELETE:
+            onDelete?.(entity);
+            break;
+          case NotifySystemActions.UPDATE:
+            onUpdate?.(entity);
+            break;
+          case NotifySystemActions.ADD:
+            onAdd?.(entity);
+            break;
+        }
+      } catch (err) {
+        console.log('Erro no listener de notificações.');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+};
+
+
+export const useProResumosList = (dataService: IProResumosService) => {
+  const [data, setData] = useState<IProResumos[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (filtro?: any) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await dataService.getAll(filtro);
+      setData(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar proresumos';
+      setError(errorMessage);
+      console.log('Erro ao carregar proresumos');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService]);
+
+  const refreshData = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+  
+  useProResumosNotifications(
+    refreshData, // onUpdate
+    refreshData, // onDelete  
+    refreshData  // onAdd
+  );
+   
+
+  return {
+    data,
+    loading,
+    error,
+    fetchData,
+    refreshData
+  };
+};
+
+
+export function useValidationsProResumos() {
+  function validate(data: IProResumos): { isValid: boolean; message: string } {
+    if (!data) return { isValid: false, message: 'Dados não informados.' };
+    
+      try {
+   
+        if (data.resumo.length > 2147483647) { 
+                                             return { isValid: false, message: 'O campo Resumo não pode ter mais de 2147483647 caracteres.' };
+                                         } 
+
+
+
+        return { isValid: true, message: '' };
+
+         } catch (error) {
+          return { isValid: true, message: 'Erro ao validar os dados.' };
+    }
+
+  }
+
+  return { validate };
+}

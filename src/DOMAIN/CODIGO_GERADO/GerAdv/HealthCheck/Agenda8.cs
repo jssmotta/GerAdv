@@ -32,7 +32,7 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
                         if (DBAgendaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ageCodigo) FROM dbo.Agenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ageCodigo) FROM {"Agenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ageIDCOB,ageClienteAvisado,ageRevisarP2,ageIDNE,ageCidade,ageOculto,ageCartaPrecatoria,ageRevisar,ageHrFinal,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageDecisao,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente,ageGUID FROM dbo.Agenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ageIDCOB,ageClienteAvisado,ageRevisarP2,ageIDNE,ageCidade,ageOculto,ageCartaPrecatoria,ageRevisar,ageHrFinal,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageDecisao,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente,ageGUID FROM {"Agenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

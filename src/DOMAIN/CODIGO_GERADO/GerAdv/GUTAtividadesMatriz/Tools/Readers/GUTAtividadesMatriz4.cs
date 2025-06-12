@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IGUTAtividadesMatrizReader
 {
-    GUTAtividadesMatrizResponse? Read(int id, SqlConnection oCnn);
-    GUTAtividadesMatrizResponse? Read(string where, SqlConnection oCnn);
+    GUTAtividadesMatrizResponse? Read(int id, MsiSqlConnection oCnn);
+    GUTAtividadesMatrizResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GUTAtividadesMatrizResponse? Read(Entity.DBGUTAtividadesMatriz dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GUTAtividadesMatrizResponse? Read(DBGUTAtividadesMatriz dbRec);
+    GUTAtividadesMatrizResponseAll? ReadAll(DBGUTAtividadesMatriz dbRec, DataRow dr);
 }
 
 public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
 {
-    public GUTAtividadesMatrizResponse? Read(int id, SqlConnection oCnn)
+    public GUTAtividadesMatrizResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBGUTAtividadesMatriz(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public GUTAtividadesMatrizResponse? Read(string where, SqlConnection oCnn)
+    public GUTAtividadesMatrizResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGUTAtividadesMatriz(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGUTAtividadesMatriz(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
             GUTAtividade = dbRec.FGUTAtividade,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gutatividadesmatriz.Auditor = auditor;
         return gutatividadesmatriz;
     }
 
@@ -69,18 +59,25 @@ public partial class GUTAtividadesMatriz : IGUTAtividadesMatrizReader
             GUTAtividade = dbRec.FGUTAtividade,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return gutatividadesmatriz;
+    }
+
+    public GUTAtividadesMatrizResponseAll? ReadAll(DBGUTAtividadesMatriz dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var gutatividadesmatriz = new GUTAtividadesMatrizResponseAll
+        {
+            Id = dbRec.ID,
+            GUTMatriz = dbRec.FGUTMatriz,
+            GUTAtividade = dbRec.FGUTAtividade,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gutatividadesmatriz.Auditor = auditor;
+        gutatividadesmatriz.DescricaoGUTMatriz = dr["gutDescricao"]?.ToString() ?? string.Empty;
+        gutatividadesmatriz.NomeGUTAtividades = dr["agtNome"]?.ToString() ?? string.Empty;
         return gutatividadesmatriz;
     }
 }

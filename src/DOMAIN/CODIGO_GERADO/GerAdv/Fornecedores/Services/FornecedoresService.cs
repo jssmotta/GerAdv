@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFornecedoresReader reader, IFornecedoresValidation validation, IFornecedoresWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IFornecedoresService, IDisposable
+public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFornecedoresReader reader, IFornecedoresValidation validation, IFornecedoresWriter writer, ICidadeReader cidadeReader, IBensMateriaisService bensmateriaisService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFornecedoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<FornecedoresResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<FornecedoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Fornecedores: URI inválida");
@@ -26,72 +27,72 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<FornecedoresResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<FornecedoresResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBFornecedores.SensivelCamposSqlX} 
-                   FROM {DBFornecedores.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBFornecedoresDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBFornecedores>(max);
-        await foreach (var item in DBFornecedores.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBFornecedores.SensivelCamposSqlX}, cidNome
+                   FROM {DBFornecedores.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=forCidade
+ 
+                   {where}
+                   ORDER BY forNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<FornecedoresResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBFornecedores(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var fornecedores = reader.ReadAll(dbRec, item);
+                if (fornecedores != null)
+                {
+                    lista.Add(fornecedores);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<FornecedoresResponse>> Filter(Filters.FilterFornecedores filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<FornecedoresResponseAll>> Filter(Filters.FilterFornecedores filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Fornecedores: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Fornecedores-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<FornecedoresResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBFornecedores.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<FornecedoresResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Fornecedores: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new FornecedoresResponse();
         }
@@ -101,39 +102,24 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Fornecedores-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Fornecedores-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Fornecedores - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Fornecedores - {uri}-: GetById");
         }
     }
 
-    private async Task<FornecedoresResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<FornecedoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<FornecedoresResponse?> AddAndUpdate([FromBody] Models.Fornecedores regFornecedores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Fornecedores: URI inválida");
@@ -147,14 +133,13 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regFornecedores, this, uri, oCnn);
+            var validade = await validation.ValidateReg(regFornecedores, this, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"Fornecedores: {validade}");
@@ -168,86 +153,82 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
     public async Task<FornecedoresResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Fornecedores: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var fornecedores = reader.Read(id, oCnn);
-            if (fornecedores != null)
+            var deleteValidation = await validation.CanDelete(id, this, bensmateriaisService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBFornecedores().DeletarItem(fornecedores.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var fornecedores = reader.Read(id, oCnn);
+            try
+            {
+                if (fornecedores != null)
+                {
+                    writer.Delete(fornecedores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return fornecedores;
         });
     }
 
-    public async Task<FornecedoresResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Fornecedores: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBFornecedoresDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterFornecedores? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Fornecedores: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Fornecedores-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Fornecedores-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBFornecedores.ListarN(cWhere, DBFornecedoresDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBFornecedoresDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,32 +268,128 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
         }
     }
 
-    private static string WFiltro(Filters.FilterFornecedores filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterFornecedores filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Grupo == -2147483648 ? string.Empty : DBFornecedoresDicInfo.GrupoSql(filtro.Grupo);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.SubGrupo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.SubGrupoSql(filtro.SubGrupo);
-        cWhere += filtro.CNPJ.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.CNPJSql(filtro.CNPJ);
-        cWhere += filtro.InscEst.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.InscEstSql(filtro.InscEst);
-        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.CPFSql(filtro.CPF);
-        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.RGSql(filtro.RG);
-        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.EnderecoSql(filtro.Endereco);
-        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.BairroSql(filtro.Bairro);
-        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.CEPSql(filtro.CEP);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.FaxSql(filtro.Fax);
-        cWhere += filtro.Email.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.EmailSql(filtro.Email);
-        cWhere += filtro.Site.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.SiteSql(filtro.Site);
-        cWhere += filtro.Obs.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.ObsSql(filtro.Obs);
-        cWhere += filtro.Produtos.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.ProdutosSql(filtro.Produtos);
-        cWhere += filtro.Contatos.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.ContatosSql(filtro.Contatos);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBFornecedoresDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Grupo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Grupo)}", filtro.Grupo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (filtro.SubGrupo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.SubGrupo)}", filtro.SubGrupo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CNPJ))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.CNPJ)}", filtro.CNPJ));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.InscEst))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.InscEst)}", filtro.InscEst));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CPF))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.CPF)}", filtro.CPF));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.RG))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.RG)}", filtro.RG));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Endereco))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Endereco)}", filtro.Endereco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Bairro))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Bairro)}", filtro.Bairro));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CEP))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.CEP)}", filtro.CEP));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fax))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Fax)}", filtro.Fax));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Email))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Email)}", filtro.Email));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Site))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Site)}", filtro.Site));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Obs))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Obs)}", filtro.Obs));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Produtos))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Produtos)}", filtro.Produtos));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Contatos))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.Contatos)}", filtro.Contatos));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBFornecedoresDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Grupo == int.MinValue ? string.Empty : $"{DBFornecedoresDicInfo.Grupo} = @{nameof(DBFornecedoresDicInfo.Grupo)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Nome} = @{nameof(DBFornecedoresDicInfo.Nome)}";
+        cWhere += filtro.SubGrupo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.SubGrupo} = @{nameof(DBFornecedoresDicInfo.SubGrupo)}";
+        cWhere += filtro.CNPJ.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.CNPJ} = @{nameof(DBFornecedoresDicInfo.CNPJ)}";
+        cWhere += filtro.InscEst.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.InscEst} = @{nameof(DBFornecedoresDicInfo.InscEst)}";
+        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.CPF} = @{nameof(DBFornecedoresDicInfo.CPF)}";
+        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.RG} = @{nameof(DBFornecedoresDicInfo.RG)}";
+        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Endereco} = @{nameof(DBFornecedoresDicInfo.Endereco)}";
+        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Bairro} = @{nameof(DBFornecedoresDicInfo.Bairro)}";
+        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.CEP} = @{nameof(DBFornecedoresDicInfo.CEP)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Cidade} = @{nameof(DBFornecedoresDicInfo.Cidade)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Fone} = @{nameof(DBFornecedoresDicInfo.Fone)}";
+        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Fax} = @{nameof(DBFornecedoresDicInfo.Fax)}";
+        cWhere += filtro.Email.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Email} = @{nameof(DBFornecedoresDicInfo.Email)}";
+        cWhere += filtro.Site.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Site} = @{nameof(DBFornecedoresDicInfo.Site)}";
+        cWhere += filtro.Obs.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Obs} = @{nameof(DBFornecedoresDicInfo.Obs)}";
+        cWhere += filtro.Produtos.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Produtos} = @{nameof(DBFornecedoresDicInfo.Produtos)}";
+        cWhere += filtro.Contatos.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.Contatos} = @{nameof(DBFornecedoresDicInfo.Contatos)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBFornecedoresDicInfo.GUID} = @{nameof(DBFornecedoresDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

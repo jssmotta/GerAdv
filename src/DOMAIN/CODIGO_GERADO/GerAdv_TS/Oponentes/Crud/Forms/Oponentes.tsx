@@ -1,0 +1,446 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IOponentes } from '@/app/GerAdv_TS/Oponentes/Interfaces/interface.Oponentes';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { OponentesApi } from '../../Apis/ApiOponentes';
+import { useValidationsOponentes } from '../../Hooks/hookOponentes';
+import CidadeComboBox from '@/app/GerAdv_TS/Cidade/ComboBox/Cidade';
+import { CidadeApi } from '@/app/GerAdv_TS/Cidade/Apis/ApiCidade';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCnpj from '@/app/components/Inputs/InputCnpj'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+import InputCpf from '@/app/components/Inputs/InputCpf'
+import InputCep from '@/app/components/Inputs/InputCep'
+interface OponentesFormProps {
+  oponentesData: IOponentes;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const OponentesForm: React.FC<OponentesFormProps> = ({
+  oponentesData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new OponentesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsOponentes();
+const [nomeCidade, setNomeCidade] = useState('');
+const cidadeApi = new CidadeApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('cidade') > 0) {
+  if (oponentesData.id === 0 && oponentesData.cidade == 0) {
+    cidadeApi
+    .getById(getParamFromUrl('cidade'))
+    .then((response) => {
+      setNomeCidade(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    oponentesData.cidade = getParamFromUrl('cidade');
+  }
+}
+const addValorCidade = (e: any) => {
+  if (e?.id>0)
+    oponentesData.cidade = e.id;
+  };
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.error('Erro ao submeter formulário de Oponentes:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`OponentesForm-${oponentesData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.error('Erro ao salvar Oponentes diretamente:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = oponentesData?.id == 0 ? 'Editar Oponentes' : 'Adicionar Oponentes';
+    }
+  }, [oponentesData.id]);
+  return (
+  <>
+  <style>
+    {!isMobile ? `
+      @media (max-width: 1366px) {
+        html {
+          zoom: 0.8 !important;
+        }
+      }
+      ` : ``}
+    </style>
+
+    <div className={isMobile ? 'form-container form-container-Oponentes' : 'form-container form-container-Oponentes'}>
+
+      <form className='formInputCadInc' id={`OponentesForm-${oponentesData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Oponentes' data={oponentesData} isSubmitting={isSubmitting} onClose={onClose} formId={`OponentesForm-${oponentesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='nome'
+            value={oponentesData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='empfuncao'
+            label='EMPFuncao'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='empfuncao'
+            value={oponentesData.empfuncao}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={15}
+            id='ctpsnumero'
+            label='CTPSNumero'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='ctpsnumero'
+            value={oponentesData.ctpsnumero}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={150}
+            id='site'
+            label='Site'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='site'
+            value={oponentesData.site}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={10}
+            id='ctpsserie'
+            label='CTPSSerie'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='ctpsserie'
+            value={oponentesData.ctpsserie}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='adv'
+            label='Adv'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='adv'
+            value={oponentesData.adv}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='empcliente'
+            label='EMPCliente'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='empcliente'
+            value={oponentesData.empcliente}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='idrep'
+            label='IDRep'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='idrep'
+            value={oponentesData.idrep}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={20}
+            id='pis'
+            label='PIS'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='pis'
+            value={oponentesData.pis}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='contato'
+            label='Contato'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='contato'
+            value={oponentesData.contato}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputCnpj
+            type='text'
+            id='cnpj'
+            label='CNPJ'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='cnpj'
+            value={oponentesData.cnpj}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={12}
+            id='rg'
+            label='RG'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='rg'
+            value={oponentesData.rg}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={oponentesData} label='Juridica' name='juridica' checked={oponentesData.juridica} onChange={onChange} />
+            <InputCheckbox dataForm={oponentesData} label='Tipo' name='tipo' checked={oponentesData.tipo} onChange={onChange} />
+            <InputCheckbox dataForm={oponentesData} label='Sexo' name='sexo' checked={oponentesData.sexo} onChange={onChange} />
+
+            <InputCpf
+            type='text'
+            id='cpf'
+            label='CPF'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='cpf'
+            value={oponentesData.cpf}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={80}
+            id='endereco'
+            label='Endereco'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='endereco'
+            value={oponentesData.endereco}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='fone'
+            label='Fone'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='fone'
+            value={oponentesData.fone}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='fax'
+            label='Fax'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='fax'
+            value={oponentesData.fax}
+            onChange={onChange}
+            />
+
+
+            <CidadeComboBox
+            name={'cidade'}
+            dataForm={oponentesData}
+            value={oponentesData.cidade}
+            setValue={addValorCidade}
+            label={'Cidade'}
+            />
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={50}
+            id='bairro'
+            label='Bairro'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='bairro'
+            value={oponentesData.bairro}
+            onChange={onChange}
+            />
+
+
+            <InputCep
+            type='text'
+            id='cep'
+            label='CEP'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='cep'
+            value={oponentesData.cep}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={15}
+            id='inscest'
+            label='InscEst'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='inscest'
+            value={oponentesData.inscest}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='observacao'
+            label='Observacao'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='observacao'
+            value={oponentesData.observacao}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='email'
+            maxLength={100}
+            id='email'
+            label='EMail'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='email'
+            value={oponentesData.email}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={1}
+            id='class'
+            label='Class'
+            dataForm={oponentesData}
+            className='inputIncNome'
+            name='class'
+            value={oponentesData.class}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={oponentesData} label='Top' name='top' checked={oponentesData.top} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Oponentes' data={oponentesData} isSubmitting={isSubmitting} onClose={onClose} formId={`OponentesForm-${oponentesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/oponentes'} id={oponentesData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

@@ -5,23 +5,51 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IProcessOutputSourcesReader
 {
-    ProcessOutputSourcesResponse? Read(int id, SqlConnection oCnn);
-    ProcessOutputSourcesResponse? Read(string where, SqlConnection oCnn);
+    ProcessOutputSourcesResponse? Read(int id, MsiSqlConnection oCnn);
+    ProcessOutputSourcesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProcessOutputSourcesResponse? Read(Entity.DBProcessOutputSources dbRec);
     ProcessOutputSourcesResponse? Read(DBProcessOutputSources dbRec);
+    ProcessOutputSourcesResponseAll? ReadAll(DBProcessOutputSources dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class ProcessOutputSources : IProcessOutputSourcesReader
 {
-    public ProcessOutputSourcesResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) posCodigo, posNome FROM {"ProcessOutputSources".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}posNome");
+        }
+
+        return query.ToString();
+    }
+
+    public ProcessOutputSourcesResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBProcessOutputSources(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ProcessOutputSourcesResponse? Read(string where, SqlConnection oCnn)
+    public ProcessOutputSourcesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProcessOutputSources(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProcessOutputSources(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -49,6 +77,22 @@ public partial class ProcessOutputSources : IProcessOutputSourcesReader
         }
 
         var processoutputsources = new ProcessOutputSourcesResponse
+        {
+            Id = dbRec.ID,
+            Nome = dbRec.FNome ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
+        };
+        return processoutputsources;
+    }
+
+    public ProcessOutputSourcesResponseAll? ReadAll(DBProcessOutputSources dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var processoutputsources = new ProcessOutputSourcesResponseAll
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,

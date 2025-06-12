@@ -1,0 +1,182 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IGUTMatriz } from '@/app/GerAdv_TS/GUTMatriz/Interfaces/interface.GUTMatriz';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { GUTMatrizApi } from '../../Apis/ApiGUTMatriz';
+import { useValidationsGUTMatriz } from '../../Hooks/hookGUTMatriz';
+import GUTTipoComboBox from '@/app/GerAdv_TS/GUTTipo/ComboBox/GUTTipo';
+import { GUTTipoApi } from '@/app/GerAdv_TS/GUTTipo/Apis/ApiGUTTipo';
+import InputDescription from '@/app/components/Inputs/InputDescription';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface GUTMatrizFormProps {
+  gutmatrizData: IGUTMatriz;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const GUTMatrizForm: React.FC<GUTMatrizFormProps> = ({
+  gutmatrizData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new GUTMatrizApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsGUTMatriz();
+const [nomeGUTTipo, setNomeGUTTipo] = useState('');
+const guttipoApi = new GUTTipoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('guttipo') > 0) {
+  if (gutmatrizData.id === 0 && gutmatrizData.guttipo == 0) {
+    guttipoApi
+    .getById(getParamFromUrl('guttipo'))
+    .then((response) => {
+      setNomeGUTTipo(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    gutmatrizData.guttipo = getParamFromUrl('guttipo');
+  }
+}
+const addValorGUTTipo = (e: any) => {
+  if (e?.id>0)
+    gutmatrizData.guttipo = e.id;
+  };
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.error('Erro ao submeter formulário de GUTMatriz:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`GUTMatrizForm-${gutmatrizData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.error('Erro ao salvar GUTMatriz diretamente:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = gutmatrizData?.id == 0 ? 'Editar GUTMatriz' : 'Adicionar G U T Matriz';
+    }
+  }, [gutmatrizData.id]);
+  return (
+  <>
+  <style>
+    {!isMobile ? `
+      @media (max-width: 1366px) {
+        html {
+          zoom: 0.8 !important;
+        }
+      }
+      ` : ``}
+    </style>
+
+    <div className={isMobile ? 'form-container form-container-GUTMatriz' : 'form-container5 form-container-GUTMatriz'}>
+
+      <form className='formInputCadInc' id={`GUTMatrizForm-${gutmatrizData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTMatriz' data={gutmatrizData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTMatrizForm-${gutmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='g u t matriz'
+            dataForm={gutmatrizData}
+            className='inputIncNome'
+            name='descricao'
+            value={gutmatrizData.descricao}
+            placeholder={`Digite nome g u t matriz`}
+            onChange={onChange}
+            required
+            disabled={gutmatrizData.id > 0}
+            />
+
+            <GUTTipoComboBox
+            name={'guttipo'}
+            dataForm={gutmatrizData}
+            value={gutmatrizData.guttipo}
+            setValue={addValorGUTTipo}
+            label={'G U T Tipo'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valor'
+            label='Valor'
+            dataForm={gutmatrizData}
+            className='inputIncNome'
+            name='valor'
+            value={gutmatrizData.valor}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTMatriz' data={gutmatrizData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTMatrizForm-${gutmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/gutmatriz'} id={gutmatrizData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

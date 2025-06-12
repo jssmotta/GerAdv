@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProDespesasReader reader, IProDespesasValidation validation, IProDespesasWriter writer, IClientesReader clientesReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IProDespesasService, IDisposable
+public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProDespesasReader reader, IProDespesasValidation validation, IProDespesasWriter writer, IClientesReader clientesReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProDespesasService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ProDespesasResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ProDespesasResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProDespesas: URI inválida");
@@ -26,72 +27,73 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProD
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ProDespesasResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ProDespesasResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBProDespesas.SensivelCamposSqlX} 
-                   FROM {DBProDespesas.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBProDespesasDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBProDespesas>(max);
-        await foreach (var item in DBProDespesas.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBProDespesas.SensivelCamposSqlX}, cliNome,proNroPasta
+                   FROM {DBProDespesas.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=desCliente
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=desProcesso
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ProDespesasResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBProDespesas(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var prodespesas = reader.ReadAll(dbRec, item);
+                if (prodespesas != null)
+                {
+                    lista.Add(prodespesas);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ProDespesasResponse>> Filter(Filters.FilterProDespesas filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ProDespesasResponseAll>> Filter(Filters.FilterProDespesas filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ProDespesas: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-ProDespesas-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ProDespesasResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBProDespesas.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ProDespesasResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProDespesas: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ProDespesasResponse();
         }
@@ -101,39 +103,24 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProD
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-ProDespesas-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ProDespesas-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ProDespesas - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ProDespesas - {uri}-: GetById");
         }
     }
 
-    private async Task<ProDespesasResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ProDespesasResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ProDespesasResponse?> AddAndUpdate([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProDespesas: URI inválida");
@@ -147,8 +134,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProD
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,31 +154,47 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProD
     public async Task<ProDespesasResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProDespesas: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var prodespesas = reader.Read(id, oCnn);
-            if (prodespesas != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBProDespesas().DeletarItem(prodespesas.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var prodespesas = reader.Read(id, oCnn);
+            try
+            {
+                if (prodespesas != null)
+                {
+                    writer.Delete(prodespesas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return prodespesas;
@@ -225,19 +227,50 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProD
         }
     }
 
-    private static string WFiltro(Filters.FilterProDespesas filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProDespesas filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.LigacaoID == -2147483648 ? string.Empty : DBProDespesasDicInfo.LigacaoIDSql(filtro.LigacaoID);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProDespesasDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProDespesasDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.Quitado == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProDespesasDicInfo.QuitadoSql(filtro.Quitado);
-        cWhere += filtro.Historico.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProDespesasDicInfo.HistoricoSql(filtro.Historico);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProDespesasDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.LigacaoID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.LigacaoID)}", filtro.LigacaoID));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (filtro.Quitado != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Quitado)}", filtro.Quitado));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Historico))
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Historico)}", filtro.Historico));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.LigacaoID == int.MinValue ? string.Empty : $"{DBProDespesasDicInfo.LigacaoID} = @{nameof(DBProDespesasDicInfo.LigacaoID)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProDespesasDicInfo.Cliente} = @{nameof(DBProDespesasDicInfo.Cliente)}";
+        cWhere += filtro.Processo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProDespesasDicInfo.Processo} = @{nameof(DBProDespesasDicInfo.Processo)}";
+        cWhere += filtro.Quitado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProDespesasDicInfo.Quitado} = @{nameof(DBProDespesasDicInfo.Quitado)}";
+        cWhere += filtro.Historico.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProDespesasDicInfo.Historico} = @{nameof(DBProDespesasDicInfo.Historico)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProDespesasDicInfo.GUID} = @{nameof(DBProDespesasDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

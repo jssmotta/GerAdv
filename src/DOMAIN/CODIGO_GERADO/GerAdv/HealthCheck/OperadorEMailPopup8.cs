@@ -32,7 +32,7 @@ public class OperadorEMailPopupHealthCheck(IOptions<AppSettings> appSettings, Op
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class OperadorEMailPopupHealthCheck(IOptions<AppSettings> appSettings, Op
                         if (DBOperadorEMailPopupDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(oepCodigo) FROM dbo.OperadorEMailPopup (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(oepCodigo) FROM {"OperadorEMailPopup".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class OperadorEMailPopupHealthCheck(IOptions<AppSettings> appSettings, Op
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) oepOperador,oepNome,oepSenha,oepSMTP,oepPOP3,oepAutenticacao,oepDescricao,oepUsuario,oepPortaSmtp,oepPortaPop3,oepAssinatura,oepSenha256,oepGUID FROM dbo.OperadorEMailPopup (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) oepOperador,oepNome,oepSenha,oepSMTP,oepPOP3,oepAutenticacao,oepDescricao,oepUsuario,oepPortaSmtp,oepPortaPop3,oepAssinatura,oepSenha256,oepGUID FROM {"OperadorEMailPopup".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

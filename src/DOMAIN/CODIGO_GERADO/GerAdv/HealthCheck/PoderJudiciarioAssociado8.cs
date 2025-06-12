@@ -32,7 +32,7 @@ public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettin
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettin
                         if (DBPoderJudiciarioAssociadoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pjaCodigo) FROM dbo.PoderJudiciarioAssociado (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pjaCodigo) FROM {"PoderJudiciarioAssociado".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettin
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pjaJustica,pjaJusticaNome,pjaArea,pjaAreaNome,pjaTribunal,pjaTribunalNome,pjaForo,pjaForoNome,pjaCidade,pjaSubDivisaoNome,pjaCidadeNome,pjaSubDivisao,pjaTipo,pjaGUID FROM dbo.PoderJudiciarioAssociado (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pjaJustica,pjaJusticaNome,pjaArea,pjaAreaNome,pjaTribunal,pjaTribunalNome,pjaForo,pjaForoNome,pjaCidade,pjaSubDivisaoNome,pjaCidadeNome,pjaSubDivisao,pjaTipo,pjaGUID FROM {"PoderJudiciarioAssociado".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

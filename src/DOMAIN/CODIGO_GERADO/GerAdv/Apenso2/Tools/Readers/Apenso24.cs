@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IApenso2Reader
 {
-    Apenso2Response? Read(int id, SqlConnection oCnn);
-    Apenso2Response? Read(string where, SqlConnection oCnn);
+    Apenso2Response? Read(int id, MsiSqlConnection oCnn);
+    Apenso2Response? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     Apenso2Response? Read(Entity.DBApenso2 dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     Apenso2Response? Read(DBApenso2 dbRec);
+    Apenso2ResponseAll? ReadAll(DBApenso2 dbRec, DataRow dr);
 }
 
 public partial class Apenso2 : IApenso2Reader
 {
-    public Apenso2Response? Read(int id, SqlConnection oCnn)
+    public Apenso2Response? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBApenso2(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public Apenso2Response? Read(string where, SqlConnection oCnn)
+    public Apenso2Response? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBApenso2(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBApenso2(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -39,18 +41,6 @@ public partial class Apenso2 : IApenso2Reader
             Processo = dbRec.FProcesso,
             Apensado = dbRec.FApensado,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        apenso2.Auditor = auditor;
         return apenso2;
     }
 
@@ -67,18 +57,23 @@ public partial class Apenso2 : IApenso2Reader
             Processo = dbRec.FProcesso,
             Apensado = dbRec.FApensado,
         };
-        var auditor = new Auditor
+        return apenso2;
+    }
+
+    public Apenso2ResponseAll? ReadAll(DBApenso2 dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var apenso2 = new Apenso2ResponseAll
+        {
+            Id = dbRec.ID,
+            Processo = dbRec.FProcesso,
+            Apensado = dbRec.FApensado,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        apenso2.Auditor = auditor;
+        apenso2.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return apenso2;
     }
 }

@@ -33,3 +33,37 @@ public partial class PontoVirtualAcessos
     [JsonPropertyName("origem")]
     public string Origem { get; set; } = "";
 }
+
+[Serializable]
+public partial class PontoVirtualAcessosAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pvaOperador  
+    /// </summary>
+    [JsonPropertyName("operador")]
+    public int Operador { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pvaDataHora  
+    /// </summary>
+    [JsonPropertyName("datahora")]
+    public string DataHora { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - pvaTipo  
+    /// </summary>
+    [JsonPropertyName("tipo")]
+    public bool Tipo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - pvaOrigem - tamanho máximo: 150 
+    /// </summary>
+    [JsonPropertyName("origem")]
+    public string Origem { get; set; } = "";
+
+    [JsonPropertyName("nomeoperador")]
+    public string NomeOperador { get; set; } = string.Empty;
+}

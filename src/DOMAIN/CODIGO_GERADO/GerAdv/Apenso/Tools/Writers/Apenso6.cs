@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IApensoWriter
 {
-    Entity.DBApenso Write(Models.Apenso apenso, int auditorQuem, SqlConnection oCnn);
+    Entity.DBApenso Write(Models.Apenso apenso, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ApensoResponse apenso, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Apenso : IApensoWriter
 {
-    public Entity.DBApenso Write(Models.Apenso apenso, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ApensoResponse apenso, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Apenso] WHERE apeCodigo={apenso.Id};", oCnn);
+    }
+
+    public Entity.DBApenso Write(Models.Apenso apenso, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = apenso.Id.IsEmptyIDNumber() ? new Entity.DBApenso() : new Entity.DBApenso(apenso.Id, oCnn);
         dbRec.FProcesso = apenso.Processo;

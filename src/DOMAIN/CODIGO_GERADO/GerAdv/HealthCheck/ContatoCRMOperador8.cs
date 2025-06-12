@@ -32,7 +32,7 @@ public class ContatoCRMOperadorHealthCheck(IOptions<AppSettings> appSettings, Co
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ContatoCRMOperadorHealthCheck(IOptions<AppSettings> appSettings, Co
                         if (DBContatoCRMOperadorDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ccoCodigo) FROM dbo.ContatoCRMOperador (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ccoCodigo) FROM {"ContatoCRMOperador".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ContatoCRMOperadorHealthCheck(IOptions<AppSettings> appSettings, Co
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ccoContatoCRM,ccoCargoEsc,ccoOperador FROM dbo.ContatoCRMOperador (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ccoContatoCRM,ccoCargoEsc,ccoOperador FROM {"ContatoCRMOperador".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

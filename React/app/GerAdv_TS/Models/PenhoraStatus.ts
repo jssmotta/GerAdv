@@ -1,0 +1,28 @@
+﻿import { IPenhoraStatus } from '../PenhoraStatus/Interfaces/interface.PenhoraStatus';
+export interface PenhoraStatus
+{
+    id: number;
+	nome : string;
+
+}
+
+
+export function PenhoraStatusEmpty(): IPenhoraStatus {
+// 20250604
+    
+    return {
+        id: 0,
+		nome: '',
+    };
+}
+
+export function PenhoraStatusTestEmpty(): IPenhoraStatus {
+// 20250604
+    
+    return {
+        id: 1,
+		nome: 'X',
+    };
+}
+
+

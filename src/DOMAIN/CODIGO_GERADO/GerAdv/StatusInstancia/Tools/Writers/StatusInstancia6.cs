@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IStatusInstanciaWriter
 {
-    Entity.DBStatusInstancia Write(Models.StatusInstancia statusinstancia, int auditorQuem, SqlConnection oCnn);
+    Entity.DBStatusInstancia Write(Models.StatusInstancia statusinstancia, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(StatusInstanciaResponse statusinstancia, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class StatusInstancia : IStatusInstanciaWriter
 {
-    public Entity.DBStatusInstancia Write(Models.StatusInstancia statusinstancia, int auditorQuem, SqlConnection oCnn)
+    public void Delete(StatusInstanciaResponse statusinstancia, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[StatusInstancia] WHERE istCodigo={statusinstancia.Id};", oCnn);
+    }
+
+    public Entity.DBStatusInstancia Write(Models.StatusInstancia statusinstancia, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = statusinstancia.Id.IsEmptyIDNumber() ? new Entity.DBStatusInstancia() : new Entity.DBStatusInstancia(statusinstancia.Id, oCnn);
         dbRec.FNome = statusinstancia.Nome;

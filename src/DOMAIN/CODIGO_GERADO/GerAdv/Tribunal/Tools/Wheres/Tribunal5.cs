@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITribunalWhere
 {
-    TribunalResponse Read(string where, SqlConnection oCnn);
+    TribunalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Tribunal : ITribunalWhere
 {
-    public TribunalResponse Read(string where, SqlConnection oCnn)
+    public TribunalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTribunal(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTribunal(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var tribunal = new TribunalResponse
         {
             Id = dbRec.ID,
@@ -27,18 +27,6 @@ public partial class Tribunal : ITribunalWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        tribunal.Auditor = auditor;
         return tribunal;
     }
 }

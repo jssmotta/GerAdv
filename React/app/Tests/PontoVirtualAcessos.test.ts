@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { usePontoVirtualAcessosForm, usePontoVirtualAcessosList, useValidationsPontoVirtualAcessos } from '../GerAdv_TS/PontoVirtualAcessos/Hooks/hookPontoVirtualAcessos';
+import { IPontoVirtualAcessos } from '../GerAdv_TS/PontoVirtualAcessos/Interfaces/interface.PontoVirtualAcessos';
+import { IPontoVirtualAcessosService } from '../GerAdv_TS/PontoVirtualAcessos/Services/PontoVirtualAcessos.service';
+import { PontoVirtualAcessosTestEmpty } from '../GerAdv_TS/Models/PontoVirtualAcessos';
+
+
+// Mock do serviço
+const mockPontoVirtualAcessosService: jest.Mocked<IPontoVirtualAcessosService> = {
+  fetchPontoVirtualAcessosById: jest.fn(),
+  savePontoVirtualAcessos: jest.fn(),
+  
+  getAll: jest.fn(),
+  deletePontoVirtualAcessos: jest.fn(),
+  validatePontoVirtualAcessos: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialPontoVirtualAcessos: IPontoVirtualAcessos = { ...PontoVirtualAcessosTestEmpty() };
+
+describe('usePontoVirtualAcessosForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosForm(initialPontoVirtualAcessos, mockPontoVirtualAcessosService)
+    );
+
+    expect(result.current.data).toEqual(initialPontoVirtualAcessos);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosForm(initialPontoVirtualAcessos, mockPontoVirtualAcessosService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'origem',
+        value: 'Novo Ponto Virtual Acessos',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.origem).toBe('Novo Ponto Virtual Acessos');
+  });
+
+   test('deve carregar Ponto Virtual Acessos por ID', async () => {
+    const mockPontoVirtualAcessos = { ...initialPontoVirtualAcessos, id: 1, origem: 'Ponto Virtual Acessos Teste' };
+    mockPontoVirtualAcessosService.fetchPontoVirtualAcessosById.mockResolvedValue(mockPontoVirtualAcessos);
+
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosForm(initialPontoVirtualAcessos, mockPontoVirtualAcessosService)
+    );
+
+    await act(async () => {
+      await result.current.loadPontoVirtualAcessos(1);
+    });
+
+    expect(mockPontoVirtualAcessosService.fetchPontoVirtualAcessosById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockPontoVirtualAcessos);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Ponto Virtual Acessos', async () => {
+    const errorMessage = 'Erro ao carregar Ponto Virtual Acessos';
+    mockPontoVirtualAcessosService.fetchPontoVirtualAcessosById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosForm(initialPontoVirtualAcessos, mockPontoVirtualAcessosService)
+    );
+
+    await act(async () => {
+      await result.current.loadPontoVirtualAcessos(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosForm(initialPontoVirtualAcessos, mockPontoVirtualAcessosService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialPontoVirtualAcessos, origem: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialPontoVirtualAcessos);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosForm(initialPontoVirtualAcessos, mockPontoVirtualAcessosService)
+    );
+
+    await act(async () => {
+      await result.current.loadPontoVirtualAcessos(0);
+    });
+
+    expect(mockPontoVirtualAcessosService.fetchPontoVirtualAcessosById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialPontoVirtualAcessos);
+  });
+});
+
+describe('usePontoVirtualAcessosList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosList(mockPontoVirtualAcessosService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialPontoVirtualAcessos, id: 1, origem: 'Ponto Virtual Acessos 1' },
+      { ...initialPontoVirtualAcessos, id: 2, origem: 'Ponto Virtual Acessos 2' }
+    ];
+    mockPontoVirtualAcessosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosList(mockPontoVirtualAcessosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockPontoVirtualAcessosService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockPontoVirtualAcessosService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosList(mockPontoVirtualAcessosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialPontoVirtualAcessos, id: 1, origem: 'Ponto Virtual Acessos Filtrado' }];
+    const filtro = { origem: 'Ponto Virtual Acessos' };
+    mockPontoVirtualAcessosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      usePontoVirtualAcessosList(mockPontoVirtualAcessosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockPontoVirtualAcessosService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsPontoVirtualAcessos', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsPontoVirtualAcessos());
+
+    const validData = { ...initialPontoVirtualAcessos, origem: 'Ponto Virtual Acessos Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsPontoVirtualAcessos());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialPontoVirtualAcessos, id: 1, origem: 'Ponto Virtual Acessos Teste' }];
+    mockPontoVirtualAcessosService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      usePontoVirtualAcessosList(mockPontoVirtualAcessosService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsPontoVirtualAcessos()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

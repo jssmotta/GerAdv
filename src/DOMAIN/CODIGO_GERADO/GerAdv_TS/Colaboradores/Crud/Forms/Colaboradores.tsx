@@ -1,0 +1,389 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IColaboradores } from '@/app/GerAdv_TS/Colaboradores/Interfaces/interface.Colaboradores';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { ColaboradoresApi } from '../../Apis/ApiColaboradores';
+import { useValidationsColaboradores } from '../../Hooks/hookColaboradores';
+import CargosComboBox from '@/app/GerAdv_TS/Cargos/ComboBox/Cargos';
+import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
+import CidadeComboBox from '@/app/GerAdv_TS/Cidade/ComboBox/Cidade';
+import { CargosApi } from '@/app/GerAdv_TS/Cargos/Apis/ApiCargos';
+import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import { CidadeApi } from '@/app/GerAdv_TS/Cidade/Apis/ApiCidade';
+import InputName from '@/app/components/Inputs/InputName';
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+import InputCpf from '@/app/components/Inputs/InputCpf'
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCep from '@/app/components/Inputs/InputCep'
+interface ColaboradoresFormProps {
+  colaboradoresData: IColaboradores;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const ColaboradoresForm: React.FC<ColaboradoresFormProps> = ({
+  colaboradoresData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new ColaboradoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsColaboradores();
+const [nomeCargos, setNomeCargos] = useState('');
+const cargosApi = new CargosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeClientes, setNomeClientes] = useState('');
+const clientesApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeCidade, setNomeCidade] = useState('');
+const cidadeApi = new CidadeApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('cargos') > 0) {
+  if (colaboradoresData.id === 0 && colaboradoresData.cargo == 0) {
+    cargosApi
+    .getById(getParamFromUrl('cargos'))
+    .then((response) => {
+      setNomeCargos(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    colaboradoresData.cargo = getParamFromUrl('cargos');
+  }
+}
+
+if (getParamFromUrl('clientes') > 0) {
+  if (colaboradoresData.id === 0 && colaboradoresData.cliente == 0) {
+    clientesApi
+    .getById(getParamFromUrl('clientes'))
+    .then((response) => {
+      setNomeClientes(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    colaboradoresData.cliente = getParamFromUrl('clientes');
+  }
+}
+
+if (getParamFromUrl('cidade') > 0) {
+  if (colaboradoresData.id === 0 && colaboradoresData.cidade == 0) {
+    cidadeApi
+    .getById(getParamFromUrl('cidade'))
+    .then((response) => {
+      setNomeCidade(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    colaboradoresData.cidade = getParamFromUrl('cidade');
+  }
+}
+const addValorCargo = (e: any) => {
+  if (e?.id>0)
+    colaboradoresData.cargo = e.id;
+  };
+  const addValorCliente = (e: any) => {
+    if (e?.id>0)
+      colaboradoresData.cliente = e.id;
+    };
+    const addValorCidade = (e: any) => {
+      if (e?.id>0)
+        colaboradoresData.cidade = e.id;
+      };
+      const onConfirm = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+
+          if (!isSubmitting) {
+            setIsSubmitting(true);
+
+            try {
+              onSubmit(e);
+            } catch (error) {
+            console.error('Erro ao submeter formulário de Colaboradores:', error);
+            setIsSubmitting(false);
+            if (onError) onError();
+            }
+          }
+        };
+        const handleCancel = () => {
+          if (onReload) {
+            onReload(); // Recarrega os dados originais
+          } else {
+          onClose(); // Comportamento padrão se não há callback de recarga
+        }
+      };
+
+      const handleDirectSave = () => {
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            const syntheticEvent = {
+              preventDefault: () => { }, 
+              target: document.getElementById(`ColaboradoresForm-${colaboradoresData.id}`)
+            } as unknown as React.FormEvent;
+
+            onSubmit(syntheticEvent);
+          } catch (error) {
+          console.error('Erro ao salvar Colaboradores diretamente:', error);
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = colaboradoresData?.id == 0 ? 'Editar Colaboradores' : 'Adicionar Colaborador';
+        }
+      }, [colaboradoresData.id]);
+      return (
+      <>
+      <style>
+        {!isMobile ? `
+          @media (max-width: 1366px) {
+            html {
+              zoom: 0.8 !important;
+            }
+          }
+          ` : ``}
+        </style>
+
+        <div className={isMobile ? 'form-container form-container-Colaboradores' : 'form-container form-container-Colaboradores'}>
+
+          <form className='formInputCadInc' id={`ColaboradoresForm-${colaboradoresData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Colaboradores' data={colaboradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
+
+                <InputName
+                type='text'
+                id='nome'
+                label='Nome'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='nome'
+                value={colaboradoresData.nome}
+                placeholder={`Informe Nome`}
+                onChange={onChange}
+                required
+                />
+
+                <CargosComboBox
+                name={'cargo'}
+                dataForm={colaboradoresData}
+                value={colaboradoresData.cargo}
+                setValue={addValorCargo}
+                label={'Cargo'}
+                />
+
+                <ClientesComboBox
+                name={'cliente'}
+                dataForm={colaboradoresData}
+                value={colaboradoresData.cliente}
+                setValue={addValorCliente}
+                label={'Clientes'}
+                />
+                <InputCheckbox dataForm={colaboradoresData} label='Sexo' name='sexo' checked={colaboradoresData.sexo} onChange={onChange} />
+
+                <InputCpf
+                type='text'
+                id='cpf'
+                label='CPF'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='cpf'
+                value={colaboradoresData.cpf}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={30}
+                id='rg'
+                label='RG'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='rg'
+                value={colaboradoresData.rg}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dtnasc'
+                label='DtNasc'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='dtnasc'
+                value={colaboradoresData.dtnasc}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='idade'
+                label='Idade'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='idade'
+                value={colaboradoresData.idade}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='endereco'
+                label='Endereco'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='endereco'
+                value={colaboradoresData.endereco}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='bairro'
+                label='Bairro'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='bairro'
+                value={colaboradoresData.bairro}
+                onChange={onChange}
+                />
+
+              </div><div className='grid-container'>
+                <InputCep
+                type='text'
+                id='cep'
+                label='CEP'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='cep'
+                value={colaboradoresData.cep}
+                onChange={onChange}
+                />
+
+
+                <CidadeComboBox
+                name={'cidade'}
+                dataForm={colaboradoresData}
+                value={colaboradoresData.cidade}
+                setValue={addValorCidade}
+                label={'Cidade'}
+                />
+
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fone'
+                label='Fone'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='fone'
+                value={colaboradoresData.fone}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='observacao'
+                label='Observacao'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='observacao'
+                value={colaboradoresData.observacao}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='email'
+                maxLength={150}
+                id='email'
+                label='EMail'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='email'
+                value={colaboradoresData.email}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='cnh'
+                label='CNH'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='cnh'
+                value={colaboradoresData.cnh}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={1}
+                id='class'
+                label='Class'
+                dataForm={colaboradoresData}
+                className='inputIncNome'
+                name='class'
+                value={colaboradoresData.class}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={colaboradoresData} label='Ani' name='ani' checked={colaboradoresData.ani} onChange={onChange} />
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Colaboradores' data={colaboradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/colaboradores'} id={colaboradoresData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

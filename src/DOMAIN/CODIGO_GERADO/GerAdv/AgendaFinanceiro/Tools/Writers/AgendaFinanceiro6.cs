@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAgendaFinanceiroWriter
 {
-    Entity.DBAgendaFinanceiro Write(Models.AgendaFinanceiro agendafinanceiro, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAgendaFinanceiro Write(Models.AgendaFinanceiro agendafinanceiro, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AgendaFinanceiroResponse agendafinanceiro, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AgendaFinanceiro : IAgendaFinanceiroWriter
 {
-    public Entity.DBAgendaFinanceiro Write(Models.AgendaFinanceiro agendafinanceiro, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AgendaFinanceiroResponse agendafinanceiro, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AgendaFinanceiro] WHERE ageCodigo={agendafinanceiro.Id};", oCnn);
+    }
+
+    public Entity.DBAgendaFinanceiro Write(Models.AgendaFinanceiro agendafinanceiro, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = agendafinanceiro.Id.IsEmptyIDNumber() ? new Entity.DBAgendaFinanceiro() : new Entity.DBAgendaFinanceiro(agendafinanceiro.Id, oCnn);
         dbRec.FIDCOB = agendafinanceiro.IDCOB;

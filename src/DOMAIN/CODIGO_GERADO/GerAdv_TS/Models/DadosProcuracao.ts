@@ -1,0 +1,50 @@
+﻿import { IDadosProcuracao } from '../DadosProcuracao/Interfaces/interface.DadosProcuracao';
+export interface DadosProcuracao
+{
+    id: number;
+	cliente : number;
+	estadocivil : string;
+	nacionalidade : string;
+	profissao : string;
+	ctps : string;
+	pispasep : string;
+	remuneracao : string;
+	objeto : string;
+	nomeclientes?: string;
+
+}
+
+
+export function DadosProcuracaoEmpty(): IDadosProcuracao {
+// 20250604
+    
+    return {
+        id: 0,
+		cliente: 0,
+		estadocivil: '',
+		nacionalidade: '',
+		profissao: '',
+		ctps: '',
+		pispasep: '',
+		remuneracao: '',
+		objeto: '',
+    };
+}
+
+export function DadosProcuracaoTestEmpty(): IDadosProcuracao {
+// 20250604
+    
+    return {
+        id: 1,
+		cliente: 1,
+		estadocivil: 'X',
+		nacionalidade: 'X',
+		profissao: 'X',
+		ctps: 'X',
+		pispasep: 'X',
+		remuneracao: 'X',
+		objeto: 'X',
+    };
+}
+
+

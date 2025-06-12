@@ -1,0 +1,162 @@
+﻿'use client';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { IAgendaRecordsService } from '../Services/AgendaRecords.service';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { IAgendaRecords } from '../Interfaces/interface.AgendaRecords';
+import { isValidDate } from '@/app/tools/datetime';
+
+export const useAgendaRecordsForm = (
+  initialAgendaRecords: IAgendaRecords,
+  dataService: IAgendaRecordsService
+) => {
+  const [data, setData] = useState<IAgendaRecords>(initialAgendaRecords);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = useCallback((e: any) => {
+    const { name, value, type, checked } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));    
+  }, []);
+
+  const loadAgendaRecords = useCallback(async (id: number) => {
+    if (!id || id === 0) {
+      setData(initialAgendaRecords);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const dados = await dataService.fetchAgendaRecordsById(id);
+      setData(dados);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Agenda Records';
+      setError(errorMessage);
+      console.log('Erro ao carregar Agenda Records');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService, initialAgendaRecords]);
+
+  const resetForm = useCallback(() => {
+    setData(initialAgendaRecords);
+    setError(null);
+  }, [initialAgendaRecords]);
+
+  const returnValue = useMemo(() => ({
+    data,
+    loading,
+    error,
+    handleChange,
+    loadAgendaRecords,
+    resetForm,
+    setData
+  }), [data, loading, error, handleChange, loadAgendaRecords, resetForm]);
+  return returnValue;
+};
+
+
+export const useAgendaRecordsNotifications = (
+  onUpdate?: (entity: any) => void,
+  onDelete?: (entity: any) => void,
+  onAdd?: (entity: any) => void
+) => {
+  const callbacksRef = useRef({ onUpdate, onDelete, onAdd });
+  
+  useEffect(() => {
+    callbacksRef.current = { onUpdate, onDelete, onAdd };
+  }, [onUpdate, onDelete, onAdd]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications('AgendaRecords', (entity) => {
+      try {
+        const { onUpdate, onDelete, onAdd } = callbacksRef.current;
+        
+        switch (entity.action) {
+          case NotifySystemActions.DELETE:
+            onDelete?.(entity);
+            break;
+          case NotifySystemActions.UPDATE:
+            onUpdate?.(entity);
+            break;
+          case NotifySystemActions.ADD:
+            onAdd?.(entity);
+            break;
+        }
+      } catch (err) {
+        console.log('Erro no listener de notificações.');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+};
+
+
+export const useAgendaRecordsList = (dataService: IAgendaRecordsService) => {
+  const [data, setData] = useState<IAgendaRecords[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async (filtro?: any) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await dataService.getAll(filtro);
+      setData(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar agendarecords';
+      setError(errorMessage);
+      console.log('Erro ao carregar agendarecords');
+    } finally {
+      setLoading(false);
+    }
+  }, [dataService]);
+
+  const refreshData = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+  
+  useAgendaRecordsNotifications(
+    refreshData, // onUpdate
+    refreshData, // onDelete  
+    refreshData  // onAdd
+  );
+   
+
+  return {
+    data,
+    loading,
+    error,
+    fetchData,
+    refreshData
+  };
+};
+
+
+export function useValidationsAgendaRecords() {
+  function validate(data: IAgendaRecords): { isValid: boolean; message: string } {
+    if (!data) return { isValid: false, message: 'Dados não informados.' };
+    
+      try {
+   
+        
+
+
+        return { isValid: true, message: '' };
+
+         } catch (error) {
+          return { isValid: true, message: 'Erro ao validar os dados.' };
+    }
+
+  }
+
+  return { validate };
+}

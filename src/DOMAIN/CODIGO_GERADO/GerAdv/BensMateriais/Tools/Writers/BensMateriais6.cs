@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IBensMateriaisWriter
 {
-    Entity.DBBensMateriais Write(Models.BensMateriais bensmateriais, int auditorQuem, SqlConnection oCnn);
+    Entity.DBBensMateriais Write(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class BensMateriais : IBensMateriaisWriter
 {
-    public Entity.DBBensMateriais Write(Models.BensMateriais bensmateriais, int auditorQuem, SqlConnection oCnn)
+    public void Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[BensMateriais] WHERE bmtCodigo={bensmateriais.Id};", oCnn);
+    }
+
+    public Entity.DBBensMateriais Write(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = bensmateriais.Id.IsEmptyIDNumber() ? new Entity.DBBensMateriais() : new Entity.DBBensMateriais(bensmateriais.Id, oCnn);
         dbRec.FNome = bensmateriais.Nome;

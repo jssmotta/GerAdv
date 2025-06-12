@@ -32,7 +32,7 @@ public class ProSucumbenciaHealthCheck(IOptions<AppSettings> appSettings, ProSuc
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProSucumbenciaHealthCheck(IOptions<AppSettings> appSettings, ProSuc
                         if (DBProSucumbenciaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(scbCodigo) FROM dbo.ProSucumbencia (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(scbCodigo) FROM {"ProSucumbencia".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProSucumbenciaHealthCheck(IOptions<AppSettings> appSettings, ProSuc
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) scbProcesso,scbInstancia,scbData,scbNome,scbTipoOrigemSucumbencia,scbValor,scbPercentual,scbGUID FROM dbo.ProSucumbencia (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) scbProcesso,scbInstancia,scbData,scbNome,scbTipoOrigemSucumbencia,scbValor,scbPercentual,scbGUID FROM {"ProSucumbencia".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSettings, IPoderJudiciarioAssociadoReader reader, IPoderJudiciarioAssociadoValidation validation, IPoderJudiciarioAssociadoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IPoderJudiciarioAssociadoService, IDisposable
+public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSettings, IPoderJudiciarioAssociadoReader reader, IPoderJudiciarioAssociadoValidation validation, IPoderJudiciarioAssociadoWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPoderJudiciarioAssociadoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<PoderJudiciarioAssociadoResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<PoderJudiciarioAssociadoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PoderJudiciarioAssociado: URI inválida");
@@ -26,72 +27,76 @@ public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSe
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<PoderJudiciarioAssociadoResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<PoderJudiciarioAssociadoResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBPoderJudiciarioAssociado.SensivelCamposSqlX} 
-                   FROM {DBPoderJudiciarioAssociado.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBPoderJudiciarioAssociadoDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBPoderJudiciarioAssociado>(max);
-        await foreach (var item in DBPoderJudiciarioAssociado.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBPoderJudiciarioAssociado.SensivelCamposSqlX}, jusNome,areDescricao,triNome,forNome,cidNome
+                   FROM {DBPoderJudiciarioAssociado.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=pjaJustica
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=pjaArea
+LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON triCodigo=pjaTribunal
+LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=pjaForo
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=pjaCidade
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<PoderJudiciarioAssociadoResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBPoderJudiciarioAssociado(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var poderjudiciarioassociado = reader.ReadAll(dbRec, item);
+                if (poderjudiciarioassociado != null)
+                {
+                    lista.Add(poderjudiciarioassociado);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<PoderJudiciarioAssociadoResponse>> Filter(Filters.FilterPoderJudiciarioAssociado filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<PoderJudiciarioAssociadoResponseAll>> Filter(Filters.FilterPoderJudiciarioAssociado filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("PoderJudiciarioAssociado: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-PoderJudiciarioAssociado-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<PoderJudiciarioAssociadoResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBPoderJudiciarioAssociado.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<PoderJudiciarioAssociadoResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("PoderJudiciarioAssociado: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new PoderJudiciarioAssociadoResponse();
         }
@@ -101,39 +106,24 @@ public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSe
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-PoderJudiciarioAssociado-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-PoderJudiciarioAssociado-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"PoderJudiciarioAssociado - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"PoderJudiciarioAssociado - {uri}-: GetById");
         }
     }
 
-    private async Task<PoderJudiciarioAssociadoResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<PoderJudiciarioAssociadoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<PoderJudiciarioAssociadoResponse?> AddAndUpdate([FromBody] Models.PoderJudiciarioAssociado regPoderJudiciarioAssociado, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PoderJudiciarioAssociado: URI inválida");
@@ -147,14 +137,13 @@ public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSe
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regPoderJudiciarioAssociado, this, justicaReader, areaReader, tribunalReader, foroReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regPoderJudiciarioAssociado, this, justicaReader, areaReader, tribunalReader, foroReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"PoderJudiciarioAssociado: {validade}");
@@ -168,31 +157,47 @@ public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSe
     public async Task<PoderJudiciarioAssociadoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PoderJudiciarioAssociado: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var poderjudiciarioassociado = reader.Read(id, oCnn);
-            if (poderjudiciarioassociado != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBPoderJudiciarioAssociado().DeletarItem(poderjudiciarioassociado.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var poderjudiciarioassociado = reader.Read(id, oCnn);
+            try
+            {
+                if (poderjudiciarioassociado != null)
+                {
+                    writer.Delete(poderjudiciarioassociado, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return poderjudiciarioassociado;
@@ -225,27 +230,98 @@ public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSe
         }
     }
 
-    private static string WFiltro(Filters.FilterPoderJudiciarioAssociado filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPoderJudiciarioAssociado filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Justica == -2147483648 ? string.Empty : DBPoderJudiciarioAssociadoDicInfo.JusticaSql(filtro.Justica);
-        cWhere += filtro.JusticaNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.JusticaNomeSql(filtro.JusticaNome);
-        cWhere += filtro.Area == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.AreaSql(filtro.Area);
-        cWhere += filtro.AreaNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.AreaNomeSql(filtro.AreaNome);
-        cWhere += filtro.Tribunal == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.TribunalSql(filtro.Tribunal);
-        cWhere += filtro.TribunalNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.TribunalNomeSql(filtro.TribunalNome);
-        cWhere += filtro.Foro == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.ForoSql(filtro.Foro);
-        cWhere += filtro.ForoNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.ForoNomeSql(filtro.ForoNome);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.SubDivisaoNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.SubDivisaoNomeSql(filtro.SubDivisaoNome);
-        cWhere += filtro.CidadeNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.CidadeNomeSql(filtro.CidadeNome);
-        cWhere += filtro.SubDivisao == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.SubDivisaoSql(filtro.SubDivisao);
-        cWhere += filtro.Tipo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.TipoSql(filtro.Tipo);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPoderJudiciarioAssociadoDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Justica != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.Justica)}", filtro.Justica));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.JusticaNome))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.JusticaNome)}", filtro.JusticaNome));
+        }
+
+        if (filtro.Area != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.Area)}", filtro.Area));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.AreaNome))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.AreaNome)}", filtro.AreaNome));
+        }
+
+        if (filtro.Tribunal != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.Tribunal)}", filtro.Tribunal));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.TribunalNome))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.TribunalNome)}", filtro.TribunalNome));
+        }
+
+        if (filtro.Foro != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.Foro)}", filtro.Foro));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.ForoNome))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.ForoNome)}", filtro.ForoNome));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.SubDivisaoNome))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.SubDivisaoNome)}", filtro.SubDivisaoNome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CidadeNome))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.CidadeNome)}", filtro.CidadeNome));
+        }
+
+        if (filtro.SubDivisao != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.SubDivisao)}", filtro.SubDivisao));
+        }
+
+        if (filtro.Tipo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.Tipo)}", filtro.Tipo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBPoderJudiciarioAssociadoDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Justica == int.MinValue ? string.Empty : $"{DBPoderJudiciarioAssociadoDicInfo.Justica} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.Justica)}";
+        cWhere += filtro.JusticaNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.JusticaNome} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.JusticaNome)}";
+        cWhere += filtro.Area == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.Area} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.Area)}";
+        cWhere += filtro.AreaNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.AreaNome} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.AreaNome)}";
+        cWhere += filtro.Tribunal == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.Tribunal} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.Tribunal)}";
+        cWhere += filtro.TribunalNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.TribunalNome} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.TribunalNome)}";
+        cWhere += filtro.Foro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.Foro} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.Foro)}";
+        cWhere += filtro.ForoNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.ForoNome} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.ForoNome)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.Cidade} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.Cidade)}";
+        cWhere += filtro.SubDivisaoNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.SubDivisaoNome} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.SubDivisaoNome)}";
+        cWhere += filtro.CidadeNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.CidadeNome} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.CidadeNome)}";
+        cWhere += filtro.SubDivisao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.SubDivisao} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.SubDivisao)}";
+        cWhere += filtro.Tipo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.Tipo} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.Tipo)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPoderJudiciarioAssociadoDicInfo.GUID} = @{nameof(DBPoderJudiciarioAssociadoDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

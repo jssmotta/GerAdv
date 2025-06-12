@@ -1,0 +1,112 @@
+﻿'use client';
+import { CRUD_CONSTANTS } from '@/app/tools/crud';
+import { JusticaApi, JusticaApiError } from '../Apis/ApiJustica';
+import { FilterJustica } from '../Filters/Justica';
+import { IJustica } from '../Interfaces/interface.Justica';
+
+export class JusticaValidator {
+  static validateJustica(justica: IJustica): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Atualmente não há validações de regras de negócio específicas
+    // Todas as validações são feitas nos inputs correspondentes
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+export interface IJusticaService {
+  fetchJusticaById: (id: number) => Promise<IJustica>;
+  saveJustica: (justica: IJustica) => Promise<IJustica>;  
+  getList: (filtro?: FilterJustica) => Promise<IJustica[]>;
+  getAll: (filtro?: FilterJustica) => Promise<IJustica[]>;
+  deleteJustica: (id: number) => Promise<void>;
+  validateJustica: (justica: IJustica) => { isValid: boolean; errors: string[] };
+}
+
+export class JusticaService implements IJusticaService {
+  constructor(private api: JusticaApi) {}
+
+  async fetchJusticaById(id: number): Promise<IJustica> {
+    if (id <= 0) {
+      throw new JusticaApiError('ID inválido', 400, 'INVALID_ID');
+    }
+
+    try {
+      const response = await this.api.getById(id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof JusticaApiError) {
+        throw error;
+      }
+      throw new JusticaApiError('Erro ao buscar justica', 500, 'FETCH_ERROR', error);
+    }
+  }
+
+  async saveJustica(justica: IJustica): Promise<IJustica> {    
+    const validation = this.validateJustica(justica);
+    if (!validation.isValid) {
+      throw new JusticaApiError(
+        `Dados inválidos: ${validation.errors.join(', ')}`,
+        400,
+        'VALIDATION_ERROR'
+      );
+    }
+
+    try {
+      const response = await this.api.addAndUpdate(justica);
+      return response.data;
+    } catch (error) {
+      if (error instanceof JusticaApiError) {
+        throw error;
+      }
+      throw new JusticaApiError('Erro ao salvar justica', 500, 'SAVE_ERROR', error);
+    }
+  }
+
+  
+    async getList(filtro?: FilterJustica): Promise<IJustica[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching justica list:', error);
+      return [];
+    }
+  }
+
+ 
+ 
+
+  async getAll(filtro?: FilterJustica): Promise<IJustica[]> {
+    try {
+      const response = await this.api.filter(filtro ?? {});
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching all justica:', error);
+      return [];
+    }
+  }
+
+  async deleteJustica(id: number): Promise<void> {
+    if (id <= 0) {
+      throw new JusticaApiError('ID inválido para exclusão', 400, 'INVALID_ID');
+    }
+
+    try {
+      await this.api.delete(id);
+    } catch (error) {
+      if (error instanceof JusticaApiError) {
+        throw error;
+      }
+      throw new JusticaApiError('Erro ao excluir justica', 500, 'DELETE_ERROR', error);
+    }
+  }
+
+  validateJustica(justica: IJustica): { isValid: boolean; errors: string[] } {
+    return JusticaValidator.validateJustica(justica);
+  }
+}

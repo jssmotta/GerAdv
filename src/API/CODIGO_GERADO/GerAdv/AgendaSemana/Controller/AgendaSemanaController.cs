@@ -14,7 +14,7 @@ public partial class AgendaSemanaController(IAgendaSemanaService agendasemanaSer
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("AgendaSemana: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("AgendaSemana: GetById called with id = {0}, {1}", id, uri);
         var result = await _agendasemanaService.GetById(id, uri, token);
         if (result == null)
         {

@@ -32,7 +32,7 @@ public class GUTAtividadesHealthCheck(IOptions<AppSettings> appSettings, GUTAtiv
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class GUTAtividadesHealthCheck(IOptions<AppSettings> appSettings, GUTAtiv
                         if (DBGUTAtividadesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(agtCodigo) FROM dbo.GUTAtividades (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(agtCodigo) FROM {"GUTAtividades".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class GUTAtividadesHealthCheck(IOptions<AppSettings> appSettings, GUTAtiv
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) agtNome,agtObservacao,agtGUTGrupo,agtGUTPeriodicidade,agtOperador,agtConcluido,agtDataConcluido,agtDiasParaIniciar,agtMinutosParaRealizar,agtGUID FROM dbo.GUTAtividades (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) agtNome,agtObservacao,agtGUTGrupo,agtGUTPeriodicidade,agtOperador,agtConcluido,agtDataConcluido,agtDiasParaIniciar,agtMinutosParaRealizar,agtGUID FROM {"GUTAtividades".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

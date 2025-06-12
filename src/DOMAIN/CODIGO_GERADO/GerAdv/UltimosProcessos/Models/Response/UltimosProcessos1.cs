@@ -27,3 +27,31 @@ public partial class UltimosProcessosResponse
     [JsonPropertyName("quem")]
     public int Quem { get; set; }
 }
+
+[Serializable]
+public partial class UltimosProcessosResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ultProcesso  
+    /// </summary>
+    [JsonPropertyName("processo")]
+    public int Processo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ultQuando  
+    /// </summary>
+    [JsonPropertyName("quando")]
+    public string Quando { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - ultQuem  
+    /// </summary>
+    [JsonPropertyName("quem")]
+    public int Quem { get; set; }
+
+    [JsonPropertyName("nropastaprocessos")]
+    public string NroPastaProcessos { get; set; } = string.Empty;
+}

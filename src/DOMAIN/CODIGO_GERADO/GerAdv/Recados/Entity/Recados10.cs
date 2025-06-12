@@ -7,7 +7,7 @@ public partial class DBRecados : MenphisSI.GerAdv.DBRecados, IDBRecados
     {
     }
 
-    public DBRecados(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBRecados(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBRecados : MenphisSI.GerAdv.DBRecados, IDBRecados
     {
     }
 
-    public DBRecados(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBRecados(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

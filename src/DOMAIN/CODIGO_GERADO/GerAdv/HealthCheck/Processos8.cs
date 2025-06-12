@@ -32,7 +32,7 @@ public class ProcessosHealthCheck(IOptions<AppSettings> appSettings, ProcessosSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProcessosHealthCheck(IOptions<AppSettings> appSettings, ProcessosSe
                         if (DBProcessosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(proCodigo) FROM dbo.Processos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(proCodigo) FROM {"Processos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProcessosHealthCheck(IOptions<AppSettings> appSettings, ProcessosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) proAdvParc,proAJGPedidoNegado,proAJGCliente,proAJGPedidoNegadoOPO,proNotificarPOE,proValorProvisionado,proAJGOponente,proValorCacheCalculo,proAJGPedidoOPO,proValorCacheCalculoProv,proConsiderarParado,proValorCalculado,proAJGConcedidoOPO,proCobranca,proDataEntrada,proPenhora,proAJGPedido,proTipoBaixa,proClassRisco,proIsApenso,proValorCausaInicial,proAJGConcedido,proObsBCX,proValorCausaDefinitivo,proPercProbExito,proMNA,proPercExito,proNroExtra,proAdvOpo,proExtra,proJustica,proAdvogado,proNroCaixa,proPreposto,proCliente,proOponente,proArea,proCidade,proSituacao,proIDSituacao,proValor,proRito,proFato,proNroPasta,proAtividade,proCaixaMorto,proBaixado,proDtBaixa,proMotivoBaixa,proOBS,proPrinted,proZKey,proZKeyQuem,proZKeyQuando,proResumo,proNaoImprimir,proEletronico,proNroContrato,proPercProbExitoJustificativa,proHonorarioValor,proHonorarioPercentual,proHonorarioSucumbencia,proFaseAuditoria,proValorCondenacao,proValorCondenacaoCalculado,proValorCondenacaoProvisorio,proGUID FROM dbo.Processos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) proAdvParc,proAJGPedidoNegado,proAJGCliente,proAJGPedidoNegadoOPO,proNotificarPOE,proValorProvisionado,proAJGOponente,proValorCacheCalculo,proAJGPedidoOPO,proValorCacheCalculoProv,proConsiderarParado,proValorCalculado,proAJGConcedidoOPO,proCobranca,proDataEntrada,proPenhora,proAJGPedido,proTipoBaixa,proClassRisco,proIsApenso,proValorCausaInicial,proAJGConcedido,proObsBCX,proValorCausaDefinitivo,proPercProbExito,proMNA,proPercExito,proNroExtra,proAdvOpo,proExtra,proJustica,proAdvogado,proNroCaixa,proPreposto,proCliente,proOponente,proArea,proCidade,proSituacao,proIDSituacao,proValor,proRito,proFato,proNroPasta,proAtividade,proCaixaMorto,proBaixado,proDtBaixa,proMotivoBaixa,proOBS,proPrinted,proZKey,proZKeyQuem,proZKeyQuando,proResumo,proNaoImprimir,proEletronico,proNroContrato,proPercProbExitoJustificativa,proHonorarioValor,proHonorarioPercentual,proHonorarioSucumbencia,proFaseAuditoria,proValorCondenacao,proValorCondenacaoCalculado,proValorCondenacaoProvisorio,proGUID FROM {"Processos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -38,7 +38,50 @@ public partial class ProcessOutputRequestResponse
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class ProcessOutputRequestResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - porProcessOutputEngine  
+    /// </summary>
+    [JsonPropertyName("processoutputengine")]
+    public int ProcessOutputEngine { get; set; }
+
+    /// <summary>
+    /// Sem descrição - porOperador  
+    /// </summary>
+    [JsonPropertyName("operador")]
+    public int Operador { get; set; }
+
+    /// <summary>
+    /// Sem descrição - porProcesso  
+    /// </summary>
+    [JsonPropertyName("processo")]
+    public int Processo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - porUltimoIdTabelaExo  
+    /// </summary>
+    [JsonPropertyName("ultimoidtabelaexo")]
+    public int UltimoIdTabelaExo { get; set; }
+
+    /// <summary>
+    /// GUId - porGUID - tamanho máximo: 150 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
+
+    [JsonPropertyName("nomeprocessoutputengine")]
+    public string NomeProcessOutputEngine { get; set; } = string.Empty;
+
+    [JsonPropertyName("nomeoperador")]
+    public string NomeOperador { get; set; } = string.Empty;
+
+    [JsonPropertyName("nropastaprocessos")]
+    public string NroPastaProcessos { get; set; } = string.Empty;
 }

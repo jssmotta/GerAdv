@@ -7,7 +7,7 @@ public partial class DBEMPClassRiscos : MenphisSI.GerAdv.DBEMPClassRiscos, IDBEM
     {
     }
 
-    public DBEMPClassRiscos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBEMPClassRiscos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBEMPClassRiscos : MenphisSI.GerAdv.DBEMPClassRiscos, IDBEM
     {
     }
 
-    public DBEMPClassRiscos(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBEMPClassRiscos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -7,7 +7,7 @@ public partial class DBEnderecos : MenphisSI.GerAdv.DBEnderecos, IDBEnderecos
     {
     }
 
-    public DBEnderecos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBEnderecos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBEnderecos : MenphisSI.GerAdv.DBEnderecos, IDBEnderecos
     {
     }
 
-    public DBEnderecos(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBEnderecos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

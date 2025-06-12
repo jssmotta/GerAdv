@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import ObjetosInc from '../Inc/Objetos';
+import { IObjetos } from '../../Interfaces/interface.Objetos';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { ObjetosEmpty } from '@/app/GerAdv_TS/Models/Objetos';
+import { useWindow } from '@/app/hooks/useWindows';
+interface ObjetosWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedObjetos?: IObjetos;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const ObjetosWindow: React.FC<ObjetosWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedObjetos, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Objetos'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={560}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedObjetos?.id ?? 0).toString()}
+>
+<ObjetosInc
+id={selectedObjetos?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowObjetos: React.FC<ObjetosWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<ObjetosWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedObjetos={ObjetosEmpty()}>
+</ObjetosWindow>
+)
+};
+export default ObjetosWindow;

@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBGUTTipo
 {
     public const string CadastroGuid = "fa72de59-f337-432a-aa1f-78d37cb01f9f";
-#region AdministrativeMethods_GUTTipo
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE gttCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "GUTTipo";
     public const string CamposSqlX = " GUTTipo.* ";
     public const string SensivelCamposSqlX = " GUTTipo.* ";

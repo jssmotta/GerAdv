@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IStatusHTrabWriter
 {
-    Entity.DBStatusHTrab Write(Models.StatusHTrab statushtrab, SqlConnection oCnn);
+    Entity.DBStatusHTrab Write(Models.StatusHTrab statushtrab, MsiSqlConnection oCnn);
+    void Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class StatusHTrab : IStatusHTrabWriter
 {
-    public Entity.DBStatusHTrab Write(Models.StatusHTrab statushtrab, SqlConnection oCnn)
+    public void Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[StatusHTrab] WHERE shtCodigo={statushtrab.Id};", oCnn);
+    }
+
+    public Entity.DBStatusHTrab Write(Models.StatusHTrab statushtrab, MsiSqlConnection oCnn)
     {
         var dbRec = statushtrab.Id.IsEmptyIDNumber() ? new Entity.DBStatusHTrab() : new Entity.DBStatusHTrab(statushtrab.Id, oCnn);
         dbRec.FDescricao = statushtrab.Descricao;

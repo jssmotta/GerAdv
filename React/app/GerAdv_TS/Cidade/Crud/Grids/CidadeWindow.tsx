@@ -1,0 +1,69 @@
+﻿// CrudWindow.tsx
+'use client';
+import React, { useEffect } from 'react';
+import { EditWindow } from '@/app/components/Cruds/EditWindow';
+import CidadeInc from '../Inc/Cidade';
+import { ICidade } from '../../Interfaces/interface.Cidade';
+import { useIsMobile } from '@/app/context/MobileContext';
+import { CidadeEmpty } from '@/app/GerAdv_TS/Models/Cidade';
+import { useWindow } from '@/app/hooks/useWindows';
+interface CidadeWindowProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dimensions?: { width: number; height: number };
+  selectedCidade?: ICidade;
+  onSuccess: (registro?: any) => void;
+  onError: () => void;
+}
+const CidadeWindow: React.FC<CidadeWindowProps> = ({
+  isOpen, 
+  onClose, 
+  dimensions, 
+  selectedCidade, 
+  onSuccess, 
+  onError, 
+}) => {
+
+const isMobile = useIsMobile();
+const dimensionsEmpty = useWindow();
+return (
+<>
+{!isOpen ? <></> : <>
+  <EditWindow
+  tableTitle='Cidade'
+  isOpen={isOpen}
+  onClose={onClose}
+  dimensions={dimensions ?? dimensionsEmpty}
+  newHeight={699}
+  newWidth={900}
+  mobile={isMobile}
+  id={(selectedCidade?.id ?? 0).toString()}
+>
+<CidadeInc
+id={selectedCidade?.id ?? 0}
+onClose={onClose}
+onSuccess={onSuccess}
+onError={onError}
+/>
+</EditWindow>
+</>}
+</>
+);
+};
+export const NewWindowCidade: React.FC<CidadeWindowProps> = ({
+  isOpen, 
+  onClose, 
+}) => {
+const dimensions = useWindow();
+return (
+<CidadeWindow
+isOpen={isOpen}
+onClose={onClose}
+dimensions={dimensions}
+onSuccess={onClose}
+onError={onClose}
+selectedCidade={CidadeEmpty()}>
+</CidadeWindow>
+)
+};
+export default CidadeWindow;

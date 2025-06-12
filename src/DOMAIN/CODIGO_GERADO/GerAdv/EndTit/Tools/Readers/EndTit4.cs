@@ -5,23 +5,24 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IEndTitReader
 {
-    EndTitResponse? Read(int id, SqlConnection oCnn);
-    EndTitResponse? Read(string where, SqlConnection oCnn);
+    EndTitResponse? Read(int id, MsiSqlConnection oCnn);
+    EndTitResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EndTitResponse? Read(Entity.DBEndTit dbRec);
     EndTitResponse? Read(DBEndTit dbRec);
+    EndTitResponseAll? ReadAll(DBEndTit dbRec, DataRow dr);
 }
 
 public partial class EndTit : IEndTitReader
 {
-    public EndTitResponse? Read(int id, SqlConnection oCnn)
+    public EndTitResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBEndTit(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public EndTitResponse? Read(string where, SqlConnection oCnn)
+    public EndTitResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBEndTit(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBEndTit(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -49,6 +50,22 @@ public partial class EndTit : IEndTitReader
         }
 
         var endtit = new EndTitResponse
+        {
+            Id = dbRec.ID,
+            Endereco = dbRec.FEndereco,
+            Titulo = dbRec.FTitulo,
+        };
+        return endtit;
+    }
+
+    public EndTitResponseAll? ReadAll(DBEndTit dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var endtit = new EndTitResponseAll
         {
             Id = dbRec.ID,
             Endereco = dbRec.FEndereco,

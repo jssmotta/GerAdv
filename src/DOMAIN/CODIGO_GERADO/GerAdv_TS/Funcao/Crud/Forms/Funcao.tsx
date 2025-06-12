@@ -1,0 +1,139 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IFuncao } from '@/app/GerAdv_TS/Funcao/Interfaces/interface.Funcao';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { FuncaoApi } from '../../Apis/ApiFuncao';
+import { useValidationsFuncao } from '../../Hooks/hookFuncao';
+import InputDescription from '@/app/components/Inputs/InputDescription';
+interface FuncaoFormProps {
+  funcaoData: IFuncao;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const FuncaoForm: React.FC<FuncaoFormProps> = ({
+  funcaoData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new FuncaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsFuncao();
+
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
+
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        onSubmit(e);
+      } catch (error) {
+      console.error('Erro ao submeter formulário de Funcao:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`FuncaoForm-${funcaoData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.error('Erro ao salvar Funcao diretamente:', error);
+    setIsSubmitting(false);
+    if (onError) onError();
+    }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = funcaoData?.id == 0 ? 'Editar Funcao' : 'Adicionar Função';
+  }
+}, [funcaoData.id]);
+return (
+<>
+<style>
+  {!isMobile ? `
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    ` : ``}
+  </style>
+
+  <div className={isMobile ? 'form-container form-container-Funcao' : 'form-container5 form-container-Funcao'}>
+
+    <form className='formInputCadInc' id={`FuncaoForm-${funcaoData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Funcao' data={funcaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`FuncaoForm-${funcaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
+
+          <InputDescription
+          type='text'
+          id='descricao'
+          label='função'
+          dataForm={funcaoData}
+          className='inputIncNome'
+          name='descricao'
+          value={funcaoData.descricao}
+          placeholder={`Digite nome função`}
+          onChange={onChange}
+          required
+          disabled={funcaoData.id > 0}
+          />
+
+        </div>
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Funcao' data={funcaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`FuncaoForm-${funcaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/funcao'} id={funcaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

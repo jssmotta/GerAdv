@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITribEnderecosReader reader, ITribEnderecosValidation validation, ITribEnderecosWriter writer, ITribunalReader tribunalReader, HybridCache cache) : ITribEnderecosService, IDisposable
+public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITribEnderecosReader reader, ITribEnderecosValidation validation, ITribEnderecosWriter writer, ITribunalReader tribunalReader, ICidadeReader cidadeReader, HybridCache cache, IMemoryCache memory) : ITribEnderecosService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<TribEnderecosResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<TribEnderecosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TribEnderecos: URI inválida");
@@ -25,72 +26,72 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITr
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<TribEnderecosResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<TribEnderecosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBTribEnderecos.SensivelCamposSqlX} 
-                   FROM {DBTribEnderecos.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBTribEnderecosDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBTribEnderecos>(max);
-        await foreach (var item in DBTribEnderecos.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBTribEnderecos.SensivelCamposSqlX}, triNome,cidNome
+                   FROM {DBTribEnderecos.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON triCodigo=treTribunal
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=treCidade
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<TribEnderecosResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBTribEnderecos(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var tribenderecos = reader.ReadAll(dbRec, item);
+                if (tribenderecos != null)
+                {
+                    lista.Add(tribenderecos);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<TribEnderecosResponse>> Filter(Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<TribEnderecosResponseAll>> Filter(Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("TribEnderecos: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-TribEnderecos-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<TribEnderecosResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBTribEnderecos.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<TribEnderecosResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("TribEnderecos: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new TribEnderecosResponse();
         }
@@ -100,36 +101,23 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITr
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-TribEnderecos-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-TribEnderecos-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"TribEnderecos - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"TribEnderecos - {uri}-: GetById");
         }
     }
 
-    private async Task<TribEnderecosResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<TribEnderecosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<TribEnderecosResponse?> AddAndUpdate([FromBody] Models.TribEnderecos regTribEnderecos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TribEnderecos: URI inválida");
@@ -143,14 +131,13 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITr
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regTribEnderecos, this, tribunalReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regTribEnderecos, this, tribunalReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"TribEnderecos: {validade}");
@@ -164,31 +151,47 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITr
     public async Task<TribEnderecosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TribEnderecos: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var tribenderecos = reader.Read(id, oCnn);
-            if (tribenderecos != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBTribEnderecos().DeletarItem(tribenderecos.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var tribenderecos = reader.Read(id, oCnn);
+            try
+            {
+                if (tribenderecos != null)
+                {
+                    writer.Delete(tribenderecos, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return tribenderecos;
@@ -221,20 +224,56 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITr
         }
     }
 
-    private static string WFiltro(Filters.FilterTribEnderecos filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTribEnderecos filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Tribunal == -2147483648 ? string.Empty : DBTribEnderecosDicInfo.TribunalSql(filtro.Tribunal);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribEnderecosDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribEnderecosDicInfo.EnderecoSql(filtro.Endereco);
-        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribEnderecosDicInfo.CEPSql(filtro.CEP);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribEnderecosDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribEnderecosDicInfo.FaxSql(filtro.Fax);
-        cWhere += filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribEnderecosDicInfo.OBSSql(filtro.OBS);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Tribunal != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.Tribunal)}", filtro.Tribunal));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Endereco))
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.Endereco)}", filtro.Endereco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CEP))
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.CEP)}", filtro.CEP));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fax))
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.Fax)}", filtro.Fax));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.OBS))
+        {
+            parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.OBS)}", filtro.OBS));
+        }
+
+        var cWhere = filtro.Tribunal == int.MinValue ? string.Empty : $"{DBTribEnderecosDicInfo.Tribunal} = @{nameof(DBTribEnderecosDicInfo.Tribunal)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribEnderecosDicInfo.Cidade} = @{nameof(DBTribEnderecosDicInfo.Cidade)}";
+        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribEnderecosDicInfo.Endereco} = @{nameof(DBTribEnderecosDicInfo.Endereco)}";
+        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribEnderecosDicInfo.CEP} = @{nameof(DBTribEnderecosDicInfo.CEP)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribEnderecosDicInfo.Fone} = @{nameof(DBTribEnderecosDicInfo.Fone)}";
+        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribEnderecosDicInfo.Fax} = @{nameof(DBTribEnderecosDicInfo.Fax)}";
+        cWhere += filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribEnderecosDicInfo.OBS} = @{nameof(DBTribEnderecosDicInfo.OBS)}";
+        return (cWhere, parameters);
     }
 }

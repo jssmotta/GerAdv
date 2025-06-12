@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IDocumentosReader
 {
-    DocumentosResponse? Read(int id, SqlConnection oCnn);
-    DocumentosResponse? Read(string where, SqlConnection oCnn);
+    DocumentosResponse? Read(int id, MsiSqlConnection oCnn);
+    DocumentosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DocumentosResponse? Read(Entity.DBDocumentos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DocumentosResponse? Read(DBDocumentos dbRec);
+    DocumentosResponseAll? ReadAll(DBDocumentos dbRec, DataRow dr);
 }
 
 public partial class Documentos : IDocumentosReader
 {
-    public DocumentosResponse? Read(int id, SqlConnection oCnn)
+    public DocumentosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBDocumentos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public DocumentosResponse? Read(string where, SqlConnection oCnn)
+    public DocumentosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBDocumentos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBDocumentos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -42,18 +44,6 @@ public partial class Documentos : IDocumentosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             documentos.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        documentos.Auditor = auditor;
         return documentos;
     }
 
@@ -73,18 +63,26 @@ public partial class Documentos : IDocumentosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             documentos.Data = dbRec.FData;
-        var auditor = new Auditor
+        return documentos;
+    }
+
+    public DocumentosResponseAll? ReadAll(DBDocumentos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var documentos = new DocumentosResponseAll
+        {
+            Id = dbRec.ID,
+            Processo = dbRec.FProcesso,
+            Observacao = dbRec.FObservacao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        documentos.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FData, out _))
+            documentos.Data = dbRec.FData;
+        documentos.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return documentos;
     }
 }

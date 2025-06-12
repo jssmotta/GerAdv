@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IObjetosWriter
 {
-    Entity.DBObjetos Write(Models.Objetos objetos, int auditorQuem, SqlConnection oCnn);
+    Entity.DBObjetos Write(Models.Objetos objetos, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ObjetosResponse objetos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Objetos : IObjetosWriter
 {
-    public Entity.DBObjetos Write(Models.Objetos objetos, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ObjetosResponse objetos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Objetos] WHERE ojtCodigo={objetos.Id};", oCnn);
+    }
+
+    public Entity.DBObjetos Write(Models.Objetos objetos, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = objetos.Id.IsEmptyIDNumber() ? new Entity.DBObjetos() : new Entity.DBObjetos(objetos.Id, oCnn);
         dbRec.FJustica = objetos.Justica;

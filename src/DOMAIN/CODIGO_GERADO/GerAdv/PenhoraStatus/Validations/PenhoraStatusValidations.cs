@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IPenhoraStatusValidation
 {
-    Task<string> ValidateReg(Models.PenhoraStatus reg, IPenhoraStatusService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.PenhoraStatus reg, IPenhoraStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IPenhoraStatusService service, IPenhoraService penhoraService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PenhoraStatusValidation : IPenhoraStatusValidation
 {
-    public async Task<string> ValidateReg(Models.PenhoraStatus reg, IPenhoraStatusService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IPenhoraStatusService service, IPenhoraService penhoraService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var penhoraExists = await penhoraService.Filter(new Filters.FilterPenhora { PenhoraStatus = id }, uri);
+        if (penhoraExists != null && penhoraExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Penhora associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.PenhoraStatus reg, IPenhoraStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

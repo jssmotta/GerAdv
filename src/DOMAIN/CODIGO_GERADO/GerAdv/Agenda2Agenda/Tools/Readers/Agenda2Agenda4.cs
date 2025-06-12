@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IAgenda2AgendaReader
 {
-    Agenda2AgendaResponse? Read(int id, SqlConnection oCnn);
-    Agenda2AgendaResponse? Read(string where, SqlConnection oCnn);
+    Agenda2AgendaResponse? Read(int id, MsiSqlConnection oCnn);
+    Agenda2AgendaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     Agenda2AgendaResponse? Read(Entity.DBAgenda2Agenda dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     Agenda2AgendaResponse? Read(DBAgenda2Agenda dbRec);
+    Agenda2AgendaResponseAll? ReadAll(DBAgenda2Agenda dbRec, DataRow dr);
 }
 
 public partial class Agenda2Agenda : IAgenda2AgendaReader
 {
-    public Agenda2AgendaResponse? Read(int id, SqlConnection oCnn)
+    public Agenda2AgendaResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBAgenda2Agenda(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public Agenda2AgendaResponse? Read(string where, SqlConnection oCnn)
+    public Agenda2AgendaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBAgenda2Agenda(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBAgenda2Agenda(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -39,18 +41,6 @@ public partial class Agenda2Agenda : IAgenda2AgendaReader
             Master = dbRec.FMaster,
             Agenda = dbRec.FAgenda,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        agenda2agenda.Auditor = auditor;
         return agenda2agenda;
     }
 
@@ -67,18 +57,22 @@ public partial class Agenda2Agenda : IAgenda2AgendaReader
             Master = dbRec.FMaster,
             Agenda = dbRec.FAgenda,
         };
-        var auditor = new Auditor
+        return agenda2agenda;
+    }
+
+    public Agenda2AgendaResponseAll? ReadAll(DBAgenda2Agenda dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var agenda2agenda = new Agenda2AgendaResponseAll
+        {
+            Id = dbRec.ID,
+            Master = dbRec.FMaster,
+            Agenda = dbRec.FAgenda,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        agenda2agenda.Auditor = auditor;
         return agenda2agenda;
     }
 }

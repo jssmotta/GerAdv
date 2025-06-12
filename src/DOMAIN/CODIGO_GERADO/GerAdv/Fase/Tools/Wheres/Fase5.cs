@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IFaseWhere
 {
-    FaseResponse Read(string where, SqlConnection oCnn);
+    FaseResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Fase : IFaseWhere
 {
-    public FaseResponse Read(string where, SqlConnection oCnn)
+    public FaseResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBFase(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBFase(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var fase = new FaseResponse
         {
             Id = dbRec.ID,
@@ -21,18 +21,6 @@ public partial class Fase : IFaseWhere
             Area = dbRec.FArea,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        fase.Auditor = auditor;
         return fase;
     }
 }

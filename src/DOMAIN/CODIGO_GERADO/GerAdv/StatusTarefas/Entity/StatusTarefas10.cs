@@ -7,7 +7,7 @@ public partial class DBStatusTarefas : MenphisSI.GerAdv.DBStatusTarefas, IDBStat
     {
     }
 
-    public DBStatusTarefas(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBStatusTarefas(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBStatusTarefas : MenphisSI.GerAdv.DBStatusTarefas, IDBStat
     {
     }
 
-    public DBStatusTarefas(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBStatusTarefas(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

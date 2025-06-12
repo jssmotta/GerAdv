@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useOperadorGruposAgendaOperadoresForm, useOperadorGruposAgendaOperadoresList, useValidationsOperadorGruposAgendaOperadores } from '../GerAdv_TS/OperadorGruposAgendaOperadores/Hooks/hookOperadorGruposAgendaOperadores';
+import { IOperadorGruposAgendaOperadores } from '../GerAdv_TS/OperadorGruposAgendaOperadores/Interfaces/interface.OperadorGruposAgendaOperadores';
+import { IOperadorGruposAgendaOperadoresService } from '../GerAdv_TS/OperadorGruposAgendaOperadores/Services/OperadorGruposAgendaOperadores.service';
+import { OperadorGruposAgendaOperadoresTestEmpty } from '../GerAdv_TS/Models/OperadorGruposAgendaOperadores';
+
+
+// Mock do serviço
+const mockOperadorGruposAgendaOperadoresService: jest.Mocked<IOperadorGruposAgendaOperadoresService> = {
+  fetchOperadorGruposAgendaOperadoresById: jest.fn(),
+  saveOperadorGruposAgendaOperadores: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteOperadorGruposAgendaOperadores: jest.fn(),
+  validateOperadorGruposAgendaOperadores: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialOperadorGruposAgendaOperadores: IOperadorGruposAgendaOperadores = { ...OperadorGruposAgendaOperadoresTestEmpty() };
+
+describe('useOperadorGruposAgendaOperadoresForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresForm(initialOperadorGruposAgendaOperadores, mockOperadorGruposAgendaOperadoresService)
+    );
+
+    expect(result.current.data).toEqual(initialOperadorGruposAgendaOperadores);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresForm(initialOperadorGruposAgendaOperadores, mockOperadorGruposAgendaOperadoresService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'guid',
+        value: 'Novo Operador Grupos Agenda Operadores',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.guid).toBe('Novo Operador Grupos Agenda Operadores');
+  });
+
+   test('deve carregar Operador Grupos Agenda Operadores por ID', async () => {
+    const mockOperadorGruposAgendaOperadores = { ...initialOperadorGruposAgendaOperadores, id: 1, guid: 'Operador Grupos Agenda Operadores Teste' };
+    mockOperadorGruposAgendaOperadoresService.fetchOperadorGruposAgendaOperadoresById.mockResolvedValue(mockOperadorGruposAgendaOperadores);
+
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresForm(initialOperadorGruposAgendaOperadores, mockOperadorGruposAgendaOperadoresService)
+    );
+
+    await act(async () => {
+      await result.current.loadOperadorGruposAgendaOperadores(1);
+    });
+
+    expect(mockOperadorGruposAgendaOperadoresService.fetchOperadorGruposAgendaOperadoresById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockOperadorGruposAgendaOperadores);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Operador Grupos Agenda Operadores', async () => {
+    const errorMessage = 'Erro ao carregar Operador Grupos Agenda Operadores';
+    mockOperadorGruposAgendaOperadoresService.fetchOperadorGruposAgendaOperadoresById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresForm(initialOperadorGruposAgendaOperadores, mockOperadorGruposAgendaOperadoresService)
+    );
+
+    await act(async () => {
+      await result.current.loadOperadorGruposAgendaOperadores(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresForm(initialOperadorGruposAgendaOperadores, mockOperadorGruposAgendaOperadoresService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialOperadorGruposAgendaOperadores, guid: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialOperadorGruposAgendaOperadores);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresForm(initialOperadorGruposAgendaOperadores, mockOperadorGruposAgendaOperadoresService)
+    );
+
+    await act(async () => {
+      await result.current.loadOperadorGruposAgendaOperadores(0);
+    });
+
+    expect(mockOperadorGruposAgendaOperadoresService.fetchOperadorGruposAgendaOperadoresById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialOperadorGruposAgendaOperadores);
+  });
+});
+
+describe('useOperadorGruposAgendaOperadoresList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresList(mockOperadorGruposAgendaOperadoresService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialOperadorGruposAgendaOperadores, id: 1, guid: 'Operador Grupos Agenda Operadores 1' },
+      { ...initialOperadorGruposAgendaOperadores, id: 2, guid: 'Operador Grupos Agenda Operadores 2' }
+    ];
+    mockOperadorGruposAgendaOperadoresService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresList(mockOperadorGruposAgendaOperadoresService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockOperadorGruposAgendaOperadoresService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockOperadorGruposAgendaOperadoresService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresList(mockOperadorGruposAgendaOperadoresService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialOperadorGruposAgendaOperadores, id: 1, guid: 'Operador Grupos Agenda Operadores Filtrado' }];
+    const filtro = { guid: 'Operador Grupos Agenda Operadores' };
+    mockOperadorGruposAgendaOperadoresService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresList(mockOperadorGruposAgendaOperadoresService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockOperadorGruposAgendaOperadoresService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsOperadorGruposAgendaOperadores', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsOperadorGruposAgendaOperadores());
+
+    const validData = { ...initialOperadorGruposAgendaOperadores, guid: 'Operador Grupos Agenda Operadores Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsOperadorGruposAgendaOperadores());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialOperadorGruposAgendaOperadores, id: 1, guid: 'Operador Grupos Agenda Operadores Teste' }];
+    mockOperadorGruposAgendaOperadoresService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useOperadorGruposAgendaOperadoresList(mockOperadorGruposAgendaOperadoresService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsOperadorGruposAgendaOperadores()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

@@ -1,0 +1,115 @@
+﻿import { IContratos } from '../Contratos/Interfaces/interface.Contratos';
+export interface Contratos
+{
+    id: number;
+	processo : number;
+	cliente : number;
+	advogado : number;
+	dia : number;
+	valor : number;
+	datainicio : string;
+	datatermino : string;
+	ocultarrelatorio : boolean;
+	percescritorio : number;
+	valorconsultoria : number;
+	tipocobranca : number;
+	protestar : string;
+	juros : string;
+	valorrealizavel : number;
+	documento : string;
+	email1 : string;
+	email2 : string;
+	email3 : string;
+	pessoa1 : string;
+	pessoa2 : string;
+	pessoa3 : string;
+	obs : string;
+	clientecontrato : number;
+	idextrangeiro : number;
+	chavecontrato : string;
+	avulso : boolean;
+	suspenso : boolean;
+	multa : string;
+	bold : boolean;
+	nropastaprocessos?: string;
+	nomeclientes?: string;
+	nomeadvogados?: string;
+
+}
+
+
+export function ContratosEmpty(): IContratos {
+// 20250604
+    
+    return {
+        id: 0,
+		processo: 0,
+		cliente: 0,
+		advogado: 0,
+		dia: 0,
+		valor: 0,
+		datainicio: '',
+		datatermino: '',
+		ocultarrelatorio: false,
+		percescritorio: 0,
+		valorconsultoria: 0,
+		tipocobranca: 0,
+		protestar: '',
+		juros: '',
+		valorrealizavel: 0,
+		documento: '',
+		email1: '',
+		email2: '',
+		email3: '',
+		pessoa1: '',
+		pessoa2: '',
+		pessoa3: '',
+		obs: '',
+		clientecontrato: 0,
+		idextrangeiro: 0,
+		chavecontrato: '',
+		avulso: false,
+		suspenso: false,
+		multa: '',
+		bold: false,
+    };
+}
+
+export function ContratosTestEmpty(): IContratos {
+// 20250604
+    
+    return {
+        id: 1,
+		processo: 1,
+		cliente: 1,
+		advogado: 1,
+		dia: 1,
+		valor: 1,
+		datainicio: 'X',
+		datatermino: 'X',
+		ocultarrelatorio: true,
+		percescritorio: 1,
+		valorconsultoria: 1,
+		tipocobranca: 1,
+		protestar: 'X',
+		juros: 'X',
+		valorrealizavel: 1,
+		documento: 'X',
+		email1: 'X',
+		email2: 'X',
+		email3: 'X',
+		pessoa1: 'X',
+		pessoa2: 'X',
+		pessoa3: 'X',
+		obs: 'X',
+		clientecontrato: 1,
+		idextrangeiro: 1,
+		chavecontrato: 'X',
+		avulso: true,
+		suspenso: true,
+		multa: 'X',
+		bold: true,
+    };
+}
+
+

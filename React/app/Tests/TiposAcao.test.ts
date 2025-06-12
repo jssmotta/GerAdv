@@ -1,0 +1,463 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useTiposAcaoForm, useTiposAcaoList, useValidationsTiposAcao } from '../GerAdv_TS/TiposAcao/Hooks/hookTiposAcao';
+import { ITiposAcao } from '../GerAdv_TS/TiposAcao/Interfaces/interface.TiposAcao';
+import { ITiposAcaoService } from '../GerAdv_TS/TiposAcao/Services/TiposAcao.service';
+import { TiposAcaoTestEmpty } from '../GerAdv_TS/Models/TiposAcao';
+import { useTiposAcaoComboBox } from '../GerAdv_TS/TiposAcao/Hooks/hookTiposAcao';
+
+// Mock do serviço
+const mockTiposAcaoService: jest.Mocked<ITiposAcaoService> = {
+  fetchTiposAcaoById: jest.fn(),
+  saveTiposAcao: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteTiposAcao: jest.fn(),
+  validateTiposAcao: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialTiposAcao: ITiposAcao = { ...TiposAcaoTestEmpty() };
+
+describe('useTiposAcaoForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    expect(result.current.data).toEqual(initialTiposAcao);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo Tipos Acao',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo Tipos Acao');
+  });
+
+   test('deve carregar Tipos Acao por ID', async () => {
+    const mockTiposAcao = { ...initialTiposAcao, id: 1, nome: 'Tipos Acao Teste' };
+    mockTiposAcaoService.fetchTiposAcaoById.mockResolvedValue(mockTiposAcao);
+
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    await act(async () => {
+      await result.current.loadTiposAcao(1);
+    });
+
+    expect(mockTiposAcaoService.fetchTiposAcaoById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockTiposAcao);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Tipos Acao', async () => {
+    const errorMessage = 'Erro ao carregar Tipos Acao';
+    mockTiposAcaoService.fetchTiposAcaoById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    await act(async () => {
+      await result.current.loadTiposAcao(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialTiposAcao, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialTiposAcao);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    await act(async () => {
+      await result.current.loadTiposAcao(0);
+    });
+
+    expect(mockTiposAcaoService.fetchTiposAcaoById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialTiposAcao);
+  });
+});
+
+describe('useTiposAcaoList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoList(mockTiposAcaoService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialTiposAcao, id: 1, nome: 'Tipos Acao 1' },
+      { ...initialTiposAcao, id: 2, nome: 'Tipos Acao 2' }
+    ];
+    mockTiposAcaoService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useTiposAcaoList(mockTiposAcaoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockTiposAcaoService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockTiposAcaoService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useTiposAcaoList(mockTiposAcaoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialTiposAcao, id: 1, nome: 'Tipos Acao Filtrado' }];
+    const filtro = { nome: 'Tipos Acao' };
+    mockTiposAcaoService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useTiposAcaoList(mockTiposAcaoService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockTiposAcaoService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsTiposAcao', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsTiposAcao());
+
+    const validData = { ...initialTiposAcao, nome: 'Tipos Acao Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsTiposAcao());
+
+    const invalidData = { ...initialTiposAcao, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsTiposAcao());
+
+    const invalidData = { 
+      ...initialTiposAcao, 
+      nome: 'a'.repeat(80+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 80 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsTiposAcao());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialTiposAcao, id: 1, nome: 'Tipos Acao Teste' }];
+    mockTiposAcaoService.getAll.mockResolvedValue(mockData);
+    mockTiposAcaoService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useTiposAcaoList(mockTiposAcaoService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsTiposAcao()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Tipos Acao Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Tipos Acao Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve lidar com checkbox no handleChange', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoForm(initialTiposAcao, mockTiposAcaoService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'inativo',
+        value: '',
+        type: 'checkbox',
+        checked: true
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.inativo).toBe(true);
+  });
+
+
+  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Tipos Acao 1' },
+      { id: 2, nome: 'Tipos Acao 2' }
+    ];
+    mockTiposAcaoService.getList.mockResolvedValue(mockOptions as ITiposAcao[]);
+
+
+    const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Tipos Acao 1' },
+        { id: 2, nome: 'Tipos Acao 2' }
+      ]);
+    });
+
+    expect(mockTiposAcaoService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Tipos Acao ABC' },
+      { id: 2, nome: 'Tipos Acao XYZ' }
+    ];
+    mockTiposAcaoService.getList.mockResolvedValue(mockOptions as ITiposAcao[]);   
+
+
+ const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Tipos Acao ABC' },
+        { id: 2, nome: 'Tipos Acao XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Tipos Acao ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Tipos Acao ABC' },
+      { id: 2, nome: 'Tipos Acao XYZ' }
+    ];
+    mockTiposAcaoService.getList.mockResolvedValue(mockOptions as ITiposAcao[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Tipos Acao ABC' },
+        { id: 2, nome: 'Tipos Acao XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Tipos Acao ABC' },
+          {id: 2, nome: 'Tipos Acao XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService)
+    );
+
+    const newValue = { id: 1, nome: 'Tipos Acao Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'Tipos Acao Inicial' };
+    
+    const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useTiposAcaoComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'Tipos Acao Inicial' };
+    
+    const { result } = renderHook(() => 
+      useTiposAcaoComboBox(mockTiposAcaoService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

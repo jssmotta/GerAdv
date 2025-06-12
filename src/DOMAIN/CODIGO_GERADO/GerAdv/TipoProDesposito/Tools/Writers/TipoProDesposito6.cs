@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoProDespositoWriter
 {
-    Entity.DBTipoProDesposito Write(Models.TipoProDesposito tipoprodesposito, SqlConnection oCnn);
+    Entity.DBTipoProDesposito Write(Models.TipoProDesposito tipoprodesposito, MsiSqlConnection oCnn);
+    void Delete(TipoProDespositoResponse tipoprodesposito, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class TipoProDesposito : ITipoProDespositoWriter
 {
-    public Entity.DBTipoProDesposito Write(Models.TipoProDesposito tipoprodesposito, SqlConnection oCnn)
+    public void Delete(TipoProDespositoResponse tipoprodesposito, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[TipoProDesposito] WHERE tpdCodigo={tipoprodesposito.Id};", oCnn);
+    }
+
+    public Entity.DBTipoProDesposito Write(Models.TipoProDesposito tipoprodesposito, MsiSqlConnection oCnn)
     {
         var dbRec = tipoprodesposito.Id.IsEmptyIDNumber() ? new Entity.DBTipoProDesposito() : new Entity.DBTipoProDesposito(tipoprodesposito.Id, oCnn);
         dbRec.FNome = tipoprodesposito.Nome;

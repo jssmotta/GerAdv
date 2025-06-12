@@ -14,7 +14,7 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoModeloDocumento", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("TipoModeloDocumento", "GetAll", $"max = {max}", uri);
         var result = await _tipomodelodocumentoService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoModeloDocumento filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoModeloDocumento: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("TipoModeloDocumento: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipomodelodocumentoService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("TipoModeloDocumento: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("TipoModeloDocumento: GetById called with id = {0}, {1}", id, uri);
         var result = await _tipomodelodocumentoService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("TipoModeloDocumento: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _tipomodelodocumentoService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No TipoModeloDocumento found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoModeloDocumento? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"TipoModeloDocumento: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"TipoModeloDocumento: GetListN called, max {max}, {filtro} uri");
         var result = await _tipomodelodocumentoService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoModeloDocumento regTipoModeloDocumento, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoModeloDocumento", "AddAndUpdate", regTipoModeloDocumento, uri);
-        var result = await _tipomodelodocumentoService.AddAndUpdate(regTipoModeloDocumento, uri);
-        if (result == null)
+        //_logger.LogInfo("TipoModeloDocumento", "AddAndUpdate", regTipoModeloDocumento, uri);
+        try
         {
-            _logger.Warn("TipoModeloDocumento: AddAndUpdate failed to add or update TipoModeloDocumento, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _tipomodelodocumentoService.AddAndUpdate(regTipoModeloDocumento, uri);
+            if (result == null)
+            {
+                _logger.Warn("TipoModeloDocumento: AddAndUpdate failed to add or update TipoModeloDocumento, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoModeloDocumento: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoModeloDocumento: Delete called with id = {0}, {2}", id, uri);
-        var result = await _tipomodelodocumentoService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("TipoModeloDocumento: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No TipoModeloDocumento found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _tipomodelodocumentoService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No TipoModeloDocumento found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoModeloDocumento: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IPenhoraWhere
 {
-    PenhoraResponse Read(string where, SqlConnection oCnn);
+    PenhoraResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Penhora : IPenhoraWhere
 {
-    public PenhoraResponse Read(string where, SqlConnection oCnn)
+    public PenhoraResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBPenhora(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBPenhora(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var penhora = new PenhoraResponse
         {
             Id = dbRec.ID,
@@ -25,18 +25,6 @@ public partial class Penhora : IPenhoraWhere
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out _))
             penhora.DataPenhora = dbRec.FDataPenhora;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        penhora.Auditor = auditor;
         return penhora;
     }
 }

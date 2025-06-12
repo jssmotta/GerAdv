@@ -32,7 +32,7 @@ public class TipoCompromissoHealthCheck(IOptions<AppSettings> appSettings, TipoC
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class TipoCompromissoHealthCheck(IOptions<AppSettings> appSettings, TipoC
                         if (DBTipoCompromissoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(tipCodigo) FROM dbo.TipoCompromisso (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(tipCodigo) FROM {"TipoCompromisso".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class TipoCompromissoHealthCheck(IOptions<AppSettings> appSettings, TipoC
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) tipIcone,tipDescricao,tipFinanceiro,tipBold,tipGUID FROM dbo.TipoCompromisso (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) tipIcone,tipDescricao,tipFinanceiro,tipBold,tipGUID FROM {"TipoCompromisso".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

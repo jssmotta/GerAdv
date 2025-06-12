@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAlertasWhere
 {
-    AlertasResponse Read(string where, SqlConnection oCnn);
+    AlertasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Alertas : IAlertasWhere
 {
-    public AlertasResponse Read(string where, SqlConnection oCnn)
+    public AlertasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBAlertas(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBAlertas(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var alertas = new AlertasResponse
         {
             Id = dbRec.ID,
@@ -23,18 +23,6 @@ public partial class Alertas : IAlertasWhere
             alertas.Data = dbRec.FData;
         if (DateTime.TryParse(dbRec.FDataAte, out _))
             alertas.DataAte = dbRec.FDataAte;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        alertas.Auditor = auditor;
         return alertas;
     }
 }

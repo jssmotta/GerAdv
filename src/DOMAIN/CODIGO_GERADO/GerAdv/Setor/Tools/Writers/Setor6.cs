@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ISetorWriter
 {
-    Entity.DBSetor Write(Models.Setor setor, int auditorQuem, SqlConnection oCnn);
+    Entity.DBSetor Write(Models.Setor setor, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(SetorResponse setor, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Setor : ISetorWriter
 {
-    public Entity.DBSetor Write(Models.Setor setor, int auditorQuem, SqlConnection oCnn)
+    public void Delete(SetorResponse setor, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Setor] WHERE setCodigo={setor.Id};", oCnn);
+    }
+
+    public Entity.DBSetor Write(Models.Setor setor, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = setor.Id.IsEmptyIDNumber() ? new Entity.DBSetor() : new Entity.DBSetor(setor.Id, oCnn);
         dbRec.FDescricao = setor.Descricao;

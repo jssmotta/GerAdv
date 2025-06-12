@@ -5,15 +5,36 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAgendaFinanceiroValidation
 {
-    Task<string> ValidateReg(Models.AgendaFinanceiro reg, IAgendaFinanceiroService service, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.AgendaFinanceiro reg, IAgendaFinanceiroService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IAgendaFinanceiroService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AgendaFinanceiroValidation : IAgendaFinanceiroValidation
 {
-    public async Task<string> ValidateReg(Models.AgendaFinanceiro reg, IAgendaFinanceiroService service, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IAgendaFinanceiroService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.AgendaFinanceiro reg, IAgendaFinanceiroService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
+            }
+        }
+
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {

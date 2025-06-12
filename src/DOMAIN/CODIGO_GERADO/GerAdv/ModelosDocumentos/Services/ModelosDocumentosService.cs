@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings, IModelosDocumentosReader reader, IModelosDocumentosValidation validation, IModelosDocumentosWriter writer, ITipoModeloDocumentoReader tipomodelodocumentoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IModelosDocumentosService, IDisposable
+public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings, IModelosDocumentosReader reader, IModelosDocumentosValidation validation, IModelosDocumentosWriter writer, ITipoModeloDocumentoReader tipomodelodocumentoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IModelosDocumentosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ModelosDocumentosResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ModelosDocumentosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ModelosDocumentos: URI inválida");
@@ -26,72 +27,72 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ModelosDocumentosResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ModelosDocumentosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBModelosDocumentos.SensivelCamposSqlX} 
-                   FROM {DBModelosDocumentos.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBModelosDocumentosDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBModelosDocumentos>(max);
-        await foreach (var item in DBModelosDocumentos.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBModelosDocumentos.SensivelCamposSqlX}, tpdNome
+                   FROM {DBModelosDocumentos.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"TipoModeloDocumento".dbo(oCnn)} (NOLOCK) ON tpdCodigo=mdcTipoModeloDocumento
+ 
+                   {where}
+                   ORDER BY mdcNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ModelosDocumentosResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBModelosDocumentos(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var modelosdocumentos = reader.ReadAll(dbRec, item);
+                if (modelosdocumentos != null)
+                {
+                    lista.Add(modelosdocumentos);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ModelosDocumentosResponse>> Filter(Filters.FilterModelosDocumentos filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ModelosDocumentosResponseAll>> Filter(Filters.FilterModelosDocumentos filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ModelosDocumentos: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-ModelosDocumentos-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ModelosDocumentosResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBModelosDocumentos.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ModelosDocumentosResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ModelosDocumentos: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ModelosDocumentosResponse();
         }
@@ -101,39 +102,24 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-ModelosDocumentos-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ModelosDocumentos-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ModelosDocumentos - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ModelosDocumentos - {uri}-: GetById");
         }
     }
 
-    private async Task<ModelosDocumentosResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ModelosDocumentosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ModelosDocumentosResponse?> AddAndUpdate([FromBody] Models.ModelosDocumentos regModelosDocumentos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ModelosDocumentos: URI inválida");
@@ -147,8 +133,7 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +153,82 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
     public async Task<ModelosDocumentosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ModelosDocumentos: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var modelosdocumentos = reader.Read(id, oCnn);
-            if (modelosdocumentos != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBModelosDocumentos().DeletarItem(modelosdocumentos.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var modelosdocumentos = reader.Read(id, oCnn);
+            try
+            {
+                if (modelosdocumentos != null)
+                {
+                    writer.Delete(modelosdocumentos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return modelosdocumentos;
         });
     }
 
-    public async Task<ModelosDocumentosResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ModelosDocumentos: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBModelosDocumentosDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterModelosDocumentos? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ModelosDocumentos: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-ModelosDocumentos-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ModelosDocumentos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBModelosDocumentos.ListarN(cWhere, DBModelosDocumentosDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBModelosDocumentosDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,30 +268,116 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
         }
     }
 
-    private static string WFiltro(Filters.FilterModelosDocumentos filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterModelosDocumentos filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : DBModelosDocumentosDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.Remuneracao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.RemuneracaoSql(filtro.Remuneracao);
-        cWhere += filtro.Assinatura.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.AssinaturaSql(filtro.Assinatura);
-        cWhere += filtro.Header.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.HeaderSql(filtro.Header);
-        cWhere += filtro.Footer.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.FooterSql(filtro.Footer);
-        cWhere += filtro.Extra1.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.Extra1Sql(filtro.Extra1);
-        cWhere += filtro.Extra2.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.Extra2Sql(filtro.Extra2);
-        cWhere += filtro.Extra3.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.Extra3Sql(filtro.Extra3);
-        cWhere += filtro.Outorgante.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.OutorganteSql(filtro.Outorgante);
-        cWhere += filtro.Outorgados.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.OutorgadosSql(filtro.Outorgados);
-        cWhere += filtro.Poderes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.PoderesSql(filtro.Poderes);
-        cWhere += filtro.Objeto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.ObjetoSql(filtro.Objeto);
-        cWhere += filtro.Titulo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.TituloSql(filtro.Titulo);
-        cWhere += filtro.Testemunhas.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.TestemunhasSql(filtro.Testemunhas);
-        cWhere += filtro.TipoModeloDocumento == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.TipoModeloDocumentoSql(filtro.TipoModeloDocumento);
-        cWhere += filtro.CSS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.CSSSql(filtro.CSS);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBModelosDocumentosDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Remuneracao))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Remuneracao)}", filtro.Remuneracao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Assinatura))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Assinatura)}", filtro.Assinatura));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Header))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Header)}", filtro.Header));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Footer))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Footer)}", filtro.Footer));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Extra1))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Extra1)}", filtro.Extra1));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Extra2))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Extra2)}", filtro.Extra2));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Extra3))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Extra3)}", filtro.Extra3));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Outorgante))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Outorgante)}", filtro.Outorgante));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Outorgados))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Outorgados)}", filtro.Outorgados));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Poderes))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Poderes)}", filtro.Poderes));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Objeto))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Objeto)}", filtro.Objeto));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Titulo))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Titulo)}", filtro.Titulo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Testemunhas))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Testemunhas)}", filtro.Testemunhas));
+        }
+
+        if (filtro.TipoModeloDocumento != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.TipoModeloDocumento)}", filtro.TipoModeloDocumento));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CSS))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.CSS)}", filtro.CSS));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : $"{DBModelosDocumentosDicInfo.Nome} = @{nameof(DBModelosDocumentosDicInfo.Nome)}";
+        cWhere += filtro.Remuneracao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Remuneracao} = @{nameof(DBModelosDocumentosDicInfo.Remuneracao)}";
+        cWhere += filtro.Assinatura.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Assinatura} = @{nameof(DBModelosDocumentosDicInfo.Assinatura)}";
+        cWhere += filtro.Header.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Header} = @{nameof(DBModelosDocumentosDicInfo.Header)}";
+        cWhere += filtro.Footer.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Footer} = @{nameof(DBModelosDocumentosDicInfo.Footer)}";
+        cWhere += filtro.Extra1.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Extra1} = @{nameof(DBModelosDocumentosDicInfo.Extra1)}";
+        cWhere += filtro.Extra2.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Extra2} = @{nameof(DBModelosDocumentosDicInfo.Extra2)}";
+        cWhere += filtro.Extra3.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Extra3} = @{nameof(DBModelosDocumentosDicInfo.Extra3)}";
+        cWhere += filtro.Outorgante.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Outorgante} = @{nameof(DBModelosDocumentosDicInfo.Outorgante)}";
+        cWhere += filtro.Outorgados.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Outorgados} = @{nameof(DBModelosDocumentosDicInfo.Outorgados)}";
+        cWhere += filtro.Poderes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Poderes} = @{nameof(DBModelosDocumentosDicInfo.Poderes)}";
+        cWhere += filtro.Objeto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Objeto} = @{nameof(DBModelosDocumentosDicInfo.Objeto)}";
+        cWhere += filtro.Titulo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Titulo} = @{nameof(DBModelosDocumentosDicInfo.Titulo)}";
+        cWhere += filtro.Testemunhas.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.Testemunhas} = @{nameof(DBModelosDocumentosDicInfo.Testemunhas)}";
+        cWhere += filtro.TipoModeloDocumento == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.TipoModeloDocumento} = @{nameof(DBModelosDocumentosDicInfo.TipoModeloDocumento)}";
+        cWhere += filtro.CSS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.CSS} = @{nameof(DBModelosDocumentosDicInfo.CSS)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBModelosDocumentosDicInfo.GUID} = @{nameof(DBModelosDocumentosDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

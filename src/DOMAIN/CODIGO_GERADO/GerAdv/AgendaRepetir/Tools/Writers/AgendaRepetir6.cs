@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAgendaRepetirWriter
 {
-    Entity.DBAgendaRepetir Write(Models.AgendaRepetir agendarepetir, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAgendaRepetir Write(Models.AgendaRepetir agendarepetir, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AgendaRepetirResponse agendarepetir, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AgendaRepetir : IAgendaRepetirWriter
 {
-    public Entity.DBAgendaRepetir Write(Models.AgendaRepetir agendarepetir, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AgendaRepetirResponse agendarepetir, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AgendaRepetir] WHERE rptCodigo={agendarepetir.Id};", oCnn);
+    }
+
+    public Entity.DBAgendaRepetir Write(Models.AgendaRepetir agendarepetir, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = agendarepetir.Id.IsEmptyIDNumber() ? new Entity.DBAgendaRepetir() : new Entity.DBAgendaRepetir(agendarepetir.Id, oCnn);
         dbRec.FAdvogado = agendarepetir.Advogado;

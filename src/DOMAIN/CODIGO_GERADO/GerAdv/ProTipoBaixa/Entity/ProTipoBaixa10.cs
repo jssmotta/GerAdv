@@ -7,7 +7,7 @@ public partial class DBProTipoBaixa : MenphisSI.GerAdv.DBProTipoBaixa, IDBProTip
     {
     }
 
-    public DBProTipoBaixa(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProTipoBaixa(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProTipoBaixa : MenphisSI.GerAdv.DBProTipoBaixa, IDBProTip
     {
     }
 
-    public DBProTipoBaixa(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBProTipoBaixa(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

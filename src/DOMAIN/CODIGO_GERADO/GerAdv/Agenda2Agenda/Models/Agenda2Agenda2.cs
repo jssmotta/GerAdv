@@ -20,7 +20,23 @@ public partial class Agenda2Agenda
     /// </summary>
     [JsonPropertyName("master")]
     public int Master { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class Agenda2AgendaAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ag2Agenda  
+    /// </summary>
+    [JsonPropertyName("agenda")]
+    public int Agenda { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ag2Master  
+    /// </summary>
+    [JsonPropertyName("master")]
+    public int Master { get; set; }
 }

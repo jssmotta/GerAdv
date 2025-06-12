@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IParteClienteOutrasReader
 {
-    ParteClienteOutrasResponse? Read(int id, SqlConnection oCnn);
-    ParteClienteOutrasResponse? Read(string where, SqlConnection oCnn);
+    ParteClienteOutrasResponse? Read(int id, MsiSqlConnection oCnn);
+    ParteClienteOutrasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ParteClienteOutrasResponse? Read(Entity.DBParteClienteOutras dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ParteClienteOutrasResponse? Read(DBParteClienteOutras dbRec);
+    ParteClienteOutrasResponseAll? ReadAll(DBParteClienteOutras dbRec, DataRow dr);
 }
 
 public partial class ParteClienteOutras : IParteClienteOutrasReader
 {
-    public ParteClienteOutrasResponse? Read(int id, SqlConnection oCnn)
+    public ParteClienteOutrasResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBParteClienteOutras(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ParteClienteOutrasResponse? Read(string where, SqlConnection oCnn)
+    public ParteClienteOutrasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBParteClienteOutras(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBParteClienteOutras(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class ParteClienteOutras : IParteClienteOutrasReader
             Processo = dbRec.FProcesso,
             PrimeiraReclamada = dbRec.FPrimeiraReclamada,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        parteclienteoutras.Auditor = auditor;
         return parteclienteoutras;
     }
 
@@ -69,18 +59,25 @@ public partial class ParteClienteOutras : IParteClienteOutrasReader
             Processo = dbRec.FProcesso,
             PrimeiraReclamada = dbRec.FPrimeiraReclamada,
         };
-        var auditor = new Auditor
+        return parteclienteoutras;
+    }
+
+    public ParteClienteOutrasResponseAll? ReadAll(DBParteClienteOutras dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var parteclienteoutras = new ParteClienteOutrasResponseAll
+        {
+            Id = dbRec.ID,
+            Cliente = dbRec.FCliente,
+            Processo = dbRec.FProcesso,
+            PrimeiraReclamada = dbRec.FPrimeiraReclamada,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        parteclienteoutras.Auditor = auditor;
+        parteclienteoutras.NomeOutrasPartesCliente = dr["opcNome"]?.ToString() ?? string.Empty;
+        parteclienteoutras.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return parteclienteoutras;
     }
 }

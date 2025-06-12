@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TribunalService(IOptions<AppSettings> appSettings, ITribunalReader reader, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : ITribunalService, IDisposable
+public partial class TribunalService(IOptions<AppSettings> appSettings, ITribunalReader reader, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITribunalService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<TribunalResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<TribunalResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Tribunal: URI inválida");
@@ -26,72 +27,74 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, ITribuna
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<TribunalResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<TribunalResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBTribunal.SensivelCamposSqlX} 
-                   FROM {DBTribunal.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBTribunalDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBTribunal>(max);
-        await foreach (var item in DBTribunal.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBTribunal.SensivelCamposSqlX}, areDescricao,jusNome,insNroProcesso
+                   FROM {DBTribunal.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=triArea
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=triJustica
+LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON insCodigo=triInstancia
+ 
+                   {where}
+                   ORDER BY triNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<TribunalResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBTribunal(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var tribunal = reader.ReadAll(dbRec, item);
+                if (tribunal != null)
+                {
+                    lista.Add(tribunal);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<TribunalResponse>> Filter(Filters.FilterTribunal filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<TribunalResponseAll>> Filter(Filters.FilterTribunal filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Tribunal: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Tribunal-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<TribunalResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBTribunal.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<TribunalResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Tribunal: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new TribunalResponse();
         }
@@ -101,39 +104,24 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, ITribuna
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Tribunal-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Tribunal-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Tribunal - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Tribunal - {uri}-: GetById");
         }
     }
 
-    private async Task<TribunalResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<TribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<TribunalResponse?> AddAndUpdate([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Tribunal: URI inválida");
@@ -147,8 +135,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, ITribuna
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +155,82 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, ITribuna
     public async Task<TribunalResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Tribunal: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var tribunal = reader.Read(id, oCnn);
-            if (tribunal != null)
+            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, poderjudiciarioassociadoService, tribenderecosService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBTribunal().DeletarItem(tribunal.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var tribunal = reader.Read(id, oCnn);
+            try
+            {
+                if (tribunal != null)
+                {
+                    writer.Delete(tribunal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return tribunal;
         });
     }
 
-    public async Task<TribunalResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Tribunal: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBTribunalDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTribunal? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Tribunal: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-Tribunal-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Tribunal-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBTribunal.ListarN(cWhere, DBTribunalDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBTribunalDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,21 +270,62 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, ITribuna
         }
     }
 
-    private static string WFiltro(Filters.FilterTribunal filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTribunal filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : DBTribunalDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.Area == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.AreaSql(filtro.Area);
-        cWhere += filtro.Justica == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.JusticaSql(filtro.Justica);
-        cWhere += filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.DescricaoSql(filtro.Descricao);
-        cWhere += filtro.Instancia == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.InstanciaSql(filtro.Instancia);
-        cWhere += filtro.Sigla.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.SiglaSql(filtro.Sigla);
-        cWhere += filtro.Web.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.WebSql(filtro.Web);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBTribunalDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (filtro.Area != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Area)}", filtro.Area));
+        }
+
+        if (filtro.Justica != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Justica)}", filtro.Justica));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Descricao))
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Descricao)}", filtro.Descricao));
+        }
+
+        if (filtro.Instancia != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Instancia)}", filtro.Instancia));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Sigla))
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Sigla)}", filtro.Sigla));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Web))
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.Web)}", filtro.Web));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBTribunalDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : $"{DBTribunalDicInfo.Nome} = @{nameof(DBTribunalDicInfo.Nome)}";
+        cWhere += filtro.Area == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.Area} = @{nameof(DBTribunalDicInfo.Area)}";
+        cWhere += filtro.Justica == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.Justica} = @{nameof(DBTribunalDicInfo.Justica)}";
+        cWhere += filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.Descricao} = @{nameof(DBTribunalDicInfo.Descricao)}";
+        cWhere += filtro.Instancia == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.Instancia} = @{nameof(DBTribunalDicInfo.Instancia)}";
+        cWhere += filtro.Sigla.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.Sigla} = @{nameof(DBTribunalDicInfo.Sigla)}";
+        cWhere += filtro.Web.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.Web} = @{nameof(DBTribunalDicInfo.Web)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBTribunalDicInfo.GUID} = @{nameof(DBTribunalDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

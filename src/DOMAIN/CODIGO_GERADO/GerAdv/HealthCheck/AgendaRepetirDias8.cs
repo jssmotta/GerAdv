@@ -32,7 +32,7 @@ public class AgendaRepetirDiasHealthCheck(IOptions<AppSettings> appSettings, Age
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AgendaRepetirDiasHealthCheck(IOptions<AppSettings> appSettings, Age
                         if (DBAgendaRepetirDiasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(rpdCodigo) FROM dbo.AgendaRepetirDias (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(rpdCodigo) FROM {"AgendaRepetirDias".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AgendaRepetirDiasHealthCheck(IOptions<AppSettings> appSettings, Age
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) rpdHoraFinal,rpdMaster,rpdDia,rpdHora FROM dbo.AgendaRepetirDias (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) rpdHoraFinal,rpdMaster,rpdDia,rpdHora FROM {"AgendaRepetirDias".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

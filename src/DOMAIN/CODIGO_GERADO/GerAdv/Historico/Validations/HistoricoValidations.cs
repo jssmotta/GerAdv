@@ -5,12 +5,29 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IHistoricoValidation
 {
-    Task<string> ValidateReg(Models.Historico reg, IHistoricoService service, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Historico reg, IHistoricoService service, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IHistoricoService service, IProcessosObsReportService processosobsreportService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class HistoricoValidation : IHistoricoValidation
 {
-    public async Task<string> ValidateReg(Models.Historico reg, IHistoricoService service, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IHistoricoService service, IProcessosObsReportService processosobsreportService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var processosobsreportExists = await processosobsreportService.Filter(new Filters.FilterProcessosObsReport { Historico = id }, uri);
+        if (processosobsreportExists != null && processosobsreportExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Processos Obs Report associados a ele.";
+        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Historico = id }, uri);
+        if (recadosExists != null && recadosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Historico reg, IHistoricoService service, IProcessosReader processosReader, IPrecatoriaReader precatoriaReader, IApensoReader apensoReader, IFaseReader faseReader, IStatusAndamentoReader statusandamentoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

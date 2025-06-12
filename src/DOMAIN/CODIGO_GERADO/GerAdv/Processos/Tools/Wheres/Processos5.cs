@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProcessosWhere
 {
-    ProcessosResponse Read(string where, SqlConnection oCnn);
+    ProcessosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Processos : IProcessosWhere
 {
-    public ProcessosResponse Read(string where, SqlConnection oCnn)
+    public ProcessosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProcessos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProcessos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var processos = new ProcessosResponse
         {
             Id = dbRec.ID,
@@ -87,18 +87,6 @@ public partial class Processos : IProcessosWhere
             processos.DtBaixa = dbRec.FDtBaixa;
         if (DateTime.TryParse(dbRec.FZKeyQuando, out _))
             processos.ZKeyQuando = dbRec.FZKeyQuando;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        processos.Auditor = auditor;
         return processos;
     }
 }

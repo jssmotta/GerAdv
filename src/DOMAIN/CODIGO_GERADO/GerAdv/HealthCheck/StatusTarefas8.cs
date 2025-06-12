@@ -32,7 +32,7 @@ public class StatusTarefasHealthCheck(IOptions<AppSettings> appSettings, StatusT
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class StatusTarefasHealthCheck(IOptions<AppSettings> appSettings, StatusT
                         if (DBStatusTarefasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(sttCodigo) FROM dbo.StatusTarefas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(sttCodigo) FROM {"StatusTarefas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class StatusTarefasHealthCheck(IOptions<AppSettings> appSettings, StatusT
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) sttNome,sttGUID FROM dbo.StatusTarefas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) sttNome,sttGUID FROM {"StatusTarefas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOutrasPartesClienteWriter
 {
-    Entity.DBOutrasPartesCliente Write(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, SqlConnection oCnn);
+    Entity.DBOutrasPartesCliente Write(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class OutrasPartesCliente : IOutrasPartesClienteWriter
 {
-    public Entity.DBOutrasPartesCliente Write(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, SqlConnection oCnn)
+    public void Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[OutrasPartesCliente] WHERE opcCodigo={outraspartescliente.Id};", oCnn);
+    }
+
+    public Entity.DBOutrasPartesCliente Write(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = outraspartescliente.Id.IsEmptyIDNumber() ? new Entity.DBOutrasPartesCliente() : new Entity.DBOutrasPartesCliente(outraspartescliente.Id, oCnn);
         dbRec.FNome = outraspartescliente.Nome;

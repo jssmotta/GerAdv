@@ -32,7 +32,35 @@ public partial class Rito
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class RitoAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ritDescricao - tamanho máximo: 20 
+    /// </summary>
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - ritTop  
+    /// </summary>
+    [JsonPropertyName("top")]
+    public bool Top { get; set; }
+
+    /// <summary>
+    /// Negritar - ritBold  
+    /// </summary>
+    [JsonPropertyName("bold")]
+    public bool Bold { get; set; }
+
+    /// <summary>
+    /// GUId - ritGUID - tamanho máximo: 100 
+    /// </summary>
+    [JsonPropertyName("guid")]
+    public string GUID { get; set; } = "";
 }

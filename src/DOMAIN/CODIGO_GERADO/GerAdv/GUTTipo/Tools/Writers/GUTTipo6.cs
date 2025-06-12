@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGUTTipoWriter
 {
-    Entity.DBGUTTipo Write(Models.GUTTipo guttipo, int auditorQuem, SqlConnection oCnn);
+    Entity.DBGUTTipo Write(Models.GUTTipo guttipo, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(GUTTipoResponse guttipo, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class GUTTipo : IGUTTipoWriter
 {
-    public Entity.DBGUTTipo Write(Models.GUTTipo guttipo, int auditorQuem, SqlConnection oCnn)
+    public void Delete(GUTTipoResponse guttipo, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[GUTTipo] WHERE gttCodigo={guttipo.Id};", oCnn);
+    }
+
+    public Entity.DBGUTTipo Write(Models.GUTTipo guttipo, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = guttipo.Id.IsEmptyIDNumber() ? new Entity.DBGUTTipo() : new Entity.DBGUTTipo(guttipo.Id, oCnn);
         dbRec.FNome = guttipo.Nome;

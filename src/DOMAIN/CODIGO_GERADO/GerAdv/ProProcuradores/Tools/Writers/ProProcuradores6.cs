@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProProcuradoresWriter
 {
-    Entity.DBProProcuradores Write(Models.ProProcuradores proprocuradores, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProProcuradores Write(Models.ProProcuradores proprocuradores, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProProcuradores : IProProcuradoresWriter
 {
-    public Entity.DBProProcuradores Write(Models.ProProcuradores proprocuradores, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProProcuradores] WHERE papCodigo={proprocuradores.Id};", oCnn);
+    }
+
+    public Entity.DBProProcuradores Write(Models.ProProcuradores proprocuradores, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = proprocuradores.Id.IsEmptyIDNumber() ? new Entity.DBProProcuradores() : new Entity.DBProProcuradores(proprocuradores.Id, oCnn);
         dbRec.FAdvogado = proprocuradores.Advogado;

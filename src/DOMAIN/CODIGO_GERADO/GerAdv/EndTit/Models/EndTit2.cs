@@ -21,3 +21,22 @@ public partial class EndTit
     [JsonPropertyName("titulo")]
     public int Titulo { get; set; }
 }
+
+[Serializable]
+public partial class EndTitAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Endereço - ettEndereco  
+    /// </summary>
+    [JsonPropertyName("endereco")]
+    public int Endereco { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ettTitulo  
+    /// </summary>
+    [JsonPropertyName("titulo")]
+    public int Titulo { get; set; }
+}

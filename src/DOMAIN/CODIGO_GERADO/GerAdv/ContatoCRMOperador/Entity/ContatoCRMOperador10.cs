@@ -7,7 +7,7 @@ public partial class DBContatoCRMOperador : MenphisSI.GerAdv.DBContatoCRMOperado
     {
     }
 
-    public DBContatoCRMOperador(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBContatoCRMOperador(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBContatoCRMOperador : MenphisSI.GerAdv.DBContatoCRMOperado
     {
     }
 
-    public DBContatoCRMOperador(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBContatoCRMOperador(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreClientesReader reader, IPreClientesValidation validation, IPreClientesWriter writer, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IPreClientesService, IDisposable
+public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreClientesReader reader, IPreClientesValidation validation, IPreClientesWriter writer, IClientesReader clientesReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPreClientesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<PreClientesResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<PreClientesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PreClientes: URI inválida");
@@ -26,72 +27,73 @@ public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreC
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<PreClientesResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<PreClientesResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBPreClientes.SensivelCamposSqlX} 
-                   FROM {DBPreClientes.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBPreClientesDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBPreClientes>(max);
-        await foreach (var item in DBPreClientes.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBPreClientes.SensivelCamposSqlX}, cliNome,cidNome
+                   FROM {DBPreClientes.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=cliIDRep
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=cliCidade
+ 
+                   {where}
+                   ORDER BY cliNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<PreClientesResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBPreClientes(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var preclientes = reader.ReadAll(dbRec, item);
+                if (preclientes != null)
+                {
+                    lista.Add(preclientes);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<PreClientesResponse>> Filter(Filters.FilterPreClientes filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<PreClientesResponseAll>> Filter(Filters.FilterPreClientes filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("PreClientes: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-PreClientes-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<PreClientesResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBPreClientes.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<PreClientesResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("PreClientes: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new PreClientesResponse();
         }
@@ -101,39 +103,24 @@ public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreC
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-PreClientes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-PreClientes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"PreClientes - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"PreClientes - {uri}-: GetById");
         }
     }
 
-    private async Task<PreClientesResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<PreClientesResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<PreClientesResponse?> AddAndUpdate([FromBody] Models.PreClientes regPreClientes, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PreClientes: URI inválida");
@@ -147,14 +134,13 @@ public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreC
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regPreClientes, this, clientesReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regPreClientes, this, clientesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"PreClientes: {validade}");
@@ -168,86 +154,82 @@ public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreC
     public async Task<PreClientesResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("PreClientes: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var preclientes = reader.Read(id, oCnn);
-            if (preclientes != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBPreClientes().DeletarItem(preclientes.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var preclientes = reader.Read(id, oCnn);
+            try
+            {
+                if (preclientes != null)
+                {
+                    writer.Delete(preclientes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return preclientes;
         });
     }
 
-    public async Task<PreClientesResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("PreClientes: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBPreClientesDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterPreClientes? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("PreClientes: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-PreClientes-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-PreClientes-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBPreClientes.ListarN(cWhere, DBPreClientesDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBPreClientesDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,39 +269,170 @@ public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreC
         }
     }
 
-    private static string WFiltro(Filters.FilterPreClientes filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPreClientes filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.QuemIndicou.IsEmpty() ? string.Empty : DBPreClientesDicInfo.QuemIndicouSql(filtro.QuemIndicou);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.Adv == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.AdvSql(filtro.Adv);
-        cWhere += filtro.IDRep == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.IDRepSql(filtro.IDRep);
-        cWhere += filtro.NomeFantasia.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.NomeFantasiaSql(filtro.NomeFantasia);
-        cWhere += filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.ClassSql(filtro.Class);
-        cWhere += filtro.InscEst.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.InscEstSql(filtro.InscEst);
-        cWhere += filtro.Qualificacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.QualificacaoSql(filtro.Qualificacao);
-        cWhere += filtro.Idade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.IdadeSql(filtro.Idade);
-        cWhere += filtro.CNPJ.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.CNPJSql(filtro.CNPJ);
-        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.CPFSql(filtro.CPF);
-        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.RGSql(filtro.RG);
-        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.ObservacaoSql(filtro.Observacao);
-        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.EnderecoSql(filtro.Endereco);
-        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.BairroSql(filtro.Bairro);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.CEPSql(filtro.CEP);
-        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.FaxSql(filtro.Fax);
-        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.FoneSql(filtro.Fone);
-        cWhere += filtro.HomePage.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.HomePageSql(filtro.HomePage);
-        cWhere += filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.EMailSql(filtro.EMail);
-        cWhere += filtro.Assistido.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.AssistidoSql(filtro.Assistido);
-        cWhere += filtro.AssRG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.AssRGSql(filtro.AssRG);
-        cWhere += filtro.AssCPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.AssCPFSql(filtro.AssCPF);
-        cWhere += filtro.AssEndereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.AssEnderecoSql(filtro.AssEndereco);
-        cWhere += filtro.CNH.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBPreClientesDicInfo.CNHSql(filtro.CNH);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.QuemIndicou))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.QuemIndicou)}", filtro.QuemIndicou));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (filtro.Adv != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Adv)}", filtro.Adv));
+        }
+
+        if (filtro.IDRep != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.IDRep)}", filtro.IDRep));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.NomeFantasia))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.NomeFantasia)}", filtro.NomeFantasia));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Class))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Class)}", filtro.Class));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.InscEst))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.InscEst)}", filtro.InscEst));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Qualificacao))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Qualificacao)}", filtro.Qualificacao));
+        }
+
+        if (filtro.Idade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Idade)}", filtro.Idade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CNPJ))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.CNPJ)}", filtro.CNPJ));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CPF))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.CPF)}", filtro.CPF));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.RG))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.RG)}", filtro.RG));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Observacao))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Observacao)}", filtro.Observacao));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Endereco))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Endereco)}", filtro.Endereco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Bairro))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Bairro)}", filtro.Bairro));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CEP))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.CEP)}", filtro.CEP));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fax))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Fax)}", filtro.Fax));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Fone))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Fone)}", filtro.Fone));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.HomePage))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.HomePage)}", filtro.HomePage));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.EMail))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.EMail)}", filtro.EMail));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Assistido))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.Assistido)}", filtro.Assistido));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.AssRG))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.AssRG)}", filtro.AssRG));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.AssCPF))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.AssCPF)}", filtro.AssCPF));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.AssEndereco))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.AssEndereco)}", filtro.AssEndereco));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.CNH))
+        {
+            parameters.Add(new($"@{nameof(DBPreClientesDicInfo.CNH)}", filtro.CNH));
+        }
+
+        var cWhere = filtro.QuemIndicou.IsEmpty() ? string.Empty : $"{DBPreClientesDicInfo.QuemIndicou} = @{nameof(DBPreClientesDicInfo.QuemIndicou)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Nome} = @{nameof(DBPreClientesDicInfo.Nome)}";
+        cWhere += filtro.Adv == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Adv} = @{nameof(DBPreClientesDicInfo.Adv)}";
+        cWhere += filtro.IDRep == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.IDRep} = @{nameof(DBPreClientesDicInfo.IDRep)}";
+        cWhere += filtro.NomeFantasia.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.NomeFantasia} = @{nameof(DBPreClientesDicInfo.NomeFantasia)}";
+        cWhere += filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Class} = @{nameof(DBPreClientesDicInfo.Class)}";
+        cWhere += filtro.InscEst.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.InscEst} = @{nameof(DBPreClientesDicInfo.InscEst)}";
+        cWhere += filtro.Qualificacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Qualificacao} = @{nameof(DBPreClientesDicInfo.Qualificacao)}";
+        cWhere += filtro.Idade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Idade} = @{nameof(DBPreClientesDicInfo.Idade)}";
+        cWhere += filtro.CNPJ.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.CNPJ} = @{nameof(DBPreClientesDicInfo.CNPJ)}";
+        cWhere += filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.CPF} = @{nameof(DBPreClientesDicInfo.CPF)}";
+        cWhere += filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.RG} = @{nameof(DBPreClientesDicInfo.RG)}";
+        cWhere += filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Observacao} = @{nameof(DBPreClientesDicInfo.Observacao)}";
+        cWhere += filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Endereco} = @{nameof(DBPreClientesDicInfo.Endereco)}";
+        cWhere += filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Bairro} = @{nameof(DBPreClientesDicInfo.Bairro)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Cidade} = @{nameof(DBPreClientesDicInfo.Cidade)}";
+        cWhere += filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.CEP} = @{nameof(DBPreClientesDicInfo.CEP)}";
+        cWhere += filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Fax} = @{nameof(DBPreClientesDicInfo.Fax)}";
+        cWhere += filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Fone} = @{nameof(DBPreClientesDicInfo.Fone)}";
+        cWhere += filtro.HomePage.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.HomePage} = @{nameof(DBPreClientesDicInfo.HomePage)}";
+        cWhere += filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.EMail} = @{nameof(DBPreClientesDicInfo.EMail)}";
+        cWhere += filtro.Assistido.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.Assistido} = @{nameof(DBPreClientesDicInfo.Assistido)}";
+        cWhere += filtro.AssRG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.AssRG} = @{nameof(DBPreClientesDicInfo.AssRG)}";
+        cWhere += filtro.AssCPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.AssCPF} = @{nameof(DBPreClientesDicInfo.AssCPF)}";
+        cWhere += filtro.AssEndereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.AssEndereco} = @{nameof(DBPreClientesDicInfo.AssEndereco)}";
+        cWhere += filtro.CNH.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPreClientesDicInfo.CNH} = @{nameof(DBPreClientesDicInfo.CNH)}";
+        return (cWhere, parameters);
     }
 }

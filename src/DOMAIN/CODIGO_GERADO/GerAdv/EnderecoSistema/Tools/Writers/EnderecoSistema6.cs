@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEnderecoSistemaWriter
 {
-    Entity.DBEnderecoSistema Write(Models.EnderecoSistema enderecosistema, int auditorQuem, SqlConnection oCnn);
+    Entity.DBEnderecoSistema Write(Models.EnderecoSistema enderecosistema, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(EnderecoSistemaResponse enderecosistema, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class EnderecoSistema : IEnderecoSistemaWriter
 {
-    public Entity.DBEnderecoSistema Write(Models.EnderecoSistema enderecosistema, int auditorQuem, SqlConnection oCnn)
+    public void Delete(EnderecoSistemaResponse enderecosistema, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[EnderecoSistema] WHERE estCodigo={enderecosistema.Id};", oCnn);
+    }
+
+    public Entity.DBEnderecoSistema Write(Models.EnderecoSistema enderecosistema, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = enderecosistema.Id.IsEmptyIDNumber() ? new Entity.DBEnderecoSistema() : new Entity.DBEnderecoSistema(enderecosistema.Id, oCnn);
         dbRec.FCadastro = enderecosistema.Cadastro;

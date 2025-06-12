@@ -14,7 +14,7 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Clientes", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("Clientes", "GetAll", $"max = {max}", uri);
         var result = await _clientesService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterClientes filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("Clientes: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("Clientes: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _clientesService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("Clientes: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("Clientes: GetById called with id = {0}, {1}", id, uri);
         var result = await _clientesService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class ClientesController(IClientesService clientesService) : Cont
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("Clientes: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _clientesService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No Clientes found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterClientes? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"Clientes: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"Clientes: GetListN called, max {max}, {filtro} uri");
         var result = await _clientesService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Clientes regClientes, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("Clientes", "AddAndUpdate", regClientes, uri);
-        var result = await _clientesService.AddAndUpdate(regClientes, uri);
-        if (result == null)
+        //_logger.LogInfo("Clientes", "AddAndUpdate", regClientes, uri);
+        try
         {
-            _logger.Warn("Clientes: AddAndUpdate failed to add or update Clientes, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _clientesService.AddAndUpdate(regClientes, uri);
+            if (result == null)
+            {
+                _logger.Warn("Clientes: AddAndUpdate failed to add or update Clientes, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Clientes: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("Clientes: Delete called with id = {0}, {2}", id, uri);
-        var result = await _clientesService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("Clientes: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No Clientes found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _clientesService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No Clientes found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Clientes: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

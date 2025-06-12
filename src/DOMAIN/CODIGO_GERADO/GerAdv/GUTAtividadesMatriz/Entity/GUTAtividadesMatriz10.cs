@@ -7,7 +7,7 @@ public partial class DBGUTAtividadesMatriz : MenphisSI.GerAdv.DBGUTAtividadesMat
     {
     }
 
-    public DBGUTAtividadesMatriz(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBGUTAtividadesMatriz(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBGUTAtividadesMatriz : MenphisSI.GerAdv.DBGUTAtividadesMat
     {
     }
 
-    public DBGUTAtividadesMatriz(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBGUTAtividadesMatriz(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

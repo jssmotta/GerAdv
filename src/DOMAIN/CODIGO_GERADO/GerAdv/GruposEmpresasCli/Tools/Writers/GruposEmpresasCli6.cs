@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGruposEmpresasCliWriter
 {
-    Entity.DBGruposEmpresasCli Write(Models.GruposEmpresasCli gruposempresascli, int auditorQuem, SqlConnection oCnn);
+    Entity.DBGruposEmpresasCli Write(Models.GruposEmpresasCli gruposempresascli, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(GruposEmpresasCliResponse gruposempresascli, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class GruposEmpresasCli : IGruposEmpresasCliWriter
 {
-    public Entity.DBGruposEmpresasCli Write(Models.GruposEmpresasCli gruposempresascli, int auditorQuem, SqlConnection oCnn)
+    public void Delete(GruposEmpresasCliResponse gruposempresascli, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[GruposEmpresasCli] WHERE gecCodigo={gruposempresascli.Id};", oCnn);
+    }
+
+    public Entity.DBGruposEmpresasCli Write(Models.GruposEmpresasCli gruposempresascli, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = gruposempresascli.Id.IsEmptyIDNumber() ? new Entity.DBGruposEmpresasCli() : new Entity.DBGruposEmpresasCli(gruposempresascli.Id, oCnn);
         dbRec.FGrupo = gruposempresascli.Grupo;

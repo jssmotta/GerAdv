@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProSucumbenciaWhere
 {
-    ProSucumbenciaResponse Read(string where, SqlConnection oCnn);
+    ProSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class ProSucumbencia : IProSucumbenciaWhere
 {
-    public ProSucumbenciaResponse Read(string where, SqlConnection oCnn)
+    public ProSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProSucumbencia(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProSucumbencia(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var prosucumbencia = new ProSucumbenciaResponse
         {
             Id = dbRec.ID,
@@ -26,18 +26,6 @@ public partial class ProSucumbencia : IProSucumbenciaWhere
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             prosucumbencia.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        prosucumbencia.Auditor = auditor;
         return prosucumbencia;
     }
 }

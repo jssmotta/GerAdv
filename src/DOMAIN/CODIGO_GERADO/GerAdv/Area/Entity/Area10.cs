@@ -7,7 +7,7 @@ public partial class DBArea : MenphisSI.GerAdv.DBArea, IDBArea
     {
     }
 
-    public DBArea(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBArea(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBArea : MenphisSI.GerAdv.DBArea, IDBArea
     {
     }
 
-    public DBArea(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBArea(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

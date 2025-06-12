@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEscritoriosWriter
 {
-    Entity.DBEscritorios Write(Models.Escritorios escritorios, int auditorQuem, SqlConnection oCnn);
+    Entity.DBEscritorios Write(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Escritorios : IEscritoriosWriter
 {
-    public Entity.DBEscritorios Write(Models.Escritorios escritorios, int auditorQuem, SqlConnection oCnn)
+    public void Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Escritorios] WHERE escCodigo={escritorios.Id};", oCnn);
+    }
+
+    public Entity.DBEscritorios Write(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = escritorios.Id.IsEmptyIDNumber() ? new Entity.DBEscritorios() : new Entity.DBEscritorios(escritorios.Id, oCnn);
         dbRec.FCNPJ = escritorios.CNPJ.ClearInputCnpj();

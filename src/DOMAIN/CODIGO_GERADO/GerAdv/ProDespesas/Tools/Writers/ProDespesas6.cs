@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProDespesasWriter
 {
-    Entity.DBProDespesas Write(Models.ProDespesas prodespesas, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProDespesas Write(Models.ProDespesas prodespesas, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProDespesas : IProDespesasWriter
 {
-    public Entity.DBProDespesas Write(Models.ProDespesas prodespesas, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProDespesas] WHERE desCodigo={prodespesas.Id};", oCnn);
+    }
+
+    public Entity.DBProDespesas Write(Models.ProDespesas prodespesas, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = prodespesas.Id.IsEmptyIDNumber() ? new Entity.DBProDespesas() : new Entity.DBProDespesas(prodespesas.Id, oCnn);
         dbRec.FLigacaoID = prodespesas.LigacaoID;

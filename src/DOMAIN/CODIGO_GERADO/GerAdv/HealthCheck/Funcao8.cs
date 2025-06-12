@@ -32,7 +32,7 @@ public class FuncaoHealthCheck(IOptions<AppSettings> appSettings, FuncaoService 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class FuncaoHealthCheck(IOptions<AppSettings> appSettings, FuncaoService 
                         if (DBFuncaoDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(funCodigo) FROM dbo.Funcao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(funCodigo) FROM {"Funcao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class FuncaoHealthCheck(IOptions<AppSettings> appSettings, FuncaoService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) funDescricao FROM dbo.Funcao (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) funDescricao FROM {"Funcao".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

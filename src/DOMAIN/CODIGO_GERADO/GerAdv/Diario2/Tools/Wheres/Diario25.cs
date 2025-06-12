@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IDiario2Where
 {
-    Diario2Response Read(string where, SqlConnection oCnn);
+    Diario2Response Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Diario2 : IDiario2Where
 {
-    public Diario2Response Read(string where, SqlConnection oCnn)
+    public Diario2Response Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBDiario2(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBDiario2(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var diario2 = new Diario2Response
         {
             Id = dbRec.ID,
@@ -27,18 +27,6 @@ public partial class Diario2 : IDiario2Where
             diario2.Data = dbRec.FData;
         if (DateTime.TryParse(dbRec.FHora, out _))
             diario2.Hora = dbRec.FHora;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        diario2.Auditor = auditor;
         return diario2;
     }
 }

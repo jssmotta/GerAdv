@@ -32,7 +32,7 @@ public class AreasJusticaHealthCheck(IOptions<AppSettings> appSettings, AreasJus
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AreasJusticaHealthCheck(IOptions<AppSettings> appSettings, AreasJus
                         if (DBAreasJusticaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(arjCodigo) FROM dbo.AreasJustica (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(arjCodigo) FROM {"AreasJustica".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AreasJusticaHealthCheck(IOptions<AppSettings> appSettings, AreasJus
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) arjArea,arjJustica FROM dbo.AreasJustica (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) arjArea,arjJustica FROM {"AreasJustica".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

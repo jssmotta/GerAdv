@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IForoWriter
 {
-    Entity.DBForo Write(Models.Foro foro, int auditorQuem, SqlConnection oCnn);
+    Entity.DBForo Write(Models.Foro foro, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ForoResponse foro, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Foro : IForoWriter
 {
-    public Entity.DBForo Write(Models.Foro foro, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ForoResponse foro, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Foro] WHERE forCodigo={foro.Id};", oCnn);
+    }
+
+    public Entity.DBForo Write(Models.Foro foro, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = foro.Id.IsEmptyIDNumber() ? new Entity.DBForo() : new Entity.DBForo(foro.Id, oCnn);
         dbRec.FEMail = foro.EMail;

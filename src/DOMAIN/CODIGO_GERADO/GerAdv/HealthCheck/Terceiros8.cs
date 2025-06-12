@@ -32,7 +32,7 @@ public class TerceirosHealthCheck(IOptions<AppSettings> appSettings, TerceirosSe
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class TerceirosHealthCheck(IOptions<AppSettings> appSettings, TerceirosSe
                         if (DBTerceirosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(terCodigo) FROM dbo.Terceiros (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(terCodigo) FROM {"Terceiros".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class TerceirosHealthCheck(IOptions<AppSettings> appSettings, TerceirosSe
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) terProcesso,terNome,terSituacao,terCidade,terEndereco,terBairro,terCEP,terFone,terFax,terOBS,terEMail,terClass,terVaraForoComarca,terSexo,terBold,terGUID FROM dbo.Terceiros (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) terProcesso,terNome,terSituacao,terCidade,terEndereco,terBairro,terCEP,terFone,terFax,terOBS,terEMail,terClass,terVaraForoComarca,terSexo,terBold,terGUID FROM {"Terceiros".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

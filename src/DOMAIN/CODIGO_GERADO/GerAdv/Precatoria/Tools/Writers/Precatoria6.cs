@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPrecatoriaWriter
 {
-    Entity.DBPrecatoria Write(Models.Precatoria precatoria, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPrecatoria Write(Models.Precatoria precatoria, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PrecatoriaResponse precatoria, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Precatoria : IPrecatoriaWriter
 {
-    public Entity.DBPrecatoria Write(Models.Precatoria precatoria, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PrecatoriaResponse precatoria, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Precatoria] WHERE preCodigo={precatoria.Id};", oCnn);
+    }
+
+    public Entity.DBPrecatoria Write(Models.Precatoria precatoria, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = precatoria.Id.IsEmptyIDNumber() ? new Entity.DBPrecatoria() : new Entity.DBPrecatoria(precatoria.Id, oCnn);
         if (precatoria.DtDist != null)

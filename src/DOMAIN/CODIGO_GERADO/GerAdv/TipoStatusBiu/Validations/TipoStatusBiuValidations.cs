@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoStatusBiuValidation
 {
-    Task<string> ValidateReg(Models.TipoStatusBiu reg, ITipoStatusBiuService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoStatusBiu reg, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoStatusBiuService service, IStatusBiuService statusbiuService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoStatusBiuValidation : ITipoStatusBiuValidation
 {
-    public async Task<string> ValidateReg(Models.TipoStatusBiu reg, ITipoStatusBiuService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoStatusBiuService service, IStatusBiuService statusbiuService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var statusbiuExists = await statusbiuService.Filter(new Filters.FilterStatusBiu { TipoStatusBiu = id }, uri);
+        if (statusbiuExists != null && statusbiuExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Status Biu associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoStatusBiu reg, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

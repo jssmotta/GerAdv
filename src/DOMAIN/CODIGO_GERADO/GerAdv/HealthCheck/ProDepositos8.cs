@@ -32,7 +32,7 @@ public class ProDepositosHealthCheck(IOptions<AppSettings> appSettings, ProDepos
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class ProDepositosHealthCheck(IOptions<AppSettings> appSettings, ProDepos
                         if (DBProDepositosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(pdsCodigo) FROM dbo.ProDepositos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(pdsCodigo) FROM {"ProDepositos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class ProDepositosHealthCheck(IOptions<AppSettings> appSettings, ProDepos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) pdsProcesso,pdsFase,pdsData,pdsValor,pdsTipoProDesposito FROM dbo.ProDepositos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) pdsProcesso,pdsFase,pdsData,pdsValor,pdsTipoProDesposito FROM {"ProDepositos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

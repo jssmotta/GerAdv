@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IGUTMatrizValidation
 {
-    Task<string> ValidateReg(Models.GUTMatriz reg, IGUTMatrizService service, IGUTTipoReader guttipoReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.GUTMatriz reg, IGUTMatrizService service, IGUTTipoReader guttipoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IGUTMatrizService service, IGUTAtividadesMatrizService gutatividadesmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTMatrizValidation : IGUTMatrizValidation
 {
-    public async Task<string> ValidateReg(Models.GUTMatriz reg, IGUTMatrizService service, IGUTTipoReader guttipoReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IGUTMatrizService service, IGUTAtividadesMatrizService gutatividadesmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var gutatividadesmatrizExists = await gutatividadesmatrizService.Filter(new Filters.FilterGUTAtividadesMatriz { GUTMatriz = id }, uri);
+        if (gutatividadesmatrizExists != null && gutatividadesmatrizExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.GUTMatriz reg, IGUTMatrizService service, IGUTTipoReader guttipoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

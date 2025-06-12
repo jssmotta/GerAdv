@@ -1,0 +1,238 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IDiario2 } from '@/app/GerAdv_TS/Diario2/Interfaces/interface.Diario2';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { Diario2Api } from '../../Apis/ApiDiario2';
+import { useValidationsDiario2 } from '../../Hooks/hookDiario2';
+import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
+import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
+import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface Diario2FormProps {
+  diario2Data: IDiario2;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const Diario2Form: React.FC<Diario2FormProps> = ({
+  diario2Data, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new Diario2Api(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsDiario2();
+const [nomeOperador, setNomeOperador] = useState('');
+const operadorApi = new OperadorApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeClientes, setNomeClientes] = useState('');
+const clientesApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('operador') > 0) {
+  if (diario2Data.id === 0 && diario2Data.operador == 0) {
+    operadorApi
+    .getById(getParamFromUrl('operador'))
+    .then((response) => {
+      setNomeOperador(response.data.rnome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    diario2Data.operador = getParamFromUrl('operador');
+  }
+}
+
+if (getParamFromUrl('clientes') > 0) {
+  if (diario2Data.id === 0 && diario2Data.cliente == 0) {
+    clientesApi
+    .getById(getParamFromUrl('clientes'))
+    .then((response) => {
+      setNomeClientes(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    diario2Data.cliente = getParamFromUrl('clientes');
+  }
+}
+const addValorOperador = (e: any) => {
+  if (e?.id>0)
+    diario2Data.operador = e.id;
+  };
+  const addValorCliente = (e: any) => {
+    if (e?.id>0)
+      diario2Data.cliente = e.id;
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.error('Erro ao submeter formulário de Diario2:', error);
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`Diario2Form-${diario2Data.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
+        } catch (error) {
+        console.error('Erro ao salvar Diario2 diretamente:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    useEffect(() => {
+      const el = document.querySelector('.nameFormMobile');
+      if (el) {
+        el.textContent = diario2Data?.id == 0 ? 'Editar Diario2' : 'Adicionar Diario2';
+      }
+    }, [diario2Data.id]);
+    return (
+    <>
+    <style>
+      {!isMobile ? `
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        ` : ``}
+      </style>
+
+      <div className={isMobile ? 'form-container form-container-Diario2' : 'form-container5 form-container-Diario2'}>
+
+        <form className='formInputCadInc' id={`Diario2Form-${diario2Data.id}`} onSubmit={onConfirm}>
+          {!isMobile && (
+            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Diario2' data={diario2Data} isSubmitting={isSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <div className='grid-container'>
+
+              <InputName
+              type='text'
+              id='nome'
+              label='Nome'
+              dataForm={diario2Data}
+              className='inputIncNome'
+              name='nome'
+              value={diario2Data.nome}
+              placeholder={`Informe Nome`}
+              onChange={onChange}
+              required
+              />
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='data'
+              label='Data'
+              dataForm={diario2Data}
+              className='inputIncNome'
+              name='data'
+              value={diario2Data.data}
+              onChange={onChange}
+              />
+
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='hora'
+              label='Hora'
+              dataForm={diario2Data}
+              className='inputIncNome'
+              name='hora'
+              value={diario2Data.hora}
+              onChange={onChange}
+              />
+
+
+              <OperadorComboBox
+              name={'operador'}
+              dataForm={diario2Data}
+              value={diario2Data.operador}
+              setValue={addValorOperador}
+              label={'Operador'}
+              />
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='ocorrencia'
+              label='Ocorrencia'
+              dataForm={diario2Data}
+              className='inputIncNome'
+              name='ocorrencia'
+              value={diario2Data.ocorrencia}
+              onChange={onChange}
+              />
+
+
+              <ClientesComboBox
+              name={'cliente'}
+              dataForm={diario2Data}
+              value={diario2Data.cliente}
+              setValue={addValorCliente}
+              label={'Clientes'}
+              />
+            </div>
+          </form>
+
+
+          {isMobile && (
+            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Diario2' data={diario2Data} isSubmitting={isSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <DeleteButton page={'/pages/diario2'} id={diario2Data.id} closeModel={onClose} dadoApi={dadoApi} />
+          </div>
+          <div className='form-spacer'></div>
+          </>
+        );
+      };

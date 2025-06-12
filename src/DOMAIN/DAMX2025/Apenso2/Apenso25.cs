@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBApenso2
 {
     public const string CadastroGuid = "dcdcf6a2-f011-49bb-a4c8-ae96b3a3ce55";
-#region AdministrativeMethods_Apenso2
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE ap2Codigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "Apenso2";
     public const string CamposSqlX = " Apenso2.* ";
     public const string SensivelCamposSqlX = " Apenso2.* ";

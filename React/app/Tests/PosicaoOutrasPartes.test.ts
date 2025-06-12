@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { usePosicaoOutrasPartesForm, usePosicaoOutrasPartesList, useValidationsPosicaoOutrasPartes } from '../GerAdv_TS/PosicaoOutrasPartes/Hooks/hookPosicaoOutrasPartes';
+import { IPosicaoOutrasPartes } from '../GerAdv_TS/PosicaoOutrasPartes/Interfaces/interface.PosicaoOutrasPartes';
+import { IPosicaoOutrasPartesService } from '../GerAdv_TS/PosicaoOutrasPartes/Services/PosicaoOutrasPartes.service';
+import { PosicaoOutrasPartesTestEmpty } from '../GerAdv_TS/Models/PosicaoOutrasPartes';
+import { usePosicaoOutrasPartesComboBox } from '../GerAdv_TS/PosicaoOutrasPartes/Hooks/hookPosicaoOutrasPartes';
+
+// Mock do serviço
+const mockPosicaoOutrasPartesService: jest.Mocked<IPosicaoOutrasPartesService> = {
+  fetchPosicaoOutrasPartesById: jest.fn(),
+  savePosicaoOutrasPartes: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deletePosicaoOutrasPartes: jest.fn(),
+  validatePosicaoOutrasPartes: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialPosicaoOutrasPartes: IPosicaoOutrasPartes = { ...PosicaoOutrasPartesTestEmpty() };
+
+describe('usePosicaoOutrasPartesForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesForm(initialPosicaoOutrasPartes, mockPosicaoOutrasPartesService)
+    );
+
+    expect(result.current.data).toEqual(initialPosicaoOutrasPartes);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesForm(initialPosicaoOutrasPartes, mockPosicaoOutrasPartesService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'descricao',
+        value: 'Novo Posicao Outras Partes',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.descricao).toBe('Novo Posicao Outras Partes');
+  });
+
+   test('deve carregar Posicao Outras Partes por ID', async () => {
+    const mockPosicaoOutrasPartes = { ...initialPosicaoOutrasPartes, id: 1, descricao: 'Posicao Outras Partes Teste' };
+    mockPosicaoOutrasPartesService.fetchPosicaoOutrasPartesById.mockResolvedValue(mockPosicaoOutrasPartes);
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesForm(initialPosicaoOutrasPartes, mockPosicaoOutrasPartesService)
+    );
+
+    await act(async () => {
+      await result.current.loadPosicaoOutrasPartes(1);
+    });
+
+    expect(mockPosicaoOutrasPartesService.fetchPosicaoOutrasPartesById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockPosicaoOutrasPartes);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Posicao Outras Partes', async () => {
+    const errorMessage = 'Erro ao carregar Posicao Outras Partes';
+    mockPosicaoOutrasPartesService.fetchPosicaoOutrasPartesById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesForm(initialPosicaoOutrasPartes, mockPosicaoOutrasPartesService)
+    );
+
+    await act(async () => {
+      await result.current.loadPosicaoOutrasPartes(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesForm(initialPosicaoOutrasPartes, mockPosicaoOutrasPartesService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialPosicaoOutrasPartes, descricao: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialPosicaoOutrasPartes);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesForm(initialPosicaoOutrasPartes, mockPosicaoOutrasPartesService)
+    );
+
+    await act(async () => {
+      await result.current.loadPosicaoOutrasPartes(0);
+    });
+
+    expect(mockPosicaoOutrasPartesService.fetchPosicaoOutrasPartesById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialPosicaoOutrasPartes);
+  });
+});
+
+describe('usePosicaoOutrasPartesList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesList(mockPosicaoOutrasPartesService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialPosicaoOutrasPartes, id: 1, descricao: 'Posicao Outras Partes 1' },
+      { ...initialPosicaoOutrasPartes, id: 2, descricao: 'Posicao Outras Partes 2' }
+    ];
+    mockPosicaoOutrasPartesService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesList(mockPosicaoOutrasPartesService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockPosicaoOutrasPartesService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockPosicaoOutrasPartesService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesList(mockPosicaoOutrasPartesService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialPosicaoOutrasPartes, id: 1, descricao: 'Posicao Outras Partes Filtrado' }];
+    const filtro = { descricao: 'Posicao Outras Partes' };
+    mockPosicaoOutrasPartesService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesList(mockPosicaoOutrasPartesService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockPosicaoOutrasPartesService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsPosicaoOutrasPartes', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsPosicaoOutrasPartes());
+
+    const validData = { ...initialPosicaoOutrasPartes, descricao: 'Posicao Outras Partes Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar descricao vazio', () => {
+    const { result } = renderHook(() => useValidationsPosicaoOutrasPartes());
+
+    const invalidData = { ...initialPosicaoOutrasPartes, descricao: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Descricao não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar descricao muito longo', () => {
+    const { result } = renderHook(() => useValidationsPosicaoOutrasPartes());
+
+    const invalidData = { 
+      ...initialPosicaoOutrasPartes, 
+      descricao: 'a'.repeat(30+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Descricao não pode ter mais de 30 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsPosicaoOutrasPartes());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialPosicaoOutrasPartes, id: 1, descricao: 'Posicao Outras Partes Teste' }];
+    mockPosicaoOutrasPartesService.getAll.mockResolvedValue(mockData);
+    mockPosicaoOutrasPartesService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      usePosicaoOutrasPartesList(mockPosicaoOutrasPartesService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsPosicaoOutrasPartes()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Posicao Outras Partes Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Posicao Outras Partes Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Posicao Outras Partes 1' },
+      { id: 2, descricao: 'Posicao Outras Partes 2' }
+    ];
+    mockPosicaoOutrasPartesService.getList.mockResolvedValue(mockOptions as IPosicaoOutrasPartes[]);
+
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Posicao Outras Partes 1' },
+        { id: 2, nome: 'Posicao Outras Partes 2' }
+      ]);
+    });
+
+    expect(mockPosicaoOutrasPartesService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Posicao Outras Partes ABC' },
+      { id: 2, descricao: 'Posicao Outras Partes XYZ' }
+    ];
+    mockPosicaoOutrasPartesService.getList.mockResolvedValue(mockOptions as IPosicaoOutrasPartes[]);   
+
+
+ const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Posicao Outras Partes ABC' },
+        { id: 2, nome: 'Posicao Outras Partes XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Posicao Outras Partes ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, descricao: 'Posicao Outras Partes ABC' },
+      { id: 2, descricao: 'Posicao Outras Partes XYZ' }
+    ];
+    mockPosicaoOutrasPartesService.getList.mockResolvedValue(mockOptions as IPosicaoOutrasPartes[]);
+  
+
+
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Posicao Outras Partes ABC' },
+        { id: 2, nome: 'Posicao Outras Partes XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Posicao Outras Partes ABC' },
+          {id: 2, nome: 'Posicao Outras Partes XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService)
+    );
+
+    const newValue = { id: 1, descricao: 'Posicao Outras Partes Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, descricao: 'Posicao Outras Partes Inicial' };
+    
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('usePosicaoOutrasPartesComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, descricao: 'Posicao Outras Partes Inicial' };
+    
+    const { result } = renderHook(() => 
+      usePosicaoOutrasPartesComboBox(mockPosicaoOutrasPartesService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

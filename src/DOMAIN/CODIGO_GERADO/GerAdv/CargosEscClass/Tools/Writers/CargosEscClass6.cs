@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ICargosEscClassWriter
 {
-    Entity.DBCargosEscClass Write(Models.CargosEscClass cargosescclass, int auditorQuem, SqlConnection oCnn);
+    Entity.DBCargosEscClass Write(Models.CargosEscClass cargosescclass, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class CargosEscClass : ICargosEscClassWriter
 {
-    public Entity.DBCargosEscClass Write(Models.CargosEscClass cargosescclass, int auditorQuem, SqlConnection oCnn)
+    public void Delete(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[CargosEscClass] WHERE cecCodigo={cargosescclass.Id};", oCnn);
+    }
+
+    public Entity.DBCargosEscClass Write(Models.CargosEscClass cargosescclass, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = cargosescclass.Id.IsEmptyIDNumber() ? new Entity.DBCargosEscClass() : new Entity.DBCargosEscClass(cargosescclass.Id, oCnn);
         dbRec.FNome = cargosescclass.Nome;

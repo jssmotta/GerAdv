@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IDocsRecebidosItensWriter
 {
-    Entity.DBDocsRecebidosItens Write(Models.DocsRecebidosItens docsrecebidositens, int auditorQuem, SqlConnection oCnn);
+    Entity.DBDocsRecebidosItens Write(Models.DocsRecebidosItens docsrecebidositens, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(DocsRecebidosItensResponse docsrecebidositens, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class DocsRecebidosItens : IDocsRecebidosItensWriter
 {
-    public Entity.DBDocsRecebidosItens Write(Models.DocsRecebidosItens docsrecebidositens, int auditorQuem, SqlConnection oCnn)
+    public void Delete(DocsRecebidosItensResponse docsrecebidositens, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[DocsRecebidosItens] WHERE driCodigo={docsrecebidositens.Id};", oCnn);
+    }
+
+    public Entity.DBDocsRecebidosItens Write(Models.DocsRecebidosItens docsrecebidositens, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = docsrecebidositens.Id.IsEmptyIDNumber() ? new Entity.DBDocsRecebidosItens() : new Entity.DBDocsRecebidosItens(docsrecebidositens.Id, oCnn);
         dbRec.FContatoCRM = docsrecebidositens.ContatoCRM;

@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IContatoCRMViewReader reader, IContatoCRMViewValidation validation, IContatoCRMViewWriter writer, HybridCache cache) : IContatoCRMViewService, IDisposable
+public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IContatoCRMViewReader reader, IContatoCRMViewValidation validation, IContatoCRMViewWriter writer, HybridCache cache, IMemoryCache memory) : IContatoCRMViewService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ContatoCRMViewResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ContatoCRMViewResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ContatoCRMView: URI inválida");
@@ -25,72 +26,70 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ContatoCRMViewResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ContatoCRMViewResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBContatoCRMView.SensivelCamposSqlX} 
-                   FROM {DBContatoCRMView.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBContatoCRMViewDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBContatoCRMView>(max);
-        await foreach (var item in DBContatoCRMView.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBContatoCRMView.SensivelCamposSqlX}
+                   FROM {DBContatoCRMView.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                    
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ContatoCRMViewResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBContatoCRMView(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var contatocrmview = reader.ReadAll(dbRec, item);
+                if (contatocrmview != null)
+                {
+                    lista.Add(contatocrmview);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ContatoCRMViewResponse>> Filter(Filters.FilterContatoCRMView filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ContatoCRMViewResponseAll>> Filter(Filters.FilterContatoCRMView filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ContatoCRMView: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-ContatoCRMView-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ContatoCRMViewResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBContatoCRMView.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ContatoCRMViewResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ContatoCRMView: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ContatoCRMViewResponse();
         }
@@ -100,36 +99,23 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-ContatoCRMView-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ContatoCRMView-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ContatoCRMView - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ContatoCRMView - {uri}-: GetById");
         }
     }
 
-    private async Task<ContatoCRMViewResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ContatoCRMViewResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ContatoCRMViewResponse?> AddAndUpdate([FromBody] Models.ContatoCRMView regContatoCRMView, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ContatoCRMView: URI inválida");
@@ -143,8 +129,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -164,31 +149,47 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
     public async Task<ContatoCRMViewResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ContatoCRMView: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var contatocrmview = reader.Read(id, oCnn);
-            if (contatocrmview != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBContatoCRMView().DeletarItem(contatocrmview.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var contatocrmview = reader.Read(id, oCnn);
+            try
+            {
+                if (contatocrmview != null)
+                {
+                    writer.Delete(contatocrmview, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return contatocrmview;
@@ -221,15 +222,26 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
         }
     }
 
-    private static string WFiltro(Filters.FilterContatoCRMView filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterContatoCRMView filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.CGUID.IsEmpty() ? string.Empty : DBContatoCRMViewDicInfo.CGUIDSql(filtro.CGUID);
-        cWhere += filtro.IP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBContatoCRMViewDicInfo.IPSql(filtro.IP);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.CGUID))
+        {
+            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.CGUID)}", filtro.CGUID));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.IP))
+        {
+            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.IP)}", filtro.IP));
+        }
+
+        var cWhere = filtro.CGUID.IsEmpty() ? string.Empty : $"{DBContatoCRMViewDicInfo.CGUID} = @{nameof(DBContatoCRMViewDicInfo.CGUID)}";
+        cWhere += filtro.IP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBContatoCRMViewDicInfo.IP} = @{nameof(DBContatoCRMViewDicInfo.IP)}";
+        return (cWhere, parameters);
     }
 }

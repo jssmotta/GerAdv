@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useProSucumbenciaForm, useProSucumbenciaList, useValidationsProSucumbencia } from '../GerAdv_TS/ProSucumbencia/Hooks/hookProSucumbencia';
+import { IProSucumbencia } from '../GerAdv_TS/ProSucumbencia/Interfaces/interface.ProSucumbencia';
+import { IProSucumbenciaService } from '../GerAdv_TS/ProSucumbencia/Services/ProSucumbencia.service';
+import { ProSucumbenciaTestEmpty } from '../GerAdv_TS/Models/ProSucumbencia';
+import { useProSucumbenciaComboBox } from '../GerAdv_TS/ProSucumbencia/Hooks/hookProSucumbencia';
+
+// Mock do serviço
+const mockProSucumbenciaService: jest.Mocked<IProSucumbenciaService> = {
+  fetchProSucumbenciaById: jest.fn(),
+  saveProSucumbencia: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteProSucumbencia: jest.fn(),
+  validateProSucumbencia: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialProSucumbencia: IProSucumbencia = { ...ProSucumbenciaTestEmpty() };
+
+describe('useProSucumbenciaForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaForm(initialProSucumbencia, mockProSucumbenciaService)
+    );
+
+    expect(result.current.data).toEqual(initialProSucumbencia);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaForm(initialProSucumbencia, mockProSucumbenciaService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo Pro Sucumbencia',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo Pro Sucumbencia');
+  });
+
+   test('deve carregar Pro Sucumbencia por ID', async () => {
+    const mockProSucumbencia = { ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia Teste' };
+    mockProSucumbenciaService.fetchProSucumbenciaById.mockResolvedValue(mockProSucumbencia);
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaForm(initialProSucumbencia, mockProSucumbenciaService)
+    );
+
+    await act(async () => {
+      await result.current.loadProSucumbencia(1);
+    });
+
+    expect(mockProSucumbenciaService.fetchProSucumbenciaById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockProSucumbencia);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Pro Sucumbencia', async () => {
+    const errorMessage = 'Erro ao carregar Pro Sucumbencia';
+    mockProSucumbenciaService.fetchProSucumbenciaById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaForm(initialProSucumbencia, mockProSucumbenciaService)
+    );
+
+    await act(async () => {
+      await result.current.loadProSucumbencia(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaForm(initialProSucumbencia, mockProSucumbenciaService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialProSucumbencia, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialProSucumbencia);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaForm(initialProSucumbencia, mockProSucumbenciaService)
+    );
+
+    await act(async () => {
+      await result.current.loadProSucumbencia(0);
+    });
+
+    expect(mockProSucumbenciaService.fetchProSucumbenciaById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialProSucumbencia);
+  });
+});
+
+describe('useProSucumbenciaList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaList(mockProSucumbenciaService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia 1' },
+      { ...initialProSucumbencia, id: 2, nome: 'Pro Sucumbencia 2' }
+    ];
+    mockProSucumbenciaService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaList(mockProSucumbenciaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockProSucumbenciaService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockProSucumbenciaService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaList(mockProSucumbenciaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia Filtrado' }];
+    const filtro = { nome: 'Pro Sucumbencia' };
+    mockProSucumbenciaService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaList(mockProSucumbenciaService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockProSucumbenciaService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsProSucumbencia', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsProSucumbencia());
+
+    const validData = { ...initialProSucumbencia, nome: 'Pro Sucumbencia Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsProSucumbencia());
+
+    const invalidData = { ...initialProSucumbencia, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsProSucumbencia());
+
+    const invalidData = { 
+      ...initialProSucumbencia, 
+      nome: 'a'.repeat(2048+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 2048 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsProSucumbencia());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia Teste' }];
+    mockProSucumbenciaService.getAll.mockResolvedValue(mockData);
+    mockProSucumbenciaService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useProSucumbenciaList(mockProSucumbenciaService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsProSucumbencia()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro Sucumbencia Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro Sucumbencia Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro Sucumbencia 1' },
+      { id: 2, nome: 'Pro Sucumbencia 2' }
+    ];
+    mockProSucumbenciaService.getList.mockResolvedValue(mockOptions as IProSucumbencia[]);
+
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro Sucumbencia 1' },
+        { id: 2, nome: 'Pro Sucumbencia 2' }
+      ]);
+    });
+
+    expect(mockProSucumbenciaService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro Sucumbencia ABC' },
+      { id: 2, nome: 'Pro Sucumbencia XYZ' }
+    ];
+    mockProSucumbenciaService.getList.mockResolvedValue(mockOptions as IProSucumbencia[]);   
+
+
+ const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro Sucumbencia ABC' },
+        { id: 2, nome: 'Pro Sucumbencia XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Pro Sucumbencia ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro Sucumbencia ABC' },
+      { id: 2, nome: 'Pro Sucumbencia XYZ' }
+    ];
+    mockProSucumbenciaService.getList.mockResolvedValue(mockOptions as IProSucumbencia[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro Sucumbencia ABC' },
+        { id: 2, nome: 'Pro Sucumbencia XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Pro Sucumbencia ABC' },
+          {id: 2, nome: 'Pro Sucumbencia XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService)
+    );
+
+    const newValue = { id: 1, nome: 'Pro Sucumbencia Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'Pro Sucumbencia Inicial' };
+    
+    const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useProSucumbenciaComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'Pro Sucumbencia Inicial' };
+    
+    const { result } = renderHook(() => 
+      useProSucumbenciaComboBox(mockProSucumbenciaService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

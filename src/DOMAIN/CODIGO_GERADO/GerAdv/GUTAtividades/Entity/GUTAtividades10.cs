@@ -7,7 +7,7 @@ public partial class DBGUTAtividades : MenphisSI.GerAdv.DBGUTAtividades, IDBGUTA
     {
     }
 
-    public DBGUTAtividades(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBGUTAtividades(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBGUTAtividades : MenphisSI.GerAdv.DBGUTAtividades, IDBGUTA
     {
     }
 
-    public DBGUTAtividades(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBGUTAtividades(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

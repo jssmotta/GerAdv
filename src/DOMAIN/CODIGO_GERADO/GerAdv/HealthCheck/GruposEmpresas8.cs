@@ -32,7 +32,7 @@ public class GruposEmpresasHealthCheck(IOptions<AppSettings> appSettings, Grupos
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class GruposEmpresasHealthCheck(IOptions<AppSettings> appSettings, Grupos
                         if (DBGruposEmpresasDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(grpCodigo) FROM dbo.GruposEmpresas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(grpCodigo) FROM {"GruposEmpresas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class GruposEmpresasHealthCheck(IOptions<AppSettings> appSettings, Grupos
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) grpEMail,grpInativo,grpOponente,grpDescricao,grpObservacoes,grpCliente,grpIcone,grpDespesaUnificada,grpGUID FROM dbo.GruposEmpresas (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) grpEMail,grpInativo,grpOponente,grpDescricao,grpObservacoes,grpCliente,grpIcone,grpDespesaUnificada,grpGUID FROM {"GruposEmpresas".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

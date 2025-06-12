@@ -7,7 +7,7 @@ public partial class DBAndamentosMD : MenphisSI.GerAdv.DBAndamentosMD, IDBAndame
     {
     }
 
-    public DBAndamentosMD(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAndamentosMD(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAndamentosMD : MenphisSI.GerAdv.DBAndamentosMD, IDBAndame
     {
     }
 
-    public DBAndamentosMD(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBAndamentosMD(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

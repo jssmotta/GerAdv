@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IPrepostosWhere
 {
-    PrepostosResponse Read(string where, SqlConnection oCnn);
+    PrepostosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Prepostos : IPrepostosWhere
 {
-    public PrepostosResponse Read(string where, SqlConnection oCnn)
+    public PrepostosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBPrepostos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBPrepostos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
@@ -54,18 +54,6 @@ public partial class Prepostos : IPrepostosWhere
             prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
         if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out _))
             prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        prepostos.Auditor = auditor;
         return prepostos;
     }
 }

@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface INENotasWhere
 {
-    NENotasResponse Read(string where, SqlConnection oCnn);
+    NENotasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class NENotas : INENotasWhere
 {
-    public NENotasResponse Read(string where, SqlConnection oCnn)
+    public NENotasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBNENotas(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBNENotas(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var nenotas = new NENotasResponse
         {
             Id = dbRec.ID,
@@ -29,18 +29,6 @@ public partial class NENotas : INENotasWhere
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             nenotas.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        nenotas.Auditor = auditor;
         return nenotas;
     }
 }

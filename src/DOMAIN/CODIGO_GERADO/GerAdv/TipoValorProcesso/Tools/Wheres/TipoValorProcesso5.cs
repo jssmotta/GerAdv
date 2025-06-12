@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoValorProcessoWhere
 {
-    TipoValorProcessoResponse Read(string where, SqlConnection oCnn);
+    TipoValorProcessoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class TipoValorProcesso : ITipoValorProcessoWhere
 {
-    public TipoValorProcessoResponse Read(string where, SqlConnection oCnn)
+    public TipoValorProcessoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTipoValorProcesso(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTipoValorProcesso(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var tipovalorprocesso = new TipoValorProcessoResponse
         {
             Id = dbRec.ID,

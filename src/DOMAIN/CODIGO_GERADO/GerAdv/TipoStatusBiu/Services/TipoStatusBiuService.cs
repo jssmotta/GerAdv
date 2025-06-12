@@ -3,16 +3,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITipoStatusBiuReader reader, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, HybridCache cache) : ITipoStatusBiuService, IDisposable
+public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITipoStatusBiuReader reader, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, IStatusBiuService statusbiuService, HybridCache cache, IMemoryCache memory) : ITipoStatusBiuService, IDisposable
 {
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<TipoStatusBiuResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<TipoStatusBiuResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TipoStatusBiu: URI inválida");
@@ -25,72 +26,70 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<TipoStatusBiuResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<TipoStatusBiuResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBTipoStatusBiu.SensivelCamposSqlX} 
-                   FROM {DBTipoStatusBiu.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBTipoStatusBiuDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBTipoStatusBiu>(max);
-        await foreach (var item in DBTipoStatusBiu.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBTipoStatusBiu.SensivelCamposSqlX}
+                   FROM {DBTipoStatusBiu.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                    
+                   {where}
+                   ORDER BY tsbNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<TipoStatusBiuResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBTipoStatusBiu(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var tipostatusbiu = reader.ReadAll(dbRec, item);
+                if (tipostatusbiu != null)
+                {
+                    lista.Add(tipostatusbiu);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<TipoStatusBiuResponse>> Filter(Filters.FilterTipoStatusBiu filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<TipoStatusBiuResponseAll>> Filter(Filters.FilterTipoStatusBiu filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("TipoStatusBiu: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-TipoStatusBiu-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<TipoStatusBiuResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBTipoStatusBiu.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<TipoStatusBiuResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("TipoStatusBiu: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new TipoStatusBiuResponse();
         }
@@ -100,36 +99,23 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            var result = await _cache.GetOrCreateAsync($"{uri}-TipoStatusBiu-GetById-{id}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-TipoStatusBiu-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"TipoStatusBiu - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"TipoStatusBiu - {uri}-: GetById");
         }
     }
 
-    private async Task<TipoStatusBiuResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<TipoStatusBiuResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<TipoStatusBiuResponse?> AddAndUpdate([FromBody] Models.TipoStatusBiu regTipoStatusBiu, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TipoStatusBiu: URI inválida");
@@ -143,8 +129,7 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -164,86 +149,75 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
     public async Task<TipoStatusBiuResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("TipoStatusBiu: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var tipostatusbiu = reader.Read(id, oCnn);
-            if (tipostatusbiu != null)
+            var deleteValidation = await validation.CanDelete(id, this, statusbiuService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBTipoStatusBiu().DeletarItem(tipostatusbiu.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var tipostatusbiu = reader.Read(id, oCnn);
+            try
+            {
+                if (tipostatusbiu != null)
+                {
+                    writer.Delete(tipostatusbiu, 0, oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return tipostatusbiu;
         });
     }
 
-    public async Task<TipoStatusBiuResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("TipoStatusBiu: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBTipoStatusBiuDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoStatusBiu? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-1
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            throw new Exception("TipoStatusBiu: URI inválida");
-        }
-
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-TipoStatusBiu-{max}-{cWhere.GetHashCode()}-GetListN";
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var cacheKey = $"{uri}-TipoStatusBiu-{max}-{where.GetHashCode()}-{parameters.GetHashCode()}GetListN";
         var entryOptions = new HybridCacheEntryOptions
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBTipoStatusBiu.ListarN(cWhere, DBTipoStatusBiuDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBTipoStatusBiuDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -283,14 +257,20 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
         }
     }
 
-    private static string WFiltro(Filters.FilterTipoStatusBiu filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoStatusBiu filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : DBTipoStatusBiuDicInfo.NomeSql(filtro.Nome);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBTipoStatusBiuDicInfo.Nome)}", filtro.Nome));
+        }
+
+        var cWhere = filtro.Nome.IsEmpty() ? string.Empty : $"{DBTipoStatusBiuDicInfo.Nome} = @{nameof(DBTipoStatusBiuDicInfo.Nome)}";
+        return (cWhere, parameters);
     }
 }

@@ -5,12 +5,38 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IFuncionariosValidation
 {
-    Task<string> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IFuncionariosService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IAgendaRepetirService agendarepetirService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FuncionariosValidation : IFuncionariosValidation
 {
-    public async Task<string> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IFuncionariosService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IAgendaRepetirService agendarepetirService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Funcionario = id }, uri);
+        if (agendaExists != null && agendaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
+        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Funcionario = id }, uri);
+        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
+        var agendaquemExists = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Funcionario = id }, uri);
+        if (agendaquemExists != null && agendaquemExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.";
+        var agendarepetirExists = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Funcionario = id }, uri);
+        if (agendarepetirExists != null && agendarepetirExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Repetir associados a ele.";
+        var horastrabExists = await horastrabService.Filter(new Filters.FilterHorasTrab { Funcionario = id }, uri);
+        if (horastrabExists != null && horastrabExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
@@ -38,11 +64,23 @@ public class FuncionariosValidation : IFuncionariosValidation
             }
         }
 
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
+            }
+        }
+
         return string.Empty;
     }
 
     private async Task<bool> IsCpfDuplicado(Models.Funcionarios reg, IFuncionariosService service, string uri)
     {
+        if (reg.CPF.Length == 0)
+            return false;
         var existingFuncionarios = (await service.Filter(new Filters.FilterFuncionarios { CPF = reg.CPF }, uri)).FirstOrDefault();
         return existingFuncionarios != null && existingFuncionarios.Id > 0 && existingFuncionarios.Id != reg.Id;
     }

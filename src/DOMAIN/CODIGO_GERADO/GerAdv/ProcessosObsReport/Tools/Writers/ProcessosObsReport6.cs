@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProcessosObsReportWriter
 {
-    Entity.DBProcessosObsReport Write(Models.ProcessosObsReport processosobsreport, int auditorQuem, SqlConnection oCnn);
+    Entity.DBProcessosObsReport Write(Models.ProcessosObsReport processosobsreport, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ProcessosObsReportResponse processosobsreport, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProcessosObsReport : IProcessosObsReportWriter
 {
-    public Entity.DBProcessosObsReport Write(Models.ProcessosObsReport processosobsreport, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ProcessosObsReportResponse processosobsreport, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProcessosObsReport] WHERE prrCodigo={processosobsreport.Id};", oCnn);
+    }
+
+    public Entity.DBProcessosObsReport Write(Models.ProcessosObsReport processosobsreport, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = processosobsreport.Id.IsEmptyIDNumber() ? new Entity.DBProcessosObsReport() : new Entity.DBProcessosObsReport(processosobsreport.Id, oCnn);
         if (processosobsreport.Data != null)

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAreaWriter
 {
-    Entity.DBArea Write(Models.Area area, int auditorQuem, SqlConnection oCnn);
+    Entity.DBArea Write(Models.Area area, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AreaResponse area, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Area : IAreaWriter
 {
-    public Entity.DBArea Write(Models.Area area, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AreaResponse area, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Area] WHERE areCodigo={area.Id};", oCnn);
+    }
+
+    public Entity.DBArea Write(Models.Area area, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = area.Id.IsEmptyIDNumber() ? new Entity.DBArea() : new Entity.DBArea(area.Id, oCnn);
         dbRec.FDescricao = area.Descricao;

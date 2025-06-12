@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface INENotasWriter
 {
-    Entity.DBNENotas Write(Models.NENotas nenotas, int auditorQuem, SqlConnection oCnn);
+    Entity.DBNENotas Write(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class NENotas : INENotasWriter
 {
-    public Entity.DBNENotas Write(Models.NENotas nenotas, int auditorQuem, SqlConnection oCnn)
+    public void Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[NENotas] WHERE nepCodigo={nenotas.Id};", oCnn);
+    }
+
+    public Entity.DBNENotas Write(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = nenotas.Id.IsEmptyIDNumber() ? new Entity.DBNENotas() : new Entity.DBNENotas(nenotas.Id, oCnn);
         dbRec.FApenso = nenotas.Apenso;

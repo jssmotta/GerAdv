@@ -5,24 +5,53 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IOperadoresReader
 {
-    OperadoresResponse? Read(int id, SqlConnection oCnn);
-    OperadoresResponse? Read(string where, SqlConnection oCnn);
+    OperadoresResponse? Read(int id, MsiSqlConnection oCnn);
+    OperadoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadoresResponse? Read(Entity.DBOperadores dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadoresResponse? Read(DBOperadores dbRec);
+    OperadoresResponseAll? ReadAll(DBOperadores dbRec, DataRow dr);
+    IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class Operadores : IOperadoresReader
 {
-    public OperadoresResponse? Read(int id, SqlConnection oCnn)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    static string BuildSqlQuery(string whereClause, string orderClause, int max = 200, MsiSqlConnection? oCnn = null)
+    {
+        if (max <= 0)
+        {
+            max = 200;
+        }
+
+        var query = new StringBuilder($"SELECT TOP ({max}) operCodigo, operNome FROM {"Operadores".dbo(oCnn)} (NOLOCK) ");
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
+        }
+
+        if (!string.IsNullOrEmpty(orderClause))
+        {
+            query.Append(!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty).Append(orderClause);
+        }
+        else
+        {
+            query.Append($"{TSql.OrderBy}operNome");
+        }
+
+        return query.ToString();
+    }
+
+    public OperadoresResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBOperadores(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public OperadoresResponse? Read(string where, SqlConnection oCnn)
+    public OperadoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBOperadores(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBOperadores(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -49,18 +78,6 @@ public partial class Operadores : IOperadoresReader
         };
         if (DateTime.TryParse(dbRec.FSuporteMaxAge, out _))
             operadores.SuporteMaxAge = dbRec.FSuporteMaxAge;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadores.Auditor = auditor;
         return operadores;
     }
 
@@ -87,18 +104,33 @@ public partial class Operadores : IOperadoresReader
         };
         if (DateTime.TryParse(dbRec.FSuporteMaxAge, out _))
             operadores.SuporteMaxAge = dbRec.FSuporteMaxAge;
-        var auditor = new Auditor
+        return operadores;
+    }
+
+    public OperadoresResponseAll? ReadAll(DBOperadores dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var operadores = new OperadoresResponseAll
+        {
+            Id = dbRec.ID,
+            Enviado = dbRec.FEnviado,
+            Casa = dbRec.FCasa,
+            CasaID = dbRec.FCasaID,
+            CasaCodigo = dbRec.FCasaCodigo,
+            IsNovo = dbRec.FIsNovo,
+            Cliente = dbRec.FCliente,
+            Grupo = dbRec.FGrupo,
+            Nome = dbRec.FNome ?? string.Empty,
+            EMail = dbRec.FEMail ?? string.Empty,
+            Ativado = dbRec.FAtivado,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        operadores.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out _))
+            operadores.SuporteMaxAge = dbRec.FSuporteMaxAge;
+        operadores.NomeClientes = dr["cliNome"]?.ToString() ?? string.Empty;
         return operadores;
     }
 }

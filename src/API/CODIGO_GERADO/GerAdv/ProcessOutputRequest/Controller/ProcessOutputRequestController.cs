@@ -14,7 +14,7 @@ public partial class ProcessOutputRequestController(IProcessOutputRequestService
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("ProcessOutputRequest", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("ProcessOutputRequest", "GetAll", $"max = {max}", uri);
         var result = await _processoutputrequestService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class ProcessOutputRequestController(IProcessOutputRequestService
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessOutputRequest filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("ProcessOutputRequest: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("ProcessOutputRequest: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _processoutputrequestService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class ProcessOutputRequestController(IProcessOutputRequestService
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("ProcessOutputRequest: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("ProcessOutputRequest: GetById called with id = {0}, {1}", id, uri);
         var result = await _processoutputrequestService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class ProcessOutputRequestController(IProcessOutputRequestService
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProcessOutputRequest regProcessOutputRequest, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("ProcessOutputRequest", "AddAndUpdate", regProcessOutputRequest, uri);
-        var result = await _processoutputrequestService.AddAndUpdate(regProcessOutputRequest, uri);
-        if (result == null)
+        //_logger.LogInfo("ProcessOutputRequest", "AddAndUpdate", regProcessOutputRequest, uri);
+        try
         {
-            _logger.Warn("ProcessOutputRequest: AddAndUpdate failed to add or update ProcessOutputRequest, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _processoutputrequestService.AddAndUpdate(regProcessOutputRequest, uri);
+            if (result == null)
+            {
+                _logger.Warn("ProcessOutputRequest: AddAndUpdate failed to add or update ProcessOutputRequest, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ProcessOutputRequest: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("ProcessOutputRequest: Delete called with id = {0}, {2}", id, uri);
-        var result = await _processoutputrequestService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("ProcessOutputRequest: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No ProcessOutputRequest found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _processoutputrequestService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No ProcessOutputRequest found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ProcessOutputRequest: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

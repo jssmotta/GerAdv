@@ -1,0 +1,200 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IContatoCRMOperador } from '@/app/GerAdv_TS/ContatoCRMOperador/Interfaces/interface.ContatoCRMOperador';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { ContatoCRMOperadorApi } from '../../Apis/ApiContatoCRMOperador';
+import { useValidationsContatoCRMOperador } from '../../Hooks/hookContatoCRMOperador';
+import ContatoCRMComboBox from '@/app/GerAdv_TS/ContatoCRM/ComboBox/ContatoCRM';
+import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
+import { ContatoCRMApi } from '@/app/GerAdv_TS/ContatoCRM/Apis/ApiContatoCRM';
+import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface ContatoCRMOperadorFormProps {
+  contatocrmoperadorData: IContatoCRMOperador;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const ContatoCRMOperadorForm: React.FC<ContatoCRMOperadorFormProps> = ({
+  contatocrmoperadorData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new ContatoCRMOperadorApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsContatoCRMOperador();
+const [nomeContatoCRM, setNomeContatoCRM] = useState('');
+const contatocrmApi = new ContatoCRMApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeOperador, setNomeOperador] = useState('');
+const operadorApi = new OperadorApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('contatocrm') > 0) {
+  if (contatocrmoperadorData.id === 0 && contatocrmoperadorData.contatocrm == 0) {
+    contatocrmApi
+    .getById(getParamFromUrl('contatocrm'))
+    .then((response) => {
+      setNomeContatoCRM(response.data.campo);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    contatocrmoperadorData.contatocrm = getParamFromUrl('contatocrm');
+  }
+}
+
+if (getParamFromUrl('operador') > 0) {
+  if (contatocrmoperadorData.id === 0 && contatocrmoperadorData.operador == 0) {
+    operadorApi
+    .getById(getParamFromUrl('operador'))
+    .then((response) => {
+      setNomeOperador(response.data.rnome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    contatocrmoperadorData.operador = getParamFromUrl('operador');
+  }
+}
+const addValorContatoCRM = (e: any) => {
+  if (e?.id>0)
+    contatocrmoperadorData.contatocrm = e.id;
+  };
+  const addValorOperador = (e: any) => {
+    if (e?.id>0)
+      contatocrmoperadorData.operador = e.id;
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.error('Erro ao submeter formulário de ContatoCRMOperador:', error);
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`ContatoCRMOperadorForm-${contatocrmoperadorData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
+        } catch (error) {
+        console.error('Erro ao salvar ContatoCRMOperador diretamente:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    useEffect(() => {
+      const el = document.querySelector('.nameFormMobile');
+      if (el) {
+        el.textContent = contatocrmoperadorData?.id == 0 ? 'Editar ContatoCRMOperador' : 'Adicionar Contato C R M Operador';
+      }
+    }, [contatocrmoperadorData.id]);
+    return (
+    <>
+    <style>
+      {!isMobile ? `
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        ` : ``}
+      </style>
+
+      <div className={isMobile ? 'form-container form-container-ContatoCRMOperador' : 'form-container5 form-container-ContatoCRMOperador'}>
+
+        <form className='formInputCadInc' id={`ContatoCRMOperadorForm-${contatocrmoperadorData.id}`} onSubmit={onConfirm}>
+          {!isMobile && (
+            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ContatoCRMOperador' data={contatocrmoperadorData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContatoCRMOperadorForm-${contatocrmoperadorData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <div className='grid-container'>
+
+
+              <ContatoCRMComboBox
+              name={'contatocrm'}
+              dataForm={contatocrmoperadorData}
+              value={contatocrmoperadorData.contatocrm}
+              setValue={addValorContatoCRM}
+              label={'Contato C R M'}
+              />
+
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='cargoesc'
+              label='CargoEsc'
+              dataForm={contatocrmoperadorData}
+              className='inputIncNome'
+              name='cargoesc'
+              value={contatocrmoperadorData.cargoesc}
+              onChange={onChange}
+              />
+
+
+              <OperadorComboBox
+              name={'operador'}
+              dataForm={contatocrmoperadorData}
+              value={contatocrmoperadorData.operador}
+              setValue={addValorOperador}
+              label={'Operador'}
+              />
+            </div>
+          </form>
+
+
+          {isMobile && (
+            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ContatoCRMOperador' data={contatocrmoperadorData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContatoCRMOperadorForm-${contatocrmoperadorData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <DeleteButton page={'/pages/contatocrmoperador'} id={contatocrmoperadorData.id} closeModel={onClose} dadoApi={dadoApi} />
+          </div>
+          <div className='form-spacer'></div>
+          </>
+        );
+      };

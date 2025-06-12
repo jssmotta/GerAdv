@@ -7,7 +7,7 @@ public partial class DBAlarmSMS : MenphisSI.GerAdv.DBAlarmSMS, IDBAlarmSMS
     {
     }
 
-    public DBAlarmSMS(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAlarmSMS(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAlarmSMS : MenphisSI.GerAdv.DBAlarmSMS, IDBAlarmSMS
     {
     }
 
-    public DBAlarmSMS(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBAlarmSMS(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

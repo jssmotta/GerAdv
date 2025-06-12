@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IReuniaoPessoasReader
 {
-    ReuniaoPessoasResponse? Read(int id, SqlConnection oCnn);
-    ReuniaoPessoasResponse? Read(string where, SqlConnection oCnn);
+    ReuniaoPessoasResponse? Read(int id, MsiSqlConnection oCnn);
+    ReuniaoPessoasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ReuniaoPessoasResponse? Read(Entity.DBReuniaoPessoas dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ReuniaoPessoasResponse? Read(DBReuniaoPessoas dbRec);
+    ReuniaoPessoasResponseAll? ReadAll(DBReuniaoPessoas dbRec, DataRow dr);
 }
 
 public partial class ReuniaoPessoas : IReuniaoPessoasReader
 {
-    public ReuniaoPessoasResponse? Read(int id, SqlConnection oCnn)
+    public ReuniaoPessoasResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBReuniaoPessoas(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ReuniaoPessoasResponse? Read(string where, SqlConnection oCnn)
+    public ReuniaoPessoasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBReuniaoPessoas(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBReuniaoPessoas(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -39,18 +41,6 @@ public partial class ReuniaoPessoas : IReuniaoPessoasReader
             Reuniao = dbRec.FReuniao,
             Operador = dbRec.FOperador,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        reuniaopessoas.Auditor = auditor;
         return reuniaopessoas;
     }
 
@@ -67,18 +57,23 @@ public partial class ReuniaoPessoas : IReuniaoPessoasReader
             Reuniao = dbRec.FReuniao,
             Operador = dbRec.FOperador,
         };
-        var auditor = new Auditor
+        return reuniaopessoas;
+    }
+
+    public ReuniaoPessoasResponseAll? ReadAll(DBReuniaoPessoas dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var reuniaopessoas = new ReuniaoPessoasResponseAll
+        {
+            Id = dbRec.ID,
+            Reuniao = dbRec.FReuniao,
+            Operador = dbRec.FOperador,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        reuniaopessoas.Auditor = auditor;
+        reuniaopessoas.NomeOperador = dr["operNome"]?.ToString() ?? string.Empty;
         return reuniaopessoas;
     }
 }

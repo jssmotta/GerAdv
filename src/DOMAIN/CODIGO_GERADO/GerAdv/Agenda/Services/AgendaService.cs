@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IAgendaService, IDisposable
+public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgenda2AgendaService agenda2agendaService, IAgendaRecordsService agendarecordsService, IAgendaStatusService agendastatusService, IAlarmSMSService alarmsmsService, IRecadosService recadosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAgendaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<AgendaResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<AgendaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Agenda: URI inválida");
@@ -26,72 +27,81 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaRea
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<AgendaResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<AgendaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBAgenda.SensivelCamposSqlX} 
-                   FROM {DBAgenda.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBAgendaDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBAgenda>(max);
-        await foreach (var item in DBAgenda.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBAgenda.SensivelCamposSqlX}, cidNome,advNome,funNome,tipDescricao,cliNome,areDescricao,jusNome,proNroPasta,operNome,preNome
+                   FROM {DBAgenda.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=ageCidade
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=ageAdvogado
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=ageFuncionario
+LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON tipCodigo=ageTipoCompromisso
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ageCliente
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=ageArea
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=ageJustica
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ageProcesso
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ageUsuario
+LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agePreposto
+ 
+                   {where}
+                   ORDER BY ageData
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<AgendaResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBAgenda(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var agenda = reader.ReadAll(dbRec, item);
+                if (agenda != null)
+                {
+                    lista.Add(agenda);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<AgendaResponse>> Filter(Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<AgendaResponseAll>> Filter(Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("Agenda: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-Agenda-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<AgendaResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBAgenda.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<AgendaResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("Agenda: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new AgendaResponse();
         }
@@ -101,39 +111,24 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaRea
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-Agenda-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-Agenda-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Agenda - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"Agenda - {uri}-: GetById");
         }
     }
 
-    private async Task<AgendaResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<AgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<AgendaResponse?> AddAndUpdate([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Agenda: URI inválida");
@@ -147,14 +142,13 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaRea
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var validade = await validation.ValidateReg(regAgenda, this, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
             if (validade.Length > 0)
             {
                 throw new Exception($"Agenda: {validade}");
@@ -168,31 +162,47 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaRea
     public async Task<AgendaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("Agenda: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var agenda = reader.Read(id, oCnn);
-            if (agenda != null)
+            var deleteValidation = await validation.CanDelete(id, this, agenda2agendaService, agendarecordsService, agendastatusService, alarmsmsService, recadosService, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBAgenda().DeletarItem(agenda.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var agenda = reader.Read(id, oCnn);
+            try
+            {
+                if (agenda != null)
+                {
+                    writer.Delete(agenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return agenda;
@@ -225,40 +235,176 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaRea
         }
     }
 
-    private static string WFiltro(Filters.FilterAgenda filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgenda filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.IDCOB == -2147483648 ? string.Empty : DBAgendaDicInfo.IDCOBSql(filtro.IDCOB);
-        cWhere += filtro.IDNE == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.IDNESql(filtro.IDNE);
-        cWhere += filtro.Cidade == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.CidadeSql(filtro.Cidade);
-        cWhere += filtro.Oculto == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.OcultoSql(filtro.Oculto);
-        cWhere += filtro.CartaPrecatoria == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.CartaPrecatoriaSql(filtro.CartaPrecatoria);
-        cWhere += filtro.Advogado == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.AdvogadoSql(filtro.Advogado);
-        cWhere += filtro.EventoGerador == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.EventoGeradorSql(filtro.EventoGerador);
-        cWhere += filtro.Funcionario == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.FuncionarioSql(filtro.Funcionario);
-        cWhere += filtro.EventoPrazo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.EventoPrazoSql(filtro.EventoPrazo);
-        cWhere += filtro.Compromisso.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.CompromissoSql(filtro.Compromisso);
-        cWhere += filtro.TipoCompromisso == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.TipoCompromissoSql(filtro.TipoCompromisso);
-        cWhere += filtro.Cliente == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.ClienteSql(filtro.Cliente);
-        cWhere += filtro.Area == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.AreaSql(filtro.Area);
-        cWhere += filtro.Justica == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.JusticaSql(filtro.Justica);
-        cWhere += filtro.Processo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.IDHistorico == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.IDHistoricoSql(filtro.IDHistorico);
-        cWhere += filtro.IDInsProcesso == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.IDInsProcessoSql(filtro.IDInsProcesso);
-        cWhere += filtro.Usuario == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.UsuarioSql(filtro.Usuario);
-        cWhere += filtro.Preposto == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.PrepostoSql(filtro.Preposto);
-        cWhere += filtro.QuemID == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.QuemIDSql(filtro.QuemID);
-        cWhere += filtro.QuemCodigo == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.QuemCodigoSql(filtro.QuemCodigo);
-        cWhere += filtro.Status.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.StatusSql(filtro.Status);
-        cWhere += filtro.Decisao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.DecisaoSql(filtro.Decisao);
-        cWhere += filtro.Sempre == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.SempreSql(filtro.Sempre);
-        cWhere += filtro.PrazoDias == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.PrazoDiasSql(filtro.PrazoDias);
-        cWhere += filtro.ProtocoloIntegrado == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.ProtocoloIntegradoSql(filtro.ProtocoloIntegrado);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.IDCOB != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.IDCOB)}", filtro.IDCOB));
+        }
+
+        if (filtro.IDNE != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.IDNE)}", filtro.IDNE));
+        }
+
+        if (filtro.Cidade != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Cidade)}", filtro.Cidade));
+        }
+
+        if (filtro.Oculto != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Oculto)}", filtro.Oculto));
+        }
+
+        if (filtro.CartaPrecatoria != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.CartaPrecatoria)}", filtro.CartaPrecatoria));
+        }
+
+        if (filtro.Advogado != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Advogado)}", filtro.Advogado));
+        }
+
+        if (filtro.EventoGerador != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.EventoGerador)}", filtro.EventoGerador));
+        }
+
+        if (filtro.Funcionario != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Funcionario)}", filtro.Funcionario));
+        }
+
+        if (filtro.EventoPrazo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.EventoPrazo)}", filtro.EventoPrazo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Compromisso))
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Compromisso)}", filtro.Compromisso));
+        }
+
+        if (filtro.TipoCompromisso != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.TipoCompromisso)}", filtro.TipoCompromisso));
+        }
+
+        if (filtro.Cliente != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Cliente)}", filtro.Cliente));
+        }
+
+        if (filtro.Area != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Area)}", filtro.Area));
+        }
+
+        if (filtro.Justica != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Justica)}", filtro.Justica));
+        }
+
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (filtro.IDHistorico != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.IDHistorico)}", filtro.IDHistorico));
+        }
+
+        if (filtro.IDInsProcesso != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.IDInsProcesso)}", filtro.IDInsProcesso));
+        }
+
+        if (filtro.Usuario != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Usuario)}", filtro.Usuario));
+        }
+
+        if (filtro.Preposto != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Preposto)}", filtro.Preposto));
+        }
+
+        if (filtro.QuemID != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.QuemID)}", filtro.QuemID));
+        }
+
+        if (filtro.QuemCodigo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.QuemCodigo)}", filtro.QuemCodigo));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Status))
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Status)}", filtro.Status));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Decisao))
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Decisao)}", filtro.Decisao));
+        }
+
+        if (filtro.Sempre != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Sempre)}", filtro.Sempre));
+        }
+
+        if (filtro.PrazoDias != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.PrazoDias)}", filtro.PrazoDias));
+        }
+
+        if (filtro.ProtocoloIntegrado != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}", filtro.ProtocoloIntegrado));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.IDCOB == int.MinValue ? string.Empty : $"{DBAgendaDicInfo.IDCOB} = @{nameof(DBAgendaDicInfo.IDCOB)}";
+        cWhere += filtro.IDNE == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.IDNE} = @{nameof(DBAgendaDicInfo.IDNE)}";
+        cWhere += filtro.Cidade == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Cidade} = @{nameof(DBAgendaDicInfo.Cidade)}";
+        cWhere += filtro.Oculto == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Oculto} = @{nameof(DBAgendaDicInfo.Oculto)}";
+        cWhere += filtro.CartaPrecatoria == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.CartaPrecatoria} = @{nameof(DBAgendaDicInfo.CartaPrecatoria)}";
+        cWhere += filtro.Advogado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Advogado} = @{nameof(DBAgendaDicInfo.Advogado)}";
+        cWhere += filtro.EventoGerador == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.EventoGerador} = @{nameof(DBAgendaDicInfo.EventoGerador)}";
+        cWhere += filtro.Funcionario == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Funcionario} = @{nameof(DBAgendaDicInfo.Funcionario)}";
+        cWhere += filtro.EventoPrazo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.EventoPrazo} = @{nameof(DBAgendaDicInfo.EventoPrazo)}";
+        cWhere += filtro.Compromisso.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Compromisso} = @{nameof(DBAgendaDicInfo.Compromisso)}";
+        cWhere += filtro.TipoCompromisso == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.TipoCompromisso} = @{nameof(DBAgendaDicInfo.TipoCompromisso)}";
+        cWhere += filtro.Cliente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Cliente} = @{nameof(DBAgendaDicInfo.Cliente)}";
+        cWhere += filtro.Area == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Area} = @{nameof(DBAgendaDicInfo.Area)}";
+        cWhere += filtro.Justica == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Justica} = @{nameof(DBAgendaDicInfo.Justica)}";
+        cWhere += filtro.Processo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Processo} = @{nameof(DBAgendaDicInfo.Processo)}";
+        cWhere += filtro.IDHistorico == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.IDHistorico} = @{nameof(DBAgendaDicInfo.IDHistorico)}";
+        cWhere += filtro.IDInsProcesso == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.IDInsProcesso} = @{nameof(DBAgendaDicInfo.IDInsProcesso)}";
+        cWhere += filtro.Usuario == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Usuario} = @{nameof(DBAgendaDicInfo.Usuario)}";
+        cWhere += filtro.Preposto == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Preposto} = @{nameof(DBAgendaDicInfo.Preposto)}";
+        cWhere += filtro.QuemID == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.QuemID} = @{nameof(DBAgendaDicInfo.QuemID)}";
+        cWhere += filtro.QuemCodigo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.QuemCodigo} = @{nameof(DBAgendaDicInfo.QuemCodigo)}";
+        cWhere += filtro.Status.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Status} = @{nameof(DBAgendaDicInfo.Status)}";
+        cWhere += filtro.Decisao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Decisao} = @{nameof(DBAgendaDicInfo.Decisao)}";
+        cWhere += filtro.Sempre == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.Sempre} = @{nameof(DBAgendaDicInfo.Sempre)}";
+        cWhere += filtro.PrazoDias == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.PrazoDias} = @{nameof(DBAgendaDicInfo.PrazoDias)}";
+        cWhere += filtro.ProtocoloIntegrado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.ProtocoloIntegrado} = @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaDicInfo.GUID} = @{nameof(DBAgendaDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

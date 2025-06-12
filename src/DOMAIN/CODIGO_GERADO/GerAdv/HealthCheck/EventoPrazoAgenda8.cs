@@ -32,7 +32,7 @@ public class EventoPrazoAgendaHealthCheck(IOptions<AppSettings> appSettings, Eve
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class EventoPrazoAgendaHealthCheck(IOptions<AppSettings> appSettings, Eve
                         if (DBEventoPrazoAgendaDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(epaCodigo) FROM dbo.EventoPrazoAgenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(epaCodigo) FROM {"EventoPrazoAgenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class EventoPrazoAgendaHealthCheck(IOptions<AppSettings> appSettings, Eve
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) epaNome,epaBold FROM dbo.EventoPrazoAgenda (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) epaNome,epaBold FROM {"EventoPrazoAgenda".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

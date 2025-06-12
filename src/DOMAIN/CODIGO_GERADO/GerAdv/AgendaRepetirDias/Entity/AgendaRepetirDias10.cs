@@ -7,7 +7,7 @@ public partial class DBAgendaRepetirDias : MenphisSI.GerAdv.DBAgendaRepetirDias,
     {
     }
 
-    public DBAgendaRepetirDias(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBAgendaRepetirDias(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBAgendaRepetirDias : MenphisSI.GerAdv.DBAgendaRepetirDias,
     {
     }
 
-    public DBAgendaRepetirDias(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBAgendaRepetirDias(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

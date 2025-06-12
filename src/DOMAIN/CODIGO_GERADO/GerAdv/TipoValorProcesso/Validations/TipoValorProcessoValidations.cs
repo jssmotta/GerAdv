@@ -5,12 +5,26 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoValorProcessoValidation
 {
-    Task<string> ValidateReg(Models.TipoValorProcesso reg, ITipoValorProcessoService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.TipoValorProcesso reg, ITipoValorProcessoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, ITipoValorProcessoService service, IProValoresService provaloresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoValorProcessoValidation : ITipoValorProcessoValidation
 {
-    public async Task<string> ValidateReg(Models.TipoValorProcesso reg, ITipoValorProcessoService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, ITipoValorProcessoService service, IProValoresService provaloresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var provaloresExists = await provaloresService.Filter(new Filters.FilterProValores { TipoValorProcesso = id }, uri);
+        if (provaloresExists != null && provaloresExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Pro Valores associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.TipoValorProcesso reg, ITipoValorProcessoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

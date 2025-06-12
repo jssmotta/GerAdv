@@ -21,3 +21,25 @@ public partial class ProPartesResponse
     [JsonPropertyName("parte")]
     public int Parte { get; set; }
 }
+
+[Serializable]
+public partial class ProPartesResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - oppProcesso  
+    /// </summary>
+    [JsonPropertyName("processo")]
+    public int Processo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - oppParte  
+    /// </summary>
+    [JsonPropertyName("parte")]
+    public int Parte { get; set; }
+
+    [JsonPropertyName("nropastaprocessos")]
+    public string NroPastaProcessos { get; set; } = string.Empty;
+}

@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useEMPClassRiscosForm, useEMPClassRiscosList, useValidationsEMPClassRiscos } from '../GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos';
+import { IEMPClassRiscos } from '../GerAdv_TS/EMPClassRiscos/Interfaces/interface.EMPClassRiscos';
+import { IEMPClassRiscosService } from '../GerAdv_TS/EMPClassRiscos/Services/EMPClassRiscos.service';
+import { EMPClassRiscosTestEmpty } from '../GerAdv_TS/Models/EMPClassRiscos';
+import { useEMPClassRiscosComboBox } from '../GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos';
+
+// Mock do serviço
+const mockEMPClassRiscosService: jest.Mocked<IEMPClassRiscosService> = {
+  fetchEMPClassRiscosById: jest.fn(),
+  saveEMPClassRiscos: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteEMPClassRiscos: jest.fn(),
+  validateEMPClassRiscos: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialEMPClassRiscos: IEMPClassRiscos = { ...EMPClassRiscosTestEmpty() };
+
+describe('useEMPClassRiscosForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosForm(initialEMPClassRiscos, mockEMPClassRiscosService)
+    );
+
+    expect(result.current.data).toEqual(initialEMPClassRiscos);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosForm(initialEMPClassRiscos, mockEMPClassRiscosService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo E M P Class Riscos',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo E M P Class Riscos');
+  });
+
+   test('deve carregar E M P Class Riscos por ID', async () => {
+    const mockEMPClassRiscos = { ...initialEMPClassRiscos, id: 1, nome: 'E M P Class Riscos Teste' };
+    mockEMPClassRiscosService.fetchEMPClassRiscosById.mockResolvedValue(mockEMPClassRiscos);
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosForm(initialEMPClassRiscos, mockEMPClassRiscosService)
+    );
+
+    await act(async () => {
+      await result.current.loadEMPClassRiscos(1);
+    });
+
+    expect(mockEMPClassRiscosService.fetchEMPClassRiscosById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockEMPClassRiscos);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar E M P Class Riscos', async () => {
+    const errorMessage = 'Erro ao carregar E M P Class Riscos';
+    mockEMPClassRiscosService.fetchEMPClassRiscosById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosForm(initialEMPClassRiscos, mockEMPClassRiscosService)
+    );
+
+    await act(async () => {
+      await result.current.loadEMPClassRiscos(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosForm(initialEMPClassRiscos, mockEMPClassRiscosService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialEMPClassRiscos, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialEMPClassRiscos);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosForm(initialEMPClassRiscos, mockEMPClassRiscosService)
+    );
+
+    await act(async () => {
+      await result.current.loadEMPClassRiscos(0);
+    });
+
+    expect(mockEMPClassRiscosService.fetchEMPClassRiscosById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialEMPClassRiscos);
+  });
+});
+
+describe('useEMPClassRiscosList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosList(mockEMPClassRiscosService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialEMPClassRiscos, id: 1, nome: 'E M P Class Riscos 1' },
+      { ...initialEMPClassRiscos, id: 2, nome: 'E M P Class Riscos 2' }
+    ];
+    mockEMPClassRiscosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosList(mockEMPClassRiscosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockEMPClassRiscosService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockEMPClassRiscosService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosList(mockEMPClassRiscosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialEMPClassRiscos, id: 1, nome: 'E M P Class Riscos Filtrado' }];
+    const filtro = { nome: 'E M P Class Riscos' };
+    mockEMPClassRiscosService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosList(mockEMPClassRiscosService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockEMPClassRiscosService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsEMPClassRiscos', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsEMPClassRiscos());
+
+    const validData = { ...initialEMPClassRiscos, nome: 'E M P Class Riscos Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsEMPClassRiscos());
+
+    const invalidData = { ...initialEMPClassRiscos, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsEMPClassRiscos());
+
+    const invalidData = { 
+      ...initialEMPClassRiscos, 
+      nome: 'a'.repeat(80+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 80 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsEMPClassRiscos());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialEMPClassRiscos, id: 1, nome: 'E M P Class Riscos Teste' }];
+    mockEMPClassRiscosService.getAll.mockResolvedValue(mockData);
+    mockEMPClassRiscosService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useEMPClassRiscosList(mockEMPClassRiscosService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsEMPClassRiscos()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'E M P Class Riscos Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'E M P Class Riscos Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'E M P Class Riscos 1' },
+      { id: 2, nome: 'E M P Class Riscos 2' }
+    ];
+    mockEMPClassRiscosService.getList.mockResolvedValue(mockOptions as IEMPClassRiscos[]);
+
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'E M P Class Riscos 1' },
+        { id: 2, nome: 'E M P Class Riscos 2' }
+      ]);
+    });
+
+    expect(mockEMPClassRiscosService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'E M P Class Riscos ABC' },
+      { id: 2, nome: 'E M P Class Riscos XYZ' }
+    ];
+    mockEMPClassRiscosService.getList.mockResolvedValue(mockOptions as IEMPClassRiscos[]);   
+
+
+ const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'E M P Class Riscos ABC' },
+        { id: 2, nome: 'E M P Class Riscos XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'E M P Class Riscos ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'E M P Class Riscos ABC' },
+      { id: 2, nome: 'E M P Class Riscos XYZ' }
+    ];
+    mockEMPClassRiscosService.getList.mockResolvedValue(mockOptions as IEMPClassRiscos[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'E M P Class Riscos ABC' },
+        { id: 2, nome: 'E M P Class Riscos XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'E M P Class Riscos ABC' },
+          {id: 2, nome: 'E M P Class Riscos XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService)
+    );
+
+    const newValue = { id: 1, nome: 'E M P Class Riscos Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'E M P Class Riscos Inicial' };
+    
+    const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useEMPClassRiscosComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'E M P Class Riscos Inicial' };
+    
+    const { result } = renderHook(() => 
+      useEMPClassRiscosComboBox(mockEMPClassRiscosService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

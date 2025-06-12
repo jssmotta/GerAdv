@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEnderecosWriter
 {
-    Entity.DBEnderecos Write(Models.Enderecos enderecos, int auditorQuem, SqlConnection oCnn);
+    Entity.DBEnderecos Write(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Enderecos : IEnderecosWriter
 {
-    public Entity.DBEnderecos Write(Models.Enderecos enderecos, int auditorQuem, SqlConnection oCnn)
+    public void Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Enderecos] WHERE endCodigo={enderecos.Id};", oCnn);
+    }
+
+    public Entity.DBEnderecos Write(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = enderecos.Id.IsEmptyIDNumber() ? new Entity.DBEnderecos() : new Entity.DBEnderecos(enderecos.Id, oCnn);
         dbRec.FTopIndex = enderecos.TopIndex;

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAlarmSMSWriter
 {
-    Entity.DBAlarmSMS Write(Models.AlarmSMS alarmsms, int auditorQuem, SqlConnection oCnn);
+    Entity.DBAlarmSMS Write(Models.AlarmSMS alarmsms, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(AlarmSMSResponse alarmsms, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class AlarmSMS : IAlarmSMSWriter
 {
-    public Entity.DBAlarmSMS Write(Models.AlarmSMS alarmsms, int auditorQuem, SqlConnection oCnn)
+    public void Delete(AlarmSMSResponse alarmsms, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[AlarmSMS] WHERE alrCodigo={alarmsms.Id};", oCnn);
+    }
+
+    public Entity.DBAlarmSMS Write(Models.AlarmSMS alarmsms, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = alarmsms.Id.IsEmptyIDNumber() ? new Entity.DBAlarmSMS() : new Entity.DBAlarmSMS(alarmsms.Id, oCnn);
         dbRec.FDescricao = alarmsms.Descricao;

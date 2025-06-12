@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadorWriter
 {
-    Entity.DBOperador Write(Models.Operador operador, int auditorQuem, SqlConnection oCnn);
+    Entity.DBOperador Write(Models.Operador operador, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(OperadorResponse operador, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Operador : IOperadorWriter
 {
-    public Entity.DBOperador Write(Models.Operador operador, int auditorQuem, SqlConnection oCnn)
+    public void Delete(OperadorResponse operador, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Operador] WHERE operCodigo={operador.Id};", oCnn);
+    }
+
+    public Entity.DBOperador Write(Models.Operador operador, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = operador.Id.IsEmptyIDNumber() ? new Entity.DBOperador() : new Entity.DBOperador(operador.Id, oCnn);
         dbRec.FEMail = operador.EMail;

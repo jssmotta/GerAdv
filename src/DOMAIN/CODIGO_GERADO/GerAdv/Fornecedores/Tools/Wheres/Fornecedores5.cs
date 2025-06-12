@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IFornecedoresWhere
 {
-    FornecedoresResponse Read(string where, SqlConnection oCnn);
+    FornecedoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Fornecedores : IFornecedoresWhere
 {
-    public FornecedoresResponse Read(string where, SqlConnection oCnn)
+    public FornecedoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBFornecedores(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBFornecedores(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var fornecedores = new FornecedoresResponse
         {
             Id = dbRec.ID,
@@ -40,18 +40,6 @@ public partial class Fornecedores : IFornecedoresWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        fornecedores.Auditor = auditor;
         return fornecedores;
     }
 }

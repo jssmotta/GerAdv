@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IRamalWriter
 {
-    Entity.DBRamal Write(Models.Ramal ramal, int auditorQuem, SqlConnection oCnn);
+    Entity.DBRamal Write(Models.Ramal ramal, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(RamalResponse ramal, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Ramal : IRamalWriter
 {
-    public Entity.DBRamal Write(Models.Ramal ramal, int auditorQuem, SqlConnection oCnn)
+    public void Delete(RamalResponse ramal, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Ramal] WHERE ramCodigo={ramal.Id};", oCnn);
+    }
+
+    public Entity.DBRamal Write(Models.Ramal ramal, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = ramal.Id.IsEmptyIDNumber() ? new Entity.DBRamal() : new Entity.DBRamal(ramal.Id, oCnn);
         dbRec.FNome = ramal.Nome;

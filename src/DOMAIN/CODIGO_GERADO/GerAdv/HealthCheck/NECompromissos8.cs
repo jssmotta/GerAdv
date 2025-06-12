@@ -32,7 +32,7 @@ public class NECompromissosHealthCheck(IOptions<AppSettings> appSettings, NEComp
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class NECompromissosHealthCheck(IOptions<AppSettings> appSettings, NEComp
                         if (DBNECompromissosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(ncpCodigo) FROM dbo.NECompromissos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ncpCodigo) FROM {"NECompromissos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class NECompromissosHealthCheck(IOptions<AppSettings> appSettings, NEComp
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) ncpPalavraChave,ncpProvisionar,ncpTipoCompromisso,ncpTextoCompromisso,ncpBold FROM dbo.NECompromissos (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) ncpPalavraChave,ncpProvisionar,ncpTipoCompromisso,ncpTextoCompromisso,ncpBold FROM {"NECompromissos".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

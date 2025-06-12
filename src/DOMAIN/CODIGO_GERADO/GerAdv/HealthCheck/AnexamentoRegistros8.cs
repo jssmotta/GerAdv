@@ -32,7 +32,7 @@ public class AnexamentoRegistrosHealthCheck(IOptions<AppSettings> appSettings, A
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class AnexamentoRegistrosHealthCheck(IOptions<AppSettings> appSettings, A
                         if (DBAnexamentoRegistrosDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(axrCodigo) FROM dbo.AnexamentoRegistros (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(axrCodigo) FROM {"AnexamentoRegistros".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class AnexamentoRegistrosHealthCheck(IOptions<AppSettings> appSettings, A
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) axrCliente,axrGUIDReg,axrCodigoReg,axrIDReg,axrData,axrGUID FROM dbo.AnexamentoRegistros (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) axrCliente,axrGUIDReg,axrCodigoReg,axrIDReg,axrData,axrGUID FROM {"AnexamentoRegistros".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

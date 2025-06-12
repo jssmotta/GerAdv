@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IAnexamentoRegistrosReader
 {
-    AnexamentoRegistrosResponse? Read(int id, SqlConnection oCnn);
-    AnexamentoRegistrosResponse? Read(string where, SqlConnection oCnn);
+    AnexamentoRegistrosResponse? Read(int id, MsiSqlConnection oCnn);
+    AnexamentoRegistrosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(Entity.DBAnexamentoRegistros dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(DBAnexamentoRegistros dbRec);
+    AnexamentoRegistrosResponseAll? ReadAll(DBAnexamentoRegistros dbRec, DataRow dr);
 }
 
 public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
 {
-    public AnexamentoRegistrosResponse? Read(int id, SqlConnection oCnn)
+    public AnexamentoRegistrosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBAnexamentoRegistros(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public AnexamentoRegistrosResponse? Read(string where, SqlConnection oCnn)
+    public AnexamentoRegistrosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBAnexamentoRegistros(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBAnexamentoRegistros(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -44,18 +46,6 @@ public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             anexamentoregistros.Data = dbRec.FData;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        anexamentoregistros.Auditor = auditor;
         return anexamentoregistros;
     }
 
@@ -77,18 +67,28 @@ public partial class AnexamentoRegistros : IAnexamentoRegistrosReader
         };
         if (DateTime.TryParse(dbRec.FData, out _))
             anexamentoregistros.Data = dbRec.FData;
-        var auditor = new Auditor
+        return anexamentoregistros;
+    }
+
+    public AnexamentoRegistrosResponseAll? ReadAll(DBAnexamentoRegistros dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var anexamentoregistros = new AnexamentoRegistrosResponseAll
+        {
+            Id = dbRec.ID,
+            Cliente = dbRec.FCliente,
+            GUIDReg = dbRec.FGUIDReg ?? string.Empty,
+            CodigoReg = dbRec.FCodigoReg,
+            IDReg = dbRec.FIDReg,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        anexamentoregistros.Auditor = auditor;
+        if (DateTime.TryParse(dbRec.FData, out _))
+            anexamentoregistros.Data = dbRec.FData;
+        anexamentoregistros.NomeClientes = dr["cliNome"]?.ToString() ?? string.Empty;
         return anexamentoregistros;
     }
 }

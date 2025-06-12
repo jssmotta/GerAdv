@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGruposEmpresasWriter
 {
-    Entity.DBGruposEmpresas Write(Models.GruposEmpresas gruposempresas, int auditorQuem, SqlConnection oCnn);
+    Entity.DBGruposEmpresas Write(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class GruposEmpresas : IGruposEmpresasWriter
 {
-    public Entity.DBGruposEmpresas Write(Models.GruposEmpresas gruposempresas, int auditorQuem, SqlConnection oCnn)
+    public void Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[GruposEmpresas] WHERE grpCodigo={gruposempresas.Id};", oCnn);
+    }
+
+    public Entity.DBGruposEmpresas Write(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = gruposempresas.Id.IsEmptyIDNumber() ? new Entity.DBGruposEmpresas() : new Entity.DBGruposEmpresas(gruposempresas.Id, oCnn);
         dbRec.FEMail = gruposempresas.EMail;

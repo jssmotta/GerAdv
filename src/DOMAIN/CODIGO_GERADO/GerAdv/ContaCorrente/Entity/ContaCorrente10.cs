@@ -7,7 +7,7 @@ public partial class DBContaCorrente : MenphisSI.GerAdv.DBContaCorrente, IDBCont
     {
     }
 
-    public DBContaCorrente(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBContaCorrente(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBContaCorrente : MenphisSI.GerAdv.DBContaCorrente, IDBCont
     {
     }
 
-    public DBContaCorrente(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBContaCorrente(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

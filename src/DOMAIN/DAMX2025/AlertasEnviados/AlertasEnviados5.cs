@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBAlertasEnviados
 {
     public const string CadastroGuid = "1379670d-e564-4c51-a066-a7570c39c7ca";
-#region AdministrativeMethods_AlertasEnviados
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE aloCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "AlertasEnviados";
     public const string CamposSqlX = " AlertasEnviados.* ";
     public const string SensivelCamposSqlX = " AlertasEnviados.* ";

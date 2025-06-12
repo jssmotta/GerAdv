@@ -26,7 +26,32 @@ public partial class OperadorGrupoResponse
     /// </summary>
     [JsonPropertyName("inativo")]
     public bool Inativo { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class OperadorGrupoResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ogrOperador  
+    /// </summary>
+    [JsonPropertyName("operador")]
+    public int Operador { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ogrGrupo  
+    /// </summary>
+    [JsonPropertyName("grupo")]
+    public int Grupo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ogrInativo  
+    /// </summary>
+    [JsonPropertyName("inativo")]
+    public bool Inativo { get; set; }
+
+    [JsonPropertyName("nomeoperador")]
+    public string NomeOperador { get; set; } = string.Empty;
 }

@@ -32,7 +32,7 @@ public class PaisesHealthCheck(IOptions<AppSettings> appSettings, PaisesService 
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PaisesHealthCheck(IOptions<AppSettings> appSettings, PaisesService 
                         if (DBPaisesDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(paiCodigo) FROM dbo.Paises (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(paiCodigo) FROM {"Paises".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PaisesHealthCheck(IOptions<AppSettings> appSettings, PaisesService 
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) paiNome,paiGUID FROM dbo.Paises (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) paiNome,paiGUID FROM {"Paises".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

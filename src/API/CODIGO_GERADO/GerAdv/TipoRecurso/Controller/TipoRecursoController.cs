@@ -14,7 +14,7 @@ public partial class TipoRecursoController(ITipoRecursoService tiporecursoServic
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoRecurso", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("TipoRecurso", "GetAll", $"max = {max}", uri);
         var result = await _tiporecursoService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class TipoRecursoController(ITipoRecursoService tiporecursoServic
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoRecurso filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoRecurso: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("TipoRecurso: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tiporecursoService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class TipoRecursoController(ITipoRecursoService tiporecursoServic
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("TipoRecurso: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("TipoRecurso: GetById called with id = {0}, {1}", id, uri);
         var result = await _tiporecursoService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class TipoRecursoController(ITipoRecursoService tiporecursoServic
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("TipoRecurso: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _tiporecursoService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No TipoRecurso found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoRecurso? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"TipoRecurso: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"TipoRecurso: GetListN called, max {max}, {filtro} uri");
         var result = await _tiporecursoService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class TipoRecursoController(ITipoRecursoService tiporecursoServic
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoRecurso regTipoRecurso, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("TipoRecurso", "AddAndUpdate", regTipoRecurso, uri);
-        var result = await _tiporecursoService.AddAndUpdate(regTipoRecurso, uri);
-        if (result == null)
+        //_logger.LogInfo("TipoRecurso", "AddAndUpdate", regTipoRecurso, uri);
+        try
         {
-            _logger.Warn("TipoRecurso: AddAndUpdate failed to add or update TipoRecurso, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _tiporecursoService.AddAndUpdate(regTipoRecurso, uri);
+            if (result == null)
+            {
+                _logger.Warn("TipoRecurso: AddAndUpdate failed to add or update TipoRecurso, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoRecurso: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("TipoRecurso: Delete called with id = {0}, {2}", id, uri);
-        var result = await _tiporecursoService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("TipoRecurso: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No TipoRecurso found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _tiporecursoService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No TipoRecurso found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoRecurso: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IGruposEmpresasCliReader
 {
-    GruposEmpresasCliResponse? Read(int id, SqlConnection oCnn);
-    GruposEmpresasCliResponse? Read(string where, SqlConnection oCnn);
+    GruposEmpresasCliResponse? Read(int id, MsiSqlConnection oCnn);
+    GruposEmpresasCliResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GruposEmpresasCliResponse? Read(Entity.DBGruposEmpresasCli dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GruposEmpresasCliResponse? Read(DBGruposEmpresasCli dbRec);
+    GruposEmpresasCliResponseAll? ReadAll(DBGruposEmpresasCli dbRec, DataRow dr);
 }
 
 public partial class GruposEmpresasCli : IGruposEmpresasCliReader
 {
-    public GruposEmpresasCliResponse? Read(int id, SqlConnection oCnn)
+    public GruposEmpresasCliResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBGruposEmpresasCli(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public GruposEmpresasCliResponse? Read(string where, SqlConnection oCnn)
+    public GruposEmpresasCliResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBGruposEmpresasCli(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBGruposEmpresasCli(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -40,18 +42,6 @@ public partial class GruposEmpresasCli : IGruposEmpresasCliReader
             Cliente = dbRec.FCliente,
             Oculto = dbRec.FOculto,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gruposempresascli.Auditor = auditor;
         return gruposempresascli;
     }
 
@@ -69,18 +59,25 @@ public partial class GruposEmpresasCli : IGruposEmpresasCliReader
             Cliente = dbRec.FCliente,
             Oculto = dbRec.FOculto,
         };
-        var auditor = new Auditor
+        return gruposempresascli;
+    }
+
+    public GruposEmpresasCliResponseAll? ReadAll(DBGruposEmpresasCli dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var gruposempresascli = new GruposEmpresasCliResponseAll
+        {
+            Id = dbRec.ID,
+            Grupo = dbRec.FGrupo,
+            Cliente = dbRec.FCliente,
+            Oculto = dbRec.FOculto,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        gruposempresascli.Auditor = auditor;
+        gruposempresascli.DescricaoGruposEmpresas = dr["grpDescricao"]?.ToString() ?? string.Empty;
+        gruposempresascli.NomeClientes = dr["cliNome"]?.ToString() ?? string.Empty;
         return gruposempresascli;
     }
 }

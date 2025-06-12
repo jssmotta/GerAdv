@@ -5,12 +5,32 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IInstanciaValidation
 {
-    Task<string> ValidateReg(Models.Instancia reg, IInstanciaService service, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Instancia reg, IInstanciaService service, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class InstanciaValidation : IInstanciaValidation
 {
-    public async Task<string> ValidateReg(Models.Instancia reg, IInstanciaService service, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var nenotasExists = await nenotasService.Filter(new Filters.FilterNENotas { Instancia = id }, uri);
+        if (nenotasExists != null && nenotasExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.";
+        var prosucumbenciaExists = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { Instancia = id }, uri);
+        if (prosucumbenciaExists != null && prosucumbenciaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.";
+        var tribunalExists = await tribunalService.Filter(new Filters.FilterTribunal { Instancia = id }, uri);
+        if (tribunalExists != null && tribunalExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Instancia reg, IInstanciaService service, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

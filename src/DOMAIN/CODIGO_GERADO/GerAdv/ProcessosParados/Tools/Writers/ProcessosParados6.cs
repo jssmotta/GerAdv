@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProcessosParadosWriter
 {
-    Entity.DBProcessosParados Write(Models.ProcessosParados processosparados, SqlConnection oCnn);
+    Entity.DBProcessosParados Write(Models.ProcessosParados processosparados, MsiSqlConnection oCnn);
+    void Delete(ProcessosParadosResponse processosparados, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ProcessosParados : IProcessosParadosWriter
 {
-    public Entity.DBProcessosParados Write(Models.ProcessosParados processosparados, SqlConnection oCnn)
+    public void Delete(ProcessosParadosResponse processosparados, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ProcessosParados] WHERE pprCodigo={processosparados.Id};", oCnn);
+    }
+
+    public Entity.DBProcessosParados Write(Models.ProcessosParados processosparados, MsiSqlConnection oCnn)
     {
         var dbRec = processosparados.Id.IsEmptyIDNumber() ? new Entity.DBProcessosParados() : new Entity.DBProcessosParados(processosparados.Id, oCnn);
         dbRec.FProcesso = processosparados.Processo;

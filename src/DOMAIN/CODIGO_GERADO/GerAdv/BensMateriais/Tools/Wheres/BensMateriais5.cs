@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IBensMateriaisWhere
 {
-    BensMateriaisResponse Read(string where, SqlConnection oCnn);
+    BensMateriaisResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class BensMateriais : IBensMateriaisWhere
 {
-    public BensMateriaisResponse Read(string where, SqlConnection oCnn)
+    public BensMateriaisResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBBensMateriais(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBBensMateriais(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var bensmateriais = new BensMateriaisResponse
         {
             Id = dbRec.ID,
@@ -36,18 +36,6 @@ public partial class BensMateriais : IBensMateriaisWhere
             bensmateriais.DataFimDaGarantia = dbRec.FDataFimDaGarantia;
         if (DateTime.TryParse(dbRec.FDataTerminoDaGarantiaDaLoja, out _))
             bensmateriais.DataTerminoDaGarantiaDaLoja = dbRec.FDataTerminoDaGarantiaDaLoja;
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        bensmateriais.Auditor = auditor;
         return bensmateriais;
     }
 }

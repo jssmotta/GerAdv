@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IDivisaoTribunalReader
 {
-    DivisaoTribunalResponse? Read(int id, SqlConnection oCnn);
-    DivisaoTribunalResponse? Read(string where, SqlConnection oCnn);
+    DivisaoTribunalResponse? Read(int id, MsiSqlConnection oCnn);
+    DivisaoTribunalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DivisaoTribunalResponse? Read(Entity.DBDivisaoTribunal dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DivisaoTribunalResponse? Read(DBDivisaoTribunal dbRec);
+    DivisaoTribunalResponseAll? ReadAll(DBDivisaoTribunal dbRec, DataRow dr);
 }
 
 public partial class DivisaoTribunal : IDivisaoTribunalReader
 {
-    public DivisaoTribunalResponse? Read(int id, SqlConnection oCnn)
+    public DivisaoTribunalResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBDivisaoTribunal(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public DivisaoTribunalResponse? Read(string where, SqlConnection oCnn)
+    public DivisaoTribunalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBDivisaoTribunal(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBDivisaoTribunal(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -47,7 +49,7 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Endereco = dbRec.FEndereco ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
-            CEP = dbRec.FCEP ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
@@ -55,18 +57,6 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        divisaotribunal.Auditor = auditor;
         return divisaotribunal;
     }
 
@@ -91,7 +81,7 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Endereco = dbRec.FEndereco ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
-            CEP = dbRec.FCEP ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
@@ -99,18 +89,43 @@ public partial class DivisaoTribunal : IDivisaoTribunalReader
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
+        return divisaotribunal;
+    }
+
+    public DivisaoTribunalResponseAll? ReadAll(DBDivisaoTribunal dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var divisaotribunal = new DivisaoTribunalResponseAll
+        {
+            Id = dbRec.ID,
+            NumCodigo = dbRec.FNumCodigo,
+            Justica = dbRec.FJustica,
+            NomeEspecial = dbRec.FNomeEspecial ?? string.Empty,
+            Area = dbRec.FArea,
+            Cidade = dbRec.FCidade,
+            Foro = dbRec.FForo,
+            Tribunal = dbRec.FTribunal,
+            CodigoDiv = dbRec.FCodigoDiv ?? string.Empty,
+            Endereco = dbRec.FEndereco ?? string.Empty,
+            Fone = dbRec.FFone ?? string.Empty,
+            Fax = dbRec.FFax ?? string.Empty,
+            CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
+            Obs = dbRec.FObs ?? string.Empty,
+            EMail = dbRec.FEMail ?? string.Empty,
+            Andar = dbRec.FAndar ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Bold = dbRec.FBold,
+            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        divisaotribunal.Auditor = auditor;
+        divisaotribunal.NomeJustica = dr["jusNome"]?.ToString() ?? string.Empty;
+        divisaotribunal.DescricaoArea = dr["areDescricao"]?.ToString() ?? string.Empty;
+        divisaotribunal.NomeCidade = dr["cidNome"]?.ToString() ?? string.Empty;
+        divisaotribunal.NomeForo = dr["forNome"]?.ToString() ?? string.Empty;
+        divisaotribunal.NomeTribunal = dr["triNome"]?.ToString() ?? string.Empty;
         return divisaotribunal;
     }
 }

@@ -14,7 +14,7 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("OperadorGrupos", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("OperadorGrupos", "GetAll", $"max = {max}", uri);
         var result = await _operadorgruposService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOperadorGrupos filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("OperadorGrupos: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("OperadorGrupos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _operadorgruposService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("OperadorGrupos: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("OperadorGrupos: GetById called with id = {0}, {1}", id, uri);
         var result = await _operadorgruposService.GetById(id, uri, token);
         if (result == null)
         {
@@ -43,26 +43,11 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
         return Ok(result);
     }
 
-    [HttpGet("{name}")]
-    [Authorize]
-    public async Task<IActionResult> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        _logger.Info("OperadorGrupos: GetByName called with name = {0}, {1}", name, uri);
-        var result = await _operadorgruposService.GetByName(name, uri);
-        if (result == null)
-        {
-            _logger.Warn("GetByName: No OperadorGrupos found with name = {0}, {1}", name, uri);
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadorGrupos? filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info($"OperadorGrupos: GetListN called, max {max}, {filtro} uri");
+        //_logger.Info($"OperadorGrupos: GetListN called, max {max}, {filtro} uri");
         var result = await _operadorgruposService.GetListN(max, filtro, uri);
         return Ok(result);
     }
@@ -71,29 +56,43 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.OperadorGrupos regOperadorGrupos, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("OperadorGrupos", "AddAndUpdate", regOperadorGrupos, uri);
-        var result = await _operadorgruposService.AddAndUpdate(regOperadorGrupos, uri);
-        if (result == null)
+        //_logger.LogInfo("OperadorGrupos", "AddAndUpdate", regOperadorGrupos, uri);
+        try
         {
-            _logger.Warn("OperadorGrupos: AddAndUpdate failed to add or update OperadorGrupos, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _operadorgruposService.AddAndUpdate(regOperadorGrupos, uri);
+            if (result == null)
+            {
+                _logger.Warn("OperadorGrupos: AddAndUpdate failed to add or update OperadorGrupos, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "OperadorGrupos: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("OperadorGrupos: Delete called with id = {0}, {2}", id, uri);
-        var result = await _operadorgruposService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("OperadorGrupos: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No OperadorGrupos found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _operadorgruposService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No OperadorGrupos found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "OperadorGrupos: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

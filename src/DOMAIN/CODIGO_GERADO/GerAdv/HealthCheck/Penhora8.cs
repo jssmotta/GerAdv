@@ -32,7 +32,7 @@ public class PenhoraHealthCheck(IOptions<AppSettings> appSettings, PenhoraServic
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class PenhoraHealthCheck(IOptions<AppSettings> appSettings, PenhoraServic
                         if (DBPenhoraDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(phrCodigo) FROM dbo.Penhora (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(phrCodigo) FROM {"Penhora".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class PenhoraHealthCheck(IOptions<AppSettings> appSettings, PenhoraServic
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) phrProcesso,phrNome,phrDescricao,phrDataPenhora,phrPenhoraStatus,phrMaster,phrGUID FROM dbo.Penhora (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) phrProcesso,phrNome,phrDescricao,phrDataPenhora,phrPenhoraStatus,phrMaster,phrGUID FROM {"Penhora".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

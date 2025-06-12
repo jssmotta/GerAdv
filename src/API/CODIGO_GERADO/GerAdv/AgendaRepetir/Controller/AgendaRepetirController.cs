@@ -14,7 +14,7 @@ public partial class AgendaRepetirController(IAgendaRepetirService agendarepetir
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("AgendaRepetir", "GetAll", $"max = {max}", uri);
+        //_logger.LogInfo("AgendaRepetir", "GetAll", $"max = {max}", uri);
         var result = await _agendarepetirService.GetAll(max, uri);
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public partial class AgendaRepetirController(IAgendaRepetirService agendarepetir
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAgendaRepetir filtro, [FromRoute, Required] string uri)
     {
-        _logger.Info("AgendaRepetir: Filter called with filtro = {0}, {1}", filtro, uri);
+        //_logger.Info("AgendaRepetir: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _agendarepetirService.Filter(filtro, uri);
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public partial class AgendaRepetirController(IAgendaRepetirService agendarepetir
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
-        _logger.Info("AgendaRepetir: GetById called with id = {0}, {1}", id, uri);
+        //_logger.Info("AgendaRepetir: GetById called with id = {0}, {1}", id, uri);
         var result = await _agendarepetirService.GetById(id, uri, token);
         if (result == null)
         {
@@ -47,29 +47,43 @@ public partial class AgendaRepetirController(IAgendaRepetirService agendarepetir
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.AgendaRepetir regAgendaRepetir, [FromRoute, Required] string uri)
     {
-        _logger.LogInfo("AgendaRepetir", "AddAndUpdate", regAgendaRepetir, uri);
-        var result = await _agendarepetirService.AddAndUpdate(regAgendaRepetir, uri);
-        if (result == null)
+        //_logger.LogInfo("AgendaRepetir", "AddAndUpdate", regAgendaRepetir, uri);
+        try
         {
-            _logger.Warn("AgendaRepetir: AddAndUpdate failed to add or update AgendaRepetir, {0}", uri);
-            return BadRequest();
-        }
+            var result = await _agendarepetirService.AddAndUpdate(regAgendaRepetir, uri);
+            if (result == null)
+            {
+                _logger.Warn("AgendaRepetir: AddAndUpdate failed to add or update AgendaRepetir, {0}", uri);
+                return BadRequest();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "AgendaRepetir: AddAndUpdate failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
     }
 
-    [HttpDelete]
-    [Authorize]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
-        _logger.Info("AgendaRepetir: Delete called with id = {0}, {2}", id, uri);
-        var result = await _agendarepetirService.Delete(id, uri);
-        if (result == null)
+        //_logger.Info("AgendaRepetir: Delete called with id = {0}, {2}", id, uri);
+        try
         {
-            _logger.Warn("Delete: No AgendaRepetir found to delete with id = {0}, {1}", id, uri);
-            return NotFound();
-        }
+            var result = await _agendarepetirService.Delete(id, uri);
+            if (result == null)
+            {
+                _logger.Warn("Delete: No AgendaRepetir found to delete with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "AgendaRepetir: Delete failed with exception for id = {0}, {1}", id, uri);
+            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+        }
     }
 }

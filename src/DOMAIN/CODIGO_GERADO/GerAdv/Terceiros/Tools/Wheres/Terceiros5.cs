@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITerceirosWhere
 {
-    TerceirosResponse Read(string where, SqlConnection oCnn);
+    TerceirosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class Terceiros : ITerceirosWhere
 {
-    public TerceirosResponse Read(string where, SqlConnection oCnn)
+    public TerceirosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTerceiros(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTerceiros(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var terceiros = new TerceirosResponse
         {
             Id = dbRec.ID,
@@ -33,18 +33,6 @@ public partial class Terceiros : ITerceirosWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        terceiros.Auditor = auditor;
         return terceiros;
     }
 }

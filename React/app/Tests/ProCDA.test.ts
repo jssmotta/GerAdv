@@ -1,0 +1,441 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useProCDAForm, useProCDAList, useValidationsProCDA } from '../GerAdv_TS/ProCDA/Hooks/hookProCDA';
+import { IProCDA } from '../GerAdv_TS/ProCDA/Interfaces/interface.ProCDA';
+import { IProCDAService } from '../GerAdv_TS/ProCDA/Services/ProCDA.service';
+import { ProCDATestEmpty } from '../GerAdv_TS/Models/ProCDA';
+import { useProCDAComboBox } from '../GerAdv_TS/ProCDA/Hooks/hookProCDA';
+
+// Mock do serviço
+const mockProCDAService: jest.Mocked<IProCDAService> = {
+  fetchProCDAById: jest.fn(),
+  saveProCDA: jest.fn(),
+  getList: jest.fn(),
+  getAll: jest.fn(),
+  deleteProCDA: jest.fn(),
+  validateProCDA: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialProCDA: IProCDA = { ...ProCDATestEmpty() };
+
+describe('useProCDAForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useProCDAForm(initialProCDA, mockProCDAService)
+    );
+
+    expect(result.current.data).toEqual(initialProCDA);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useProCDAForm(initialProCDA, mockProCDAService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'nome',
+        value: 'Novo Pro C D A',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.nome).toBe('Novo Pro C D A');
+  });
+
+   test('deve carregar Pro C D A por ID', async () => {
+    const mockProCDA = { ...initialProCDA, id: 1, nome: 'Pro C D A Teste' };
+    mockProCDAService.fetchProCDAById.mockResolvedValue(mockProCDA);
+
+    const { result } = renderHook(() => 
+      useProCDAForm(initialProCDA, mockProCDAService)
+    );
+
+    await act(async () => {
+      await result.current.loadProCDA(1);
+    });
+
+    expect(mockProCDAService.fetchProCDAById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockProCDA);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Pro C D A', async () => {
+    const errorMessage = 'Erro ao carregar Pro C D A';
+    mockProCDAService.fetchProCDAById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProCDAForm(initialProCDA, mockProCDAService)
+    );
+
+    await act(async () => {
+      await result.current.loadProCDA(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useProCDAForm(initialProCDA, mockProCDAService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialProCDA, nome: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialProCDA);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useProCDAForm(initialProCDA, mockProCDAService)
+    );
+
+    await act(async () => {
+      await result.current.loadProCDA(0);
+    });
+
+    expect(mockProCDAService.fetchProCDAById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialProCDA);
+  });
+});
+
+describe('useProCDAList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProCDAList(mockProCDAService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialProCDA, id: 1, nome: 'Pro C D A 1' },
+      { ...initialProCDA, id: 2, nome: 'Pro C D A 2' }
+    ];
+    mockProCDAService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProCDAList(mockProCDAService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockProCDAService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockProCDAService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useProCDAList(mockProCDAService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialProCDA, id: 1, nome: 'Pro C D A Filtrado' }];
+    const filtro = { nome: 'Pro C D A' };
+    mockProCDAService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useProCDAList(mockProCDAService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockProCDAService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsProCDA', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsProCDA());
+
+    const validData = { ...initialProCDA, nome: 'Pro C D A Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+    test('deve invalidar nome vazio', () => {
+    const { result } = renderHook(() => useValidationsProCDA());
+
+    const invalidData = { ...initialProCDA, nome: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+  });
+
+  
+  test('deve invalidar nome muito longo', () => {
+    const { result } = renderHook(() => useValidationsProCDA());
+
+    const invalidData = { 
+      ...initialProCDA, 
+      nome: 'a'.repeat(255+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Nome não pode ter mais de 255 caracteres.');
+  });
+
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsProCDA());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialProCDA, id: 1, nome: 'Pro C D A Teste' }];
+    mockProCDAService.getAll.mockResolvedValue(mockData);
+    mockProCDAService.getList.mockResolvedValue(mockData);
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useProCDAList(mockProCDAService)
+    );
+    
+     const { result: comboResult } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService)
+    );   
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsProCDA()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+     
+    // Aguarda carregar opções no combo
+    
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro C D A Teste' }]);
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro C D A Teste' }]);
+  
+    expect(validation.isValid).toBe(true);
+  });
+});  test('deve carregar opções na inicialização', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro C D A 1' },
+      { id: 2, nome: 'Pro C D A 2' }
+    ];
+    mockProCDAService.getList.mockResolvedValue(mockOptions as IProCDA[]);
+
+
+    const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService)
+    );
+
+    await waitFor(() => {
+      // Aguarda carregar as opções antes de verificar
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro C D A 1' },
+        { id: 2, nome: 'Pro C D A 2' }
+      ]);
+    });
+
+    expect(mockProCDAService.getList).toHaveBeenCalled();
+  });
+
+  test('deve filtrar opções', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro C D A ABC' },
+      { id: 2, nome: 'Pro C D A XYZ' }
+    ];
+    mockProCDAService.getList.mockResolvedValue(mockOptions as IProCDA[]);   
+
+
+ const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService)
+    );
+
+
+    // Aguarda carregar as opções
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro C D A ABC' },
+        { id: 2, nome: 'Pro C D A XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Pro C D A ABC' }]);
+  });
+
+
+  test('deve limpar filtro quando texto vazio', async () => {
+    const mockOptions = [
+      { id: 1, nome: 'Pro C D A ABC' },
+      { id: 2, nome: 'Pro C D A XYZ' }
+    ];
+    mockProCDAService.getList.mockResolvedValue(mockOptions as IProCDA[]);
+  
+
+
+    const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService)
+    );
+
+
+    await waitFor(() => {
+      expect(result.current.options).toEqual([
+        { id: 1, nome: 'Pro C D A ABC' },
+        { id: 2, nome: 'Pro C D A XYZ' }
+      ]);
+    });
+
+    // Aplica filtro
+    act(() => {
+      result.current.handleFilter('ABC');
+    });
+
+    // Remove filtro
+    act(() => {
+      result.current.handleFilter('');
+    });
+ 
+
+     expect(result.current.options).toEqual([
+          {id: 1, nome: 'Pro C D A ABC' },
+          {id: 2, nome: 'Pro C D A XYZ' }
+        ]);
+
+  });
+
+
+
+ test('deve alterar valor selecionado', () => {
+    const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService)
+    );
+
+    const newValue = { id: 1, nome: 'Pro C D A Selecionado' };
+
+    act(() => {
+      result.current.handleValueChange(newValue);
+    });
+
+    expect(result.current.selectedValue).toEqual(newValue);
+  });
+
+  test('deve limpar valor selecionado', () => {
+    const initialValue = { id: 1, nome: 'Pro C D A Inicial' };
+    
+    const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService, initialValue)
+    );
+
+    act(() => {
+      result.current.clearValue();
+    });
+
+    expect(result.current.selectedValue).toBe(null);
+  });
+
+
+describe('useProCDAComboBox', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService)
+    );
+
+    expect(result.current.options).toEqual([]);
+    expect(result.current.loading).toBe(true);
+    expect(result.current.selectedValue).toBeUndefined();
+  });
+
+ 
+  test('deve inicializar com valor inicial', () => {
+    const initialValue = { id: 1, nome: 'Pro C D A Inicial' };
+    
+    const { result } = renderHook(() => 
+      useProCDAComboBox(mockProCDAService, initialValue)
+    );
+
+    expect(result.current.selectedValue).toEqual(initialValue);
+  });
+});
+
+
+
+
+
+

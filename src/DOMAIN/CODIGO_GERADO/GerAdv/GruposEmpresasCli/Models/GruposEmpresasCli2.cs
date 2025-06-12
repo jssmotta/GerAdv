@@ -26,7 +26,35 @@ public partial class GruposEmpresasCli
     /// </summary>
     [JsonPropertyName("oculto")]
     public bool Oculto { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class GruposEmpresasCliAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - gecGrupo  
+    /// </summary>
+    [JsonPropertyName("grupo")]
+    public int Grupo { get; set; }
+
+    /// <summary>
+    /// Sem descrição - gecCliente  
+    /// </summary>
+    [JsonPropertyName("cliente")]
+    public int Cliente { get; set; }
+
+    /// <summary>
+    /// Sem descrição - gecOculto  
+    /// </summary>
+    [JsonPropertyName("oculto")]
+    public bool Oculto { get; set; }
+
+    [JsonPropertyName("descricaogruposempresas")]
+    public string DescricaoGruposEmpresas { get; set; } = string.Empty;
+
+    [JsonPropertyName("nomeclientes")]
+    public string NomeClientes { get; set; } = string.Empty;
 }

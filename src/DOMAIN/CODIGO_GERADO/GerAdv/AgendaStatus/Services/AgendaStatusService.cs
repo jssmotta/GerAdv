@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAgendaStatusReader reader, IAgendaStatusValidation validation, IAgendaStatusWriter writer, IAgendaReader agendaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IAgendaStatusService, IDisposable
+public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAgendaStatusReader reader, IAgendaStatusValidation validation, IAgendaStatusWriter writer, IAgendaReader agendaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAgendaStatusService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<AgendaStatusResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<AgendaStatusResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaStatus: URI inválida");
@@ -26,72 +27,72 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<AgendaStatusResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<AgendaStatusResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBAgendaStatus.SensivelCamposSqlX} 
-                   FROM {DBAgendaStatus.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBAgendaStatusDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBAgendaStatus>(max);
-        await foreach (var item in DBAgendaStatus.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBAgendaStatus.SensivelCamposSqlX}
+                   FROM {DBAgendaStatus.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=astAgenda
+ 
+                   {where}
+                   ORDER BY 
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<AgendaStatusResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBAgendaStatus(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var agendastatus = reader.ReadAll(dbRec, item);
+                if (agendastatus != null)
+                {
+                    lista.Add(agendastatus);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<AgendaStatusResponse>> Filter(Filters.FilterAgendaStatus filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<AgendaStatusResponseAll>> Filter(Filters.FilterAgendaStatus filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("AgendaStatus: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-AgendaStatus-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<AgendaStatusResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBAgendaStatus.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<AgendaStatusResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("AgendaStatus: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new AgendaStatusResponse();
         }
@@ -101,39 +102,24 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-AgendaStatus-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-AgendaStatus-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"AgendaStatus - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"AgendaStatus - {uri}-: GetById");
         }
     }
 
-    private async Task<AgendaStatusResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<AgendaStatusResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<AgendaStatusResponse?> AddAndUpdate([FromBody] Models.AgendaStatus regAgendaStatus, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaStatus: URI inválida");
@@ -147,8 +133,7 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,31 +153,47 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
     public async Task<AgendaStatusResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("AgendaStatus: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var agendastatus = reader.Read(id, oCnn);
-            if (agendastatus != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBAgendaStatus().DeletarItem(agendastatus.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var agendastatus = reader.Read(id, oCnn);
+            try
+            {
+                if (agendastatus != null)
+                {
+                    writer.Delete(agendastatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return agendastatus;
@@ -225,15 +226,26 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
         }
     }
 
-    private static string WFiltro(Filters.FilterAgendaStatus filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgendaStatus filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Agenda == -2147483648 ? string.Empty : DBAgendaStatusDicInfo.AgendaSql(filtro.Agenda);
-        cWhere += filtro.Completed == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBAgendaStatusDicInfo.CompletedSql(filtro.Completed);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Agenda != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaStatusDicInfo.Agenda)}", filtro.Agenda));
+        }
+
+        if (filtro.Completed != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaStatusDicInfo.Completed)}", filtro.Completed));
+        }
+
+        var cWhere = filtro.Agenda == int.MinValue ? string.Empty : $"{DBAgendaStatusDicInfo.Agenda} = @{nameof(DBAgendaStatusDicInfo.Agenda)}";
+        cWhere += filtro.Completed == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBAgendaStatusDicInfo.Completed} = @{nameof(DBAgendaStatusDicInfo.Completed)}";
+        return (cWhere, parameters);
     }
 }

@@ -7,7 +7,7 @@ public partial class DBProDepositos : MenphisSI.GerAdv.DBProDepositos, IDBProDep
     {
     }
 
-    public DBProDepositos(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBProDepositos(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBProDepositos : MenphisSI.GerAdv.DBProDepositos, IDBProDep
     {
     }
 
-    public DBProDepositos(SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(oCnn, fullSql, sqlWhere, join)
+    public DBProDepositos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

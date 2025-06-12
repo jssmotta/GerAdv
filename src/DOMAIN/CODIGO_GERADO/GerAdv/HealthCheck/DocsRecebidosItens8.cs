@@ -32,7 +32,7 @@ public class DocsRecebidosItensHealthCheck(IOptions<AppSettings> appSettings, Do
 
                 }
 
-                SqlConnection? connection = null;
+                MsiSqlConnection? connection = null;
                 try
                 {
                     using var scope = Configuracoes.CreateConnectionScope(uri);
@@ -61,7 +61,7 @@ public class DocsRecebidosItensHealthCheck(IOptions<AppSettings> appSettings, Do
                         if (DBDocsRecebidosItensDicInfo.CampoCodigo.NotIsEmpty())
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) MAX(driCodigo) FROM dbo.DocsRecebidosItens (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) MAX(driCodigo) FROM {"DocsRecebidosItens".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             if (retId != null && retId != DBNull.Value)
@@ -72,7 +72,7 @@ public class DocsRecebidosItensHealthCheck(IOptions<AppSettings> appSettings, Do
 
                         {
                             await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = "SELECT TOP (1) driContatoCRM,driNome,driDevolvido,driSeraDevolvido,driObservacoes,driBold,driGUID FROM dbo.DocsRecebidosItens (NOLOCK);";
+                            tableCheck.CommandText = $"SELECT TOP (1) driContatoCRM,driNome,driDevolvido,driSeraDevolvido,driObservacoes,driBold,driGUID FROM {"DocsRecebidosItens".dbo(connection)} (NOLOCK);";
                             tableCheck.CommandTimeout = 5;
                             _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                         }

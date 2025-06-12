@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBProcessosObsReport
 {
     public const string CadastroGuid = "ede80309-1e4e-4984-8c0d-3760af531cfd";
-#region AdministrativeMethods_ProcessosObsReport
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE prrCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "ProcessosObsReport";
     public const string CamposSqlX = " ProcessosObsReport.* ";
     public const string SensivelCamposSqlX = " ProcessosObsReport.* ";

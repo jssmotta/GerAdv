@@ -5,12 +5,35 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IPrepostosValidation
 {
-    Task<string> ValidateReg(Models.Prepostos reg, IPrepostosService service, IFuncaoReader funcaoReader, ISetorReader setorReader, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Prepostos reg, IPrepostosService service, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IPrepostosService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PrepostosValidation : IPrepostosValidation
 {
-    public async Task<string> ValidateReg(Models.Prepostos reg, IPrepostosService service, IFuncaoReader funcaoReader, ISetorReader setorReader, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IPrepostosService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Preposto = id }, uri);
+        if (agendaExists != null && agendaExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
+        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Preposto = id }, uri);
+        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
+        var agendaquemExists = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Preposto = id }, uri);
+        if (agendaquemExists != null && agendaquemExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.";
+        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Preposto = id }, uri);
+        if (processosExists != null && processosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Prepostos reg, IPrepostosService service, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";
@@ -38,11 +61,23 @@ public class PrepostosValidation : IPrepostosValidation
             }
         }
 
+        // Cidade
+        if (!reg.Cidade.IsEmptyIDNumber())
+        {
+            var regCidade = cidadeReader.Read(reg.Cidade, oCnn);
+            if (regCidade == null || regCidade.Id != reg.Cidade)
+            {
+                return $"Cidade não encontrado ({regCidade?.Id}).";
+            }
+        }
+
         return string.Empty;
     }
 
     private async Task<bool> IsCpfDuplicado(Models.Prepostos reg, IPrepostosService service, string uri)
     {
+        if (reg.CPF.Length == 0)
+            return false;
         var existingPrepostos = (await service.Filter(new Filters.FilterPrepostos { CPF = reg.CPF }, uri)).FirstOrDefault();
         return existingPrepostos != null && existingPrepostos.Id > 0 && existingPrepostos.Id != reg.Id;
     }

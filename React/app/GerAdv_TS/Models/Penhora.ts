@@ -1,0 +1,45 @@
+﻿import { IPenhora } from '../Penhora/Interfaces/interface.Penhora';
+export interface Penhora
+{
+    id: number;
+	processo : number;
+	penhorastatus : number;
+	nome : string;
+	descricao : string;
+	datapenhora : string;
+	master : number;
+	nropastaprocessos?: string;
+	nomepenhorastatus?: string;
+
+}
+
+
+export function PenhoraEmpty(): IPenhora {
+// 20250604
+    
+    return {
+        id: 0,
+		processo: 0,
+		penhorastatus: 0,
+		nome: '',
+		descricao: '',
+		datapenhora: '',
+		master: 0,
+    };
+}
+
+export function PenhoraTestEmpty(): IPenhora {
+// 20250604
+    
+    return {
+        id: 1,
+		processo: 1,
+		penhorastatus: 1,
+		nome: 'X',
+		descricao: 'X',
+		datapenhora: 'X',
+		master: 1,
+    };
+}
+
+

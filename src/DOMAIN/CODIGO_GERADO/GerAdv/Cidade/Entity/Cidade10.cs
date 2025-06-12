@@ -7,7 +7,7 @@ public partial class DBCidade : MenphisSI.GerAdv.DBCidade, IDBCidade
     {
     }
 
-    public DBCidade(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBCidade(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBCidade : MenphisSI.GerAdv.DBCidade, IDBCidade
     {
     }
 
-    public DBCidade(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBCidade(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

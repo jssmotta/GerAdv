@@ -7,7 +7,7 @@ public partial class DBNEPalavrasChaves : MenphisSI.GerAdv.DBNEPalavrasChaves, I
     {
     }
 
-    public DBNEPalavrasChaves(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBNEPalavrasChaves(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBNEPalavrasChaves : MenphisSI.GerAdv.DBNEPalavrasChaves, I
     {
     }
 
-    public DBNEPalavrasChaves(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBNEPalavrasChaves(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

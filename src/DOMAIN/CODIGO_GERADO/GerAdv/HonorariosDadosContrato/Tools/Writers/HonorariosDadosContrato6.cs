@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IHonorariosDadosContratoWriter
 {
-    Entity.DBHonorariosDadosContrato Write(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, SqlConnection oCnn);
+    Entity.DBHonorariosDadosContrato Write(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class HonorariosDadosContrato : IHonorariosDadosContratoWriter
 {
-    public Entity.DBHonorariosDadosContrato Write(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, SqlConnection oCnn)
+    public void Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[HonorariosDadosContrato] WHERE hdcCodigo={honorariosdadoscontrato.Id};", oCnn);
+    }
+
+    public Entity.DBHonorariosDadosContrato Write(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = honorariosdadoscontrato.Id.IsEmptyIDNumber() ? new Entity.DBHonorariosDadosContrato() : new Entity.DBHonorariosDadosContrato(honorariosdadoscontrato.Id, oCnn);
         dbRec.FCliente = honorariosdadoscontrato.Cliente;

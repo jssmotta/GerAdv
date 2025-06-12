@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IClientesSociosWriter
 {
-    Entity.DBClientesSocios Write(Models.ClientesSocios clientessocios, int auditorQuem, SqlConnection oCnn);
+    Entity.DBClientesSocios Write(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class ClientesSocios : IClientesSociosWriter
 {
-    public Entity.DBClientesSocios Write(Models.ClientesSocios clientessocios, int auditorQuem, SqlConnection oCnn)
+    public void Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[ClientesSocios] WHERE cscCodigo={clientessocios.Id};", oCnn);
+    }
+
+    public Entity.DBClientesSocios Write(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = clientessocios.Id.IsEmptyIDNumber() ? new Entity.DBClientesSocios() : new Entity.DBClientesSocios(clientessocios.Id, oCnn);
         dbRec.FSomenteRepresentante = clientessocios.SomenteRepresentante;

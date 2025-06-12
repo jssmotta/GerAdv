@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ILigacoesWriter
 {
-    Entity.DBLigacoes Write(Models.Ligacoes ligacoes, int auditorQuem, SqlConnection oCnn);
+    Entity.DBLigacoes Write(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class Ligacoes : ILigacoesWriter
 {
-    public Entity.DBLigacoes Write(Models.Ligacoes ligacoes, int auditorQuem, SqlConnection oCnn)
+    public void Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[Ligacoes] WHERE ligCodigo={ligacoes.Id};", oCnn);
+    }
+
+    public Entity.DBLigacoes Write(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = ligacoes.Id.IsEmptyIDNumber() ? new Entity.DBLigacoes() : new Entity.DBLigacoes(ligacoes.Id, oCnn);
         dbRec.FAssunto = ligacoes.Assunto;

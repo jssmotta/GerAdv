@@ -5,32 +5,20 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface INEPalavrasChavesWhere
 {
-    NEPalavrasChavesResponse Read(string where, SqlConnection oCnn);
+    NEPalavrasChavesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class NEPalavrasChaves : INEPalavrasChavesWhere
 {
-    public NEPalavrasChavesResponse Read(string where, SqlConnection oCnn)
+    public NEPalavrasChavesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBNEPalavrasChaves(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBNEPalavrasChaves(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var nepalavraschaves = new NEPalavrasChavesResponse
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Bold = dbRec.FBold,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        nepalavraschaves.Auditor = auditor;
         return nepalavraschaves;
     }
 }

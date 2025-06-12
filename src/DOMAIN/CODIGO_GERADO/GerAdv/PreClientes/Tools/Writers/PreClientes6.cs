@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPreClientesWriter
 {
-    Entity.DBPreClientes Write(Models.PreClientes preclientes, int auditorQuem, SqlConnection oCnn);
+    Entity.DBPreClientes Write(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class PreClientes : IPreClientesWriter
 {
-    public Entity.DBPreClientes Write(Models.PreClientes preclientes, int auditorQuem, SqlConnection oCnn)
+    public void Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[PreClientes] WHERE cliCodigo={preclientes.Id};", oCnn);
+    }
+
+    public Entity.DBPreClientes Write(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = preclientes.Id.IsEmptyIDNumber() ? new Entity.DBPreClientes() : new Entity.DBPreClientes(preclientes.Id, oCnn);
         dbRec.FInativo = preclientes.Inativo;

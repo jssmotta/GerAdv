@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoContatoCRMWhere
 {
-    TipoContatoCRMResponse Read(string where, SqlConnection oCnn);
+    TipoContatoCRMResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class TipoContatoCRM : ITipoContatoCRMWhere
 {
-    public TipoContatoCRMResponse Read(string where, SqlConnection oCnn)
+    public TipoContatoCRMResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBTipoContatoCRM(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBTipoContatoCRM(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var tipocontatocrm = new TipoContatoCRMResponse
         {
             Id = dbRec.ID,
@@ -20,18 +20,6 @@ public partial class TipoContatoCRM : ITipoContatoCRMWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        tipocontatocrm.Auditor = auditor;
         return tipocontatocrm;
     }
 }

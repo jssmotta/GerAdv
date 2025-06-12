@@ -1,0 +1,101 @@
+﻿'use client';
+import { CRUD_CONSTANTS } from '@/app/tools/crud';
+import { HorasTrabApi, HorasTrabApiError } from '../Apis/ApiHorasTrab';
+import { FilterHorasTrab } from '../Filters/HorasTrab';
+import { IHorasTrab } from '../Interfaces/interface.HorasTrab';
+
+export class HorasTrabValidator {
+  static validateHorasTrab(horastrab: IHorasTrab): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    // Atualmente não há validações de regras de negócio específicas
+    // Todas as validações são feitas nos inputs correspondentes
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+export interface IHorasTrabService {
+  fetchHorasTrabById: (id: number) => Promise<IHorasTrab>;
+  saveHorasTrab: (horastrab: IHorasTrab) => Promise<IHorasTrab>;  
+  
+  getAll: (filtro?: FilterHorasTrab) => Promise<IHorasTrab[]>;
+  deleteHorasTrab: (id: number) => Promise<void>;
+  validateHorasTrab: (horastrab: IHorasTrab) => { isValid: boolean; errors: string[] };
+}
+
+export class HorasTrabService implements IHorasTrabService {
+  constructor(private api: HorasTrabApi) {}
+
+  async fetchHorasTrabById(id: number): Promise<IHorasTrab> {
+    if (id <= 0) {
+      throw new HorasTrabApiError('ID inválido', 400, 'INVALID_ID');
+    }
+
+    try {
+      const response = await this.api.getById(id);
+      return response.data;
+    } catch (error) {
+      if (error instanceof HorasTrabApiError) {
+        throw error;
+      }
+      throw new HorasTrabApiError('Erro ao buscar horastrab', 500, 'FETCH_ERROR', error);
+    }
+  }
+
+  async saveHorasTrab(horastrab: IHorasTrab): Promise<IHorasTrab> {    
+    const validation = this.validateHorasTrab(horastrab);
+    if (!validation.isValid) {
+      throw new HorasTrabApiError(
+        `Dados inválidos: ${validation.errors.join(', ')}`,
+        400,
+        'VALIDATION_ERROR'
+      );
+    }
+
+    try {
+      const response = await this.api.addAndUpdate(horastrab);
+      return response.data;
+    } catch (error) {
+      if (error instanceof HorasTrabApiError) {
+        throw error;
+      }
+      throw new HorasTrabApiError('Erro ao salvar horastrab', 500, 'SAVE_ERROR', error);
+    }
+  }
+
+  
+ 
+
+  async getAll(filtro?: FilterHorasTrab): Promise<IHorasTrab[]> {
+    try {
+      const response = await this.api.filter(filtro ?? {});
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching all horastrab:', error);
+      return [];
+    }
+  }
+
+  async deleteHorasTrab(id: number): Promise<void> {
+    if (id <= 0) {
+      throw new HorasTrabApiError('ID inválido para exclusão', 400, 'INVALID_ID');
+    }
+
+    try {
+      await this.api.delete(id);
+    } catch (error) {
+      if (error instanceof HorasTrabApiError) {
+        throw error;
+      }
+      throw new HorasTrabApiError('Erro ao excluir horastrab', 500, 'DELETE_ERROR', error);
+    }
+  }
+
+  validateHorasTrab(horastrab: IHorasTrab): { isValid: boolean; errors: string[] } {
+    return HorasTrabValidator.validateHorasTrab(horastrab);
+  }
+}

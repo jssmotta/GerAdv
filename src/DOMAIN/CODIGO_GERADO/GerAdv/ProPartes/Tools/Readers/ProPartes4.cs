@@ -5,23 +5,24 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface IProPartesReader
 {
-    ProPartesResponse? Read(int id, SqlConnection oCnn);
-    ProPartesResponse? Read(string where, SqlConnection oCnn);
+    ProPartesResponse? Read(int id, MsiSqlConnection oCnn);
+    ProPartesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProPartesResponse? Read(Entity.DBProPartes dbRec);
     ProPartesResponse? Read(DBProPartes dbRec);
+    ProPartesResponseAll? ReadAll(DBProPartes dbRec, DataRow dr);
 }
 
 public partial class ProPartes : IProPartesReader
 {
-    public ProPartesResponse? Read(int id, SqlConnection oCnn)
+    public ProPartesResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBProPartes(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public ProPartesResponse? Read(string where, SqlConnection oCnn)
+    public ProPartesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBProPartes(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBProPartes(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -54,6 +55,23 @@ public partial class ProPartes : IProPartesReader
             Parte = dbRec.FParte,
             Processo = dbRec.FProcesso,
         };
+        return propartes;
+    }
+
+    public ProPartesResponseAll? ReadAll(DBProPartes dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var propartes = new ProPartesResponseAll
+        {
+            Id = dbRec.ID,
+            Parte = dbRec.FParte,
+            Processo = dbRec.FProcesso,
+        };
+        propartes.NroPastaProcessos = dr["proNroPasta"]?.ToString() ?? string.Empty;
         return propartes;
     }
 }

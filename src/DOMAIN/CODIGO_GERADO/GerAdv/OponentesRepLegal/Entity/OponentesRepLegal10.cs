@@ -7,7 +7,7 @@ public partial class DBOponentesRepLegal : MenphisSI.GerAdv.DBOponentesRepLegal,
     {
     }
 
-    public DBOponentesRepLegal(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBOponentesRepLegal(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBOponentesRepLegal : MenphisSI.GerAdv.DBOponentesRepLegal,
     {
     }
 
-    public DBOponentesRepLegal(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBOponentesRepLegal(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

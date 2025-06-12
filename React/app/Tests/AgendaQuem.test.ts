@@ -1,0 +1,260 @@
+﻿// Tests.tsx.txt
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { jest, describe, beforeEach, test, expect } from '@jest/globals';
+import { useAgendaQuemForm, useAgendaQuemList, useValidationsAgendaQuem } from '../GerAdv_TS/AgendaQuem/Hooks/hookAgendaQuem';
+import { IAgendaQuem } from '../GerAdv_TS/AgendaQuem/Interfaces/interface.AgendaQuem';
+import { IAgendaQuemService } from '../GerAdv_TS/AgendaQuem/Services/AgendaQuem.service';
+import { AgendaQuemTestEmpty } from '../GerAdv_TS/Models/AgendaQuem';
+
+
+// Mock do serviço
+const mockAgendaQuemService: jest.Mocked<IAgendaQuemService> = {
+  fetchAgendaQuemById: jest.fn(),
+  saveAgendaQuem: jest.fn(),
+  
+  getAll: jest.fn(),
+  deleteAgendaQuem: jest.fn(),
+  validateAgendaQuem: jest.fn(),
+};
+
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+// Mock dos dados iniciais
+const initialAgendaQuem: IAgendaQuem = { ...AgendaQuemTestEmpty() };
+
+describe('useAgendaQuemForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com dados corretos', () => {
+    const { result } = renderHook(() => 
+      useAgendaQuemForm(initialAgendaQuem, mockAgendaQuemService)
+    );
+
+    expect(result.current.data).toEqual(initialAgendaQuem);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve atualizar dados com handleChange', () => {
+    const { result } = renderHook(() => 
+      useAgendaQuemForm(initialAgendaQuem, mockAgendaQuemService)
+    );
+
+    const mockEvent = {
+      target: {
+        name: 'campo',
+        value: 'Novo Agenda Quem',
+        type: 'text',
+        checked: false
+      }
+    };
+
+    act(() => {
+      result.current.handleChange(mockEvent);
+    });
+
+    expect(result.current.data.campo).toBe('Novo Agenda Quem');
+  });
+
+   test('deve carregar Agenda Quem por ID', async () => {
+    const mockAgendaQuem = { ...initialAgendaQuem, id: 1, campo: 'Agenda Quem Teste' };
+    mockAgendaQuemService.fetchAgendaQuemById.mockResolvedValue(mockAgendaQuem);
+
+    const { result } = renderHook(() => 
+      useAgendaQuemForm(initialAgendaQuem, mockAgendaQuemService)
+    );
+
+    await act(async () => {
+      await result.current.loadAgendaQuem(1);
+    });
+
+    expect(mockAgendaQuemService.fetchAgendaQuemById).toHaveBeenCalledWith(1);
+    expect(result.current.data).toEqual(mockAgendaQuem);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro ao carregar Agenda Quem', async () => {
+    const errorMessage = 'Erro ao carregar Agenda Quem';
+    mockAgendaQuemService.fetchAgendaQuemById.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAgendaQuemForm(initialAgendaQuem, mockAgendaQuemService)
+    );
+
+    await act(async () => {
+      await result.current.loadAgendaQuem(1);
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve resetar formulário', () => {
+    const { result } = renderHook(() => 
+      useAgendaQuemForm(initialAgendaQuem, mockAgendaQuemService)
+    );
+
+    // Primeiro, modifica os dados
+    act(() => {
+      result.current.setData({ ...initialAgendaQuem, campo: 'Teste' });
+    });
+
+    // Depois reseta
+    act(() => {
+      result.current.resetForm();
+    });
+
+    expect(result.current.data).toEqual(initialAgendaQuem);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('não deve carregar quando ID é 0', async () => {
+    const { result } = renderHook(() => 
+      useAgendaQuemForm(initialAgendaQuem, mockAgendaQuemService)
+    );
+
+    await act(async () => {
+      await result.current.loadAgendaQuem(0);
+    });
+
+    expect(mockAgendaQuemService.fetchAgendaQuemById).not.toHaveBeenCalled();
+    expect(result.current.data).toEqual(initialAgendaQuem);
+  });
+});
+
+describe('useAgendaQuemList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('deve inicializar com estado correto', () => {
+    const { result } = renderHook(() => 
+      useAgendaQuemList(mockAgendaQuemService)
+    );
+
+    expect(result.current.data).toEqual([]);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+  });
+
+  test('deve buscar dados com fetchData', async () => {
+    const mockData = [
+      { ...initialAgendaQuem, id: 1, campo: 'Agenda Quem 1' },
+      { ...initialAgendaQuem, id: 2, campo: 'Agenda Quem 2' }
+    ];
+    mockAgendaQuemService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAgendaQuemList(mockAgendaQuemService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(mockAgendaQuemService.getAll).toHaveBeenCalled();
+    expect(result.current.data).toEqual(mockData);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve lidar com erro na busca', async () => {
+    const errorMessage = 'Erro ao carregar lista';
+    mockAgendaQuemService.getAll.mockRejectedValue(new Error(errorMessage));
+
+    const { result } = renderHook(() => 
+      useAgendaQuemList(mockAgendaQuemService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    expect(result.current.error).toBe(errorMessage);
+    expect(result.current.loading).toBe(false);
+  });
+
+  test('deve buscar dados com filtro', async () => {
+    const mockData = [{ ...initialAgendaQuem, id: 1, campo: 'Agenda Quem Filtrado' }];
+    const filtro = { campo: 'Agenda Quem' };
+    mockAgendaQuemService.getAll.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => 
+      useAgendaQuemList(mockAgendaQuemService)
+    );
+
+    await act(async () => {
+      await result.current.fetchData(filtro);
+    });
+
+    expect(mockAgendaQuemService.getAll).toHaveBeenCalledWith(filtro);
+    expect(result.current.data).toEqual(mockData);
+  });
+});
+
+describe('useValidationsAgendaQuem', () => {
+  test('deve validar dados corretos', () => {
+    const { result } = renderHook(() => useValidationsAgendaQuem());
+
+    const validData = { ...initialAgendaQuem, campo: 'Agenda Quem Válido' };
+    const validation = result.current.validate(validData);
+
+    expect(validation.isValid).toBe(true);
+    expect(validation.message).toBe('');
+  });
+
+
+  
+
+  
+
+  test('deve invalidar dados nulos', () => {
+    const { result } = renderHook(() => useValidationsAgendaQuem());
+
+    const validation = result.current.validate(null as any);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('Dados não informados.');
+  });
+});
+
+
+// Teste de integração para múltiplos hooks
+describe('Integração de hooks', () => {
+  test('deve funcionar em conjunto', async () => {
+    const mockData = [{ ...initialAgendaQuem, id: 1, campo: 'Agenda Quem Teste' }];
+    mockAgendaQuemService.getAll.mockResolvedValue(mockData);
+    
+
+    // Usa múltiplos hooks
+    const { result: listResult } = renderHook(() => 
+      useAgendaQuemList(mockAgendaQuemService)
+    );
+    
+       
+
+    const { result: validationResult } = renderHook(() => 
+      useValidationsAgendaQuem()
+    );
+
+    // Busca dados na lista
+    await act(async () => {
+      await listResult.current.fetchData();
+    });
+
+    
+   
+
+    // Valida dados
+    const validation = validationResult.current.validate(mockData[0]);
+
+    expect(listResult.current.data).toEqual(mockData);
+    
+  
+    expect(validation.isValid).toBe(true);
+  });
+});

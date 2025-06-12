@@ -3,17 +3,18 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IProSucumbenciaReader reader, IProSucumbenciaValidation validation, IProSucumbenciaWriter writer, IProcessosReader processosReader, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache) : IProSucumbenciaService, IDisposable
+public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IProSucumbenciaReader reader, IProSucumbenciaValidation validation, IProSucumbenciaWriter writer, IProcessosReader processosReader, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProSucumbenciaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly string _uris = appSettings.Value.ValidUris;
+    private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory;
     private bool _disposed;
-    public async Task<IEnumerable<ProSucumbenciaResponse>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ProSucumbenciaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProSucumbencia: URI inválida");
@@ -26,72 +27,74 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IP
             Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, uri, cancel), entryOptions, cancellationToken: token);
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
     }
 
-    private async Task<IEnumerable<ProSucumbenciaResponse>> GetDataAllAsync(int max, string uri, CancellationToken token)
+    private async Task<IEnumerable<ProSucumbenciaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
     {
-        var query = $@"SELECT DISTINCT TOP {max} 
-                   {DBProSucumbencia.SensivelCamposSqlX} 
-                   FROM {DBProSucumbencia.PTabelaNome} (NOLOCK)
-                   ORDER BY {DBProSucumbenciaDicInfo.CampoNome}
-                   OPTION (OPTIMIZE FOR UNKNOWN)";
-        var connection = Configuracoes.ConnectionByUri(uri);
-        var lista = new List<DBProSucumbencia>(max);
-        await foreach (var item in DBProSucumbencia.ListarAsync(query, string.Empty, string.Empty, connection).WithCancellation(token).ConfigureAwait(false))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            if (item != null)
-            {
-                lista.Add(item);
-                if (lista.Count % 100 == 0)
-                    token.ThrowIfCancellationRequested();
-            }
+            throw new Exception("Conexão nula.");
         }
 
-        return lista.Count > 0 ? lista.Select(item => reader.Read(item)!).Where(item => item != null).ToList() : [];
+        var query = $@"SELECT TOP ({max})
+                   {DBProSucumbencia.SensivelCamposSqlX}, proNroPasta,insNroProcesso,tosNome
+                   FROM {DBProSucumbencia.PTabelaNome.dbo(oCnn)} (NOLOCK)
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=scbProcesso
+LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON insCodigo=scbInstancia
+LEFT JOIN {"TipoOrigemSucumbencia".dbo(oCnn)} (NOLOCK) ON tosCodigo=scbTipoOrigemSucumbencia
+ 
+                   {where}
+                   ORDER BY scbNome
+                   OPTION (OPTIMIZE FOR UNKNOWN)";
+        var lista = new List<ProSucumbenciaResponseAll>(max);
+        var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
+        if (ds != null)
+            foreach (DataRow item in ds.Rows)
+            {
+                var dbRec = new DBProSucumbencia(item);
+                if (dbRec.ID.IsEmptyIDNumber())
+                {
+                    continue;
+                }
+
+                var prosucumbencia = reader.ReadAll(dbRec, item);
+                if (prosucumbencia != null)
+                {
+                    lista.Add(prosucumbencia);
+                }
+            }
+
+        return lista;
     }
 
-    public async Task<IEnumerable<ProSucumbenciaResponse>> Filter(Filters.FilterProSucumbencia filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ProSucumbenciaResponseAll>> Filter(Filters.FilterProSucumbencia filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ProSucumbencia: URI inválida");
+            throw new Exception("Conexão nula.");
         }
 
-        return await Task.Run(() =>
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-ProSucumbencia-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return[];
-            }
-
-            var result = new List<ProSucumbenciaResponse>();
-            var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-            var list = DBProSucumbencia.Listar("", cWhere, "", Configuracoes.ConnectionByUri(uri));
-            if (list != null)
-            {
-                foreach (var item in list)
-                    result.Add(reader.Read(item)!);
-            }
-
-            return result;
-        });
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
     }
 
     public async Task<ProSucumbenciaResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProSucumbencia: URI inválida");
-            }
-        }
-
-        if (id.IsEmptyIDNumber())
+        if (id < 1)
         {
             return new ProSucumbenciaResponse();
         }
@@ -101,39 +104,24 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IP
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
         try
         {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
             var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
-            var result = await _cache.GetOrCreateAsync($"{uri}-ProSucumbencia-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, uri, cancel), entryOptions, cancellationToken: token);
+            var result = await _cache.GetOrCreateAsync($"{uri}-ProSucumbencia-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
         catch (Exception ex)
         {
-            throw new Exception($"ProSucumbencia - {uri}-: GetById - {ex.Message}");
+            throw new Exception($"ProSucumbencia - {uri}-: GetById");
         }
     }
 
-    private async Task<ProSucumbenciaResponse?> GetDataByIdAsync(int id, string uri, CancellationToken token)
-    {
-        return await Task.Run(() =>
-        {
-            if (id.IsEmptyIDNumber())
-            {
-                return null;
-            }
-
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            return oCnn == null ? null : reader.Read(id, oCnn);
-        });
-    }
-
+    private async Task<ProSucumbenciaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await Task.Run(() => reader.Read(id, oCnn));
     public async Task<ProSucumbenciaResponse?> AddAndUpdate([FromBody] Models.ProSucumbencia regProSucumbencia, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProSucumbencia: URI inválida");
@@ -147,8 +135,7 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IP
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
@@ -168,86 +155,82 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IP
     public async Task<ProSucumbenciaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             {
                 throw new Exception("ProSucumbencia: URI inválida");
             }
         }
 
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (id.IsEmptyIDNumber())
             {
                 return null;
             }
 
-            using var scope = Configuracoes.CreateConnectionScopeRw(uri);
-            var oCnn = scope.Connection;
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
             if (oCnn == null)
             {
                 return null;
             }
 
-            var prosucumbencia = reader.Read(id, oCnn);
-            if (prosucumbencia != null)
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
+            if (deleteValidation.Length > 0)
             {
-                new DBProSucumbencia().DeletarItem(prosucumbencia.Id, oCnn, null);
+                throw new Exception(deleteValidation);
+            }
+
+            var prosucumbencia = reader.Read(id, oCnn);
+            try
+            {
+                if (prosucumbencia != null)
+                {
+                    writer.Delete(prosucumbencia, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
+                    if (_memoryCache is MemoryCache memCache)
+                    {
+                        memCache.Compact(1.0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
             return prosucumbencia;
         });
     }
 
-    public async Task<ProSucumbenciaResponse?> GetByName(string name, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
-        {
-            {
-                throw new Exception("ProSucumbencia: URI inválida");
-            }
-        }
-
-        return await Task.Run(() =>
-        {
-            using var scope = Configuracoes.CreateConnectionScope(uri);
-            var oCnn = scope.Connection;
-            if (oCnn == null)
-            {
-                return null;
-            }
-
-            var cWhere = $"{DBProSucumbenciaDicInfo.CampoNome} like '{name.PreparaParaSql()}'";
-            var result = reader.Read(cWhere, oCnn);
-            return result ?? new();
-        });
-    }
-
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProSucumbencia? filtro, [FromRoute, Required] string uri, CancellationToken token)
     {
+        // Tracking: 20250606-0
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _uris))
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
         {
-            throw new Exception("ProSucumbencia: URI inválida");
+            throw new Exception($"Coneão nula.");
         }
 
-        var cWhere = filtro == null ? string.Empty : WFiltro(filtro!);
-        var cacheKey = $"{uri}-ProSucumbencia-{max}-{cWhere.GetHashCode()}-GetListN";
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ProSucumbencia-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, cWhere, cancel), entryOptions, cancellationToken: token) ?? [];
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private static async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string cWhere, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
     {
         return await Task.Run(() =>
         {
             var result = new List<NomeID>(max);
-            foreach (var item in DBProSucumbencia.ListarN(cWhere, DBProSucumbenciaDicInfo.CampoNome, Configuracoes.ConnectionByUri(uri), max: max))
+            foreach (var item in reader.ListarN(max, uri, where, parameters, DBProSucumbenciaDicInfo.CampoNome))
             {
                 if (token.IsCancellationRequested)
                     break;
@@ -287,19 +270,50 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IP
         }
     }
 
-    private static string WFiltro(Filters.FilterProSucumbencia filtro)
+    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProSucumbencia filtro)
     {
         if (filtro.Operator.IsEmpty() || (filtro.Operator.NotEquals(TSql.And) && filtro.Operator.NotEquals(TSql.OR)))
         {
             filtro.Operator = TSql.And;
         }
 
-        var cWhere = filtro.Processo == -2147483648 ? string.Empty : DBProSucumbenciaDicInfo.ProcessoSql(filtro.Processo);
-        cWhere += filtro.Instancia == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProSucumbenciaDicInfo.InstanciaSql(filtro.Instancia);
-        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProSucumbenciaDicInfo.NomeSql(filtro.Nome);
-        cWhere += filtro.TipoOrigemSucumbencia == -2147483648 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProSucumbenciaDicInfo.TipoOrigemSucumbenciaSql(filtro.TipoOrigemSucumbencia);
-        cWhere += filtro.Percentual.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProSucumbenciaDicInfo.PercentualSql(filtro.Percentual);
-        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + DBProSucumbenciaDicInfo.GUIDSql(filtro.GUID);
-        return cWhere;
+        var parameters = new List<SqlParameter>();
+        if (filtro.Processo != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProSucumbenciaDicInfo.Processo)}", filtro.Processo));
+        }
+
+        if (filtro.Instancia != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProSucumbenciaDicInfo.Instancia)}", filtro.Instancia));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Nome))
+        {
+            parameters.Add(new($"@{nameof(DBProSucumbenciaDicInfo.Nome)}", filtro.Nome));
+        }
+
+        if (filtro.TipoOrigemSucumbencia != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia)}", filtro.TipoOrigemSucumbencia));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.Percentual))
+        {
+            parameters.Add(new($"@{nameof(DBProSucumbenciaDicInfo.Percentual)}", filtro.Percentual));
+        }
+
+        if (!string.IsNullOrEmpty(filtro.GUID))
+        {
+            parameters.Add(new($"@{nameof(DBProSucumbenciaDicInfo.GUID)}", filtro.GUID));
+        }
+
+        var cWhere = filtro.Processo == int.MinValue ? string.Empty : $"{DBProSucumbenciaDicInfo.Processo} = @{nameof(DBProSucumbenciaDicInfo.Processo)}";
+        cWhere += filtro.Instancia == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProSucumbenciaDicInfo.Instancia} = @{nameof(DBProSucumbenciaDicInfo.Instancia)}";
+        cWhere += filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProSucumbenciaDicInfo.Nome} = @{nameof(DBProSucumbenciaDicInfo.Nome)}";
+        cWhere += filtro.TipoOrigemSucumbencia == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProSucumbenciaDicInfo.TipoOrigemSucumbencia} = @{nameof(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia)}";
+        cWhere += filtro.Percentual.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProSucumbenciaDicInfo.Percentual} = @{nameof(DBProSucumbenciaDicInfo.Percentual)}";
+        cWhere += filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBProSucumbenciaDicInfo.GUID} = @{nameof(DBProSucumbenciaDicInfo.GUID)}";
+        return (cWhere, parameters);
     }
 }

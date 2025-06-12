@@ -5,24 +5,26 @@ namespace MenphisSI.GerAdv.Readers;
 
 public partial interface INECompromissosReader
 {
-    NECompromissosResponse? Read(int id, SqlConnection oCnn);
-    NECompromissosResponse? Read(string where, SqlConnection oCnn);
+    NECompromissosResponse? Read(int id, MsiSqlConnection oCnn);
+    NECompromissosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     NECompromissosResponse? Read(Entity.DBNECompromissos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, SqlConnection oCnn);
+    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
+    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     NECompromissosResponse? Read(DBNECompromissos dbRec);
+    NECompromissosResponseAll? ReadAll(DBNECompromissos dbRec, DataRow dr);
 }
 
 public partial class NECompromissos : INECompromissosReader
 {
-    public NECompromissosResponse? Read(int id, SqlConnection oCnn)
+    public NECompromissosResponse? Read(int id, MsiSqlConnection oCnn)
     {
         using var dbRec = new Entity.DBNECompromissos(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public NECompromissosResponse? Read(string where, SqlConnection oCnn)
+    public NECompromissosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBNECompromissos(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBNECompromissos(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
@@ -42,18 +44,6 @@ public partial class NECompromissos : INECompromissosReader
             TextoCompromisso = dbRec.FTextoCompromisso ?? string.Empty,
             Bold = dbRec.FBold,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        necompromissos.Auditor = auditor;
         return necompromissos;
     }
 
@@ -73,18 +63,26 @@ public partial class NECompromissos : INECompromissosReader
             TextoCompromisso = dbRec.FTextoCompromisso ?? string.Empty,
             Bold = dbRec.FBold,
         };
-        var auditor = new Auditor
+        return necompromissos;
+    }
+
+    public NECompromissosResponseAll? ReadAll(DBNECompromissos dbRec, DataRow dr)
+    {
+        if (dbRec == null)
         {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
+            return null;
+        }
+
+        var necompromissos = new NECompromissosResponseAll
+        {
+            Id = dbRec.ID,
+            PalavraChave = dbRec.FPalavraChave,
+            Provisionar = dbRec.FProvisionar,
+            TipoCompromisso = dbRec.FTipoCompromisso,
+            TextoCompromisso = dbRec.FTextoCompromisso ?? string.Empty,
+            Bold = dbRec.FBold,
         };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        necompromissos.Auditor = auditor;
+        necompromissos.DescricaoTipoCompromisso = dr["tipDescricao"]?.ToString() ?? string.Empty;
         return necompromissos;
     }
 }

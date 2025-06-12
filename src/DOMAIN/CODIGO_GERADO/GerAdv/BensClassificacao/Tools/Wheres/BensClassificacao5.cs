@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IBensClassificacaoWhere
 {
-    BensClassificacaoResponse Read(string where, SqlConnection oCnn);
+    BensClassificacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
 }
 
 public partial class BensClassificacao : IBensClassificacaoWhere
 {
-    public BensClassificacaoResponse Read(string where, SqlConnection oCnn)
+    public BensClassificacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
-        using var dbRec = new Entity.DBBensClassificacao(sqlWhere: where, oCnn: oCnn);
+        using var dbRec = new Entity.DBBensClassificacao(sqlWhere: where, parameters: parameters, oCnn: oCnn);
         var bensclassificacao = new BensClassificacaoResponse
         {
             Id = dbRec.ID,
@@ -20,18 +20,6 @@ public partial class BensClassificacao : IBensClassificacaoWhere
             Bold = dbRec.FBold,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        var auditor = new Auditor
-        {
-            Visto = dbRec.FVisto,
-            QuemCad = dbRec.FQuemCad
-        };
-        if (auditor.QuemAtu > 0)
-            auditor.QuemAtu = dbRec.FQuemAtu;
-        if (dbRec.FDtCad.NotIsEmpty())
-            auditor.DtCad = Convert.ToDateTime(dbRec.FDtCad);
-        if (!(dbRec.FDtAtu is { }))
-            auditor.DtAtu = Convert.ToDateTime(dbRec.FDtAtu);
-        bensclassificacao.Auditor = auditor;
         return bensclassificacao;
     }
 }

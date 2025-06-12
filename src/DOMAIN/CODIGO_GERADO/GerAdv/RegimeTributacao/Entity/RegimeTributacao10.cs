@@ -7,7 +7,7 @@ public partial class DBRegimeTributacao : MenphisSI.GerAdv.DBRegimeTributacao, I
     {
     }
 
-    public DBRegimeTributacao(int id, SqlConnection oCnn) : base(id, oCnn)
+    public DBRegimeTributacao(int id, MsiSqlConnection oCnn) : base(id, oCnn)
     {
     }
 
@@ -19,7 +19,7 @@ public partial class DBRegimeTributacao : MenphisSI.GerAdv.DBRegimeTributacao, I
     {
     }
 
-    public DBRegimeTributacao(in string? cNome = "", SqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(cNome, oCnn, fullSql, sqlWhere, join)
+    public DBRegimeTributacao(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 }

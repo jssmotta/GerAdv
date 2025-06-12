@@ -1,0 +1,17 @@
+﻿export enum FieldsOperadores
+{	cliente = `Cliente`,
+	enviado = `Enviado`,
+	casa = `Casa`,
+	casaid = `CasaID`,
+	casacodigo = `CasaCodigo`,
+	isnovo = `IsNovo`,
+	grupo = `Grupo`,
+	nome = `Nome`,
+	email = `EMail`,
+	senha = `Senha`,
+	ativado = `Ativado`,
+	atualizarsenha = `AtualizarSenha`,
+	senha256 = `Senha256`,
+	suportesenha256 = `SuporteSenha256`,
+	suportemaxage = `SuporteMaxAge`,
+}

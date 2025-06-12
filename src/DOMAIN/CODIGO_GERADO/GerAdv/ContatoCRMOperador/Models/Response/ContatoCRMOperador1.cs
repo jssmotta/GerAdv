@@ -26,7 +26,32 @@ public partial class ContatoCRMOperadorResponse
     /// </summary>
     [JsonPropertyName("cargoesc")]
     public int CargoEsc { get; set; }
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class ContatoCRMOperadorResponseAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ccoContatoCRM  
+    /// </summary>
+    [JsonPropertyName("contatocrm")]
+    public int ContatoCRM { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ccoOperador  
+    /// </summary>
+    [JsonPropertyName("operador")]
+    public int Operador { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ccoCargoEsc  
+    /// </summary>
+    [JsonPropertyName("cargoesc")]
+    public int CargoEsc { get; set; }
+
+    [JsonPropertyName("nomeoperador")]
+    public string NomeOperador { get; set; } = string.Empty;
 }

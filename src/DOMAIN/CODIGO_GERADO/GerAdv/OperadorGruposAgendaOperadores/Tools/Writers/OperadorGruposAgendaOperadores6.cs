@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadorGruposAgendaOperadoresWriter
 {
-    Entity.DBOperadorGruposAgendaOperadores Write(Models.OperadorGruposAgendaOperadores operadorgruposagendaoperadores, int auditorQuem, SqlConnection oCnn);
+    Entity.DBOperadorGruposAgendaOperadores Write(Models.OperadorGruposAgendaOperadores operadorgruposagendaoperadores, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(OperadorGruposAgendaOperadoresResponse operadorgruposagendaoperadores, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class OperadorGruposAgendaOperadores : IOperadorGruposAgendaOperadoresWriter
 {
-    public Entity.DBOperadorGruposAgendaOperadores Write(Models.OperadorGruposAgendaOperadores operadorgruposagendaoperadores, int auditorQuem, SqlConnection oCnn)
+    public void Delete(OperadorGruposAgendaOperadoresResponse operadorgruposagendaoperadores, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[OperadorGruposAgendaOperadores] WHERE ogpCodigo={operadorgruposagendaoperadores.Id};", oCnn);
+    }
+
+    public Entity.DBOperadorGruposAgendaOperadores Write(Models.OperadorGruposAgendaOperadores operadorgruposagendaoperadores, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = operadorgruposagendaoperadores.Id.IsEmptyIDNumber() ? new Entity.DBOperadorGruposAgendaOperadores() : new Entity.DBOperadorGruposAgendaOperadores(operadorgruposagendaoperadores.Id, oCnn);
         dbRec.FOperadorGruposAgenda = operadorgruposagendaoperadores.OperadorGruposAgenda;

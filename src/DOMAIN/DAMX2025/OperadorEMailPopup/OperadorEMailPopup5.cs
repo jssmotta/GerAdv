@@ -3,10 +3,6 @@ namespace MenphisSI.GerAdv;
 public partial class DBOperadorEMailPopup
 {
     public const string CadastroGuid = "db42a519-a7ab-4494-a991-316f4593d823";
-#region AdministrativeMethods_OperadorEMailPopup
-    public bool DeletarItem(int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => DeletarItem(DevourerOne.InteropOperId32(), nId, oCnn, oTrans);
-    public bool DeletarItem(in int nOper, in int nId, MsiSqlConnection? oCnn, SqlTransaction? oTrans) => nId > 0 && ConfiguracoesDBT.ExecuteDelete($"{ConfiguracoesDBT.DeleteCommand(oCnn, true)} FROM {PTabelaNome.dbo(oCnn)} WHERE oepCodigo={nId};", oCnn, oTrans);
-#endregion
     public const string PTabelaNome = "OperadorEMailPopup";
     public const string CamposSqlX = " OperadorEMailPopup.* ";
     public const string SensivelCamposSqlX = " OperadorEMailPopup.* ";

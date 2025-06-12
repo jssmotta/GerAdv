@@ -5,12 +5,29 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IFuncaoValidation
 {
-    Task<string> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, SqlConnection oCnn);
+    Task<string> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<string> CanDelete(int id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FuncaoValidation : IFuncaoValidation
 {
-    public async Task<string> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, SqlConnection oCnn)
+    public async Task<string> CanDelete(int id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    {
+        if (id <= 0)
+            return "Id inválido";
+        var reg = await service.GetById(id, uri, default);
+        if (reg == null)
+            return $"Registro com id {id} não encontrado.";
+        var funcionariosExists = await funcionariosService.Filter(new Filters.FilterFuncionarios { Funcao = id }, uri);
+        if (funcionariosExists != null && funcionariosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.";
+        var prepostosExists = await prepostosService.Filter(new Filters.FilterPrepostos { Funcao = id }, uri);
+        if (prepostosExists != null && prepostosExists.Any())
+            return "Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.";
+        return string.Empty;
+    }
+
+    public async Task<string> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             return "Objeto está nulo";

@@ -5,12 +5,18 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ILivroCaixaWriter
 {
-    Entity.DBLivroCaixa Write(Models.LivroCaixa livrocaixa, int auditorQuem, SqlConnection oCnn);
+    Entity.DBLivroCaixa Write(Models.LivroCaixa livrocaixa, int auditorQuem, MsiSqlConnection oCnn);
+    void Delete(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection oCnn);
 }
 
 public class LivroCaixa : ILivroCaixaWriter
 {
-    public Entity.DBLivroCaixa Write(Models.LivroCaixa livrocaixa, int auditorQuem, SqlConnection oCnn)
+    public void Delete(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection oCnn)
+    {
+        ConfiguracoesDBT.ExecuteDelete($"DELETE FROM [{oCnn.UseDbo}].[LivroCaixa] WHERE livCodigo={livrocaixa.Id};", oCnn);
+    }
+
+    public Entity.DBLivroCaixa Write(Models.LivroCaixa livrocaixa, int auditorQuem, MsiSqlConnection oCnn)
     {
         var dbRec = livrocaixa.Id.IsEmptyIDNumber() ? new Entity.DBLivroCaixa() : new Entity.DBLivroCaixa(livrocaixa.Id, oCnn);
         dbRec.FIDDes = livrocaixa.IDDes;

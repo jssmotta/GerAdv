@@ -1,0 +1,195 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IPontoVirtual } from '@/app/GerAdv_TS/PontoVirtual/Interfaces/interface.PontoVirtual';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/Inputs.css';
+import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { PontoVirtualApi } from '../../Apis/ApiPontoVirtual';
+import { useValidationsPontoVirtual } from '../../Hooks/hookPontoVirtual';
+import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
+import { OperadorApi } from '@/app/GerAdv_TS/Operador/Apis/ApiOperador';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+interface PontoVirtualFormProps {
+  pontovirtualData: IPontoVirtual;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const PontoVirtualForm: React.FC<PontoVirtualFormProps> = ({
+  pontovirtualData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const isMobile = useIsMobile();
+const { systemContext } = useSystemContext();
+const dadoApi = new PontoVirtualApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsPontoVirtual();
+const [nomeOperador, setNomeOperador] = useState('');
+const operadorApi = new OperadorApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('operador') > 0) {
+  if (pontovirtualData.id === 0 && pontovirtualData.operador == 0) {
+    operadorApi
+    .getById(getParamFromUrl('operador'))
+    .then((response) => {
+      setNomeOperador(response.data.rnome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    pontovirtualData.operador = getParamFromUrl('operador');
+  }
+}
+const addValorOperador = (e: any) => {
+  if (e?.id>0)
+    pontovirtualData.operador = e.id;
+  };
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.error('Erro ao submeter formulário de PontoVirtual:', error);
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
+    };
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`PontoVirtualForm-${pontovirtualData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.error('Erro ao salvar PontoVirtual diretamente:', error);
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = pontovirtualData?.id == 0 ? 'Editar PontoVirtual' : 'Adicionar Ponto Virtual';
+    }
+  }, [pontovirtualData.id]);
+  return (
+  <>
+  <style>
+    {!isMobile ? `
+      @media (max-width: 1366px) {
+        html {
+          zoom: 0.8 !important;
+        }
+      }
+      ` : ``}
+    </style>
+
+    <div className={isMobile ? 'form-container form-container-PontoVirtual' : 'form-container5 form-container-PontoVirtual'}>
+
+      <form className='formInputCadInc' id={`PontoVirtualForm-${pontovirtualData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PontoVirtual' data={pontovirtualData} isSubmitting={isSubmitting} onClose={onClose} formId={`PontoVirtualForm-${pontovirtualData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='horaentrada'
+            label='HoraEntrada'
+            dataForm={pontovirtualData}
+            className='inputIncNome'
+            name='horaentrada'
+            value={pontovirtualData.horaentrada}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='horasaida'
+            label='HoraSaida'
+            dataForm={pontovirtualData}
+            className='inputIncNome'
+            name='horasaida'
+            value={pontovirtualData.horasaida}
+            onChange={onChange}
+            />
+
+
+            <OperadorComboBox
+            name={'operador'}
+            dataForm={pontovirtualData}
+            value={pontovirtualData.operador}
+            setValue={addValorOperador}
+            label={'Operador'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={23}
+            id='key'
+            label='Key'
+            dataForm={pontovirtualData}
+            className='inputIncNome'
+            name='key'
+            value={pontovirtualData.key}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PontoVirtual' data={pontovirtualData} isSubmitting={isSubmitting} onClose={onClose} formId={`PontoVirtualForm-${pontovirtualData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/pontovirtual'} id={pontovirtualData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

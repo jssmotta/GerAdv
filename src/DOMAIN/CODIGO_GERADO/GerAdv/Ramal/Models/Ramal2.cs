@@ -20,7 +20,23 @@ public partial class Ramal
     /// </summary>
     [JsonPropertyName("obs")]
     public string Obs { get; set; } = "";
+}
 
-    [JsonPropertyName("auditor")]
-    public Auditor? Auditor { get; set; }
+[Serializable]
+public partial class RamalAll
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Sem descrição - ramNome - tamanho máximo: 50 
+    /// </summary>
+    [JsonPropertyName("nome")]
+    public string Nome { get; set; } = "";
+
+    /// <summary>
+    /// Sem descrição - ramObs  
+    /// </summary>
+    [JsonPropertyName("obs")]
+    public string Obs { get; set; } = "";
 }
