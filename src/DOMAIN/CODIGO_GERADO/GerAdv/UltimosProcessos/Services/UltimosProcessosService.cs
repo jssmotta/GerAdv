@@ -38,12 +38,12 @@ public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, 
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBUltimosProcessos.SensivelCamposSqlX}, proNroPasta
+                   {DBUltimosProcessos.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBUltimosProcessos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ultProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[UltimosProcessos].[ultProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [UltimosProcessos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<UltimosProcessosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -139,11 +139,49 @@ public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, 
             var validade = await validation.ValidateReg(regUltimosProcessos, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"UltimosProcessos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regUltimosProcessos, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<UltimosProcessosResponse?> Validation([FromBody] Models.UltimosProcessos regUltimosProcessos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("UltimosProcessos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regUltimosProcessos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regUltimosProcessos, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regUltimosProcessos.Id.IsEmptyIDNumber())
+            {
+                return new UltimosProcessosResponse();
+            }
+
+            return reader.Read(regUltimosProcessos.Id, oCnn);
         });
     }
 

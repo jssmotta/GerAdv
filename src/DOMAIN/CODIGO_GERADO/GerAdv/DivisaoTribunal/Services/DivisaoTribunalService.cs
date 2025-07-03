@@ -39,16 +39,16 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBDivisaoTribunal.SensivelCamposSqlX}, jusNome,areDescricao,cidNome,forNome,triNome
+                   {DBDivisaoTribunal.SensivelCamposSqlX}, [Justica].[jusNome],[Area].[areDescricao],[Cidade].[cidNome],[Foro].[forNome],[Tribunal].[triNome]
                    FROM {DBDivisaoTribunal.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=divJustica
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=divArea
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=divCidade
-LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=divForo
-LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON triCodigo=divTribunal
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[DivisaoTribunal].[divJustica]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[DivisaoTribunal].[divArea]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[DivisaoTribunal].[divCidade]
+LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON [Foro].[forCodigo]=[DivisaoTribunal].[divForo]
+LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON [Tribunal].[triCodigo]=[DivisaoTribunal].[divTribunal]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [DivisaoTribunal].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<DivisaoTribunalResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -146,11 +146,49 @@ LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON triCodigo=divTribunal
             var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"DivisaoTribunal: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regDivisaoTribunal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<DivisaoTribunalResponse?> Validation([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("DivisaoTribunal: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regDivisaoTribunal == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regDivisaoTribunal.Id.IsEmptyIDNumber())
+            {
+                return new DivisaoTribunalResponse();
+            }
+
+            return reader.Read(regDivisaoTribunal.Id, oCnn);
         });
     }
 

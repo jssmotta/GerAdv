@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface ProcessosIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const ProcessosIncContainer: React.FC<ProcessosIncContainerProps> = ({ id, navigator }) => {
+const ProcessosIncContainer: React.FC<ProcessosIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <ProcessosInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

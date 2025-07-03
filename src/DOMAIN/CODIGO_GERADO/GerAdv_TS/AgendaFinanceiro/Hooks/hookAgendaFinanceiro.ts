@@ -4,6 +4,7 @@ import { IAgendaFinanceiroService } from '../Services/AgendaFinanceiro.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgendaFinanceiro } from '../Interfaces/interface.AgendaFinanceiro';
 import { isValidDate } from '@/app/tools/datetime';
+import { AgendaFinanceiroApi } from '../Apis/ApiAgendaFinanceiro';
 
 export const useAgendaFinanceiroForm = (
   initialAgendaFinanceiro: IAgendaFinanceiro,
@@ -142,6 +143,16 @@ export const useAgendaFinanceiroList = (dataService: IAgendaFinanceiroService) =
 
 
 export function useValidationsAgendaFinanceiro() {
+
+  async function runValidation(data: IAgendaFinanceiro, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agendafinanceiroApi = new AgendaFinanceiroApi(uri ?? '', token ?? '');
+
+    const result = await agendafinanceiroApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgendaFinanceiro): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -170,5 +181,5 @@ if (data.decisao.length > 2048) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

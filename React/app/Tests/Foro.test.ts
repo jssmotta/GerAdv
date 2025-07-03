@@ -306,7 +306,8 @@ describe('Integração de hooks', () => {
   });
 
 
-  test('deve carregar opções na inicialização', async () => {
+ 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, nome: 'Foro 1' },
       { id: 2, nome: 'Foro 2' }
@@ -326,6 +327,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockForoService.getList).toHaveBeenCalled();
   });
 
@@ -340,8 +342,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useForoComboBox(mockForoService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -371,8 +371,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useForoComboBox(mockForoService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'Foro ABC' },

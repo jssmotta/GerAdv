@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PontoVirtualAcessosApi, PontoVirtualAcessosApiError } from '../Apis/ApiPontoVirtualAcessos';
 import { FilterPontoVirtualAcessos } from '../Filters/PontoVirtualAcessos';
 import { IPontoVirtualAcessos } from '../Interfaces/interface.PontoVirtualAcessos';
+import { PontoVirtualAcessosEmpty } from '../../Models/PontoVirtualAcessos';
 
 export class PontoVirtualAcessosValidator {
   static validatePontoVirtualAcessos(pontovirtualacessos: IPontoVirtualAcessos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PontoVirtualAcessosService implements IPontoVirtualAcessosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PontoVirtualAcessosApiError) {
         throw error;

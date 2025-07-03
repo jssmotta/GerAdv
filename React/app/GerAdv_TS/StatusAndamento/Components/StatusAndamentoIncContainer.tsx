@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface StatusAndamentoIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const StatusAndamentoIncContainer: React.FC<StatusAndamentoIncContainerProps> = ({ id, navigator }) => {
+const StatusAndamentoIncContainer: React.FC<StatusAndamentoIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <StatusAndamentoInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

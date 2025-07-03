@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OponentesRepLegalApi, OponentesRepLegalApiError } from '../Apis/ApiOponentesRepLegal';
 import { FilterOponentesRepLegal } from '../Filters/OponentesRepLegal';
 import { IOponentesRepLegal } from '../Interfaces/interface.OponentesRepLegal';
+import { OponentesRepLegalEmpty } from '../../Models/OponentesRepLegal';
 
 export class OponentesRepLegalValidator {
   static validateOponentesRepLegal(oponentesreplegal: IOponentesRepLegal): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OponentesRepLegalService implements IOponentesRepLegalService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OponentesRepLegalApiError) {
         throw error;

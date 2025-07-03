@@ -4,6 +4,7 @@ import { IContaCorrenteService } from '../Services/ContaCorrente.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IContaCorrente } from '../Interfaces/interface.ContaCorrente';
 import { isValidDate } from '@/app/tools/datetime';
+import { ContaCorrenteApi } from '../Apis/ApiContaCorrente';
 
 export const useContaCorrenteForm = (
   initialContaCorrente: IContaCorrente,
@@ -142,6 +143,16 @@ export const useContaCorrenteList = (dataService: IContaCorrenteService) => {
 
 
 export function useValidationsContaCorrente() {
+
+  async function runValidation(data: IContaCorrente, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const contacorrenteApi = new ContaCorrenteApi(uri ?? '', token ?? '');
+
+    const result = await contacorrenteApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IContaCorrente): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsContaCorrente() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

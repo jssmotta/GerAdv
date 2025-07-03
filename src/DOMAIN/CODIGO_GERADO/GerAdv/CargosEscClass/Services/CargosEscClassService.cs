@@ -43,7 +43,7 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IC
                    FROM {DBCargosEscClass.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY cecNome
+                   ORDER BY [CargosEscClass].[cecNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<CargosEscClassResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IC
             var validade = await validation.ValidateReg(regCargosEscClass, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"CargosEscClass: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regCargosEscClass, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<CargosEscClassResponse?> Validation([FromBody] Models.CargosEscClass regCargosEscClass, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("CargosEscClass: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regCargosEscClass == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regCargosEscClass, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regCargosEscClass.Id.IsEmptyIDNumber())
+            {
+                return new CargosEscClassResponse();
+            }
+
+            return reader.Read(regCargosEscClass.Id, oCnn);
         });
     }
 

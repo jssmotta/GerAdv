@@ -306,7 +306,8 @@ describe('Integração de hooks', () => {
   });
 
 
-  test('deve carregar opções na inicialização', async () => {
+ 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, nome: 'Process Output Engine 1' },
       { id: 2, nome: 'Process Output Engine 2' }
@@ -326,6 +327,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockProcessOutputEngineService.getList).toHaveBeenCalled();
   });
 
@@ -340,8 +342,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useProcessOutputEngineComboBox(mockProcessOutputEngineService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -371,8 +371,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useProcessOutputEngineComboBox(mockProcessOutputEngineService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'Process Output Engine ABC' },

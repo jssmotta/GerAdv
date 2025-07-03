@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface NECompromissosIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const NECompromissosIncContainer: React.FC<NECompromissosIncContainerProps> = ({ id, navigator }) => {
+const NECompromissosIncContainer: React.FC<NECompromissosIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <NECompromissosInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

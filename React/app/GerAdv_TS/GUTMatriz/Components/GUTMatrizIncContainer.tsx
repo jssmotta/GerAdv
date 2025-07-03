@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface GUTMatrizIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const GUTMatrizIncContainer: React.FC<GUTMatrizIncContainerProps> = ({ id, navigator }) => {
+const GUTMatrizIncContainer: React.FC<GUTMatrizIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <GUTMatrizInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

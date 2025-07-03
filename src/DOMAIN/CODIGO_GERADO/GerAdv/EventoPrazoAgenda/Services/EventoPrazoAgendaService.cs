@@ -43,7 +43,7 @@ public partial class EventoPrazoAgendaService(IOptions<AppSettings> appSettings,
                    FROM {DBEventoPrazoAgenda.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY epaNome
+                   ORDER BY [EventoPrazoAgenda].[epaNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EventoPrazoAgendaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class EventoPrazoAgendaService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regEventoPrazoAgenda, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"EventoPrazoAgenda: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEventoPrazoAgenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EventoPrazoAgendaResponse?> Validation([FromBody] Models.EventoPrazoAgenda regEventoPrazoAgenda, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("EventoPrazoAgenda: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEventoPrazoAgenda == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEventoPrazoAgenda, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEventoPrazoAgenda.Id.IsEmptyIDNumber())
+            {
+                return new EventoPrazoAgendaResponse();
+            }
+
+            return reader.Read(regEventoPrazoAgenda.Id, oCnn);
         });
     }
 

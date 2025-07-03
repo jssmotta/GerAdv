@@ -4,6 +4,7 @@ import { IDivisaoTribunalService } from '../Services/DivisaoTribunal.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IDivisaoTribunal } from '../Interfaces/interface.DivisaoTribunal';
 import { isValidDate } from '@/app/tools/datetime';
+import { DivisaoTribunalApi } from '../Apis/ApiDivisaoTribunal';
 
 export const useDivisaoTribunalForm = (
   initialDivisaoTribunal: IDivisaoTribunal,
@@ -142,6 +143,16 @@ export const useDivisaoTribunalList = (dataService: IDivisaoTribunalService) => 
 
 
 export function useValidationsDivisaoTribunal() {
+
+  async function runValidation(data: IDivisaoTribunal, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const divisaotribunalApi = new DivisaoTribunalApi(uri ?? '', token ?? '');
+
+    const result = await divisaotribunalApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IDivisaoTribunal): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -185,5 +196,5 @@ if (data.andar.length > 12) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

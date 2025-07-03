@@ -4,6 +4,7 @@ import { IObjetosService } from '../Services/Objetos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IObjetos } from '../Interfaces/interface.Objetos';
 import { isValidDate } from '@/app/tools/datetime';
+import { ObjetosApi } from '../Apis/ApiObjetos';
 
 export const useObjetosForm = (
   initialObjetos: IObjetos,
@@ -142,6 +143,16 @@ export const useObjetosList = (dataService: IObjetosService) => {
 
 
 export function useValidationsObjetos() {
+
+  async function runValidation(data: IObjetos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const objetosApi = new ObjetosApi(uri ?? '', token ?? '');
+
+    const result = await objetosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IObjetos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useObjetosComboBox = (
   dataService: IObjetosService,
   initialValue?: any

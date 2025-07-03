@@ -39,13 +39,13 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFaseReader 
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBFase.SensivelCamposSqlX}, jusNome,areDescricao
+                   {DBFase.SensivelCamposSqlX}, [Justica].[jusNome],[Area].[areDescricao]
                    FROM {DBFase.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=fasJustica
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=fasArea
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[Fase].[fasJustica]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[Fase].[fasArea]
  
                    {where}
-                   ORDER BY fasDescricao
+                   ORDER BY [Fase].[fasDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<FaseResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=fasArea
             var validade = await validation.ValidateReg(regFase, this, justicaReader, areaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Fase: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regFase, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<FaseResponse?> Validation([FromBody] Models.Fase regFase, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Fase: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regFase == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regFase, this, justicaReader, areaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regFase.Id.IsEmptyIDNumber())
+            {
+                return new FaseResponse();
+            }
+
+            return reader.Read(regFase.Id, oCnn);
         });
     }
 

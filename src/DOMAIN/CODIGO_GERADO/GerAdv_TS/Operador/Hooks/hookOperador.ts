@@ -4,6 +4,7 @@ import { IOperadorService } from '../Services/Operador.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOperador } from '../Interfaces/interface.Operador';
 import { isValidDate } from '@/app/tools/datetime';
+import { OperadorApi } from '../Apis/ApiOperador';
 
 export const useOperadorForm = (
   initialOperador: IOperador,
@@ -142,6 +143,16 @@ export const useOperadorList = (dataService: IOperadorService) => {
 
 
 export function useValidationsOperador() {
+
+  async function runValidation(data: IOperador, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const operadorApi = new OperadorApi(uri ?? '', token ?? '');
+
+    const result = await operadorApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOperador): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -182,7 +193,7 @@ if (data.senha256.length > 4000) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOperadorComboBox = (
   dataService: IOperadorService,
   initialValue?: any

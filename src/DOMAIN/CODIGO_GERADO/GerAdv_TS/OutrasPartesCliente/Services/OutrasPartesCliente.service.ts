@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OutrasPartesClienteApi, OutrasPartesClienteApiError } from '../Apis/ApiOutrasPartesCliente';
 import { FilterOutrasPartesCliente } from '../Filters/OutrasPartesCliente';
 import { IOutrasPartesCliente } from '../Interfaces/interface.OutrasPartesCliente';
+import { OutrasPartesClienteEmpty } from '../../Models/OutrasPartesCliente';
 
 export class OutrasPartesClienteValidator {
   static validateOutrasPartesCliente(outraspartescliente: IOutrasPartesCliente): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OutrasPartesClienteService implements IOutrasPartesClienteService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OutrasPartesClienteApiError) {
         throw error;

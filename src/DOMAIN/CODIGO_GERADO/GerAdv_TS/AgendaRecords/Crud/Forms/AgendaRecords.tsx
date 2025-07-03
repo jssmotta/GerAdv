@@ -2,12 +2,11 @@
 'use client';
 import { IAgendaRecords } from '@/app/GerAdv_TS/AgendaRecords/Interfaces/interface.AgendaRecords';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const AgendaRecordsForm: React.FC<AgendaRecordsFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new AgendaRecordsApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -263,95 +262,95 @@ const addValorAgenda = (e: any) => {
                   />
                   <InputCheckbox dataForm={agendarecordsData} label='Aviso1' name='aviso1' checked={agendarecordsData.aviso1} onChange={onChange} />
                   <InputCheckbox dataForm={agendarecordsData} label='Aviso2' name='aviso2' checked={agendarecordsData.aviso2} onChange={onChange} />
-                  <InputCheckbox dataForm={agendarecordsData} label='Aviso3' name='aviso3' checked={agendarecordsData.aviso3} onChange={onChange} />
-                </div><div className='grid-container'>
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='crmaviso1'
-                  label='CrmAviso1'
-                  dataForm={agendarecordsData}
-                  className='inputIncNome'
-                  name='crmaviso1'
-                  value={agendarecordsData.crmaviso1}
-                  onChange={onChange}
-                  />
+                </div><div className='grid-container'><InputCheckbox dataForm={agendarecordsData} label='Aviso3' name='aviso3' checked={agendarecordsData.aviso3} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='crmaviso1'
+                label='CrmAviso1'
+                dataForm={agendarecordsData}
+                className='inputIncNome'
+                name='crmaviso1'
+                value={agendarecordsData.crmaviso1}
+                onChange={onChange}
+                />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='crmaviso2'
-                  label='CrmAviso2'
-                  dataForm={agendarecordsData}
-                  className='inputIncNome'
-                  name='crmaviso2'
-                  value={agendarecordsData.crmaviso2}
-                  onChange={onChange}
-                  />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='crmaviso2'
+                label='CrmAviso2'
+                dataForm={agendarecordsData}
+                className='inputIncNome'
+                name='crmaviso2'
+                value={agendarecordsData.crmaviso2}
+                onChange={onChange}
+                />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='crmaviso3'
-                  label='CrmAviso3'
-                  dataForm={agendarecordsData}
-                  className='inputIncNome'
-                  name='crmaviso3'
-                  value={agendarecordsData.crmaviso3}
-                  onChange={onChange}
-                  />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='crmaviso3'
+                label='CrmAviso3'
+                dataForm={agendarecordsData}
+                className='inputIncNome'
+                name='crmaviso3'
+                value={agendarecordsData.crmaviso3}
+                onChange={onChange}
+                />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='dataaviso1'
-                  label='DataAviso1'
-                  dataForm={agendarecordsData}
-                  className='inputIncNome'
-                  name='dataaviso1'
-                  value={agendarecordsData.dataaviso1}
-                  onChange={onChange}
-                  />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dataaviso1'
+                label='DataAviso1'
+                dataForm={agendarecordsData}
+                className='inputIncNome'
+                name='dataaviso1'
+                value={agendarecordsData.dataaviso1}
+                onChange={onChange}
+                />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='dataaviso2'
-                  label='DataAviso2'
-                  dataForm={agendarecordsData}
-                  className='inputIncNome'
-                  name='dataaviso2'
-                  value={agendarecordsData.dataaviso2}
-                  onChange={onChange}
-                  />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dataaviso2'
+                label='DataAviso2'
+                dataForm={agendarecordsData}
+                className='inputIncNome'
+                name='dataaviso2'
+                value={agendarecordsData.dataaviso2}
+                onChange={onChange}
+                />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='dataaviso3'
-                  label='DataAviso3'
-                  dataForm={agendarecordsData}
-                  className='inputIncNome'
-                  name='dataaviso3'
-                  value={agendarecordsData.dataaviso3}
-                  onChange={onChange}
-                  />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dataaviso3'
+                label='DataAviso3'
+                dataForm={agendarecordsData}
+                className='inputIncNome'
+                name='dataaviso3'
+                value={agendarecordsData.dataaviso3}
+                onChange={onChange}
+                />
 
-                </div>
-              </form>
-
-
-              {isMobile && (
-                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRecords' data={agendarecordsData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRecordsForm-${agendarecordsData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <DeleteButton page={'/pages/agendarecords'} id={agendarecordsData.id} closeModel={onClose} dadoApi={dadoApi} />
               </div>
-              <div className='form-spacer'></div>
-              </>
-            );
-          };
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRecords' data={agendarecordsData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRecordsForm-${agendarecordsData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/agendarecords'} id={agendarecordsData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

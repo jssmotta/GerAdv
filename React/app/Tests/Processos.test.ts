@@ -5,7 +5,7 @@ import { useProcessosForm, useProcessosList, useValidationsProcessos } from '../
 import { IProcessos } from '../GerAdv_TS/Processos/Interfaces/interface.Processos';
 import { IProcessosService } from '../GerAdv_TS/Processos/Services/Processos.service';
 import { ProcessosTestEmpty } from '../GerAdv_TS/Models/Processos';
-import { useProcessosComboBox } from '../GerAdv_TS/Processos/Hooks/hookProcessos';
+
 
 // Mock do serviço
 const mockProcessosService: jest.Mocked<IProcessosService> = {
@@ -249,16 +249,14 @@ describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
     const mockData = [{ ...initialProcessos, id: 1, nropasta: 'Processos Teste' }];
     mockProcessosService.getAll.mockResolvedValue(mockData);
-    mockProcessosService.getList.mockResolvedValue(mockData);
+    
 
     // Usa múltiplos hooks
     const { result: listResult } = renderHook(() => 
       useProcessosList(mockProcessosService)
     );
     
-     const { result: comboResult } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService)
-    );   
+       
 
     const { result: validationResult } = renderHook(() => 
       useValidationsProcessos()
@@ -269,10 +267,6 @@ describe('Integração de hooks', () => {
       await listResult.current.fetchData();
     });
 
-     
-    // Aguarda carregar opções no combo
-    
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Processos Teste' }]);
     
    
 
@@ -280,7 +274,7 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Processos Teste' }]);
+    
   
     expect(validation.isValid).toBe(true);
   });
@@ -304,160 +298,5 @@ describe('Integração de hooks', () => {
 
     expect(result.current.data.ajgpedidonegado).toBe(true);
   });
-
-
-  test('deve carregar opções na inicialização', async () => {
-    const mockOptions = [
-      { id: 1, nropasta: 'Processos 1' },
-      { id: 2, nropasta: 'Processos 2' }
-    ];
-    mockProcessosService.getList.mockResolvedValue(mockOptions as IProcessos[]);
-
-
-    const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService)
-    );
-
-    await waitFor(() => {
-      // Aguarda carregar as opções antes de verificar
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Processos 1' },
-        { id: 2, nome: 'Processos 2' }
-      ]);
-    });
-
-    expect(mockProcessosService.getList).toHaveBeenCalled();
-  });
-
-  test('deve filtrar opções', async () => {
-    const mockOptions = [
-      { id: 1, nropasta: 'Processos ABC' },
-      { id: 2, nropasta: 'Processos XYZ' }
-    ];
-    mockProcessosService.getList.mockResolvedValue(mockOptions as IProcessos[]);   
-
-
- const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService)
-    );
-
-
-    // Aguarda carregar as opções
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Processos ABC' },
-        { id: 2, nome: 'Processos XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Processos ABC' }]);
-  });
-
-
-  test('deve limpar filtro quando texto vazio', async () => {
-    const mockOptions = [
-      { id: 1, nropasta: 'Processos ABC' },
-      { id: 2, nropasta: 'Processos XYZ' }
-    ];
-    mockProcessosService.getList.mockResolvedValue(mockOptions as IProcessos[]);
-  
-
-
-    const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService)
-    );
-
-
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Processos ABC' },
-        { id: 2, nome: 'Processos XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    // Remove filtro
-    act(() => {
-      result.current.handleFilter('');
-    });
- 
-
-     expect(result.current.options).toEqual([
-          {id: 1, nome: 'Processos ABC' },
-          {id: 2, nome: 'Processos XYZ' }
-        ]);
-
-  });
-
-
-
- test('deve alterar valor selecionado', () => {
-    const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService)
-    );
-
-    const newValue = { id: 1, nropasta: 'Processos Selecionado' };
-
-    act(() => {
-      result.current.handleValueChange(newValue);
-    });
-
-    expect(result.current.selectedValue).toEqual(newValue);
-  });
-
-  test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, nropasta: 'Processos Inicial' };
-    
-    const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService, initialValue)
-    );
-
-    act(() => {
-      result.current.clearValue();
-    });
-
-    expect(result.current.selectedValue).toBe(null);
-  });
-
-
-describe('useProcessosComboBox', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('deve inicializar com estado correto', () => {
-    const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService)
-    );
-
-    expect(result.current.options).toEqual([]);
-    expect(result.current.loading).toBe(true);
-    expect(result.current.selectedValue).toBeUndefined();
-  });
-
- 
-  test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, nropasta: 'Processos Inicial' };
-    
-    const { result } = renderHook(() => 
-      useProcessosComboBox(mockProcessosService, initialValue)
-    );
-
-    expect(result.current.selectedValue).toEqual(initialValue);
-  });
-});
-
-
-
-
 
 

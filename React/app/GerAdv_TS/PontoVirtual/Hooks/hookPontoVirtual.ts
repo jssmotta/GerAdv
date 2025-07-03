@@ -4,6 +4,7 @@ import { IPontoVirtualService } from '../Services/PontoVirtual.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPontoVirtual } from '../Interfaces/interface.PontoVirtual';
 import { isValidDate } from '@/app/tools/datetime';
+import { PontoVirtualApi } from '../Apis/ApiPontoVirtual';
 
 export const usePontoVirtualForm = (
   initialPontoVirtual: IPontoVirtual,
@@ -142,6 +143,16 @@ export const usePontoVirtualList = (dataService: IPontoVirtualService) => {
 
 
 export function useValidationsPontoVirtual() {
+
+  async function runValidation(data: IPontoVirtual, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const pontovirtualApi = new PontoVirtualApi(uri ?? '', token ?? '');
+
+    const result = await pontovirtualApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPontoVirtual): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsPontoVirtual() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

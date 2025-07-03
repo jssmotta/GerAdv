@@ -42,7 +42,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IStat
                    FROM {DBStatusHTrab.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY shtDescricao
+                   ORDER BY [StatusHTrab].[shtDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<StatusHTrabResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IStat
             var validade = await validation.ValidateReg(regStatusHTrab, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"StatusHTrab: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regStatusHTrab, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<StatusHTrabResponse?> Validation([FromBody] Models.StatusHTrab regStatusHTrab, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("StatusHTrab: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regStatusHTrab == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regStatusHTrab, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regStatusHTrab.Id.IsEmptyIDNumber())
+            {
+                return new StatusHTrabResponse();
+            }
+
+            return reader.Read(regStatusHTrab.Id, oCnn);
         });
     }
 

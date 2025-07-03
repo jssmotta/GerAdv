@@ -4,6 +4,7 @@ import { IPenhoraStatusService } from '../Services/PenhoraStatus.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPenhoraStatus } from '../Interfaces/interface.PenhoraStatus';
 import { isValidDate } from '@/app/tools/datetime';
+import { PenhoraStatusApi } from '../Apis/ApiPenhoraStatus';
 
 export const usePenhoraStatusForm = (
   initialPenhoraStatus: IPenhoraStatus,
@@ -142,6 +143,16 @@ export const usePenhoraStatusList = (dataService: IPenhoraStatusService) => {
 
 
 export function useValidationsPenhoraStatus() {
+
+  async function runValidation(data: IPenhoraStatus, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const penhorastatusApi = new PenhoraStatusApi(uri ?? '', token ?? '');
+
+    const result = await penhorastatusApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPenhoraStatus): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const usePenhoraStatusComboBox = (
   dataService: IPenhoraStatusService,
   initialValue?: any

@@ -39,13 +39,13 @@ public partial class ParteClienteOutrasService(IOptions<AppSettings> appSettings
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBParteClienteOutras.SensivelCamposSqlX}, opcNome,proNroPasta
+                   {DBParteClienteOutras.SensivelCamposSqlX}, [OutrasPartesCliente].[opcNome],[Processos].[proNroPasta]
                    FROM {DBParteClienteOutras.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"OutrasPartesCliente".dbo(oCnn)} (NOLOCK) ON opcCodigo=pcoCliente
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pcoProcesso
+                   LEFT JOIN {"OutrasPartesCliente".dbo(oCnn)} (NOLOCK) ON [OutrasPartesCliente].[opcCodigo]=[ParteClienteOutras].[pcoCliente]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ParteClienteOutras].[pcoProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ParteClienteOutras].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ParteClienteOutrasResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pcoProcesso
             var validade = await validation.ValidateReg(regParteClienteOutras, this, outraspartesclienteReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ParteClienteOutras: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regParteClienteOutras, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ParteClienteOutrasResponse?> Validation([FromBody] Models.ParteClienteOutras regParteClienteOutras, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ParteClienteOutras: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regParteClienteOutras == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regParteClienteOutras, this, outraspartesclienteReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regParteClienteOutras.Id.IsEmptyIDNumber())
+            {
+                return new ParteClienteOutrasResponse();
+            }
+
+            return reader.Read(regParteClienteOutras.Id, oCnn);
         });
     }
 

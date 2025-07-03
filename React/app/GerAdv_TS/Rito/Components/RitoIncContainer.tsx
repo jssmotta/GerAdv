@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface RitoIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const RitoIncContainer: React.FC<RitoIncContainerProps> = ({ id, navigator }) => {
+const RitoIncContainer: React.FC<RitoIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <RitoInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { Auditor4KApi, Auditor4KApiError } from '../Apis/ApiAuditor4K';
 import { FilterAuditor4K } from '../Filters/Auditor4K';
 import { IAuditor4K } from '../Interfaces/interface.Auditor4K';
+import { Auditor4KEmpty } from '../../Models/Auditor4K';
 
 export class Auditor4KValidator {
   static validateAuditor4K(auditor4k: IAuditor4K): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class Auditor4KService implements IAuditor4KService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof Auditor4KApiError) {
         throw error;

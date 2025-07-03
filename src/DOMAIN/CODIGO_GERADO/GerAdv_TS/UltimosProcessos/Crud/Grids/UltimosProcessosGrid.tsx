@@ -19,7 +19,7 @@ import UltimosProcessosWindow from './UltimosProcessosWindow';
 import ErrorMessage from '@/app/components/Cruds/ErrorMessage';
 import { useUltimosProcessosList } from '../../Hooks/hookUltimosProcessos';
 import { LoadingSpinner } from '@/app/components/Cruds/LoadingSpinner';
-import { subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 const UltimosProcessosGrid: React.FC = () => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
@@ -108,6 +108,9 @@ const cancelDelete = () => {
 const displayError = error || errorMessage;
 useEffect(() => {
   const unsubscribe = subscribeToNotifications('*', (entity) => {
+    if (entity.action == NotifySystemActions.ERROR) {
+      return;
+    }
     reloadFilter();
   });
   return () => {
@@ -146,6 +149,7 @@ return (
     onError={handleError}
     selectedUltimosProcessos={selectedUltimosProcessos}
     />
+
     <ConfirmationModal
     isOpen={isModalOpen}
     onConfirm={confirmDelete}

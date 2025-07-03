@@ -39,12 +39,12 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IDocum
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBDocumentos.SensivelCamposSqlX}, proNroPasta
+                   {DBDocumentos.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBDocumentos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=docProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Documentos].[docProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [Documentos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<DocumentosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IDocum
             var validade = await validation.ValidateReg(regDocumentos, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Documentos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regDocumentos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<DocumentosResponse?> Validation([FromBody] Models.Documentos regDocumentos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Documentos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regDocumentos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regDocumentos, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regDocumentos.Id.IsEmptyIDNumber())
+            {
+                return new DocumentosResponse();
+            }
+
+            return reader.Read(regDocumentos.Id, oCnn);
         });
     }
 

@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface PoderJudiciarioAssociadoIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const PoderJudiciarioAssociadoIncContainer: React.FC<PoderJudiciarioAssociadoIncContainerProps> = ({ id, navigator }) => {
+const PoderJudiciarioAssociadoIncContainer: React.FC<PoderJudiciarioAssociadoIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <PoderJudiciarioAssociadoInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

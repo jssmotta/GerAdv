@@ -4,6 +4,7 @@ import { IFuncionariosService } from '../Services/Funcionarios.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IFuncionarios } from '../Interfaces/interface.Funcionarios';
 import { isValidDate } from '@/app/tools/datetime';
+import { FuncionariosApi } from '../Apis/ApiFuncionarios';
 
 export const useFuncionariosForm = (
   initialFuncionarios: IFuncionarios,
@@ -142,6 +143,16 @@ export const useFuncionariosList = (dataService: IFuncionariosService) => {
 
 
 export function useValidationsFuncionarios() {
+
+  async function runValidation(data: IFuncionarios, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const funcionariosApi = new FuncionariosApi(uri ?? '', token ?? '');
+
+    const result = await funcionariosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IFuncionarios): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -212,7 +223,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useFuncionariosComboBox = (
   dataService: IFuncionariosService,
   initialValue?: any

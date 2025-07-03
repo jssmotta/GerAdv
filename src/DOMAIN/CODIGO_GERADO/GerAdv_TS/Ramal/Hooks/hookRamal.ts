@@ -4,6 +4,7 @@ import { IRamalService } from '../Services/Ramal.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IRamal } from '../Interfaces/interface.Ramal';
 import { isValidDate } from '@/app/tools/datetime';
+import { RamalApi } from '../Apis/ApiRamal';
 
 export const useRamalForm = (
   initialRamal: IRamal,
@@ -142,6 +143,16 @@ export const useRamalList = (dataService: IRamalService) => {
 
 
 export function useValidationsRamal() {
+
+  async function runValidation(data: IRamal, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const ramalApi = new RamalApi(uri ?? '', token ?? '');
+
+    const result = await ramalApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IRamal): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.obs.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useRamalComboBox = (
   dataService: IRamalService,
   initialValue?: any

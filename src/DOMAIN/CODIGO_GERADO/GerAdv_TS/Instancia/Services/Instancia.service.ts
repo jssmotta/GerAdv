@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { InstanciaApi, InstanciaApiError } from '../Apis/ApiInstancia';
 import { FilterInstancia } from '../Filters/Instancia';
 import { IInstancia } from '../Interfaces/interface.Instancia';
+import { InstanciaEmpty } from '../../Models/Instancia';
 
 export class InstanciaValidator {
   static validateInstancia(instancia: IInstancia): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class InstanciaService implements IInstanciaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof InstanciaApiError) {
         throw error;

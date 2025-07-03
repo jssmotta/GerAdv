@@ -39,14 +39,14 @@ public partial class AlarmSMSService(IOptions<AppSettings> appSettings, IAlarmSM
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAlarmSMS.SensivelCamposSqlX}, operNome
+                   {DBAlarmSMS.SensivelCamposSqlX}, [Operador].[operNome],[Agenda].[],[Recados].[]
                    FROM {DBAlarmSMS.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=alrOperador
-LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=alrAgenda
-LEFT JOIN {"Recados".dbo(oCnn)} (NOLOCK) ON recCodigo=alrRecado
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[AlarmSMS].[alrOperador]
+LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON [Agenda].[ageCodigo]=[AlarmSMS].[alrAgenda]
+LEFT JOIN {"Recados".dbo(oCnn)} (NOLOCK) ON [Recados].[recCodigo]=[AlarmSMS].[alrRecado]
  
                    {where}
-                   ORDER BY alrDescricao
+                   ORDER BY [AlarmSMS].[alrDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AlarmSMSResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Recados".dbo(oCnn)} (NOLOCK) ON recCodigo=alrRecado
             var validade = await validation.ValidateReg(regAlarmSMS, this, operadorReader, agendaReader, recadosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AlarmSMS: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAlarmSMS, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AlarmSMSResponse?> Validation([FromBody] Models.AlarmSMS regAlarmSMS, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AlarmSMS: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAlarmSMS == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAlarmSMS, this, operadorReader, agendaReader, recadosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAlarmSMS.Id.IsEmptyIDNumber())
+            {
+                return new AlarmSMSResponse();
+            }
+
+            return reader.Read(regAlarmSMS.Id, oCnn);
         });
     }
 

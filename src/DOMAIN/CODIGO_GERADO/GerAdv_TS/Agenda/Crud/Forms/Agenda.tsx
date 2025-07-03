@@ -2,12 +2,11 @@
 'use client';
 import { IAgenda } from '@/app/GerAdv_TS/Agenda/Interfaces/interface.Agenda';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -57,8 +56,8 @@ export const AgendaForm: React.FC<AgendaFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new AgendaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -404,7 +403,7 @@ const addValorCidade = (e: any) => {
                               />
 
                               <InputCheckbox dataForm={agendaData} label='Revisar' name='revisar' checked={agendaData.revisar} onChange={onChange} />
-
+                            </div><div className='grid-container'>
                               <InputInput
                               type='text'
                               maxLength={2048}
@@ -417,7 +416,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-                            </div><div className='grid-container'>
+
                               <AdvogadosComboBox
                               name={'advogado'}
                               dataForm={agendaData}
@@ -511,7 +510,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-
+                            </div><div className='grid-container'>
                               <TipoCompromissoComboBox
                               name={'tipocompromisso'}
                               dataForm={agendaData}
@@ -527,203 +526,203 @@ const addValorCidade = (e: any) => {
                               setValue={addValorCliente}
                               label={'Clientes'}
                               />
-                            </div><div className='grid-container'><InputCheckbox dataForm={agendaData} label='Liberado' name='liberado' checked={agendaData.liberado} onChange={onChange} />
-                            <InputCheckbox dataForm={agendaData} label='Importante' name='importante' checked={agendaData.importante} onChange={onChange} />
-                            <InputCheckbox dataForm={agendaData} label='Concluido' name='concluido' checked={agendaData.concluido} onChange={onChange} />
+                              <InputCheckbox dataForm={agendaData} label='Liberado' name='liberado' checked={agendaData.liberado} onChange={onChange} />
+                              <InputCheckbox dataForm={agendaData} label='Importante' name='importante' checked={agendaData.importante} onChange={onChange} />
+                              <InputCheckbox dataForm={agendaData} label='Concluido' name='concluido' checked={agendaData.concluido} onChange={onChange} />
 
-                            <AreaComboBox
-                            name={'area'}
-                            dataForm={agendaData}
-                            value={agendaData.area}
-                            setValue={addValorArea}
-                            label={'Area'}
-                            />
+                              <AreaComboBox
+                              name={'area'}
+                              dataForm={agendaData}
+                              value={agendaData.area}
+                              setValue={addValorArea}
+                              label={'Area'}
+                              />
 
-                            <JusticaComboBox
-                            name={'justica'}
-                            dataForm={agendaData}
-                            value={agendaData.justica}
-                            setValue={addValorJustica}
-                            label={'Justica'}
-                            />
+                              <JusticaComboBox
+                              name={'justica'}
+                              dataForm={agendaData}
+                              value={agendaData.justica}
+                              setValue={addValorJustica}
+                              label={'Justica'}
+                              />
 
-                            <ProcessosComboBox
-                            name={'processo'}
-                            dataForm={agendaData}
-                            value={agendaData.processo}
-                            setValue={addValorProcesso}
-                            label={'Processos'}
-                            />
+                              <ProcessosComboBox
+                              name={'processo'}
+                              dataForm={agendaData}
+                              value={agendaData.processo}
+                              setValue={addValorProcesso}
+                              label={'Processos'}
+                              />
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='idhistorico'
-                            label='IDHistorico'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='idhistorico'
-                            value={agendaData.idhistorico}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='idhistorico'
+                              label='IDHistorico'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='idhistorico'
+                              value={agendaData.idhistorico}
+                              onChange={onChange}
+                              />
 
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='idinsprocesso'
-                            label='IDInsProcesso'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='idinsprocesso'
-                            value={agendaData.idinsprocesso}
-                            onChange={onChange}
-                            />
-
-
-                            <OperadorComboBox
-                            name={'usuario'}
-                            dataForm={agendaData}
-                            value={agendaData.usuario}
-                            setValue={addValorUsuario}
-                            label={'Operador'}
-                            />
-
-                            <PrepostosComboBox
-                            name={'preposto'}
-                            dataForm={agendaData}
-                            value={agendaData.preposto}
-                            setValue={addValorPreposto}
-                            label={'Prepostos'}
-                            />
-                          </div><div className='grid-container'>
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='quemid'
-                            label='QuemID'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='quemid'
-                            value={agendaData.quemid}
-                            onChange={onChange}
-                            />
+                            </div><div className='grid-container'>
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='idinsprocesso'
+                              label='IDInsProcesso'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='idinsprocesso'
+                              value={agendaData.idinsprocesso}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='quemcodigo'
-                            label='QuemCodigo'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='quemcodigo'
-                            value={agendaData.quemcodigo}
-                            onChange={onChange}
-                            />
+                              <OperadorComboBox
+                              name={'usuario'}
+                              dataForm={agendaData}
+                              value={agendaData.usuario}
+                              setValue={addValorUsuario}
+                              label={'Operador'}
+                              />
+
+                              <PrepostosComboBox
+                              name={'preposto'}
+                              dataForm={agendaData}
+                              value={agendaData.preposto}
+                              setValue={addValorPreposto}
+                              label={'Prepostos'}
+                              />
+
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='quemid'
+                              label='QuemID'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='quemid'
+                              value={agendaData.quemid}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2147483647}
-                            id='status'
-                            label='Status'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='status'
-                            value={agendaData.status}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='quemcodigo'
+                              label='QuemCodigo'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='quemcodigo'
+                              value={agendaData.quemcodigo}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='valor'
-                            label='Valor'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='valor'
-                            value={agendaData.valor}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2147483647}
+                              id='status'
+                              label='Status'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='status'
+                              value={agendaData.status}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='decisao'
-                            label='Decisao'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='decisao'
-                            value={agendaData.decisao}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='valor'
+                              label='Valor'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='valor'
+                              value={agendaData.valor}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='sempre'
-                            label='Sempre'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='sempre'
-                            value={agendaData.sempre}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='decisao'
+                              label='Decisao'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='decisao'
+                              value={agendaData.decisao}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='prazodias'
-                            label='PrazoDias'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='prazodias'
-                            value={agendaData.prazodias}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='sempre'
+                              label='Sempre'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='sempre'
+                              value={agendaData.sempre}
+                              onChange={onChange}
+                              />
+
+                            </div><div className='grid-container'>
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='prazodias'
+                              label='PrazoDias'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='prazodias'
+                              value={agendaData.prazodias}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='protocolointegrado'
-                            label='ProtocoloIntegrado'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='protocolointegrado'
-                            value={agendaData.protocolointegrado}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='protocolointegrado'
+                              label='ProtocoloIntegrado'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='protocolointegrado'
+                              value={agendaData.protocolointegrado}
+                              onChange={onChange}
+                              />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='datainicioprazo'
-                            label='DataInicioPrazo'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='datainicioprazo'
-                            value={agendaData.datainicioprazo}
-                            onChange={onChange}
-                            />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='datainicioprazo'
+                              label='DataInicioPrazo'
+                              dataForm={agendaData}
+                              className='inputIncNome'
+                              name='datainicioprazo'
+                              value={agendaData.datainicioprazo}
+                              onChange={onChange}
+                              />
 
-                            <InputCheckbox dataForm={agendaData} label='UsuarioCiente' name='usuariociente' checked={agendaData.usuariociente} onChange={onChange} />
+                              <InputCheckbox dataForm={agendaData} label='UsuarioCiente' name='usuariociente' checked={agendaData.usuariociente} onChange={onChange} />
+                            </div>
+                          </form>
+
+
+                          {isMobile && (
+                            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Agenda' data={agendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                            )}
+                            <DeleteButton page={'/pages/agenda'} id={agendaData.id} closeModel={onClose} dadoApi={dadoApi} />
                           </div>
-                        </form>
-
-
-                        {isMobile && (
-                          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Agenda' data={agendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                          )}
-                          <DeleteButton page={'/pages/agenda'} id={agendaData.id} closeModel={onClose} dadoApi={dadoApi} />
-                        </div>
-                        <div className='form-spacer'></div>
-                        </>
-                      );
-                    };
+                          <div className='form-spacer'></div>
+                          </>
+                        );
+                      };

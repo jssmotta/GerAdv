@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { HorasTrabApi, HorasTrabApiError } from '../Apis/ApiHorasTrab';
 import { FilterHorasTrab } from '../Filters/HorasTrab';
 import { IHorasTrab } from '../Interfaces/interface.HorasTrab';
+import { HorasTrabEmpty } from '../../Models/HorasTrab';
 
 export class HorasTrabValidator {
   static validateHorasTrab(horastrab: IHorasTrab): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class HorasTrabService implements IHorasTrabService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof HorasTrabApiError) {
         throw error;

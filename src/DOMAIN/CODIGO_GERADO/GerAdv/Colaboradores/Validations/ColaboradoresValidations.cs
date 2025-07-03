@@ -31,9 +31,20 @@ public class ColaboradoresValidation : IColaboradoresValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Colaboradores '{reg.Nome}' já cadastrado.";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Colaboradores' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            return $"Colaborador '{reg.Nome}' Cliente e/ou Nome";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Colaborador ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Colaborador com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         // Cargos
         if (!reg.Cargo.IsEmptyIDNumber())
         {
@@ -73,11 +84,11 @@ public class ColaboradoresValidation : IColaboradoresValidation
         return existingColaboradores != null && existingColaboradores.Id > 0 && existingColaboradores.Id != reg.Id;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.Colaboradores reg, IColaboradoresService service, string uri)
+    private async Task<(bool, ColaboradoresResponseAll? )> IsCpfDuplicado(Models.Colaboradores reg, IColaboradoresService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingColaboradores = (await service.Filter(new Filters.FilterColaboradores { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingColaboradores != null && existingColaboradores.Id > 0 && existingColaboradores.Id != reg.Id;
+            return (false, null);
+        var existingColaboradores = (await service.Filter(new Filters.FilterColaboradores { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingColaboradores != null && existingColaboradores.Id > 0 && existingColaboradores.Id != reg.Id, existingColaboradores);
     }
 }

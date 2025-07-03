@@ -284,7 +284,8 @@ describe('Integração de hooks', () => {
   
     expect(validation.isValid).toBe(true);
   });
-});  test('deve carregar opções na inicialização', async () => {
+}); 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, nome: 'Tribunal 1' },
       { id: 2, nome: 'Tribunal 2' }
@@ -304,6 +305,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockTribunalService.getList).toHaveBeenCalled();
   });
 
@@ -318,8 +320,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useTribunalComboBox(mockTribunalService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -349,8 +349,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useTribunalComboBox(mockTribunalService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'Tribunal ABC' },

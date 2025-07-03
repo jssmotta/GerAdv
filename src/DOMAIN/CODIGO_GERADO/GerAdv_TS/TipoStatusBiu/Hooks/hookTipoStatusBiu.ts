@@ -4,6 +4,7 @@ import { ITipoStatusBiuService } from '../Services/TipoStatusBiu.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoStatusBiu } from '../Interfaces/interface.TipoStatusBiu';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoStatusBiuApi } from '../Apis/ApiTipoStatusBiu';
 
 export const useTipoStatusBiuForm = (
   initialTipoStatusBiu: ITipoStatusBiu,
@@ -142,6 +143,16 @@ export const useTipoStatusBiuList = (dataService: ITipoStatusBiuService) => {
 
 
 export function useValidationsTipoStatusBiu() {
+
+  async function runValidation(data: ITipoStatusBiu, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipostatusbiuApi = new TipoStatusBiuApi(uri ?? '', token ?? '');
+
+    const result = await tipostatusbiuApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoStatusBiu): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 150) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoStatusBiuComboBox = (
   dataService: ITipoStatusBiuService,
   initialValue?: any

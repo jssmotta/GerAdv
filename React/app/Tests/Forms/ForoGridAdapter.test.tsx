@@ -1,0 +1,13 @@
+﻿// ForoGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { ForoGridAdapter } from '@/app/GerAdv_TS/Foro/Adapter/ForoGridAdapter';
+// Mock ForoGrid component
+jest.mock('@/app/GerAdv_TS/Foro/Crud/Grids/ForoGrid', () => () => <div data-testid='foro-grid-mock' />);
+describe('ForoGridAdapter', () => {
+  it('should render ForoGrid component', () => {
+    const adapter = new ForoGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('foro-grid-mock')).toBeInTheDocument();
+  });
+});

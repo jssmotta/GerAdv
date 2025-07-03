@@ -1,0 +1,266 @@
+﻿// app/TestsForms/ProCDAComboBox.test.tsx - Vers�o Corrigida
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import ProCDAComboBox from '@/app/GerAdv_TS/ProCDA/ComboBox/ProCDA';
+import { setupSystemContextMock } from '@/__tests__/testeHelpers';
+// Mock do SystemContext
+jest.mock('@/app/context/SystemContext', () => ({
+  useSystemContext: jest.fn(), 
+}));
+
+import { ProCDAEmpty, ProCDATestEmpty } from '@/app/GerAdv_TS/Models/ProCDA';
+// Mock do hook antes dos imports
+jest.mock('@/app/GerAdv_TS/ProCDA/Hooks/hookProCDA', () => ({
+  useProCDAComboBox: jest.fn(() => ({
+    options: [
+    { ...ProCDAEmpty(), id: 1, nome: 'Pro C D A 1' },
+    { ...ProCDAEmpty(), id: 2, nome: 'Pro C D A 2' },
+    ], 
+    loading: false, 
+    selectedValue: null, 
+    handleFilter: jest.fn(), 
+    handleValueChange: jest.fn(), 
+    clearValue: jest.fn(), 
+  })), 
+}));
+// Mock da API e Service
+jest.mock('@/app/GerAdv_TS/ProCDA/Apis/ApiProCDA', () => ({
+  ProCDAApi: jest.fn().mockImplementation(() => ({
+    getById: jest.fn().mockResolvedValue({ id: 1, nome: 'Mock ProCDA' }),
+    getAll: jest.fn().mockResolvedValue([]), 
+    filter: jest.fn().mockResolvedValue([]), 
+    addAndUpdate: jest.fn().mockResolvedValue({ id: 1, nome: 'Mock ProCDA' }),
+    delete: jest.fn().mockResolvedValue(true), 
+  })), 
+}));
+jest.mock('@/app/GerAdv_TS/ProCDA/Services/ProCDA.service', () => ({
+  ProCDAService: jest.fn().mockImplementation(() => ({
+    fetchProCDAById: jest.fn().mockResolvedValue({ id: 1, nome: 'Mock ProCDA' }),
+    getList: jest.fn().mockResolvedValue([]), 
+  })), 
+}));
+// Mock do Window
+jest.mock('@/app/GerAdv_TS/ProCDA/Crud/Grids/ProCDAWindow', () => {
+  return function MockProCDAWindow(props: any) {
+    return props.isOpen ? (
+    <div data-testid='procda-window'>
+      <button onClick={() => props.onClose()}>Close</button>
+        <button onClick={() => props.onSuccess({ id: 1, nome: 'New Item' })}>Success</button>
+        </div>
+        ) : null;
+      };
+    });
+    jest.mock('@/app/tools/crud', () => ({
+      ActionAdicionar: 'Adicionar',
+      ActionEditar: 'Editar',
+    }));
+    // Mock do Kendo UI ComboBox
+    jest.mock('@progress/kendo-react-dropdowns', () => ({
+      ComboBox: jest.fn((props: any) => (
+      <select
+      role='combobox'
+      value={props.value?.id || ''}
+      onChange={(e) => {
+        const selectedId = parseInt(e.target.value);
+        const selectedItem = props.data?.find((item: any) => item.id === selectedId);
+        if (selectedItem) {
+          props.onChange({ target: { value: selectedItem } });
+        } else if (e.target.value === '') {
+        props.onChange({ target: { value: null } });
+      }
+    }}
+    data-testid='combo-box'
+  >
+  <option value=''>Select {props.textField === 'nome' ? 'Pro C D A' : 'Item'}</option>
+    {props.data?.map((item: any) => (
+      <option key={item.id} value={item.id}>
+        {item.nome}
+      </option>
+      ))}
+    </select>
+    )), 
+  }));
+  // Mock dos �cones Kendo
+  jest.mock('@progress/kendo-svg-icons', () => ({
+    pencilIcon: 'pencil-icon',
+    plusIcon: 'plus-icon',
+    xIcon: 'x-icon',
+  }));
+  jest.mock('@progress/kendo-react-common', () => ({
+    SvgIcon: jest.fn(({ icon }) => <span data-testid={`svg-icon-${icon}`}>{icon}</span>),
+  }));
+  // Dados mock para os testes
+  const mockOptions = [
+  { ...ProCDATestEmpty(), id: 1, nome: 'Pro C D A 1' },
+  { ...ProCDATestEmpty(), id: 2, nome: 'Pro C D A 2' },
+];
+// Props padr�o para o componente
+const defaultProps = {
+  label: 'Pro C D A',
+  name: 'procda',
+  value: 0, 
+  setValue: jest.fn(), 
+  dataForm: ProCDAEmpty(), 
+};
+describe('ProCDAComboBox', () => {
+  // Configurar o mock do SystemContext
+  const { useSystemContext } = require('@/app/context/SystemContext');
+  (useSystemContext as jest.Mock).mockReturnValue({
+    Uri: 'test-uri',
+    Token: 'test-token'
+  });
+
+  // Configurar o mock do SystemContext
+  setupSystemContextMock({
+    systemContext: { Uri: 'test-uri', Token: 'test-token' }
+  });
+  // Reset dos mocks do hook
+  const { useProCDAComboBox } = require('@/app/GerAdv_TS/ProCDA/Hooks/hookProCDA');
+  (useProCDAComboBox as jest.Mock).mockReturnValue({
+    options: mockOptions, 
+    loading: false, 
+    selectedValue: null, 
+    handleFilter: jest.fn(), 
+    handleValueChange: jest.fn(), 
+    clearValue: jest.fn(), 
+  });
+  it('renders label and ComboBox', () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    // Verificar se o label � renderizado
+    expect(screen.getByText('Pro C D A')).toBeInTheDocument();
+    // Verificar se o combobox � renderizado
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeInTheDocument();
+    // Verificar se a op��o padr�o est� presente
+    expect(screen.getByText('Select Pro C D A')).toBeInTheDocument();
+  });
+  it('calls setValue on ComboBox change', () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+
+    fireEvent.change(combobox, { target: { value: '1' } });
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...ProCDATestEmpty(), id: 1, nome: 'Pro C D A 1' });
+  });
+  it('shows loading state', () => {
+    // Mock loading state
+    const { useProCDAComboBox } = require('@/app/GerAdv_TS/ProCDA/Hooks/hookProCDA');
+    useProCDAComboBox.mockReturnValue({
+      options: [], 
+      loading: true, 
+      selectedValue: null, 
+      handleFilter: jest.fn(), 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<ProCDAComboBox {...defaultProps} />);
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+  });
+  it('opens ProCDAWindow on action button click (add)', async () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    // Procurar pelo bot�o de adicionar usando o �cone
+    const addButton = screen.getByTestId('svg-icon-plus-icon');
+    expect(addButton).toBeInTheDocument();
+    fireEvent.click(addButton.closest('label')!);
+    // Verificar se a janela abriu
+    await waitFor(() => {
+      expect(screen.getByTestId('procda-window')).toBeInTheDocument();
+    });
+  });
+
+  it('handles window close', async () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    // Abrir a janela
+    const addButton = screen.getByTestId('svg-icon-plus-icon');
+    fireEvent.click(addButton.closest('label')!);
+    // Verificar se a janela est� aberta
+    expect(screen.getByTestId('procda-window')).toBeInTheDocument();
+    // Fechar a janela
+    const closeButton = screen.getByText('Close');
+    fireEvent.click(closeButton);
+    // Verificar se a janela foi fechada
+    await waitFor(() => {
+      expect(screen.queryByTestId('procda-window')).not.toBeInTheDocument();
+    });
+  });
+  it('renders with empty options when loading is false and no options', () => {
+    (useProCDAComboBox as jest.Mock).mockReturnValue({
+      options: [], 
+      loading: false, 
+      selectedValue: null, 
+      handleFilter: jest.fn(), 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<ProCDAComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeInTheDocument();
+  });
+  it('calls setValue with null when empty option is selected', () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+
+    fireEvent.change(combobox, { target: { value: '' } });
+    expect(defaultProps.setValue).toHaveBeenCalledWith(null);
+  });
+
+  it('handles invalid value gracefully', () => {
+    const propsWithInvalidValue = {
+      ...defaultProps, 
+      value: null
+    };
+    render(<ProCDAComboBox {...propsWithInvalidValue} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveValue('');
+  });
+  it('handles ProCDAWindow onClose and onSuccess', () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    // Abrir a janela
+    const addButton = screen.getByTestId('svg-icon-plus-icon');
+    fireEvent.click(addButton.closest('label')!);
+    // Testar onSuccess
+    const successButton = screen.getByText('Success');
+    fireEvent.click(successButton);
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ id: 1, nome: 'New Item' });
+  });
+  it('handles edit mode when value is provided', () => {
+    const propsWithValue = {
+      ...defaultProps, 
+      value: { id: 1, nome: 'Existing Item' }
+    };
+    // Mock com selectedValue
+    const { useProCDAComboBox } = require('@/app/GerAdv_TS/ProCDA/Hooks/hookProCDA');
+    useProCDAComboBox.mockReturnValue({
+      options: mockOptions, 
+      loading: false, 
+      selectedValue: { id: 1, nome: 'Existing Item' },
+      handleFilter: jest.fn(), 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<ProCDAComboBox {...propsWithValue} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveValue('1');
+  });
+  it('handles string input for new items', () => {
+    render(<ProCDAComboBox {...defaultProps} />);
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+  });
+  it('handles filter changes', () => {
+    const mockHandleFilter = jest.fn();
+    const { useProCDAComboBox } = require('@/app/GerAdv_TS/ProCDA/Hooks/hookProCDA');
+    useProCDAComboBox.mockReturnValue({
+      options: mockOptions, 
+      loading: false, 
+      selectedValue: null, 
+      handleFilter: mockHandleFilter, 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<ProCDAComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeInTheDocument();
+
+    // O teste de filtro dependeria da implementa��o do ComboBox do Kendo
+    // que � complexa de mockar completamente
+  });
+});

@@ -39,13 +39,13 @@ public partial class ReuniaoPessoasService(IOptions<AppSettings> appSettings, IR
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBReuniaoPessoas.SensivelCamposSqlX}, operNome
+                   {DBReuniaoPessoas.SensivelCamposSqlX}, [Reuniao].[],[Operador].[operNome]
                    FROM {DBReuniaoPessoas.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Reuniao".dbo(oCnn)} (NOLOCK) ON renCodigo=rnpReuniao
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=rnpOperador
+                   LEFT JOIN {"Reuniao".dbo(oCnn)} (NOLOCK) ON [Reuniao].[renCodigo]=[ReuniaoPessoas].[rnpReuniao]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[ReuniaoPessoas].[rnpOperador]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ReuniaoPessoas].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ReuniaoPessoasResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=rnpOperador
             var validade = await validation.ValidateReg(regReuniaoPessoas, this, reuniaoReader, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ReuniaoPessoas: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regReuniaoPessoas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ReuniaoPessoasResponse?> Validation([FromBody] Models.ReuniaoPessoas regReuniaoPessoas, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ReuniaoPessoas: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regReuniaoPessoas == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regReuniaoPessoas, this, reuniaoReader, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regReuniaoPessoas.Id.IsEmptyIDNumber())
+            {
+                return new ReuniaoPessoasResponse();
+            }
+
+            return reader.Read(regReuniaoPessoas.Id, oCnn);
         });
     }
 

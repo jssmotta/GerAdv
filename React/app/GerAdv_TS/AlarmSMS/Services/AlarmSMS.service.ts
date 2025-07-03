@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AlarmSMSApi, AlarmSMSApiError } from '../Apis/ApiAlarmSMS';
 import { FilterAlarmSMS } from '../Filters/AlarmSMS';
 import { IAlarmSMS } from '../Interfaces/interface.AlarmSMS';
+import { AlarmSMSEmpty } from '../../Models/AlarmSMS';
 
 export class AlarmSMSValidator {
   static validateAlarmSMS(alarmsms: IAlarmSMS): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AlarmSMSService implements IAlarmSMSService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AlarmSMSApiError) {
         throw error;

@@ -42,7 +42,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
                    FROM {DBContatoCRMView.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY 
+                   ORDER BY [ContatoCRMView].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ContatoCRMViewResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
             var validade = await validation.ValidateReg(regContatoCRMView, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ContatoCRMView: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regContatoCRMView, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ContatoCRMViewResponse?> Validation([FromBody] Models.ContatoCRMView regContatoCRMView, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ContatoCRMView: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regContatoCRMView == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regContatoCRMView, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regContatoCRMView.Id.IsEmptyIDNumber())
+            {
+                return new ContatoCRMViewResponse();
+            }
+
+            return reader.Read(regContatoCRMView.Id, oCnn);
         });
     }
 

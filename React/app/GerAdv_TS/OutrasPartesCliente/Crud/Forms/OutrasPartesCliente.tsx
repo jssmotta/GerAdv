@@ -2,12 +2,11 @@
 'use client';
 import { IOutrasPartesCliente } from '@/app/GerAdv_TS/OutrasPartesCliente/Interfaces/interface.OutrasPartesCliente';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -42,8 +41,8 @@ export const OutrasPartesClienteForm: React.FC<OutrasPartesClienteFormProps> = (
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new OutrasPartesClienteApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -215,7 +214,7 @@ const addValorCidade = (e: any) => {
             onChange={onChange}
             />
 
-
+          </div><div className='grid-container'>
             <InputInput
             type='text'
             maxLength={15}
@@ -228,7 +227,7 @@ const addValorCidade = (e: any) => {
             onChange={onChange}
             />
 
-          </div><div className='grid-container'>
+
             <InputInput
             type='text'
             maxLength={255}
@@ -326,7 +325,7 @@ const addValorCidade = (e: any) => {
             onChange={onChange}
             />
 
-
+          </div><div className='grid-container'>
             <InputInput
             type='text'
             maxLength={150}
@@ -352,17 +351,17 @@ const addValorCidade = (e: any) => {
             onChange={onChange}
             />
 
-          </div><div className='grid-container'><InputCheckbox dataForm={outraspartesclienteData} label='Ani' name='ani' checked={outraspartesclienteData.ani} onChange={onChange} />
+            <InputCheckbox dataForm={outraspartesclienteData} label='Ani' name='ani' checked={outraspartesclienteData.ani} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OutrasPartesCliente' data={outraspartesclienteData} isSubmitting={isSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/outraspartescliente'} id={outraspartesclienteData.id} closeModel={onClose} dadoApi={dadoApi} />
         </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OutrasPartesCliente' data={outraspartesclienteData} isSubmitting={isSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/outraspartescliente'} id={outraspartesclienteData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
-  };
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

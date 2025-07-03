@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TerceirosApi, TerceirosApiError } from '../Apis/ApiTerceiros';
 import { FilterTerceiros } from '../Filters/Terceiros';
 import { ITerceiros } from '../Interfaces/interface.Terceiros';
+import { TerceirosEmpty } from '../../Models/Terceiros';
 
 export class TerceirosValidator {
   static validateTerceiros(terceiros: ITerceiros): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TerceirosService implements ITerceirosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TerceirosApiError) {
         throw error;

@@ -4,6 +4,7 @@ import { IRegimeTributacaoService } from '../Services/RegimeTributacao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IRegimeTributacao } from '../Interfaces/interface.RegimeTributacao';
 import { isValidDate } from '@/app/tools/datetime';
+import { RegimeTributacaoApi } from '../Apis/ApiRegimeTributacao';
 
 export const useRegimeTributacaoForm = (
   initialRegimeTributacao: IRegimeTributacao,
@@ -142,6 +143,16 @@ export const useRegimeTributacaoList = (dataService: IRegimeTributacaoService) =
 
 
 export function useValidationsRegimeTributacao() {
+
+  async function runValidation(data: IRegimeTributacao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const regimetributacaoApi = new RegimeTributacaoApi(uri ?? '', token ?? '');
+
+    const result = await regimetributacaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IRegimeTributacao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useRegimeTributacaoComboBox = (
   dataService: IRegimeTributacaoService,
   initialValue?: any

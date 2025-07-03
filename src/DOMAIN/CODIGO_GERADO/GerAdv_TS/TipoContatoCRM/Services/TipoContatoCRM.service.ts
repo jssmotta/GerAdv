@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoContatoCRMApi, TipoContatoCRMApiError } from '../Apis/ApiTipoContatoCRM';
 import { FilterTipoContatoCRM } from '../Filters/TipoContatoCRM';
 import { ITipoContatoCRM } from '../Interfaces/interface.TipoContatoCRM';
+import { TipoContatoCRMEmpty } from '../../Models/TipoContatoCRM';
 
 export class TipoContatoCRMValidator {
   static validateTipoContatoCRM(tipocontatocrm: ITipoContatoCRM): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoContatoCRMService implements ITipoContatoCRMService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoContatoCRMApiError) {
         throw error;

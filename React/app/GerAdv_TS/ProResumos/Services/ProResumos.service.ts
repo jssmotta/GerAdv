@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProResumosApi, ProResumosApiError } from '../Apis/ApiProResumos';
 import { FilterProResumos } from '../Filters/ProResumos';
 import { IProResumos } from '../Interfaces/interface.ProResumos';
+import { ProResumosEmpty } from '../../Models/ProResumos';
 
 export class ProResumosValidator {
   static validateProResumos(proresumos: IProResumos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProResumosService implements IProResumosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProResumosApiError) {
         throw error;

@@ -39,12 +39,12 @@ public partial class AnexamentoRegistrosService(IOptions<AppSettings> appSetting
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAnexamentoRegistros.SensivelCamposSqlX}, cliNome
+                   {DBAnexamentoRegistros.SensivelCamposSqlX}, [Clientes].[cliNome]
                    FROM {DBAnexamentoRegistros.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=axrCliente
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[AnexamentoRegistros].[axrCliente]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AnexamentoRegistros].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AnexamentoRegistrosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class AnexamentoRegistrosService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regAnexamentoRegistros, this, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AnexamentoRegistros: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAnexamentoRegistros, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AnexamentoRegistrosResponse?> Validation([FromBody] Models.AnexamentoRegistros regAnexamentoRegistros, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AnexamentoRegistros: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAnexamentoRegistros == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAnexamentoRegistros, this, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAnexamentoRegistros.Id.IsEmptyIDNumber())
+            {
+                return new AnexamentoRegistrosResponse();
+            }
+
+            return reader.Read(regAnexamentoRegistros.Id, oCnn);
         });
     }
 

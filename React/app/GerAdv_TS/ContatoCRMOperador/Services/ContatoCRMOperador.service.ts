@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ContatoCRMOperadorApi, ContatoCRMOperadorApiError } from '../Apis/ApiContatoCRMOperador';
 import { FilterContatoCRMOperador } from '../Filters/ContatoCRMOperador';
 import { IContatoCRMOperador } from '../Interfaces/interface.ContatoCRMOperador';
+import { ContatoCRMOperadorEmpty } from '../../Models/ContatoCRMOperador';
 
 export class ContatoCRMOperadorValidator {
   static validateContatoCRMOperador(contatocrmoperador: IContatoCRMOperador): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ContatoCRMOperadorService implements IContatoCRMOperadorService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ContatoCRMOperadorApiError) {
         throw error;

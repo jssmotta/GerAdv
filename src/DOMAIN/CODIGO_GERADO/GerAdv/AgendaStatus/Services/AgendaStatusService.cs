@@ -39,12 +39,12 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAgendaStatus.SensivelCamposSqlX}
+                   {DBAgendaStatus.SensivelCamposSqlX}, [Agenda].[]
                    FROM {DBAgendaStatus.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=astAgenda
+                   LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON [Agenda].[ageCodigo]=[AgendaStatus].[astAgenda]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AgendaStatus].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaStatusResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
             var validade = await validation.ValidateReg(regAgendaStatus, this, agendaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AgendaStatus: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgendaStatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaStatusResponse?> Validation([FromBody] Models.AgendaStatus regAgendaStatus, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AgendaStatus: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgendaStatus == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgendaStatus, this, agendaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgendaStatus.Id.IsEmptyIDNumber())
+            {
+                return new AgendaStatusResponse();
+            }
+
+            return reader.Read(regAgendaStatus.Id, oCnn);
         });
     }
 

@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface AgendaRepetirDiasIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const AgendaRepetirDiasIncContainer: React.FC<AgendaRepetirDiasIncContainerProps> = ({ id, navigator }) => {
+const AgendaRepetirDiasIncContainer: React.FC<AgendaRepetirDiasIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <AgendaRepetirDiasInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

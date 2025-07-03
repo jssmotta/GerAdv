@@ -38,13 +38,13 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, ITr
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBTribEnderecos.SensivelCamposSqlX}, triNome,cidNome
+                   {DBTribEnderecos.SensivelCamposSqlX}, [Tribunal].[triNome],[Cidade].[cidNome]
                    FROM {DBTribEnderecos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON triCodigo=treTribunal
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=treCidade
+                   LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON [Tribunal].[triCodigo]=[TribEnderecos].[treTribunal]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[TribEnderecos].[treCidade]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [TribEnderecos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TribEnderecosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -140,11 +140,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=treCidade
             var validade = await validation.ValidateReg(regTribEnderecos, this, tribunalReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TribEnderecos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTribEnderecos, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TribEnderecosResponse?> Validation([FromBody] Models.TribEnderecos regTribEnderecos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TribEnderecos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTribEnderecos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTribEnderecos, this, tribunalReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTribEnderecos.Id.IsEmptyIDNumber())
+            {
+                return new TribEnderecosResponse();
+            }
+
+            return reader.Read(regTribEnderecos.Id, oCnn);
         });
     }
 

@@ -43,7 +43,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
                    FROM {DBTipoModeloDocumento.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tpdNome
+                   ORDER BY [TipoModeloDocumento].[tpdNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoModeloDocumentoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regTipoModeloDocumento, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoModeloDocumento: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoModeloDocumento, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoModeloDocumentoResponse?> Validation([FromBody] Models.TipoModeloDocumento regTipoModeloDocumento, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoModeloDocumento: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoModeloDocumento == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoModeloDocumento, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoModeloDocumento.Id.IsEmptyIDNumber())
+            {
+                return new TipoModeloDocumentoResponse();
+            }
+
+            return reader.Read(regTipoModeloDocumento.Id, oCnn);
         });
     }
 

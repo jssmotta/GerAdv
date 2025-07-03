@@ -28,7 +28,7 @@ public class TipoEnderecoValidation : ITipoEnderecoValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoEndereco '{reg.Descricao}' já cadastrado.";
+            return $"Tipo Endereco '{reg.Descricao}'  - Descricao";
         return string.Empty;
     }
 

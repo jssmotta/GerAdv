@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ReuniaoApi, ReuniaoApiError } from '../Apis/ApiReuniao';
 import { FilterReuniao } from '../Filters/Reuniao';
 import { IReuniao } from '../Interfaces/interface.Reuniao';
+import { ReuniaoEmpty } from '../../Models/Reuniao';
 
 export class ReuniaoValidator {
   static validateReuniao(reuniao: IReuniao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ReuniaoService implements IReuniaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ReuniaoApiError) {
         throw error;

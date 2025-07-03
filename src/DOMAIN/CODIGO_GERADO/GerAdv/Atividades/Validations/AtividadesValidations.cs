@@ -31,7 +31,7 @@ public class AtividadesValidation : IAtividadesValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Atividades '{reg.Descricao}' já cadastrado.";
+            return $"Atividades '{reg.Descricao}'  - Descricao";
         return string.Empty;
     }
 

@@ -39,15 +39,15 @@ public partial class AgendaRepetirService(IOptions<AppSettings> appSettings, IAg
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAgendaRepetir.SensivelCamposSqlX}, advNome,cliNome,funNome,proNroPasta
+                   {DBAgendaRepetir.SensivelCamposSqlX}, [Advogados].[advNome],[Clientes].[cliNome],[Funcionarios].[funNome],[Processos].[proNroPasta]
                    FROM {DBAgendaRepetir.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=rptAdvogado
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=rptCliente
-LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=rptFuncionario
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=rptProcesso
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[AgendaRepetir].[rptAdvogado]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[AgendaRepetir].[rptCliente]
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON [Funcionarios].[funCodigo]=[AgendaRepetir].[rptFuncionario]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[AgendaRepetir].[rptProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AgendaRepetir].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaRepetirResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -145,11 +145,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=rptProcesso
             var validade = await validation.ValidateReg(regAgendaRepetir, this, advogadosReader, clientesReader, funcionariosReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AgendaRepetir: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgendaRepetir, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaRepetirResponse?> Validation([FromBody] Models.AgendaRepetir regAgendaRepetir, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AgendaRepetir: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgendaRepetir == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgendaRepetir, this, advogadosReader, clientesReader, funcionariosReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgendaRepetir.Id.IsEmptyIDNumber())
+            {
+                return new AgendaRepetirResponse();
+            }
+
+            return reader.Read(regAgendaRepetir.Id, oCnn);
         });
     }
 

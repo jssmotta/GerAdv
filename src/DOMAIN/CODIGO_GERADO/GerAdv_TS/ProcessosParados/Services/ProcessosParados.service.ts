@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProcessosParadosApi, ProcessosParadosApiError } from '../Apis/ApiProcessosParados';
 import { FilterProcessosParados } from '../Filters/ProcessosParados';
 import { IProcessosParados } from '../Interfaces/interface.ProcessosParados';
+import { ProcessosParadosEmpty } from '../../Models/ProcessosParados';
 
 export class ProcessosParadosValidator {
   static validateProcessosParados(processosparados: IProcessosParados): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProcessosParadosService implements IProcessosParadosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProcessosParadosApiError) {
         throw error;

@@ -42,7 +42,7 @@ public partial class ProcessOutPutIDsService(IOptions<AppSettings> appSettings, 
                    FROM {DBProcessOutPutIDs.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY poiNome
+                   ORDER BY [ProcessOutPutIDs].[poiNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessOutPutIDsResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class ProcessOutPutIDsService(IOptions<AppSettings> appSettings, 
             var validade = await validation.ValidateReg(regProcessOutPutIDs, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProcessOutPutIDs: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessOutPutIDs, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessOutPutIDsResponse?> Validation([FromBody] Models.ProcessOutPutIDs regProcessOutPutIDs, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProcessOutPutIDs: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessOutPutIDs == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessOutPutIDs, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessOutPutIDs.Id.IsEmptyIDNumber())
+            {
+                return new ProcessOutPutIDsResponse();
+            }
+
+            return reader.Read(regProcessOutPutIDs.Id, oCnn);
         });
     }
 

@@ -4,6 +4,7 @@ import { IAgendaQuemService } from '../Services/AgendaQuem.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgendaQuem } from '../Interfaces/interface.AgendaQuem';
 import { isValidDate } from '@/app/tools/datetime';
+import { AgendaQuemApi } from '../Apis/ApiAgendaQuem';
 
 export const useAgendaQuemForm = (
   initialAgendaQuem: IAgendaQuem,
@@ -142,6 +143,16 @@ export const useAgendaQuemList = (dataService: IAgendaQuemService) => {
 
 
 export function useValidationsAgendaQuem() {
+
+  async function runValidation(data: IAgendaQuem, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agendaquemApi = new AgendaQuemApi(uri ?? '', token ?? '');
+
+    const result = await agendaquemApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgendaQuem): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAgendaQuem() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

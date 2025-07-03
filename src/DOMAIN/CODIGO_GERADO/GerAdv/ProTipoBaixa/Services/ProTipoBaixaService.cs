@@ -43,7 +43,7 @@ public partial class ProTipoBaixaService(IOptions<AppSettings> appSettings, IPro
                    FROM {DBProTipoBaixa.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY ptxNome
+                   ORDER BY [ProTipoBaixa].[ptxNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProTipoBaixaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class ProTipoBaixaService(IOptions<AppSettings> appSettings, IPro
             var validade = await validation.ValidateReg(regProTipoBaixa, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProTipoBaixa: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProTipoBaixa, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProTipoBaixaResponse?> Validation([FromBody] Models.ProTipoBaixa regProTipoBaixa, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProTipoBaixa: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProTipoBaixa == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProTipoBaixa, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProTipoBaixa.Id.IsEmptyIDNumber())
+            {
+                return new ProTipoBaixaResponse();
+            }
+
+            return reader.Read(regProTipoBaixa.Id, oCnn);
         });
     }
 

@@ -4,6 +4,7 @@ import { IReuniaoService } from '../Services/Reuniao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IReuniao } from '../Interfaces/interface.Reuniao';
 import { isValidDate } from '@/app/tools/datetime';
+import { ReuniaoApi } from '../Apis/ApiReuniao';
 
 export const useReuniaoForm = (
   initialReuniao: IReuniao,
@@ -142,6 +143,16 @@ export const useReuniaoList = (dataService: IReuniaoService) => {
 
 
 export function useValidationsReuniao() {
+
+  async function runValidation(data: IReuniao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const reuniaoApi = new ReuniaoApi(uri ?? '', token ?? '');
+
+    const result = await reuniaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IReuniao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,5 +178,5 @@ if (data.principaisdecisoes.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

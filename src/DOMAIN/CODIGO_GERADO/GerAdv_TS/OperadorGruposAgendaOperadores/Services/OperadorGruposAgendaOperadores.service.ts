@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OperadorGruposAgendaOperadoresApi, OperadorGruposAgendaOperadoresApiError } from '../Apis/ApiOperadorGruposAgendaOperadores';
 import { FilterOperadorGruposAgendaOperadores } from '../Filters/OperadorGruposAgendaOperadores';
 import { IOperadorGruposAgendaOperadores } from '../Interfaces/interface.OperadorGruposAgendaOperadores';
+import { OperadorGruposAgendaOperadoresEmpty } from '../../Models/OperadorGruposAgendaOperadores';
 
 export class OperadorGruposAgendaOperadoresValidator {
   static validateOperadorGruposAgendaOperadores(operadorgruposagendaoperadores: IOperadorGruposAgendaOperadores): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OperadorGruposAgendaOperadoresService implements IOperadorGruposAge
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OperadorGruposAgendaOperadoresApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { EscritoriosApi, EscritoriosApiError } from '../Apis/ApiEscritorios';
 import { FilterEscritorios } from '../Filters/Escritorios';
 import { IEscritorios } from '../Interfaces/interface.Escritorios';
+import { EscritoriosEmpty } from '../../Models/Escritorios';
 
 export class EscritoriosValidator {
   static validateEscritorios(escritorios: IEscritorios): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class EscritoriosService implements IEscritoriosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof EscritoriosApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { StatusBiuApi, StatusBiuApiError } from '../Apis/ApiStatusBiu';
 import { FilterStatusBiu } from '../Filters/StatusBiu';
 import { IStatusBiu } from '../Interfaces/interface.StatusBiu';
+import { StatusBiuEmpty } from '../../Models/StatusBiu';
 
 export class StatusBiuValidator {
   static validateStatusBiu(statusbiu: IStatusBiu): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class StatusBiuService implements IStatusBiuService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof StatusBiuApiError) {
         throw error;

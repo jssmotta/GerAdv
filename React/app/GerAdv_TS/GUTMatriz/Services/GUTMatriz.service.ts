@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GUTMatrizApi, GUTMatrizApiError } from '../Apis/ApiGUTMatriz';
 import { FilterGUTMatriz } from '../Filters/GUTMatriz';
 import { IGUTMatriz } from '../Interfaces/interface.GUTMatriz';
+import { GUTMatrizEmpty } from '../../Models/GUTMatriz';
 
 export class GUTMatrizValidator {
   static validateGUTMatriz(gutmatriz: IGUTMatriz): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GUTMatrizService implements IGUTMatrizService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GUTMatrizApiError) {
         throw error;

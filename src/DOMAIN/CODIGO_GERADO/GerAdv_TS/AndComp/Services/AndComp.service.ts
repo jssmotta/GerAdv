@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AndCompApi, AndCompApiError } from '../Apis/ApiAndComp';
 import { FilterAndComp } from '../Filters/AndComp';
 import { IAndComp } from '../Interfaces/interface.AndComp';
+import { AndCompEmpty } from '../../Models/AndComp';
 
 export class AndCompValidator {
   static validateAndComp(andcomp: IAndComp): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AndCompService implements IAndCompService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AndCompApiError) {
         throw error;

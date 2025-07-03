@@ -31,7 +31,7 @@ public class SetorValidation : ISetorValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Setor '{reg.Descricao}' já cadastrado.";
+            return $"Setor '{reg.Descricao}'  - Descricao";
         return string.Empty;
     }
 

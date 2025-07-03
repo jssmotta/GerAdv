@@ -38,13 +38,13 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProcessosParados.SensivelCamposSqlX}, proNroPasta,operNome
+                   {DBProcessosParados.SensivelCamposSqlX}, [Processos].[proNroPasta],[Operador].[operNome]
                    FROM {DBProcessosParados.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pprProcesso
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=pprOperador
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProcessosParados].[pprProcesso]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[ProcessosParados].[pprOperador]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProcessosParados].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessosParadosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -140,11 +140,49 @@ LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=pprOperador
             var validade = await validation.ValidateReg(regProcessosParados, this, processosReader, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProcessosParados: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessosParados, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessosParadosResponse?> Validation([FromBody] Models.ProcessosParados regProcessosParados, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProcessosParados: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessosParados == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessosParados, this, processosReader, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessosParados.Id.IsEmptyIDNumber())
+            {
+                return new ProcessosParadosResponse();
+            }
+
+            return reader.Read(regProcessosParados.Id, oCnn);
         });
     }
 

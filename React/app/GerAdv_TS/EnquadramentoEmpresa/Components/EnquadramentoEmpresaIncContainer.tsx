@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface EnquadramentoEmpresaIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const EnquadramentoEmpresaIncContainer: React.FC<EnquadramentoEmpresaIncContainerProps> = ({ id, navigator }) => {
+const EnquadramentoEmpresaIncContainer: React.FC<EnquadramentoEmpresaIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <EnquadramentoEmpresaInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

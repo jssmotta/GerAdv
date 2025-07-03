@@ -4,6 +4,7 @@ import { IProProcuradoresService } from '../Services/ProProcuradores.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProProcuradores } from '../Interfaces/interface.ProProcuradores';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProProcuradoresApi } from '../Apis/ApiProProcuradores';
 
 export const useProProcuradoresForm = (
   initialProProcuradores: IProProcuradores,
@@ -142,6 +143,16 @@ export const useProProcuradoresList = (dataService: IProProcuradoresService) => 
 
 
 export function useValidationsProProcuradores() {
+
+  async function runValidation(data: IProProcuradores, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const proprocuradoresApi = new ProProcuradoresApi(uri ?? '', token ?? '');
+
+    const result = await proprocuradoresApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProProcuradores): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProProcuradoresComboBox = (
   dataService: IProProcuradoresService,
   initialValue?: any

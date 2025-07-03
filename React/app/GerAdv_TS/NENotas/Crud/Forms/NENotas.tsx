@@ -2,13 +2,12 @@
 'use client';
 import { INENotas } from '@/app/GerAdv_TS/NENotas/Interfaces/interface.NENotas';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
-import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
@@ -45,8 +44,8 @@ export const NENotasForm: React.FC<NENotasFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new NENotasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -195,7 +194,7 @@ const addValorApenso = (e: any) => {
             ` : ``}
           </style>
 
-          <div className={isMobile ? 'form-container form-container-NENotas' : 'form-container5 form-container-NENotas'}>
+          <div className={isMobile ? 'form-container form-container-NENotas' : 'form-container form-container-NENotas'}>
 
             <form className='formInputCadInc' id={`NENotasForm-${nenotasData.id}`} onSubmit={onConfirm}>
               {!isMobile && (
@@ -263,7 +262,7 @@ const addValorApenso = (e: any) => {
                   onChange={onChange}
                   />
 
-
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -276,7 +275,7 @@ const addValorApenso = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'>
+
                   <InputInput
                   type='text'
                   maxLength={2147483647}

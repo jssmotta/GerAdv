@@ -4,6 +4,7 @@ import { ITipoValorProcessoService } from '../Services/TipoValorProcesso.service
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoValorProcesso } from '../Interfaces/interface.TipoValorProcesso';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoValorProcessoApi } from '../Apis/ApiTipoValorProcesso';
 
 export const useTipoValorProcessoForm = (
   initialTipoValorProcesso: ITipoValorProcesso,
@@ -142,6 +143,16 @@ export const useTipoValorProcessoList = (dataService: ITipoValorProcessoService)
 
 
 export function useValidationsTipoValorProcesso() {
+
+  async function runValidation(data: ITipoValorProcesso, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipovalorprocessoApi = new TipoValorProcessoApi(uri ?? '', token ?? '');
+
+    const result = await tipovalorprocessoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoValorProcesso): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 100) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoValorProcessoComboBox = (
   dataService: ITipoValorProcessoService,
   initialValue?: any

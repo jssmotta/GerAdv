@@ -4,6 +4,7 @@ import { IProcessOutPutIDsService } from '../Services/ProcessOutPutIDs.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessOutPutIDs } from '../Interfaces/interface.ProcessOutPutIDs';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessOutPutIDsApi } from '../Apis/ApiProcessOutPutIDs';
 
 export const useProcessOutPutIDsForm = (
   initialProcessOutPutIDs: IProcessOutPutIDs,
@@ -142,6 +143,16 @@ export const useProcessOutPutIDsList = (dataService: IProcessOutPutIDsService) =
 
 
 export function useValidationsProcessOutPutIDs() {
+
+  async function runValidation(data: IProcessOutPutIDs, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processoutputidsApi = new ProcessOutPutIDsApi(uri ?? '', token ?? '');
+
+    const result = await processoutputidsApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessOutPutIDs): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProcessOutPutIDsComboBox = (
   dataService: IProcessOutPutIDsService,
   initialValue?: any

@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import AreasJusticaIncContainer from '@/app/GerAdv_TS/AreasJustica/Components/AreasJusticaIncContainer';
+// AreasJusticaIncContainer.test.tsx
+// Mock do AreasJusticaInc
+jest.mock('@/app/GerAdv_TS/AreasJustica/Crud/Inc/AreasJustica', () => (props: any) => (
+<div data-testid='areasjustica-inc-mock' {...props} />
+));
+describe('AreasJusticaIncContainer', () => {
+  it('deve renderizar AreasJusticaInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <AreasJusticaIncContainer id={id} navigator={mockNavigator} />
+  );
+  const areasjusticaInc = getByTestId('areasjustica-inc-mock');
+  expect(areasjusticaInc).toBeInTheDocument();
+  expect(areasjusticaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import GruposEmpresasIncContainer from '@/app/GerAdv_TS/GruposEmpresas/Components/GruposEmpresasIncContainer';
+// GruposEmpresasIncContainer.test.tsx
+// Mock do GruposEmpresasInc
+jest.mock('@/app/GerAdv_TS/GruposEmpresas/Crud/Inc/GruposEmpresas', () => (props: any) => (
+<div data-testid='gruposempresas-inc-mock' {...props} />
+));
+describe('GruposEmpresasIncContainer', () => {
+  it('deve renderizar GruposEmpresasInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <GruposEmpresasIncContainer id={id} navigator={mockNavigator} />
+  );
+  const gruposempresasInc = getByTestId('gruposempresas-inc-mock');
+  expect(gruposempresasInc).toBeInTheDocument();
+  expect(gruposempresasInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

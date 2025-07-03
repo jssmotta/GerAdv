@@ -58,9 +58,20 @@ public class AdvogadosValidation : IAdvogadosValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Advogados '{reg.Nome}' já cadastrado.";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Advogados' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            return $"Advogados '{reg.Nome}' Escritorio e/ou Nome";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Advogados ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Advogados com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         // Cargos
         if (!reg.Cargo.IsEmptyIDNumber())
         {
@@ -100,11 +111,11 @@ public class AdvogadosValidation : IAdvogadosValidation
         return existingAdvogados != null && existingAdvogados.Id > 0 && existingAdvogados.Id != reg.Id;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.Advogados reg, IAdvogadosService service, string uri)
+    private async Task<(bool, AdvogadosResponseAll? )> IsCpfDuplicado(Models.Advogados reg, IAdvogadosService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingAdvogados = (await service.Filter(new Filters.FilterAdvogados { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingAdvogados != null && existingAdvogados.Id > 0 && existingAdvogados.Id != reg.Id;
+            return (false, null);
+        var existingAdvogados = (await service.Filter(new Filters.FilterAdvogados { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingAdvogados != null && existingAdvogados.Id > 0 && existingAdvogados.Id != reg.Id, existingAdvogados);
     }
 }

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { UltimosProcessosApi, UltimosProcessosApiError } from '../Apis/ApiUltimosProcessos';
 import { FilterUltimosProcessos } from '../Filters/UltimosProcessos';
 import { IUltimosProcessos } from '../Interfaces/interface.UltimosProcessos';
+import { UltimosProcessosEmpty } from '../../Models/UltimosProcessos';
 
 export class UltimosProcessosValidator {
   static validateUltimosProcessos(ultimosprocessos: IUltimosProcessos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class UltimosProcessosService implements IUltimosProcessosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof UltimosProcessosApiError) {
         throw error;

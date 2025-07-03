@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AgendaQuemApi, AgendaQuemApiError } from '../Apis/ApiAgendaQuem';
 import { FilterAgendaQuem } from '../Filters/AgendaQuem';
 import { IAgendaQuem } from '../Interfaces/interface.AgendaQuem';
+import { AgendaQuemEmpty } from '../../Models/AgendaQuem';
 
 export class AgendaQuemValidator {
   static validateAgendaQuem(agendaquem: IAgendaQuem): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AgendaQuemService implements IAgendaQuemService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AgendaQuemApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProValoresApi, ProValoresApiError } from '../Apis/ApiProValores';
 import { FilterProValores } from '../Filters/ProValores';
 import { IProValores } from '../Interfaces/interface.ProValores';
+import { ProValoresEmpty } from '../../Models/ProValores';
 
 export class ProValoresValidator {
   static validateProValores(provalores: IProValores): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProValoresService implements IProValoresService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProValoresApiError) {
         throw error;

@@ -39,15 +39,15 @@ public partial class NENotasService(IOptions<AppSettings> appSettings, INENotasR
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBNENotas.SensivelCamposSqlX}, insNroProcesso,proNroPasta
+                   {DBNENotas.SensivelCamposSqlX}, [Apenso].[],[Precatoria].[],[Instancia].[insNroProcesso],[Processos].[proNroPasta]
                    FROM {DBNENotas.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Apenso".dbo(oCnn)} (NOLOCK) ON apeCodigo=nepApenso
-LEFT JOIN {"Precatoria".dbo(oCnn)} (NOLOCK) ON preCodigo=nepPrecatoria
-LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON insCodigo=nepInstancia
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=nepProcesso
+                   LEFT JOIN {"Apenso".dbo(oCnn)} (NOLOCK) ON [Apenso].[apeCodigo]=[NENotas].[nepApenso]
+LEFT JOIN {"Precatoria".dbo(oCnn)} (NOLOCK) ON [Precatoria].[preCodigo]=[NENotas].[nepPrecatoria]
+LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON [Instancia].[insCodigo]=[NENotas].[nepInstancia]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[NENotas].[nepProcesso]
  
                    {where}
-                   ORDER BY nepNome
+                   ORDER BY [NENotas].[nepNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<NENotasResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -145,11 +145,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=nepProcesso
             var validade = await validation.ValidateReg(regNENotas, this, apensoReader, precatoriaReader, instanciaReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"NENotas: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regNENotas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<NENotasResponse?> Validation([FromBody] Models.NENotas regNENotas, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("NENotas: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regNENotas == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regNENotas, this, apensoReader, precatoriaReader, instanciaReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regNENotas.Id.IsEmptyIDNumber())
+            {
+                return new NENotasResponse();
+            }
+
+            return reader.Read(regNENotas.Id, oCnn);
         });
     }
 

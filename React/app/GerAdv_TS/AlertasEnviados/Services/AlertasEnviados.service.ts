@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AlertasEnviadosApi, AlertasEnviadosApiError } from '../Apis/ApiAlertasEnviados';
 import { FilterAlertasEnviados } from '../Filters/AlertasEnviados';
 import { IAlertasEnviados } from '../Interfaces/interface.AlertasEnviados';
+import { AlertasEnviadosEmpty } from '../../Models/AlertasEnviados';
 
 export class AlertasEnviadosValidator {
   static validateAlertasEnviados(alertasenviados: IAlertasEnviados): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AlertasEnviadosService implements IAlertasEnviadosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AlertasEnviadosApiError) {
         throw error;

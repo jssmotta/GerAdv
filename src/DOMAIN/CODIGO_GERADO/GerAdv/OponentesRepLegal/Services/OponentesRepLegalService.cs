@@ -39,13 +39,13 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBOponentesRepLegal.SensivelCamposSqlX}, opoNome,cidNome
+                   {DBOponentesRepLegal.SensivelCamposSqlX}, [Oponentes].[opoNome],[Cidade].[cidNome]
                    FROM {DBOponentesRepLegal.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON opoCodigo=oprOponente
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=oprCidade
+                   LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON [Oponentes].[opoCodigo]=[OponentesRepLegal].[oprOponente]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[OponentesRepLegal].[oprCidade]
  
                    {where}
-                   ORDER BY oprNome
+                   ORDER BY [OponentesRepLegal].[oprNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OponentesRepLegalResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=oprCidade
             var validade = await validation.ValidateReg(regOponentesRepLegal, this, oponentesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"OponentesRepLegal: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOponentesRepLegal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OponentesRepLegalResponse?> Validation([FromBody] Models.OponentesRepLegal regOponentesRepLegal, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("OponentesRepLegal: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOponentesRepLegal == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOponentesRepLegal, this, oponentesReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOponentesRepLegal.Id.IsEmptyIDNumber())
+            {
+                return new OponentesRepLegalResponse();
+            }
+
+            return reader.Read(regOponentesRepLegal.Id, oCnn);
         });
     }
 

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TribunalApi, TribunalApiError } from '../Apis/ApiTribunal';
 import { FilterTribunal } from '../Filters/Tribunal';
 import { ITribunal } from '../Interfaces/interface.Tribunal';
+import { TribunalEmpty } from '../../Models/Tribunal';
 
 export class TribunalValidator {
   static validateTribunal(tribunal: ITribunal): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TribunalService implements ITribunalService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TribunalApiError) {
         throw error;

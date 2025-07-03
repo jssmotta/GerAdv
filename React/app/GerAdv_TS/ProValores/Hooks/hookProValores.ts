@@ -4,6 +4,7 @@ import { IProValoresService } from '../Services/ProValores.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProValores } from '../Interfaces/interface.ProValores';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProValoresApi } from '../Apis/ApiProValores';
 
 export const useProValoresForm = (
   initialProValores: IProValores,
@@ -142,6 +143,16 @@ export const useProValoresList = (dataService: IProValoresService) => {
 
 
 export function useValidationsProValores() {
+
+  async function runValidation(data: IProValores, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const provaloresApi = new ProValoresApi(uri ?? '', token ?? '');
+
+    const result = await provaloresApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProValores): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsProValores() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

@@ -38,12 +38,12 @@ public partial class ProPartesService(IOptions<AppSettings> appSettings, IProPar
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProPartes.SensivelCamposSqlX}, proNroPasta
+                   {DBProPartes.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBProPartes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=oppProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProPartes].[oppProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProPartes].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProPartesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -139,11 +139,49 @@ public partial class ProPartesService(IOptions<AppSettings> appSettings, IProPar
             var validade = await validation.ValidateReg(regProPartes, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProPartes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProPartes, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProPartesResponse?> Validation([FromBody] Models.ProPartes regProPartes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProPartes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProPartes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProPartes, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProPartes.Id.IsEmptyIDNumber())
+            {
+                return new ProPartesResponse();
+            }
+
+            return reader.Read(regProPartes.Id, oCnn);
         });
     }
 

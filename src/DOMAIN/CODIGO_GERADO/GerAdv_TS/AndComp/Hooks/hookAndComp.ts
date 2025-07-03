@@ -4,6 +4,7 @@ import { IAndCompService } from '../Services/AndComp.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAndComp } from '../Interfaces/interface.AndComp';
 import { isValidDate } from '@/app/tools/datetime';
+import { AndCompApi } from '../Apis/ApiAndComp';
 
 export const useAndCompForm = (
   initialAndComp: IAndComp,
@@ -142,6 +143,16 @@ export const useAndCompList = (dataService: IAndCompService) => {
 
 
 export function useValidationsAndComp() {
+
+  async function runValidation(data: IAndComp, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const andcompApi = new AndCompApi(uri ?? '', token ?? '');
+
+    const result = await andcompApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAndComp): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAndComp() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

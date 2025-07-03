@@ -2,12 +2,11 @@
 'use client';
 import { IEnderecoSistema } from '@/app/GerAdv_TS/EnderecoSistema/Interfaces/interface.EnderecoSistema';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -43,8 +42,8 @@ export const EnderecoSistemaForm: React.FC<EnderecoSistemaFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new EnderecoSistemaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -269,7 +268,7 @@ const addValorTipoEnderecoSistema = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={50}
@@ -282,7 +281,7 @@ const addValorTipoEnderecoSistema = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputCep
                 type='text'
                 id='cep'

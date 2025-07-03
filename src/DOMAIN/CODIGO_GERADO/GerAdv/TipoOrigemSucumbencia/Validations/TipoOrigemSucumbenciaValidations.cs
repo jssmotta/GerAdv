@@ -31,7 +31,7 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoOrigemSucumbencia '{reg.Nome}' já cadastrado.";
+            return $"Tipo Origem Sucumbencia '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

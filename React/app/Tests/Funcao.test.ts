@@ -284,7 +284,8 @@ describe('Integração de hooks', () => {
   
     expect(validation.isValid).toBe(true);
   });
-});  test('deve carregar opções na inicialização', async () => {
+}); 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, descricao: 'Função 1' },
       { id: 2, descricao: 'Função 2' }
@@ -304,6 +305,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockFuncaoService.getList).toHaveBeenCalled();
   });
 
@@ -318,8 +320,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useFuncaoComboBox(mockFuncaoService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -349,8 +349,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useFuncaoComboBox(mockFuncaoService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'Função ABC' },

@@ -1,0 +1,13 @@
+﻿// AgendaFinanceiroGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { AgendaFinanceiroGridAdapter } from '@/app/GerAdv_TS/AgendaFinanceiro/Adapter/AgendaFinanceiroGridAdapter';
+// Mock AgendaFinanceiroGrid component
+jest.mock('@/app/GerAdv_TS/AgendaFinanceiro/Crud/Grids/AgendaFinanceiroGrid', () => () => <div data-testid='agendafinanceiro-grid-mock' />);
+describe('AgendaFinanceiroGridAdapter', () => {
+  it('should render AgendaFinanceiroGrid component', () => {
+    const adapter = new AgendaFinanceiroGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('agendafinanceiro-grid-mock')).toBeInTheDocument();
+  });
+});

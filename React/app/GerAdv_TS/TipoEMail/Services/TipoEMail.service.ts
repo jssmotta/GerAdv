@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoEMailApi, TipoEMailApiError } from '../Apis/ApiTipoEMail';
 import { FilterTipoEMail } from '../Filters/TipoEMail';
 import { ITipoEMail } from '../Interfaces/interface.TipoEMail';
+import { TipoEMailEmpty } from '../../Models/TipoEMail';
 
 export class TipoEMailValidator {
   static validateTipoEMail(tipoemail: ITipoEMail): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoEMailService implements ITipoEMailService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoEMailApiError) {
         throw error;

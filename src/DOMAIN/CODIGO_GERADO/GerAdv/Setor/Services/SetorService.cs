@@ -43,7 +43,7 @@ public partial class SetorService(IOptions<AppSettings> appSettings, ISetorReade
                    FROM {DBSetor.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY setDescricao
+                   ORDER BY [Setor].[setDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<SetorResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class SetorService(IOptions<AppSettings> appSettings, ISetorReade
             var validade = await validation.ValidateReg(regSetor, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Setor: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regSetor, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<SetorResponse?> Validation([FromBody] Models.Setor regSetor, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Setor: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regSetor == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regSetor, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regSetor.Id.IsEmptyIDNumber())
+            {
+                return new SetorResponse();
+            }
+
+            return reader.Read(regSetor.Id, oCnn);
         });
     }
 

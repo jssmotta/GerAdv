@@ -39,14 +39,14 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBEnderecoSistema.SensivelCamposSqlX}, tesNome,proNroPasta,cidNome
+                   {DBEnderecoSistema.SensivelCamposSqlX}, [TipoEnderecoSistema].[tesNome],[Processos].[proNroPasta],[Cidade].[cidNome]
                    FROM {DBEnderecoSistema.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"TipoEnderecoSistema".dbo(oCnn)} (NOLOCK) ON tesCodigo=estTipoEnderecoSistema
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=estProcesso
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=estCidade
+                   LEFT JOIN {"TipoEnderecoSistema".dbo(oCnn)} (NOLOCK) ON [TipoEnderecoSistema].[tesCodigo]=[EnderecoSistema].[estTipoEnderecoSistema]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[EnderecoSistema].[estProcesso]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[EnderecoSistema].[estCidade]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [EnderecoSistema].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EnderecoSistemaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=estCidade
             var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, processosReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"EnderecoSistema: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEnderecoSistema, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EnderecoSistemaResponse?> Validation([FromBody] Models.EnderecoSistema regEnderecoSistema, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("EnderecoSistema: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEnderecoSistema == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, processosReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEnderecoSistema.Id.IsEmptyIDNumber())
+            {
+                return new EnderecoSistemaResponse();
+            }
+
+            return reader.Read(regEnderecoSistema.Id, oCnn);
         });
     }
 

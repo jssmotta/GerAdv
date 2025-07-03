@@ -39,16 +39,16 @@ public partial class HorasTrabService(IOptions<AppSettings> appSettings, IHorasT
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBHorasTrab.SensivelCamposSqlX}, cliNome,proNroPasta,advNome,funNome,serDescricao
+                   {DBHorasTrab.SensivelCamposSqlX}, [Clientes].[cliNome],[Processos].[proNroPasta],[Advogados].[advNome],[Funcionarios].[funNome],[Servicos].[serDescricao]
                    FROM {DBHorasTrab.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=htbCliente
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=htbProcesso
-LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=htbAdvogado
-LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=htbFuncionario
-LEFT JOIN {"Servicos".dbo(oCnn)} (NOLOCK) ON serCodigo=htbServico
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[HorasTrab].[htbCliente]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[HorasTrab].[htbProcesso]
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[HorasTrab].[htbAdvogado]
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON [Funcionarios].[funCodigo]=[HorasTrab].[htbFuncionario]
+LEFT JOIN {"Servicos".dbo(oCnn)} (NOLOCK) ON [Servicos].[serCodigo]=[HorasTrab].[htbServico]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [HorasTrab].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<HorasTrabResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -146,11 +146,49 @@ LEFT JOIN {"Servicos".dbo(oCnn)} (NOLOCK) ON serCodigo=htbServico
             var validade = await validation.ValidateReg(regHorasTrab, this, clientesReader, processosReader, advogadosReader, funcionariosReader, servicosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"HorasTrab: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regHorasTrab, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<HorasTrabResponse?> Validation([FromBody] Models.HorasTrab regHorasTrab, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("HorasTrab: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regHorasTrab == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regHorasTrab, this, clientesReader, processosReader, advogadosReader, funcionariosReader, servicosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regHorasTrab.Id.IsEmptyIDNumber())
+            {
+                return new HorasTrabResponse();
+            }
+
+            return reader.Read(regHorasTrab.Id, oCnn);
         });
     }
 

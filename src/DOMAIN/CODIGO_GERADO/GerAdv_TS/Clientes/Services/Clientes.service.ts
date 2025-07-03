@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ClientesApi, ClientesApiError } from '../Apis/ApiClientes';
 import { FilterClientes } from '../Filters/Clientes';
 import { IClientes } from '../Interfaces/interface.Clientes';
+import { ClientesEmpty } from '../../Models/Clientes';
 
 export class ClientesValidator {
   static validateClientes(clientes: IClientes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ClientesService implements IClientesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ClientesApiError) {
         throw error;

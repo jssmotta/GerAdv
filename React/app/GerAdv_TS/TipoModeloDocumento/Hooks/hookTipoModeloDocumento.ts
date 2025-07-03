@@ -4,6 +4,7 @@ import { ITipoModeloDocumentoService } from '../Services/TipoModeloDocumento.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoModeloDocumento } from '../Interfaces/interface.TipoModeloDocumento';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoModeloDocumentoApi } from '../Apis/ApiTipoModeloDocumento';
 
 export const useTipoModeloDocumentoForm = (
   initialTipoModeloDocumento: ITipoModeloDocumento,
@@ -142,6 +143,16 @@ export const useTipoModeloDocumentoList = (dataService: ITipoModeloDocumentoServ
 
 
 export function useValidationsTipoModeloDocumento() {
+
+  async function runValidation(data: ITipoModeloDocumento, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipomodelodocumentoApi = new TipoModeloDocumentoApi(uri ?? '', token ?? '');
+
+    const result = await tipomodelodocumentoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoModeloDocumento): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoModeloDocumentoComboBox = (
   dataService: ITipoModeloDocumentoService,
   initialValue?: any

@@ -31,7 +31,7 @@ public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoModeloDocumento '{reg.Nome}' já cadastrado.";
+            return $"Tipo Modelo Documento '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

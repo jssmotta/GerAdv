@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { SMSAliceApi, SMSAliceApiError } from '../Apis/ApiSMSAlice';
 import { FilterSMSAlice } from '../Filters/SMSAlice';
 import { ISMSAlice } from '../Interfaces/interface.SMSAlice';
+import { SMSAliceEmpty } from '../../Models/SMSAlice';
 
 export class SMSAliceValidator {
   static validateSMSAlice(smsalice: ISMSAlice): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class SMSAliceService implements ISMSAliceService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof SMSAliceApiError) {
         throw error;

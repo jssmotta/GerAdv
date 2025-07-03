@@ -43,7 +43,7 @@ public partial class EMPClassRiscosService(IOptions<AppSettings> appSettings, IE
                    FROM {DBEMPClassRiscos.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY ecrNome
+                   ORDER BY [EMPClassRiscos].[ecrNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EMPClassRiscosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class EMPClassRiscosService(IOptions<AppSettings> appSettings, IE
             var validade = await validation.ValidateReg(regEMPClassRiscos, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"EMPClassRiscos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEMPClassRiscos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EMPClassRiscosResponse?> Validation([FromBody] Models.EMPClassRiscos regEMPClassRiscos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("EMPClassRiscos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEMPClassRiscos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEMPClassRiscos, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEMPClassRiscos.Id.IsEmptyIDNumber())
+            {
+                return new EMPClassRiscosResponse();
+            }
+
+            return reader.Read(regEMPClassRiscos.Id, oCnn);
         });
     }
 

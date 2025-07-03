@@ -39,13 +39,13 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IProD
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProDespesas.SensivelCamposSqlX}, cliNome,proNroPasta
+                   {DBProDespesas.SensivelCamposSqlX}, [Clientes].[cliNome],[Processos].[proNroPasta]
                    FROM {DBProDespesas.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=desCliente
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=desProcesso
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[ProDespesas].[desCliente]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProDespesas].[desProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProDespesas].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProDespesasResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=desProcesso
             var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProDespesas: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProDespesas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProDespesasResponse?> Validation([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProDespesas: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProDespesas == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProDespesas.Id.IsEmptyIDNumber())
+            {
+                return new ProDespesasResponse();
+            }
+
+            return reader.Read(regProDespesas.Id, oCnn);
         });
     }
 

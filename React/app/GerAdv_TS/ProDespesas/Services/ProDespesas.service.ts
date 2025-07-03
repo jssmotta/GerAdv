@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProDespesasApi, ProDespesasApiError } from '../Apis/ApiProDespesas';
 import { FilterProDespesas } from '../Filters/ProDespesas';
 import { IProDespesas } from '../Interfaces/interface.ProDespesas';
+import { ProDespesasEmpty } from '../../Models/ProDespesas';
 
 export class ProDespesasValidator {
   static validateProDespesas(prodespesas: IProDespesas): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProDespesasService implements IProDespesasService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProDespesasApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoModeloDocumentoApi, TipoModeloDocumentoApiError } from '../Apis/ApiTipoModeloDocumento';
 import { FilterTipoModeloDocumento } from '../Filters/TipoModeloDocumento';
 import { ITipoModeloDocumento } from '../Interfaces/interface.TipoModeloDocumento';
+import { TipoModeloDocumentoEmpty } from '../../Models/TipoModeloDocumento';
 
 export class TipoModeloDocumentoValidator {
   static validateTipoModeloDocumento(tipomodelodocumento: ITipoModeloDocumento): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoModeloDocumentoService implements ITipoModeloDocumentoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoModeloDocumentoApiError) {
         throw error;

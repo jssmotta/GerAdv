@@ -39,13 +39,13 @@ public partial class ProcessosObsReportService(IOptions<AppSettings> appSettings
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProcessosObsReport.SensivelCamposSqlX}, proNroPasta
+                   {DBProcessosObsReport.SensivelCamposSqlX}, [Processos].[proNroPasta],[Historico].[]
                    FROM {DBProcessosObsReport.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=prrProcesso
-LEFT JOIN {"Historico".dbo(oCnn)} (NOLOCK) ON hisCodigo=prrHistorico
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProcessosObsReport].[prrProcesso]
+LEFT JOIN {"Historico".dbo(oCnn)} (NOLOCK) ON [Historico].[hisCodigo]=[ProcessosObsReport].[prrHistorico]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProcessosObsReport].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessosObsReportResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Historico".dbo(oCnn)} (NOLOCK) ON hisCodigo=prrHistorico
             var validade = await validation.ValidateReg(regProcessosObsReport, this, processosReader, historicoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProcessosObsReport: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessosObsReport, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessosObsReportResponse?> Validation([FromBody] Models.ProcessosObsReport regProcessosObsReport, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProcessosObsReport: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessosObsReport == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessosObsReport, this, processosReader, historicoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessosObsReport.Id.IsEmptyIDNumber())
+            {
+                return new ProcessosObsReportResponse();
+            }
+
+            return reader.Read(regProcessosObsReport.Id, oCnn);
         });
     }
 

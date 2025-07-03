@@ -31,7 +31,7 @@ public class RitoValidation : IRitoValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Rito '{reg.Descricao}' já cadastrado.";
+            return $"Rito '{reg.Descricao}'  - Descricao";
         return string.Empty;
     }
 

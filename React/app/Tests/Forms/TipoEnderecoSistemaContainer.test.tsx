@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import TipoEnderecoSistemaIncContainer from '@/app/GerAdv_TS/TipoEnderecoSistema/Components/TipoEnderecoSistemaIncContainer';
+// TipoEnderecoSistemaIncContainer.test.tsx
+// Mock do TipoEnderecoSistemaInc
+jest.mock('@/app/GerAdv_TS/TipoEnderecoSistema/Crud/Inc/TipoEnderecoSistema', () => (props: any) => (
+<div data-testid='tipoenderecosistema-inc-mock' {...props} />
+));
+describe('TipoEnderecoSistemaIncContainer', () => {
+  it('deve renderizar TipoEnderecoSistemaInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <TipoEnderecoSistemaIncContainer id={id} navigator={mockNavigator} />
+  );
+  const tipoenderecosistemaInc = getByTestId('tipoenderecosistema-inc-mock');
+  expect(tipoenderecosistemaInc).toBeInTheDocument();
+  expect(tipoenderecosistemaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

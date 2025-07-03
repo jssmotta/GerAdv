@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface GUTPeriodicidadeIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const GUTPeriodicidadeIncContainer: React.FC<GUTPeriodicidadeIncContainerProps> = ({ id, navigator }) => {
+const GUTPeriodicidadeIncContainer: React.FC<GUTPeriodicidadeIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <GUTPeriodicidadeInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

@@ -39,14 +39,14 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IContra
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBContratos.SensivelCamposSqlX}, proNroPasta,cliNome,advNome
+                   {DBContratos.SensivelCamposSqlX}, [Processos].[proNroPasta],[Clientes].[cliNome],[Advogados].[advNome]
                    FROM {DBContratos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=cttProcesso
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=cttCliente
-LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=cttAdvogado
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Contratos].[cttProcesso]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Contratos].[cttCliente]
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[Contratos].[cttAdvogado]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [Contratos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ContratosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=cttAdvogado
             var validade = await validation.ValidateReg(regContratos, this, processosReader, clientesReader, advogadosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Contratos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regContratos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ContratosResponse?> Validation([FromBody] Models.Contratos regContratos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Contratos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regContratos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regContratos, this, processosReader, clientesReader, advogadosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regContratos.Id.IsEmptyIDNumber())
+            {
+                return new ContratosResponse();
+            }
+
+            return reader.Read(regContratos.Id, oCnn);
         });
     }
 

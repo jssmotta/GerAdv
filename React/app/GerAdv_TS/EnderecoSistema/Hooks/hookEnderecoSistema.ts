@@ -4,6 +4,7 @@ import { IEnderecoSistemaService } from '../Services/EnderecoSistema.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEnderecoSistema } from '../Interfaces/interface.EnderecoSistema';
 import { isValidDate } from '@/app/tools/datetime';
+import { EnderecoSistemaApi } from '../Apis/ApiEnderecoSistema';
 
 export const useEnderecoSistemaForm = (
   initialEnderecoSistema: IEnderecoSistema,
@@ -142,6 +143,16 @@ export const useEnderecoSistemaList = (dataService: IEnderecoSistemaService) => 
 
 
 export function useValidationsEnderecoSistema() {
+
+  async function runValidation(data: IEnderecoSistema, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const enderecosistemaApi = new EnderecoSistemaApi(uri ?? '', token ?? '');
+
+    const result = await enderecosistemaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEnderecoSistema): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -182,5 +193,5 @@ if (data.observacao.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

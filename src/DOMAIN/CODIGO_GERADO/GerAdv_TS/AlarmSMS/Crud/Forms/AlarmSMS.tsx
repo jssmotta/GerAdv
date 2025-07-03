@@ -2,12 +2,11 @@
 'use client';
 import { IAlarmSMS } from '@/app/GerAdv_TS/AlarmSMS/Interfaces/interface.AlarmSMS';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -43,8 +42,8 @@ export const AlarmSMSForm: React.FC<AlarmSMSFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new AlarmSMSApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -225,109 +224,109 @@ const addValorOperador = (e: any) => {
                 <InputCheckbox dataForm={alarmsmsData} label='D4' name='d4' checked={alarmsmsData.d4} onChange={onChange} />
                 <InputCheckbox dataForm={alarmsmsData} label='D5' name='d5' checked={alarmsmsData.d5} onChange={onChange} />
                 <InputCheckbox dataForm={alarmsmsData} label='D6' name='d6' checked={alarmsmsData.d6} onChange={onChange} />
-                <InputCheckbox dataForm={alarmsmsData} label='D7' name='d7' checked={alarmsmsData.d7} onChange={onChange} />
-              </div><div className='grid-container'>
-                <InputInput
-                type='email'
-                maxLength={50}
-                id='email'
-                label='EMail'
-                dataForm={alarmsmsData}
-                className='inputIncNome'
-                name='email'
-                value={alarmsmsData.email}
-                onChange={onChange}
-                />
+              </div><div className='grid-container'><InputCheckbox dataForm={alarmsmsData} label='D7' name='d7' checked={alarmsmsData.d7} onChange={onChange} />
 
-                <InputCheckbox dataForm={alarmsmsData} label='Desativar' name='desativar' checked={alarmsmsData.desativar} onChange={onChange} />
+              <InputInput
+              type='email'
+              maxLength={50}
+              id='email'
+              label='EMail'
+              dataForm={alarmsmsData}
+              className='inputIncNome'
+              name='email'
+              value={alarmsmsData.email}
+              onChange={onChange}
+              />
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='today'
-                label='Today'
-                dataForm={alarmsmsData}
-                className='inputIncNome'
-                name='today'
-                value={alarmsmsData.today}
-                onChange={onChange}
-                />
+              <InputCheckbox dataForm={alarmsmsData} label='Desativar' name='desativar' checked={alarmsmsData.desativar} onChange={onChange} />
 
-                <InputCheckbox dataForm={alarmsmsData} label='ExcetoDiasFelizes' name='excetodiasfelizes' checked={alarmsmsData.excetodiasfelizes} onChange={onChange} />
-                <InputCheckbox dataForm={alarmsmsData} label='Desktop' name='desktop' checked={alarmsmsData.desktop} onChange={onChange} />
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='today'
+              label='Today'
+              dataForm={alarmsmsData}
+              className='inputIncNome'
+              name='today'
+              value={alarmsmsData.today}
+              onChange={onChange}
+              />
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='alertardatahora'
-                label='AlertarDataHora'
-                dataForm={alarmsmsData}
-                className='inputIncNome'
-                name='alertardatahora'
-                value={alarmsmsData.alertardatahora}
-                onChange={onChange}
-                />
+              <InputCheckbox dataForm={alarmsmsData} label='ExcetoDiasFelizes' name='excetodiasfelizes' checked={alarmsmsData.excetodiasfelizes} onChange={onChange} />
+              <InputCheckbox dataForm={alarmsmsData} label='Desktop' name='desktop' checked={alarmsmsData.desktop} onChange={onChange} />
 
-
-                <OperadorComboBox
-                name={'operador'}
-                dataForm={alarmsmsData}
-                value={alarmsmsData.operador}
-                setValue={addValorOperador}
-                label={'Operador'}
-                />
-
-                <InputInput
-                type='text'
-                maxLength={100}
-                id='guidexo'
-                label='GuidExo'
-                dataForm={alarmsmsData}
-                className='inputIncNome'
-                name='guidexo'
-                value={alarmsmsData.guidexo}
-                onChange={onChange}
-                />
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='alertardatahora'
+              label='AlertarDataHora'
+              dataForm={alarmsmsData}
+              className='inputIncNome'
+              name='alertardatahora'
+              value={alarmsmsData.alertardatahora}
+              onChange={onChange}
+              />
 
 
-                <AgendaComboBox
-                name={'agenda'}
-                dataForm={alarmsmsData}
-                value={alarmsmsData.agenda}
-                setValue={addValorAgenda}
-                label={'Agenda'}
-                />
+              <OperadorComboBox
+              name={'operador'}
+              dataForm={alarmsmsData}
+              value={alarmsmsData.operador}
+              setValue={addValorOperador}
+              label={'Operador'}
+              />
 
-                <RecadosComboBox
-                name={'recado'}
-                dataForm={alarmsmsData}
-                value={alarmsmsData.recado}
-                setValue={addValorRecado}
-                label={'Recados'}
-                />
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='emocao'
-                label='Emocao'
-                dataForm={alarmsmsData}
-                className='inputIncNome'
-                name='emocao'
-                value={alarmsmsData.emocao}
-                onChange={onChange}
-                />
+              <InputInput
+              type='text'
+              maxLength={100}
+              id='guidexo'
+              label='GuidExo'
+              dataForm={alarmsmsData}
+              className='inputIncNome'
+              name='guidexo'
+              value={alarmsmsData.guidexo}
+              onChange={onChange}
+              />
 
-              </div>
-            </form>
+            </div><div className='grid-container'>
+              <AgendaComboBox
+              name={'agenda'}
+              dataForm={alarmsmsData}
+              value={alarmsmsData.agenda}
+              setValue={addValorAgenda}
+              label={'Agenda'}
+              />
 
+              <RecadosComboBox
+              name={'recado'}
+              dataForm={alarmsmsData}
+              value={alarmsmsData.recado}
+              setValue={addValorRecado}
+              label={'Recados'}
+              />
 
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AlarmSMS' data={alarmsmsData} isSubmitting={isSubmitting} onClose={onClose} formId={`AlarmSMSForm-${alarmsmsData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/alarmsms'} id={alarmsmsData.id} closeModel={onClose} dadoApi={dadoApi} />
+              <InputInput
+              type='text'
+              maxLength={2048}
+              id='emocao'
+              label='Emocao'
+              dataForm={alarmsmsData}
+              className='inputIncNome'
+              name='emocao'
+              value={alarmsmsData.emocao}
+              onChange={onChange}
+              />
+
             </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+          </form>
+
+
+          {isMobile && (
+            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AlarmSMS' data={alarmsmsData} isSubmitting={isSubmitting} onClose={onClose} formId={`AlarmSMSForm-${alarmsmsData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <DeleteButton page={'/pages/alarmsms'} id={alarmsmsData.id} closeModel={onClose} dadoApi={dadoApi} />
+          </div>
+          <div className='form-spacer'></div>
+          </>
+        );
+      };

@@ -2,12 +2,11 @@
 'use client';
 import { IColaboradores } from '@/app/GerAdv_TS/Colaboradores/Interfaces/interface.Colaboradores';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const ColaboradoresForm: React.FC<ColaboradoresFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ColaboradoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -275,7 +274,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={50}
@@ -288,7 +287,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputCep
                 type='text'
                 id='cep'

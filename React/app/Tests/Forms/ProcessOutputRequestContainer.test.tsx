@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProcessOutputRequestIncContainer from '@/app/GerAdv_TS/ProcessOutputRequest/Components/ProcessOutputRequestIncContainer';
+// ProcessOutputRequestIncContainer.test.tsx
+// Mock do ProcessOutputRequestInc
+jest.mock('@/app/GerAdv_TS/ProcessOutputRequest/Crud/Inc/ProcessOutputRequest', () => (props: any) => (
+<div data-testid='processoutputrequest-inc-mock' {...props} />
+));
+describe('ProcessOutputRequestIncContainer', () => {
+  it('deve renderizar ProcessOutputRequestInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProcessOutputRequestIncContainer id={id} navigator={mockNavigator} />
+  );
+  const processoutputrequestInc = getByTestId('processoutputrequest-inc-mock');
+  expect(processoutputrequestInc).toBeInTheDocument();
+  expect(processoutputrequestInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

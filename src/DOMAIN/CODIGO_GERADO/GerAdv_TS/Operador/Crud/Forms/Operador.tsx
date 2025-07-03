@@ -2,12 +2,11 @@
 'use client';
 import { IOperador } from '@/app/GerAdv_TS/Operador/Interfaces/interface.Operador';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -37,8 +36,8 @@ export const OperadorForm: React.FC<OperadorFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new OperadorApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -180,7 +179,7 @@ return (
           onChange={onChange}
           />
 
-
+        </div><div className='grid-container'>
           <InputInput
           type='email'
           maxLength={100}
@@ -193,28 +192,28 @@ return (
           onChange={onChange}
           />
 
-        </div><div className='grid-container'><InputCheckbox dataForm={operadorData} label='OnLine' name='online' checked={operadorData.online} onChange={onChange} />
-        <InputCheckbox dataForm={operadorData} label='SysOp' name='sysop' checked={operadorData.sysop} onChange={onChange} />
-        <InputCheckbox dataForm={operadorData} label='IsFinanceiro' name='isfinanceiro' checked={operadorData.isfinanceiro} onChange={onChange} />
-        <InputCheckbox dataForm={operadorData} label='Top' name='top' checked={operadorData.top} onChange={onChange} />
-        <InputCheckbox dataForm={operadorData} label='Sexo' name='sexo' checked={operadorData.sexo} onChange={onChange} />
-        <InputCheckbox dataForm={operadorData} label='Basico' name='basico' checked={operadorData.basico} onChange={onChange} />
-        <InputCheckbox dataForm={operadorData} label='Externo' name='externo' checked={operadorData.externo} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='OnLine' name='online' checked={operadorData.online} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='SysOp' name='sysop' checked={operadorData.sysop} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='IsFinanceiro' name='isfinanceiro' checked={operadorData.isfinanceiro} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='Top' name='top' checked={operadorData.top} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='Sexo' name='sexo' checked={operadorData.sexo} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='Basico' name='basico' checked={operadorData.basico} onChange={onChange} />
+          <InputCheckbox dataForm={operadorData} label='Externo' name='externo' checked={operadorData.externo} onChange={onChange} />
 
-        <InputInput
-        autoComplete='off'
-        type='password'
-        maxLength={4000}
-        id='senha256'
-        label='Senha256'
-        dataForm={operadorData}
-        className='inputIncNome'
-        name='senha256'
-        value={operadorData.senha256}
-        onChange={onChange}
-        />
+          <InputInput
+          autoComplete='off'
+          type='password'
+          maxLength={4000}
+          id='senha256'
+          label='Senha256'
+          dataForm={operadorData}
+          className='inputIncNome'
+          name='senha256'
+          value={operadorData.senha256}
+          onChange={onChange}
+          />
 
-        <InputCheckbox dataForm={operadorData} label='EMailConfirmado' name='emailconfirmado' checked={operadorData.emailconfirmado} onChange={onChange} />
+        </div><div className='grid-container'><InputCheckbox dataForm={operadorData} label='EMailConfirmado' name='emailconfirmado' checked={operadorData.emailconfirmado} onChange={onChange} />
 
         <InputInput
         type='text'

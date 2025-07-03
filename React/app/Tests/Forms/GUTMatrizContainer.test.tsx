@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import GUTMatrizIncContainer from '@/app/GerAdv_TS/GUTMatriz/Components/GUTMatrizIncContainer';
+// GUTMatrizIncContainer.test.tsx
+// Mock do GUTMatrizInc
+jest.mock('@/app/GerAdv_TS/GUTMatriz/Crud/Inc/GUTMatriz', () => (props: any) => (
+<div data-testid='gutmatriz-inc-mock' {...props} />
+));
+describe('GUTMatrizIncContainer', () => {
+  it('deve renderizar GUTMatrizInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <GUTMatrizIncContainer id={id} navigator={mockNavigator} />
+  );
+  const gutmatrizInc = getByTestId('gutmatriz-inc-mock');
+  expect(gutmatrizInc).toBeInTheDocument();
+  expect(gutmatrizInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

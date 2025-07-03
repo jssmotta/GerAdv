@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PoderJudiciarioAssociadoApi, PoderJudiciarioAssociadoApiError } from '../Apis/ApiPoderJudiciarioAssociado';
 import { FilterPoderJudiciarioAssociado } from '../Filters/PoderJudiciarioAssociado';
 import { IPoderJudiciarioAssociado } from '../Interfaces/interface.PoderJudiciarioAssociado';
+import { PoderJudiciarioAssociadoEmpty } from '../../Models/PoderJudiciarioAssociado';
 
 export class PoderJudiciarioAssociadoValidator {
   static validatePoderJudiciarioAssociado(poderjudiciarioassociado: IPoderJudiciarioAssociado): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PoderJudiciarioAssociadoService implements IPoderJudiciarioAssociad
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PoderJudiciarioAssociadoApiError) {
         throw error;

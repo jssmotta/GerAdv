@@ -39,15 +39,15 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IInstan
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBInstancia.SensivelCamposSqlX}, proNroPasta,acaDescricao,forNome,trcDescricao
+                   {DBInstancia.SensivelCamposSqlX}, [Processos].[proNroPasta],[Acao].[acaDescricao],[Foro].[forNome],[TipoRecurso].[trcDescricao]
                    FROM {DBInstancia.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=insProcesso
-LEFT JOIN {"Acao".dbo(oCnn)} (NOLOCK) ON acaCodigo=insAcao
-LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=insForo
-LEFT JOIN {"TipoRecurso".dbo(oCnn)} (NOLOCK) ON trcCodigo=insTipoRecurso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Instancia].[insProcesso]
+LEFT JOIN {"Acao".dbo(oCnn)} (NOLOCK) ON [Acao].[acaCodigo]=[Instancia].[insAcao]
+LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON [Foro].[forCodigo]=[Instancia].[insForo]
+LEFT JOIN {"TipoRecurso".dbo(oCnn)} (NOLOCK) ON [TipoRecurso].[trcCodigo]=[Instancia].[insTipoRecurso]
  
                    {where}
-                   ORDER BY insNroProcesso
+                   ORDER BY [Instancia].[insNroProcesso]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<InstanciaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -145,11 +145,49 @@ LEFT JOIN {"TipoRecurso".dbo(oCnn)} (NOLOCK) ON trcCodigo=insTipoRecurso
             var validade = await validation.ValidateReg(regInstancia, this, processosReader, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Instancia: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regInstancia, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<InstanciaResponse?> Validation([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Instancia: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regInstancia == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regInstancia, this, processosReader, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regInstancia.Id.IsEmptyIDNumber())
+            {
+                return new InstanciaResponse();
+            }
+
+            return reader.Read(regInstancia.Id, oCnn);
         });
     }
 

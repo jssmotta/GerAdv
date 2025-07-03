@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { BensMateriaisApi, BensMateriaisApiError } from '../Apis/ApiBensMateriais';
 import { FilterBensMateriais } from '../Filters/BensMateriais';
 import { IBensMateriais } from '../Interfaces/interface.BensMateriais';
+import { BensMateriaisEmpty } from '../../Models/BensMateriais';
 
 export class BensMateriaisValidator {
   static validateBensMateriais(bensmateriais: IBensMateriais): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class BensMateriaisService implements IBensMateriaisService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof BensMateriaisApiError) {
         throw error;

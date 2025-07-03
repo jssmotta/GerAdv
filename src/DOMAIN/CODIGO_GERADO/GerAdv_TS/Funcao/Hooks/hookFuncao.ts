@@ -4,6 +4,7 @@ import { IFuncaoService } from '../Services/Funcao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IFuncao } from '../Interfaces/interface.Funcao';
 import { isValidDate } from '@/app/tools/datetime';
+import { FuncaoApi } from '../Apis/ApiFuncao';
 
 export const useFuncaoForm = (
   initialFuncao: IFuncao,
@@ -142,6 +143,16 @@ export const useFuncaoList = (dataService: IFuncaoService) => {
 
 
 export function useValidationsFuncao() {
+
+  async function runValidation(data: IFuncao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const funcaoApi = new FuncaoApi(uri ?? '', token ?? '');
+
+    const result = await funcaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IFuncao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 40) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useFuncaoComboBox = (
   dataService: IFuncaoService,
   initialValue?: any

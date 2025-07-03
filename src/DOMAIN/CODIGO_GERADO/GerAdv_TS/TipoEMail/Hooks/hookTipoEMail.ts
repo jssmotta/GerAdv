@@ -4,6 +4,7 @@ import { ITipoEMailService } from '../Services/TipoEMail.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoEMail } from '../Interfaces/interface.TipoEMail';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoEMailApi } from '../Apis/ApiTipoEMail';
 
 export const useTipoEMailForm = (
   initialTipoEMail: ITipoEMail,
@@ -142,6 +143,16 @@ export const useTipoEMailList = (dataService: ITipoEMailService) => {
 
 
 export function useValidationsTipoEMail() {
+
+  async function runValidation(data: ITipoEMail, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipoemailApi = new TipoEMailApi(uri ?? '', token ?? '');
+
+    const result = await tipoemailApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoEMail): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoEMailComboBox = (
   dataService: ITipoEMailService,
   initialValue?: any

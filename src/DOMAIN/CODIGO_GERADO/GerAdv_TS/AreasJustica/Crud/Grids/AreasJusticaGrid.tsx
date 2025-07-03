@@ -19,7 +19,7 @@ import AreasJusticaWindow from './AreasJusticaWindow';
 import ErrorMessage from '@/app/components/Cruds/ErrorMessage';
 import { useAreasJusticaList } from '../../Hooks/hookAreasJustica';
 import { LoadingSpinner } from '@/app/components/Cruds/LoadingSpinner';
-import { subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 const AreasJusticaGrid: React.FC = () => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
@@ -108,6 +108,9 @@ const cancelDelete = () => {
 const displayError = error || errorMessage;
 useEffect(() => {
   const unsubscribe = subscribeToNotifications('*', (entity) => {
+    if (entity.action == NotifySystemActions.ERROR) {
+      return;
+    }
     reloadFilter();
   });
   return () => {
@@ -146,6 +149,7 @@ return (
     onError={handleError}
     selectedAreasJustica={selectedAreasJustica}
     />
+
     <ConfirmationModal
     isOpen={isModalOpen}
     onConfirm={confirmDelete}

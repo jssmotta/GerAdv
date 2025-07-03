@@ -2,12 +2,11 @@
 'use client';
 import { IContratos } from '@/app/GerAdv_TS/Contratos/Interfaces/interface.Contratos';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -43,8 +42,8 @@ export const ContratosForm: React.FC<ContratosFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ContratosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -257,7 +256,7 @@ const addValorProcesso = (e: any) => {
                 />
 
                 <InputCheckbox dataForm={contratosData} label='OcultarRelatorio' name='ocultarrelatorio' checked={contratosData.ocultarrelatorio} onChange={onChange} />
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={2048}
@@ -270,7 +269,7 @@ const addValorProcesso = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={2048}
@@ -374,7 +373,7 @@ const addValorProcesso = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='email'
                 maxLength={300}
@@ -400,7 +399,7 @@ const addValorProcesso = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={100}
@@ -479,30 +478,30 @@ const addValorProcesso = (e: any) => {
                 />
 
                 <InputCheckbox dataForm={contratosData} label='Avulso' name='avulso' checked={contratosData.avulso} onChange={onChange} />
-                <InputCheckbox dataForm={contratosData} label='Suspenso' name='suspenso' checked={contratosData.suspenso} onChange={onChange} />
+              </div><div className='grid-container'><InputCheckbox dataForm={contratosData} label='Suspenso' name='suspenso' checked={contratosData.suspenso} onChange={onChange} />
 
-                <InputInput
-                type='text'
-                maxLength={10}
-                id='multa'
-                label='Multa'
-                dataForm={contratosData}
-                className='inputIncNome'
-                name='multa'
-                value={contratosData.multa}
-                onChange={onChange}
-                />
+              <InputInput
+              type='text'
+              maxLength={10}
+              id='multa'
+              label='Multa'
+              dataForm={contratosData}
+              className='inputIncNome'
+              name='multa'
+              value={contratosData.multa}
+              onChange={onChange}
+              />
 
-              </div>
-            </form>
-
-
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/contratos'} id={contratosData.id} closeModel={onClose} dadoApi={dadoApi} />
             </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+          </form>
+
+
+          {isMobile && (
+            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <DeleteButton page={'/pages/contratos'} id={contratosData.id} closeModel={onClose} dadoApi={dadoApi} />
+          </div>
+          <div className='form-spacer'></div>
+          </>
+        );
+      };

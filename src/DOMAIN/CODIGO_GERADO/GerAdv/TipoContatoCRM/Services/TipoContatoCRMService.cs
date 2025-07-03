@@ -43,7 +43,7 @@ public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IT
                    FROM {DBTipoContatoCRM.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tccNome
+                   ORDER BY [TipoContatoCRM].[tccNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoContatoCRMResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IT
             var validade = await validation.ValidateReg(regTipoContatoCRM, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoContatoCRM: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoContatoCRM, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoContatoCRMResponse?> Validation([FromBody] Models.TipoContatoCRM regTipoContatoCRM, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoContatoCRM: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoContatoCRM == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoContatoCRM, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoContatoCRM.Id.IsEmptyIDNumber())
+            {
+                return new TipoContatoCRMResponse();
+            }
+
+            return reader.Read(regTipoContatoCRM.Id, oCnn);
         });
     }
 

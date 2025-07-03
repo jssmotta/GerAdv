@@ -43,7 +43,7 @@ public partial class PosicaoOutrasPartesService(IOptions<AppSettings> appSetting
                    FROM {DBPosicaoOutrasPartes.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY posDescricao
+                   ORDER BY [PosicaoOutrasPartes].[posDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PosicaoOutrasPartesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class PosicaoOutrasPartesService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regPosicaoOutrasPartes, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"PosicaoOutrasPartes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPosicaoOutrasPartes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PosicaoOutrasPartesResponse?> Validation([FromBody] Models.PosicaoOutrasPartes regPosicaoOutrasPartes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("PosicaoOutrasPartes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPosicaoOutrasPartes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPosicaoOutrasPartes, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPosicaoOutrasPartes.Id.IsEmptyIDNumber())
+            {
+                return new PosicaoOutrasPartesResponse();
+            }
+
+            return reader.Read(regPosicaoOutrasPartes.Id, oCnn);
         });
     }
 

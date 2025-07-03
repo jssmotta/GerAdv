@@ -2,12 +2,11 @@
 'use client';
 import { IReuniao } from '@/app/GerAdv_TS/Reuniao/Interfaces/interface.Reuniao';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -39,8 +38,8 @@ export const ReuniaoForm: React.FC<ReuniaoFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ReuniaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -221,7 +220,7 @@ const addValorCliente = (e: any) => {
             />
 
             <InputCheckbox dataForm={reuniaoData} label='Externa' name='externa' checked={reuniaoData.externa} onChange={onChange} />
-
+          </div><div className='grid-container'>
             <InputInput
             type='text'
             maxLength={2048}
@@ -234,7 +233,7 @@ const addValorCliente = (e: any) => {
             onChange={onChange}
             />
 
-          </div><div className='grid-container'>
+
             <InputInput
             type='text'
             maxLength={2048}

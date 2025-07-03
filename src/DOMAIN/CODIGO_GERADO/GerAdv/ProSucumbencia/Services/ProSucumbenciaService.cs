@@ -39,14 +39,14 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IP
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProSucumbencia.SensivelCamposSqlX}, proNroPasta,insNroProcesso,tosNome
+                   {DBProSucumbencia.SensivelCamposSqlX}, [Processos].[proNroPasta],[Instancia].[insNroProcesso],[TipoOrigemSucumbencia].[tosNome]
                    FROM {DBProSucumbencia.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=scbProcesso
-LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON insCodigo=scbInstancia
-LEFT JOIN {"TipoOrigemSucumbencia".dbo(oCnn)} (NOLOCK) ON tosCodigo=scbTipoOrigemSucumbencia
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProSucumbencia].[scbProcesso]
+LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON [Instancia].[insCodigo]=[ProSucumbencia].[scbInstancia]
+LEFT JOIN {"TipoOrigemSucumbencia".dbo(oCnn)} (NOLOCK) ON [TipoOrigemSucumbencia].[tosCodigo]=[ProSucumbencia].[scbTipoOrigemSucumbencia]
  
                    {where}
-                   ORDER BY scbNome
+                   ORDER BY [ProSucumbencia].[scbNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProSucumbenciaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"TipoOrigemSucumbencia".dbo(oCnn)} (NOLOCK) ON tosCodigo=scbTipoOrige
             var validade = await validation.ValidateReg(regProSucumbencia, this, processosReader, instanciaReader, tipoorigemsucumbenciaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProSucumbencia: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProSucumbencia, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProSucumbenciaResponse?> Validation([FromBody] Models.ProSucumbencia regProSucumbencia, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProSucumbencia: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProSucumbencia == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProSucumbencia, this, processosReader, instanciaReader, tipoorigemsucumbenciaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProSucumbencia.Id.IsEmptyIDNumber())
+            {
+                return new ProSucumbenciaResponse();
+            }
+
+            return reader.Read(regProSucumbencia.Id, oCnn);
         });
     }
 

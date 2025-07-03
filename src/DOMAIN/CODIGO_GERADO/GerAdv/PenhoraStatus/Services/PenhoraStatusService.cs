@@ -43,7 +43,7 @@ public partial class PenhoraStatusService(IOptions<AppSettings> appSettings, IPe
                    FROM {DBPenhoraStatus.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY phsNome
+                   ORDER BY [PenhoraStatus].[phsNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PenhoraStatusResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class PenhoraStatusService(IOptions<AppSettings> appSettings, IPe
             var validade = await validation.ValidateReg(regPenhoraStatus, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"PenhoraStatus: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPenhoraStatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PenhoraStatusResponse?> Validation([FromBody] Models.PenhoraStatus regPenhoraStatus, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("PenhoraStatus: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPenhoraStatus == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPenhoraStatus, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPenhoraStatus.Id.IsEmptyIDNumber())
+            {
+                return new PenhoraStatusResponse();
+            }
+
+            return reader.Read(regPenhoraStatus.Id, oCnn);
         });
     }
 

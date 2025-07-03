@@ -39,14 +39,14 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFun
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBFuncionarios.SensivelCamposSqlX}, carNome,funDescricao,cidNome
+                   {DBFuncionarios.SensivelCamposSqlX}, [Cargos].[carNome],[Funcao].[funDescricao],[Cidade].[cidNome]
                    FROM {DBFuncionarios.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON carCodigo=funCargo
-LEFT JOIN {"Funcao".dbo(oCnn)} (NOLOCK) ON funCodigo=funFuncao
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=funCidade
+                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON [Cargos].[carCodigo]=[Funcionarios].[funCargo]
+LEFT JOIN {"Funcao".dbo(oCnn)} (NOLOCK) ON [Funcao].[funCodigo]=[Funcionarios].[funFuncao]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Funcionarios].[funCidade]
  
                    {where}
-                   ORDER BY funNome
+                   ORDER BY [Funcionarios].[funNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<FuncionariosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=funCidade
             var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Funcionarios: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regFuncionarios, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<FuncionariosResponse?> Validation([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Funcionarios: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regFuncionarios == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regFuncionarios.Id.IsEmptyIDNumber())
+            {
+                return new FuncionariosResponse();
+            }
+
+            return reader.Read(regFuncionarios.Id, oCnn);
         });
     }
 

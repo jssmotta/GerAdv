@@ -4,6 +4,7 @@ import { IClientesService } from '../Services/Clientes.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IClientes } from '../Interfaces/interface.Clientes';
 import { isValidDate } from '@/app/tools/datetime';
+import { ClientesApi } from '../Apis/ApiClientes';
 
 export const useClientesForm = (
   initialClientes: IClientes,
@@ -142,6 +143,16 @@ export const useClientesList = (dataService: IClientesService) => {
 
 
 export function useValidationsClientes() {
+
+  async function runValidation(data: IClientes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const clientesApi = new ClientesApi(uri ?? '', token ?? '');
+
+    const result = await clientesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IClientes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -224,7 +235,7 @@ if (data.pessoacontato.length > 120) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useClientesComboBox = (
   dataService: IClientesService,
   initialValue?: any

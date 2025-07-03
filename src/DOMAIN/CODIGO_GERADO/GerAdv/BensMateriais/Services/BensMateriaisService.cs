@@ -39,14 +39,14 @@ public partial class BensMateriaisService(IOptions<AppSettings> appSettings, IBe
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBBensMateriais.SensivelCamposSqlX}, bcsNome,forNome,cidNome
+                   {DBBensMateriais.SensivelCamposSqlX}, [BensClassificacao].[bcsNome],[Fornecedores].[forNome],[Cidade].[cidNome]
                    FROM {DBBensMateriais.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"BensClassificacao".dbo(oCnn)} (NOLOCK) ON bcsCodigo=bmtBensClassificacao
-LEFT JOIN {"Fornecedores".dbo(oCnn)} (NOLOCK) ON forCodigo=bmtFornecedor
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=bmtCidade
+                   LEFT JOIN {"BensClassificacao".dbo(oCnn)} (NOLOCK) ON [BensClassificacao].[bcsCodigo]=[BensMateriais].[bmtBensClassificacao]
+LEFT JOIN {"Fornecedores".dbo(oCnn)} (NOLOCK) ON [Fornecedores].[forCodigo]=[BensMateriais].[bmtFornecedor]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[BensMateriais].[bmtCidade]
  
                    {where}
-                   ORDER BY bmtNome
+                   ORDER BY [BensMateriais].[bmtNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<BensMateriaisResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=bmtCidade
             var validade = await validation.ValidateReg(regBensMateriais, this, bensclassificacaoReader, fornecedoresReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"BensMateriais: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regBensMateriais, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<BensMateriaisResponse?> Validation([FromBody] Models.BensMateriais regBensMateriais, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("BensMateriais: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regBensMateriais == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regBensMateriais, this, bensclassificacaoReader, fornecedoresReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regBensMateriais.Id.IsEmptyIDNumber())
+            {
+                return new BensMateriaisResponse();
+            }
+
+            return reader.Read(regBensMateriais.Id, oCnn);
         });
     }
 

@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import PontoVirtualIncContainer from '@/app/GerAdv_TS/PontoVirtual/Components/PontoVirtualIncContainer';
+// PontoVirtualIncContainer.test.tsx
+// Mock do PontoVirtualInc
+jest.mock('@/app/GerAdv_TS/PontoVirtual/Crud/Inc/PontoVirtual', () => (props: any) => (
+<div data-testid='pontovirtual-inc-mock' {...props} />
+));
+describe('PontoVirtualIncContainer', () => {
+  it('deve renderizar PontoVirtualInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <PontoVirtualIncContainer id={id} navigator={mockNavigator} />
+  );
+  const pontovirtualInc = getByTestId('pontovirtual-inc-mock');
+  expect(pontovirtualInc).toBeInTheDocument();
+  expect(pontovirtualInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

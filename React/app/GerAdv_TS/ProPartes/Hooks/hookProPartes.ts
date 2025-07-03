@@ -4,6 +4,7 @@ import { IProPartesService } from '../Services/ProPartes.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProPartes } from '../Interfaces/interface.ProPartes';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProPartesApi } from '../Apis/ApiProPartes';
 
 export const useProPartesForm = (
   initialProPartes: IProPartes,
@@ -142,6 +143,16 @@ export const useProPartesList = (dataService: IProPartesService) => {
 
 
 export function useValidationsProPartes() {
+
+  async function runValidation(data: IProPartes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const propartesApi = new ProPartesApi(uri ?? '', token ?? '');
+
+    const result = await propartesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProPartes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsProPartes() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

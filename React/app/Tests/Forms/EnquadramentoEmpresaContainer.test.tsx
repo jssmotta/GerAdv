@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import EnquadramentoEmpresaIncContainer from '@/app/GerAdv_TS/EnquadramentoEmpresa/Components/EnquadramentoEmpresaIncContainer';
+// EnquadramentoEmpresaIncContainer.test.tsx
+// Mock do EnquadramentoEmpresaInc
+jest.mock('@/app/GerAdv_TS/EnquadramentoEmpresa/Crud/Inc/EnquadramentoEmpresa', () => (props: any) => (
+<div data-testid='enquadramentoempresa-inc-mock' {...props} />
+));
+describe('EnquadramentoEmpresaIncContainer', () => {
+  it('deve renderizar EnquadramentoEmpresaInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <EnquadramentoEmpresaIncContainer id={id} navigator={mockNavigator} />
+  );
+  const enquadramentoempresaInc = getByTestId('enquadramentoempresa-inc-mock');
+  expect(enquadramentoempresaInc).toBeInTheDocument();
+  expect(enquadramentoempresaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

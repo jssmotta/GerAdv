@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface ProcessosObsReportIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const ProcessosObsReportIncContainer: React.FC<ProcessosObsReportIncContainerProps> = ({ id, navigator }) => {
+const ProcessosObsReportIncContainer: React.FC<ProcessosObsReportIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <ProcessosObsReportInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

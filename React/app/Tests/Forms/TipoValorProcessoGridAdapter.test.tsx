@@ -1,0 +1,13 @@
+﻿// TipoValorProcessoGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { TipoValorProcessoGridAdapter } from '@/app/GerAdv_TS/TipoValorProcesso/Adapter/TipoValorProcessoGridAdapter';
+// Mock TipoValorProcessoGrid component
+jest.mock('@/app/GerAdv_TS/TipoValorProcesso/Crud/Grids/TipoValorProcessoGrid', () => () => <div data-testid='tipovalorprocesso-grid-mock' />);
+describe('TipoValorProcessoGridAdapter', () => {
+  it('should render TipoValorProcessoGrid component', () => {
+    const adapter = new TipoValorProcessoGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('tipovalorprocesso-grid-mock')).toBeInTheDocument();
+  });
+});

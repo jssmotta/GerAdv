@@ -28,7 +28,7 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"BensMateriais '{reg.Nome}' já cadastrado.";
+            return $"Bens Materiais '{reg.Nome}' Fornecedor e/ou Nome";
         // BensClassificacao
         if (!reg.BensClassificacao.IsEmptyIDNumber())
         {

@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProTipoBaixaIncContainer from '@/app/GerAdv_TS/ProTipoBaixa/Components/ProTipoBaixaIncContainer';
+// ProTipoBaixaIncContainer.test.tsx
+// Mock do ProTipoBaixaInc
+jest.mock('@/app/GerAdv_TS/ProTipoBaixa/Crud/Inc/ProTipoBaixa', () => (props: any) => (
+<div data-testid='protipobaixa-inc-mock' {...props} />
+));
+describe('ProTipoBaixaIncContainer', () => {
+  it('deve renderizar ProTipoBaixaInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProTipoBaixaIncContainer id={id} navigator={mockNavigator} />
+  );
+  const protipobaixaInc = getByTestId('protipobaixa-inc-mock');
+  expect(protipobaixaInc).toBeInTheDocument();
+  expect(protipobaixaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

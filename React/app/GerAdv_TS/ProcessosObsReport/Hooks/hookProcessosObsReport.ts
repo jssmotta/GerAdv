@@ -4,6 +4,7 @@ import { IProcessosObsReportService } from '../Services/ProcessosObsReport.servi
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessosObsReport } from '../Interfaces/interface.ProcessosObsReport';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessosObsReportApi } from '../Apis/ApiProcessosObsReport';
 
 export const useProcessosObsReportForm = (
   initialProcessosObsReport: IProcessosObsReport,
@@ -142,6 +143,16 @@ export const useProcessosObsReportList = (dataService: IProcessosObsReportServic
 
 
 export function useValidationsProcessosObsReport() {
+
+  async function runValidation(data: IProcessosObsReport, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processosobsreportApi = new ProcessosObsReportApi(uri ?? '', token ?? '');
+
+    const result = await processosobsreportApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessosObsReport): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsProcessosObsReport() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

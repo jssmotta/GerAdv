@@ -19,7 +19,7 @@ import EMPClassRiscosWindow from './EMPClassRiscosWindow';
 import ErrorMessage from '@/app/components/Cruds/ErrorMessage';
 import { useEMPClassRiscosList } from '../../Hooks/hookEMPClassRiscos';
 import { LoadingSpinner } from '@/app/components/Cruds/LoadingSpinner';
-import { subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 const EMPClassRiscosGrid: React.FC = () => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
@@ -108,6 +108,9 @@ const cancelDelete = () => {
 const displayError = error || errorMessage;
 useEffect(() => {
   const unsubscribe = subscribeToNotifications('*', (entity) => {
+    if (entity.action == NotifySystemActions.ERROR) {
+      return;
+    }
     reloadFilter();
   });
   return () => {
@@ -146,6 +149,7 @@ return (
     onError={handleError}
     selectedEMPClassRiscos={selectedEMPClassRiscos}
     />
+
     <ConfirmationModal
     isOpen={isModalOpen}
     onConfirm={confirmDelete}

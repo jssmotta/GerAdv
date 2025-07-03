@@ -1,0 +1,13 @@
+﻿// TipoRecursoGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { TipoRecursoGridAdapter } from '@/app/GerAdv_TS/TipoRecurso/Adapter/TipoRecursoGridAdapter';
+// Mock TipoRecursoGrid component
+jest.mock('@/app/GerAdv_TS/TipoRecurso/Crud/Grids/TipoRecursoGrid', () => () => <div data-testid='tiporecurso-grid-mock' />);
+describe('TipoRecursoGridAdapter', () => {
+  it('should render TipoRecursoGrid component', () => {
+    const adapter = new TipoRecursoGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('tiporecurso-grid-mock')).toBeInTheDocument();
+  });
+});

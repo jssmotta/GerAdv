@@ -4,6 +4,7 @@ import { ILigacoesService } from '../Services/Ligacoes.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ILigacoes } from '../Interfaces/interface.Ligacoes';
 import { isValidDate } from '@/app/tools/datetime';
+import { LigacoesApi } from '../Apis/ApiLigacoes';
 
 export const useLigacoesForm = (
   initialLigacoes: ILigacoes,
@@ -142,6 +143,16 @@ export const useLigacoesList = (dataService: ILigacoesService) => {
 
 
 export function useValidationsLigacoes() {
+
+  async function runValidation(data: ILigacoes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const ligacoesApi = new LigacoesApi(uri ?? '', token ?? '');
+
+    const result = await ligacoesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ILigacoes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -182,7 +193,7 @@ if (data.ligarpara.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useLigacoesComboBox = (
   dataService: ILigacoesService,
   initialValue?: any

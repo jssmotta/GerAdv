@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { RamalApi, RamalApiError } from '../Apis/ApiRamal';
 import { FilterRamal } from '../Filters/Ramal';
 import { IRamal } from '../Interfaces/interface.Ramal';
+import { RamalEmpty } from '../../Models/Ramal';
 
 export class RamalValidator {
   static validateRamal(ramal: IRamal): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class RamalService implements IRamalService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof RamalApiError) {
         throw error;

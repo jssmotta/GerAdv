@@ -39,14 +39,14 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, ITribuna
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBTribunal.SensivelCamposSqlX}, areDescricao,jusNome,insNroProcesso
+                   {DBTribunal.SensivelCamposSqlX}, [Area].[areDescricao],[Justica].[jusNome],[Instancia].[insNroProcesso]
                    FROM {DBTribunal.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=triArea
-LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=triJustica
-LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON insCodigo=triInstancia
+                   LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[Tribunal].[triArea]
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[Tribunal].[triJustica]
+LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON [Instancia].[insCodigo]=[Tribunal].[triInstancia]
  
                    {where}
-                   ORDER BY triNome
+                   ORDER BY [Tribunal].[triNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TribunalResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON insCodigo=triInstancia
             var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Tribunal: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTribunal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TribunalResponse?> Validation([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Tribunal: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTribunal == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTribunal.Id.IsEmptyIDNumber())
+            {
+                return new TribunalResponse();
+            }
+
+            return reader.Read(regTribunal.Id, oCnn);
         });
     }
 

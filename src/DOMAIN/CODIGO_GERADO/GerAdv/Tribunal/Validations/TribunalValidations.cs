@@ -37,7 +37,7 @@ public class TribunalValidation : ITribunalValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Tribunal '{reg.Nome}' já cadastrado.";
+            return $"Tribunal '{reg.Nome}' Area e/ou Descricao e/ou Instancia e/ou Justica";
         // Area
         if (!reg.Area.IsEmptyIDNumber())
         {

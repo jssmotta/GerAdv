@@ -4,6 +4,7 @@ import { IFornecedoresService } from '../Services/Fornecedores.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IFornecedores } from '../Interfaces/interface.Fornecedores';
 import { isValidDate } from '@/app/tools/datetime';
+import { FornecedoresApi } from '../Apis/ApiFornecedores';
 
 export const useFornecedoresForm = (
   initialFornecedores: IFornecedores,
@@ -142,6 +143,16 @@ export const useFornecedoresList = (dataService: IFornecedoresService) => {
 
 
 export function useValidationsFornecedores() {
+
+  async function runValidation(data: IFornecedores, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const fornecedoresApi = new FornecedoresApi(uri ?? '', token ?? '');
+
+    const result = await fornecedoresApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IFornecedores): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -200,7 +211,7 @@ if (data.contatos.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useFornecedoresComboBox = (
   dataService: IFornecedoresService,
   initialValue?: any

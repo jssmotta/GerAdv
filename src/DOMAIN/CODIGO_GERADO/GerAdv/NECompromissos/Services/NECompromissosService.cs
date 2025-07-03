@@ -39,12 +39,12 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IN
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBNECompromissos.SensivelCamposSqlX}, tipDescricao
+                   {DBNECompromissos.SensivelCamposSqlX}, [TipoCompromisso].[tipDescricao]
                    FROM {DBNECompromissos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON tipCodigo=ncpTipoCompromisso
+                   LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON [TipoCompromisso].[tipCodigo]=[NECompromissos].[ncpTipoCompromisso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [NECompromissos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<NECompromissosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IN
             var validade = await validation.ValidateReg(regNECompromissos, this, tipocompromissoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"NECompromissos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regNECompromissos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<NECompromissosResponse?> Validation([FromBody] Models.NECompromissos regNECompromissos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("NECompromissos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regNECompromissos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regNECompromissos, this, tipocompromissoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regNECompromissos.Id.IsEmptyIDNumber())
+            {
+                return new NECompromissosResponse();
+            }
+
+            return reader.Read(regNECompromissos.Id, oCnn);
         });
     }
 

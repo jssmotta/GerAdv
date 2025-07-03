@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface TipoEnderecoSistemaIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const TipoEnderecoSistemaIncContainer: React.FC<TipoEnderecoSistemaIncContainerProps> = ({ id, navigator }) => {
+const TipoEnderecoSistemaIncContainer: React.FC<TipoEnderecoSistemaIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <TipoEnderecoSistemaInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

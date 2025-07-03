@@ -4,6 +4,7 @@ import { IGUTAtividadesService } from '../Services/GUTAtividades.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGUTAtividades } from '../Interfaces/interface.GUTAtividades';
 import { isValidDate } from '@/app/tools/datetime';
+import { GUTAtividadesApi } from '../Apis/ApiGUTAtividades';
 
 export const useGUTAtividadesForm = (
   initialGUTAtividades: IGUTAtividades,
@@ -142,6 +143,16 @@ export const useGUTAtividadesList = (dataService: IGUTAtividadesService) => {
 
 
 export function useValidationsGUTAtividades() {
+
+  async function runValidation(data: IGUTAtividades, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gutatividadesApi = new GUTAtividadesApi(uri ?? '', token ?? '');
+
+    const result = await gutatividadesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGUTAtividades): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.observacao.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useGUTAtividadesComboBox = (
   dataService: IGUTAtividadesService,
   initialValue?: any

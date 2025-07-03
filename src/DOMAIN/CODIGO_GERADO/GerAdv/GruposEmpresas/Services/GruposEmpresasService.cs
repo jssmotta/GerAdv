@@ -39,13 +39,13 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IG
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBGruposEmpresas.SensivelCamposSqlX}, opoNome,cliNome
+                   {DBGruposEmpresas.SensivelCamposSqlX}, [Oponentes].[opoNome],[Clientes].[cliNome]
                    FROM {DBGruposEmpresas.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON opoCodigo=grpOponente
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=grpCliente
+                   LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON [Oponentes].[opoCodigo]=[GruposEmpresas].[grpOponente]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[GruposEmpresas].[grpCliente]
  
                    {where}
-                   ORDER BY grpDescricao
+                   ORDER BY [GruposEmpresas].[grpDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GruposEmpresasResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=grpCliente
             var validade = await validation.ValidateReg(regGruposEmpresas, this, oponentesReader, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GruposEmpresas: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGruposEmpresas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GruposEmpresasResponse?> Validation([FromBody] Models.GruposEmpresas regGruposEmpresas, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GruposEmpresas: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGruposEmpresas == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGruposEmpresas, this, oponentesReader, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGruposEmpresas.Id.IsEmptyIDNumber())
+            {
+                return new GruposEmpresasResponse();
+            }
+
+            return reader.Read(regGruposEmpresas.Id, oCnn);
         });
     }
 

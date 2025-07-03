@@ -31,7 +31,7 @@ public class PaisesValidation : IPaisesValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Paises '{reg.Nome}' já cadastrado.";
+            return $"Paises '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

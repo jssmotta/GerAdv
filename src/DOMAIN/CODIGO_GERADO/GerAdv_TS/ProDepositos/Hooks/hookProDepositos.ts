@@ -4,6 +4,7 @@ import { IProDepositosService } from '../Services/ProDepositos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProDepositos } from '../Interfaces/interface.ProDepositos';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProDepositosApi } from '../Apis/ApiProDepositos';
 
 export const useProDepositosForm = (
   initialProDepositos: IProDepositos,
@@ -142,6 +143,16 @@ export const useProDepositosList = (dataService: IProDepositosService) => {
 
 
 export function useValidationsProDepositos() {
+
+  async function runValidation(data: IProDepositos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const prodepositosApi = new ProDepositosApi(uri ?? '', token ?? '');
+
+    const result = await prodepositosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProDepositos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsProDepositos() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

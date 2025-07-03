@@ -4,6 +4,7 @@ import { IProcessosService } from '../Services/Processos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessos } from '../Interfaces/interface.Processos';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessosApi } from '../Apis/ApiProcessos';
 
 export const useProcessosForm = (
   initialProcessos: IProcessos,
@@ -142,6 +143,16 @@ export const useProcessosList = (dataService: IProcessosService) => {
 
 
 export function useValidationsProcessos() {
+
+  async function runValidation(data: IProcessos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processosApi = new ProcessosApi(uri ?? '', token ?? '');
+
+    const result = await processosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -197,79 +208,5 @@ if (data.percprobexitojustificativa.length > 1024) {
 
   }
 
-  return { validate };
-}export const useProcessosComboBox = (
-  dataService: IProcessosService,
-  initialValue?: any
-) => {
-  const [options, setOptions] = useState<any[]>([]);
-  const [filteredOptions, setFilteredOptions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue);
-  const [hasLoaded, setHasLoaded] = useState(false);
-
-  const fetchOptions = useCallback(async () => {
-    if (loading) return; // Evita múltiplas requisições simultâneas
-    
-    setLoading(true);
-    try {
-      const response = await dataService.getList();
-      const mappedOptions = response.map(item => ({
-        id: item.id,
-        nome: item.nropasta
-      }));
-      setOptions(mappedOptions);
-      setFilteredOptions(mappedOptions);
-      setHasLoaded(true);
-    } catch (err) {
-      console.log('Erro ao buscar opções do ComboBox');
-    } finally {
-      setLoading(false);
-    }
-  }, [dataService, loading]);
-
-  const handleFilter = useCallback((filterText: string) => {
-    if (!filterText) {
-      setFilteredOptions(options);
-      return;
-    }
-    
-    const filter = filterText.toLowerCase();
-    const filtered = options.filter(option =>
-      option.nome.toLowerCase().includes(filter)
-    );
-    setFilteredOptions(filtered);
-  }, [options]);
-
-  const handleValueChange = useCallback((newValue: any) => {
-    setSelectedValue(newValue);
-  }, []);
-  
-  useEffect(() => {
-    if (!hasLoaded) {
-      fetchOptions();
-    }
-  }, [fetchOptions, hasLoaded]);
-
-  const refreshCallback = useCallback(() => {
-    if (hasLoaded) {
-      fetchOptions();
-    }
-  }, [fetchOptions, hasLoaded]);
-
-  useProcessosNotifications(
-    refreshCallback, // onUpdate
-    refreshCallback, // onDelete
-    refreshCallback  // onAdd
-  );
-
-  return {
-    options: filteredOptions,
-    loading,
-    selectedValue,
-    handleFilter,
-    handleValueChange,
-    refreshOptions: fetchOptions,
-    clearValue: () => setSelectedValue(null)
-  };
-};
+ return { validate, runValidation };
+}

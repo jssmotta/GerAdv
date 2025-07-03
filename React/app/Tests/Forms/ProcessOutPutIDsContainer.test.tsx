@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProcessOutPutIDsIncContainer from '@/app/GerAdv_TS/ProcessOutPutIDs/Components/ProcessOutPutIDsIncContainer';
+// ProcessOutPutIDsIncContainer.test.tsx
+// Mock do ProcessOutPutIDsInc
+jest.mock('@/app/GerAdv_TS/ProcessOutPutIDs/Crud/Inc/ProcessOutPutIDs', () => (props: any) => (
+<div data-testid='processoutputids-inc-mock' {...props} />
+));
+describe('ProcessOutPutIDsIncContainer', () => {
+  it('deve renderizar ProcessOutPutIDsInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProcessOutPutIDsIncContainer id={id} navigator={mockNavigator} />
+  );
+  const processoutputidsInc = getByTestId('processoutputids-inc-mock');
+  expect(processoutputidsInc).toBeInTheDocument();
+  expect(processoutputidsInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

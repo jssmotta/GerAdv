@@ -86,4 +86,26 @@ public partial class LivroCaixaClientesController(ILivroCaixaClientesService liv
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.LivroCaixaClientes regLivroCaixaClientes, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _livrocaixaclientesService.Validation(regLivroCaixaClientes, uri);
+            if (result == null)
+            {
+                _logger.Warn("LivroCaixaClientes: Validation failed to add or update LivroCaixaClientes, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "LivroCaixaClientes: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

@@ -4,6 +4,7 @@ import { INENotasService } from '../Services/NENotas.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { INENotas } from '../Interfaces/interface.NENotas';
 import { isValidDate } from '@/app/tools/datetime';
+import { NENotasApi } from '../Apis/ApiNENotas';
 
 export const useNENotasForm = (
   initialNENotas: INENotas,
@@ -142,6 +143,16 @@ export const useNENotasList = (dataService: INENotasService) => {
 
 
 export function useValidationsNENotas() {
+
+  async function runValidation(data: INENotas, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const nenotasApi = new NENotasApi(uri ?? '', token ?? '');
+
+    const result = await nenotasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: INENotas): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.notapublicada.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useNENotasComboBox = (
   dataService: INENotasService,
   initialValue?: any

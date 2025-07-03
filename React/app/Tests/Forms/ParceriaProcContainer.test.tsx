@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ParceriaProcIncContainer from '@/app/GerAdv_TS/ParceriaProc/Components/ParceriaProcIncContainer';
+// ParceriaProcIncContainer.test.tsx
+// Mock do ParceriaProcInc
+jest.mock('@/app/GerAdv_TS/ParceriaProc/Crud/Inc/ParceriaProc', () => (props: any) => (
+<div data-testid='parceriaproc-inc-mock' {...props} />
+));
+describe('ParceriaProcIncContainer', () => {
+  it('deve renderizar ParceriaProcInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ParceriaProcIncContainer id={id} navigator={mockNavigator} />
+  );
+  const parceriaprocInc = getByTestId('parceriaproc-inc-mock');
+  expect(parceriaprocInc).toBeInTheDocument();
+  expect(parceriaprocInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

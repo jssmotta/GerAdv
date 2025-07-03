@@ -4,6 +4,7 @@ import { IGUTMatrizService } from '../Services/GUTMatriz.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGUTMatriz } from '../Interfaces/interface.GUTMatriz';
 import { isValidDate } from '@/app/tools/datetime';
+import { GUTMatrizApi } from '../Apis/ApiGUTMatriz';
 
 export const useGUTMatrizForm = (
   initialGUTMatriz: IGUTMatriz,
@@ -142,6 +143,16 @@ export const useGUTMatrizList = (dataService: IGUTMatrizService) => {
 
 
 export function useValidationsGUTMatriz() {
+
+  async function runValidation(data: IGUTMatriz, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gutmatrizApi = new GUTMatrizApi(uri ?? '', token ?? '');
+
+    const result = await gutmatrizApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGUTMatriz): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 150) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useGUTMatrizComboBox = (
   dataService: IGUTMatrizService,
   initialValue?: any

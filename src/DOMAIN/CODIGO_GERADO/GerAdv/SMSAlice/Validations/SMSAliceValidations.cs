@@ -28,7 +28,7 @@ public class SMSAliceValidation : ISMSAliceValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"SMSAlice '{reg.Nome}' já cadastrado.";
+            return $"S M S Alice '{reg.Nome}' Nome e/ou Operador";
         // Operador
         if (!reg.Operador.IsEmptyIDNumber())
         {

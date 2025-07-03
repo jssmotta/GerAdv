@@ -2,12 +2,11 @@
 'use client';
 import { IAdvogados } from '@/app/GerAdv_TS/Advogados/Interfaces/interface.Advogados';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const AdvogadosForm: React.FC<AdvogadosFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new AdvogadosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -263,7 +262,7 @@ const addValorCargo = (e: any) => {
                 label={'Escritorios'}
                 />
                 <InputCheckbox dataForm={advogadosData} label='Estagiario' name='estagiario' checked={advogadosData.estagiario} onChange={onChange} />
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={12}
@@ -276,7 +275,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={50}
@@ -362,7 +361,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={2147483647}
@@ -388,7 +387,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={2048}
@@ -479,7 +478,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='email'
                 maxLength={100}
@@ -518,7 +517,7 @@ const addValorCargo = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={2147483647}

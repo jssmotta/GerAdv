@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import GUTPeriodicidadeStatusIncContainer from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Components/GUTPeriodicidadeStatusIncContainer';
+// GUTPeriodicidadeStatusIncContainer.test.tsx
+// Mock do GUTPeriodicidadeStatusInc
+jest.mock('@/app/GerAdv_TS/GUTPeriodicidadeStatus/Crud/Inc/GUTPeriodicidadeStatus', () => (props: any) => (
+<div data-testid='gutperiodicidadestatus-inc-mock' {...props} />
+));
+describe('GUTPeriodicidadeStatusIncContainer', () => {
+  it('deve renderizar GUTPeriodicidadeStatusInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <GUTPeriodicidadeStatusIncContainer id={id} navigator={mockNavigator} />
+  );
+  const gutperiodicidadestatusInc = getByTestId('gutperiodicidadestatus-inc-mock');
+  expect(gutperiodicidadestatusInc).toBeInTheDocument();
+  expect(gutperiodicidadestatusInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

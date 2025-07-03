@@ -2,12 +2,11 @@
 'use client';
 import { IOperadores } from '@/app/GerAdv_TS/Operadores/Interfaces/interface.Operadores';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -39,8 +38,8 @@ export const OperadoresForm: React.FC<OperadoresFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new OperadoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -209,7 +208,7 @@ const addValorCliente = (e: any) => {
             onChange={onChange}
             />
 
-
+          </div><div className='grid-container'>
             <InputInput
             autoComplete='off'
             type='password'
@@ -223,32 +222,32 @@ const addValorCliente = (e: any) => {
             onChange={onChange}
             />
 
-          </div><div className='grid-container'><InputCheckbox dataForm={operadoresData} label='Ativado' name='ativado' checked={operadoresData.ativado} onChange={onChange} />
-          <InputCheckbox dataForm={operadoresData} label='AtualizarSenha' name='atualizarsenha' checked={operadoresData.atualizarsenha} onChange={onChange} />
+            <InputCheckbox dataForm={operadoresData} label='Ativado' name='ativado' checked={operadoresData.ativado} onChange={onChange} />
+            <InputCheckbox dataForm={operadoresData} label='AtualizarSenha' name='atualizarsenha' checked={operadoresData.atualizarsenha} onChange={onChange} />
 
-          <InputInput
-          autoComplete='off'
-          type='password'
-          maxLength={4000}
-          id='senha256'
-          label='Senha256'
-          dataForm={operadoresData}
-          className='inputIncNome'
-          name='senha256'
-          value={operadoresData.senha256}
-          onChange={onChange}
-          />
+            <InputInput
+            autoComplete='off'
+            type='password'
+            maxLength={4000}
+            id='senha256'
+            label='Senha256'
+            dataForm={operadoresData}
+            className='inputIncNome'
+            name='senha256'
+            value={operadoresData.senha256}
+            onChange={onChange}
+            />
 
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Operadores' data={operadoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadoresForm-${operadoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/operadores'} id={operadoresData.id} closeModel={onClose} dadoApi={dadoApi} />
         </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Operadores' data={operadoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadoresForm-${operadoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/operadores'} id={operadoresData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
-  };
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

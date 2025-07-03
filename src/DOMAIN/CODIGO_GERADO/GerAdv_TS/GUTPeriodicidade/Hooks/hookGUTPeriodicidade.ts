@@ -4,6 +4,7 @@ import { IGUTPeriodicidadeService } from '../Services/GUTPeriodicidade.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGUTPeriodicidade } from '../Interfaces/interface.GUTPeriodicidade';
 import { isValidDate } from '@/app/tools/datetime';
+import { GUTPeriodicidadeApi } from '../Apis/ApiGUTPeriodicidade';
 
 export const useGUTPeriodicidadeForm = (
   initialGUTPeriodicidade: IGUTPeriodicidade,
@@ -142,6 +143,16 @@ export const useGUTPeriodicidadeList = (dataService: IGUTPeriodicidadeService) =
 
 
 export function useValidationsGUTPeriodicidade() {
+
+  async function runValidation(data: IGUTPeriodicidade, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gutperiodicidadeApi = new GUTPeriodicidadeApi(uri ?? '', token ?? '');
+
+    const result = await gutperiodicidadeApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGUTPeriodicidade): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 20) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useGUTPeriodicidadeComboBox = (
   dataService: IGUTPeriodicidadeService,
   initialValue?: any

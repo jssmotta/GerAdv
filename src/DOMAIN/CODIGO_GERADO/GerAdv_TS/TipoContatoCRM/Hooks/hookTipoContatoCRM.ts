@@ -4,6 +4,7 @@ import { ITipoContatoCRMService } from '../Services/TipoContatoCRM.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoContatoCRM } from '../Interfaces/interface.TipoContatoCRM';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoContatoCRMApi } from '../Apis/ApiTipoContatoCRM';
 
 export const useTipoContatoCRMForm = (
   initialTipoContatoCRM: ITipoContatoCRM,
@@ -142,6 +143,16 @@ export const useTipoContatoCRMList = (dataService: ITipoContatoCRMService) => {
 
 
 export function useValidationsTipoContatoCRM() {
+
+  async function runValidation(data: ITipoContatoCRM, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipocontatocrmApi = new TipoContatoCRMApi(uri ?? '', token ?? '');
+
+    const result = await tipocontatocrmApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoContatoCRM): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoContatoCRMComboBox = (
   dataService: ITipoContatoCRMService,
   initialValue?: any

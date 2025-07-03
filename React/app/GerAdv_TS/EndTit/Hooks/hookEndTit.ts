@@ -4,6 +4,7 @@ import { IEndTitService } from '../Services/EndTit.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEndTit } from '../Interfaces/interface.EndTit';
 import { isValidDate } from '@/app/tools/datetime';
+import { EndTitApi } from '../Apis/ApiEndTit';
 
 export const useEndTitForm = (
   initialEndTit: IEndTit,
@@ -142,6 +143,16 @@ export const useEndTitList = (dataService: IEndTitService) => {
 
 
 export function useValidationsEndTit() {
+
+  async function runValidation(data: IEndTit, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const endtitApi = new EndTitApi(uri ?? '', token ?? '');
+
+    const result = await endtitApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEndTit): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsEndTit() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

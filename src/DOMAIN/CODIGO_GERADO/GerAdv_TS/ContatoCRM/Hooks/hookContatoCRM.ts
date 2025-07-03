@@ -4,6 +4,7 @@ import { IContatoCRMService } from '../Services/ContatoCRM.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IContatoCRM } from '../Interfaces/interface.ContatoCRM';
 import { isValidDate } from '@/app/tools/datetime';
+import { ContatoCRMApi } from '../Apis/ApiContatoCRM';
 
 export const useContatoCRMForm = (
   initialContatoCRM: IContatoCRM,
@@ -142,6 +143,16 @@ export const useContatoCRMList = (dataService: IContatoCRMService) => {
 
 
 export function useValidationsContatoCRM() {
+
+  async function runValidation(data: IContatoCRM, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const contatocrmApi = new ContatoCRMApi(uri ?? '', token ?? '');
+
+    const result = await contatocrmApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IContatoCRM): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,5 +178,5 @@ if (data.contato.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

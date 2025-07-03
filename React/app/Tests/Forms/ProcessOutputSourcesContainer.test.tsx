@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProcessOutputSourcesIncContainer from '@/app/GerAdv_TS/ProcessOutputSources/Components/ProcessOutputSourcesIncContainer';
+// ProcessOutputSourcesIncContainer.test.tsx
+// Mock do ProcessOutputSourcesInc
+jest.mock('@/app/GerAdv_TS/ProcessOutputSources/Crud/Inc/ProcessOutputSources', () => (props: any) => (
+<div data-testid='processoutputsources-inc-mock' {...props} />
+));
+describe('ProcessOutputSourcesIncContainer', () => {
+  it('deve renderizar ProcessOutputSourcesInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProcessOutputSourcesIncContainer id={id} navigator={mockNavigator} />
+  );
+  const processoutputsourcesInc = getByTestId('processoutputsources-inc-mock');
+  expect(processoutputsourcesInc).toBeInTheDocument();
+  expect(processoutputsourcesInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

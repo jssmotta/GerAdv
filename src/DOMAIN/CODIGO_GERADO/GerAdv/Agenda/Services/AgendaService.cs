@@ -39,21 +39,21 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IAgendaRea
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAgenda.SensivelCamposSqlX}, cidNome,advNome,funNome,tipDescricao,cliNome,areDescricao,jusNome,proNroPasta,operNome,preNome
+                   {DBAgenda.SensivelCamposSqlX}, [Cidade].[cidNome],[Advogados].[advNome],[Funcionarios].[funNome],[TipoCompromisso].[tipDescricao],[Clientes].[cliNome],[Area].[areDescricao],[Justica].[jusNome],[Processos].[proNroPasta],[Operador].[operNome],[Prepostos].[preNome]
                    FROM {DBAgenda.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=ageCidade
-LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=ageAdvogado
-LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=ageFuncionario
-LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON tipCodigo=ageTipoCompromisso
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ageCliente
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=ageArea
-LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=ageJustica
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ageProcesso
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ageUsuario
-LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agePreposto
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Agenda].[ageCidade]
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[Agenda].[ageAdvogado]
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON [Funcionarios].[funCodigo]=[Agenda].[ageFuncionario]
+LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON [TipoCompromisso].[tipCodigo]=[Agenda].[ageTipoCompromisso]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Agenda].[ageCliente]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[Agenda].[ageArea]
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[Agenda].[ageJustica]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Agenda].[ageProcesso]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[Agenda].[ageUsuario]
+LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON [Prepostos].[preCodigo]=[Agenda].[agePreposto]
  
                    {where}
-                   ORDER BY ageData
+                   ORDER BY [Agenda].[ageData]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -151,11 +151,49 @@ LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agePreposto
             var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Agenda: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaResponse?> Validation([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Agenda: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgenda == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgenda.Id.IsEmptyIDNumber())
+            {
+                return new AgendaResponse();
+            }
+
+            return reader.Read(regAgenda.Id, oCnn);
         });
     }
 

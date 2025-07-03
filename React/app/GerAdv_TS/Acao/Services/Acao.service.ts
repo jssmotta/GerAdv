@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AcaoApi, AcaoApiError } from '../Apis/ApiAcao';
 import { FilterAcao } from '../Filters/Acao';
 import { IAcao } from '../Interfaces/interface.Acao';
+import { AcaoEmpty } from '../../Models/Acao';
 
 export class AcaoValidator {
   static validateAcao(acao: IAcao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AcaoService implements IAcaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AcaoApiError) {
         throw error;

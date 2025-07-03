@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { DocsRecebidosItensApi, DocsRecebidosItensApiError } from '../Apis/ApiDocsRecebidosItens';
 import { FilterDocsRecebidosItens } from '../Filters/DocsRecebidosItens';
 import { IDocsRecebidosItens } from '../Interfaces/interface.DocsRecebidosItens';
+import { DocsRecebidosItensEmpty } from '../../Models/DocsRecebidosItens';
 
 export class DocsRecebidosItensValidator {
   static validateDocsRecebidosItens(docsrecebidositens: IDocsRecebidosItens): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class DocsRecebidosItensService implements IDocsRecebidosItensService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof DocsRecebidosItensApiError) {
         throw error;

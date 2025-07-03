@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import BensClassificacaoIncContainer from '@/app/GerAdv_TS/BensClassificacao/Components/BensClassificacaoIncContainer';
+// BensClassificacaoIncContainer.test.tsx
+// Mock do BensClassificacaoInc
+jest.mock('@/app/GerAdv_TS/BensClassificacao/Crud/Inc/BensClassificacao', () => (props: any) => (
+<div data-testid='bensclassificacao-inc-mock' {...props} />
+));
+describe('BensClassificacaoIncContainer', () => {
+  it('deve renderizar BensClassificacaoInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <BensClassificacaoIncContainer id={id} navigator={mockNavigator} />
+  );
+  const bensclassificacaoInc = getByTestId('bensclassificacao-inc-mock');
+  expect(bensclassificacaoInc).toBeInTheDocument();
+  expect(bensclassificacaoInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

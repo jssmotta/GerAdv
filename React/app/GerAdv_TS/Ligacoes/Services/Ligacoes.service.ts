@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { LigacoesApi, LigacoesApiError } from '../Apis/ApiLigacoes';
 import { FilterLigacoes } from '../Filters/Ligacoes';
 import { ILigacoes } from '../Interfaces/interface.Ligacoes';
+import { LigacoesEmpty } from '../../Models/Ligacoes';
 
 export class LigacoesValidator {
   static validateLigacoes(ligacoes: ILigacoes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class LigacoesService implements ILigacoesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof LigacoesApiError) {
         throw error;

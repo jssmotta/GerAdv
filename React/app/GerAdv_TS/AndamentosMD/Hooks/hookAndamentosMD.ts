@@ -4,6 +4,7 @@ import { IAndamentosMDService } from '../Services/AndamentosMD.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAndamentosMD } from '../Interfaces/interface.AndamentosMD';
 import { isValidDate } from '@/app/tools/datetime';
+import { AndamentosMDApi } from '../Apis/ApiAndamentosMD';
 
 export const useAndamentosMDForm = (
   initialAndamentosMD: IAndamentosMD,
@@ -142,6 +143,16 @@ export const useAndamentosMDList = (dataService: IAndamentosMDService) => {
 
 
 export function useValidationsAndamentosMD() {
+
+  async function runValidation(data: IAndamentosMD, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const andamentosmdApi = new AndamentosMDApi(uri ?? '', token ?? '');
+
+    const result = await andamentosmdApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAndamentosMD): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -170,7 +181,7 @@ if (data.unc.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAndamentosMDComboBox = (
   dataService: IAndamentosMDService,
   initialValue?: any

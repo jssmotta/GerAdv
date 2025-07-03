@@ -4,6 +4,7 @@ import { ICargosEscService } from '../Services/CargosEsc.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ICargosEsc } from '../Interfaces/interface.CargosEsc';
 import { isValidDate } from '@/app/tools/datetime';
+import { CargosEscApi } from '../Apis/ApiCargosEsc';
 
 export const useCargosEscForm = (
   initialCargosEsc: ICargosEsc,
@@ -142,6 +143,16 @@ export const useCargosEscList = (dataService: ICargosEscService) => {
 
 
 export function useValidationsCargosEsc() {
+
+  async function runValidation(data: ICargosEsc, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const cargosescApi = new CargosEscApi(uri ?? '', token ?? '');
+
+    const result = await cargosescApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ICargosEsc): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useCargosEscComboBox = (
   dataService: ICargosEscService,
   initialValue?: any

@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import PoderJudiciarioAssociadoIncContainer from '@/app/GerAdv_TS/PoderJudiciarioAssociado/Components/PoderJudiciarioAssociadoIncContainer';
+// PoderJudiciarioAssociadoIncContainer.test.tsx
+// Mock do PoderJudiciarioAssociadoInc
+jest.mock('@/app/GerAdv_TS/PoderJudiciarioAssociado/Crud/Inc/PoderJudiciarioAssociado', () => (props: any) => (
+<div data-testid='poderjudiciarioassociado-inc-mock' {...props} />
+));
+describe('PoderJudiciarioAssociadoIncContainer', () => {
+  it('deve renderizar PoderJudiciarioAssociadoInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <PoderJudiciarioAssociadoIncContainer id={id} navigator={mockNavigator} />
+  );
+  const poderjudiciarioassociadoInc = getByTestId('poderjudiciarioassociado-inc-mock');
+  expect(poderjudiciarioassociadoInc).toBeInTheDocument();
+  expect(poderjudiciarioassociadoInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

@@ -39,12 +39,12 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IForoReader 
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBForo.SensivelCamposSqlX}, cidNome
+                   {DBForo.SensivelCamposSqlX}, [Cidade].[cidNome]
                    FROM {DBForo.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=forCidade
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Foro].[forCidade]
  
                    {where}
-                   ORDER BY forNome
+                   ORDER BY [Foro].[forNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ForoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IForoReader 
             var validade = await validation.ValidateReg(regForo, this, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Foro: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regForo, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ForoResponse?> Validation([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Foro: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regForo == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regForo, this, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regForo.Id.IsEmptyIDNumber())
+            {
+                return new ForoResponse();
+            }
+
+            return reader.Read(regForo.Id, oCnn);
         });
     }
 

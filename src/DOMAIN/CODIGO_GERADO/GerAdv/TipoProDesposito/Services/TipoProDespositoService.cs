@@ -42,7 +42,7 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
                    FROM {DBTipoProDesposito.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tpdNome
+                   ORDER BY [TipoProDesposito].[tpdNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoProDespositoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
             var validade = await validation.ValidateReg(regTipoProDesposito, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoProDesposito: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoProDesposito, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoProDespositoResponse?> Validation([FromBody] Models.TipoProDesposito regTipoProDesposito, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoProDesposito: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoProDesposito == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoProDesposito, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoProDesposito.Id.IsEmptyIDNumber())
+            {
+                return new TipoProDespositoResponse();
+            }
+
+            return reader.Read(regTipoProDesposito.Id, oCnn);
         });
     }
 

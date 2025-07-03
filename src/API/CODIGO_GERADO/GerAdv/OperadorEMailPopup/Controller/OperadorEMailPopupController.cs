@@ -95,4 +95,26 @@ public partial class OperadorEMailPopupController(IOperadorEMailPopupService ope
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.OperadorEMailPopup regOperadorEMailPopup, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _operadoremailpopupService.Validation(regOperadorEMailPopup, uri);
+            if (result == null)
+            {
+                _logger.Warn("OperadorEMailPopup: Validation failed to add or update OperadorEMailPopup, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "OperadorEMailPopup: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

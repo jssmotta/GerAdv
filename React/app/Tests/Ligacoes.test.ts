@@ -306,7 +306,8 @@ describe('Integração de hooks', () => {
   });
 
 
-  test('deve carregar opções na inicialização', async () => {
+ 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, nome: 'Ligacoes 1' },
       { id: 2, nome: 'Ligacoes 2' }
@@ -326,6 +327,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockLigacoesService.getList).toHaveBeenCalled();
   });
 
@@ -340,8 +342,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useLigacoesComboBox(mockLigacoesService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -371,8 +371,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useLigacoesComboBox(mockLigacoesService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'Ligacoes ABC' },

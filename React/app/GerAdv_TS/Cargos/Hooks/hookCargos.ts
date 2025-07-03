@@ -4,6 +4,7 @@ import { ICargosService } from '../Services/Cargos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ICargos } from '../Interfaces/interface.Cargos';
 import { isValidDate } from '@/app/tools/datetime';
+import { CargosApi } from '../Apis/ApiCargos';
 
 export const useCargosForm = (
   initialCargos: ICargos,
@@ -142,6 +143,16 @@ export const useCargosList = (dataService: ICargosService) => {
 
 
 export function useValidationsCargos() {
+
+  async function runValidation(data: ICargos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const cargosApi = new CargosApi(uri ?? '', token ?? '');
+
+    const result = await cargosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ICargos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useCargosComboBox = (
   dataService: ICargosService,
   initialValue?: any

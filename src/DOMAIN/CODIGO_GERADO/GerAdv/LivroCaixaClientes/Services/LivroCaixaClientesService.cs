@@ -39,13 +39,13 @@ public partial class LivroCaixaClientesService(IOptions<AppSettings> appSettings
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBLivroCaixaClientes.SensivelCamposSqlX}, cliNome
+                   {DBLivroCaixaClientes.SensivelCamposSqlX}, [LivroCaixa].[],[Clientes].[cliNome]
                    FROM {DBLivroCaixaClientes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"LivroCaixa".dbo(oCnn)} (NOLOCK) ON livCodigo=lccLivroCaixa
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=lccCliente
+                   LEFT JOIN {"LivroCaixa".dbo(oCnn)} (NOLOCK) ON [LivroCaixa].[livCodigo]=[LivroCaixaClientes].[lccLivroCaixa]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[LivroCaixaClientes].[lccCliente]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [LivroCaixaClientes].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<LivroCaixaClientesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=lccCliente
             var validade = await validation.ValidateReg(regLivroCaixaClientes, this, livrocaixaReader, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"LivroCaixaClientes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regLivroCaixaClientes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<LivroCaixaClientesResponse?> Validation([FromBody] Models.LivroCaixaClientes regLivroCaixaClientes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("LivroCaixaClientes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regLivroCaixaClientes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regLivroCaixaClientes, this, livrocaixaReader, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regLivroCaixaClientes.Id.IsEmptyIDNumber())
+            {
+                return new LivroCaixaClientesResponse();
+            }
+
+            return reader.Read(regLivroCaixaClientes.Id, oCnn);
         });
     }
 

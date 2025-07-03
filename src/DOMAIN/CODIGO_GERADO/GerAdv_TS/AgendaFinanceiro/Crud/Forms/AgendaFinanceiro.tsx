@@ -2,12 +2,11 @@
 'use client';
 import { IAgendaFinanceiro } from '@/app/GerAdv_TS/AgendaFinanceiro/Interfaces/interface.AgendaFinanceiro';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -57,8 +56,8 @@ export const AgendaFinanceiroForm: React.FC<AgendaFinanceiroFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new AgendaFinanceiroApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -440,7 +439,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-
+                            </div><div className='grid-container'>
                               <InputInput
                               type='text'
                               maxLength={2048}
@@ -453,7 +452,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-                            </div><div className='grid-container'>
+
                               <AdvogadosComboBox
                               name={'advogado'}
                               dataForm={agendafinanceiroData}
@@ -547,7 +546,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-
+                            </div><div className='grid-container'>
                               <TipoCompromissoComboBox
                               name={'tipocompromisso'}
                               dataForm={agendafinanceiroData}
@@ -563,7 +562,7 @@ const addValorCidade = (e: any) => {
                               setValue={addValorCliente}
                               label={'Clientes'}
                               />
-                            </div><div className='grid-container'>
+
                               <InputInput
                               type='text'
                               maxLength={2048}
@@ -608,7 +607,7 @@ const addValorCidade = (e: any) => {
                               setValue={addValorJustica}
                               label={'Justica'}
                               />
-
+                            </div><div className='grid-container'>
                               <ProcessosComboBox
                               name={'processo'}
                               dataForm={agendafinanceiroData}
@@ -642,7 +641,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-                            </div><div className='grid-container'>
+
                               <OperadorComboBox
                               name={'usuario'}
                               dataForm={agendafinanceiroData}
@@ -710,7 +709,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-
+                            </div><div className='grid-container'>
                               <InputInput
                               type='text'
                               maxLength={2147483647}
@@ -738,7 +737,7 @@ const addValorCidade = (e: any) => {
 
                               <InputCheckbox dataForm={agendafinanceiroData} label='Revisar' name='revisar' checked={agendafinanceiroData.revisar} onChange={onChange} />
                               <InputCheckbox dataForm={agendafinanceiroData} label='RevisarP2' name='revisarp2' checked={agendafinanceiroData.revisarp2} onChange={onChange} />
-                            </div><div className='grid-container'>
+
                               <InputInput
                               type='text'
                               maxLength={2048}

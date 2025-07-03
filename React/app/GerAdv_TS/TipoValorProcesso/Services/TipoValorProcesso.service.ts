@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoValorProcessoApi, TipoValorProcessoApiError } from '../Apis/ApiTipoValorProcesso';
 import { FilterTipoValorProcesso } from '../Filters/TipoValorProcesso';
 import { ITipoValorProcesso } from '../Interfaces/interface.TipoValorProcesso';
+import { TipoValorProcessoEmpty } from '../../Models/TipoValorProcesso';
 
 export class TipoValorProcessoValidator {
   static validateTipoValorProcesso(tipovalorprocesso: ITipoValorProcesso): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoValorProcessoService implements ITipoValorProcessoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoValorProcessoApiError) {
         throw error;

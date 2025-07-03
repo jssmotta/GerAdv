@@ -4,6 +4,7 @@ import { IStatusTarefasService } from '../Services/StatusTarefas.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IStatusTarefas } from '../Interfaces/interface.StatusTarefas';
 import { isValidDate } from '@/app/tools/datetime';
+import { StatusTarefasApi } from '../Apis/ApiStatusTarefas';
 
 export const useStatusTarefasForm = (
   initialStatusTarefas: IStatusTarefas,
@@ -142,6 +143,16 @@ export const useStatusTarefasList = (dataService: IStatusTarefasService) => {
 
 
 export function useValidationsStatusTarefas() {
+
+  async function runValidation(data: IStatusTarefas, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const statustarefasApi = new StatusTarefasApi(uri ?? '', token ?? '');
+
+    const result = await statustarefasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IStatusTarefas): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useStatusTarefasComboBox = (
   dataService: IStatusTarefasService,
   initialValue?: any

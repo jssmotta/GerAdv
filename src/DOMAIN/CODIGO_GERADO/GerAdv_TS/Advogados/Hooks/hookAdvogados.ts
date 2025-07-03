@@ -4,6 +4,7 @@ import { IAdvogadosService } from '../Services/Advogados.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAdvogados } from '../Interfaces/interface.Advogados';
 import { isValidDate } from '@/app/tools/datetime';
+import { AdvogadosApi } from '../Apis/ApiAdvogados';
 
 export const useAdvogadosForm = (
   initialAdvogados: IAdvogados,
@@ -142,6 +143,16 @@ export const useAdvogadosList = (dataService: IAdvogadosService) => {
 
 
 export function useValidationsAdvogados() {
+
+  async function runValidation(data: IAdvogados, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const advogadosApi = new AdvogadosApi(uri ?? '', token ?? '');
+
+    const result = await advogadosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAdvogados): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -224,7 +235,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAdvogadosComboBox = (
   dataService: IAdvogadosService,
   initialValue?: any

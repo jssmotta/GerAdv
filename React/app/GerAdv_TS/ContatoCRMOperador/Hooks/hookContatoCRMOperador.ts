@@ -4,6 +4,7 @@ import { IContatoCRMOperadorService } from '../Services/ContatoCRMOperador.servi
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IContatoCRMOperador } from '../Interfaces/interface.ContatoCRMOperador';
 import { isValidDate } from '@/app/tools/datetime';
+import { ContatoCRMOperadorApi } from '../Apis/ApiContatoCRMOperador';
 
 export const useContatoCRMOperadorForm = (
   initialContatoCRMOperador: IContatoCRMOperador,
@@ -142,6 +143,16 @@ export const useContatoCRMOperadorList = (dataService: IContatoCRMOperadorServic
 
 
 export function useValidationsContatoCRMOperador() {
+
+  async function runValidation(data: IContatoCRMOperador, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const contatocrmoperadorApi = new ContatoCRMOperadorApi(uri ?? '', token ?? '');
+
+    const result = await contatocrmoperadorApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IContatoCRMOperador): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsContatoCRMOperador() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

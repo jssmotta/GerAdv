@@ -39,13 +39,13 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IAcaoReader 
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAcao.SensivelCamposSqlX}, jusNome,areDescricao
+                   {DBAcao.SensivelCamposSqlX}, [Justica].[jusNome],[Area].[areDescricao]
                    FROM {DBAcao.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=acaJustica
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=acaArea
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[Acao].[acaJustica]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[Acao].[acaArea]
  
                    {where}
-                   ORDER BY acaDescricao
+                   ORDER BY [Acao].[acaDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AcaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=acaArea
             var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Acao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAcao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AcaoResponse?> Validation([FromBody] Models.Acao regAcao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Acao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAcao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAcao.Id.IsEmptyIDNumber())
+            {
+                return new AcaoResponse();
+            }
+
+            return reader.Read(regAcao.Id, oCnn);
         });
     }
 

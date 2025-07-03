@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { Diario2Api, Diario2ApiError } from '../Apis/ApiDiario2';
 import { FilterDiario2 } from '../Filters/Diario2';
 import { IDiario2 } from '../Interfaces/interface.Diario2';
+import { Diario2Empty } from '../../Models/Diario2';
 
 export class Diario2Validator {
   static validateDiario2(diario2: IDiario2): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class Diario2Service implements IDiario2Service {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof Diario2ApiError) {
         throw error;

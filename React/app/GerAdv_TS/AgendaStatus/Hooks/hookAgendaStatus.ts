@@ -4,6 +4,7 @@ import { IAgendaStatusService } from '../Services/AgendaStatus.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgendaStatus } from '../Interfaces/interface.AgendaStatus';
 import { isValidDate } from '@/app/tools/datetime';
+import { AgendaStatusApi } from '../Apis/ApiAgendaStatus';
 
 export const useAgendaStatusForm = (
   initialAgendaStatus: IAgendaStatus,
@@ -142,6 +143,16 @@ export const useAgendaStatusList = (dataService: IAgendaStatusService) => {
 
 
 export function useValidationsAgendaStatus() {
+
+  async function runValidation(data: IAgendaStatus, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agendastatusApi = new AgendaStatusApi(uri ?? '', token ?? '');
+
+    const result = await agendastatusApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgendaStatus): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAgendaStatus() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

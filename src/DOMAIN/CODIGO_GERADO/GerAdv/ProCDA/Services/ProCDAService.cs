@@ -39,12 +39,12 @@ public partial class ProCDAService(IOptions<AppSettings> appSettings, IProCDARea
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProCDA.SensivelCamposSqlX}, proNroPasta
+                   {DBProCDA.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBProCDA.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pcdProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProCDA].[pcdProcesso]
  
                    {where}
-                   ORDER BY pcdNome
+                   ORDER BY [ProCDA].[pcdNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProCDAResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class ProCDAService(IOptions<AppSettings> appSettings, IProCDARea
             var validade = await validation.ValidateReg(regProCDA, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProCDA: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProCDA, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProCDAResponse?> Validation([FromBody] Models.ProCDA regProCDA, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProCDA: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProCDA == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProCDA, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProCDA.Id.IsEmptyIDNumber())
+            {
+                return new ProCDAResponse();
+            }
+
+            return reader.Read(regProCDA.Id, oCnn);
         });
     }
 

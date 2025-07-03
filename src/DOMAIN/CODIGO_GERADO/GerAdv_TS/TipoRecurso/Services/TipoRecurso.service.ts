@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoRecursoApi, TipoRecursoApiError } from '../Apis/ApiTipoRecurso';
 import { FilterTipoRecurso } from '../Filters/TipoRecurso';
 import { ITipoRecurso } from '../Interfaces/interface.TipoRecurso';
+import { TipoRecursoEmpty } from '../../Models/TipoRecurso';
 
 export class TipoRecursoValidator {
   static validateTipoRecurso(tiporecurso: ITipoRecurso): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoRecursoService implements ITipoRecursoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoRecursoApiError) {
         throw error;

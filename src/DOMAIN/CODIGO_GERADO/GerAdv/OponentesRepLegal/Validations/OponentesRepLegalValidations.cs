@@ -27,8 +27,19 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Oponentes Rep Legal' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Oponentes Rep Legal ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Oponentes Rep Legal com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         // Oponentes
         if (!reg.Oponente.IsEmptyIDNumber())
         {
@@ -52,11 +63,11 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
         return string.Empty;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.OponentesRepLegal reg, IOponentesRepLegalService service, string uri)
+    private async Task<(bool, OponentesRepLegalResponseAll? )> IsCpfDuplicado(Models.OponentesRepLegal reg, IOponentesRepLegalService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingOponentesRepLegal = (await service.Filter(new Filters.FilterOponentesRepLegal { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingOponentesRepLegal != null && existingOponentesRepLegal.Id > 0 && existingOponentesRepLegal.Id != reg.Id;
+            return (false, null);
+        var existingOponentesRepLegal = (await service.Filter(new Filters.FilterOponentesRepLegal { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingOponentesRepLegal != null && existingOponentesRepLegal.Id > 0 && existingOponentesRepLegal.Id != reg.Id, existingOponentesRepLegal);
     }
 }

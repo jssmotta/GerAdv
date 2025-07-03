@@ -39,13 +39,13 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IProVa
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProValores.SensivelCamposSqlX}, proNroPasta,ptvDescricao
+                   {DBProValores.SensivelCamposSqlX}, [Processos].[proNroPasta],[TipoValorProcesso].[ptvDescricao]
                    FROM {DBProValores.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=prvProcesso
-LEFT JOIN {"TipoValorProcesso".dbo(oCnn)} (NOLOCK) ON ptvCodigo=prvTipoValorProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProValores].[prvProcesso]
+LEFT JOIN {"TipoValorProcesso".dbo(oCnn)} (NOLOCK) ON [TipoValorProcesso].[ptvCodigo]=[ProValores].[prvTipoValorProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProValores].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProValoresResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"TipoValorProcesso".dbo(oCnn)} (NOLOCK) ON ptvCodigo=prvTipoValorProc
             var validade = await validation.ValidateReg(regProValores, this, processosReader, tipovalorprocessoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProValores: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProValores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProValoresResponse?> Validation([FromBody] Models.ProValores regProValores, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProValores: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProValores == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProValores, this, processosReader, tipovalorprocessoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProValores.Id.IsEmptyIDNumber())
+            {
+                return new ProValoresResponse();
+            }
+
+            return reader.Read(regProValores.Id, oCnn);
         });
     }
 

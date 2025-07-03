@@ -39,16 +39,16 @@ public partial class HistoricoService(IOptions<AppSettings> appSettings, IHistor
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBHistorico.SensivelCamposSqlX}, proNroPasta,fasDescricao,sanNome
+                   {DBHistorico.SensivelCamposSqlX}, [Processos].[proNroPasta],[Precatoria].[],[Apenso].[],[Fase].[fasDescricao],[StatusAndamento].[sanNome]
                    FROM {DBHistorico.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=hisProcesso
-LEFT JOIN {"Precatoria".dbo(oCnn)} (NOLOCK) ON preCodigo=hisPrecatoria
-LEFT JOIN {"Apenso".dbo(oCnn)} (NOLOCK) ON apeCodigo=hisApenso
-LEFT JOIN {"Fase".dbo(oCnn)} (NOLOCK) ON fasCodigo=hisFase
-LEFT JOIN {"StatusAndamento".dbo(oCnn)} (NOLOCK) ON sanCodigo=hisStatusAndamento
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Historico].[hisProcesso]
+LEFT JOIN {"Precatoria".dbo(oCnn)} (NOLOCK) ON [Precatoria].[preCodigo]=[Historico].[hisPrecatoria]
+LEFT JOIN {"Apenso".dbo(oCnn)} (NOLOCK) ON [Apenso].[apeCodigo]=[Historico].[hisApenso]
+LEFT JOIN {"Fase".dbo(oCnn)} (NOLOCK) ON [Fase].[fasCodigo]=[Historico].[hisFase]
+LEFT JOIN {"StatusAndamento".dbo(oCnn)} (NOLOCK) ON [StatusAndamento].[sanCodigo]=[Historico].[hisStatusAndamento]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [Historico].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<HistoricoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -146,11 +146,49 @@ LEFT JOIN {"StatusAndamento".dbo(oCnn)} (NOLOCK) ON sanCodigo=hisStatusAndamento
             var validade = await validation.ValidateReg(regHistorico, this, processosReader, precatoriaReader, apensoReader, faseReader, statusandamentoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Historico: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regHistorico, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<HistoricoResponse?> Validation([FromBody] Models.Historico regHistorico, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Historico: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regHistorico == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regHistorico, this, processosReader, precatoriaReader, apensoReader, faseReader, statusandamentoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regHistorico.Id.IsEmptyIDNumber())
+            {
+                return new HistoricoResponse();
+            }
+
+            return reader.Read(regHistorico.Id, oCnn);
         });
     }
 

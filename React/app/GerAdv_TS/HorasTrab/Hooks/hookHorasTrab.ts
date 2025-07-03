@@ -4,6 +4,7 @@ import { IHorasTrabService } from '../Services/HorasTrab.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IHorasTrab } from '../Interfaces/interface.HorasTrab';
 import { isValidDate } from '@/app/tools/datetime';
+import { HorasTrabApi } from '../Apis/ApiHorasTrab';
 
 export const useHorasTrabForm = (
   initialHorasTrab: IHorasTrab,
@@ -142,6 +143,16 @@ export const useHorasTrabList = (dataService: IHorasTrabService) => {
 
 
 export function useValidationsHorasTrab() {
+
+  async function runValidation(data: IHorasTrab, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const horastrabApi = new HorasTrabApi(uri ?? '', token ?? '');
+
+    const result = await horastrabApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IHorasTrab): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -176,5 +187,5 @@ if (data.anexounc.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

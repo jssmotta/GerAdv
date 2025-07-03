@@ -39,14 +39,14 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IPrepos
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBPrepostos.SensivelCamposSqlX}, funDescricao,setDescricao,cidNome
+                   {DBPrepostos.SensivelCamposSqlX}, [Funcao].[funDescricao],[Setor].[setDescricao],[Cidade].[cidNome]
                    FROM {DBPrepostos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Funcao".dbo(oCnn)} (NOLOCK) ON funCodigo=preFuncao
-LEFT JOIN {"Setor".dbo(oCnn)} (NOLOCK) ON setCodigo=preSetor
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=preCidade
+                   LEFT JOIN {"Funcao".dbo(oCnn)} (NOLOCK) ON [Funcao].[funCodigo]=[Prepostos].[preFuncao]
+LEFT JOIN {"Setor".dbo(oCnn)} (NOLOCK) ON [Setor].[setCodigo]=[Prepostos].[preSetor]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Prepostos].[preCidade]
  
                    {where}
-                   ORDER BY preNome
+                   ORDER BY [Prepostos].[preNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PrepostosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=preCidade
             var validade = await validation.ValidateReg(regPrepostos, this, funcaoReader, setorReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Prepostos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPrepostos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PrepostosResponse?> Validation([FromBody] Models.Prepostos regPrepostos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Prepostos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPrepostos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPrepostos, this, funcaoReader, setorReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPrepostos.Id.IsEmptyIDNumber())
+            {
+                return new PrepostosResponse();
+            }
+
+            return reader.Read(regPrepostos.Id, oCnn);
         });
     }
 

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { CargosApi, CargosApiError } from '../Apis/ApiCargos';
 import { FilterCargos } from '../Filters/Cargos';
 import { ICargos } from '../Interfaces/interface.Cargos';
+import { CargosEmpty } from '../../Models/Cargos';
 
 export class CargosValidator {
   static validateCargos(cargos: ICargos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class CargosService implements ICargosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof CargosApiError) {
         throw error;

@@ -4,6 +4,7 @@ import { IPontoVirtualAcessosService } from '../Services/PontoVirtualAcessos.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPontoVirtualAcessos } from '../Interfaces/interface.PontoVirtualAcessos';
 import { isValidDate } from '@/app/tools/datetime';
+import { PontoVirtualAcessosApi } from '../Apis/ApiPontoVirtualAcessos';
 
 export const usePontoVirtualAcessosForm = (
   initialPontoVirtualAcessos: IPontoVirtualAcessos,
@@ -142,6 +143,16 @@ export const usePontoVirtualAcessosList = (dataService: IPontoVirtualAcessosServ
 
 
 export function useValidationsPontoVirtualAcessos() {
+
+  async function runValidation(data: IPontoVirtualAcessos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const pontovirtualacessosApi = new PontoVirtualAcessosApi(uri ?? '', token ?? '');
+
+    const result = await pontovirtualacessosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPontoVirtualAcessos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsPontoVirtualAcessos() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

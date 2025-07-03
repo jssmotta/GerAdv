@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoStatusBiuApi, TipoStatusBiuApiError } from '../Apis/ApiTipoStatusBiu';
 import { FilterTipoStatusBiu } from '../Filters/TipoStatusBiu';
 import { ITipoStatusBiu } from '../Interfaces/interface.TipoStatusBiu';
+import { TipoStatusBiuEmpty } from '../../Models/TipoStatusBiu';
 
 export class TipoStatusBiuValidator {
   static validateTipoStatusBiu(tipostatusbiu: ITipoStatusBiu): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoStatusBiuService implements ITipoStatusBiuService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoStatusBiuApiError) {
         throw error;

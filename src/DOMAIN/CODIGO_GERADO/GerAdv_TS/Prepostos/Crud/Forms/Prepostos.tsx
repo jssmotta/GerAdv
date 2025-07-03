@@ -2,12 +2,11 @@
 'use client';
 import { IPrepostos } from '@/app/GerAdv_TS/Prepostos/Interfaces/interface.Prepostos';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const PrepostosForm: React.FC<PrepostosFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new PrepostosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -275,7 +274,7 @@ const addValorFuncao = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={2048}
@@ -288,7 +287,7 @@ const addValorFuncao = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={2048}
@@ -380,7 +379,7 @@ const addValorFuncao = (e: any) => {
                 />
 
                 <InputCheckbox dataForm={prepostosData} label='LiberaAgenda' name='liberaagenda' checked={prepostosData.liberaagenda} onChange={onChange} />
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={2147483647}
@@ -406,7 +405,7 @@ const addValorFuncao = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'>
+
                 <InputInput
                 type='text'
                 maxLength={50}
@@ -491,7 +490,7 @@ const addValorFuncao = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={50}

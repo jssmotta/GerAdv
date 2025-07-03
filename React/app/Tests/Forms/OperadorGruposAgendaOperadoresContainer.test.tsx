@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import OperadorGruposAgendaOperadoresIncContainer from '@/app/GerAdv_TS/OperadorGruposAgendaOperadores/Components/OperadorGruposAgendaOperadoresIncContainer';
+// OperadorGruposAgendaOperadoresIncContainer.test.tsx
+// Mock do OperadorGruposAgendaOperadoresInc
+jest.mock('@/app/GerAdv_TS/OperadorGruposAgendaOperadores/Crud/Inc/OperadorGruposAgendaOperadores', () => (props: any) => (
+<div data-testid='operadorgruposagendaoperadores-inc-mock' {...props} />
+));
+describe('OperadorGruposAgendaOperadoresIncContainer', () => {
+  it('deve renderizar OperadorGruposAgendaOperadoresInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <OperadorGruposAgendaOperadoresIncContainer id={id} navigator={mockNavigator} />
+  );
+  const operadorgruposagendaoperadoresInc = getByTestId('operadorgruposagendaoperadores-inc-mock');
+  expect(operadorgruposagendaoperadoresInc).toBeInTheDocument();
+  expect(operadorgruposagendaoperadoresInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

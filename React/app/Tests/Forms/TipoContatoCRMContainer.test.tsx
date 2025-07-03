@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import TipoContatoCRMIncContainer from '@/app/GerAdv_TS/TipoContatoCRM/Components/TipoContatoCRMIncContainer';
+// TipoContatoCRMIncContainer.test.tsx
+// Mock do TipoContatoCRMInc
+jest.mock('@/app/GerAdv_TS/TipoContatoCRM/Crud/Inc/TipoContatoCRM', () => (props: any) => (
+<div data-testid='tipocontatocrm-inc-mock' {...props} />
+));
+describe('TipoContatoCRMIncContainer', () => {
+  it('deve renderizar TipoContatoCRMInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <TipoContatoCRMIncContainer id={id} navigator={mockNavigator} />
+  );
+  const tipocontatocrmInc = getByTestId('tipocontatocrm-inc-mock');
+  expect(tipocontatocrmInc).toBeInTheDocument();
+  expect(tipocontatocrmInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

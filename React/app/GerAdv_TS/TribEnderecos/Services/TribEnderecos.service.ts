@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TribEnderecosApi, TribEnderecosApiError } from '../Apis/ApiTribEnderecos';
 import { FilterTribEnderecos } from '../Filters/TribEnderecos';
 import { ITribEnderecos } from '../Interfaces/interface.TribEnderecos';
+import { TribEnderecosEmpty } from '../../Models/TribEnderecos';
 
 export class TribEnderecosValidator {
   static validateTribEnderecos(tribenderecos: ITribEnderecos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TribEnderecosService implements ITribEnderecosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TribEnderecosApiError) {
         throw error;

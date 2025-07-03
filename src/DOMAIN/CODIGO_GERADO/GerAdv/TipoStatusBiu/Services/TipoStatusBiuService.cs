@@ -42,7 +42,7 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
                    FROM {DBTipoStatusBiu.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tsbNome
+                   ORDER BY [TipoStatusBiu].[tsbNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoStatusBiuResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
             var validade = await validation.ValidateReg(regTipoStatusBiu, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoStatusBiu: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoStatusBiu, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoStatusBiuResponse?> Validation([FromBody] Models.TipoStatusBiu regTipoStatusBiu, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoStatusBiu: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoStatusBiu == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoStatusBiu, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoStatusBiu.Id.IsEmptyIDNumber())
+            {
+                return new TipoStatusBiuResponse();
+            }
+
+            return reader.Read(regTipoStatusBiu.Id, oCnn);
         });
     }
 

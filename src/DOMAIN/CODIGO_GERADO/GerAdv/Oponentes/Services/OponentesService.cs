@@ -39,12 +39,12 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IOponen
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBOponentes.SensivelCamposSqlX}, cidNome
+                   {DBOponentes.SensivelCamposSqlX}, [Cidade].[cidNome]
                    FROM {DBOponentes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=opoCidade
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Oponentes].[opoCidade]
  
                    {where}
-                   ORDER BY opoNome
+                   ORDER BY [Oponentes].[opoNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OponentesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IOponen
             var validade = await validation.ValidateReg(regOponentes, this, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Oponentes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOponentes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OponentesResponse?> Validation([FromBody] Models.Oponentes regOponentes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Oponentes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOponentes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOponentes, this, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOponentes.Id.IsEmptyIDNumber())
+            {
+                return new OponentesResponse();
+            }
+
+            return reader.Read(regOponentes.Id, oCnn);
         });
     }
 

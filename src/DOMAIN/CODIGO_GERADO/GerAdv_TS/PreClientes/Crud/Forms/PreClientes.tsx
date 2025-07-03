@@ -2,12 +2,11 @@
 'use client';
 import { IPreClientes } from '@/app/GerAdv_TS/PreClientes/Interfaces/interface.PreClientes';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -44,8 +43,8 @@ export const PreClientesForm: React.FC<PreClientesFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new PreClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -235,7 +234,7 @@ const addValorIDRep = (e: any) => {
               />
 
               <InputCheckbox dataForm={preclientesData} label='Tipo' name='tipo' checked={preclientesData.tipo} onChange={onChange} />
-
+            </div><div className='grid-container'>
               <InputInput
               type='text'
               maxLength={2048}
@@ -248,7 +247,7 @@ const addValorIDRep = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'>
+
               <InputInput
               type='text'
               maxLength={15}
@@ -326,7 +325,7 @@ const addValorIDRep = (e: any) => {
               />
 
               <InputCheckbox dataForm={preclientesData} label='TipoCaptacao' name='tipocaptacao' checked={preclientesData.tipocaptacao} onChange={onChange} />
-
+            </div><div className='grid-container'>
               <InputInput
               type='text'
               maxLength={2147483647}
@@ -352,7 +351,7 @@ const addValorIDRep = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'>
+
               <InputInput
               type='text'
               maxLength={50}
@@ -437,7 +436,7 @@ const addValorIDRep = (e: any) => {
               onChange={onChange}
               />
 
-
+            </div><div className='grid-container'>
               <InputInput
               type='email'
               maxLength={60}
@@ -476,7 +475,7 @@ const addValorIDRep = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'>
+
               <InputInput
               type='text'
               maxLength={12}

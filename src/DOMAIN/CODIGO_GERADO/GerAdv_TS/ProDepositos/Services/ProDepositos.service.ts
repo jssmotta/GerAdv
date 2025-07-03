@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProDepositosApi, ProDepositosApiError } from '../Apis/ApiProDepositos';
 import { FilterProDepositos } from '../Filters/ProDepositos';
 import { IProDepositos } from '../Interfaces/interface.ProDepositos';
+import { ProDepositosEmpty } from '../../Models/ProDepositos';
 
 export class ProDepositosValidator {
   static validateProDepositos(prodepositos: IProDepositos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProDepositosService implements IProDepositosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProDepositosApiError) {
         throw error;

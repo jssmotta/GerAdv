@@ -4,6 +4,7 @@ import { IDiario2Service } from '../Services/Diario2.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IDiario2 } from '../Interfaces/interface.Diario2';
 import { isValidDate } from '@/app/tools/datetime';
+import { Diario2Api } from '../Apis/ApiDiario2';
 
 export const useDiario2Form = (
   initialDiario2: IDiario2,
@@ -142,6 +143,16 @@ export const useDiario2List = (dataService: IDiario2Service) => {
 
 
 export function useValidationsDiario2() {
+
+  async function runValidation(data: IDiario2, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const diario2Api = new Diario2Api(uri ?? '', token ?? '');
+
+    const result = await diario2Api.validation(data);
+
+    return result;
+  }
+
   function validate(data: IDiario2): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.ocorrencia.length > 2048) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useDiario2ComboBox = (
   dataService: IDiario2Service,
   initialValue?: any

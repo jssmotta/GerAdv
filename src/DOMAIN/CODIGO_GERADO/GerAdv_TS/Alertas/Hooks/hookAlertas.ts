@@ -4,6 +4,7 @@ import { IAlertasService } from '../Services/Alertas.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAlertas } from '../Interfaces/interface.Alertas';
 import { isValidDate } from '@/app/tools/datetime';
+import { AlertasApi } from '../Apis/ApiAlertas';
 
 export const useAlertasForm = (
   initialAlertas: IAlertas,
@@ -142,6 +143,16 @@ export const useAlertasList = (dataService: IAlertasService) => {
 
 
 export function useValidationsAlertas() {
+
+  async function runValidation(data: IAlertas, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const alertasApi = new AlertasApi(uri ?? '', token ?? '');
+
+    const result = await alertasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAlertas): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 2048) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAlertasComboBox = (
   dataService: IAlertasService,
   initialValue?: any

@@ -4,6 +4,7 @@ import { IGUTAtividadesMatrizService } from '../Services/GUTAtividadesMatriz.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGUTAtividadesMatriz } from '../Interfaces/interface.GUTAtividadesMatriz';
 import { isValidDate } from '@/app/tools/datetime';
+import { GUTAtividadesMatrizApi } from '../Apis/ApiGUTAtividadesMatriz';
 
 export const useGUTAtividadesMatrizForm = (
   initialGUTAtividadesMatriz: IGUTAtividadesMatriz,
@@ -142,6 +143,16 @@ export const useGUTAtividadesMatrizList = (dataService: IGUTAtividadesMatrizServ
 
 
 export function useValidationsGUTAtividadesMatriz() {
+
+  async function runValidation(data: IGUTAtividadesMatriz, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gutatividadesmatrizApi = new GUTAtividadesMatrizApi(uri ?? '', token ?? '');
+
+    const result = await gutatividadesmatrizApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGUTAtividadesMatriz): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsGUTAtividadesMatriz() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

@@ -88,7 +88,7 @@ public class OperadorValidation : IOperadorValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Operador '{reg.Nome}' já cadastrado.";
+            return $"Operador '{reg.Nome}'  - Nome";
         // StatusBiu
         if (!reg.StatusId.IsEmptyIDNumber())
         {

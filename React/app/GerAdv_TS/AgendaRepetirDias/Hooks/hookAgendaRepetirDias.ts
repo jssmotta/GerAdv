@@ -4,6 +4,7 @@ import { IAgendaRepetirDiasService } from '../Services/AgendaRepetirDias.service
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgendaRepetirDias } from '../Interfaces/interface.AgendaRepetirDias';
 import { isValidDate } from '@/app/tools/datetime';
+import { AgendaRepetirDiasApi } from '../Apis/ApiAgendaRepetirDias';
 
 export const useAgendaRepetirDiasForm = (
   initialAgendaRepetirDias: IAgendaRepetirDias,
@@ -142,6 +143,16 @@ export const useAgendaRepetirDiasList = (dataService: IAgendaRepetirDiasService)
 
 
 export function useValidationsAgendaRepetirDias() {
+
+  async function runValidation(data: IAgendaRepetirDias, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agendarepetirdiasApi = new AgendaRepetirDiasApi(uri ?? '', token ?? '');
+
+    const result = await agendarepetirdiasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgendaRepetirDias): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAgendaRepetirDias() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

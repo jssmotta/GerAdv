@@ -4,6 +4,7 @@ import { IOponentesService } from '../Services/Oponentes.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOponentes } from '../Interfaces/interface.Oponentes';
 import { isValidDate } from '@/app/tools/datetime';
+import { OponentesApi } from '../Apis/ApiOponentes';
 
 export const useOponentesForm = (
   initialOponentes: IOponentes,
@@ -142,6 +143,16 @@ export const useOponentesList = (dataService: IOponentesService) => {
 
 
 export function useValidationsOponentes() {
+
+  async function runValidation(data: IOponentes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const oponentesApi = new OponentesApi(uri ?? '', token ?? '');
+
+    const result = await oponentesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOponentes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -209,7 +220,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOponentesComboBox = (
   dataService: IOponentesService,
   initialValue?: any

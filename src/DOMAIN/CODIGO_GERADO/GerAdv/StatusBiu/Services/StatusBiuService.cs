@@ -38,13 +38,13 @@ public partial class StatusBiuService(IOptions<AppSettings> appSettings, IStatus
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBStatusBiu.SensivelCamposSqlX}, tsbNome,operNome
+                   {DBStatusBiu.SensivelCamposSqlX}, [TipoStatusBiu].[tsbNome],[Operador].[operNome]
                    FROM {DBStatusBiu.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"TipoStatusBiu".dbo(oCnn)} (NOLOCK) ON tsbCodigo=stbTipoStatusBiu
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=stbOperador
+                   LEFT JOIN {"TipoStatusBiu".dbo(oCnn)} (NOLOCK) ON [TipoStatusBiu].[tsbCodigo]=[StatusBiu].[stbTipoStatusBiu]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[StatusBiu].[stbOperador]
  
                    {where}
-                   ORDER BY stbNome
+                   ORDER BY [StatusBiu].[stbNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<StatusBiuResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -140,11 +140,49 @@ LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=stbOperador
             var validade = await validation.ValidateReg(regStatusBiu, this, tipostatusbiuReader, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"StatusBiu: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regStatusBiu, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<StatusBiuResponse?> Validation([FromBody] Models.StatusBiu regStatusBiu, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("StatusBiu: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regStatusBiu == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regStatusBiu, this, tipostatusbiuReader, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regStatusBiu.Id.IsEmptyIDNumber())
+            {
+                return new StatusBiuResponse();
+            }
+
+            return reader.Read(regStatusBiu.Id, oCnn);
         });
     }
 

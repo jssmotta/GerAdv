@@ -38,13 +38,13 @@ public partial class AreasJusticaService(IOptions<AppSettings> appSettings, IAre
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAreasJustica.SensivelCamposSqlX}, areDescricao,jusNome
+                   {DBAreasJustica.SensivelCamposSqlX}, [Area].[areDescricao],[Justica].[jusNome]
                    FROM {DBAreasJustica.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=arjArea
-LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=arjJustica
+                   LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[AreasJustica].[arjArea]
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[AreasJustica].[arjJustica]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AreasJustica].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AreasJusticaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -140,11 +140,49 @@ LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=arjJustica
             var validade = await validation.ValidateReg(regAreasJustica, this, areaReader, justicaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AreasJustica: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAreasJustica, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AreasJusticaResponse?> Validation([FromBody] Models.AreasJustica regAreasJustica, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AreasJustica: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAreasJustica == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAreasJustica, this, areaReader, justicaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAreasJustica.Id.IsEmptyIDNumber())
+            {
+                return new AreasJusticaResponse();
+            }
+
+            return reader.Read(regAreasJustica.Id, oCnn);
         });
     }
 

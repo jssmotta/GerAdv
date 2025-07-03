@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import EscritoriosIncContainer from '@/app/GerAdv_TS/Escritorios/Components/EscritoriosIncContainer';
+// EscritoriosIncContainer.test.tsx
+// Mock do EscritoriosInc
+jest.mock('@/app/GerAdv_TS/Escritorios/Crud/Inc/Escritorios', () => (props: any) => (
+<div data-testid='escritorios-inc-mock' {...props} />
+));
+describe('EscritoriosIncContainer', () => {
+  it('deve renderizar EscritoriosInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <EscritoriosIncContainer id={id} navigator={mockNavigator} />
+  );
+  const escritoriosInc = getByTestId('escritorios-inc-mock');
+  expect(escritoriosInc).toBeInTheDocument();
+  expect(escritoriosInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

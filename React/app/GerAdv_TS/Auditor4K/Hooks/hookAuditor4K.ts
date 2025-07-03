@@ -4,6 +4,7 @@ import { IAuditor4KService } from '../Services/Auditor4K.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAuditor4K } from '../Interfaces/interface.Auditor4K';
 import { isValidDate } from '@/app/tools/datetime';
+import { Auditor4KApi } from '../Apis/ApiAuditor4K';
 
 export const useAuditor4KForm = (
   initialAuditor4K: IAuditor4K,
@@ -142,6 +143,16 @@ export const useAuditor4KList = (dataService: IAuditor4KService) => {
 
 
 export function useValidationsAuditor4K() {
+
+  async function runValidation(data: IAuditor4K, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const auditor4kApi = new Auditor4KApi(uri ?? '', token ?? '');
+
+    const result = await auditor4kApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAuditor4K): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 100) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAuditor4KComboBox = (
   dataService: IAuditor4KService,
   initialValue?: any

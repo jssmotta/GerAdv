@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProPartesApi, ProPartesApiError } from '../Apis/ApiProPartes';
 import { FilterProPartes } from '../Filters/ProPartes';
 import { IProPartes } from '../Interfaces/interface.ProPartes';
+import { ProPartesEmpty } from '../../Models/ProPartes';
 
 export class ProPartesValidator {
   static validateProPartes(propartes: IProPartes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProPartesService implements IProPartesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProPartesApiError) {
         throw error;

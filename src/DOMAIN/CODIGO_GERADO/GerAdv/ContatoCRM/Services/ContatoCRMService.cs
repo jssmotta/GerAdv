@@ -39,15 +39,15 @@ public partial class ContatoCRMService(IOptions<AppSettings> appSettings, IConta
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBContatoCRM.SensivelCamposSqlX}, operNome,cliNome,proNroPasta,tccNome
+                   {DBContatoCRM.SensivelCamposSqlX}, [Operador].[operNome],[Clientes].[cliNome],[Processos].[proNroPasta],[TipoContatoCRM].[tccNome]
                    FROM {DBContatoCRM.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ctcOperador
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ctcCliente
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ctcProcesso
-LEFT JOIN {"TipoContatoCRM".dbo(oCnn)} (NOLOCK) ON tccCodigo=ctcTipoContatoCRM
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[ContatoCRM].[ctcOperador]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[ContatoCRM].[ctcCliente]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ContatoCRM].[ctcProcesso]
+LEFT JOIN {"TipoContatoCRM".dbo(oCnn)} (NOLOCK) ON [TipoContatoCRM].[tccCodigo]=[ContatoCRM].[ctcTipoContatoCRM]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ContatoCRM].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ContatoCRMResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -145,11 +145,49 @@ LEFT JOIN {"TipoContatoCRM".dbo(oCnn)} (NOLOCK) ON tccCodigo=ctcTipoContatoCRM
             var validade = await validation.ValidateReg(regContatoCRM, this, operadorReader, clientesReader, processosReader, tipocontatocrmReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ContatoCRM: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regContatoCRM, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ContatoCRMResponse?> Validation([FromBody] Models.ContatoCRM regContatoCRM, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ContatoCRM: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regContatoCRM == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regContatoCRM, this, operadorReader, clientesReader, processosReader, tipocontatocrmReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regContatoCRM.Id.IsEmptyIDNumber())
+            {
+                return new ContatoCRMResponse();
+            }
+
+            return reader.Read(regContatoCRM.Id, oCnn);
         });
     }
 

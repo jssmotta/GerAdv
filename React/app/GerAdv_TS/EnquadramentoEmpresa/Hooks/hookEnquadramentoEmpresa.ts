@@ -4,6 +4,7 @@ import { IEnquadramentoEmpresaService } from '../Services/EnquadramentoEmpresa.s
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEnquadramentoEmpresa } from '../Interfaces/interface.EnquadramentoEmpresa';
 import { isValidDate } from '@/app/tools/datetime';
+import { EnquadramentoEmpresaApi } from '../Apis/ApiEnquadramentoEmpresa';
 
 export const useEnquadramentoEmpresaForm = (
   initialEnquadramentoEmpresa: IEnquadramentoEmpresa,
@@ -142,6 +143,16 @@ export const useEnquadramentoEmpresaList = (dataService: IEnquadramentoEmpresaSe
 
 
 export function useValidationsEnquadramentoEmpresa() {
+
+  async function runValidation(data: IEnquadramentoEmpresa, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const enquadramentoempresaApi = new EnquadramentoEmpresaApi(uri ?? '', token ?? '');
+
+    const result = await enquadramentoempresaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEnquadramentoEmpresa): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useEnquadramentoEmpresaComboBox = (
   dataService: IEnquadramentoEmpresaService,
   initialValue?: any

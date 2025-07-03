@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AlertasApi, AlertasApiError } from '../Apis/ApiAlertas';
 import { FilterAlertas } from '../Filters/Alertas';
 import { IAlertas } from '../Interfaces/interface.Alertas';
+import { AlertasEmpty } from '../../Models/Alertas';
 
 export class AlertasValidator {
   static validateAlertas(alertas: IAlertas): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AlertasService implements IAlertasService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AlertasApiError) {
         throw error;

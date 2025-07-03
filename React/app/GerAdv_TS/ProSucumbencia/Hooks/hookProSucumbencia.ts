@@ -4,6 +4,7 @@ import { IProSucumbenciaService } from '../Services/ProSucumbencia.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProSucumbencia } from '../Interfaces/interface.ProSucumbencia';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProSucumbenciaApi } from '../Apis/ApiProSucumbencia';
 
 export const useProSucumbenciaForm = (
   initialProSucumbencia: IProSucumbencia,
@@ -142,6 +143,16 @@ export const useProSucumbenciaList = (dataService: IProSucumbenciaService) => {
 
 
 export function useValidationsProSucumbencia() {
+
+  async function runValidation(data: IProSucumbencia, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const prosucumbenciaApi = new ProSucumbenciaApi(uri ?? '', token ?? '');
+
+    const result = await prosucumbenciaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProSucumbencia): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.percentual.length > 5) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProSucumbenciaComboBox = (
   dataService: IProSucumbenciaService,
   initialValue?: any

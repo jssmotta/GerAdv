@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { DadosProcuracaoApi, DadosProcuracaoApiError } from '../Apis/ApiDadosProcuracao';
 import { FilterDadosProcuracao } from '../Filters/DadosProcuracao';
 import { IDadosProcuracao } from '../Interfaces/interface.DadosProcuracao';
+import { DadosProcuracaoEmpty } from '../../Models/DadosProcuracao';
 
 export class DadosProcuracaoValidator {
   static validateDadosProcuracao(dadosprocuracao: IDadosProcuracao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class DadosProcuracaoService implements IDadosProcuracaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof DadosProcuracaoApiError) {
         throw error;

@@ -4,6 +4,7 @@ import { ITribEnderecosService } from '../Services/TribEnderecos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITribEnderecos } from '../Interfaces/interface.TribEnderecos';
 import { isValidDate } from '@/app/tools/datetime';
+import { TribEnderecosApi } from '../Apis/ApiTribEnderecos';
 
 export const useTribEnderecosForm = (
   initialTribEnderecos: ITribEnderecos,
@@ -142,6 +143,16 @@ export const useTribEnderecosList = (dataService: ITribEnderecosService) => {
 
 
 export function useValidationsTribEnderecos() {
+
+  async function runValidation(data: ITribEnderecos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tribenderecosApi = new TribEnderecosApi(uri ?? '', token ?? '');
+
+    const result = await tribenderecosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITribEnderecos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -173,5 +184,5 @@ if (data.obs.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

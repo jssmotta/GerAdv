@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { EndTitApi, EndTitApiError } from '../Apis/ApiEndTit';
 import { FilterEndTit } from '../Filters/EndTit';
 import { IEndTit } from '../Interfaces/interface.EndTit';
+import { EndTitEmpty } from '../../Models/EndTit';
 
 export class EndTitValidator {
   static validateEndTit(endtit: IEndTit): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class EndTitService implements IEndTitService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof EndTitApiError) {
         throw error;

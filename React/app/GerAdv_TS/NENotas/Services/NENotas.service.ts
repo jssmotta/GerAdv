@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { NENotasApi, NENotasApiError } from '../Apis/ApiNENotas';
 import { FilterNENotas } from '../Filters/NENotas';
 import { INENotas } from '../Interfaces/interface.NENotas';
+import { NENotasEmpty } from '../../Models/NENotas';
 
 export class NENotasValidator {
   static validateNENotas(nenotas: INENotas): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class NENotasService implements INENotasService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof NENotasApiError) {
         throw error;

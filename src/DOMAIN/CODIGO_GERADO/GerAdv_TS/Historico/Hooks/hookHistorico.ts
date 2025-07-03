@@ -4,6 +4,7 @@ import { IHistoricoService } from '../Services/Historico.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IHistorico } from '../Interfaces/interface.Historico';
 import { isValidDate } from '@/app/tools/datetime';
+import { HistoricoApi } from '../Apis/ApiHistorico';
 
 export const useHistoricoForm = (
   initialHistorico: IHistorico,
@@ -142,6 +143,16 @@ export const useHistoricoList = (dataService: IHistoricoService) => {
 
 
 export function useValidationsHistorico() {
+
+  async function runValidation(data: IHistorico, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const historicoApi = new HistoricoApi(uri ?? '', token ?? '');
+
+    const result = await historicoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IHistorico): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,5 +175,5 @@ if (data.observacao.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

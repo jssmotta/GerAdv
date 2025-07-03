@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface ProcessOutPutIDsIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const ProcessOutPutIDsIncContainer: React.FC<ProcessOutPutIDsIncContainerProps> = ({ id, navigator }) => {
+const ProcessOutPutIDsIncContainer: React.FC<ProcessOutPutIDsIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <ProcessOutPutIDsInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

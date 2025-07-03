@@ -4,6 +4,7 @@ import { IOperadorGruposAgendaOperadoresService } from '../Services/OperadorGrup
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOperadorGruposAgendaOperadores } from '../Interfaces/interface.OperadorGruposAgendaOperadores';
 import { isValidDate } from '@/app/tools/datetime';
+import { OperadorGruposAgendaOperadoresApi } from '../Apis/ApiOperadorGruposAgendaOperadores';
 
 export const useOperadorGruposAgendaOperadoresForm = (
   initialOperadorGruposAgendaOperadores: IOperadorGruposAgendaOperadores,
@@ -142,6 +143,16 @@ export const useOperadorGruposAgendaOperadoresList = (dataService: IOperadorGrup
 
 
 export function useValidationsOperadorGruposAgendaOperadores() {
+
+  async function runValidation(data: IOperadorGruposAgendaOperadores, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const operadorgruposagendaoperadoresApi = new OperadorGruposAgendaOperadoresApi(uri ?? '', token ?? '');
+
+    const result = await operadorgruposagendaoperadoresApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOperadorGruposAgendaOperadores): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsOperadorGruposAgendaOperadores() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

@@ -4,6 +4,7 @@ import { IGruposEmpresasCliService } from '../Services/GruposEmpresasCli.service
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGruposEmpresasCli } from '../Interfaces/interface.GruposEmpresasCli';
 import { isValidDate } from '@/app/tools/datetime';
+import { GruposEmpresasCliApi } from '../Apis/ApiGruposEmpresasCli';
 
 export const useGruposEmpresasCliForm = (
   initialGruposEmpresasCli: IGruposEmpresasCli,
@@ -142,6 +143,16 @@ export const useGruposEmpresasCliList = (dataService: IGruposEmpresasCliService)
 
 
 export function useValidationsGruposEmpresasCli() {
+
+  async function runValidation(data: IGruposEmpresasCli, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gruposempresascliApi = new GruposEmpresasCliApi(uri ?? '', token ?? '');
+
+    const result = await gruposempresascliApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGruposEmpresasCli): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsGruposEmpresasCli() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

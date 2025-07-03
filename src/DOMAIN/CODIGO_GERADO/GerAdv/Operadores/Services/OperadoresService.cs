@@ -39,12 +39,12 @@ public partial class OperadoresService(IOptions<AppSettings> appSettings, IOpera
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBOperadores.SensivelCamposSqlX}, cliNome
+                   {DBOperadores.SensivelCamposSqlX}, [Clientes].[cliNome]
                    FROM {DBOperadores.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=operCliente
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Operadores].[operCliente]
  
                    {where}
-                   ORDER BY operNome
+                   ORDER BY [Operadores].[operNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OperadoresResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class OperadoresService(IOptions<AppSettings> appSettings, IOpera
             var validade = await validation.ValidateReg(regOperadores, this, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Operadores: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOperadores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OperadoresResponse?> Validation([FromBody] Models.Operadores regOperadores, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Operadores: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOperadores == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOperadores, this, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOperadores.Id.IsEmptyIDNumber())
+            {
+                return new OperadoresResponse();
+            }
+
+            return reader.Read(regOperadores.Id, oCnn);
         });
     }
 

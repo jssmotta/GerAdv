@@ -4,6 +4,7 @@ import { IAcaoService } from '../Services/Acao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAcao } from '../Interfaces/interface.Acao';
 import { isValidDate } from '@/app/tools/datetime';
+import { AcaoApi } from '../Apis/ApiAcao';
 
 export const useAcaoForm = (
   initialAcao: IAcao,
@@ -142,6 +143,16 @@ export const useAcaoList = (dataService: IAcaoService) => {
 
 
 export function useValidationsAcao() {
+
+  async function runValidation(data: IAcao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const acaoApi = new AcaoApi(uri ?? '', token ?? '');
+
+    const result = await acaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAcao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAcaoComboBox = (
   dataService: IAcaoService,
   initialValue?: any

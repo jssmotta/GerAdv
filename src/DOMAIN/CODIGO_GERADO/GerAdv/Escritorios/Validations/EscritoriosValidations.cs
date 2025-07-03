@@ -31,7 +31,7 @@ public class EscritoriosValidation : IEscritoriosValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Escritorios '{reg.Nome}' já cadastrado.";
+            return $"Escritorios '{reg.Nome}'  - Nome";
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Escritorios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         // Cidade
@@ -57,7 +57,7 @@ public class EscritoriosValidation : IEscritoriosValidation
     {
         if (reg.CNPJ.Length == 0)
             return false;
-        var existingEscritorios = (await service.Filter(new Filters.FilterEscritorios { CNPJ = reg.CNPJ }, uri)).FirstOrDefault();
+        var existingEscritorios = (await service.Filter(new Filters.FilterEscritorios { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingEscritorios != null && existingEscritorios.Id > 0 && existingEscritorios.Id != reg.Id;
     }
 }

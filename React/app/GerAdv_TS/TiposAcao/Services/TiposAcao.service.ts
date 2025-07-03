@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TiposAcaoApi, TiposAcaoApiError } from '../Apis/ApiTiposAcao';
 import { FilterTiposAcao } from '../Filters/TiposAcao';
 import { ITiposAcao } from '../Interfaces/interface.TiposAcao';
+import { TiposAcaoEmpty } from '../../Models/TiposAcao';
 
 export class TiposAcaoValidator {
   static validateTiposAcao(tiposacao: ITiposAcao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TiposAcaoService implements ITiposAcaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TiposAcaoApiError) {
         throw error;

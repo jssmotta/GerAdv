@@ -4,6 +4,7 @@ import { ITipoProDespositoService } from '../Services/TipoProDesposito.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoProDesposito } from '../Interfaces/interface.TipoProDesposito';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoProDespositoApi } from '../Apis/ApiTipoProDesposito';
 
 export const useTipoProDespositoForm = (
   initialTipoProDesposito: ITipoProDesposito,
@@ -142,6 +143,16 @@ export const useTipoProDespositoList = (dataService: ITipoProDespositoService) =
 
 
 export function useValidationsTipoProDesposito() {
+
+  async function runValidation(data: ITipoProDesposito, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipoprodespositoApi = new TipoProDespositoApi(uri ?? '', token ?? '');
+
+    const result = await tipoprodespositoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoProDesposito): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoProDespositoComboBox = (
   dataService: ITipoProDespositoService,
   initialValue?: any

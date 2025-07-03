@@ -42,7 +42,7 @@ public partial class AgendaRepetirDiasService(IOptions<AppSettings> appSettings,
                    FROM {DBAgendaRepetirDias.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY 
+                   ORDER BY [AgendaRepetirDias].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaRepetirDiasResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class AgendaRepetirDiasService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regAgendaRepetirDias, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AgendaRepetirDias: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgendaRepetirDias, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaRepetirDiasResponse?> Validation([FromBody] Models.AgendaRepetirDias regAgendaRepetirDias, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AgendaRepetirDias: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgendaRepetirDias == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgendaRepetirDias, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgendaRepetirDias.Id.IsEmptyIDNumber())
+            {
+                return new AgendaRepetirDiasResponse();
+            }
+
+            return reader.Read(regAgendaRepetirDias.Id, oCnn);
         });
     }
 

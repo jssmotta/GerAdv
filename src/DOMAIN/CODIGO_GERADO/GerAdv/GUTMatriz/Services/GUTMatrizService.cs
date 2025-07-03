@@ -38,12 +38,12 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBGUTMatriz.SensivelCamposSqlX}, gttNome
+                   {DBGUTMatriz.SensivelCamposSqlX}, [GUTTipo].[gttNome]
                    FROM {DBGUTMatriz.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"GUTTipo".dbo(oCnn)} (NOLOCK) ON gttCodigo=gutGUTTipo
+                   LEFT JOIN {"GUTTipo".dbo(oCnn)} (NOLOCK) ON [GUTTipo].[gttCodigo]=[GUTMatriz].[gutGUTTipo]
  
                    {where}
-                   ORDER BY gutDescricao
+                   ORDER BY [GUTMatriz].[gutDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GUTMatrizResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -139,11 +139,49 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
             var validade = await validation.ValidateReg(regGUTMatriz, this, guttipoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GUTMatriz: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGUTMatriz, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GUTMatrizResponse?> Validation([FromBody] Models.GUTMatriz regGUTMatriz, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GUTMatriz: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGUTMatriz == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGUTMatriz, this, guttipoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGUTMatriz.Id.IsEmptyIDNumber())
+            {
+                return new GUTMatrizResponse();
+            }
+
+            return reader.Read(regGUTMatriz.Id, oCnn);
         });
     }
 

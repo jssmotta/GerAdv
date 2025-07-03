@@ -39,12 +39,12 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBGUTPeriodicidadeStatus.SensivelCamposSqlX}, agtNome
+                   {DBGUTPeriodicidadeStatus.SensivelCamposSqlX}, [GUTAtividades].[agtNome]
                    FROM {DBGUTPeriodicidadeStatus.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"GUTAtividades".dbo(oCnn)} (NOLOCK) ON agtCodigo=pgsGUTAtividade
+                   LEFT JOIN {"GUTAtividades".dbo(oCnn)} (NOLOCK) ON [GUTAtividades].[agtCodigo]=[GUTPeriodicidadeStatus].[pgsGUTAtividade]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [GUTPeriodicidadeStatus].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GUTPeriodicidadeStatusResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
             var validade = await validation.ValidateReg(regGUTPeriodicidadeStatus, this, gutatividadesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GUTPeriodicidadeStatus: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGUTPeriodicidadeStatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GUTPeriodicidadeStatusResponse?> Validation([FromBody] Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GUTPeriodicidadeStatus: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGUTPeriodicidadeStatus == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGUTPeriodicidadeStatus, this, gutatividadesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGUTPeriodicidadeStatus.Id.IsEmptyIDNumber())
+            {
+                return new GUTPeriodicidadeStatusResponse();
+            }
+
+            return reader.Read(regGUTPeriodicidadeStatus.Id, oCnn);
         });
     }
 

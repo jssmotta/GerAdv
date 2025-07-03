@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PenhoraApi, PenhoraApiError } from '../Apis/ApiPenhora';
 import { FilterPenhora } from '../Filters/Penhora';
 import { IPenhora } from '../Interfaces/interface.Penhora';
+import { PenhoraEmpty } from '../../Models/Penhora';
 
 export class PenhoraValidator {
   static validatePenhora(penhora: IPenhora): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PenhoraService implements IPenhoraService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PenhoraApiError) {
         throw error;

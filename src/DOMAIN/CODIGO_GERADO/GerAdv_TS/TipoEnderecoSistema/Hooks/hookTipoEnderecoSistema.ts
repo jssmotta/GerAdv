@@ -4,6 +4,7 @@ import { ITipoEnderecoSistemaService } from '../Services/TipoEnderecoSistema.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoEnderecoSistema } from '../Interfaces/interface.TipoEnderecoSistema';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoEnderecoSistemaApi } from '../Apis/ApiTipoEnderecoSistema';
 
 export const useTipoEnderecoSistemaForm = (
   initialTipoEnderecoSistema: ITipoEnderecoSistema,
@@ -142,6 +143,16 @@ export const useTipoEnderecoSistemaList = (dataService: ITipoEnderecoSistemaServ
 
 
 export function useValidationsTipoEnderecoSistema() {
+
+  async function runValidation(data: ITipoEnderecoSistema, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipoenderecosistemaApi = new TipoEnderecoSistemaApi(uri ?? '', token ?? '');
+
+    const result = await tipoenderecosistemaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoEnderecoSistema): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 150) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoEnderecoSistemaComboBox = (
   dataService: ITipoEnderecoSistemaService,
   initialValue?: any

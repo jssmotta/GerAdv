@@ -2,12 +2,11 @@
 'use client';
 import { IEscritorios } from '@/app/GerAdv_TS/Escritorios/Interfaces/interface.Escritorios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -41,8 +40,8 @@ export const EscritoriosForm: React.FC<EscritoriosFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new EscritoriosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -221,7 +220,7 @@ const addValorCidade = (e: any) => {
             onChange={onChange}
             />
 
-
+          </div><div className='grid-container'>
             <InputInput
             type='text'
             maxLength={2147483647}
@@ -234,7 +233,7 @@ const addValorCidade = (e: any) => {
             onChange={onChange}
             />
 
-          </div><div className='grid-container'>
+
             <InputInput
             type='text'
             maxLength={2147483647}
@@ -326,17 +325,17 @@ const addValorCidade = (e: any) => {
             />
 
             <InputCheckbox dataForm={escritoriosData} label='Correspondente' name='correspondente' checked={escritoriosData.correspondente} onChange={onChange} />
-            <InputCheckbox dataForm={escritoriosData} label='Top' name='top' checked={escritoriosData.top} onChange={onChange} />
-          </div>
-        </form>
-
-
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Escritorios' data={escritoriosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EscritoriosForm-${escritoriosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/escritorios'} id={escritoriosData.id} closeModel={onClose} dadoApi={dadoApi} />
+          </div><div className='grid-container'><InputCheckbox dataForm={escritoriosData} label='Top' name='top' checked={escritoriosData.top} onChange={onChange} />
         </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Escritorios' data={escritoriosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EscritoriosForm-${escritoriosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/escritorios'} id={escritoriosData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

@@ -4,6 +4,7 @@ import { IEnderecosService } from '../Services/Enderecos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEnderecos } from '../Interfaces/interface.Enderecos';
 import { isValidDate } from '@/app/tools/datetime';
+import { EnderecosApi } from '../Apis/ApiEnderecos';
 
 export const useEnderecosForm = (
   initialEnderecos: IEnderecos,
@@ -142,6 +143,16 @@ export const useEnderecosList = (dataService: IEnderecosService) => {
 
 
 export function useValidationsEnderecos() {
+
+  async function runValidation(data: IEnderecos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const enderecosApi = new EnderecosApi(uri ?? '', token ?? '');
+
+    const result = await enderecosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEnderecos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -200,7 +211,7 @@ if (data.quemindicou.length > 150) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useEnderecosComboBox = (
   dataService: IEnderecosService,
   initialValue?: any

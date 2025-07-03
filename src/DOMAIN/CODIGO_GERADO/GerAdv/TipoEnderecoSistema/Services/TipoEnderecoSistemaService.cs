@@ -43,7 +43,7 @@ public partial class TipoEnderecoSistemaService(IOptions<AppSettings> appSetting
                    FROM {DBTipoEnderecoSistema.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tesNome
+                   ORDER BY [TipoEnderecoSistema].[tesNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoEnderecoSistemaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class TipoEnderecoSistemaService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regTipoEnderecoSistema, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoEnderecoSistema: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoEnderecoSistema, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoEnderecoSistemaResponse?> Validation([FromBody] Models.TipoEnderecoSistema regTipoEnderecoSistema, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoEnderecoSistema: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoEnderecoSistema == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoEnderecoSistema, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoEnderecoSistema.Id.IsEmptyIDNumber())
+            {
+                return new TipoEnderecoSistemaResponse();
+            }
+
+            return reader.Read(regTipoEnderecoSistema.Id, oCnn);
         });
     }
 

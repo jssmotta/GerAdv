@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { Apenso2Api, Apenso2ApiError } from '../Apis/ApiApenso2';
 import { FilterApenso2 } from '../Filters/Apenso2';
 import { IApenso2 } from '../Interfaces/interface.Apenso2';
+import { Apenso2Empty } from '../../Models/Apenso2';
 
 export class Apenso2Validator {
   static validateApenso2(apenso2: IApenso2): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class Apenso2Service implements IApenso2Service {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof Apenso2ApiError) {
         throw error;

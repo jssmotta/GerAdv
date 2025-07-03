@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProCDAIncContainer from '@/app/GerAdv_TS/ProCDA/Components/ProCDAIncContainer';
+// ProCDAIncContainer.test.tsx
+// Mock do ProCDAInc
+jest.mock('@/app/GerAdv_TS/ProCDA/Crud/Inc/ProCDA', () => (props: any) => (
+<div data-testid='procda-inc-mock' {...props} />
+));
+describe('ProCDAIncContainer', () => {
+  it('deve renderizar ProCDAInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProCDAIncContainer id={id} navigator={mockNavigator} />
+  );
+  const procdaInc = getByTestId('procda-inc-mock');
+  expect(procdaInc).toBeInTheDocument();
+  expect(procdaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

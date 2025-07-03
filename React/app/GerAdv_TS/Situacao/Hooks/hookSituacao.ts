@@ -4,6 +4,7 @@ import { ISituacaoService } from '../Services/Situacao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ISituacao } from '../Interfaces/interface.Situacao';
 import { isValidDate } from '@/app/tools/datetime';
+import { SituacaoApi } from '../Apis/ApiSituacao';
 
 export const useSituacaoForm = (
   initialSituacao: ISituacao,
@@ -142,6 +143,16 @@ export const useSituacaoList = (dataService: ISituacaoService) => {
 
 
 export function useValidationsSituacao() {
+
+  async function runValidation(data: ISituacao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const situacaoApi = new SituacaoApi(uri ?? '', token ?? '');
+
+    const result = await situacaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ISituacao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,5 +175,5 @@ if (data.parte_opo.length > 30) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

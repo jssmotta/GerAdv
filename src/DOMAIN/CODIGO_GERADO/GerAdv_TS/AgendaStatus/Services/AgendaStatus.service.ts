@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AgendaStatusApi, AgendaStatusApiError } from '../Apis/ApiAgendaStatus';
 import { FilterAgendaStatus } from '../Filters/AgendaStatus';
 import { IAgendaStatus } from '../Interfaces/interface.AgendaStatus';
+import { AgendaStatusEmpty } from '../../Models/AgendaStatus';
 
 export class AgendaStatusValidator {
   static validateAgendaStatus(agendastatus: IAgendaStatus): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AgendaStatusService implements IAgendaStatusService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AgendaStatusApiError) {
         throw error;

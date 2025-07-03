@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { StatusAndamentoApi, StatusAndamentoApiError } from '../Apis/ApiStatusAndamento';
 import { FilterStatusAndamento } from '../Filters/StatusAndamento';
 import { IStatusAndamento } from '../Interfaces/interface.StatusAndamento';
+import { StatusAndamentoEmpty } from '../../Models/StatusAndamento';
 
 export class StatusAndamentoValidator {
   static validateStatusAndamento(statusandamento: IStatusAndamento): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class StatusAndamentoService implements IStatusAndamentoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof StatusAndamentoApiError) {
         throw error;

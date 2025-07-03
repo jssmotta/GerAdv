@@ -43,7 +43,7 @@ public partial class BensClassificacaoService(IOptions<AppSettings> appSettings,
                    FROM {DBBensClassificacao.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY bcsNome
+                   ORDER BY [BensClassificacao].[bcsNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<BensClassificacaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class BensClassificacaoService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regBensClassificacao, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"BensClassificacao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regBensClassificacao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<BensClassificacaoResponse?> Validation([FromBody] Models.BensClassificacao regBensClassificacao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("BensClassificacao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regBensClassificacao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regBensClassificacao, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regBensClassificacao.Id.IsEmptyIDNumber())
+            {
+                return new BensClassificacaoResponse();
+            }
+
+            return reader.Read(regBensClassificacao.Id, oCnn);
         });
     }
 

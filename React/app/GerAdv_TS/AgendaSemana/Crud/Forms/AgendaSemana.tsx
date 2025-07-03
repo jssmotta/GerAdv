@@ -1,0 +1,355 @@
+﻿// Tracking: Forms.tsx.txt
+'use client';
+import { IAgendaSemana } from '@/app/GerAdv_TS/AgendaSemana/Interfaces/interface.AgendaSemana';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, useRef } from 'react';
+import { useSystemContext } from '@/app/context/SystemContext';
+import { getParamFromUrl } from '@/app/tools/helpers';
+import '@/app/styles/CrudFormsBase.css';
+import '@/app/styles/CrudFormsMobile.css';
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
+import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
+import { useIsMobile } from '@/app/context/MobileContext';
+import DeleteButton from '@/app/components/Cruds/DeleteButton';
+import { AgendaSemanaApi } from '../../Apis/ApiAgendaSemana';
+import { useValidationsAgendaSemana } from '../../Hooks/hookAgendaSemana';
+import FuncionariosComboBox from '@/app/GerAdv_TS/Funcionarios/ComboBox/Funcionarios';
+import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
+import TipoCompromissoComboBox from '@/app/GerAdv_TS/TipoCompromisso/ComboBox/TipoCompromisso';
+import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
+import { FuncionariosApi } from '@/app/GerAdv_TS/Funcionarios/Apis/ApiFuncionarios';
+import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
+import { TipoCompromissoApi } from '@/app/GerAdv_TS/TipoCompromisso/Apis/ApiTipoCompromisso';
+import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
+import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
+interface AgendaSemanaFormProps {
+  agendasemanaData: IAgendaSemana;
+  onChange: (e: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onError?: () => void;
+  onReload?: () => void;
+  onSuccess?: (registro?: any) => void;
+}
+
+export const AgendaSemanaForm: React.FC<AgendaSemanaFormProps> = ({
+  agendasemanaData, 
+  onChange, 
+  onSubmit, 
+  onClose, 
+  onError, 
+  onReload, 
+  onSuccess, 
+}) => {
+const router = useRouter();
+const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
+const dadoApi = new AgendaSemanaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [isSubmitting, setIsSubmitting] = useState(false);
+const initialized = useRef(false);
+const validationForm = useValidationsAgendaSemana();
+const [nomeFuncionarios, setNomeFuncionarios] = useState('');
+const funcionariosApi = new FuncionariosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeAdvogados, setNomeAdvogados] = useState('');
+const advogadosApi = new AdvogadosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeTipoCompromisso, setNomeTipoCompromisso] = useState('');
+const tipocompromissoApi = new TipoCompromissoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+const [nomeClientes, setNomeClientes] = useState('');
+const clientesApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
+
+if (getParamFromUrl('funcionarios') > 0) {
+  if (agendasemanaData.id === 0 && agendasemanaData.funcionario == 0) {
+    funcionariosApi
+    .getById(getParamFromUrl('funcionarios'))
+    .then((response) => {
+      setNomeFuncionarios(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    agendasemanaData.funcionario = getParamFromUrl('funcionarios');
+  }
+}
+
+if (getParamFromUrl('advogados') > 0) {
+  if (agendasemanaData.id === 0 && agendasemanaData.advogado == 0) {
+    advogadosApi
+    .getById(getParamFromUrl('advogados'))
+    .then((response) => {
+      setNomeAdvogados(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    agendasemanaData.advogado = getParamFromUrl('advogados');
+  }
+}
+
+if (getParamFromUrl('tipocompromisso') > 0) {
+  if (agendasemanaData.id === 0 && agendasemanaData.tipocompromisso == 0) {
+    tipocompromissoApi
+    .getById(getParamFromUrl('tipocompromisso'))
+    .then((response) => {
+      setNomeTipoCompromisso(response.data.descricao);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    agendasemanaData.tipocompromisso = getParamFromUrl('tipocompromisso');
+  }
+}
+
+if (getParamFromUrl('clientes') > 0) {
+  if (agendasemanaData.id === 0 && agendasemanaData.cliente == 0) {
+    clientesApi
+    .getById(getParamFromUrl('clientes'))
+    .then((response) => {
+      setNomeClientes(response.data.nome);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    agendasemanaData.cliente = getParamFromUrl('clientes');
+  }
+}
+const addValorFuncionario = (e: any) => {
+  if (e?.id>0)
+    agendasemanaData.funcionario = e.id;
+  };
+  const addValorAdvogado = (e: any) => {
+    if (e?.id>0)
+      agendasemanaData.advogado = e.id;
+    };
+    const addValorTipoCompromisso = (e: any) => {
+      if (e?.id>0)
+        agendasemanaData.tipocompromisso = e.id;
+      };
+      const addValorCliente = (e: any) => {
+        if (e?.id>0)
+          agendasemanaData.cliente = e.id;
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
+
+            if (!isSubmitting) {
+              setIsSubmitting(true);
+
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.error('Erro ao submeter formulário de AgendaSemana:', error);
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
+          }
+        };
+
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
+
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`AgendaSemanaForm-${agendasemanaData.id}`)
+              } as unknown as React.FormEvent;
+
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            console.error('Erro ao salvar AgendaSemana diretamente:', error);
+            setIsSubmitting(false);
+            if (onError) onError();
+            }
+          }
+        };
+        useEffect(() => {
+          const el = document.querySelector('.nameFormMobile');
+          if (el) {
+            el.textContent = agendasemanaData?.id == 0 ? 'Editar AgendaSemana' : 'Adicionar Agenda Semana';
+          }
+        }, [agendasemanaData.id]);
+        return (
+        <>
+        <style>
+          {!isMobile ? `
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            ` : ``}
+          </style>
+
+          <div className={isMobile ? 'form-container form-container-AgendaSemana' : 'form-container form-container-AgendaSemana'}>
+
+            <form className='formInputCadInc' id={`AgendaSemanaForm-${agendasemanaData.id}`} onSubmit={onConfirm}>
+              {!isMobile && (
+                <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AgendaSemana' data={agendasemanaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaSemanaForm-${agendasemanaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                )}
+                <div className='grid-container'>
+
+                  <InputName
+                  type='text'
+                  id='paranome'
+                  label='ParaNome'
+                  dataForm={agendasemanaData}
+                  className='inputIncNome'
+                  name='paranome'
+                  value={agendasemanaData.paranome}
+                  placeholder={`Informe ParaNome`}
+                  onChange={onChange}
+                  required
+                  />
+
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='data'
+                  label='Data'
+                  dataForm={agendasemanaData}
+                  className='inputIncNome'
+                  name='data'
+                  value={agendasemanaData.data}
+                  onChange={onChange}
+                  />
+
+
+                  <FuncionariosComboBox
+                  name={'funcionario'}
+                  dataForm={agendasemanaData}
+                  value={agendasemanaData.funcionario}
+                  setValue={addValorFuncionario}
+                  label={'Colaborador'}
+                  />
+
+                  <AdvogadosComboBox
+                  name={'advogado'}
+                  dataForm={agendasemanaData}
+                  value={agendasemanaData.advogado}
+                  setValue={addValorAdvogado}
+                  label={'Advogados'}
+                  />
+
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='hora'
+                  label='Hora'
+                  dataForm={agendasemanaData}
+                  className='inputIncNome'
+                  name='hora'
+                  value={agendasemanaData.hora}
+                  onChange={onChange}
+                  />
+
+
+                  <TipoCompromissoComboBox
+                  name={'tipocompromisso'}
+                  dataForm={agendasemanaData}
+                  value={agendasemanaData.tipocompromisso}
+                  setValue={addValorTipoCompromisso}
+                  label={'Tipo Compromisso'}
+                  />
+
+                  <InputInput
+                  type='text'
+                  maxLength={2147483647}
+                  id='compromisso'
+                  label='Compromisso'
+                  dataForm={agendasemanaData}
+                  className='inputIncNome'
+                  name='compromisso'
+                  value={agendasemanaData.compromisso}
+                  onChange={onChange}
+                  />
+
+                  <InputCheckbox dataForm={agendasemanaData} label='Concluido' name='concluido' checked={agendasemanaData.concluido} onChange={onChange} />
+                  <InputCheckbox dataForm={agendasemanaData} label='Liberado' name='liberado' checked={agendasemanaData.liberado} onChange={onChange} />
+                </div><div className='grid-container'><InputCheckbox dataForm={agendasemanaData} label='Importante' name='importante' checked={agendasemanaData.importante} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='horafinal'
+                label='HoraFinal'
+                dataForm={agendasemanaData}
+                className='inputIncNome'
+                name='horafinal'
+                value={agendasemanaData.horafinal}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='nome'
+                label='Nome'
+                dataForm={agendasemanaData}
+                className='inputIncNome'
+                name='nome'
+                value={agendasemanaData.nome}
+                onChange={onChange}
+                />
+
+
+                <ClientesComboBox
+                name={'cliente'}
+                dataForm={agendasemanaData}
+                value={agendasemanaData.cliente}
+                setValue={addValorCliente}
+                label={'Clientes'}
+                />
+
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='nomecliente'
+                label='NomeCliente'
+                dataForm={agendasemanaData}
+                className='inputIncNome'
+                name='nomecliente'
+                value={agendasemanaData.nomecliente}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='tipo'
+                label='Tipo'
+                dataForm={agendasemanaData}
+                className='inputIncNome'
+                name='tipo'
+                value={agendasemanaData.tipo}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaSemana' data={agendasemanaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaSemanaForm-${agendasemanaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/agendasemana'} id={agendasemanaData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

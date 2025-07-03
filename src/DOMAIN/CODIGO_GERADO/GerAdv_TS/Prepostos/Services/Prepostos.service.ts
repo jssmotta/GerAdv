@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PrepostosApi, PrepostosApiError } from '../Apis/ApiPrepostos';
 import { FilterPrepostos } from '../Filters/Prepostos';
 import { IPrepostos } from '../Interfaces/interface.Prepostos';
+import { PrepostosEmpty } from '../../Models/Prepostos';
 
 export class PrepostosValidator {
   static validatePrepostos(prepostos: IPrepostos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PrepostosService implements IPrepostosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PrepostosApiError) {
         throw error;

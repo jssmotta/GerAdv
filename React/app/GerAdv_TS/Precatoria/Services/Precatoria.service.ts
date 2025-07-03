@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PrecatoriaApi, PrecatoriaApiError } from '../Apis/ApiPrecatoria';
 import { FilterPrecatoria } from '../Filters/Precatoria';
 import { IPrecatoria } from '../Interfaces/interface.Precatoria';
+import { PrecatoriaEmpty } from '../../Models/Precatoria';
 
 export class PrecatoriaValidator {
   static validatePrecatoria(precatoria: IPrecatoria): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PrecatoriaService implements IPrecatoriaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PrecatoriaApiError) {
         throw error;

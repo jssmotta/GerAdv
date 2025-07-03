@@ -43,7 +43,7 @@ public partial class ServicosService(IOptions<AppSettings> appSettings, IServico
                    FROM {DBServicos.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY serDescricao
+                   ORDER BY [Servicos].[serDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ServicosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class ServicosService(IOptions<AppSettings> appSettings, IServico
             var validade = await validation.ValidateReg(regServicos, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Servicos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regServicos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ServicosResponse?> Validation([FromBody] Models.Servicos regServicos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Servicos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regServicos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regServicos, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regServicos.Id.IsEmptyIDNumber())
+            {
+                return new ServicosResponse();
+            }
+
+            return reader.Read(regServicos.Id, oCnn);
         });
     }
 

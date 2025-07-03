@@ -38,15 +38,15 @@ public partial class AgendaRecordsService(IOptions<AppSettings> appSettings, IAg
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAgendaRecords.SensivelCamposSqlX}, cscNome,colNome,forNome
+                   {DBAgendaRecords.SensivelCamposSqlX}, [Agenda].[],[ClientesSocios].[cscNome],[Colaboradores].[colNome],[Foro].[forNome]
                    FROM {DBAgendaRecords.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=ragAgenda
-LEFT JOIN {"ClientesSocios".dbo(oCnn)} (NOLOCK) ON cscCodigo=ragClientesSocios
-LEFT JOIN {"Colaboradores".dbo(oCnn)} (NOLOCK) ON colCodigo=ragColaborador
-LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=ragForo
+                   LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON [Agenda].[ageCodigo]=[AgendaRecords].[ragAgenda]
+LEFT JOIN {"ClientesSocios".dbo(oCnn)} (NOLOCK) ON [ClientesSocios].[cscCodigo]=[AgendaRecords].[ragClientesSocios]
+LEFT JOIN {"Colaboradores".dbo(oCnn)} (NOLOCK) ON [Colaboradores].[colCodigo]=[AgendaRecords].[ragColaborador]
+LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON [Foro].[forCodigo]=[AgendaRecords].[ragForo]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AgendaRecords].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaRecordsResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=ragForo
             var validade = await validation.ValidateReg(regAgendaRecords, this, agendaReader, clientessociosReader, colaboradoresReader, foroReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AgendaRecords: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgendaRecords, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaRecordsResponse?> Validation([FromBody] Models.AgendaRecords regAgendaRecords, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AgendaRecords: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgendaRecords == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgendaRecords, this, agendaReader, clientessociosReader, colaboradoresReader, foroReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgendaRecords.Id.IsEmptyIDNumber())
+            {
+                return new AgendaRecordsResponse();
+            }
+
+            return reader.Read(regAgendaRecords.Id, oCnn);
         });
     }
 

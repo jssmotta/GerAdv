@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import UFIncContainer from '@/app/GerAdv_TS/UF/Components/UFIncContainer';
+// UFIncContainer.test.tsx
+// Mock do UFInc
+jest.mock('@/app/GerAdv_TS/UF/Crud/Inc/UF', () => (props: any) => (
+<div data-testid='uf-inc-mock' {...props} />
+));
+describe('UFIncContainer', () => {
+  it('deve renderizar UFInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <UFIncContainer id={id} navigator={mockNavigator} />
+  );
+  const ufInc = getByTestId('uf-inc-mock');
+  expect(ufInc).toBeInTheDocument();
+  expect(ufInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

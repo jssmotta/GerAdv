@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AgendaRepetirDiasApi, AgendaRepetirDiasApiError } from '../Apis/ApiAgendaRepetirDias';
 import { FilterAgendaRepetirDias } from '../Filters/AgendaRepetirDias';
 import { IAgendaRepetirDias } from '../Interfaces/interface.AgendaRepetirDias';
+import { AgendaRepetirDiasEmpty } from '../../Models/AgendaRepetirDias';
 
 export class AgendaRepetirDiasValidator {
   static validateAgendaRepetirDias(agendarepetirdias: IAgendaRepetirDias): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AgendaRepetirDiasService implements IAgendaRepetirDiasService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AgendaRepetirDiasApiError) {
         throw error;

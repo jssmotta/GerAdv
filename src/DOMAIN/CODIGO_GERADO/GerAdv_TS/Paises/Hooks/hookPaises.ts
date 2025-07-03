@@ -4,6 +4,7 @@ import { IPaisesService } from '../Services/Paises.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPaises } from '../Interfaces/interface.Paises';
 import { isValidDate } from '@/app/tools/datetime';
+import { PaisesApi } from '../Apis/ApiPaises';
 
 export const usePaisesForm = (
   initialPaises: IPaises,
@@ -142,6 +143,16 @@ export const usePaisesList = (dataService: IPaisesService) => {
 
 
 export function useValidationsPaises() {
+
+  async function runValidation(data: IPaises, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const paisesApi = new PaisesApi(uri ?? '', token ?? '');
+
+    const result = await paisesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPaises): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const usePaisesComboBox = (
   dataService: IPaisesService,
   initialValue?: any

@@ -4,6 +4,7 @@ import { IStatusAndamentoService } from '../Services/StatusAndamento.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IStatusAndamento } from '../Interfaces/interface.StatusAndamento';
 import { isValidDate } from '@/app/tools/datetime';
+import { StatusAndamentoApi } from '../Apis/ApiStatusAndamento';
 
 export const useStatusAndamentoForm = (
   initialStatusAndamento: IStatusAndamento,
@@ -142,6 +143,16 @@ export const useStatusAndamentoList = (dataService: IStatusAndamentoService) => 
 
 
 export function useValidationsStatusAndamento() {
+
+  async function runValidation(data: IStatusAndamento, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const statusandamentoApi = new StatusAndamentoApi(uri ?? '', token ?? '');
+
+    const result = await statusandamentoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IStatusAndamento): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useStatusAndamentoComboBox = (
   dataService: IStatusAndamentoService,
   initialValue?: any

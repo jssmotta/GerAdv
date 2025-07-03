@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { CidadeApi, CidadeApiError } from '../Apis/ApiCidade';
 import { FilterCidade } from '../Filters/Cidade';
 import { ICidade } from '../Interfaces/interface.Cidade';
+import { CidadeEmpty } from '../../Models/Cidade';
 
 export class CidadeValidator {
   static validateCidade(cidade: ICidade): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class CidadeService implements ICidadeService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof CidadeApiError) {
         throw error;

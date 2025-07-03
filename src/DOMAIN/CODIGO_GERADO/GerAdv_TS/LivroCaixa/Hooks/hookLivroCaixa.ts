@@ -4,6 +4,7 @@ import { ILivroCaixaService } from '../Services/LivroCaixa.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ILivroCaixa } from '../Interfaces/interface.LivroCaixa';
 import { isValidDate } from '@/app/tools/datetime';
+import { LivroCaixaApi } from '../Apis/ApiLivroCaixa';
 
 export const useLivroCaixaForm = (
   initialLivroCaixa: ILivroCaixa,
@@ -142,6 +143,16 @@ export const useLivroCaixaList = (dataService: ILivroCaixaService) => {
 
 
 export function useValidationsLivroCaixa() {
+
+  async function runValidation(data: ILivroCaixa, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const livrocaixaApi = new LivroCaixaApi(uri ?? '', token ?? '');
+
+    const result = await livrocaixaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ILivroCaixa): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsLivroCaixa() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

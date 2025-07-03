@@ -1,0 +1,266 @@
+﻿// app/TestsForms/EMPClassRiscosComboBox.test.tsx - Vers�o Corrigida
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import EMPClassRiscosComboBox from '@/app/GerAdv_TS/EMPClassRiscos/ComboBox/EMPClassRiscos';
+import { setupSystemContextMock } from '@/__tests__/testeHelpers';
+// Mock do SystemContext
+jest.mock('@/app/context/SystemContext', () => ({
+  useSystemContext: jest.fn(), 
+}));
+
+import { EMPClassRiscosEmpty, EMPClassRiscosTestEmpty } from '@/app/GerAdv_TS/Models/EMPClassRiscos';
+// Mock do hook antes dos imports
+jest.mock('@/app/GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos', () => ({
+  useEMPClassRiscosComboBox: jest.fn(() => ({
+    options: [
+    { ...EMPClassRiscosEmpty(), id: 1, nome: 'E M P Class Riscos 1' },
+    { ...EMPClassRiscosEmpty(), id: 2, nome: 'E M P Class Riscos 2' },
+    ], 
+    loading: false, 
+    selectedValue: null, 
+    handleFilter: jest.fn(), 
+    handleValueChange: jest.fn(), 
+    clearValue: jest.fn(), 
+  })), 
+}));
+// Mock da API e Service
+jest.mock('@/app/GerAdv_TS/EMPClassRiscos/Apis/ApiEMPClassRiscos', () => ({
+  EMPClassRiscosApi: jest.fn().mockImplementation(() => ({
+    getById: jest.fn().mockResolvedValue({ id: 1, nome: 'Mock EMPClassRiscos' }),
+    getAll: jest.fn().mockResolvedValue([]), 
+    filter: jest.fn().mockResolvedValue([]), 
+    addAndUpdate: jest.fn().mockResolvedValue({ id: 1, nome: 'Mock EMPClassRiscos' }),
+    delete: jest.fn().mockResolvedValue(true), 
+  })), 
+}));
+jest.mock('@/app/GerAdv_TS/EMPClassRiscos/Services/EMPClassRiscos.service', () => ({
+  EMPClassRiscosService: jest.fn().mockImplementation(() => ({
+    fetchEMPClassRiscosById: jest.fn().mockResolvedValue({ id: 1, nome: 'Mock EMPClassRiscos' }),
+    getList: jest.fn().mockResolvedValue([]), 
+  })), 
+}));
+// Mock do Window
+jest.mock('@/app/GerAdv_TS/EMPClassRiscos/Crud/Grids/EMPClassRiscosWindow', () => {
+  return function MockEMPClassRiscosWindow(props: any) {
+    return props.isOpen ? (
+    <div data-testid='empclassriscos-window'>
+      <button onClick={() => props.onClose()}>Close</button>
+        <button onClick={() => props.onSuccess({ id: 1, nome: 'New Item' })}>Success</button>
+        </div>
+        ) : null;
+      };
+    });
+    jest.mock('@/app/tools/crud', () => ({
+      ActionAdicionar: 'Adicionar',
+      ActionEditar: 'Editar',
+    }));
+    // Mock do Kendo UI ComboBox
+    jest.mock('@progress/kendo-react-dropdowns', () => ({
+      ComboBox: jest.fn((props: any) => (
+      <select
+      role='combobox'
+      value={props.value?.id || ''}
+      onChange={(e) => {
+        const selectedId = parseInt(e.target.value);
+        const selectedItem = props.data?.find((item: any) => item.id === selectedId);
+        if (selectedItem) {
+          props.onChange({ target: { value: selectedItem } });
+        } else if (e.target.value === '') {
+        props.onChange({ target: { value: null } });
+      }
+    }}
+    data-testid='combo-box'
+  >
+  <option value=''>Select {props.textField === 'nome' ? 'E M P Class Riscos' : 'Item'}</option>
+    {props.data?.map((item: any) => (
+      <option key={item.id} value={item.id}>
+        {item.nome}
+      </option>
+      ))}
+    </select>
+    )), 
+  }));
+  // Mock dos �cones Kendo
+  jest.mock('@progress/kendo-svg-icons', () => ({
+    pencilIcon: 'pencil-icon',
+    plusIcon: 'plus-icon',
+    xIcon: 'x-icon',
+  }));
+  jest.mock('@progress/kendo-react-common', () => ({
+    SvgIcon: jest.fn(({ icon }) => <span data-testid={`svg-icon-${icon}`}>{icon}</span>),
+  }));
+  // Dados mock para os testes
+  const mockOptions = [
+  { ...EMPClassRiscosTestEmpty(), id: 1, nome: 'E M P Class Riscos 1' },
+  { ...EMPClassRiscosTestEmpty(), id: 2, nome: 'E M P Class Riscos 2' },
+];
+// Props padr�o para o componente
+const defaultProps = {
+  label: 'E M P Class Riscos',
+  name: 'empclassriscos',
+  value: 0, 
+  setValue: jest.fn(), 
+  dataForm: EMPClassRiscosEmpty(), 
+};
+describe('EMPClassRiscosComboBox', () => {
+  // Configurar o mock do SystemContext
+  const { useSystemContext } = require('@/app/context/SystemContext');
+  (useSystemContext as jest.Mock).mockReturnValue({
+    Uri: 'test-uri',
+    Token: 'test-token'
+  });
+
+  // Configurar o mock do SystemContext
+  setupSystemContextMock({
+    systemContext: { Uri: 'test-uri', Token: 'test-token' }
+  });
+  // Reset dos mocks do hook
+  const { useEMPClassRiscosComboBox } = require('@/app/GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos');
+  (useEMPClassRiscosComboBox as jest.Mock).mockReturnValue({
+    options: mockOptions, 
+    loading: false, 
+    selectedValue: null, 
+    handleFilter: jest.fn(), 
+    handleValueChange: jest.fn(), 
+    clearValue: jest.fn(), 
+  });
+  it('renders label and ComboBox', () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    // Verificar se o label � renderizado
+    expect(screen.getByText('E M P Class Riscos')).toBeInTheDocument();
+    // Verificar se o combobox � renderizado
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeInTheDocument();
+    // Verificar se a op��o padr�o est� presente
+    expect(screen.getByText('Select E M P Class Riscos')).toBeInTheDocument();
+  });
+  it('calls setValue on ComboBox change', () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+
+    fireEvent.change(combobox, { target: { value: '1' } });
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...EMPClassRiscosTestEmpty(), id: 1, nome: 'E M P Class Riscos 1' });
+  });
+  it('shows loading state', () => {
+    // Mock loading state
+    const { useEMPClassRiscosComboBox } = require('@/app/GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos');
+    useEMPClassRiscosComboBox.mockReturnValue({
+      options: [], 
+      loading: true, 
+      selectedValue: null, 
+      handleFilter: jest.fn(), 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+  });
+  it('opens EMPClassRiscosWindow on action button click (add)', async () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    // Procurar pelo bot�o de adicionar usando o �cone
+    const addButton = screen.getByTestId('svg-icon-plus-icon');
+    expect(addButton).toBeInTheDocument();
+    fireEvent.click(addButton.closest('label')!);
+    // Verificar se a janela abriu
+    await waitFor(() => {
+      expect(screen.getByTestId('empclassriscos-window')).toBeInTheDocument();
+    });
+  });
+
+  it('handles window close', async () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    // Abrir a janela
+    const addButton = screen.getByTestId('svg-icon-plus-icon');
+    fireEvent.click(addButton.closest('label')!);
+    // Verificar se a janela est� aberta
+    expect(screen.getByTestId('empclassriscos-window')).toBeInTheDocument();
+    // Fechar a janela
+    const closeButton = screen.getByText('Close');
+    fireEvent.click(closeButton);
+    // Verificar se a janela foi fechada
+    await waitFor(() => {
+      expect(screen.queryByTestId('empclassriscos-window')).not.toBeInTheDocument();
+    });
+  });
+  it('renders with empty options when loading is false and no options', () => {
+    (useEMPClassRiscosComboBox as jest.Mock).mockReturnValue({
+      options: [], 
+      loading: false, 
+      selectedValue: null, 
+      handleFilter: jest.fn(), 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeInTheDocument();
+  });
+  it('calls setValue with null when empty option is selected', () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+
+    fireEvent.change(combobox, { target: { value: '' } });
+    expect(defaultProps.setValue).toHaveBeenCalledWith(null);
+  });
+
+  it('handles invalid value gracefully', () => {
+    const propsWithInvalidValue = {
+      ...defaultProps, 
+      value: null
+    };
+    render(<EMPClassRiscosComboBox {...propsWithInvalidValue} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveValue('');
+  });
+  it('handles EMPClassRiscosWindow onClose and onSuccess', () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    // Abrir a janela
+    const addButton = screen.getByTestId('svg-icon-plus-icon');
+    fireEvent.click(addButton.closest('label')!);
+    // Testar onSuccess
+    const successButton = screen.getByText('Success');
+    fireEvent.click(successButton);
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ id: 1, nome: 'New Item' });
+  });
+  it('handles edit mode when value is provided', () => {
+    const propsWithValue = {
+      ...defaultProps, 
+      value: { id: 1, nome: 'Existing Item' }
+    };
+    // Mock com selectedValue
+    const { useEMPClassRiscosComboBox } = require('@/app/GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos');
+    useEMPClassRiscosComboBox.mockReturnValue({
+      options: mockOptions, 
+      loading: false, 
+      selectedValue: { id: 1, nome: 'Existing Item' },
+      handleFilter: jest.fn(), 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<EMPClassRiscosComboBox {...propsWithValue} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toHaveValue('1');
+  });
+  it('handles string input for new items', () => {
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+  });
+  it('handles filter changes', () => {
+    const mockHandleFilter = jest.fn();
+    const { useEMPClassRiscosComboBox } = require('@/app/GerAdv_TS/EMPClassRiscos/Hooks/hookEMPClassRiscos');
+    useEMPClassRiscosComboBox.mockReturnValue({
+      options: mockOptions, 
+      loading: false, 
+      selectedValue: null, 
+      handleFilter: mockHandleFilter, 
+      handleValueChange: jest.fn(), 
+      clearValue: jest.fn(), 
+    });
+    render(<EMPClassRiscosComboBox {...defaultProps} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeInTheDocument();
+
+    // O teste de filtro dependeria da implementa��o do ComboBox do Kendo
+    // que � complexa de mockar completamente
+  });
+});

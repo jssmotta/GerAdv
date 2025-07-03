@@ -27,8 +27,19 @@ public class PreClientesValidation : IPreClientesValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Pre Clientes' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Pre Clientes ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Pre Clientes com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Pre Clientes com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         // Clientes
@@ -58,15 +69,15 @@ public class PreClientesValidation : IPreClientesValidation
     {
         if (reg.CNPJ.Length == 0)
             return false;
-        var existingPreClientes = (await service.Filter(new Filters.FilterPreClientes { CNPJ = reg.CNPJ }, uri)).FirstOrDefault();
+        var existingPreClientes = (await service.Filter(new Filters.FilterPreClientes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingPreClientes != null && existingPreClientes.Id > 0 && existingPreClientes.Id != reg.Id;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.PreClientes reg, IPreClientesService service, string uri)
+    private async Task<(bool, PreClientesResponseAll? )> IsCpfDuplicado(Models.PreClientes reg, IPreClientesService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingPreClientes = (await service.Filter(new Filters.FilterPreClientes { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingPreClientes != null && existingPreClientes.Id > 0 && existingPreClientes.Id != reg.Id;
+            return (false, null);
+        var existingPreClientes = (await service.Filter(new Filters.FilterPreClientes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingPreClientes != null && existingPreClientes.Id > 0 && existingPreClientes.Id != reg.Id, existingPreClientes);
     }
 }

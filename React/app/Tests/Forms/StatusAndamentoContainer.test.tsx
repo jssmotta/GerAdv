@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import StatusAndamentoIncContainer from '@/app/GerAdv_TS/StatusAndamento/Components/StatusAndamentoIncContainer';
+// StatusAndamentoIncContainer.test.tsx
+// Mock do StatusAndamentoInc
+jest.mock('@/app/GerAdv_TS/StatusAndamento/Crud/Inc/StatusAndamento', () => (props: any) => (
+<div data-testid='statusandamento-inc-mock' {...props} />
+));
+describe('StatusAndamentoIncContainer', () => {
+  it('deve renderizar StatusAndamentoInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <StatusAndamentoIncContainer id={id} navigator={mockNavigator} />
+  );
+  const statusandamentoInc = getByTestId('statusandamento-inc-mock');
+  expect(statusandamentoInc).toBeInTheDocument();
+  expect(statusandamentoInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

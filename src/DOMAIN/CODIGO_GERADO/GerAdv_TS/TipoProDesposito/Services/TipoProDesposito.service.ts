@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoProDespositoApi, TipoProDespositoApiError } from '../Apis/ApiTipoProDesposito';
 import { FilterTipoProDesposito } from '../Filters/TipoProDesposito';
 import { ITipoProDesposito } from '../Interfaces/interface.TipoProDesposito';
+import { TipoProDespositoEmpty } from '../../Models/TipoProDesposito';
 
 export class TipoProDespositoValidator {
   static validateTipoProDesposito(tipoprodesposito: ITipoProDesposito): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoProDespositoService implements ITipoProDespositoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoProDespositoApiError) {
         throw error;

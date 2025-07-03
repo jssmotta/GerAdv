@@ -42,7 +42,7 @@ public partial class TipoValorProcessoService(IOptions<AppSettings> appSettings,
                    FROM {DBTipoValorProcesso.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY ptvDescricao
+                   ORDER BY [TipoValorProcesso].[ptvDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoValorProcessoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class TipoValorProcessoService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regTipoValorProcesso, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoValorProcesso: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoValorProcesso, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoValorProcessoResponse?> Validation([FromBody] Models.TipoValorProcesso regTipoValorProcesso, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoValorProcesso: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoValorProcesso == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoValorProcesso, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoValorProcesso.Id.IsEmptyIDNumber())
+            {
+                return new TipoValorProcessoResponse();
+            }
+
+            return reader.Read(regTipoValorProcesso.Id, oCnn);
         });
     }
 

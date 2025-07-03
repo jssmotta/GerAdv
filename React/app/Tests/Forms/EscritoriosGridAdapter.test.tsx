@@ -1,0 +1,13 @@
+﻿// EscritoriosGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { EscritoriosGridAdapter } from '@/app/GerAdv_TS/Escritorios/Adapter/EscritoriosGridAdapter';
+// Mock EscritoriosGrid component
+jest.mock('@/app/GerAdv_TS/Escritorios/Crud/Grids/EscritoriosGrid', () => () => <div data-testid='escritorios-grid-mock' />);
+describe('EscritoriosGridAdapter', () => {
+  it('should render EscritoriosGrid component', () => {
+    const adapter = new EscritoriosGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('escritorios-grid-mock')).toBeInTheDocument();
+  });
+});

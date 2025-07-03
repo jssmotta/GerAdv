@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoOrigemSucumbenciaApi, TipoOrigemSucumbenciaApiError } from '../Apis/ApiTipoOrigemSucumbencia';
 import { FilterTipoOrigemSucumbencia } from '../Filters/TipoOrigemSucumbencia';
 import { ITipoOrigemSucumbencia } from '../Interfaces/interface.TipoOrigemSucumbencia';
+import { TipoOrigemSucumbenciaEmpty } from '../../Models/TipoOrigemSucumbencia';
 
 export class TipoOrigemSucumbenciaValidator {
   static validateTipoOrigemSucumbencia(tipoorigemsucumbencia: ITipoOrigemSucumbencia): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoOrigemSucumbenciaService implements ITipoOrigemSucumbenciaServi
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoOrigemSucumbenciaApiError) {
         throw error;

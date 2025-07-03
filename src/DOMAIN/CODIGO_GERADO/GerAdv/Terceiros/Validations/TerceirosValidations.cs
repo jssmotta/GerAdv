@@ -28,7 +28,7 @@ public class TerceirosValidation : ITerceirosValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Terceiros '{reg.Nome}' já cadastrado.";
+            return $"Terceiros '{reg.Nome}' Nome e/ou Processo";
         // Processos
         if (!reg.Processo.IsEmptyIDNumber())
         {

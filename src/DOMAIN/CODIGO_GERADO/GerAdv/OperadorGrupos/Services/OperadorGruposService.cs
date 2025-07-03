@@ -43,7 +43,7 @@ public partial class OperadorGruposService(IOptions<AppSettings> appSettings, IO
                    FROM {DBOperadorGrupos.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY opgNome
+                   ORDER BY [OperadorGrupos].[opgNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OperadorGruposResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class OperadorGruposService(IOptions<AppSettings> appSettings, IO
             var validade = await validation.ValidateReg(regOperadorGrupos, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"OperadorGrupos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOperadorGrupos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OperadorGruposResponse?> Validation([FromBody] Models.OperadorGrupos regOperadorGrupos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("OperadorGrupos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOperadorGrupos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOperadorGrupos, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOperadorGrupos.Id.IsEmptyIDNumber())
+            {
+                return new OperadorGruposResponse();
+            }
+
+            return reader.Read(regOperadorGrupos.Id, oCnn);
         });
     }
 

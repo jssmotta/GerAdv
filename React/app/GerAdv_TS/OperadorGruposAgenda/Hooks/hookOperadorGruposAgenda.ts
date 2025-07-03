@@ -4,6 +4,7 @@ import { IOperadorGruposAgendaService } from '../Services/OperadorGruposAgenda.s
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOperadorGruposAgenda } from '../Interfaces/interface.OperadorGruposAgenda';
 import { isValidDate } from '@/app/tools/datetime';
+import { OperadorGruposAgendaApi } from '../Apis/ApiOperadorGruposAgenda';
 
 export const useOperadorGruposAgendaForm = (
   initialOperadorGruposAgenda: IOperadorGruposAgenda,
@@ -142,6 +143,16 @@ export const useOperadorGruposAgendaList = (dataService: IOperadorGruposAgendaSe
 
 
 export function useValidationsOperadorGruposAgenda() {
+
+  async function runValidation(data: IOperadorGruposAgenda, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const operadorgruposagendaApi = new OperadorGruposAgendaApi(uri ?? '', token ?? '');
+
+    const result = await operadorgruposagendaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOperadorGruposAgenda): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.nome.length > 100) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOperadorGruposAgendaComboBox = (
   dataService: IOperadorGruposAgendaService,
   initialValue?: any

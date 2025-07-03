@@ -4,6 +4,7 @@ import { IFaseService } from '../Services/Fase.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IFase } from '../Interfaces/interface.Fase';
 import { isValidDate } from '@/app/tools/datetime';
+import { FaseApi } from '../Apis/ApiFase';
 
 export const useFaseForm = (
   initialFase: IFase,
@@ -142,6 +143,16 @@ export const useFaseList = (dataService: IFaseService) => {
 
 
 export function useValidationsFase() {
+
+  async function runValidation(data: IFase, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const faseApi = new FaseApi(uri ?? '', token ?? '');
+
+    const result = await faseApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IFase): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useFaseComboBox = (
   dataService: IFaseService,
   initialValue?: any

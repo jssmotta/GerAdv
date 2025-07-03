@@ -4,6 +4,7 @@ import { IDocsRecebidosItensService } from '../Services/DocsRecebidosItens.servi
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IDocsRecebidosItens } from '../Interfaces/interface.DocsRecebidosItens';
 import { isValidDate } from '@/app/tools/datetime';
+import { DocsRecebidosItensApi } from '../Apis/ApiDocsRecebidosItens';
 
 export const useDocsRecebidosItensForm = (
   initialDocsRecebidosItens: IDocsRecebidosItens,
@@ -142,6 +143,16 @@ export const useDocsRecebidosItensList = (dataService: IDocsRecebidosItensServic
 
 
 export function useValidationsDocsRecebidosItens() {
+
+  async function runValidation(data: IDocsRecebidosItens, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const docsrecebidositensApi = new DocsRecebidosItensApi(uri ?? '', token ?? '');
+
+    const result = await docsrecebidositensApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IDocsRecebidosItens): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.observacoes.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useDocsRecebidosItensComboBox = (
   dataService: IDocsRecebidosItensService,
   initialValue?: any

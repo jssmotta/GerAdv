@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { NECompromissosApi, NECompromissosApiError } from '../Apis/ApiNECompromissos';
 import { FilterNECompromissos } from '../Filters/NECompromissos';
 import { INECompromissos } from '../Interfaces/interface.NECompromissos';
+import { NECompromissosEmpty } from '../../Models/NECompromissos';
 
 export class NECompromissosValidator {
   static validateNECompromissos(necompromissos: INECompromissos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class NECompromissosService implements INECompromissosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof NECompromissosApiError) {
         throw error;

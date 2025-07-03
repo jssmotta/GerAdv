@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { StatusTarefasApi, StatusTarefasApiError } from '../Apis/ApiStatusTarefas';
 import { FilterStatusTarefas } from '../Filters/StatusTarefas';
 import { IStatusTarefas } from '../Interfaces/interface.StatusTarefas';
+import { StatusTarefasEmpty } from '../../Models/StatusTarefas';
 
 export class StatusTarefasValidator {
   static validateStatusTarefas(statustarefas: IStatusTarefas): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class StatusTarefasService implements IStatusTarefasService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof StatusTarefasApiError) {
         throw error;

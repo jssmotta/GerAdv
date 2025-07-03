@@ -2,12 +2,11 @@
 'use client';
 import { IProcessos } from '@/app/GerAdv_TS/Processos/Interfaces/interface.Processos';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -58,8 +57,8 @@ export const ProcessosForm: React.FC<ProcessosFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -402,66 +401,66 @@ const addValorAdvOpo = (e: any) => {
                                 onChange={onChange}
                                 />
 
-                                <InputCheckbox dataForm={processosData} label='AJGPedidoOPO' name='ajgpedidoopo' checked={processosData.ajgpedidoopo} onChange={onChange} />
-                              </div><div className='grid-container'>
-                                <InputInput
-                                type='text'
-                                maxLength={2048}
-                                id='valorcachecalculoprov'
-                                label='ValorCacheCalculoProv'
-                                dataForm={processosData}
-                                className='inputIncNome'
-                                name='valorcachecalculoprov'
-                                value={processosData.valorcachecalculoprov}
-                                onChange={onChange}
-                                />
+                              </div><div className='grid-container'><InputCheckbox dataForm={processosData} label='AJGPedidoOPO' name='ajgpedidoopo' checked={processosData.ajgpedidoopo} onChange={onChange} />
 
-                                <InputCheckbox dataForm={processosData} label='ConsiderarParado' name='considerarparado' checked={processosData.considerarparado} onChange={onChange} />
-                                <InputCheckbox dataForm={processosData} label='ValorCalculado' name='valorcalculado' checked={processosData.valorcalculado} onChange={onChange} />
-                                <InputCheckbox dataForm={processosData} label='AJGConcedidoOPO' name='ajgconcedidoopo' checked={processosData.ajgconcedidoopo} onChange={onChange} />
-                                <InputCheckbox dataForm={processosData} label='Cobranca' name='cobranca' checked={processosData.cobranca} onChange={onChange} />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='valorcachecalculoprov'
+                              label='ValorCacheCalculoProv'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='valorcachecalculoprov'
+                              value={processosData.valorcachecalculoprov}
+                              onChange={onChange}
+                              />
 
-                                <InputInput
-                                type='text'
-                                maxLength={2048}
-                                id='dataentrada'
-                                label='DataEntrada'
-                                dataForm={processosData}
-                                className='inputIncNome'
-                                name='dataentrada'
-                                value={processosData.dataentrada}
-                                onChange={onChange}
-                                />
+                              <InputCheckbox dataForm={processosData} label='ConsiderarParado' name='considerarparado' checked={processosData.considerarparado} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='ValorCalculado' name='valorcalculado' checked={processosData.valorcalculado} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='AJGConcedidoOPO' name='ajgconcedidoopo' checked={processosData.ajgconcedidoopo} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='Cobranca' name='cobranca' checked={processosData.cobranca} onChange={onChange} />
 
-                                <InputCheckbox dataForm={processosData} label='Penhora' name='penhora' checked={processosData.penhora} onChange={onChange} />
-                                <InputCheckbox dataForm={processosData} label='AJGPedido' name='ajgpedido' checked={processosData.ajgpedido} onChange={onChange} />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='dataentrada'
+                              label='DataEntrada'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='dataentrada'
+                              value={processosData.dataentrada}
+                              onChange={onChange}
+                              />
 
-                                <InputInput
-                                type='text'
-                                maxLength={2048}
-                                id='tipobaixa'
-                                label='TipoBaixa'
-                                dataForm={processosData}
-                                className='inputIncNome'
-                                name='tipobaixa'
-                                value={processosData.tipobaixa}
-                                onChange={onChange}
-                                />
+                              <InputCheckbox dataForm={processosData} label='Penhora' name='penhora' checked={processosData.penhora} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='AJGPedido' name='ajgpedido' checked={processosData.ajgpedido} onChange={onChange} />
+                            </div><div className='grid-container'>
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='tipobaixa'
+                              label='TipoBaixa'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='tipobaixa'
+                              value={processosData.tipobaixa}
+                              onChange={onChange}
+                              />
 
 
-                                <InputInput
-                                type='text'
-                                maxLength={2048}
-                                id='classrisco'
-                                label='ClassRisco'
-                                dataForm={processosData}
-                                className='inputIncNome'
-                                name='classrisco'
-                                value={processosData.classrisco}
-                                onChange={onChange}
-                                />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='classrisco'
+                              label='ClassRisco'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='classrisco'
+                              value={processosData.classrisco}
+                              onChange={onChange}
+                              />
 
-                              </div><div className='grid-container'><InputCheckbox dataForm={processosData} label='IsApenso' name='isapenso' checked={processosData.isapenso} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='IsApenso' name='isapenso' checked={processosData.isapenso} onChange={onChange} />
 
                               <InputInput
                               type='text'
@@ -516,7 +515,7 @@ const addValorAdvOpo = (e: any) => {
                               />
 
                               <InputCheckbox dataForm={processosData} label='MNA' name='mna' checked={processosData.mna} onChange={onChange} />
-
+                            </div><div className='grid-container'>
                               <InputInput
                               type='text'
                               maxLength={2048}
@@ -550,362 +549,362 @@ const addValorAdvOpo = (e: any) => {
                               setValue={addValorAdvOpo}
                               label={'Advogados'}
                               />
-                            </div><div className='grid-container'><InputCheckbox dataForm={processosData} label='Extra' name='extra' checked={processosData.extra} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='Extra' name='extra' checked={processosData.extra} onChange={onChange} />
 
-                            <JusticaComboBox
-                            name={'justica'}
-                            dataForm={processosData}
-                            value={processosData.justica}
-                            setValue={addValorJustica}
-                            label={'Justica'}
-                            />
+                              <JusticaComboBox
+                              name={'justica'}
+                              dataForm={processosData}
+                              value={processosData.justica}
+                              setValue={addValorJustica}
+                              label={'Justica'}
+                              />
 
-                            <AdvogadosComboBox
-                            name={'advogado'}
-                            dataForm={processosData}
-                            value={processosData.advogado}
-                            setValue={addValorAdvogado}
-                            label={'Advogados'}
-                            />
+                              <AdvogadosComboBox
+                              name={'advogado'}
+                              dataForm={processosData}
+                              value={processosData.advogado}
+                              setValue={addValorAdvogado}
+                              label={'Advogados'}
+                              />
 
-                            <InputInput
-                            type='text'
-                            maxLength={20}
-                            id='nrocaixa'
-                            label='NroCaixa'
-                            dataForm={processosData}
-                            className='inputIncNome'
-                            name='nrocaixa'
-                            value={processosData.nrocaixa}
-                            onChange={onChange}
-                            />
-
-
-                            <PrepostosComboBox
-                            name={'preposto'}
-                            dataForm={processosData}
-                            value={processosData.preposto}
-                            setValue={addValorPreposto}
-                            label={'Prepostos'}
-                            />
-
-                            <ClientesComboBox
-                            name={'cliente'}
-                            dataForm={processosData}
-                            value={processosData.cliente}
-                            setValue={addValorCliente}
-                            label={'Clientes'}
-                            />
-
-                            <OponentesComboBox
-                            name={'oponente'}
-                            dataForm={processosData}
-                            value={processosData.oponente}
-                            setValue={addValorOponente}
-                            label={'Oponentes'}
-                            />
-
-                            <AreaComboBox
-                            name={'area'}
-                            dataForm={processosData}
-                            value={processosData.area}
-                            setValue={addValorArea}
-                            label={'Area'}
-                            />
-
-                            <CidadeComboBox
-                            name={'cidade'}
-                            dataForm={processosData}
-                            value={processosData.cidade}
-                            setValue={addValorCidade}
-                            label={'Cidade'}
-                            />
-
-                            <SituacaoComboBox
-                            name={'situacao'}
-                            dataForm={processosData}
-                            value={processosData.situacao}
-                            setValue={addValorSituacao}
-                            label={'Situacao'}
-                            />
-                          </div><div className='grid-container'><InputCheckbox dataForm={processosData} label='IDSituacao' name='idsituacao' checked={processosData.idsituacao} onChange={onChange} />
-
-                          <InputInput
-                          type='text'
-                          maxLength={2048}
-                          id='valor'
-                          label='Valor'
-                          dataForm={processosData}
-                          className='inputIncNome'
-                          name='valor'
-                          value={processosData.valor}
-                          onChange={onChange}
-                          />
+                              <InputInput
+                              type='text'
+                              maxLength={20}
+                              id='nrocaixa'
+                              label='NroCaixa'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='nrocaixa'
+                              value={processosData.nrocaixa}
+                              onChange={onChange}
+                              />
 
 
-                          <RitoComboBox
-                          name={'rito'}
-                          dataForm={processosData}
-                          value={processosData.rito}
-                          setValue={addValorRito}
-                          label={'Rito'}
-                          />
+                              <PrepostosComboBox
+                              name={'preposto'}
+                              dataForm={processosData}
+                              value={processosData.preposto}
+                              setValue={addValorPreposto}
+                              label={'Prepostos'}
+                              />
 
-                          <InputInput
-                          type='text'
-                          maxLength={2147483647}
-                          id='fato'
-                          label='Fato'
-                          dataForm={processosData}
-                          className='inputIncNome'
-                          name='fato'
-                          value={processosData.fato}
-                          onChange={onChange}
-                          />
+                              <ClientesComboBox
+                              name={'cliente'}
+                              dataForm={processosData}
+                              value={processosData.cliente}
+                              setValue={addValorCliente}
+                              label={'Clientes'}
+                              />
+                            </div><div className='grid-container'>
+                              <OponentesComboBox
+                              name={'oponente'}
+                              dataForm={processosData}
+                              value={processosData.oponente}
+                              setValue={addValorOponente}
+                              label={'Oponentes'}
+                              />
 
+                              <AreaComboBox
+                              name={'area'}
+                              dataForm={processosData}
+                              value={processosData.area}
+                              setValue={addValorArea}
+                              label={'Area'}
+                              />
 
-                          <AtividadesComboBox
-                          name={'atividade'}
-                          dataForm={processosData}
-                          value={processosData.atividade}
-                          setValue={addValorAtividade}
-                          label={'Atividades'}
-                          />
+                              <CidadeComboBox
+                              name={'cidade'}
+                              dataForm={processosData}
+                              value={processosData.cidade}
+                              setValue={addValorCidade}
+                              label={'Cidade'}
+                              />
 
-                          <InputInput
-                          type='text'
-                          maxLength={10}
-                          id='caixamorto'
-                          label='CaixaMorto'
-                          dataForm={processosData}
-                          className='inputIncNome'
-                          name='caixamorto'
-                          value={processosData.caixamorto}
-                          onChange={onChange}
-                          />
+                              <SituacaoComboBox
+                              name={'situacao'}
+                              dataForm={processosData}
+                              value={processosData.situacao}
+                              setValue={addValorSituacao}
+                              label={'Situacao'}
+                              />
+                              <InputCheckbox dataForm={processosData} label='IDSituacao' name='idsituacao' checked={processosData.idsituacao} onChange={onChange} />
 
-                          <InputCheckbox dataForm={processosData} label='Baixado' name='baixado' checked={processosData.baixado} onChange={onChange} />
-
-                          <InputInput
-                          type='text'
-                          maxLength={2048}
-                          id='dtbaixa'
-                          label='DtBaixa'
-                          dataForm={processosData}
-                          className='inputIncNome'
-                          name='dtbaixa'
-                          value={processosData.dtbaixa}
-                          onChange={onChange}
-                          />
-
-
-                          <InputInput
-                          type='text'
-                          maxLength={2147483647}
-                          id='motivobaixa'
-                          label='MotivoBaixa'
-                          dataForm={processosData}
-                          className='inputIncNome'
-                          name='motivobaixa'
-                          value={processosData.motivobaixa}
-                          onChange={onChange}
-                          />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='valor'
+                              label='Valor'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='valor'
+                              value={processosData.valor}
+                              onChange={onChange}
+                              />
 
 
-                          <InputInput
-                          type='text'
-                          maxLength={2147483647}
-                          id='obs'
-                          label='OBS'
-                          dataForm={processosData}
-                          className='inputIncNome'
-                          name='obs'
-                          value={processosData.obs}
-                          onChange={onChange}
-                          />
+                              <RitoComboBox
+                              name={'rito'}
+                              dataForm={processosData}
+                              value={processosData.rito}
+                              setValue={addValorRito}
+                              label={'Rito'}
+                              />
 
-                        </div><div className='grid-container'><InputCheckbox dataForm={processosData} label='Printed' name='printed' checked={processosData.printed} onChange={onChange} />
-
-                        <InputInput
-                        type='text'
-                        maxLength={20}
-                        id='zkey'
-                        label='ZKey'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='zkey'
-                        value={processosData.zkey}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2147483647}
+                              id='fato'
+                              label='Fato'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='fato'
+                              value={processosData.fato}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='zkeyquem'
-                        label='ZKeyQuem'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='zkeyquem'
-                        value={processosData.zkeyquem}
-                        onChange={onChange}
-                        />
+                              <AtividadesComboBox
+                              name={'atividade'}
+                              dataForm={processosData}
+                              value={processosData.atividade}
+                              setValue={addValorAtividade}
+                              label={'Atividades'}
+                              />
+                            </div><div className='grid-container'>
+                              <InputInput
+                              type='text'
+                              maxLength={10}
+                              id='caixamorto'
+                              label='CaixaMorto'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='caixamorto'
+                              value={processosData.caixamorto}
+                              onChange={onChange}
+                              />
+
+                              <InputCheckbox dataForm={processosData} label='Baixado' name='baixado' checked={processosData.baixado} onChange={onChange} />
+
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='dtbaixa'
+                              label='DtBaixa'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='dtbaixa'
+                              value={processosData.dtbaixa}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='zkeyquando'
-                        label='ZKeyQuando'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='zkeyquando'
-                        value={processosData.zkeyquando}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2147483647}
+                              id='motivobaixa'
+                              label='MotivoBaixa'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='motivobaixa'
+                              value={processosData.motivobaixa}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2147483647}
-                        id='resumo'
-                        label='Resumo'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='resumo'
-                        value={processosData.resumo}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2147483647}
+                              id='obs'
+                              label='OBS'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='obs'
+                              value={processosData.obs}
+                              onChange={onChange}
+                              />
 
-                        <InputCheckbox dataForm={processosData} label='NaoImprimir' name='naoimprimir' checked={processosData.naoimprimir} onChange={onChange} />
-                        <InputCheckbox dataForm={processosData} label='Eletronico' name='eletronico' checked={processosData.eletronico} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='Printed' name='printed' checked={processosData.printed} onChange={onChange} />
 
-                        <InputInput
-                        type='text'
-                        maxLength={100}
-                        id='nrocontrato'
-                        label='NroContrato'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='nrocontrato'
-                        value={processosData.nrocontrato}
-                        onChange={onChange}
-                        />
-
-
-                        <InputInput
-                        type='text'
-                        maxLength={1024}
-                        id='percprobexitojustificativa'
-                        label='PercProbExitoJustificativa'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='percprobexitojustificativa'
-                        value={processosData.percprobexitojustificativa}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={20}
+                              id='zkey'
+                              label='ZKey'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='zkey'
+                              value={processosData.zkey}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='honorariovalor'
-                        label='HonorarioValor'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='honorariovalor'
-                        value={processosData.honorariovalor}
-                        onChange={onChange}
-                        />
-
-                      </div><div className='grid-container'>
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='honorariopercentual'
-                        label='HonorarioPercentual'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='honorariopercentual'
-                        value={processosData.honorariopercentual}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='zkeyquem'
+                              label='ZKeyQuem'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='zkeyquem'
+                              value={processosData.zkeyquem}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='honorariosucumbencia'
-                        label='HonorarioSucumbencia'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='honorariosucumbencia'
-                        value={processosData.honorariosucumbencia}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='zkeyquando'
+                              label='ZKeyQuando'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='zkeyquando'
+                              value={processosData.zkeyquando}
+                              onChange={onChange}
+                              />
+
+                            </div><div className='grid-container'>
+                              <InputInput
+                              type='text'
+                              maxLength={2147483647}
+                              id='resumo'
+                              label='Resumo'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='resumo'
+                              value={processosData.resumo}
+                              onChange={onChange}
+                              />
+
+                              <InputCheckbox dataForm={processosData} label='NaoImprimir' name='naoimprimir' checked={processosData.naoimprimir} onChange={onChange} />
+                              <InputCheckbox dataForm={processosData} label='Eletronico' name='eletronico' checked={processosData.eletronico} onChange={onChange} />
+
+                              <InputInput
+                              type='text'
+                              maxLength={100}
+                              id='nrocontrato'
+                              label='NroContrato'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='nrocontrato'
+                              value={processosData.nrocontrato}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='faseauditoria'
-                        label='FaseAuditoria'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='faseauditoria'
-                        value={processosData.faseauditoria}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={1024}
+                              id='percprobexitojustificativa'
+                              label='PercProbExitoJustificativa'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='percprobexitojustificativa'
+                              value={processosData.percprobexitojustificativa}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='valorcondenacao'
-                        label='ValorCondenacao'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='valorcondenacao'
-                        value={processosData.valorcondenacao}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='honorariovalor'
+                              label='HonorarioValor'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='honorariovalor'
+                              value={processosData.honorariovalor}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='valorcondenacaocalculado'
-                        label='ValorCondenacaoCalculado'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='valorcondenacaocalculado'
-                        value={processosData.valorcondenacaocalculado}
-                        onChange={onChange}
-                        />
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='honorariopercentual'
+                              label='HonorarioPercentual'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='honorariopercentual'
+                              value={processosData.honorariopercentual}
+                              onChange={onChange}
+                              />
 
 
-                        <InputInput
-                        type='text'
-                        maxLength={2048}
-                        id='valorcondenacaoprovisorio'
-                        label='ValorCondenacaoProvisorio'
-                        dataForm={processosData}
-                        className='inputIncNome'
-                        name='valorcondenacaoprovisorio'
-                        value={processosData.valorcondenacaoprovisorio}
-                        onChange={onChange}
-                        />
-
-                      </div>
-                    </form>
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='honorariosucumbencia'
+                              label='HonorarioSucumbencia'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='honorariosucumbencia'
+                              value={processosData.honorariosucumbencia}
+                              onChange={onChange}
+                              />
 
 
-                    {isMobile && (
-                      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Processos' data={processosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosForm-${processosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                      )}
-                      <DeleteButton page={'/pages/processos'} id={processosData.id} closeModel={onClose} dadoApi={dadoApi} />
-                    </div>
-                    <div className='form-spacer'></div>
-                    </>
-                  );
-                };
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='faseauditoria'
+                              label='FaseAuditoria'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='faseauditoria'
+                              value={processosData.faseauditoria}
+                              onChange={onChange}
+                              />
+
+                            </div><div className='grid-container'>
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='valorcondenacao'
+                              label='ValorCondenacao'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='valorcondenacao'
+                              value={processosData.valorcondenacao}
+                              onChange={onChange}
+                              />
+
+
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='valorcondenacaocalculado'
+                              label='ValorCondenacaoCalculado'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='valorcondenacaocalculado'
+                              value={processosData.valorcondenacaocalculado}
+                              onChange={onChange}
+                              />
+
+
+                              <InputInput
+                              type='text'
+                              maxLength={2048}
+                              id='valorcondenacaoprovisorio'
+                              label='ValorCondenacaoProvisorio'
+                              dataForm={processosData}
+                              className='inputIncNome'
+                              name='valorcondenacaoprovisorio'
+                              value={processosData.valorcondenacaoprovisorio}
+                              onChange={onChange}
+                              />
+
+                            </div>
+                          </form>
+
+
+                          {isMobile && (
+                            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Processos' data={processosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosForm-${processosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                            )}
+                            <DeleteButton page={'/pages/processos'} id={processosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                          </div>
+                          <div className='form-spacer'></div>
+                          </>
+                        );
+                      };

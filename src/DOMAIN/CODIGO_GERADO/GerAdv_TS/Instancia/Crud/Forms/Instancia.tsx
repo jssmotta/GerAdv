@@ -2,12 +2,11 @@
 'use client';
 import { IInstancia } from '@/app/GerAdv_TS/Instancia/Interfaces/interface.Instancia';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const InstanciaForm: React.FC<InstanciaFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new InstanciaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -266,7 +265,7 @@ const addValorProcesso = (e: any) => {
                   setValue={addValorProcesso}
                   label={'Processos'}
                   />
-
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -279,186 +278,186 @@ const addValorProcesso = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'><InputCheckbox dataForm={instanciaData} label='LiminarParcial' name='liminarparcial' checked={instanciaData.liminarparcial} onChange={onChange} />
+                  <InputCheckbox dataForm={instanciaData} label='LiminarParcial' name='liminarparcial' checked={instanciaData.liminarparcial} onChange={onChange} />
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='liminarresultado'
-                label='LiminarResultado'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='liminarresultado'
-                value={instanciaData.liminarresultado}
-                onChange={onChange}
-                />
-
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='divisao'
-                label='Divisao'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='divisao'
-                value={instanciaData.divisao}
-                onChange={onChange}
-                />
-
-                <InputCheckbox dataForm={instanciaData} label='LiminarCliente' name='liminarcliente' checked={instanciaData.liminarcliente} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='comarca'
-                label='Comarca'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='comarca'
-                value={instanciaData.comarca}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2147483647}
+                  id='liminarresultado'
+                  label='LiminarResultado'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='liminarresultado'
+                  value={instanciaData.liminarresultado}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='subdivisao'
-                label='SubDivisao'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='subdivisao'
-                value={instanciaData.subdivisao}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='divisao'
+                  label='Divisao'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='divisao'
+                  value={instanciaData.divisao}
+                  onChange={onChange}
+                  />
 
-                <InputCheckbox dataForm={instanciaData} label='Principal' name='principal' checked={instanciaData.principal} onChange={onChange} />
+                  <InputCheckbox dataForm={instanciaData} label='LiminarCliente' name='liminarcliente' checked={instanciaData.liminarcliente} onChange={onChange} />
 
-                <AcaoComboBox
-                name={'acao'}
-                dataForm={instanciaData}
-                value={instanciaData.acao}
-                setValue={addValorAcao}
-                label={'Acao'}
-                />
-
-                <ForoComboBox
-                name={'foro'}
-                dataForm={instanciaData}
-                value={instanciaData.foro}
-                setValue={addValorForo}
-                label={'Foro'}
-                />
-
-                <TipoRecursoComboBox
-                name={'tiporecurso'}
-                dataForm={instanciaData}
-                value={instanciaData.tiporecurso}
-                setValue={addValorTipoRecurso}
-                label={'Tipo Recurso'}
-                />
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={25}
-                id='zkey'
-                label='ZKey'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='zkey'
-                value={instanciaData.zkey}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='comarca'
+                  label='Comarca'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='comarca'
+                  value={instanciaData.comarca}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='zkeyquem'
-                label='ZKeyQuem'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='zkeyquem'
-                value={instanciaData.zkeyquem}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='subdivisao'
+                  label='SubDivisao'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='subdivisao'
+                  value={instanciaData.subdivisao}
+                  onChange={onChange}
+                  />
+
+                  <InputCheckbox dataForm={instanciaData} label='Principal' name='principal' checked={instanciaData.principal} onChange={onChange} />
+
+                  <AcaoComboBox
+                  name={'acao'}
+                  dataForm={instanciaData}
+                  value={instanciaData.acao}
+                  setValue={addValorAcao}
+                  label={'Acao'}
+                  />
+                </div><div className='grid-container'>
+                  <ForoComboBox
+                  name={'foro'}
+                  dataForm={instanciaData}
+                  value={instanciaData.foro}
+                  setValue={addValorForo}
+                  label={'Foro'}
+                  />
+
+                  <TipoRecursoComboBox
+                  name={'tiporecurso'}
+                  dataForm={instanciaData}
+                  value={instanciaData.tiporecurso}
+                  setValue={addValorTipoRecurso}
+                  label={'Tipo Recurso'}
+                  />
+
+                  <InputInput
+                  type='text'
+                  maxLength={25}
+                  id='zkey'
+                  label='ZKey'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='zkey'
+                  value={instanciaData.zkey}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='zkeyquando'
-                label='ZKeyQuando'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='zkeyquando'
-                value={instanciaData.zkeyquando}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='zkeyquem'
+                  label='ZKeyQuem'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='zkeyquem'
+                  value={instanciaData.zkeyquem}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={25}
-                id='nroantigo'
-                label='NroAntigo'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='nroantigo'
-                value={instanciaData.nroantigo}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='zkeyquando'
+                  label='ZKeyQuando'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='zkeyquando'
+                  value={instanciaData.zkeyquando}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={100}
-                id='accesscode'
-                label='AccessCode'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='accesscode'
-                value={instanciaData.accesscode}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={25}
+                  id='nroantigo'
+                  label='NroAntigo'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='nroantigo'
+                  value={instanciaData.nroantigo}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='julgador'
-                label='Julgador'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='julgador'
-                value={instanciaData.julgador}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={100}
+                  id='accesscode'
+                  label='AccessCode'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='accesscode'
+                  value={instanciaData.accesscode}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={25}
-                id='zkeyia'
-                label='ZKeyIA'
-                dataForm={instanciaData}
-                className='inputIncNome'
-                name='zkeyia'
-                value={instanciaData.zkeyia}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='julgador'
+                  label='Julgador'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='julgador'
+                  value={instanciaData.julgador}
+                  onChange={onChange}
+                  />
 
+
+                  <InputInput
+                  type='text'
+                  maxLength={25}
+                  id='zkeyia'
+                  label='ZKeyIA'
+                  dataForm={instanciaData}
+                  className='inputIncNome'
+                  name='zkeyia'
+                  value={instanciaData.zkeyia}
+                  onChange={onChange}
+                  />
+
+                </div>
+              </form>
+
+
+              {isMobile && (
+                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Instancia' data={instanciaData} isSubmitting={isSubmitting} onClose={onClose} formId={`InstanciaForm-${instanciaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                )}
+                <DeleteButton page={'/pages/instancia'} id={instanciaData.id} closeModel={onClose} dadoApi={dadoApi} />
               </div>
-            </form>
-
-
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Instancia' data={instanciaData} isSubmitting={isSubmitting} onClose={onClose} formId={`InstanciaForm-${instanciaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/instancia'} id={instanciaData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+              <div className='form-spacer'></div>
+              </>
+            );
+          };

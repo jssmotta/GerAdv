@@ -4,7 +4,8 @@ public partial interface IProcessOutputSourcesService
     Task<IEnumerable<ProcessOutputSourcesResponseAll>> Filter(Filters.FilterProcessOutputSources filter, [FromRoute, Required] string uri = "");
     Task<ProcessOutputSourcesResponse?> AddAndUpdate(Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri = "");
     Task<ProcessOutputSourcesResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<IEnumerable<ProcessOutputSourcesResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<ProcessOutputSourcesResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<ProcessOutputSourcesResponse?> Validation(Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProcessOutputSourcesResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessOutputSources? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

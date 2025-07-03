@@ -38,13 +38,13 @@ public partial class AlertasEnviadosService(IOptions<AppSettings> appSettings, I
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAlertasEnviados.SensivelCamposSqlX}, operNome,altNome
+                   {DBAlertasEnviados.SensivelCamposSqlX}, [Operador].[operNome],[Alertas].[altNome]
                    FROM {DBAlertasEnviados.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=aloOperador
-LEFT JOIN {"Alertas".dbo(oCnn)} (NOLOCK) ON altCodigo=aloAlerta
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[AlertasEnviados].[aloOperador]
+LEFT JOIN {"Alertas".dbo(oCnn)} (NOLOCK) ON [Alertas].[altCodigo]=[AlertasEnviados].[aloAlerta]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AlertasEnviados].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AlertasEnviadosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -140,11 +140,49 @@ LEFT JOIN {"Alertas".dbo(oCnn)} (NOLOCK) ON altCodigo=aloAlerta
             var validade = await validation.ValidateReg(regAlertasEnviados, this, operadorReader, alertasReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AlertasEnviados: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAlertasEnviados, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AlertasEnviadosResponse?> Validation([FromBody] Models.AlertasEnviados regAlertasEnviados, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AlertasEnviados: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAlertasEnviados == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAlertasEnviados, this, operadorReader, alertasReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAlertasEnviados.Id.IsEmptyIDNumber())
+            {
+                return new AlertasEnviadosResponse();
+            }
+
+            return reader.Read(regAlertasEnviados.Id, oCnn);
         });
     }
 

@@ -4,6 +4,7 @@ import { IPrecatoriaService } from '../Services/Precatoria.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPrecatoria } from '../Interfaces/interface.Precatoria';
 import { isValidDate } from '@/app/tools/datetime';
+import { PrecatoriaApi } from '../Apis/ApiPrecatoria';
 
 export const usePrecatoriaForm = (
   initialPrecatoria: IPrecatoria,
@@ -142,6 +143,16 @@ export const usePrecatoriaList = (dataService: IPrecatoriaService) => {
 
 
 export function useValidationsPrecatoria() {
+
+  async function runValidation(data: IPrecatoria, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const precatoriaApi = new PrecatoriaApi(uri ?? '', token ?? '');
+
+    const result = await precatoriaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPrecatoria): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -170,5 +181,5 @@ if (data.obs.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

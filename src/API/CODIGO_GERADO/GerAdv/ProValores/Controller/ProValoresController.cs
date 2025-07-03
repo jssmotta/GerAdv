@@ -86,4 +86,26 @@ public partial class ProValoresController(IProValoresService provaloresService) 
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.ProValores regProValores, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _provaloresService.Validation(regProValores, uri);
+            if (result == null)
+            {
+                _logger.Warn("ProValores: Validation failed to add or update ProValores, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ProValores: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

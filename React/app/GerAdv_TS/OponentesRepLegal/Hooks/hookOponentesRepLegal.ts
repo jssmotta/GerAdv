@@ -4,6 +4,7 @@ import { IOponentesRepLegalService } from '../Services/OponentesRepLegal.service
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOponentesRepLegal } from '../Interfaces/interface.OponentesRepLegal';
 import { isValidDate } from '@/app/tools/datetime';
+import { OponentesRepLegalApi } from '../Apis/ApiOponentesRepLegal';
 
 export const useOponentesRepLegalForm = (
   initialOponentesRepLegal: IOponentesRepLegal,
@@ -142,6 +143,16 @@ export const useOponentesRepLegalList = (dataService: IOponentesRepLegalService)
 
 
 export function useValidationsOponentesRepLegal() {
+
+  async function runValidation(data: IOponentesRepLegal, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const oponentesreplegalApi = new OponentesRepLegalApi(uri ?? '', token ?? '');
+
+    const result = await oponentesreplegalApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOponentesRepLegal): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -191,7 +202,7 @@ if (data.observacao.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOponentesRepLegalComboBox = (
   dataService: IOponentesRepLegalService,
   initialValue?: any

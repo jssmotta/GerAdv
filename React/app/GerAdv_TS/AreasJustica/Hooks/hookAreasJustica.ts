@@ -4,6 +4,7 @@ import { IAreasJusticaService } from '../Services/AreasJustica.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAreasJustica } from '../Interfaces/interface.AreasJustica';
 import { isValidDate } from '@/app/tools/datetime';
+import { AreasJusticaApi } from '../Apis/ApiAreasJustica';
 
 export const useAreasJusticaForm = (
   initialAreasJustica: IAreasJustica,
@@ -142,6 +143,16 @@ export const useAreasJusticaList = (dataService: IAreasJusticaService) => {
 
 
 export function useValidationsAreasJustica() {
+
+  async function runValidation(data: IAreasJustica, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const areasjusticaApi = new AreasJusticaApi(uri ?? '', token ?? '');
+
+    const result = await areasjusticaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAreasJustica): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAreasJustica() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

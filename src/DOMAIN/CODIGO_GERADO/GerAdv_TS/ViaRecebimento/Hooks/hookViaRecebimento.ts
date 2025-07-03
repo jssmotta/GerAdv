@@ -4,6 +4,7 @@ import { IViaRecebimentoService } from '../Services/ViaRecebimento.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IViaRecebimento } from '../Interfaces/interface.ViaRecebimento';
 import { isValidDate } from '@/app/tools/datetime';
+import { ViaRecebimentoApi } from '../Apis/ApiViaRecebimento';
 
 export const useViaRecebimentoForm = (
   initialViaRecebimento: IViaRecebimento,
@@ -142,6 +143,16 @@ export const useViaRecebimentoList = (dataService: IViaRecebimentoService) => {
 
 
 export function useValidationsViaRecebimento() {
+
+  async function runValidation(data: IViaRecebimento, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const viarecebimentoApi = new ViaRecebimentoApi(uri ?? '', token ?? '');
+
+    const result = await viarecebimentoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IViaRecebimento): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useViaRecebimentoComboBox = (
   dataService: IViaRecebimentoService,
   initialValue?: any

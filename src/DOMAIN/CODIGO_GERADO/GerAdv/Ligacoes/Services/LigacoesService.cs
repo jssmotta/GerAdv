@@ -39,14 +39,14 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, ILigacoe
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBLigacoes.SensivelCamposSqlX}, cliNome,ramNome,proNroPasta
+                   {DBLigacoes.SensivelCamposSqlX}, [Clientes].[cliNome],[Ramal].[ramNome],[Processos].[proNroPasta]
                    FROM {DBLigacoes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ligCliente
-LEFT JOIN {"Ramal".dbo(oCnn)} (NOLOCK) ON ramCodigo=ligRamal
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ligProcesso
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Ligacoes].[ligCliente]
+LEFT JOIN {"Ramal".dbo(oCnn)} (NOLOCK) ON [Ramal].[ramCodigo]=[Ligacoes].[ligRamal]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Ligacoes].[ligProcesso]
  
                    {where}
-                   ORDER BY ligNome
+                   ORDER BY [Ligacoes].[ligNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<LigacoesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ligProcesso
             var validade = await validation.ValidateReg(regLigacoes, this, clientesReader, ramalReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Ligacoes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regLigacoes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<LigacoesResponse?> Validation([FromBody] Models.Ligacoes regLigacoes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Ligacoes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regLigacoes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regLigacoes, this, clientesReader, ramalReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regLigacoes.Id.IsEmptyIDNumber())
+            {
+                return new LigacoesResponse();
+            }
+
+            return reader.Read(regLigacoes.Id, oCnn);
         });
     }
 

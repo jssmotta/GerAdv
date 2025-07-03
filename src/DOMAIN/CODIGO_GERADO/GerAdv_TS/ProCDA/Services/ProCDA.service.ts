@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProCDAApi, ProCDAApiError } from '../Apis/ApiProCDA';
 import { FilterProCDA } from '../Filters/ProCDA';
 import { IProCDA } from '../Interfaces/interface.ProCDA';
+import { ProCDAEmpty } from '../../Models/ProCDA';
 
 export class ProCDAValidator {
   static validateProCDA(procda: IProCDA): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProCDAService implements IProCDAService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProCDAApiError) {
         throw error;

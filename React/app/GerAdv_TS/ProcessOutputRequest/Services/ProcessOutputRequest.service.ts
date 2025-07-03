@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProcessOutputRequestApi, ProcessOutputRequestApiError } from '../Apis/ApiProcessOutputRequest';
 import { FilterProcessOutputRequest } from '../Filters/ProcessOutputRequest';
 import { IProcessOutputRequest } from '../Interfaces/interface.ProcessOutputRequest';
+import { ProcessOutputRequestEmpty } from '../../Models/ProcessOutputRequest';
 
 export class ProcessOutputRequestValidator {
   static validateProcessOutputRequest(processoutputrequest: IProcessOutputRequest): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProcessOutputRequestService implements IProcessOutputRequestService
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProcessOutputRequestApiError) {
         throw error;

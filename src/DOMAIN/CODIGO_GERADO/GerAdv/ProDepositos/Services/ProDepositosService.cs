@@ -39,14 +39,14 @@ public partial class ProDepositosService(IOptions<AppSettings> appSettings, IPro
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProDepositos.SensivelCamposSqlX}, proNroPasta,fasDescricao,tpdNome
+                   {DBProDepositos.SensivelCamposSqlX}, [Processos].[proNroPasta],[Fase].[fasDescricao],[TipoProDesposito].[tpdNome]
                    FROM {DBProDepositos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pdsProcesso
-LEFT JOIN {"Fase".dbo(oCnn)} (NOLOCK) ON fasCodigo=pdsFase
-LEFT JOIN {"TipoProDesposito".dbo(oCnn)} (NOLOCK) ON tpdCodigo=pdsTipoProDesposito
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProDepositos].[pdsProcesso]
+LEFT JOIN {"Fase".dbo(oCnn)} (NOLOCK) ON [Fase].[fasCodigo]=[ProDepositos].[pdsFase]
+LEFT JOIN {"TipoProDesposito".dbo(oCnn)} (NOLOCK) ON [TipoProDesposito].[tpdCodigo]=[ProDepositos].[pdsTipoProDesposito]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProDepositos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProDepositosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"TipoProDesposito".dbo(oCnn)} (NOLOCK) ON tpdCodigo=pdsTipoProDesposi
             var validade = await validation.ValidateReg(regProDepositos, this, processosReader, faseReader, tipoprodespositoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProDepositos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProDepositos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProDepositosResponse?> Validation([FromBody] Models.ProDepositos regProDepositos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProDepositos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProDepositos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProDepositos, this, processosReader, faseReader, tipoprodespositoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProDepositos.Id.IsEmptyIDNumber())
+            {
+                return new ProDepositosResponse();
+            }
+
+            return reader.Read(regProDepositos.Id, oCnn);
         });
     }
 

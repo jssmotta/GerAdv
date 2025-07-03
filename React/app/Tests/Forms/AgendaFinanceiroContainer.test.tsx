@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import AgendaFinanceiroIncContainer from '@/app/GerAdv_TS/AgendaFinanceiro/Components/AgendaFinanceiroIncContainer';
+// AgendaFinanceiroIncContainer.test.tsx
+// Mock do AgendaFinanceiroInc
+jest.mock('@/app/GerAdv_TS/AgendaFinanceiro/Crud/Inc/AgendaFinanceiro', () => (props: any) => (
+<div data-testid='agendafinanceiro-inc-mock' {...props} />
+));
+describe('AgendaFinanceiroIncContainer', () => {
+  it('deve renderizar AgendaFinanceiroInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <AgendaFinanceiroIncContainer id={id} navigator={mockNavigator} />
+  );
+  const agendafinanceiroInc = getByTestId('agendafinanceiro-inc-mock');
+  expect(agendafinanceiroInc).toBeInTheDocument();
+  expect(agendafinanceiroInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { FuncionariosApi, FuncionariosApiError } from '../Apis/ApiFuncionarios';
 import { FilterFuncionarios } from '../Filters/Funcionarios';
 import { IFuncionarios } from '../Interfaces/interface.Funcionarios';
+import { FuncionariosEmpty } from '../../Models/Funcionarios';
 
 export class FuncionariosValidator {
   static validateFuncionarios(funcionarios: IFuncionarios): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class FuncionariosService implements IFuncionariosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof FuncionariosApiError) {
         throw error;

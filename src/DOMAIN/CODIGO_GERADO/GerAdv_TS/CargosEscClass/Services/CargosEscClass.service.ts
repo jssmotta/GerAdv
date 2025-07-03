@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { CargosEscClassApi, CargosEscClassApiError } from '../Apis/ApiCargosEscClass';
 import { FilterCargosEscClass } from '../Filters/CargosEscClass';
 import { ICargosEscClass } from '../Interfaces/interface.CargosEscClass';
+import { CargosEscClassEmpty } from '../../Models/CargosEscClass';
 
 export class CargosEscClassValidator {
   static validateCargosEscClass(cargosescclass: ICargosEscClass): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class CargosEscClassService implements ICargosEscClassService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof CargosEscClassApiError) {
         throw error;

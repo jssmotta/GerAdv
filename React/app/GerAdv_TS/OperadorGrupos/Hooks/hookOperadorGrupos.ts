@@ -4,6 +4,7 @@ import { IOperadorGruposService } from '../Services/OperadorGrupos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOperadorGrupos } from '../Interfaces/interface.OperadorGrupos';
 import { isValidDate } from '@/app/tools/datetime';
+import { OperadorGruposApi } from '../Apis/ApiOperadorGrupos';
 
 export const useOperadorGruposForm = (
   initialOperadorGrupos: IOperadorGrupos,
@@ -142,6 +143,16 @@ export const useOperadorGruposList = (dataService: IOperadorGruposService) => {
 
 
 export function useValidationsOperadorGrupos() {
+
+  async function runValidation(data: IOperadorGrupos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const operadorgruposApi = new OperadorGruposApi(uri ?? '', token ?? '');
+
+    const result = await operadorgruposApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOperadorGrupos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOperadorGruposComboBox = (
   dataService: IOperadorGruposService,
   initialValue?: any

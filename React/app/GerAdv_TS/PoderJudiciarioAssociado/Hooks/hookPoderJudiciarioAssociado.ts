@@ -4,6 +4,7 @@ import { IPoderJudiciarioAssociadoService } from '../Services/PoderJudiciarioAss
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPoderJudiciarioAssociado } from '../Interfaces/interface.PoderJudiciarioAssociado';
 import { isValidDate } from '@/app/tools/datetime';
+import { PoderJudiciarioAssociadoApi } from '../Apis/ApiPoderJudiciarioAssociado';
 
 export const usePoderJudiciarioAssociadoForm = (
   initialPoderJudiciarioAssociado: IPoderJudiciarioAssociado,
@@ -142,6 +143,16 @@ export const usePoderJudiciarioAssociadoList = (dataService: IPoderJudiciarioAss
 
 
 export function useValidationsPoderJudiciarioAssociado() {
+
+  async function runValidation(data: IPoderJudiciarioAssociado, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const poderjudiciarioassociadoApi = new PoderJudiciarioAssociadoApi(uri ?? '', token ?? '');
+
+    const result = await poderjudiciarioassociadoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPoderJudiciarioAssociado): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -176,5 +187,5 @@ if (data.cidadenome.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

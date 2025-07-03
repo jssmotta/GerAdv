@@ -1,0 +1,13 @@
+﻿// AlertasGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { AlertasGridAdapter } from '@/app/GerAdv_TS/Alertas/Adapter/AlertasGridAdapter';
+// Mock AlertasGrid component
+jest.mock('@/app/GerAdv_TS/Alertas/Crud/Grids/AlertasGrid', () => () => <div data-testid='alertas-grid-mock' />);
+describe('AlertasGridAdapter', () => {
+  it('should render AlertasGrid component', () => {
+    const adapter = new AlertasGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('alertas-grid-mock')).toBeInTheDocument();
+  });
+});

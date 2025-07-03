@@ -39,13 +39,13 @@ public partial class PenhoraService(IOptions<AppSettings> appSettings, IPenhoraR
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBPenhora.SensivelCamposSqlX}, proNroPasta,phsNome
+                   {DBPenhora.SensivelCamposSqlX}, [Processos].[proNroPasta],[PenhoraStatus].[phsNome]
                    FROM {DBPenhora.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=phrProcesso
-LEFT JOIN {"PenhoraStatus".dbo(oCnn)} (NOLOCK) ON phsCodigo=phrPenhoraStatus
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Penhora].[phrProcesso]
+LEFT JOIN {"PenhoraStatus".dbo(oCnn)} (NOLOCK) ON [PenhoraStatus].[phsCodigo]=[Penhora].[phrPenhoraStatus]
  
                    {where}
-                   ORDER BY phrNome
+                   ORDER BY [Penhora].[phrNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PenhoraResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"PenhoraStatus".dbo(oCnn)} (NOLOCK) ON phsCodigo=phrPenhoraStatus
             var validade = await validation.ValidateReg(regPenhora, this, processosReader, penhorastatusReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Penhora: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPenhora, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PenhoraResponse?> Validation([FromBody] Models.Penhora regPenhora, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Penhora: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPenhora == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPenhora, this, processosReader, penhorastatusReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPenhora.Id.IsEmptyIDNumber())
+            {
+                return new PenhoraResponse();
+            }
+
+            return reader.Read(regPenhora.Id, oCnn);
         });
     }
 

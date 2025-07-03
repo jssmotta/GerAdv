@@ -4,6 +4,7 @@ import { IEscritoriosService } from '../Services/Escritorios.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEscritorios } from '../Interfaces/interface.Escritorios';
 import { isValidDate } from '@/app/tools/datetime';
+import { EscritoriosApi } from '../Apis/ApiEscritorios';
 
 export const useEscritoriosForm = (
   initialEscritorios: IEscritorios,
@@ -142,6 +143,16 @@ export const useEscritoriosList = (dataService: IEscritoriosService) => {
 
 
 export function useValidationsEscritorios() {
+
+  async function runValidation(data: IEscritorios, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const escritoriosApi = new EscritoriosApi(uri ?? '', token ?? '');
+
+    const result = await escritoriosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEscritorios): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -200,7 +211,7 @@ if (data.inscest.length > 15) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useEscritoriosComboBox = (
   dataService: IEscritoriosService,
   initialValue?: any

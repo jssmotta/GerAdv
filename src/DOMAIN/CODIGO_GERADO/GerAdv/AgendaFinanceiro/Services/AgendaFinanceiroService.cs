@@ -39,21 +39,21 @@ public partial class AgendaFinanceiroService(IOptions<AppSettings> appSettings, 
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAgendaFinanceiro.SensivelCamposSqlX}, cidNome,advNome,funNome,tipDescricao,cliNome,areDescricao,jusNome,proNroPasta,operNome,preNome
+                   {DBAgendaFinanceiro.SensivelCamposSqlX}, [Cidade].[cidNome],[Advogados].[advNome],[Funcionarios].[funNome],[TipoCompromisso].[tipDescricao],[Clientes].[cliNome],[Area].[areDescricao],[Justica].[jusNome],[Processos].[proNroPasta],[Operador].[operNome],[Prepostos].[preNome]
                    FROM {DBAgendaFinanceiro.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=ageCidade
-LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=ageAdvogado
-LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=ageFuncionario
-LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON tipCodigo=ageTipoCompromisso
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ageCliente
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=ageArea
-LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=ageJustica
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ageProcesso
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ageUsuario
-LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agePreposto
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[AgendaFinanceiro].[ageCidade]
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[AgendaFinanceiro].[ageAdvogado]
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON [Funcionarios].[funCodigo]=[AgendaFinanceiro].[ageFuncionario]
+LEFT JOIN {"TipoCompromisso".dbo(oCnn)} (NOLOCK) ON [TipoCompromisso].[tipCodigo]=[AgendaFinanceiro].[ageTipoCompromisso]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[AgendaFinanceiro].[ageCliente]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[AgendaFinanceiro].[ageArea]
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[AgendaFinanceiro].[ageJustica]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[AgendaFinanceiro].[ageProcesso]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[AgendaFinanceiro].[ageUsuario]
+LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON [Prepostos].[preCodigo]=[AgendaFinanceiro].[agePreposto]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AgendaFinanceiro].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaFinanceiroResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -151,11 +151,49 @@ LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agePreposto
             var validade = await validation.ValidateReg(regAgendaFinanceiro, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AgendaFinanceiro: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgendaFinanceiro, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaFinanceiroResponse?> Validation([FromBody] Models.AgendaFinanceiro regAgendaFinanceiro, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AgendaFinanceiro: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgendaFinanceiro == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgendaFinanceiro, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgendaFinanceiro.Id.IsEmptyIDNumber())
+            {
+                return new AgendaFinanceiroResponse();
+            }
+
+            return reader.Read(regAgendaFinanceiro.Id, oCnn);
         });
     }
 

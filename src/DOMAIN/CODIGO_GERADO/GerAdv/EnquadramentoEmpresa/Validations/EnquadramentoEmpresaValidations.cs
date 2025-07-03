@@ -31,7 +31,7 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"EnquadramentoEmpresa '{reg.Nome}' já cadastrado.";
+            return $"Enquadramento Empresa '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

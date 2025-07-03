@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ForoApi, ForoApiError } from '../Apis/ApiForo';
 import { FilterForo } from '../Filters/Foro';
 import { IForo } from '../Interfaces/interface.Foro';
+import { ForoEmpty } from '../../Models/Foro';
 
 export class ForoValidator {
   static validateForo(foro: IForo): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ForoService implements IForoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ForoApiError) {
         throw error;

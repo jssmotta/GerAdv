@@ -1,13 +1,22 @@
-﻿// GridsDesktop.tsx.txt
+﻿// GridsDesktop.tsx - Versão Refatorada
 'use client';
 import React from 'react';
-import { Grid, GridColumn, GridFilterChangeEvent, GridPageChangeEvent, GridSortChangeEvent } from '@progress/kendo-react-grid';
+import {
+  Grid, 
+  GridColumn, 
+} from '@progress/kendo-react-grid';
+import { useSystemContext } from '@/app/context/SystemContext';
 import { IProcessos } from '../../Interfaces/interface.Processos';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useMemo } from 'react';
-import { applyFilter, applyFilterToColumn, CRUD_CONSTANTS, sortData } from '@/app/tools/crud';
+import { useMemo, useCallback } from 'react';
+import { applyFilter, CRUD_CONSTANTS } from '@/app/tools/crud';
 import { SvgIcon } from '@progress/kendo-react-common';
 import { pencilIcon, trashIcon } from '@progress/kendo-svg-icons';
+import { useHiddenColumns } from '@/app/hooks/useHiddenColumns';
+import { GridColumnMenu } from '@/app/components/Cruds/GridColumnMenu';
+import { useGridFilter } from '@/app/hooks/useGridFilter';
+import { useGridSort } from '@/app/hooks/useGridSort';
+import { useGridPagination } from '@/app/hooks/useGridPagination';
 interface ProcessosGridProps {
   data: IProcessos[];
   onRowClick: (processos: IProcessos) => void;
@@ -23,40 +32,33 @@ export const ProcessosGridDesktopComponent = React.memo(
 
 }: ProcessosGridProps) => {
 const router = useRouter();
-const [initialized, setInitialized] = useState(false);
+const { systemContext } = useSystemContext();
 const RowNumberCell = (props: any) => <td>{props.dataIndex + 1}</td>;
-const [page, setPage] = useState({
-  skip: 0, 
-  take: 10, 
+// Hook para paginação
+const { page, handlePageChange } = useGridPagination({
+  initialSkip: 0, 
+  initialTake: 10, 
 });
-const [sort, setSort] = useState<any[]>([]);
-const [columnFilters, setColumnFilters] = useState({
+// Configuração dos filtros iniciais
+const initialFilters = {
   nropasta: '',
+};
+// Lógica de filtro customizada usando useCallback
+const filterLogic = useCallback((data: IProcessos, filters: Record<string, any>) => {
+  const nropastaMatches = applyFilter(data, 'nropasta', filters.nropasta);
+  return nropastaMatches
+  ;
+}, []);
+// Hook para filtros
+const { columnFilters, filteredData, handleFilterChange } = useGridFilter({
+  data, 
+  initialFilters, 
+  filterLogic, 
 });
-const handleSortChange = (e: GridSortChangeEvent) => {
-  setSort(e.sort);
-};
-const filteredData = useMemo(() => {
-  return data.filter((data: any) => {
-    const nropastaMatches = applyFilter(data, 'nropasta', columnFilters.nropasta);
-    return nropastaMatches
-    ;
-  });
-}, [data, columnFilters]);
-const handleFilterChange = (event: GridFilterChangeEvent) => {
-  const filters = event.filter?.filters || [];
-  const newColumnFilters = { nropasta: '',
-  };
-  filters.forEach((filter) => applyFilterToColumn(filter, newColumnFilters));
-  setColumnFilters(newColumnFilters);
-};
-const sortedFilteredData = sortData(filteredData, sort);
-const handlePageChange = (event: GridPageChangeEvent) => {
-  setPage({
-    skip: event.page.skip, 
-    take: event.page.take, 
-  });
-};
+// Hook para ordenação
+const { sort, sortedData, handleSortChange } = useGridSort({
+  data: filteredData, 
+});
 const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
@@ -513,350 +515,372 @@ const ExcluirLinha = (e: any) => {
   </td>
 );
 };
+const gridColumns = useMemo(() => [
+  <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+  <GridColumn field='nropasta' title='NroPasta' sortable={true} filterable={true} />, /* Track G.02 */
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Agenda'
+  cells={{ data: EditarCellAgenda }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Agenda Financeiro'
+  cells={{ data: EditarCellAgendaFinanceiro }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Agenda Repetir'
+  cells={{ data: EditarCellAgendaRepetir }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Andamentos M D'
+  cells={{ data: EditarCellAndamentosMD }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Apenso'
+  cells={{ data: EditarCellApenso }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Apenso2'
+  cells={{ data: EditarCellApenso2 }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Conta Corrente'
+  cells={{ data: EditarCellContaCorrente }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Contato C R M'
+  cells={{ data: EditarCellContatoCRM }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Contratos'
+  cells={{ data: EditarCellContratos }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Documentos'
+  cells={{ data: EditarCellDocumentos }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Endereco Sistema'
+  cells={{ data: EditarCellEnderecoSistema }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Historico'
+  cells={{ data: EditarCellHistorico }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Honorarios Dados Contrato'
+  cells={{ data: EditarCellHonorariosDadosContrato }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Horas Trab'
+  cells={{ data: EditarCellHorasTrab }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Instancia'
+  cells={{ data: EditarCellInstancia }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Ligacoes'
+  cells={{ data: EditarCellLigacoes }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Livro Caixa'
+  cells={{ data: EditarCellLivroCaixa }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='N E Notas'
+  cells={{ data: EditarCellNENotas }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Parceria Proc'
+  cells={{ data: EditarCellParceriaProc }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Parte Cliente Outras'
+  cells={{ data: EditarCellParteClienteOutras }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Penhora'
+  cells={{ data: EditarCellPenhora }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Precatoria'
+  cells={{ data: EditarCellPrecatoria }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro C D A'
+  cells={{ data: EditarCellProCDA }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Processos Obs Report'
+  cells={{ data: EditarCellProcessosObsReport }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Processos Parados'
+  cells={{ data: EditarCellProcessosParados }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Process Output Request'
+  cells={{ data: EditarCellProcessOutputRequest }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Depositos'
+  cells={{ data: EditarCellProDepositos }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Despesas'
+  cells={{ data: EditarCellProDespesas }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Observacoes'
+  cells={{ data: EditarCellProObservacoes }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Partes'
+  cells={{ data: EditarCellProPartes }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Procuradores'
+  cells={{ data: EditarCellProProcuradores }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Resumos'
+  cells={{ data: EditarCellProResumos }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Sucumbencia'
+  cells={{ data: EditarCellProSucumbencia }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Pro Valores'
+  cells={{ data: EditarCellProValores }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Recados'
+  cells={{ data: EditarCellRecados }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Terceiros'
+  cells={{ data: EditarCellTerceiros }}
+  />, 
+  <GridColumn
+  field='id'
+  filterable={false}
+  sortable={false}
+  width={'65px'}
+  title='Ultimos Processos'
+  cells={{ data: EditarCellUltimosProcessos }}
+  />, 
+  <GridColumn field='nomeprepostos' title='Prepostos' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='nomeadvogados' title='Advogados' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='nomeclientes' title='Clientes' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='nomejustica' title='Justica' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='nomeoponentes' title='Oponentes' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='descricaoarea' title='Area' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='descricaorito' title='Rito' sortable={false} filterable={false} />, /* Track G.01 */
+
+  <GridColumn field='descricaoatividades' title='Atividades' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn
+  field='id'
+  width={'55px'}
+  title='Excluir'
+  sortable={false} filterable={false}
+  cells={{ data: ExcluirLinha }} />
+  ], []);
+  // Hook customizado para gerenciar colunas ocultas
+  const {
+    columnsState, 
+    syncedGridColumns, 
+    initialized, 
+    handleColumnsStateChange
+  } = useHiddenColumns({
+  gridColumns, 
+  systemContextId: systemContext?.Id, 
+  tableName: 'processos'
+});
+// Componente do menu de colunas
+const columnMenuComponent = GridColumnMenu({
+  columnsState, 
+  onColumnsStateChange: handleColumnsStateChange
+});
 return (
 <>
-<Grid
-data={sortedFilteredData.slice(page.skip, page.skip + page.take)}
-skip={page.skip}
-take={page.take}
-total={sortedFilteredData.length}
-pageable={{
-  pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES), 
-  buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT, 
-}}
-onPageChange={handlePageChange}
-sortable={true}
-sort={sort}
-onSortChange={handleSortChange}
-resizable={true}
-reorderable={true}
-filterable={true}
-onFilterChange={handleFilterChange}
-onRowDoubleClick={(e) => handleRowClick(e)}>
-<GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />
-
-<GridColumn field='nropasta' title='NroPasta' sortable={true} filterable={true} />  {/* Track G.02 */}
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Agenda'
-cells={{ data: EditarCellAgenda }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Agenda Financeiro'
-cells={{ data: EditarCellAgendaFinanceiro }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Agenda Repetir'
-cells={{ data: EditarCellAgendaRepetir }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Andamentos M D'
-cells={{ data: EditarCellAndamentosMD }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Apenso'
-cells={{ data: EditarCellApenso }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Apenso2'
-cells={{ data: EditarCellApenso2 }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Conta Corrente'
-cells={{ data: EditarCellContaCorrente }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Contato C R M'
-cells={{ data: EditarCellContatoCRM }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Contratos'
-cells={{ data: EditarCellContratos }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Documentos'
-cells={{ data: EditarCellDocumentos }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Endereco Sistema'
-cells={{ data: EditarCellEnderecoSistema }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Historico'
-cells={{ data: EditarCellHistorico }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Honorarios Dados Contrato'
-cells={{ data: EditarCellHonorariosDadosContrato }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Horas Trab'
-cells={{ data: EditarCellHorasTrab }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Instancia'
-cells={{ data: EditarCellInstancia }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Ligacoes'
-cells={{ data: EditarCellLigacoes }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Livro Caixa'
-cells={{ data: EditarCellLivroCaixa }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='N E Notas'
-cells={{ data: EditarCellNENotas }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Parceria Proc'
-cells={{ data: EditarCellParceriaProc }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Parte Cliente Outras'
-cells={{ data: EditarCellParteClienteOutras }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Penhora'
-cells={{ data: EditarCellPenhora }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Precatoria'
-cells={{ data: EditarCellPrecatoria }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro C D A'
-cells={{ data: EditarCellProCDA }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Processos Obs Report'
-cells={{ data: EditarCellProcessosObsReport }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Processos Parados'
-cells={{ data: EditarCellProcessosParados }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Process Output Request'
-cells={{ data: EditarCellProcessOutputRequest }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Depositos'
-cells={{ data: EditarCellProDepositos }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Despesas'
-cells={{ data: EditarCellProDespesas }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Observacoes'
-cells={{ data: EditarCellProObservacoes }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Partes'
-cells={{ data: EditarCellProPartes }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Procuradores'
-cells={{ data: EditarCellProProcuradores }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Resumos'
-cells={{ data: EditarCellProResumos }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Sucumbencia'
-cells={{ data: EditarCellProSucumbencia }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Pro Valores'
-cells={{ data: EditarCellProValores }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Recados'
-cells={{ data: EditarCellRecados }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Terceiros'
-cells={{ data: EditarCellTerceiros }}
-/>
-<GridColumn
-field='id'
-filterable={false}
-sortable={false}
-width={'65px'}
-title='Ultimos Processos'
-cells={{ data: EditarCellUltimosProcessos }}
-/>
-<GridColumn field='nomeprepostos' title='Prepostos' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='nomeadvogados' title='Advogados' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='nomeclientes' title='Clientes' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='nomejustica' title='Justica' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='nomeoponentes' title='Oponentes' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='descricaoarea' title='Area' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='descricaorito' title='Rito' sortable={false} filterable={false} /> {/* Track G.01 */}
-
-<GridColumn field='descricaoatividades' title='Atividades' sortable={false} filterable={false} /> {/* Track G.01 */}
-<GridColumn
-field='id'
-width={'55px'}
-title='Excluir'
-sortable={false} filterable={false}
-cells={{ data: ExcluirLinha }} />
+{initialized && (
+  <Grid
+  columnMenu={columnMenuComponent}
+  columnsState={columnsState}
+  className='grid-desktop-processos'
+  data={sortedData.slice(page.skip, page.skip + page.take)}
+  skip={page.skip}
+  take={page.take}
+  total={sortedData.length}
+  pageable={{
+    pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES), 
+    buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT, 
+  }}
+  onPageChange={handlePageChange}
+  sortable={true}
+  sort={sort}
+  onSortChange={handleSortChange}
+  resizable={true}
+  reorderable={true}
+  filterable={true}
+  onFilterChange={handleFilterChange}
+  onRowDoubleClick={(e) => handleRowClick(e)}>
+  {syncedGridColumns}
 </Grid>
-
+)}
 </>
 );
 }

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OperadorGruposAgendaApi, OperadorGruposAgendaApiError } from '../Apis/ApiOperadorGruposAgenda';
 import { FilterOperadorGruposAgenda } from '../Filters/OperadorGruposAgenda';
 import { IOperadorGruposAgenda } from '../Interfaces/interface.OperadorGruposAgenda';
+import { OperadorGruposAgendaEmpty } from '../../Models/OperadorGruposAgenda';
 
 export class OperadorGruposAgendaValidator {
   static validateOperadorGruposAgenda(operadorgruposagenda: IOperadorGruposAgenda): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OperadorGruposAgendaService implements IOperadorGruposAgendaService
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OperadorGruposAgendaApiError) {
         throw error;

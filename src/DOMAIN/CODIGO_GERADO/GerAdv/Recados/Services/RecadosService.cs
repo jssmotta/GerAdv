@@ -39,17 +39,17 @@ public partial class RecadosService(IOptions<AppSettings> appSettings, IRecadosR
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBRecados.SensivelCamposSqlX}, proNroPasta,cliNome,ligNome
+                   {DBRecados.SensivelCamposSqlX}, [Processos].[proNroPasta],[Clientes].[cliNome],[Historico].[],[ContatoCRM].[],[Ligacoes].[ligNome],[Agenda].[]
                    FROM {DBRecados.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=recProcesso
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=recCliente
-LEFT JOIN {"Historico".dbo(oCnn)} (NOLOCK) ON hisCodigo=recHistorico
-LEFT JOIN {"ContatoCRM".dbo(oCnn)} (NOLOCK) ON ctcCodigo=recContatoCRM
-LEFT JOIN {"Ligacoes".dbo(oCnn)} (NOLOCK) ON ligCodigo=recLigacoes
-LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=recAgenda
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Recados].[recProcesso]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Recados].[recCliente]
+LEFT JOIN {"Historico".dbo(oCnn)} (NOLOCK) ON [Historico].[hisCodigo]=[Recados].[recHistorico]
+LEFT JOIN {"ContatoCRM".dbo(oCnn)} (NOLOCK) ON [ContatoCRM].[ctcCodigo]=[Recados].[recContatoCRM]
+LEFT JOIN {"Ligacoes".dbo(oCnn)} (NOLOCK) ON [Ligacoes].[ligCodigo]=[Recados].[recLigacoes]
+LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON [Agenda].[ageCodigo]=[Recados].[recAgenda]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [Recados].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<RecadosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -147,11 +147,49 @@ LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON ageCodigo=recAgenda
             var validade = await validation.ValidateReg(regRecados, this, processosReader, clientesReader, historicoReader, contatocrmReader, ligacoesReader, agendaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Recados: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regRecados, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<RecadosResponse?> Validation([FromBody] Models.Recados regRecados, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Recados: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regRecados == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regRecados, this, processosReader, clientesReader, historicoReader, contatocrmReader, ligacoesReader, agendaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regRecados.Id.IsEmptyIDNumber())
+            {
+                return new RecadosResponse();
+            }
+
+            return reader.Read(regRecados.Id, oCnn);
         });
     }
 

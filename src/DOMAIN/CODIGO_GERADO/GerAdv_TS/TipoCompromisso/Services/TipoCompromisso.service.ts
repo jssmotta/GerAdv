@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoCompromissoApi, TipoCompromissoApiError } from '../Apis/ApiTipoCompromisso';
 import { FilterTipoCompromisso } from '../Filters/TipoCompromisso';
 import { ITipoCompromisso } from '../Interfaces/interface.TipoCompromisso';
+import { TipoCompromissoEmpty } from '../../Models/TipoCompromisso';
 
 export class TipoCompromissoValidator {
   static validateTipoCompromisso(tipocompromisso: ITipoCompromisso): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoCompromissoService implements ITipoCompromissoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoCompromissoApiError) {
         throw error;

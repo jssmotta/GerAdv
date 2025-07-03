@@ -31,7 +31,7 @@ public class TipoRecursoValidation : ITipoRecursoValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoRecurso '{reg.Descricao}' já cadastrado.";
+            return $"Tipo Recurso '{reg.Descricao}' Area e/ou Descricao e/ou Justica";
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {

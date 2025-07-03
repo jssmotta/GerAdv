@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { RegimeTributacaoApi, RegimeTributacaoApiError } from '../Apis/ApiRegimeTributacao';
 import { FilterRegimeTributacao } from '../Filters/RegimeTributacao';
 import { IRegimeTributacao } from '../Interfaces/interface.RegimeTributacao';
+import { RegimeTributacaoEmpty } from '../../Models/RegimeTributacao';
 
 export class RegimeTributacaoValidator {
   static validateRegimeTributacao(regimetributacao: IRegimeTributacao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class RegimeTributacaoService implements IRegimeTributacaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof RegimeTributacaoApiError) {
         throw error;

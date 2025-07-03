@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GUTTipoApi, GUTTipoApiError } from '../Apis/ApiGUTTipo';
 import { FilterGUTTipo } from '../Filters/GUTTipo';
 import { IGUTTipo } from '../Interfaces/interface.GUTTipo';
+import { GUTTipoEmpty } from '../../Models/GUTTipo';
 
 export class GUTTipoValidator {
   static validateGUTTipo(guttipo: IGUTTipo): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GUTTipoService implements IGUTTipoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GUTTipoApiError) {
         throw error;

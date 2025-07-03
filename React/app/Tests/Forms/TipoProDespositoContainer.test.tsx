@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import TipoProDespositoIncContainer from '@/app/GerAdv_TS/TipoProDesposito/Components/TipoProDespositoIncContainer';
+// TipoProDespositoIncContainer.test.tsx
+// Mock do TipoProDespositoInc
+jest.mock('@/app/GerAdv_TS/TipoProDesposito/Crud/Inc/TipoProDesposito', () => (props: any) => (
+<div data-testid='tipoprodesposito-inc-mock' {...props} />
+));
+describe('TipoProDespositoIncContainer', () => {
+  it('deve renderizar TipoProDespositoInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <TipoProDespositoIncContainer id={id} navigator={mockNavigator} />
+  );
+  const tipoprodespositoInc = getByTestId('tipoprodesposito-inc-mock');
+  expect(tipoprodespositoInc).toBeInTheDocument();
+  expect(tipoprodespositoInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

@@ -61,7 +61,7 @@ public class JusticaValidation : IJusticaValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Justica '{reg.Nome}' já cadastrado.";
+            return $"Justica '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

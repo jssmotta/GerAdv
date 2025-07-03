@@ -39,12 +39,12 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBOperadorEMailPopup.SensivelCamposSqlX}, operNome
+                   {DBOperadorEMailPopup.SensivelCamposSqlX}, [Operador].[operNome]
                    FROM {DBOperadorEMailPopup.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=oepOperador
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[OperadorEMailPopup].[oepOperador]
  
                    {where}
-                   ORDER BY oepNome
+                   ORDER BY [OperadorEMailPopup].[oepNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OperadorEMailPopupResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
             var validade = await validation.ValidateReg(regOperadorEMailPopup, this, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"OperadorEMailPopup: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOperadorEMailPopup, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OperadorEMailPopupResponse?> Validation([FromBody] Models.OperadorEMailPopup regOperadorEMailPopup, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("OperadorEMailPopup: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOperadorEMailPopup == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOperadorEMailPopup, this, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOperadorEMailPopup.Id.IsEmptyIDNumber())
+            {
+                return new OperadorEMailPopupResponse();
+            }
+
+            return reader.Read(regOperadorEMailPopup.Id, oCnn);
         });
     }
 

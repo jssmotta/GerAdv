@@ -39,22 +39,22 @@ public partial class ProcessosService(IOptions<AppSettings> appSettings, IProces
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProcessos.SensivelCamposSqlX}, advNome,jusNome,advNome,preNome,cliNome,opoNome,areDescricao,cidNome,ritDescricao,atvDescricao
+                   {DBProcessos.SensivelCamposSqlX}, [Advogados].[advNome],[Justica].[jusNome],[Advogados].[advNome],[Prepostos].[preNome],[Clientes].[cliNome],[Oponentes].[opoNome],[Area].[areDescricao],[Cidade].[cidNome],[Situacao].[],[Rito].[ritDescricao],[Atividades].[atvDescricao]
                    FROM {DBProcessos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=proAdvOpo
-LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=proJustica
-LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=proAdvogado
-LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=proPreposto
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=proCliente
-LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON opoCodigo=proOponente
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=proArea
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=proCidade
-LEFT JOIN {"Situacao".dbo(oCnn)} (NOLOCK) ON sitCodigo=proSituacao
-LEFT JOIN {"Rito".dbo(oCnn)} (NOLOCK) ON ritCodigo=proRito
-LEFT JOIN {"Atividades".dbo(oCnn)} (NOLOCK) ON atvCodigo=proAtividade
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[Processos].[proAdvOpo]
+LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[Processos].[proJustica]
+LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[Processos].[proAdvogado]
+LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON [Prepostos].[preCodigo]=[Processos].[proPreposto]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Processos].[proCliente]
+LEFT JOIN {"Oponentes".dbo(oCnn)} (NOLOCK) ON [Oponentes].[opoCodigo]=[Processos].[proOponente]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[Processos].[proArea]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Processos].[proCidade]
+LEFT JOIN {"Situacao".dbo(oCnn)} (NOLOCK) ON [Situacao].[sitCodigo]=[Processos].[proSituacao]
+LEFT JOIN {"Rito".dbo(oCnn)} (NOLOCK) ON [Rito].[ritCodigo]=[Processos].[proRito]
+LEFT JOIN {"Atividades".dbo(oCnn)} (NOLOCK) ON [Atividades].[atvCodigo]=[Processos].[proAtividade]
  
                    {where}
-                   ORDER BY proNroPasta
+                   ORDER BY [Processos].[proNroPasta]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -152,11 +152,49 @@ LEFT JOIN {"Atividades".dbo(oCnn)} (NOLOCK) ON atvCodigo=proAtividade
             var validade = await validation.ValidateReg(regProcessos, this, advogadosReader, justicaReader, prepostosReader, clientesReader, oponentesReader, areaReader, cidadeReader, situacaoReader, ritoReader, atividadesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Processos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessosResponse?> Validation([FromBody] Models.Processos regProcessos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Processos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessos, this, advogadosReader, justicaReader, prepostosReader, clientesReader, oponentesReader, areaReader, cidadeReader, situacaoReader, ritoReader, atividadesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessos.Id.IsEmptyIDNumber())
+            {
+                return new ProcessosResponse();
+            }
+
+            return reader.Read(regProcessos.Id, oCnn);
         });
     }
 

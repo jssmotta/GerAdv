@@ -39,13 +39,13 @@ public partial class HonorariosDadosContratoService(IOptions<AppSettings> appSet
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBHonorariosDadosContrato.SensivelCamposSqlX}, cliNome,proNroPasta
+                   {DBHonorariosDadosContrato.SensivelCamposSqlX}, [Clientes].[cliNome],[Processos].[proNroPasta]
                    FROM {DBHonorariosDadosContrato.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=hdcCliente
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=hdcProcesso
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[HonorariosDadosContrato].[hdcCliente]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[HonorariosDadosContrato].[hdcProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [HonorariosDadosContrato].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<HonorariosDadosContratoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=hdcProcesso
             var validade = await validation.ValidateReg(regHonorariosDadosContrato, this, clientesReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"HonorariosDadosContrato: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regHonorariosDadosContrato, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<HonorariosDadosContratoResponse?> Validation([FromBody] Models.HonorariosDadosContrato regHonorariosDadosContrato, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("HonorariosDadosContrato: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regHonorariosDadosContrato == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regHonorariosDadosContrato, this, clientesReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regHonorariosDadosContrato.Id.IsEmptyIDNumber())
+            {
+                return new HonorariosDadosContratoResponse();
+            }
+
+            return reader.Read(regHonorariosDadosContrato.Id, oCnn);
         });
     }
 

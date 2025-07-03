@@ -1,0 +1,13 @@
+﻿// Agenda2AgendaGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { Agenda2AgendaGridAdapter } from '@/app/GerAdv_TS/Agenda2Agenda/Adapter/Agenda2AgendaGridAdapter';
+// Mock Agenda2AgendaGrid component
+jest.mock('@/app/GerAdv_TS/Agenda2Agenda/Crud/Grids/Agenda2AgendaGrid', () => () => <div data-testid='agenda2agenda-grid-mock' />);
+describe('Agenda2AgendaGridAdapter', () => {
+  it('should render Agenda2AgendaGrid component', () => {
+    const adapter = new Agenda2AgendaGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('agenda2agenda-grid-mock')).toBeInTheDocument();
+  });
+});

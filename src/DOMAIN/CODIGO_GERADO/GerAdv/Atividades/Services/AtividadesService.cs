@@ -43,7 +43,7 @@ public partial class AtividadesService(IOptions<AppSettings> appSettings, IAtivi
                    FROM {DBAtividades.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY atvDescricao
+                   ORDER BY [Atividades].[atvDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AtividadesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class AtividadesService(IOptions<AppSettings> appSettings, IAtivi
             var validade = await validation.ValidateReg(regAtividades, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Atividades: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAtividades, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AtividadesResponse?> Validation([FromBody] Models.Atividades regAtividades, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Atividades: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAtividades == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAtividades, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAtividades.Id.IsEmptyIDNumber())
+            {
+                return new AtividadesResponse();
+            }
+
+            return reader.Read(regAtividades.Id, oCnn);
         });
     }
 

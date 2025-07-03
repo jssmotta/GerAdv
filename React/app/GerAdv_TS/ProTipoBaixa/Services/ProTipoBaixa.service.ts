@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProTipoBaixaApi, ProTipoBaixaApiError } from '../Apis/ApiProTipoBaixa';
 import { FilterProTipoBaixa } from '../Filters/ProTipoBaixa';
 import { IProTipoBaixa } from '../Interfaces/interface.ProTipoBaixa';
+import { ProTipoBaixaEmpty } from '../../Models/ProTipoBaixa';
 
 export class ProTipoBaixaValidator {
   static validateProTipoBaixa(protipobaixa: IProTipoBaixa): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProTipoBaixaService implements IProTipoBaixaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProTipoBaixaApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OponentesApi, OponentesApiError } from '../Apis/ApiOponentes';
 import { FilterOponentes } from '../Filters/Oponentes';
 import { IOponentes } from '../Interfaces/interface.Oponentes';
+import { OponentesEmpty } from '../../Models/Oponentes';
 
 export class OponentesValidator {
   static validateOponentes(oponentes: IOponentes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OponentesService implements IOponentesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OponentesApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AdvogadosApi, AdvogadosApiError } from '../Apis/ApiAdvogados';
 import { FilterAdvogados } from '../Filters/Advogados';
 import { IAdvogados } from '../Interfaces/interface.Advogados';
+import { AdvogadosEmpty } from '../../Models/Advogados';
 
 export class AdvogadosValidator {
   static validateAdvogados(advogados: IAdvogados): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AdvogadosService implements IAdvogadosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AdvogadosApiError) {
         throw error;

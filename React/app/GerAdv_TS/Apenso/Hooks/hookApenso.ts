@@ -4,6 +4,7 @@ import { IApensoService } from '../Services/Apenso.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IApenso } from '../Interfaces/interface.Apenso';
 import { isValidDate } from '@/app/tools/datetime';
+import { ApensoApi } from '../Apis/ApiApenso';
 
 export const useApensoForm = (
   initialApenso: IApenso,
@@ -142,6 +143,16 @@ export const useApensoList = (dataService: IApensoService) => {
 
 
 export function useValidationsApenso() {
+
+  async function runValidation(data: IApenso, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const apensoApi = new ApensoApi(uri ?? '', token ?? '');
+
+    const result = await apensoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IApenso): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,5 +178,5 @@ if (data.obs.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

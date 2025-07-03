@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GUTAtividadesMatrizApi, GUTAtividadesMatrizApiError } from '../Apis/ApiGUTAtividadesMatriz';
 import { FilterGUTAtividadesMatriz } from '../Filters/GUTAtividadesMatriz';
 import { IGUTAtividadesMatriz } from '../Interfaces/interface.GUTAtividadesMatriz';
+import { GUTAtividadesMatrizEmpty } from '../../Models/GUTAtividadesMatriz';
 
 export class GUTAtividadesMatrizValidator {
   static validateGUTAtividadesMatriz(gutatividadesmatriz: IGUTAtividadesMatriz): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GUTAtividadesMatrizService implements IGUTAtividadesMatrizService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GUTAtividadesMatrizApiError) {
         throw error;

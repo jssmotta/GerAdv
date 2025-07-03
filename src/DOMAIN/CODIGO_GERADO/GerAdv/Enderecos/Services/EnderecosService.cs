@@ -39,12 +39,12 @@ public partial class EnderecosService(IOptions<AppSettings> appSettings, IEndere
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBEnderecos.SensivelCamposSqlX}, cidNome
+                   {DBEnderecos.SensivelCamposSqlX}, [Cidade].[cidNome]
                    FROM {DBEnderecos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=endCidade
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Enderecos].[endCidade]
  
                    {where}
-                   ORDER BY endDescricao
+                   ORDER BY [Enderecos].[endDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EnderecosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class EnderecosService(IOptions<AppSettings> appSettings, IEndere
             var validade = await validation.ValidateReg(regEnderecos, this, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Enderecos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEnderecos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EnderecosResponse?> Validation([FromBody] Models.Enderecos regEnderecos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Enderecos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEnderecos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEnderecos, this, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEnderecos.Id.IsEmptyIDNumber())
+            {
+                return new EnderecosResponse();
+            }
+
+            return reader.Read(regEnderecos.Id, oCnn);
         });
     }
 

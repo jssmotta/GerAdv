@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ContatoCRMViewIncContainer from '@/app/GerAdv_TS/ContatoCRMView/Components/ContatoCRMViewIncContainer';
+// ContatoCRMViewIncContainer.test.tsx
+// Mock do ContatoCRMViewInc
+jest.mock('@/app/GerAdv_TS/ContatoCRMView/Crud/Inc/ContatoCRMView', () => (props: any) => (
+<div data-testid='contatocrmview-inc-mock' {...props} />
+));
+describe('ContatoCRMViewIncContainer', () => {
+  it('deve renderizar ContatoCRMViewInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ContatoCRMViewIncContainer id={id} navigator={mockNavigator} />
+  );
+  const contatocrmviewInc = getByTestId('contatocrmview-inc-mock');
+  expect(contatocrmviewInc).toBeInTheDocument();
+  expect(contatocrmviewInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

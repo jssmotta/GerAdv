@@ -4,6 +4,7 @@ import { IDadosProcuracaoService } from '../Services/DadosProcuracao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IDadosProcuracao } from '../Interfaces/interface.DadosProcuracao';
 import { isValidDate } from '@/app/tools/datetime';
+import { DadosProcuracaoApi } from '../Apis/ApiDadosProcuracao';
 
 export const useDadosProcuracaoForm = (
   initialDadosProcuracao: IDadosProcuracao,
@@ -142,6 +143,16 @@ export const useDadosProcuracaoList = (dataService: IDadosProcuracaoService) => 
 
 
 export function useValidationsDadosProcuracao() {
+
+  async function runValidation(data: IDadosProcuracao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const dadosprocuracaoApi = new DadosProcuracaoApi(uri ?? '', token ?? '');
+
+    const result = await dadosprocuracaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IDadosProcuracao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -179,5 +190,5 @@ if (data.objeto.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

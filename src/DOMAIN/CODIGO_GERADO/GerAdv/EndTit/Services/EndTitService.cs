@@ -42,7 +42,7 @@ public partial class EndTitService(IOptions<AppSettings> appSettings, IEndTitRea
                    FROM {DBEndTit.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY 
+                   ORDER BY [EndTit].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EndTitResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class EndTitService(IOptions<AppSettings> appSettings, IEndTitRea
             var validade = await validation.ValidateReg(regEndTit, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"EndTit: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEndTit, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EndTitResponse?> Validation([FromBody] Models.EndTit regEndTit, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("EndTit: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEndTit == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEndTit, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEndTit.Id.IsEmptyIDNumber())
+            {
+                return new EndTitResponse();
+            }
+
+            return reader.Read(regEndTit.Id, oCnn);
         });
     }
 

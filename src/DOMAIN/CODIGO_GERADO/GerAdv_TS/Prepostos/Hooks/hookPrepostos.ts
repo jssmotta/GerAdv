@@ -4,6 +4,7 @@ import { IPrepostosService } from '../Services/Prepostos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPrepostos } from '../Interfaces/interface.Prepostos';
 import { isValidDate } from '@/app/tools/datetime';
+import { PrepostosApi } from '../Apis/ApiPrepostos';
 
 export const usePrepostosForm = (
   initialPrepostos: IPrepostos,
@@ -142,6 +143,16 @@ export const usePrepostosList = (dataService: IPrepostosService) => {
 
 
 export function useValidationsPrepostos() {
+
+  async function runValidation(data: IPrepostos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const prepostosApi = new PrepostosApi(uri ?? '', token ?? '');
+
+    const result = await prepostosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPrepostos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -212,7 +223,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const usePrepostosComboBox = (
   dataService: IPrepostosService,
   initialValue?: any

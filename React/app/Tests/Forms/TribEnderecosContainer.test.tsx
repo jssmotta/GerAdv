@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import TribEnderecosIncContainer from '@/app/GerAdv_TS/TribEnderecos/Components/TribEnderecosIncContainer';
+// TribEnderecosIncContainer.test.tsx
+// Mock do TribEnderecosInc
+jest.mock('@/app/GerAdv_TS/TribEnderecos/Crud/Inc/TribEnderecos', () => (props: any) => (
+<div data-testid='tribenderecos-inc-mock' {...props} />
+));
+describe('TribEnderecosIncContainer', () => {
+  it('deve renderizar TribEnderecosInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <TribEnderecosIncContainer id={id} navigator={mockNavigator} />
+  );
+  const tribenderecosInc = getByTestId('tribenderecos-inc-mock');
+  expect(tribenderecosInc).toBeInTheDocument();
+  expect(tribenderecosInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

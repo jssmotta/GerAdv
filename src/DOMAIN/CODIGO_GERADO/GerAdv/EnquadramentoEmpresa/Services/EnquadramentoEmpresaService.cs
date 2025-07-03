@@ -43,7 +43,7 @@ public partial class EnquadramentoEmpresaService(IOptions<AppSettings> appSettin
                    FROM {DBEnquadramentoEmpresa.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY eqeNome
+                   ORDER BY [EnquadramentoEmpresa].[eqeNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EnquadramentoEmpresaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class EnquadramentoEmpresaService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regEnquadramentoEmpresa, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"EnquadramentoEmpresa: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEnquadramentoEmpresa, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EnquadramentoEmpresaResponse?> Validation([FromBody] Models.EnquadramentoEmpresa regEnquadramentoEmpresa, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("EnquadramentoEmpresa: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEnquadramentoEmpresa == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEnquadramentoEmpresa, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEnquadramentoEmpresa.Id.IsEmptyIDNumber())
+            {
+                return new EnquadramentoEmpresaResponse();
+            }
+
+            return reader.Read(regEnquadramentoEmpresa.Id, oCnn);
         });
     }
 

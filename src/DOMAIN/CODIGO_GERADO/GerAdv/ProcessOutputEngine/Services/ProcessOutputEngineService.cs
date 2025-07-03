@@ -42,7 +42,7 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
                    FROM {DBProcessOutputEngine.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY poeNome
+                   ORDER BY [ProcessOutputEngine].[poeNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessOutputEngineResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regProcessOutputEngine, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProcessOutputEngine: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessOutputEngine, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessOutputEngineResponse?> Validation([FromBody] Models.ProcessOutputEngine regProcessOutputEngine, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProcessOutputEngine: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessOutputEngine == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessOutputEngine, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessOutputEngine.Id.IsEmptyIDNumber())
+            {
+                return new ProcessOutputEngineResponse();
+            }
+
+            return reader.Read(regProcessOutputEngine.Id, oCnn);
         });
     }
 

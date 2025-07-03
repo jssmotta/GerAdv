@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OperadorGrupoApi, OperadorGrupoApiError } from '../Apis/ApiOperadorGrupo';
 import { FilterOperadorGrupo } from '../Filters/OperadorGrupo';
 import { IOperadorGrupo } from '../Interfaces/interface.OperadorGrupo';
+import { OperadorGrupoEmpty } from '../../Models/OperadorGrupo';
 
 export class OperadorGrupoValidator {
   static validateOperadorGrupo(operadorgrupo: IOperadorGrupo): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OperadorGrupoService implements IOperadorGrupoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OperadorGrupoApiError) {
         throw error;

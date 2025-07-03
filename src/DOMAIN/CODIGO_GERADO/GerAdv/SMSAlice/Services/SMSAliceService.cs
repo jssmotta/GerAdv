@@ -39,13 +39,13 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, ISMSAlic
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBSMSAlice.SensivelCamposSqlX}, operNome,tmlNome
+                   {DBSMSAlice.SensivelCamposSqlX}, [Operador].[operNome],[TipoEMail].[tmlNome]
                    FROM {DBSMSAlice.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=smaOperador
-LEFT JOIN {"TipoEMail".dbo(oCnn)} (NOLOCK) ON tmlCodigo=smaTipoEMail
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[SMSAlice].[smaOperador]
+LEFT JOIN {"TipoEMail".dbo(oCnn)} (NOLOCK) ON [TipoEMail].[tmlCodigo]=[SMSAlice].[smaTipoEMail]
  
                    {where}
-                   ORDER BY smaNome
+                   ORDER BY [SMSAlice].[smaNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<SMSAliceResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"TipoEMail".dbo(oCnn)} (NOLOCK) ON tmlCodigo=smaTipoEMail
             var validade = await validation.ValidateReg(regSMSAlice, this, operadorReader, tipoemailReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"SMSAlice: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regSMSAlice, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<SMSAliceResponse?> Validation([FromBody] Models.SMSAlice regSMSAlice, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("SMSAlice: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regSMSAlice == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regSMSAlice, this, operadorReader, tipoemailReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regSMSAlice.Id.IsEmptyIDNumber())
+            {
+                return new SMSAliceResponse();
+            }
+
+            return reader.Read(regSMSAlice.Id, oCnn);
         });
     }
 

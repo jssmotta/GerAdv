@@ -4,6 +4,7 @@ import { IApenso2Service } from '../Services/Apenso2.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IApenso2 } from '../Interfaces/interface.Apenso2';
 import { isValidDate } from '@/app/tools/datetime';
+import { Apenso2Api } from '../Apis/ApiApenso2';
 
 export const useApenso2Form = (
   initialApenso2: IApenso2,
@@ -142,6 +143,16 @@ export const useApenso2List = (dataService: IApenso2Service) => {
 
 
 export function useValidationsApenso2() {
+
+  async function runValidation(data: IApenso2, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const apenso2Api = new Apenso2Api(uri ?? '', token ?? '');
+
+    const result = await apenso2Api.validation(data);
+
+    return result;
+  }
+
   function validate(data: IApenso2): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsApenso2() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

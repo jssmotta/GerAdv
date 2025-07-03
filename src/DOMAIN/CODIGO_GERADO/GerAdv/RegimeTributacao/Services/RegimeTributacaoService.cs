@@ -43,7 +43,7 @@ public partial class RegimeTributacaoService(IOptions<AppSettings> appSettings, 
                    FROM {DBRegimeTributacao.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY rdtNome
+                   ORDER BY [RegimeTributacao].[rdtNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<RegimeTributacaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class RegimeTributacaoService(IOptions<AppSettings> appSettings, 
             var validade = await validation.ValidateReg(regRegimeTributacao, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"RegimeTributacao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regRegimeTributacao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<RegimeTributacaoResponse?> Validation([FromBody] Models.RegimeTributacao regRegimeTributacao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("RegimeTributacao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regRegimeTributacao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regRegimeTributacao, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regRegimeTributacao.Id.IsEmptyIDNumber())
+            {
+                return new RegimeTributacaoResponse();
+            }
+
+            return reader.Read(regRegimeTributacao.Id, oCnn);
         });
     }
 

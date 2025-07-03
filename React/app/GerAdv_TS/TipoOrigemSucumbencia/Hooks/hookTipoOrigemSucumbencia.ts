@@ -4,6 +4,7 @@ import { ITipoOrigemSucumbenciaService } from '../Services/TipoOrigemSucumbencia
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoOrigemSucumbencia } from '../Interfaces/interface.TipoOrigemSucumbencia';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoOrigemSucumbenciaApi } from '../Apis/ApiTipoOrigemSucumbencia';
 
 export const useTipoOrigemSucumbenciaForm = (
   initialTipoOrigemSucumbencia: ITipoOrigemSucumbencia,
@@ -142,6 +143,16 @@ export const useTipoOrigemSucumbenciaList = (dataService: ITipoOrigemSucumbencia
 
 
 export function useValidationsTipoOrigemSucumbencia() {
+
+  async function runValidation(data: ITipoOrigemSucumbencia, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipoorigemsucumbenciaApi = new TipoOrigemSucumbenciaApi(uri ?? '', token ?? '');
+
+    const result = await tipoorigemsucumbenciaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoOrigemSucumbencia): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoOrigemSucumbenciaComboBox = (
   dataService: ITipoOrigemSucumbenciaService,
   initialValue?: any

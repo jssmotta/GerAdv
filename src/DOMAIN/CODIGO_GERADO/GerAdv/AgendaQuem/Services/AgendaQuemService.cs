@@ -38,14 +38,14 @@ public partial class AgendaQuemService(IOptions<AppSettings> appSettings, IAgend
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAgendaQuem.SensivelCamposSqlX}, advNome,funNome,preNome
+                   {DBAgendaQuem.SensivelCamposSqlX}, [Advogados].[advNome],[Funcionarios].[funNome],[Prepostos].[preNome]
                    FROM {DBAgendaQuem.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=agqAdvogado
-LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON funCodigo=agqFuncionario
-LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agqPreposto
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[AgendaQuem].[agqAdvogado]
+LEFT JOIN {"Funcionarios".dbo(oCnn)} (NOLOCK) ON [Funcionarios].[funCodigo]=[AgendaQuem].[agqFuncionario]
+LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON [Prepostos].[preCodigo]=[AgendaQuem].[agqPreposto]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [AgendaQuem].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AgendaQuemResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON preCodigo=agqPreposto
             var validade = await validation.ValidateReg(regAgendaQuem, this, advogadosReader, funcionariosReader, prepostosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AgendaQuem: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAgendaQuem, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AgendaQuemResponse?> Validation([FromBody] Models.AgendaQuem regAgendaQuem, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AgendaQuem: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAgendaQuem == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAgendaQuem, this, advogadosReader, funcionariosReader, prepostosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAgendaQuem.Id.IsEmptyIDNumber())
+            {
+                return new AgendaQuemResponse();
+            }
+
+            return reader.Read(regAgendaQuem.Id, oCnn);
         });
     }
 

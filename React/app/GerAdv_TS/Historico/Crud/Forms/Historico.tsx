@@ -2,12 +2,11 @@
 'use client';
 import { IHistorico } from '@/app/GerAdv_TS/Historico/Interfaces/interface.Historico';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -47,8 +46,8 @@ export const HistoricoForm: React.FC<HistoricoFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new HistoricoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -303,7 +302,7 @@ const addValorProcesso = (e: any) => {
                     onChange={onChange}
                     />
 
-
+                  </div><div className='grid-container'>
                     <FaseComboBox
                     name={'fase'}
                     dataForm={historicoData}
@@ -311,7 +310,7 @@ const addValorProcesso = (e: any) => {
                     setValue={addValorFase}
                     label={'Fase'}
                     />
-                  </div><div className='grid-container'>
+
                     <InputInput
                     type='text'
                     maxLength={2048}
@@ -362,17 +361,17 @@ const addValorProcesso = (e: any) => {
                     setValue={addValorStatusAndamento}
                     label={'Status Andamento'}
                     />
-                    <InputCheckbox dataForm={historicoData} label='Top' name='top' checked={historicoData.top} onChange={onChange} />
-                  </div>
-                </form>
-
-
-                {isMobile && (
-                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Historico' data={historicoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HistoricoForm-${historicoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                  )}
-                  <DeleteButton page={'/pages/historico'} id={historicoData.id} closeModel={onClose} dadoApi={dadoApi} />
+                  </div><div className='grid-container'><InputCheckbox dataForm={historicoData} label='Top' name='top' checked={historicoData.top} onChange={onChange} />
                 </div>
-                <div className='form-spacer'></div>
-                </>
-              );
-            };
+              </form>
+
+
+              {isMobile && (
+                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Historico' data={historicoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HistoricoForm-${historicoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                )}
+                <DeleteButton page={'/pages/historico'} id={historicoData.id} closeModel={onClose} dadoApi={dadoApi} />
+              </div>
+              <div className='form-spacer'></div>
+              </>
+            );
+          };

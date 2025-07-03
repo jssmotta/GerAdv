@@ -39,12 +39,12 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IEscr
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBEscritorios.SensivelCamposSqlX}, cidNome
+                   {DBEscritorios.SensivelCamposSqlX}, [Cidade].[cidNome]
                    FROM {DBEscritorios.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=escCidade
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Escritorios].[escCidade]
  
                    {where}
-                   ORDER BY escNome
+                   ORDER BY [Escritorios].[escNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<EscritoriosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IEscr
             var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Escritorios: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regEscritorios, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<EscritoriosResponse?> Validation([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Escritorios: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regEscritorios == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regEscritorios.Id.IsEmptyIDNumber())
+            {
+                return new EscritoriosResponse();
+            }
+
+            return reader.Read(regEscritorios.Id, oCnn);
         });
     }
 

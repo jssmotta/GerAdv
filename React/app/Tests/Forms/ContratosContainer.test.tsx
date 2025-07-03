@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ContratosIncContainer from '@/app/GerAdv_TS/Contratos/Components/ContratosIncContainer';
+// ContratosIncContainer.test.tsx
+// Mock do ContratosInc
+jest.mock('@/app/GerAdv_TS/Contratos/Crud/Inc/Contratos', () => (props: any) => (
+<div data-testid='contratos-inc-mock' {...props} />
+));
+describe('ContratosIncContainer', () => {
+  it('deve renderizar ContratosInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ContratosIncContainer id={id} navigator={mockNavigator} />
+  );
+  const contratosInc = getByTestId('contratos-inc-mock');
+  expect(contratosInc).toBeInTheDocument();
+  expect(contratosInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

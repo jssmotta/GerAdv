@@ -4,6 +4,7 @@ import { IStatusHTrabService } from '../Services/StatusHTrab.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IStatusHTrab } from '../Interfaces/interface.StatusHTrab';
 import { isValidDate } from '@/app/tools/datetime';
+import { StatusHTrabApi } from '../Apis/ApiStatusHTrab';
 
 export const useStatusHTrabForm = (
   initialStatusHTrab: IStatusHTrab,
@@ -142,6 +143,16 @@ export const useStatusHTrabList = (dataService: IStatusHTrabService) => {
 
 
 export function useValidationsStatusHTrab() {
+
+  async function runValidation(data: IStatusHTrab, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const statushtrabApi = new StatusHTrabApi(uri ?? '', token ?? '');
+
+    const result = await statushtrabApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IStatusHTrab): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useStatusHTrabComboBox = (
   dataService: IStatusHTrabService,
   initialValue?: any

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { Agenda2AgendaApi, Agenda2AgendaApiError } from '../Apis/ApiAgenda2Agenda';
 import { FilterAgenda2Agenda } from '../Filters/Agenda2Agenda';
 import { IAgenda2Agenda } from '../Interfaces/interface.Agenda2Agenda';
+import { Agenda2AgendaEmpty } from '../../Models/Agenda2Agenda';
 
 export class Agenda2AgendaValidator {
   static validateAgenda2Agenda(agenda2agenda: IAgenda2Agenda): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class Agenda2AgendaService implements IAgenda2AgendaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof Agenda2AgendaApiError) {
         throw error;

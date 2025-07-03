@@ -4,6 +4,7 @@ import { IUFService } from '../Services/UF.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IUF } from '../Interfaces/interface.UF';
 import { isValidDate } from '@/app/tools/datetime';
+import { UFApi } from '../Apis/ApiUF';
 
 export const useUFForm = (
   initialUF: IUF,
@@ -142,6 +143,16 @@ export const useUFList = (dataService: IUFService) => {
 
 
 export function useValidationsUF() {
+
+  async function runValidation(data: IUF, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const ufApi = new UFApi(uri ?? '', token ?? '');
+
+    const result = await ufApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IUF): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -170,7 +181,7 @@ if (data.descricao.length > 40) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useUFComboBox = (
   dataService: IUFService,
   initialValue?: any

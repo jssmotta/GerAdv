@@ -28,7 +28,7 @@ public class ObjetosValidation : IObjetosValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Objetos '{reg.Nome}' já cadastrado.";
+            return $"Objetos '{reg.Nome}' Area e/ou Justica e/ou Nome";
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {

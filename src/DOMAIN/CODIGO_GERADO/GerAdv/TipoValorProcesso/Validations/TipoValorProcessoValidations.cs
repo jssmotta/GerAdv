@@ -31,7 +31,7 @@ public class TipoValorProcessoValidation : ITipoValorProcessoValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoValorProcesso '{reg.Descricao}' já cadastrado.";
+            return $"Tipo Valor Processo '{reg.Descricao}'  - Descricao";
         return string.Empty;
     }
 

@@ -2,13 +2,12 @@
 'use client';
 import { IHonorariosDadosContrato } from '@/app/GerAdv_TS/HonorariosDadosContrato/Interfaces/interface.HonorariosDadosContrato';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
-import '@/app/styles/CrudForms5.css'; // [ INDEX_SIZE ]
+import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
@@ -41,8 +40,8 @@ export const HonorariosDadosContratoForm: React.FC<HonorariosDadosContratoFormPr
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new HonorariosDadosContratoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -149,7 +148,7 @@ const addValorCliente = (e: any) => {
         ` : ``}
       </style>
 
-      <div className={isMobile ? 'form-container form-container-HonorariosDadosContrato' : 'form-container5 form-container-HonorariosDadosContrato'}>
+      <div className={isMobile ? 'form-container form-container-HonorariosDadosContrato' : 'form-container form-container-HonorariosDadosContrato'}>
 
         <form className='formInputCadInc' id={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} onSubmit={onConfirm}>
           {!isMobile && (
@@ -227,7 +226,7 @@ const addValorCliente = (e: any) => {
               onChange={onChange}
               />
 
-
+            </div><div className='grid-container'>
               <InputInput
               type='text'
               maxLength={2048}
@@ -240,7 +239,7 @@ const addValorCliente = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'>
+
               <InputInput
               type='text'
               maxLength={2048}

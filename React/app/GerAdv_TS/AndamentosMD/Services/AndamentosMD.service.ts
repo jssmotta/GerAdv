@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AndamentosMDApi, AndamentosMDApiError } from '../Apis/ApiAndamentosMD';
 import { FilterAndamentosMD } from '../Filters/AndamentosMD';
 import { IAndamentosMD } from '../Interfaces/interface.AndamentosMD';
+import { AndamentosMDEmpty } from '../../Models/AndamentosMD';
 
 export class AndamentosMDValidator {
   static validateAndamentosMD(andamentosmd: IAndamentosMD): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AndamentosMDService implements IAndamentosMDService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AndamentosMDApiError) {
         throw error;

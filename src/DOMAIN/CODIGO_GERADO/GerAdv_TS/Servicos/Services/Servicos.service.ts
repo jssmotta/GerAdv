@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ServicosApi, ServicosApiError } from '../Apis/ApiServicos';
 import { FilterServicos } from '../Filters/Servicos';
 import { IServicos } from '../Interfaces/interface.Servicos';
+import { ServicosEmpty } from '../../Models/Servicos';
 
 export class ServicosValidator {
   static validateServicos(servicos: IServicos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ServicosService implements IServicosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ServicosApiError) {
         throw error;

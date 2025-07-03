@@ -39,12 +39,12 @@ public partial class UFService(IOptions<AppSettings> appSettings, IUFReader read
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBUF.SensivelCamposSqlX}, paiNome
+                   {DBUF.SensivelCamposSqlX}, [Paises].[paiNome]
                    FROM {DBUF.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Paises".dbo(oCnn)} (NOLOCK) ON paiCodigo=ufPais
+                   LEFT JOIN {"Paises".dbo(oCnn)} (NOLOCK) ON [Paises].[paiCodigo]=[UF].[ufPais]
  
                    {where}
-                   ORDER BY ufID
+                   ORDER BY [UF].[ufID]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<UFResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class UFService(IOptions<AppSettings> appSettings, IUFReader read
             var validade = await validation.ValidateReg(regUF, this, paisesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"UF: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regUF, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<UFResponse?> Validation([FromBody] Models.UF regUF, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("UF: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regUF == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regUF, this, paisesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regUF.Id.IsEmptyIDNumber())
+            {
+                return new UFResponse();
+            }
+
+            return reader.Read(regUF.Id, oCnn);
         });
     }
 

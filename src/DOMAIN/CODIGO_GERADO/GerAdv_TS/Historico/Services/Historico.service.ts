@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { HistoricoApi, HistoricoApiError } from '../Apis/ApiHistorico';
 import { FilterHistorico } from '../Filters/Historico';
 import { IHistorico } from '../Interfaces/interface.Historico';
+import { HistoricoEmpty } from '../../Models/Historico';
 
 export class HistoricoValidator {
   static validateHistorico(historico: IHistorico): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class HistoricoService implements IHistoricoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof HistoricoApiError) {
         throw error;

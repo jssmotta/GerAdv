@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoEnderecoApi, TipoEnderecoApiError } from '../Apis/ApiTipoEndereco';
 import { FilterTipoEndereco } from '../Filters/TipoEndereco';
 import { ITipoEndereco } from '../Interfaces/interface.TipoEndereco';
+import { TipoEnderecoEmpty } from '../../Models/TipoEndereco';
 
 export class TipoEnderecoValidator {
   static validateTipoEndereco(tipoendereco: ITipoEndereco): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class TipoEnderecoService implements ITipoEnderecoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof TipoEnderecoApiError) {
         throw error;

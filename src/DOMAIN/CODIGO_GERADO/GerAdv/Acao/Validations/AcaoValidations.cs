@@ -31,7 +31,7 @@ public class AcaoValidation : IAcaoValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Acao '{reg.Descricao}' já cadastrado.";
+            return $"Acao '{reg.Descricao}' Area e/ou Descricao e/ou Justica";
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {

@@ -4,6 +4,7 @@ import { ITribunalService } from '../Services/Tribunal.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITribunal } from '../Interfaces/interface.Tribunal';
 import { isValidDate } from '@/app/tools/datetime';
+import { TribunalApi } from '../Apis/ApiTribunal';
 
 export const useTribunalForm = (
   initialTribunal: ITribunal,
@@ -142,6 +143,16 @@ export const useTribunalList = (dataService: ITribunalService) => {
 
 
 export function useValidationsTribunal() {
+
+  async function runValidation(data: ITribunal, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tribunalApi = new TribunalApi(uri ?? '', token ?? '');
+
+    const result = await tribunalApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITribunal): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -173,7 +184,7 @@ if (data.web.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTribunalComboBox = (
   dataService: ITribunalService,
   initialValue?: any

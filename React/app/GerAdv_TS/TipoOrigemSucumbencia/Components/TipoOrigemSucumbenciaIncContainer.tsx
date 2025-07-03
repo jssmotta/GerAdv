@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface TipoOrigemSucumbenciaIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const TipoOrigemSucumbenciaIncContainer: React.FC<TipoOrigemSucumbenciaIncContainerProps> = ({ id, navigator }) => {
+const TipoOrigemSucumbenciaIncContainer: React.FC<TipoOrigemSucumbenciaIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <TipoOrigemSucumbenciaInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

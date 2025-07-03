@@ -39,12 +39,12 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, ICidadeRea
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBCidade.SensivelCamposSqlX}, ufID
+                   {DBCidade.SensivelCamposSqlX}, [UF].[ufID]
                    FROM {DBCidade.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"UF".dbo(oCnn)} (NOLOCK) ON ufCodigo=cidUF
+                   LEFT JOIN {"UF".dbo(oCnn)} (NOLOCK) ON [UF].[ufCodigo]=[Cidade].[cidUF]
  
                    {where}
-                   ORDER BY cidNome
+                   ORDER BY [Cidade].[cidNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<CidadeResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, ICidadeRea
             var validade = await validation.ValidateReg(regCidade, this, ufReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Cidade: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regCidade, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<CidadeResponse?> Validation([FromBody] Models.Cidade regCidade, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Cidade: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regCidade == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regCidade, this, ufReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regCidade.Id.IsEmptyIDNumber())
+            {
+                return new CidadeResponse();
+            }
+
+            return reader.Read(regCidade.Id, oCnn);
         });
     }
 

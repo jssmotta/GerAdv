@@ -43,7 +43,7 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IPaisesRea
                    FROM {DBPaises.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY paiNome
+                   ORDER BY [Paises].[paiNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PaisesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IPaisesRea
             var validade = await validation.ValidateReg(regPaises, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Paises: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPaises, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PaisesResponse?> Validation([FromBody] Models.Paises regPaises, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Paises: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPaises == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPaises, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPaises.Id.IsEmptyIDNumber())
+            {
+                return new PaisesResponse();
+            }
+
+            return reader.Read(regPaises.Id, oCnn);
         });
     }
 

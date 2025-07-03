@@ -2,12 +2,11 @@
 'use client';
 import { IContatoCRM } from '@/app/GerAdv_TS/ContatoCRM/Interfaces/interface.ContatoCRM';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const ContatoCRMForm: React.FC<ContatoCRMFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ContatoCRMApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -259,7 +258,7 @@ const addValorOperador = (e: any) => {
                   onChange={onChange}
                   />
 
-
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -272,7 +271,7 @@ const addValorOperador = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'>
+
                   <OperadorComboBox
                   name={'operador'}
                   dataForm={contatocrmData}
@@ -366,7 +365,7 @@ const addValorOperador = (e: any) => {
                   onChange={onChange}
                   />
 
-
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -387,45 +386,45 @@ const addValorOperador = (e: any) => {
                   setValue={addValorProcesso}
                   label={'Processos'}
                   />
-                </div><div className='grid-container'><InputCheckbox dataForm={contatocrmData} label='Importante' name='importante' checked={contatocrmData.importante} onChange={onChange} />
-                <InputCheckbox dataForm={contatocrmData} label='Urgente' name='urgente' checked={contatocrmData.urgente} onChange={onChange} />
-                <InputCheckbox dataForm={contatocrmData} label='GerarHoraTrabalhada' name='gerarhoratrabalhada' checked={contatocrmData.gerarhoratrabalhada} onChange={onChange} />
-                <InputCheckbox dataForm={contatocrmData} label='ExibirNoTopo' name='exibirnotopo' checked={contatocrmData.exibirnotopo} onChange={onChange} />
+                  <InputCheckbox dataForm={contatocrmData} label='Importante' name='importante' checked={contatocrmData.importante} onChange={onChange} />
+                  <InputCheckbox dataForm={contatocrmData} label='Urgente' name='urgente' checked={contatocrmData.urgente} onChange={onChange} />
+                  <InputCheckbox dataForm={contatocrmData} label='GerarHoraTrabalhada' name='gerarhoratrabalhada' checked={contatocrmData.gerarhoratrabalhada} onChange={onChange} />
+                  <InputCheckbox dataForm={contatocrmData} label='ExibirNoTopo' name='exibirnotopo' checked={contatocrmData.exibirnotopo} onChange={onChange} />
 
-                <TipoContatoCRMComboBox
-                name={'tipocontatocrm'}
-                dataForm={contatocrmData}
-                value={contatocrmData.tipocontatocrm}
-                setValue={addValorTipoContatoCRM}
-                label={'Tipo Contato C R M'}
-                />
+                  <TipoContatoCRMComboBox
+                  name={'tipocontatocrm'}
+                  dataForm={contatocrmData}
+                  value={contatocrmData.tipocontatocrm}
+                  setValue={addValorTipoContatoCRM}
+                  label={'Tipo Contato C R M'}
+                  />
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='contato'
-                label='Contato'
-                dataForm={contatocrmData}
-                className='inputIncNome'
-                name='contato'
-                value={contatocrmData.contato}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2147483647}
+                  id='contato'
+                  label='Contato'
+                  dataForm={contatocrmData}
+                  className='inputIncNome'
+                  name='contato'
+                  value={contatocrmData.contato}
+                  onChange={onChange}
+                  />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='emocao'
-                label='Emocao'
-                dataForm={contatocrmData}
-                className='inputIncNome'
-                name='emocao'
-                value={contatocrmData.emocao}
-                onChange={onChange}
-                />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='emocao'
+                  label='Emocao'
+                  dataForm={contatocrmData}
+                  className='inputIncNome'
+                  name='emocao'
+                  value={contatocrmData.emocao}
+                  onChange={onChange}
+                  />
 
-                <InputCheckbox dataForm={contatocrmData} label='Continuar' name='continuar' checked={contatocrmData.continuar} onChange={onChange} />
+                </div><div className='grid-container'><InputCheckbox dataForm={contatocrmData} label='Continuar' name='continuar' checked={contatocrmData.continuar} onChange={onChange} />
               </div>
             </form>
 

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OperadorEMailPopupApi, OperadorEMailPopupApiError } from '../Apis/ApiOperadorEMailPopup';
 import { FilterOperadorEMailPopup } from '../Filters/OperadorEMailPopup';
 import { IOperadorEMailPopup } from '../Interfaces/interface.OperadorEMailPopup';
+import { OperadorEMailPopupEmpty } from '../../Models/OperadorEMailPopup';
 
 export class OperadorEMailPopupValidator {
   static validateOperadorEMailPopup(operadoremailpopup: IOperadorEMailPopup): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OperadorEMailPopupService implements IOperadorEMailPopupService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OperadorEMailPopupApiError) {
         throw error;

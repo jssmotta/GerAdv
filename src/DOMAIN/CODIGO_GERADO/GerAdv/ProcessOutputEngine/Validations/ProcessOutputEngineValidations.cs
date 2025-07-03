@@ -31,7 +31,7 @@ public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"ProcessOutputEngine '{reg.Nome}' já cadastrado.";
+            return $"Process Output Engine '{reg.Nome}' Campo e/ou Database e/ou Tabela e/ou Valor";
         return string.Empty;
     }
 

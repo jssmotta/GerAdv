@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { SetorApi, SetorApiError } from '../Apis/ApiSetor';
 import { FilterSetor } from '../Filters/Setor';
 import { ISetor } from '../Interfaces/interface.Setor';
+import { SetorEmpty } from '../../Models/Setor';
 
 export class SetorValidator {
   static validateSetor(setor: ISetor): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class SetorService implements ISetorService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof SetorApiError) {
         throw error;

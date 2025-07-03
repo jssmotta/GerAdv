@@ -4,6 +4,7 @@ import { ISMSAliceService } from '../Services/SMSAlice.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ISMSAlice } from '../Interfaces/interface.SMSAlice';
 import { isValidDate } from '@/app/tools/datetime';
+import { SMSAliceApi } from '../Apis/ApiSMSAlice';
 
 export const useSMSAliceForm = (
   initialSMSAlice: ISMSAlice,
@@ -142,6 +143,16 @@ export const useSMSAliceList = (dataService: ISMSAliceService) => {
 
 
 export function useValidationsSMSAlice() {
+
+  async function runValidation(data: ISMSAlice, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const smsaliceApi = new SMSAliceApi(uri ?? '', token ?? '');
+
+    const result = await smsaliceApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ISMSAlice): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 150) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useSMSAliceComboBox = (
   dataService: ISMSAliceService,
   initialValue?: any

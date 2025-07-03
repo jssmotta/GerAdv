@@ -4,6 +4,7 @@ import { ISetorService } from '../Services/Setor.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ISetor } from '../Interfaces/interface.Setor';
 import { isValidDate } from '@/app/tools/datetime';
+import { SetorApi } from '../Apis/ApiSetor';
 
 export const useSetorForm = (
   initialSetor: ISetor,
@@ -142,6 +143,16 @@ export const useSetorList = (dataService: ISetorService) => {
 
 
 export function useValidationsSetor() {
+
+  async function runValidation(data: ISetor, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const setorApi = new SetorApi(uri ?? '', token ?? '');
+
+    const result = await setorApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ISetor): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 40) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useSetorComboBox = (
   dataService: ISetorService,
   initialValue?: any

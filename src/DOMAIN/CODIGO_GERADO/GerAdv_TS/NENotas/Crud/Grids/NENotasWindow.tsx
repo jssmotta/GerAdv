@@ -35,7 +35,7 @@ return (
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
   newHeight={560}
-  newWidth={900}
+  newWidth={1250}
   mobile={isMobile}
   id={(selectedNENotas?.id ?? 0).toString()}
 >

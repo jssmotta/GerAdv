@@ -284,7 +284,8 @@ describe('Integração de hooks', () => {
   
     expect(validation.isValid).toBe(true);
   });
-});  test('deve carregar opções na inicialização', async () => {
+}); 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, nome: 'S M S Alice 1' },
       { id: 2, nome: 'S M S Alice 2' }
@@ -304,6 +305,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockSMSAliceService.getList).toHaveBeenCalled();
   });
 
@@ -318,8 +320,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useSMSAliceComboBox(mockSMSAliceService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -349,8 +349,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useSMSAliceComboBox(mockSMSAliceService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'S M S Alice ABC' },

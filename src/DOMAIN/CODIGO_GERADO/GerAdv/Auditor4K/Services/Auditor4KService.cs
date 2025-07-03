@@ -43,7 +43,7 @@ public partial class Auditor4KService(IOptions<AppSettings> appSettings, IAudito
                    FROM {DBAuditor4K.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY audNome
+                   ORDER BY [Auditor4K].[audNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<Auditor4KResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class Auditor4KService(IOptions<AppSettings> appSettings, IAudito
             var validade = await validation.ValidateReg(regAuditor4K, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Auditor4K: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAuditor4K, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<Auditor4KResponse?> Validation([FromBody] Models.Auditor4K regAuditor4K, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Auditor4K: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAuditor4K == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAuditor4K, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAuditor4K.Id.IsEmptyIDNumber())
+            {
+                return new Auditor4KResponse();
+            }
+
+            return reader.Read(regAuditor4K.Id, oCnn);
         });
     }
 

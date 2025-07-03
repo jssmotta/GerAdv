@@ -4,6 +4,7 @@ import { IForoService } from '../Services/Foro.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IForo } from '../Interfaces/interface.Foro';
 import { isValidDate } from '@/app/tools/datetime';
+import { ForoApi } from '../Apis/ApiForo';
 
 export const useForoForm = (
   initialForo: IForo,
@@ -142,6 +143,16 @@ export const useForoList = (dataService: IForoService) => {
 
 
 export function useValidationsForo() {
+
+  async function runValidation(data: IForo, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const foroApi = new ForoApi(uri ?? '', token ?? '');
+
+    const result = await foroApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IForo): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -191,7 +202,7 @@ if (data.web.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useForoComboBox = (
   dataService: IForoService,
   initialValue?: any

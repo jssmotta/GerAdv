@@ -39,12 +39,12 @@ public partial class PrecatoriaService(IOptions<AppSettings> appSettings, IPreca
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBPrecatoria.SensivelCamposSqlX}, proNroPasta
+                   {DBPrecatoria.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBPrecatoria.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=preProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Precatoria].[preProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [Precatoria].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PrecatoriaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class PrecatoriaService(IOptions<AppSettings> appSettings, IPreca
             var validade = await validation.ValidateReg(regPrecatoria, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Precatoria: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPrecatoria, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PrecatoriaResponse?> Validation([FromBody] Models.Precatoria regPrecatoria, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Precatoria: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPrecatoria == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPrecatoria, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPrecatoria.Id.IsEmptyIDNumber())
+            {
+                return new PrecatoriaResponse();
+            }
+
+            return reader.Read(regPrecatoria.Id, oCnn);
         });
     }
 

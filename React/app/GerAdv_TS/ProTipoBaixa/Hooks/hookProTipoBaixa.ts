@@ -4,6 +4,7 @@ import { IProTipoBaixaService } from '../Services/ProTipoBaixa.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProTipoBaixa } from '../Interfaces/interface.ProTipoBaixa';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProTipoBaixaApi } from '../Apis/ApiProTipoBaixa';
 
 export const useProTipoBaixaForm = (
   initialProTipoBaixa: IProTipoBaixa,
@@ -142,6 +143,16 @@ export const useProTipoBaixaList = (dataService: IProTipoBaixaService) => {
 
 
 export function useValidationsProTipoBaixa() {
+
+  async function runValidation(data: IProTipoBaixa, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const protipobaixaApi = new ProTipoBaixaApi(uri ?? '', token ?? '');
+
+    const result = await protipobaixaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProTipoBaixa): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProTipoBaixaComboBox = (
   dataService: IProTipoBaixaService,
   initialValue?: any

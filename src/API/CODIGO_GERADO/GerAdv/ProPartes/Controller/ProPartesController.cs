@@ -86,4 +86,26 @@ public partial class ProPartesController(IProPartesService propartesService) : C
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.ProPartes regProPartes, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _propartesService.Validation(regProPartes, uri);
+            if (result == null)
+            {
+                _logger.Warn("ProPartes: Validation failed to add or update ProPartes, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ProPartes: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

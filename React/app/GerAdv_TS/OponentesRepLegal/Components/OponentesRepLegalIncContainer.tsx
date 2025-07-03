@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface OponentesRepLegalIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const OponentesRepLegalIncContainer: React.FC<OponentesRepLegalIncContainerProps> = ({ id, navigator }) => {
+const OponentesRepLegalIncContainer: React.FC<OponentesRepLegalIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <OponentesRepLegalInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

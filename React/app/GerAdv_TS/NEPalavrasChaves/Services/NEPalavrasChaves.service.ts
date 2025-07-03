@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { NEPalavrasChavesApi, NEPalavrasChavesApiError } from '../Apis/ApiNEPalavrasChaves';
 import { FilterNEPalavrasChaves } from '../Filters/NEPalavrasChaves';
 import { INEPalavrasChaves } from '../Interfaces/interface.NEPalavrasChaves';
+import { NEPalavrasChavesEmpty } from '../../Models/NEPalavrasChaves';
 
 export class NEPalavrasChavesValidator {
   static validateNEPalavrasChaves(nepalavraschaves: INEPalavrasChaves): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class NEPalavrasChavesService implements INEPalavrasChavesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof NEPalavrasChavesApiError) {
         throw error;

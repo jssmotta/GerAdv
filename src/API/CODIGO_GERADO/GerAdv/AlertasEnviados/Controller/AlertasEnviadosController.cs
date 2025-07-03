@@ -86,4 +86,26 @@ public partial class AlertasEnviadosController(IAlertasEnviadosService alertasen
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.AlertasEnviados regAlertasEnviados, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _alertasenviadosService.Validation(regAlertasEnviados, uri);
+            if (result == null)
+            {
+                _logger.Warn("AlertasEnviados: Validation failed to add or update AlertasEnviados, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "AlertasEnviados: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

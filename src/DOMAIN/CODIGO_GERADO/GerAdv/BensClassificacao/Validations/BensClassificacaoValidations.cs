@@ -31,7 +31,7 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"BensClassificacao '{reg.Nome}' já cadastrado.";
+            return $"Bens Classificacao '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

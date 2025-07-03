@@ -4,6 +4,7 @@ import { IParteClienteOutrasService } from '../Services/ParteClienteOutras.servi
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IParteClienteOutras } from '../Interfaces/interface.ParteClienteOutras';
 import { isValidDate } from '@/app/tools/datetime';
+import { ParteClienteOutrasApi } from '../Apis/ApiParteClienteOutras';
 
 export const useParteClienteOutrasForm = (
   initialParteClienteOutras: IParteClienteOutras,
@@ -142,6 +143,16 @@ export const useParteClienteOutrasList = (dataService: IParteClienteOutrasServic
 
 
 export function useValidationsParteClienteOutras() {
+
+  async function runValidation(data: IParteClienteOutras, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const parteclienteoutrasApi = new ParteClienteOutrasApi(uri ?? '', token ?? '');
+
+    const result = await parteclienteoutrasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IParteClienteOutras): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsParteClienteOutras() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

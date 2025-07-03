@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProProcuradoresApi, ProProcuradoresApiError } from '../Apis/ApiProProcuradores';
 import { FilterProProcuradores } from '../Filters/ProProcuradores';
 import { IProProcuradores } from '../Interfaces/interface.ProProcuradores';
+import { ProProcuradoresEmpty } from '../../Models/ProProcuradores';
 
 export class ProProcuradoresValidator {
   static validateProProcuradores(proprocuradores: IProProcuradores): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProProcuradoresService implements IProProcuradoresService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProProcuradoresApiError) {
         throw error;

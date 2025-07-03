@@ -4,6 +4,7 @@ import { IEMPClassRiscosService } from '../Services/EMPClassRiscos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEMPClassRiscos } from '../Interfaces/interface.EMPClassRiscos';
 import { isValidDate } from '@/app/tools/datetime';
+import { EMPClassRiscosApi } from '../Apis/ApiEMPClassRiscos';
 
 export const useEMPClassRiscosForm = (
   initialEMPClassRiscos: IEMPClassRiscos,
@@ -142,6 +143,16 @@ export const useEMPClassRiscosList = (dataService: IEMPClassRiscosService) => {
 
 
 export function useValidationsEMPClassRiscos() {
+
+  async function runValidation(data: IEMPClassRiscos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const empclassriscosApi = new EMPClassRiscosApi(uri ?? '', token ?? '');
+
+    const result = await empclassriscosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEMPClassRiscos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useEMPClassRiscosComboBox = (
   dataService: IEMPClassRiscosService,
   initialValue?: any

@@ -39,13 +39,13 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IPar
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBParceriaProc.SensivelCamposSqlX}, advNome,proNroPasta
+                   {DBParceriaProc.SensivelCamposSqlX}, [Advogados].[advNome],[Processos].[proNroPasta]
                    FROM {DBParceriaProc.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=parAdvogado
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=parProcesso
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[ParceriaProc].[parAdvogado]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ParceriaProc].[parProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ParceriaProc].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ParceriaProcResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=parProcesso
             var validade = await validation.ValidateReg(regParceriaProc, this, advogadosReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ParceriaProc: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regParceriaProc, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ParceriaProcResponse?> Validation([FromBody] Models.ParceriaProc regParceriaProc, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ParceriaProc: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regParceriaProc == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regParceriaProc, this, advogadosReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regParceriaProc.Id.IsEmptyIDNumber())
+            {
+                return new ParceriaProcResponse();
+            }
+
+            return reader.Read(regParceriaProc.Id, oCnn);
         });
     }
 

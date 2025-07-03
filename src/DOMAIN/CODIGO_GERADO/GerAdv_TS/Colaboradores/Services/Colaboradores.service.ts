@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ColaboradoresApi, ColaboradoresApiError } from '../Apis/ApiColaboradores';
 import { FilterColaboradores } from '../Filters/Colaboradores';
 import { IColaboradores } from '../Interfaces/interface.Colaboradores';
+import { ColaboradoresEmpty } from '../../Models/Colaboradores';
 
 export class ColaboradoresValidator {
   static validateColaboradores(colaboradores: IColaboradores): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ColaboradoresService implements IColaboradoresService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ColaboradoresApiError) {
         throw error;

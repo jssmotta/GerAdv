@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AreaApi, AreaApiError } from '../Apis/ApiArea';
 import { FilterArea } from '../Filters/Area';
 import { IArea } from '../Interfaces/interface.Area';
+import { AreaEmpty } from '../../Models/Area';
 
 export class AreaValidator {
   static validateArea(area: IArea): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AreaService implements IAreaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AreaApiError) {
         throw error;

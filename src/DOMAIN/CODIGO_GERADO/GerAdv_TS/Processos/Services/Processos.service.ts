@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProcessosApi, ProcessosApiError } from '../Apis/ApiProcessos';
 import { FilterProcessos } from '../Filters/Processos';
 import { IProcessos } from '../Interfaces/interface.Processos';
+import { ProcessosEmpty } from '../../Models/Processos';
 
 export class ProcessosValidator {
   static validateProcessos(processos: IProcessos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProcessosService implements IProcessosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProcessosApiError) {
         throw error;

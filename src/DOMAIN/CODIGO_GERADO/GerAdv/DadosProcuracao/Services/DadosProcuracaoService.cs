@@ -39,12 +39,12 @@ public partial class DadosProcuracaoService(IOptions<AppSettings> appSettings, I
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBDadosProcuracao.SensivelCamposSqlX}, cliNome
+                   {DBDadosProcuracao.SensivelCamposSqlX}, [Clientes].[cliNome]
                    FROM {DBDadosProcuracao.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=prcCliente
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[DadosProcuracao].[prcCliente]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [DadosProcuracao].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<DadosProcuracaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class DadosProcuracaoService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regDadosProcuracao, this, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"DadosProcuracao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regDadosProcuracao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<DadosProcuracaoResponse?> Validation([FromBody] Models.DadosProcuracao regDadosProcuracao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("DadosProcuracao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regDadosProcuracao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regDadosProcuracao, this, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regDadosProcuracao.Id.IsEmptyIDNumber())
+            {
+                return new DadosProcuracaoResponse();
+            }
+
+            return reader.Read(regDadosProcuracao.Id, oCnn);
         });
     }
 

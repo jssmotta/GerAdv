@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ViaRecebimentoApi, ViaRecebimentoApiError } from '../Apis/ApiViaRecebimento';
 import { FilterViaRecebimento } from '../Filters/ViaRecebimento';
 import { IViaRecebimento } from '../Interfaces/interface.ViaRecebimento';
+import { ViaRecebimentoEmpty } from '../../Models/ViaRecebimento';
 
 export class ViaRecebimentoValidator {
   static validateViaRecebimento(viarecebimento: IViaRecebimento): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ViaRecebimentoService implements IViaRecebimentoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ViaRecebimentoApiError) {
         throw error;

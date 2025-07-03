@@ -39,13 +39,13 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IDiario2R
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBDiario2.SensivelCamposSqlX}, operNome,cliNome
+                   {DBDiario2.SensivelCamposSqlX}, [Operador].[operNome],[Clientes].[cliNome]
                    FROM {DBDiario2.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=diaOperador
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=diaCliente
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[Diario2].[diaOperador]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Diario2].[diaCliente]
  
                    {where}
-                   ORDER BY diaNome
+                   ORDER BY [Diario2].[diaNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<Diario2ResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=diaCliente
             var validade = await validation.ValidateReg(regDiario2, this, operadorReader, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Diario2: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regDiario2, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<Diario2Response?> Validation([FromBody] Models.Diario2 regDiario2, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Diario2: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regDiario2 == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regDiario2, this, operadorReader, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regDiario2.Id.IsEmptyIDNumber())
+            {
+                return new Diario2Response();
+            }
+
+            return reader.Read(regDiario2.Id, oCnn);
         });
     }
 

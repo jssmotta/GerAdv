@@ -4,6 +4,7 @@ import { IRitoService } from '../Services/Rito.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IRito } from '../Interfaces/interface.Rito';
 import { isValidDate } from '@/app/tools/datetime';
+import { RitoApi } from '../Apis/ApiRito';
 
 export const useRitoForm = (
   initialRito: IRito,
@@ -142,6 +143,16 @@ export const useRitoList = (dataService: IRitoService) => {
 
 
 export function useValidationsRito() {
+
+  async function runValidation(data: IRito, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const ritoApi = new RitoApi(uri ?? '', token ?? '');
+
+    const result = await ritoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IRito): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 20) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useRitoComboBox = (
   dataService: IRitoService,
   initialValue?: any

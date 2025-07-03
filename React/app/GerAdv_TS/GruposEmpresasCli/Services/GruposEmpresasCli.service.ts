@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GruposEmpresasCliApi, GruposEmpresasCliApiError } from '../Apis/ApiGruposEmpresasCli';
 import { FilterGruposEmpresasCli } from '../Filters/GruposEmpresasCli';
 import { IGruposEmpresasCli } from '../Interfaces/interface.GruposEmpresasCli';
+import { GruposEmpresasCliEmpty } from '../../Models/GruposEmpresasCli';
 
 export class GruposEmpresasCliValidator {
   static validateGruposEmpresasCli(gruposempresascli: IGruposEmpresasCli): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GruposEmpresasCliService implements IGruposEmpresasCliService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GruposEmpresasCliApiError) {
         throw error;

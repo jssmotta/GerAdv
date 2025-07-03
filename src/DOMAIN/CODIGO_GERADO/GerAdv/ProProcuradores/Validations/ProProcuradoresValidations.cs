@@ -28,7 +28,7 @@ public class ProProcuradoresValidation : IProProcuradoresValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"ProProcuradores '{reg.Nome}' já cadastrado.";
+            return $"Pro Procuradores '{reg.Nome}' Advogado e/ou Data e/ou Nome e/ou Processo";
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {

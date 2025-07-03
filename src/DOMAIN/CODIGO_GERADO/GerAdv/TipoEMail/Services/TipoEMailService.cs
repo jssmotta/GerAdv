@@ -42,7 +42,7 @@ public partial class TipoEMailService(IOptions<AppSettings> appSettings, ITipoEM
                    FROM {DBTipoEMail.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tmlNome
+                   ORDER BY [TipoEMail].[tmlNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoEMailResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class TipoEMailService(IOptions<AppSettings> appSettings, ITipoEM
             var validade = await validation.ValidateReg(regTipoEMail, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoEMail: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoEMail, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoEMailResponse?> Validation([FromBody] Models.TipoEMail regTipoEMail, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoEMail: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoEMail == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoEMail, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoEMail.Id.IsEmptyIDNumber())
+            {
+                return new TipoEMailResponse();
+            }
+
+            return reader.Read(regTipoEMail.Id, oCnn);
         });
     }
 

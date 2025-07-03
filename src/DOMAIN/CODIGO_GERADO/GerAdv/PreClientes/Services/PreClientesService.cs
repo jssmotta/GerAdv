@@ -39,13 +39,13 @@ public partial class PreClientesService(IOptions<AppSettings> appSettings, IPreC
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBPreClientes.SensivelCamposSqlX}, cliNome,cidNome
+                   {DBPreClientes.SensivelCamposSqlX}, [Clientes].[cliNome],[Cidade].[cidNome]
                    FROM {DBPreClientes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=cliIDRep
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=cliCidade
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[PreClientes].[cliIDRep]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[PreClientes].[cliCidade]
  
                    {where}
-                   ORDER BY cliNome
+                   ORDER BY [PreClientes].[cliNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PreClientesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=cliCidade
             var validade = await validation.ValidateReg(regPreClientes, this, clientesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"PreClientes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPreClientes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PreClientesResponse?> Validation([FromBody] Models.PreClientes regPreClientes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("PreClientes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPreClientes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPreClientes, this, clientesReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPreClientes.Id.IsEmptyIDNumber())
+            {
+                return new PreClientesResponse();
+            }
+
+            return reader.Read(regPreClientes.Id, oCnn);
         });
     }
 

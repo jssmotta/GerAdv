@@ -2,12 +2,11 @@
 'use client';
 import { IAgendaRepetir } from '@/app/GerAdv_TS/AgendaRepetir/Interfaces/interface.AgendaRepetir';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -45,8 +44,8 @@ export const AgendaRepetirForm: React.FC<AgendaRepetirFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new AgendaRepetirApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -275,7 +274,7 @@ const addValorAdvogado = (e: any) => {
                   onChange={onChange}
                   />
 
-
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -288,7 +287,7 @@ const addValorAdvogado = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'>
+
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -392,7 +391,7 @@ const addValorAdvogado = (e: any) => {
                   onChange={onChange}
                   />
 
-
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -418,23 +417,23 @@ const addValorAdvogado = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'><InputCheckbox dataForm={agendarepetirData} label='Segunda' name='segunda' checked={agendarepetirData.segunda} onChange={onChange} />
-                <InputCheckbox dataForm={agendarepetirData} label='Quarta' name='quarta' checked={agendarepetirData.quarta} onChange={onChange} />
-                <InputCheckbox dataForm={agendarepetirData} label='Quinta' name='quinta' checked={agendarepetirData.quinta} onChange={onChange} />
-                <InputCheckbox dataForm={agendarepetirData} label='Sexta' name='sexta' checked={agendarepetirData.sexta} onChange={onChange} />
-                <InputCheckbox dataForm={agendarepetirData} label='Sabado' name='sabado' checked={agendarepetirData.sabado} onChange={onChange} />
-                <InputCheckbox dataForm={agendarepetirData} label='Domingo' name='domingo' checked={agendarepetirData.domingo} onChange={onChange} />
-                <InputCheckbox dataForm={agendarepetirData} label='Terca' name='terca' checked={agendarepetirData.terca} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Segunda' name='segunda' checked={agendarepetirData.segunda} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Quarta' name='quarta' checked={agendarepetirData.quarta} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Quinta' name='quinta' checked={agendarepetirData.quinta} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Sexta' name='sexta' checked={agendarepetirData.sexta} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Sabado' name='sabado' checked={agendarepetirData.sabado} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Domingo' name='domingo' checked={agendarepetirData.domingo} onChange={onChange} />
+                  <InputCheckbox dataForm={agendarepetirData} label='Terca' name='terca' checked={agendarepetirData.terca} onChange={onChange} />
+                </div>
+              </form>
+
+
+              {isMobile && (
+                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRepetir' data={agendarepetirData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRepetirForm-${agendarepetirData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                )}
+                <DeleteButton page={'/pages/agendarepetir'} id={agendarepetirData.id} closeModel={onClose} dadoApi={dadoApi} />
               </div>
-            </form>
-
-
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRepetir' data={agendarepetirData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRepetirForm-${agendarepetirData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/agendarepetir'} id={agendarepetirData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+              <div className='form-spacer'></div>
+              </>
+            );
+          };

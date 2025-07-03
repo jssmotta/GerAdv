@@ -4,6 +4,7 @@ import { IHonorariosDadosContratoService } from '../Services/HonorariosDadosCont
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IHonorariosDadosContrato } from '../Interfaces/interface.HonorariosDadosContrato';
 import { isValidDate } from '@/app/tools/datetime';
+import { HonorariosDadosContratoApi } from '../Apis/ApiHonorariosDadosContrato';
 
 export const useHonorariosDadosContratoForm = (
   initialHonorariosDadosContrato: IHonorariosDadosContrato,
@@ -142,6 +143,16 @@ export const useHonorariosDadosContratoList = (dataService: IHonorariosDadosCont
 
 
 export function useValidationsHonorariosDadosContrato() {
+
+  async function runValidation(data: IHonorariosDadosContrato, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const honorariosdadoscontratoApi = new HonorariosDadosContratoApi(uri ?? '', token ?? '');
+
+    const result = await honorariosdadoscontratoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IHonorariosDadosContrato): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,5 +178,5 @@ if (data.observacao.length > 2048) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

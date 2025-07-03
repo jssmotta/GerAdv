@@ -39,14 +39,14 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, ICo
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBColaboradores.SensivelCamposSqlX}, carNome,cliNome,cidNome
+                   {DBColaboradores.SensivelCamposSqlX}, [Cargos].[carNome],[Clientes].[cliNome],[Cidade].[cidNome]
                    FROM {DBColaboradores.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON carCodigo=colCargo
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=colCliente
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=colCidade
+                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON [Cargos].[carCodigo]=[Colaboradores].[colCargo]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[Colaboradores].[colCliente]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Colaboradores].[colCidade]
  
                    {where}
-                   ORDER BY colNome
+                   ORDER BY [Colaboradores].[colNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ColaboradoresResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=colCidade
             var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Colaboradores: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regColaboradores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ColaboradoresResponse?> Validation([FromBody] Models.Colaboradores regColaboradores, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Colaboradores: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regColaboradores == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regColaboradores.Id.IsEmptyIDNumber())
+            {
+                return new ColaboradoresResponse();
+            }
+
+            return reader.Read(regColaboradores.Id, oCnn);
         });
     }
 

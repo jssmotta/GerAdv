@@ -4,6 +4,7 @@ import { IProCDAService } from '../Services/ProCDA.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProCDA } from '../Interfaces/interface.ProCDA';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProCDAApi } from '../Apis/ApiProCDA';
 
 export const useProCDAForm = (
   initialProCDA: IProCDA,
@@ -142,6 +143,16 @@ export const useProCDAList = (dataService: IProCDAService) => {
 
 
 export function useValidationsProCDA() {
+
+  async function runValidation(data: IProCDA, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const procdaApi = new ProCDAApi(uri ?? '', token ?? '');
+
+    const result = await procdaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProCDA): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.nrointerno.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProCDAComboBox = (
   dataService: IProCDAService,
   initialValue?: any

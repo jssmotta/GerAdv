@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface NEPalavrasChavesIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const NEPalavrasChavesIncContainer: React.FC<NEPalavrasChavesIncContainerProps> = ({ id, navigator }) => {
+const NEPalavrasChavesIncContainer: React.FC<NEPalavrasChavesIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <NEPalavrasChavesInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

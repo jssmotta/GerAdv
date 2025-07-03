@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { HonorariosDadosContratoApi, HonorariosDadosContratoApiError } from '../Apis/ApiHonorariosDadosContrato';
 import { FilterHonorariosDadosContrato } from '../Filters/HonorariosDadosContrato';
 import { IHonorariosDadosContrato } from '../Interfaces/interface.HonorariosDadosContrato';
+import { HonorariosDadosContratoEmpty } from '../../Models/HonorariosDadosContrato';
 
 export class HonorariosDadosContratoValidator {
   static validateHonorariosDadosContrato(honorariosdadoscontrato: IHonorariosDadosContrato): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class HonorariosDadosContratoService implements IHonorariosDadosContratoS
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof HonorariosDadosContratoApiError) {
         throw error;

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GUTAtividadesApi, GUTAtividadesApiError } from '../Apis/ApiGUTAtividades';
 import { FilterGUTAtividades } from '../Filters/GUTAtividades';
 import { IGUTAtividades } from '../Interfaces/interface.GUTAtividades';
+import { GUTAtividadesEmpty } from '../../Models/GUTAtividades';
 
 export class GUTAtividadesValidator {
   static validateGUTAtividades(gutatividades: IGUTAtividades): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GUTAtividadesService implements IGUTAtividadesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GUTAtividadesApiError) {
         throw error;

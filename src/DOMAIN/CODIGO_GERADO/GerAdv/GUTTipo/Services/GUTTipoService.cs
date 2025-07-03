@@ -43,7 +43,7 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
                    FROM {DBGUTTipo.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY gttNome
+                   ORDER BY [GUTTipo].[gttNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GUTTipoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
             var validade = await validation.ValidateReg(regGUTTipo, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GUTTipo: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGUTTipo, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GUTTipoResponse?> Validation([FromBody] Models.GUTTipo regGUTTipo, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GUTTipo: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGUTTipo == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGUTTipo, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGUTTipo.Id.IsEmptyIDNumber())
+            {
+                return new GUTTipoResponse();
+            }
+
+            return reader.Read(regGUTTipo.Id, oCnn);
         });
     }
 

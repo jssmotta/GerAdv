@@ -4,6 +4,7 @@ import { IAlertasEnviadosService } from '../Services/AlertasEnviados.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAlertasEnviados } from '../Interfaces/interface.AlertasEnviados';
 import { isValidDate } from '@/app/tools/datetime';
+import { AlertasEnviadosApi } from '../Apis/ApiAlertasEnviados';
 
 export const useAlertasEnviadosForm = (
   initialAlertasEnviados: IAlertasEnviados,
@@ -142,6 +143,16 @@ export const useAlertasEnviadosList = (dataService: IAlertasEnviadosService) => 
 
 
 export function useValidationsAlertasEnviados() {
+
+  async function runValidation(data: IAlertasEnviados, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const alertasenviadosApi = new AlertasEnviadosApi(uri ?? '', token ?? '');
+
+    const result = await alertasenviadosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAlertasEnviados): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAlertasEnviados() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

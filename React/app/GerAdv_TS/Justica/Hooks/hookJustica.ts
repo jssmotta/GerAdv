@@ -4,6 +4,7 @@ import { IJusticaService } from '../Services/Justica.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IJustica } from '../Interfaces/interface.Justica';
 import { isValidDate } from '@/app/tools/datetime';
+import { JusticaApi } from '../Apis/ApiJustica';
 
 export const useJusticaForm = (
   initialJustica: IJustica,
@@ -142,6 +143,16 @@ export const useJusticaList = (dataService: IJusticaService) => {
 
 
 export function useValidationsJustica() {
+
+  async function runValidation(data: IJustica, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const justicaApi = new JusticaApi(uri ?? '', token ?? '');
+
+    const result = await justicaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IJustica): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useJusticaComboBox = (
   dataService: IJusticaService,
   initialValue?: any

@@ -28,7 +28,7 @@ public class ProCDAValidation : IProCDAValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"ProCDA '{reg.Nome}' já cadastrado.";
+            return $"Pro C D A '{reg.Nome}' Nome e/ou Processo";
         // Processos
         if (!reg.Processo.IsEmptyIDNumber())
         {

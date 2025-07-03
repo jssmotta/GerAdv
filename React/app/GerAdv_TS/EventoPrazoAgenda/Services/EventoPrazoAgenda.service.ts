@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { EventoPrazoAgendaApi, EventoPrazoAgendaApiError } from '../Apis/ApiEventoPrazoAgenda';
 import { FilterEventoPrazoAgenda } from '../Filters/EventoPrazoAgenda';
 import { IEventoPrazoAgenda } from '../Interfaces/interface.EventoPrazoAgenda';
+import { EventoPrazoAgendaEmpty } from '../../Models/EventoPrazoAgenda';
 
 export class EventoPrazoAgendaValidator {
   static validateEventoPrazoAgenda(eventoprazoagenda: IEventoPrazoAgenda): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class EventoPrazoAgendaService implements IEventoPrazoAgendaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof EventoPrazoAgendaApiError) {
         throw error;

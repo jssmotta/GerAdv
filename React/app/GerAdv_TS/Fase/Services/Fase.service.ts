@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { FaseApi, FaseApiError } from '../Apis/ApiFase';
 import { FilterFase } from '../Filters/Fase';
 import { IFase } from '../Interfaces/interface.Fase';
+import { FaseEmpty } from '../../Models/Fase';
 
 export class FaseValidator {
   static validateFase(fase: IFase): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class FaseService implements IFaseService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof FaseApiError) {
         throw error;

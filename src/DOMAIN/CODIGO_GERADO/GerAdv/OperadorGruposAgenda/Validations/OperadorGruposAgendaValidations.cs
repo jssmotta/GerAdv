@@ -31,7 +31,7 @@ public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"OperadorGruposAgenda '{reg.Nome}' já cadastrado.";
+            return $"Operador Grupos Agenda '{reg.Nome}'  - Nome";
         // Operador
         if (!reg.Operador.IsEmptyIDNumber())
         {

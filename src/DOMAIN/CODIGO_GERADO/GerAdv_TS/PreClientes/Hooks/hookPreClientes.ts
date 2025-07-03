@@ -4,6 +4,7 @@ import { IPreClientesService } from '../Services/PreClientes.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPreClientes } from '../Interfaces/interface.PreClientes';
 import { isValidDate } from '@/app/tools/datetime';
+import { PreClientesApi } from '../Apis/ApiPreClientes';
 
 export const usePreClientesForm = (
   initialPreClientes: IPreClientes,
@@ -142,6 +143,16 @@ export const usePreClientesList = (dataService: IPreClientesService) => {
 
 
 export function useValidationsPreClientes() {
+
+  async function runValidation(data: IPreClientes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const preclientesApi = new PreClientesApi(uri ?? '', token ?? '');
+
+    const result = await preclientesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPreClientes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -221,7 +232,7 @@ if (data.cnh.length > 100) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const usePreClientesComboBox = (
   dataService: IPreClientesService,
   initialValue?: any

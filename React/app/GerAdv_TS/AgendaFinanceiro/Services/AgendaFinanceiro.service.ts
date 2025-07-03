@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AgendaFinanceiroApi, AgendaFinanceiroApiError } from '../Apis/ApiAgendaFinanceiro';
 import { FilterAgendaFinanceiro } from '../Filters/AgendaFinanceiro';
 import { IAgendaFinanceiro } from '../Interfaces/interface.AgendaFinanceiro';
+import { AgendaFinanceiroEmpty } from '../../Models/AgendaFinanceiro';
 
 export class AgendaFinanceiroValidator {
   static validateAgendaFinanceiro(agendafinanceiro: IAgendaFinanceiro): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AgendaFinanceiroService implements IAgendaFinanceiroService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AgendaFinanceiroApiError) {
         throw error;

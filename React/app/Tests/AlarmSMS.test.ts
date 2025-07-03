@@ -293,7 +293,8 @@ describe('Integração de hooks', () => {
   });
 
 
-  test('deve carregar opções na inicialização', async () => {
+ 
+test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
       { id: 1, descricao: 'Alarm S M S 1' },
       { id: 2, descricao: 'Alarm S M S 2' }
@@ -313,6 +314,7 @@ describe('Integração de hooks', () => {
       ]);
     });
 
+
     expect(mockAlarmSMSService.getList).toHaveBeenCalled();
   });
 
@@ -327,8 +329,6 @@ describe('Integração de hooks', () => {
  const { result } = renderHook(() => 
       useAlarmSMSComboBox(mockAlarmSMSService)
     );
-
-
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
@@ -358,8 +358,6 @@ describe('Integração de hooks', () => {
     const { result } = renderHook(() => 
       useAlarmSMSComboBox(mockAlarmSMSService)
     );
-
-
     await waitFor(() => {
       expect(result.current.options).toEqual([
         { id: 1, nome: 'Alarm S M S ABC' },

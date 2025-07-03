@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface LivroCaixaClientesIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const LivroCaixaClientesIncContainer: React.FC<LivroCaixaClientesIncContainerProps> = ({ id, navigator }) => {
+const LivroCaixaClientesIncContainer: React.FC<LivroCaixaClientesIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <LivroCaixaClientesInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

@@ -1,0 +1,13 @@
+﻿// ProcessOutputEngineGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { ProcessOutputEngineGridAdapter } from '@/app/GerAdv_TS/ProcessOutputEngine/Adapter/ProcessOutputEngineGridAdapter';
+// Mock ProcessOutputEngineGrid component
+jest.mock('@/app/GerAdv_TS/ProcessOutputEngine/Crud/Grids/ProcessOutputEngineGrid', () => () => <div data-testid='processoutputengine-grid-mock' />);
+describe('ProcessOutputEngineGridAdapter', () => {
+  it('should render ProcessOutputEngineGrid component', () => {
+    const adapter = new ProcessOutputEngineGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('processoutputengine-grid-mock')).toBeInTheDocument();
+  });
+});

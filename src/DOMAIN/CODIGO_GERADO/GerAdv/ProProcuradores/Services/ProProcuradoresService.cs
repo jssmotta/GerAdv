@@ -39,13 +39,13 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProProcuradores.SensivelCamposSqlX}, advNome,proNroPasta
+                   {DBProProcuradores.SensivelCamposSqlX}, [Advogados].[advNome],[Processos].[proNroPasta]
                    FROM {DBProProcuradores.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON advCodigo=papAdvogado
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=papProcesso
+                   LEFT JOIN {"Advogados".dbo(oCnn)} (NOLOCK) ON [Advogados].[advCodigo]=[ProProcuradores].[papAdvogado]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProProcuradores].[papProcesso]
  
                    {where}
-                   ORDER BY papNome
+                   ORDER BY [ProProcuradores].[papNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProProcuradoresResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=papProcesso
             var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProProcuradores: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProProcuradores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProProcuradoresResponse?> Validation([FromBody] Models.ProProcuradores regProProcuradores, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProProcuradores: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProProcuradores == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProProcuradores.Id.IsEmptyIDNumber())
+            {
+                return new ProProcuradoresResponse();
+            }
+
+            return reader.Read(regProProcuradores.Id, oCnn);
         });
     }
 

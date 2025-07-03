@@ -43,7 +43,7 @@ public partial class TipoEnderecoService(IOptions<AppSettings> appSettings, ITip
                    FROM {DBTipoEndereco.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tipDescricao
+                   ORDER BY [TipoEndereco].[tipDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoEnderecoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class TipoEnderecoService(IOptions<AppSettings> appSettings, ITip
             var validade = await validation.ValidateReg(regTipoEndereco, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoEndereco: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoEndereco, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoEnderecoResponse?> Validation([FromBody] Models.TipoEndereco regTipoEndereco, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoEndereco: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoEndereco == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoEndereco, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoEndereco.Id.IsEmptyIDNumber())
+            {
+                return new TipoEnderecoResponse();
+            }
+
+            return reader.Read(regTipoEndereco.Id, oCnn);
         });
     }
 

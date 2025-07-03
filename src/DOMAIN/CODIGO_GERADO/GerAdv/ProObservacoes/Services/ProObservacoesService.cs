@@ -39,12 +39,12 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProObservacoes.SensivelCamposSqlX}, proNroPasta
+                   {DBProObservacoes.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBProObservacoes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=pobProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProObservacoes].[pobProcesso]
  
                    {where}
-                   ORDER BY pobNome
+                   ORDER BY [ProObservacoes].[pobNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProObservacoesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
             var validade = await validation.ValidateReg(regProObservacoes, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProObservacoes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProObservacoes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProObservacoesResponse?> Validation([FromBody] Models.ProObservacoes regProObservacoes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProObservacoes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProObservacoes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProObservacoes, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProObservacoes.Id.IsEmptyIDNumber())
+            {
+                return new ProObservacoesResponse();
+            }
+
+            return reader.Read(regProObservacoes.Id, oCnn);
         });
     }
 

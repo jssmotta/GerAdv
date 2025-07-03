@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface DivisaoTribunalIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const DivisaoTribunalIncContainer: React.FC<DivisaoTribunalIncContainerProps> = ({ id, navigator }) => {
+const DivisaoTribunalIncContainer: React.FC<DivisaoTribunalIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <DivisaoTribunalInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

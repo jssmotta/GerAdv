@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProObservacoesApi, ProObservacoesApiError } from '../Apis/ApiProObservacoes';
 import { FilterProObservacoes } from '../Filters/ProObservacoes';
 import { IProObservacoes } from '../Interfaces/interface.ProObservacoes';
+import { ProObservacoesEmpty } from '../../Models/ProObservacoes';
 
 export class ProObservacoesValidator {
   static validateProObservacoes(proobservacoes: IProObservacoes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProObservacoesService implements IProObservacoesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProObservacoesApiError) {
         throw error;

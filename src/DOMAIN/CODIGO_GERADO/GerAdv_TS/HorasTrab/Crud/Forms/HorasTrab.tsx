@@ -2,12 +2,11 @@
 'use client';
 import { IHorasTrab } from '@/app/GerAdv_TS/HorasTrab/Interfaces/interface.HorasTrab';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -47,8 +46,8 @@ export const HorasTrabForm: React.FC<HorasTrabFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new HorasTrabApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -303,7 +302,7 @@ const addValorCliente = (e: any) => {
                     setValue={addValorAdvogado}
                     label={'Advogados'}
                     />
-
+                  </div><div className='grid-container'>
                     <FuncionariosComboBox
                     name={'funcionario'}
                     dataForm={horastrabData}
@@ -311,7 +310,7 @@ const addValorCliente = (e: any) => {
                     setValue={addValorFuncionario}
                     label={'Colaborador'}
                     />
-                  </div><div className='grid-container'>
+
                     <InputInput
                     type='text'
                     maxLength={5}
@@ -415,7 +414,7 @@ const addValorCliente = (e: any) => {
                     onChange={onChange}
                     />
 
-
+                  </div><div className='grid-container'>
                     <ServicosComboBox
                     name={'servico'}
                     dataForm={horastrabData}

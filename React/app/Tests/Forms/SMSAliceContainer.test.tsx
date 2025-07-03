@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import SMSAliceIncContainer from '@/app/GerAdv_TS/SMSAlice/Components/SMSAliceIncContainer';
+// SMSAliceIncContainer.test.tsx
+// Mock do SMSAliceInc
+jest.mock('@/app/GerAdv_TS/SMSAlice/Crud/Inc/SMSAlice', () => (props: any) => (
+<div data-testid='smsalice-inc-mock' {...props} />
+));
+describe('SMSAliceIncContainer', () => {
+  it('deve renderizar SMSAliceInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <SMSAliceIncContainer id={id} navigator={mockNavigator} />
+  );
+  const smsaliceInc = getByTestId('smsalice-inc-mock');
+  expect(smsaliceInc).toBeInTheDocument();
+  expect(smsaliceInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

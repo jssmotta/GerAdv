@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface PontoVirtualAcessosIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const PontoVirtualAcessosIncContainer: React.FC<PontoVirtualAcessosIncContainerProps> = ({ id, navigator }) => {
+const PontoVirtualAcessosIncContainer: React.FC<PontoVirtualAcessosIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <PontoVirtualAcessosInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

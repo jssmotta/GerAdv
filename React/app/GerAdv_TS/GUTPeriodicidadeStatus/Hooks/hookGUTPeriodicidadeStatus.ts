@@ -4,6 +4,7 @@ import { IGUTPeriodicidadeStatusService } from '../Services/GUTPeriodicidadeStat
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGUTPeriodicidadeStatus } from '../Interfaces/interface.GUTPeriodicidadeStatus';
 import { isValidDate } from '@/app/tools/datetime';
+import { GUTPeriodicidadeStatusApi } from '../Apis/ApiGUTPeriodicidadeStatus';
 
 export const useGUTPeriodicidadeStatusForm = (
   initialGUTPeriodicidadeStatus: IGUTPeriodicidadeStatus,
@@ -142,6 +143,16 @@ export const useGUTPeriodicidadeStatusList = (dataService: IGUTPeriodicidadeStat
 
 
 export function useValidationsGUTPeriodicidadeStatus() {
+
+  async function runValidation(data: IGUTPeriodicidadeStatus, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gutperiodicidadestatusApi = new GUTPeriodicidadeStatusApi(uri ?? '', token ?? '');
+
+    const result = await gutperiodicidadestatusApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGUTPeriodicidadeStatus): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsGUTPeriodicidadeStatus() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

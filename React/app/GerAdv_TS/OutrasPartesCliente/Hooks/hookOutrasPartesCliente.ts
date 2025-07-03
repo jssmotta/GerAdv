@@ -4,6 +4,7 @@ import { IOutrasPartesClienteService } from '../Services/OutrasPartesCliente.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOutrasPartesCliente } from '../Interfaces/interface.OutrasPartesCliente';
 import { isValidDate } from '@/app/tools/datetime';
+import { OutrasPartesClienteApi } from '../Apis/ApiOutrasPartesCliente';
 
 export const useOutrasPartesClienteForm = (
   initialOutrasPartesCliente: IOutrasPartesCliente,
@@ -142,6 +143,16 @@ export const useOutrasPartesClienteList = (dataService: IOutrasPartesClienteServ
 
 
 export function useValidationsOutrasPartesCliente() {
+
+  async function runValidation(data: IOutrasPartesCliente, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const outraspartesclienteApi = new OutrasPartesClienteApi(uri ?? '', token ?? '');
+
+    const result = await outraspartesclienteApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOutrasPartesCliente): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -197,7 +208,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOutrasPartesClienteComboBox = (
   dataService: IOutrasPartesClienteService,
   initialValue?: any

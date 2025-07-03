@@ -4,6 +4,7 @@ import { IServicosService } from '../Services/Servicos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IServicos } from '../Interfaces/interface.Servicos';
 import { isValidDate } from '@/app/tools/datetime';
+import { ServicosApi } from '../Apis/ApiServicos';
 
 export const useServicosForm = (
   initialServicos: IServicos,
@@ -142,6 +143,16 @@ export const useServicosList = (dataService: IServicosService) => {
 
 
 export function useValidationsServicos() {
+
+  async function runValidation(data: IServicos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const servicosApi = new ServicosApi(uri ?? '', token ?? '');
+
+    const result = await servicosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IServicos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 200) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useServicosComboBox = (
   dataService: IServicosService,
   initialValue?: any

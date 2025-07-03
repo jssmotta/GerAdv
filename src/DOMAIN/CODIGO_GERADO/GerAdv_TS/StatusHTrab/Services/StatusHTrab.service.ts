@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { StatusHTrabApi, StatusHTrabApiError } from '../Apis/ApiStatusHTrab';
 import { FilterStatusHTrab } from '../Filters/StatusHTrab';
 import { IStatusHTrab } from '../Interfaces/interface.StatusHTrab';
+import { StatusHTrabEmpty } from '../../Models/StatusHTrab';
 
 export class StatusHTrabValidator {
   static validateStatusHTrab(statushtrab: IStatusHTrab): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class StatusHTrabService implements IStatusHTrabService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof StatusHTrabApiError) {
         throw error;

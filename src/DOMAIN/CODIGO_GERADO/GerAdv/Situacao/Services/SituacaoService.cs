@@ -43,7 +43,7 @@ public partial class SituacaoService(IOptions<AppSettings> appSettings, ISituaca
                    FROM {DBSituacao.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY 
+                   ORDER BY [Situacao].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<SituacaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class SituacaoService(IOptions<AppSettings> appSettings, ISituaca
             var validade = await validation.ValidateReg(regSituacao, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Situacao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regSituacao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<SituacaoResponse?> Validation([FromBody] Models.Situacao regSituacao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Situacao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regSituacao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regSituacao, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regSituacao.Id.IsEmptyIDNumber())
+            {
+                return new SituacaoResponse();
+            }
+
+            return reader.Read(regSituacao.Id, oCnn);
         });
     }
 

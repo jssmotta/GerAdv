@@ -4,6 +4,7 @@ import { IProcessOutputEngineService } from '../Services/ProcessOutputEngine.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessOutputEngine } from '../Interfaces/interface.ProcessOutputEngine';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessOutputEngineApi } from '../Apis/ApiProcessOutputEngine';
 
 export const useProcessOutputEngineForm = (
   initialProcessOutputEngine: IProcessOutputEngine,
@@ -142,6 +143,16 @@ export const useProcessOutputEngineList = (dataService: IProcessOutputEngineServ
 
 
 export function useValidationsProcessOutputEngine() {
+
+  async function runValidation(data: IProcessOutputEngine, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processoutputengineApi = new ProcessOutputEngineApi(uri ?? '', token ?? '');
+
+    const result = await processoutputengineApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessOutputEngine): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -179,7 +190,7 @@ if (data.output.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProcessOutputEngineComboBox = (
   dataService: IProcessOutputEngineService,
   initialValue?: any

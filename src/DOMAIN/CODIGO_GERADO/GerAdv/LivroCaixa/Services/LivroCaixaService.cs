@@ -39,12 +39,12 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, ILivro
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBLivroCaixa.SensivelCamposSqlX}, proNroPasta
+                   {DBLivroCaixa.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBLivroCaixa.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=livProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[LivroCaixa].[livProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [LivroCaixa].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<LivroCaixaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, ILivro
             var validade = await validation.ValidateReg(regLivroCaixa, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"LivroCaixa: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regLivroCaixa, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<LivroCaixaResponse?> Validation([FromBody] Models.LivroCaixa regLivroCaixa, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("LivroCaixa: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regLivroCaixa == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regLivroCaixa, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regLivroCaixa.Id.IsEmptyIDNumber())
+            {
+                return new LivroCaixaResponse();
+            }
+
+            return reader.Read(regLivroCaixa.Id, oCnn);
         });
     }
 

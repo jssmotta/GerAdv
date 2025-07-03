@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { EnderecosApi, EnderecosApiError } from '../Apis/ApiEnderecos';
 import { FilterEnderecos } from '../Filters/Enderecos';
 import { IEnderecos } from '../Interfaces/interface.Enderecos';
+import { EnderecosEmpty } from '../../Models/Enderecos';
 
 export class EnderecosValidator {
   static validateEnderecos(enderecos: IEnderecos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class EnderecosService implements IEnderecosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof EnderecosApiError) {
         throw error;

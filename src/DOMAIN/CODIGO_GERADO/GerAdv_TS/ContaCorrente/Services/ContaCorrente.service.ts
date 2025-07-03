@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ContaCorrenteApi, ContaCorrenteApiError } from '../Apis/ApiContaCorrente';
 import { FilterContaCorrente } from '../Filters/ContaCorrente';
 import { IContaCorrente } from '../Interfaces/interface.ContaCorrente';
+import { ContaCorrenteEmpty } from '../../Models/ContaCorrente';
 
 export class ContaCorrenteValidator {
   static validateContaCorrente(contacorrente: IContaCorrente): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ContaCorrenteService implements IContaCorrenteService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ContaCorrenteApiError) {
         throw error;

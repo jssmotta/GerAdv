@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ParteClienteOutrasIncContainer from '@/app/GerAdv_TS/ParteClienteOutras/Components/ParteClienteOutrasIncContainer';
+// ParteClienteOutrasIncContainer.test.tsx
+// Mock do ParteClienteOutrasInc
+jest.mock('@/app/GerAdv_TS/ParteClienteOutras/Crud/Inc/ParteClienteOutras', () => (props: any) => (
+<div data-testid='parteclienteoutras-inc-mock' {...props} />
+));
+describe('ParteClienteOutrasIncContainer', () => {
+  it('deve renderizar ParteClienteOutrasInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ParteClienteOutrasIncContainer id={id} navigator={mockNavigator} />
+  );
+  const parteclienteoutrasInc = getByTestId('parteclienteoutras-inc-mock');
+  expect(parteclienteoutrasInc).toBeInTheDocument();
+  expect(parteclienteoutrasInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

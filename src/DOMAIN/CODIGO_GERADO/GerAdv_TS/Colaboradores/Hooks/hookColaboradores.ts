@@ -4,6 +4,7 @@ import { IColaboradoresService } from '../Services/Colaboradores.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IColaboradores } from '../Interfaces/interface.Colaboradores';
 import { isValidDate } from '@/app/tools/datetime';
+import { ColaboradoresApi } from '../Apis/ApiColaboradores';
 
 export const useColaboradoresForm = (
   initialColaboradores: IColaboradores,
@@ -142,6 +143,16 @@ export const useColaboradoresList = (dataService: IColaboradoresService) => {
 
 
 export function useValidationsColaboradores() {
+
+  async function runValidation(data: IColaboradores, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const colaboradoresApi = new ColaboradoresApi(uri ?? '', token ?? '');
+
+    const result = await colaboradoresApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IColaboradores): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -191,7 +202,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useColaboradoresComboBox = (
   dataService: IColaboradoresService,
   initialValue?: any

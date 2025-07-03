@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import FaseIncContainer from '@/app/GerAdv_TS/Fase/Components/FaseIncContainer';
+// FaseIncContainer.test.tsx
+// Mock do FaseInc
+jest.mock('@/app/GerAdv_TS/Fase/Crud/Inc/Fase', () => (props: any) => (
+<div data-testid='fase-inc-mock' {...props} />
+));
+describe('FaseIncContainer', () => {
+  it('deve renderizar FaseInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <FaseIncContainer id={id} navigator={mockNavigator} />
+  );
+  const faseInc = getByTestId('fase-inc-mock');
+  expect(faseInc).toBeInTheDocument();
+  expect(faseInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

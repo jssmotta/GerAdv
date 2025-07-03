@@ -4,6 +4,7 @@ import { ITerceirosService } from '../Services/Terceiros.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITerceiros } from '../Interfaces/interface.Terceiros';
 import { isValidDate } from '@/app/tools/datetime';
+import { TerceirosApi } from '../Apis/ApiTerceiros';
 
 export const useTerceirosForm = (
   initialTerceiros: ITerceiros,
@@ -142,6 +143,16 @@ export const useTerceirosList = (dataService: ITerceirosService) => {
 
 
 export function useValidationsTerceiros() {
+
+  async function runValidation(data: ITerceiros, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const terceirosApi = new TerceirosApi(uri ?? '', token ?? '');
+
+    const result = await terceirosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITerceiros): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -191,7 +202,7 @@ if (data.varaforocomarca.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTerceirosComboBox = (
   dataService: ITerceirosService,
   initialValue?: any

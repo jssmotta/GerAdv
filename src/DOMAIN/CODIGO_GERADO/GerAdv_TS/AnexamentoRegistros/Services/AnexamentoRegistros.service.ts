@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AnexamentoRegistrosApi, AnexamentoRegistrosApiError } from '../Apis/ApiAnexamentoRegistros';
 import { FilterAnexamentoRegistros } from '../Filters/AnexamentoRegistros';
 import { IAnexamentoRegistros } from '../Interfaces/interface.AnexamentoRegistros';
+import { AnexamentoRegistrosEmpty } from '../../Models/AnexamentoRegistros';
 
 export class AnexamentoRegistrosValidator {
   static validateAnexamentoRegistros(anexamentoregistros: IAnexamentoRegistros): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AnexamentoRegistrosService implements IAnexamentoRegistrosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AnexamentoRegistrosApiError) {
         throw error;

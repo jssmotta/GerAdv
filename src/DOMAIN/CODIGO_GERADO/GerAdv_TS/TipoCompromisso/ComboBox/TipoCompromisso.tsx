@@ -11,7 +11,6 @@ import { pencilIcon, plusIcon, xIcon } from '@progress/kendo-svg-icons';
 import { SvgIcon } from '@progress/kendo-react-common';
 import { ActionAdicionar, ActionEditar } from '@/app/tools/crud';
 import { TipoCompromissoService } from '../Services/TipoCompromisso.service';
-import { useTipoCompromissoComboBox } from '../Hooks/hookTipoCompromisso';
 const TipoCompromissoComboBox: React.FC<DadosSelectProps> = ({
   name, 
   value, 
@@ -21,61 +20,87 @@ const TipoCompromissoComboBox: React.FC<DadosSelectProps> = ({
 }) => {
 const cssDado = 'tipocompromissoInput';
 const { systemContext } = useSystemContext();
-const tipocompromissoService = new TipoCompromissoService(
-new TipoCompromissoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+const dadoApi = new TipoCompromissoApi(
+systemContext?.Uri ?? '',
+systemContext?.Token ?? ''
 );
-const {
-  options: filteredOptions, 
-  loading, 
-  selectedValue, 
-  handleFilter, 
-  handleValueChange, 
-  clearValue
-} = useTipoCompromissoComboBox(tipocompromissoService);
-
+const tipocompromissoService = new TipoCompromissoService(dadoApi);
+// Usando estado local para ter controle total dos dados
+const [dados, setDados] = React.useState<ITipoCompromisso[] | null>([]);
+const [filteredDados, setFilteredDados] = useState<ITipoCompromisso[]>([]);
+const [selectedValue, setSelectedValue] = useState<any>(null);
+const [loading, setLoading] = useState(false);
 const [isOpen, setIsOpen] = useState(false);
 const [editRecord, setEditRecord] = useState<ITipoCompromisso | null>(null);
 const [addRecord, setAddRecord] = useState<ITipoCompromisso | null>(null);
 const [action, setAction] = useState(ActionAdicionar);
+// Buscar dados diretamente da API
+const fetchDados = async () => {
+  try {
+    setLoading(true);
+    const response = await dadoApi.getAll();
+    const dado = response.data ?? [];
+    setDados(dado);
+    setFilteredDados(dado);
+  } catch (error) {
+  console.error('Erro ao buscar dados:', error);
+} finally {
+setLoading(false);
+}
+};
+React.useEffect(() => {
+  fetchDados();
+}, []);
+// useEffect para lidar com valores iniciais num�ricos (igual ao InputTipoCompromissoMDS)
 useEffect(() => {
-  if (typeof value === 'number' && value > 0 && !selectedValue) {
-    loadRecordForEdit(value);
-  } else if (!value) {
-  handleValueChange(null);
-  setAction(ActionAdicionar);
+  if (typeof value === 'number' && !isNaN(value) && value > 0) {
+    const fetchData = async () => {
+      try {
+        const response = await dadoApi.getById(value);
+        const selectedItem = {
+          id: response.data.id, 
+          nome: response.data.nome, 
+          icone: response.data.icone, 
+        };
+        setSelectedValue(selectedItem);
+        setEditRecord(response.data);
+        setAction(ActionEditar);
+      } catch (error) {
+      console.error('Erro ao buscar tipo compromisso por ID:', error);
+    }
+  };
+  fetchData();
+} else if (!value) {
+setSelectedValue(null);
+setAction(ActionAdicionar);
 }
 }, [value]);
-
 const loadRecordForEdit = async (id: number) => {
   try {
     const record = await tipocompromissoService.fetchTipoCompromissoById(id);
     setEditRecord(record);
     setAction(ActionEditar);
-    handleValueChange({ id: record.id, nome: record.descricao });
+    setSelectedValue({ id: record.id, nome: record.nome, icone: record.icone });
   } catch (error) {
   console.log('Erro ao carregar Tipo Compromisso:');
 }
 };
-
 const handleComboChange = (e: any) => {
   const newValue = e.target.value;
-
   if (newValue && typeof newValue === 'object' && 'id' in newValue && 'nome' in newValue) {
-    handleValueChange(newValue);
+    setSelectedValue(newValue);
     setValue(newValue);
     if (newValue.id > 0) {
       loadRecordForEdit(newValue.id);
     }
   } else if (typeof newValue === 'string' && newValue.trim() !== '') {
-  const tempValue = { id: 0, nome: newValue };
-  handleValueChange(tempValue);
-
-  const matchingItem = filteredOptions.find(item =>
+  const tempValue = { id: 0, nome: newValue, icone: '0' };
+  setSelectedValue(tempValue);
+  const matchingItem = filteredDados.find((item: ITipoCompromisso) =>
     item.nome.toLowerCase() === newValue.toLowerCase()
   );
-
   if (matchingItem) {
-    handleValueChange(matchingItem);
+    setSelectedValue(matchingItem);
     setValue(matchingItem);
     loadRecordForEdit(matchingItem.id);
   } else {
@@ -87,16 +112,18 @@ handleClear();
 }
 };
 const handleFilterChange = (event: any) => {
-  const filter = event.filter.value;
-  handleFilter(filter);
+  const filter = event.filter.value.toLowerCase();
+  const filteredData = (dados ?? []).filter((dado: ITipoCompromisso) =>
+    dado.nome.toLowerCase().includes(filter)
+  );
+  setFilteredDados(filteredData);
 };
 const getCurrentInputValue = (): string => {
   const inputElement = document.querySelector(`.${cssDado} input`) as HTMLInputElement;
   return inputElement?.value || '';
 };
-
 const handleClear = () => {
-  clearValue();
+  setSelectedValue(null);
   setValue(null);
   setAction(ActionAdicionar);
   setEditRecord(null);
@@ -108,66 +135,240 @@ const handleActionClick = () => {
   }
   const inputValue = getCurrentInputValue();
   const newRecord = TipoCompromissoEmpty();
-  newRecord.descricao = inputValue.toUpperCase();
+  newRecord.nome = inputValue.toUpperCase();
   setAddRecord(newRecord);
   setEditRecord(null);
   setIsOpen(true);
 };
-
 const handleClose = () => {
   setIsOpen(false);
   setAddRecord(null);
 };
 const handleSuccess = (newTipoCompromisso?: ITipoCompromisso) => {
   if (newTipoCompromisso) {
-    setValue({ id: newTipoCompromisso.id, nome: newTipoCompromisso.descricao });
+    setValue({ id: newTipoCompromisso.id, nome: newTipoCompromisso.nome });
     loadRecordForEdit(newTipoCompromisso.id);
-    handleValueChange(newTipoCompromisso);
+    setSelectedValue(newTipoCompromisso);
   }
   handleClose();
 };
+const renderComboBoxItem = (li: any, itemProps: any) => {
+  const item = itemProps.dataItem;
+  if (!item || !item.icone) {
+    return React.cloneElement(
+    li, 
+    li.props, 
+    <div style={{ display: 'flex', alignItems: 'center', width: '100%', padding: '4px 8px' }}>
+      <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+        {item?.nome || 'Item sem nome'}
+      </span>
+    </div>
+  );
+}
+const iconUrl = `https://cdn.menphis.com.br/msi/agenda/${item.icone}.webp`;
+return React.cloneElement(
+li, 
+li.props, 
+<div style={{ display: 'flex', alignItems: 'center', width: '100%', padding: '4px 8px' }}>
+  <img
+  src={iconUrl}
+  alt={item.nome}
+  onError={(e) => {
+    (e.target as HTMLImageElement).style.display = 'none';
+  }}
+  style={{
+    width: '18px',
+    height: '18px',
+    marginRight: '8px',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    flexShrink: 0
+  }}
+  />
+  <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    {item.nome}
+  </span>
+</div>
+);
+};
+const renderComboBoxValue = (paramValue: any) => {
+  if (!paramValue || !paramValue.props || !paramValue.props.value) {
+    return null;
+  }
+  const currentValue = paramValue.props.value;
+  // Buscar o item pelo ID ou nome
+  let selectedValueForRender = null;
+  if (typeof currentValue === 'object' && currentValue.id) {
+    selectedValueForRender = dados?.find((item: ITipoCompromisso) => item.id === currentValue.id);
+  } else if (typeof currentValue === 'string') {
+  selectedValueForRender = dados?.find((item: ITipoCompromisso) =>
+    item.nome.toLowerCase() === currentValue.toLowerCase()
+  );
+}
+if (!selectedValueForRender || !selectedValueForRender.icone) {
+  return (
+  <span style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+    <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+      {selectedValueForRender?.nome || currentValue?.nome || currentValue}
+    </span>
+  </span>
+);
+}
+const iconUrl = `https://cdn.menphis.com.br/msi/agenda/${selectedValueForRender.icone}.webp`;
+return (
+<span style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+  <img
+  src={iconUrl}
+  alt={selectedValueForRender.nome}
+  onError={(e) => {
+    (e.target as HTMLImageElement).style.display = 'none';
+  }}
+  style={{
+    width: '18px',
+    height: '18px',
+    marginLeft: '4px',
+    marginRight: '8px',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    flexShrink: 0
+  }}
+  />
+  <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    {selectedValueForRender.nome}
+  </span>
+</span>
+);
+};
 return (
 <>
-{(editRecord || addRecord) && isOpen && (
-  <TipoCompromissoWindow
-  isOpen={isOpen}
-  onClose={handleClose}
-  onSuccess={handleSuccess}
-  onError={handleClose}
-  selectedTipoCompromisso={editRecord || addRecord || TipoCompromissoEmpty()}
-  />
-  )}
-
-  <div className={`${cssDado} inputCombobox input-container`}>
-    <div className='comboboxLabel'>
-      <span className='k-floating-label'>{label}</span>
-      </div>
-      <div className='comboboxBox'>
-        <ComboBox
-        name={name}
-        data={filteredOptions}
-        textField='nome'
-        dataItemKey='id'
-        value={selectedValue}
-        className={cssDado}
-        allowCustom={true}
-        filterable={true}
-        loading={loading}
-        onFilterChange={handleFilterChange}
-        onChange={handleComboChange}
-        style={{ height: '33px' }}
-        clearButton={true}
-        />
-
-        <label
-        title={action === 'Editar' ? 'Editar o item atual' : 'Incluir/Adicionar novo item'}
-        className={`input-combobox-action-svg-label-${action.toLowerCase()}`}
-        onClick={handleActionClick}
-      >
-      <SvgIcon icon={action === 'Editar' ? pencilIcon : plusIcon} />
-    </label>
+<style jsx global>{`
+  /* Estilos para o campo de input com �cone */
+  .tipocompromissoInput .k-input-inner {
+    padding-left: 30px !important;
+  }
+  /* Garantir que o ComboBox tenha apenas border-bottom */
+  .tipocompromissoInput.k-combobox, 
+  .tipocompromissoInput .k-input, 
+  .tipocompromissoInput .k-input-inner {
+    border: none !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid #ccc !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    transition: border-color 0.3s ease;
+  }
+  .tipocompromisso-dropdown-popup-msi {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 99999 !important;
+    position: absolute !important;
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    min-width: 200px !important;
+    height: auto !important;
+  }
+  .tipocompromisso-dropdown-popup-msi .k-list {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: white !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+  .tipocompromisso-dropdown-popup-msi .k-list-item {
+    display: flex !important;
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 8px 12px !important;
+    background: white !important;
+    color: #333 !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #eee !important;
+    height: auto !important;
+    min-height: 32px !important;
+    width: 100% !important;
+  }
+  .tipocompromisso-dropdown-popup-msi .k-list-item: hover {
+    background: #f0f0f0 !important;
+  }
+  .tipocompromisso-dropdown-popup-msi .k-list-item > div {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 8px 12px !important;
+  }
+  .tipocompromisso-dropdown-popup-msi .k-list-item img {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-right: 8px !important;
+  }
+  .tipocompromisso-dropdown-popup-msi .k-list-item span {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    flex: 1 !important;
+  }
+  .tipocompromisso-dropdown-popup-msi * {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+  }
+  `}</style>
+  {(editRecord || addRecord) && isOpen && (
+    <TipoCompromissoWindow
+    isOpen={isOpen}
+    onClose={handleClose}
+    onSuccess={handleSuccess}
+    onError={handleClose}
+    selectedTipoCompromisso={editRecord || addRecord || TipoCompromissoEmpty()}
+    />
+    )}
+    <div className={`${cssDado} inputCombobox input-container`}>
+      <div className='comboboxLabel'>
+        <span className='k-floating-label'>{label}</span>
+        </div>
+        <div className='comboboxBox'>
+          <ComboBox
+          name={name}
+          data={filteredDados}
+          textField='nome'
+          dataItemKey='id'
+          value={selectedValue}
+          className={cssDado}
+          allowCustom={true}
+          filterable={true}
+          loading={loading}
+          aria-busy={loading}
+          onFilterChange={handleFilterChange}
+          onChange={handleComboChange}
+          itemRender={renderComboBoxItem}
+          valueRender={renderComboBoxValue}
+          style={{ height: '33px' }}
+          clearButton={true}
+          suggest={true}
+          popupSettings={{
+            className: 'tipocompromisso-dropdown-popup-msi'
+          }}
+          />
+          <label
+          title={action === 'Editar' ? 'Editar o item atual' : 'Incluir/Adicionar novo item'}
+          className={`input-combobox-action-svg-label-${action.toLowerCase()}`}
+          onClick={handleActionClick}
+        >
+        <SvgIcon icon={action === 'Editar' ? pencilIcon : plusIcon} />
+      </label>
+    </div>
   </div>
-</div>
 </>
 );
 };

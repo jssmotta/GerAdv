@@ -4,6 +4,7 @@ import { IEventoPrazoAgendaService } from '../Services/EventoPrazoAgenda.service
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IEventoPrazoAgenda } from '../Interfaces/interface.EventoPrazoAgenda';
 import { isValidDate } from '@/app/tools/datetime';
+import { EventoPrazoAgendaApi } from '../Apis/ApiEventoPrazoAgenda';
 
 export const useEventoPrazoAgendaForm = (
   initialEventoPrazoAgenda: IEventoPrazoAgenda,
@@ -142,6 +143,16 @@ export const useEventoPrazoAgendaList = (dataService: IEventoPrazoAgendaService)
 
 
 export function useValidationsEventoPrazoAgenda() {
+
+  async function runValidation(data: IEventoPrazoAgenda, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const eventoprazoagendaApi = new EventoPrazoAgendaApi(uri ?? '', token ?? '');
+
+    const result = await eventoprazoagendaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IEventoPrazoAgenda): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useEventoPrazoAgendaComboBox = (
   dataService: IEventoPrazoAgendaService,
   initialValue?: any

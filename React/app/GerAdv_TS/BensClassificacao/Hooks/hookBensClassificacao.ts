@@ -4,6 +4,7 @@ import { IBensClassificacaoService } from '../Services/BensClassificacao.service
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IBensClassificacao } from '../Interfaces/interface.BensClassificacao';
 import { isValidDate } from '@/app/tools/datetime';
+import { BensClassificacaoApi } from '../Apis/ApiBensClassificacao';
 
 export const useBensClassificacaoForm = (
   initialBensClassificacao: IBensClassificacao,
@@ -142,6 +143,16 @@ export const useBensClassificacaoList = (dataService: IBensClassificacaoService)
 
 
 export function useValidationsBensClassificacao() {
+
+  async function runValidation(data: IBensClassificacao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const bensclassificacaoApi = new BensClassificacaoApi(uri ?? '', token ?? '');
+
+    const result = await bensclassificacaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IBensClassificacao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useBensClassificacaoComboBox = (
   dataService: IBensClassificacaoService,
   initialValue?: any

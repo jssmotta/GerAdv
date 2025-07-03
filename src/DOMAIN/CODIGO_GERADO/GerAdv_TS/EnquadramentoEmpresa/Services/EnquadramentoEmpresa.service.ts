@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { EnquadramentoEmpresaApi, EnquadramentoEmpresaApiError } from '../Apis/ApiEnquadramentoEmpresa';
 import { FilterEnquadramentoEmpresa } from '../Filters/EnquadramentoEmpresa';
 import { IEnquadramentoEmpresa } from '../Interfaces/interface.EnquadramentoEmpresa';
+import { EnquadramentoEmpresaEmpty } from '../../Models/EnquadramentoEmpresa';
 
 export class EnquadramentoEmpresaValidator {
   static validateEnquadramentoEmpresa(enquadramentoempresa: IEnquadramentoEmpresa): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class EnquadramentoEmpresaService implements IEnquadramentoEmpresaService
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof EnquadramentoEmpresaApiError) {
         throw error;

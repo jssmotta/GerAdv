@@ -128,46 +128,102 @@ const handleSuccess = (newCargosEscClass?: ICargosEscClass) => {
 };
 return (
 <>
-{(editRecord || addRecord) && isOpen && (
-  <CargosEscClassWindow
-  isOpen={isOpen}
-  onClose={handleClose}
-  onSuccess={handleSuccess}
-  onError={handleClose}
-  selectedCargosEscClass={editRecord || addRecord || CargosEscClassEmpty()}
-  />
-  )}
 
-  <div className={`${cssDado} inputCombobox input-container`}>
-    <div className='comboboxLabel'>
-      <span className='k-floating-label'>{label}</span>
-      </div>
-      <div className='comboboxBox'>
-        <ComboBox
-        name={name}
-        data={filteredOptions}
-        textField='nome'
-        dataItemKey='id'
-        value={selectedValue}
-        className={cssDado}
-        allowCustom={true}
-        filterable={true}
-        loading={loading}
-        onFilterChange={handleFilterChange}
-        onChange={handleComboChange}
-        style={{ height: '33px' }}
-        clearButton={true}
-        />
+<style jsx global>{`
+  .cargosescclass-dropdown-popup-msi {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 99999 !important;
+    position: absolute !important;
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    min-width: 200px !important;
+    height: auto !important;
+  }
 
-        <label
-        title={action === 'Editar' ? 'Editar o item atual' : 'Incluir/Adicionar novo item'}
-        className={`input-combobox-action-svg-label-${action.toLowerCase()}`}
-        onClick={handleActionClick}
-      >
-      <SvgIcon icon={action === 'Editar' ? pencilIcon : plusIcon} />
-    </label>
+  .cargosescclass-dropdown-popup-msi .k-list {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: white !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  .cargosescclass-dropdown-popup-msi .k-list-item {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 8px 12px !important;
+    background: white !important;
+    color: #333 !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #eee !important;
+    height: auto !important;
+  }
+
+  .cargosescclass-dropdown-popup-msi .k-list-item: hover {
+    background: #f0f0f0 !important;
+  }
+
+  .cargosescclass-dropdown-popup-msi * {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+  }
+
+  `}</style>
+  {(editRecord || addRecord) && isOpen && (
+    <CargosEscClassWindow
+    isOpen={isOpen}
+    onClose={handleClose}
+    onSuccess={handleSuccess}
+    onError={handleClose}
+    selectedCargosEscClass={editRecord || addRecord || CargosEscClassEmpty()}
+    />
+    )}
+
+    <div className={`${cssDado} inputCombobox input-container`}>
+      <div className='comboboxLabel'>
+        <span className='k-floating-label'>{label}</span>
+        </div>
+        <div className='comboboxBox'>
+          <ComboBox
+          name={name}
+          data={filteredOptions}
+          textField='nome'
+          dataItemKey='id'
+          value={selectedValue}
+          className={cssDado}
+          allowCustom={true}
+          filterable={true}
+          loading={loading}
+          aria-busy={loading}
+          onFilterChange={handleFilterChange}
+          onChange={handleComboChange}
+          style={{ height: '33px' }}
+          clearButton={true}
+          suggest={true}
+          popupSettings={{
+            className: 'cargosescclass-dropdown-popup-msi'
+          }}
+          />
+
+          <label
+          title={action === 'Editar' ? 'Editar o item atual' : 'Incluir/Adicionar novo item'}
+          className={`input-combobox-action-svg-label-${action.toLowerCase()}`}
+          onClick={handleActionClick}
+        >
+        <SvgIcon icon={action === 'Editar' ? pencilIcon : plusIcon} />
+      </label>
+    </div>
   </div>
-</div>
 </>
 );
 };

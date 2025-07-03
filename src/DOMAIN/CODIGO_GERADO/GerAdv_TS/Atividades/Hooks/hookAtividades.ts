@@ -4,6 +4,7 @@ import { IAtividadesService } from '../Services/Atividades.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAtividades } from '../Interfaces/interface.Atividades';
 import { isValidDate } from '@/app/tools/datetime';
+import { AtividadesApi } from '../Apis/ApiAtividades';
 
 export const useAtividadesForm = (
   initialAtividades: IAtividades,
@@ -142,6 +143,16 @@ export const useAtividadesList = (dataService: IAtividadesService) => {
 
 
 export function useValidationsAtividades() {
+
+  async function runValidation(data: IAtividades, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const atividadesApi = new AtividadesApi(uri ?? '', token ?? '');
+
+    const result = await atividadesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAtividades): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAtividadesComboBox = (
   dataService: IAtividadesService,
   initialValue?: any

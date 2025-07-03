@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import PaisesIncContainer from '@/app/GerAdv_TS/Paises/Components/PaisesIncContainer';
+// PaisesIncContainer.test.tsx
+// Mock do PaisesInc
+jest.mock('@/app/GerAdv_TS/Paises/Crud/Inc/Paises', () => (props: any) => (
+<div data-testid='paises-inc-mock' {...props} />
+));
+describe('PaisesIncContainer', () => {
+  it('deve renderizar PaisesInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <PaisesIncContainer id={id} navigator={mockNavigator} />
+  );
+  const paisesInc = getByTestId('paises-inc-mock');
+  expect(paisesInc).toBeInTheDocument();
+  expect(paisesInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

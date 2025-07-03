@@ -43,7 +43,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFuncaoRea
                    FROM {DBFuncao.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY funDescricao
+                   ORDER BY [Funcao].[funDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<FuncaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFuncaoRea
             var validade = await validation.ValidateReg(regFuncao, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Funcao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regFuncao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<FuncaoResponse?> Validation([FromBody] Models.Funcao regFuncao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Funcao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regFuncao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regFuncao, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regFuncao.Id.IsEmptyIDNumber())
+            {
+                return new FuncaoResponse();
+            }
+
+            return reader.Read(regFuncao.Id, oCnn);
         });
     }
 

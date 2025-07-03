@@ -1,13 +1,16 @@
-﻿// GridsMobile.tsx.txt
+﻿// GridsMobile.tsx
 'use client';
 import React from 'react';
-import { Grid, GridColumn, GridFilterChangeEvent, GridPageChangeEvent, GridSortChangeEvent } from '@progress/kendo-react-grid';
+import { Grid, GridColumn } from '@progress/kendo-react-grid';
 import { ITipoEndereco } from '../../Interfaces/interface.TipoEndereco';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useMemo } from 'react';
-import { applyFilter, applyFilterToColumn, CRUD_CONSTANTS, sortData } from '@/app/tools/crud';
+import { useMemo, useCallback } from 'react';
+import { applyFilter, CRUD_CONSTANTS } from '@/app/tools/crud';
 import { SvgIcon } from '@progress/kendo-react-common';
 import { pencilIcon, trashIcon } from '@progress/kendo-svg-icons';
+import { useGridFilter } from '@/app/hooks/useGridFilter';
+import { useGridSort } from '@/app/hooks/useGridSort';
+import { useGridPagination } from '@/app/hooks/useGridPagination';
 interface TipoEnderecoGridProps {
   data: ITipoEndereco[];
   onRowClick: (tipoendereco: ITipoEndereco) => void;
@@ -23,48 +26,57 @@ export const TipoEnderecoGridMobileComponent = React.memo(
 
 }: TipoEnderecoGridProps) => {
 const router = useRouter();
-const [initialized, setInitialized] = useState(false);
+
 const RowNumberCell = (props: any) => <td>{props.dataIndex + 1}</td>;
-const [page, setPage] = useState({
-  skip: 0, 
-  take: 10, 
+// Hook para paginação
+const { page, handlePageChange } = useGridPagination({
+  initialSkip: 0, 
+  initialTake: 10, 
 });
-const [sort, setSort] = useState<any[]>([]);
-const [columnFilters, setColumnFilters] = useState({
-  descricao: ''
+// Configuração dos filtros iniciais
+const initialFilters = {
+  descricao: '',
+};
+// Lógica de filtro customizada usando useCallback
+const filterLogic = useCallback((data: ITipoEndereco, filters: Record<string, any>) => {
+  const descricaoMatches = applyFilter(data, 'descricao', filters.descricao);
+  return descricaoMatches
+  ;
+}, []);
+// Hook para filtros
+const { columnFilters, filteredData, handleFilterChange } = useGridFilter({
+  data, 
+  initialFilters, 
+  filterLogic, 
 });
-const handleSortChange = (e: GridSortChangeEvent) => {
-  setSort(e.sort);
-};
-const filteredData = useMemo(() => { return data.filter((data: any) => {
-  const descricaoMatches = applyFilter(data, 'descricao', columnFilters.descricao);
-  return descricaoMatches;
+// Hook para ordenação
+const { sort, sortedData, handleSortChange } = useGridSort({
+  data: filteredData, 
 });
-}, [data, columnFilters]);
-const handleFilterChange = (event: GridFilterChangeEvent) => {
-  const filters = event.filter?.filters || [];
-  const newColumnFilters = { descricao: '' };
-  filters.forEach((filter) => applyFilterToColumn(filter, newColumnFilters));
-  setColumnFilters(newColumnFilters);
-};
-const sortedFilteredData = sortData(filteredData, sort);
-const handlePageChange = (event: GridPageChangeEvent) => {
-  setPage({
-    skip: event.page.skip, 
-    take: event.page.take, 
-  });
-};
 const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
+const gridColumns = useMemo(() => [
+  <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+  <GridColumn field='descricao' title='Descricao' />,
+
+  ], []);
+  const ExcluirLinha = (e: any) => {
+    return (
+    <td>
+      <span onClick={() => onDeleteClick(e) } title='Excluit item' ><SvgIcon icon={trashIcon} /></span>
+    </td>
+  );
+};
 return (
 <>
 <Grid
-data={sortedFilteredData.slice(page.skip, page.skip + page.take)}
+className='grid-mobile-tipoendereco'
+data={sortedData.slice(page.skip, page.skip + page.take)}
 skip={page.skip}
 take={page.take}
-total={sortedFilteredData.length}
+total={sortedData.length}
 pageable={{
   pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES), 
   buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT, 
@@ -78,11 +90,8 @@ reorderable={true}
 filterable={true}
 onFilterChange={handleFilterChange}
 onRowClick={(e) => handleRowClick(e)}>
-<GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />
-<GridColumn field='descricao' title='Descricao' />
-
+{gridColumns}
 </Grid>
-
 </>
 );
 }

@@ -43,7 +43,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IRitoReader 
                    FROM {DBRito.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY ritDescricao
+                   ORDER BY [Rito].[ritDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<RitoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IRitoReader 
             var validade = await validation.ValidateReg(regRito, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Rito: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regRito, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<RitoResponse?> Validation([FromBody] Models.Rito regRito, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Rito: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regRito == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regRito, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regRito.Id.IsEmptyIDNumber())
+            {
+                return new RitoResponse();
+            }
+
+            return reader.Read(regRito.Id, oCnn);
         });
     }
 

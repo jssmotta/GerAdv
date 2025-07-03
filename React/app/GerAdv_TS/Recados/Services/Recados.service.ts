@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { RecadosApi, RecadosApiError } from '../Apis/ApiRecados';
 import { FilterRecados } from '../Filters/Recados';
 import { IRecados } from '../Interfaces/interface.Recados';
+import { RecadosEmpty } from '../../Models/Recados';
 
 export class RecadosValidator {
   static validateRecados(recados: IRecados): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class RecadosService implements IRecadosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof RecadosApiError) {
         throw error;

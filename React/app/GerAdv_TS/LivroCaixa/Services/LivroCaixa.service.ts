@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { LivroCaixaApi, LivroCaixaApiError } from '../Apis/ApiLivroCaixa';
 import { FilterLivroCaixa } from '../Filters/LivroCaixa';
 import { ILivroCaixa } from '../Interfaces/interface.LivroCaixa';
+import { LivroCaixaEmpty } from '../../Models/LivroCaixa';
 
 export class LivroCaixaValidator {
   static validateLivroCaixa(livrocaixa: ILivroCaixa): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class LivroCaixaService implements ILivroCaixaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof LivroCaixaApiError) {
         throw error;

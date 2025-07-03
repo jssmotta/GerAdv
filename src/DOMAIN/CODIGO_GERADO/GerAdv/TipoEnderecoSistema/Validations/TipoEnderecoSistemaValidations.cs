@@ -31,7 +31,7 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoEnderecoSistema '{reg.Nome}' já cadastrado.";
+            return $"Tipo Endereco Sistema '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

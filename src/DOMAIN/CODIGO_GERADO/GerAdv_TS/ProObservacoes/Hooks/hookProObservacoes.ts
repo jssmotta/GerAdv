@@ -4,6 +4,7 @@ import { IProObservacoesService } from '../Services/ProObservacoes.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProObservacoes } from '../Interfaces/interface.ProObservacoes';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProObservacoesApi } from '../Apis/ApiProObservacoes';
 
 export const useProObservacoesForm = (
   initialProObservacoes: IProObservacoes,
@@ -142,6 +143,16 @@ export const useProObservacoesList = (dataService: IProObservacoesService) => {
 
 
 export function useValidationsProObservacoes() {
+
+  async function runValidation(data: IProObservacoes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const proobservacoesApi = new ProObservacoesApi(uri ?? '', token ?? '');
+
+    const result = await proobservacoesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProObservacoes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -167,7 +178,7 @@ if (data.observacoes.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProObservacoesComboBox = (
   dataService: IProObservacoesService,
   initialValue?: any

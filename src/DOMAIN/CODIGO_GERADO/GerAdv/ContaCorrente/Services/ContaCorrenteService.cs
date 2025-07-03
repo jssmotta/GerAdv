@@ -39,13 +39,13 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, ICo
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBContaCorrente.SensivelCamposSqlX}, proNroPasta,cliNome
+                   {DBContaCorrente.SensivelCamposSqlX}, [Processos].[proNroPasta],[Clientes].[cliNome]
                    FROM {DBContaCorrente.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=ctoProcesso
-LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ctoCliente
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ContaCorrente].[ctoProcesso]
+LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[ContaCorrente].[ctoCliente]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ContaCorrente].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ContaCorrenteResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=ctoCliente
             var validade = await validation.ValidateReg(regContaCorrente, this, processosReader, clientesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ContaCorrente: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regContaCorrente, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ContaCorrenteResponse?> Validation([FromBody] Models.ContaCorrente regContaCorrente, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ContaCorrente: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regContaCorrente == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regContaCorrente, this, processosReader, clientesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regContaCorrente.Id.IsEmptyIDNumber())
+            {
+                return new ContaCorrenteResponse();
+            }
+
+            return reader.Read(regContaCorrente.Id, oCnn);
         });
     }
 

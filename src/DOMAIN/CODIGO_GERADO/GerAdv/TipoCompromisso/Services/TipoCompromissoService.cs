@@ -43,7 +43,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
                    FROM {DBTipoCompromisso.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tipDescricao
+                   ORDER BY [TipoCompromisso].[tipDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoCompromissoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regTipoCompromisso, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoCompromisso: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoCompromisso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoCompromissoResponse?> Validation([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoCompromisso: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoCompromisso == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoCompromisso, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoCompromisso.Id.IsEmptyIDNumber())
+            {
+                return new TipoCompromissoResponse();
+            }
+
+            return reader.Read(regTipoCompromisso.Id, oCnn);
         });
     }
 

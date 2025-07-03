@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProSucumbenciaApi, ProSucumbenciaApiError } from '../Apis/ApiProSucumbencia';
 import { FilterProSucumbencia } from '../Filters/ProSucumbencia';
 import { IProSucumbencia } from '../Interfaces/interface.ProSucumbencia';
+import { ProSucumbenciaEmpty } from '../../Models/ProSucumbencia';
 
 export class ProSucumbenciaValidator {
   static validateProSucumbencia(prosucumbencia: IProSucumbencia): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProSucumbenciaService implements IProSucumbenciaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProSucumbenciaApiError) {
         throw error;

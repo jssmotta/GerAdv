@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import OperadorGruposIncContainer from '@/app/GerAdv_TS/OperadorGrupos/Components/OperadorGruposIncContainer';
+// OperadorGruposIncContainer.test.tsx
+// Mock do OperadorGruposInc
+jest.mock('@/app/GerAdv_TS/OperadorGrupos/Crud/Inc/OperadorGrupos', () => (props: any) => (
+<div data-testid='operadorgrupos-inc-mock' {...props} />
+));
+describe('OperadorGruposIncContainer', () => {
+  it('deve renderizar OperadorGruposInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <OperadorGruposIncContainer id={id} navigator={mockNavigator} />
+  );
+  const operadorgruposInc = getByTestId('operadorgrupos-inc-mock');
+  expect(operadorgruposInc).toBeInTheDocument();
+  expect(operadorgruposInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

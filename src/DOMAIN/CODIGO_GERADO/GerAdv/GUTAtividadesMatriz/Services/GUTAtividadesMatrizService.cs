@@ -39,13 +39,13 @@ public partial class GUTAtividadesMatrizService(IOptions<AppSettings> appSetting
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBGUTAtividadesMatriz.SensivelCamposSqlX}, gutDescricao,agtNome
+                   {DBGUTAtividadesMatriz.SensivelCamposSqlX}, [GUTMatriz].[gutDescricao],[GUTAtividades].[agtNome]
                    FROM {DBGUTAtividadesMatriz.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"GUTMatriz".dbo(oCnn)} (NOLOCK) ON gutCodigo=amgGUTMatriz
-LEFT JOIN {"GUTAtividades".dbo(oCnn)} (NOLOCK) ON agtCodigo=amgGUTAtividade
+                   LEFT JOIN {"GUTMatriz".dbo(oCnn)} (NOLOCK) ON [GUTMatriz].[gutCodigo]=[GUTAtividadesMatriz].[amgGUTMatriz]
+LEFT JOIN {"GUTAtividades".dbo(oCnn)} (NOLOCK) ON [GUTAtividades].[agtCodigo]=[GUTAtividadesMatriz].[amgGUTAtividade]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [GUTAtividadesMatriz].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GUTAtividadesMatrizResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"GUTAtividades".dbo(oCnn)} (NOLOCK) ON agtCodigo=amgGUTAtividade
             var validade = await validation.ValidateReg(regGUTAtividadesMatriz, this, gutmatrizReader, gutatividadesReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GUTAtividadesMatriz: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGUTAtividadesMatriz, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GUTAtividadesMatrizResponse?> Validation([FromBody] Models.GUTAtividadesMatriz regGUTAtividadesMatriz, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GUTAtividadesMatriz: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGUTAtividadesMatriz == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGUTAtividadesMatriz, this, gutmatrizReader, gutatividadesReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGUTAtividadesMatriz.Id.IsEmptyIDNumber())
+            {
+                return new GUTAtividadesMatrizResponse();
+            }
+
+            return reader.Read(regGUTAtividadesMatriz.Id, oCnn);
         });
     }
 

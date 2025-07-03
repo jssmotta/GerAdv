@@ -4,6 +4,7 @@ import { IAlarmSMSService } from '../Services/AlarmSMS.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAlarmSMS } from '../Interfaces/interface.AlarmSMS';
 import { isValidDate } from '@/app/tools/datetime';
+import { AlarmSMSApi } from '../Apis/ApiAlarmSMS';
 
 export const useAlarmSMSForm = (
   initialAlarmSMS: IAlarmSMS,
@@ -142,6 +143,16 @@ export const useAlarmSMSList = (dataService: IAlarmSMSService) => {
 
 
 export function useValidationsAlarmSMS() {
+
+  async function runValidation(data: IAlarmSMS, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const alarmsmsApi = new AlarmSMSApi(uri ?? '', token ?? '');
+
+    const result = await alarmsmsApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAlarmSMS): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -170,7 +181,7 @@ if (data.guidexo.length > 100) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAlarmSMSComboBox = (
   dataService: IAlarmSMSService,
   initialValue?: any

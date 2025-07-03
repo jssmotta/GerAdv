@@ -4,6 +4,7 @@ import { IPosicaoOutrasPartesService } from '../Services/PosicaoOutrasPartes.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IPosicaoOutrasPartes } from '../Interfaces/interface.PosicaoOutrasPartes';
 import { isValidDate } from '@/app/tools/datetime';
+import { PosicaoOutrasPartesApi } from '../Apis/ApiPosicaoOutrasPartes';
 
 export const usePosicaoOutrasPartesForm = (
   initialPosicaoOutrasPartes: IPosicaoOutrasPartes,
@@ -142,6 +143,16 @@ export const usePosicaoOutrasPartesList = (dataService: IPosicaoOutrasPartesServ
 
 
 export function useValidationsPosicaoOutrasPartes() {
+
+  async function runValidation(data: IPosicaoOutrasPartes, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const posicaooutraspartesApi = new PosicaoOutrasPartesApi(uri ?? '', token ?? '');
+
+    const result = await posicaooutraspartesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IPosicaoOutrasPartes): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 30) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const usePosicaoOutrasPartesComboBox = (
   dataService: IPosicaoOutrasPartesService,
   initialValue?: any

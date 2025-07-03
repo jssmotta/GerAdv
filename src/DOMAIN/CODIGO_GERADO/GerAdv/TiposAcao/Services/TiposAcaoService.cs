@@ -43,7 +43,7 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, ITiposA
                    FROM {DBTiposAcao.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tacNome
+                   ORDER BY [TiposAcao].[tacNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TiposAcaoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, ITiposA
             var validade = await validation.ValidateReg(regTiposAcao, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TiposAcao: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTiposAcao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TiposAcaoResponse?> Validation([FromBody] Models.TiposAcao regTiposAcao, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TiposAcao: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTiposAcao == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTiposAcao, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTiposAcao.Id.IsEmptyIDNumber())
+            {
+                return new TiposAcaoResponse();
+            }
+
+            return reader.Read(regTiposAcao.Id, oCnn);
         });
     }
 

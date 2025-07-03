@@ -4,6 +4,7 @@ import { ITipoEnderecoService } from '../Services/TipoEndereco.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoEndereco } from '../Interfaces/interface.TipoEndereco';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoEnderecoApi } from '../Apis/ApiTipoEndereco';
 
 export const useTipoEnderecoForm = (
   initialTipoEndereco: ITipoEndereco,
@@ -142,6 +143,16 @@ export const useTipoEnderecoList = (dataService: ITipoEnderecoService) => {
 
 
 export function useValidationsTipoEndereco() {
+
+  async function runValidation(data: ITipoEndereco, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipoenderecoApi = new TipoEnderecoApi(uri ?? '', token ?? '');
+
+    const result = await tipoenderecoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoEndereco): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 40) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoEnderecoComboBox = (
   dataService: ITipoEnderecoService,
   initialValue?: any

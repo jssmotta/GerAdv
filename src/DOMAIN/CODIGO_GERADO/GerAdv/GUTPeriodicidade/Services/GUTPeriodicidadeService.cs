@@ -43,7 +43,7 @@ public partial class GUTPeriodicidadeService(IOptions<AppSettings> appSettings, 
                    FROM {DBGUTPeriodicidade.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY pcgNome
+                   ORDER BY [GUTPeriodicidade].[pcgNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GUTPeriodicidadeResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class GUTPeriodicidadeService(IOptions<AppSettings> appSettings, 
             var validade = await validation.ValidateReg(regGUTPeriodicidade, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GUTPeriodicidade: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGUTPeriodicidade, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GUTPeriodicidadeResponse?> Validation([FromBody] Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GUTPeriodicidade: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGUTPeriodicidade == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGUTPeriodicidade, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGUTPeriodicidade.Id.IsEmptyIDNumber())
+            {
+                return new GUTPeriodicidadeResponse();
+            }
+
+            return reader.Read(regGUTPeriodicidade.Id, oCnn);
         });
     }
 

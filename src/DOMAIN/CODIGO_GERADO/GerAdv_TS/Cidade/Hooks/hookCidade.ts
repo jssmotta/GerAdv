@@ -4,6 +4,7 @@ import { ICidadeService } from '../Services/Cidade.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ICidade } from '../Interfaces/interface.Cidade';
 import { isValidDate } from '@/app/tools/datetime';
+import { CidadeApi } from '../Apis/ApiCidade';
 
 export const useCidadeForm = (
   initialCidade: ICidade,
@@ -142,6 +143,16 @@ export const useCidadeList = (dataService: ICidadeService) => {
 
 
 export function useValidationsCidade() {
+
+  async function runValidation(data: ICidade, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const cidadeApi = new CidadeApi(uri ?? '', token ?? '');
+
+    const result = await cidadeApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ICidade): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -170,7 +181,7 @@ if (data.sigla.length > 10) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useCidadeComboBox = (
   dataService: ICidadeService,
   initialValue?: any

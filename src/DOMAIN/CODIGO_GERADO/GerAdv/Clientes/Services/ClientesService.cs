@@ -39,14 +39,14 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, ICliente
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBClientes.SensivelCamposSqlX}, cidNome,rdtNome,eqeNome
+                   {DBClientes.SensivelCamposSqlX}, [Cidade].[cidNome],[RegimeTributacao].[rdtNome],[EnquadramentoEmpresa].[eqeNome]
                    FROM {DBClientes.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=cliCidade
-LEFT JOIN {"RegimeTributacao".dbo(oCnn)} (NOLOCK) ON rdtCodigo=cliRegimeTributacao
-LEFT JOIN {"EnquadramentoEmpresa".dbo(oCnn)} (NOLOCK) ON eqeCodigo=cliEnquadramentoEmpresa
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Clientes].[cliCidade]
+LEFT JOIN {"RegimeTributacao".dbo(oCnn)} (NOLOCK) ON [RegimeTributacao].[rdtCodigo]=[Clientes].[cliRegimeTributacao]
+LEFT JOIN {"EnquadramentoEmpresa".dbo(oCnn)} (NOLOCK) ON [EnquadramentoEmpresa].[eqeCodigo]=[Clientes].[cliEnquadramentoEmpresa]
  
                    {where}
-                   ORDER BY cliNome
+                   ORDER BY [Clientes].[cliNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ClientesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"EnquadramentoEmpresa".dbo(oCnn)} (NOLOCK) ON eqeCodigo=cliEnquadrame
             var validade = await validation.ValidateReg(regClientes, this, cidadeReader, regimetributacaoReader, enquadramentoempresaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Clientes: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regClientes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ClientesResponse?> Validation([FromBody] Models.Clientes regClientes, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Clientes: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regClientes == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regClientes, this, cidadeReader, regimetributacaoReader, enquadramentoempresaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regClientes.Id.IsEmptyIDNumber())
+            {
+                return new ClientesResponse();
+            }
+
+            return reader.Read(regClientes.Id, oCnn);
         });
     }
 

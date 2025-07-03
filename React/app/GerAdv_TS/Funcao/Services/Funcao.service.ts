@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { FuncaoApi, FuncaoApiError } from '../Apis/ApiFuncao';
 import { FilterFuncao } from '../Filters/Funcao';
 import { IFuncao } from '../Interfaces/interface.Funcao';
+import { FuncaoEmpty } from '../../Models/Funcao';
 
 export class FuncaoValidator {
   static validateFuncao(funcao: IFuncao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class FuncaoService implements IFuncaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof FuncaoApiError) {
         throw error;

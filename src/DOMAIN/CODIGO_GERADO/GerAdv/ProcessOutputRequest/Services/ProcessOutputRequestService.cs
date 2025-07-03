@@ -39,14 +39,14 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProcessOutputRequest.SensivelCamposSqlX}, poeNome,operNome,proNroPasta
+                   {DBProcessOutputRequest.SensivelCamposSqlX}, [ProcessOutputEngine].[poeNome],[Operador].[operNome],[Processos].[proNroPasta]
                    FROM {DBProcessOutputRequest.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"ProcessOutputEngine".dbo(oCnn)} (NOLOCK) ON poeCodigo=porProcessOutputEngine
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=porOperador
-LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=porProcesso
+                   LEFT JOIN {"ProcessOutputEngine".dbo(oCnn)} (NOLOCK) ON [ProcessOutputEngine].[poeCodigo]=[ProcessOutputRequest].[porProcessOutputEngine]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[ProcessOutputRequest].[porOperador]
+LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProcessOutputRequest].[porProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProcessOutputRequest].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessOutputRequestResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=porProcesso
             var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProcessOutputRequest: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessOutputRequest, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessOutputRequestResponse?> Validation([FromBody] Models.ProcessOutputRequest regProcessOutputRequest, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProcessOutputRequest: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessOutputRequest == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessOutputRequest.Id.IsEmptyIDNumber())
+            {
+                return new ProcessOutputRequestResponse();
+            }
+
+            return reader.Read(regProcessOutputRequest.Id, oCnn);
         });
     }
 

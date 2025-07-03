@@ -4,6 +4,7 @@ import { IStatusBiuService } from '../Services/StatusBiu.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IStatusBiu } from '../Interfaces/interface.StatusBiu';
 import { isValidDate } from '@/app/tools/datetime';
+import { StatusBiuApi } from '../Apis/ApiStatusBiu';
 
 export const useStatusBiuForm = (
   initialStatusBiu: IStatusBiu,
@@ -142,6 +143,16 @@ export const useStatusBiuList = (dataService: IStatusBiuService) => {
 
 
 export function useValidationsStatusBiu() {
+
+  async function runValidation(data: IStatusBiu, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const statusbiuApi = new StatusBiuApi(uri ?? '', token ?? '');
+
+    const result = await statusbiuApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IStatusBiu): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 1024) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useStatusBiuComboBox = (
   dataService: IStatusBiuService,
   initialValue?: any

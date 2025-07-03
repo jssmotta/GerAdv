@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import PreClientesIncContainer from '@/app/GerAdv_TS/PreClientes/Components/PreClientesIncContainer';
+// PreClientesIncContainer.test.tsx
+// Mock do PreClientesInc
+jest.mock('@/app/GerAdv_TS/PreClientes/Crud/Inc/PreClientes', () => (props: any) => (
+<div data-testid='preclientes-inc-mock' {...props} />
+));
+describe('PreClientesIncContainer', () => {
+  it('deve renderizar PreClientesInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <PreClientesIncContainer id={id} navigator={mockNavigator} />
+  );
+  const preclientesInc = getByTestId('preclientes-inc-mock');
+  expect(preclientesInc).toBeInTheDocument();
+  expect(preclientesInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

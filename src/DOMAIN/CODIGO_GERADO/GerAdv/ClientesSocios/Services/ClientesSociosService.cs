@@ -39,13 +39,13 @@ public partial class ClientesSociosService(IOptions<AppSettings> appSettings, IC
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBClientesSocios.SensivelCamposSqlX}, cliNome,cidNome
+                   {DBClientesSocios.SensivelCamposSqlX}, [Clientes].[cliNome],[Cidade].[cidNome]
                    FROM {DBClientesSocios.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON cliCodigo=cscCliente
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=cscCidade
+                   LEFT JOIN {"Clientes".dbo(oCnn)} (NOLOCK) ON [Clientes].[cliCodigo]=[ClientesSocios].[cscCliente]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[ClientesSocios].[cscCidade]
  
                    {where}
-                   ORDER BY cscNome
+                   ORDER BY [ClientesSocios].[cscNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ClientesSociosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=cscCidade
             var validade = await validation.ValidateReg(regClientesSocios, this, clientesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ClientesSocios: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regClientesSocios, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ClientesSociosResponse?> Validation([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ClientesSocios: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regClientesSocios == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regClientesSocios, this, clientesReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regClientesSocios.Id.IsEmptyIDNumber())
+            {
+                return new ClientesSociosResponse();
+            }
+
+            return reader.Read(regClientesSocios.Id, oCnn);
         });
     }
 

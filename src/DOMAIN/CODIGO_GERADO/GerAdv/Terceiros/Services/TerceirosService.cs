@@ -39,14 +39,14 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, ITercei
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBTerceiros.SensivelCamposSqlX}, proNroPasta,posDescricao,cidNome
+                   {DBTerceiros.SensivelCamposSqlX}, [Processos].[proNroPasta],[PosicaoOutrasPartes].[posDescricao],[Cidade].[cidNome]
                    FROM {DBTerceiros.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=terProcesso
-LEFT JOIN {"PosicaoOutrasPartes".dbo(oCnn)} (NOLOCK) ON posCodigo=terSituacao
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=terCidade
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Terceiros].[terProcesso]
+LEFT JOIN {"PosicaoOutrasPartes".dbo(oCnn)} (NOLOCK) ON [PosicaoOutrasPartes].[posCodigo]=[Terceiros].[terSituacao]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Terceiros].[terCidade]
  
                    {where}
-                   ORDER BY terNome
+                   ORDER BY [Terceiros].[terNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TerceirosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=terCidade
             var validade = await validation.ValidateReg(regTerceiros, this, processosReader, posicaooutraspartesReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Terceiros: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTerceiros, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TerceirosResponse?> Validation([FromBody] Models.Terceiros regTerceiros, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Terceiros: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTerceiros == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTerceiros, this, processosReader, posicaooutraspartesReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTerceiros.Id.IsEmptyIDNumber())
+            {
+                return new TerceirosResponse();
+            }
+
+            return reader.Read(regTerceiros.Id, oCnn);
         });
     }
 

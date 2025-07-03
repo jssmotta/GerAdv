@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import Diario2IncContainer from '@/app/GerAdv_TS/Diario2/Components/Diario2IncContainer';
+// Diario2IncContainer.test.tsx
+// Mock do Diario2Inc
+jest.mock('@/app/GerAdv_TS/Diario2/Crud/Inc/Diario2', () => (props: any) => (
+<div data-testid='diario2-inc-mock' {...props} />
+));
+describe('Diario2IncContainer', () => {
+  it('deve renderizar Diario2Inc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <Diario2IncContainer id={id} navigator={mockNavigator} />
+  );
+  const diario2Inc = getByTestId('diario2-inc-mock');
+  expect(diario2Inc).toBeInTheDocument();
+  expect(diario2Inc.getAttribute('id')).toBe(id.toString());
+
+});
+});

@@ -39,12 +39,12 @@ public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IAnd
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAndamentosMD.SensivelCamposSqlX}, proNroPasta
+                   {DBAndamentosMD.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBAndamentosMD.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=amdProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[AndamentosMD].[amdProcesso]
  
                    {where}
-                   ORDER BY amdNome
+                   ORDER BY [AndamentosMD].[amdNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AndamentosMDResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IAnd
             var validade = await validation.ValidateReg(regAndamentosMD, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AndamentosMD: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAndamentosMD, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AndamentosMDResponse?> Validation([FromBody] Models.AndamentosMD regAndamentosMD, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AndamentosMD: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAndamentosMD == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAndamentosMD, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAndamentosMD.Id.IsEmptyIDNumber())
+            {
+                return new AndamentosMDResponse();
+            }
+
+            return reader.Read(regAndamentosMD.Id, oCnn);
         });
     }
 

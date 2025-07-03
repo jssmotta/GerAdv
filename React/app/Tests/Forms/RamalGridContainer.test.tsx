@@ -1,0 +1,16 @@
+﻿// RamalGridContainer.test.tsx
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { IGridComponent } from '@/app/interfaces/IGridComponent';
+import RamalGridContainer from '@/app/GerAdv_TS/Ramal/Components/RamalGridContainer';
+describe('RamalGridContainer', () => {
+  it('renders the grid component output', () => {
+    // Mock grid with a render method
+    const mockGrid: IGridComponent = {
+      render: () => <div data-testid='mock-grid'>Mock Grid Content</div>
+    };
+    render(<RamalGridContainer grid={mockGrid} />);
+    // Assert the mock grid content is rendered
+    expect(screen.getByTestId('mock-grid')).toHaveTextContent('Mock Grid Content');
+  });
+});

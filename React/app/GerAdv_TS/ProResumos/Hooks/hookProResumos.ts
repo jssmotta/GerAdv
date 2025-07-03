@@ -4,6 +4,7 @@ import { IProResumosService } from '../Services/ProResumos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProResumos } from '../Interfaces/interface.ProResumos';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProResumosApi } from '../Apis/ApiProResumos';
 
 export const useProResumosForm = (
   initialProResumos: IProResumos,
@@ -142,6 +143,16 @@ export const useProResumosList = (dataService: IProResumosService) => {
 
 
 export function useValidationsProResumos() {
+
+  async function runValidation(data: IProResumos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const proresumosApi = new ProResumosApi(uri ?? '', token ?? '');
+
+    const result = await proresumosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProResumos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsProResumos() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

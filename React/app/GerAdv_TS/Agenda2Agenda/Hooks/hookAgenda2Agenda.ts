@@ -4,6 +4,7 @@ import { IAgenda2AgendaService } from '../Services/Agenda2Agenda.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgenda2Agenda } from '../Interfaces/interface.Agenda2Agenda';
 import { isValidDate } from '@/app/tools/datetime';
+import { Agenda2AgendaApi } from '../Apis/ApiAgenda2Agenda';
 
 export const useAgenda2AgendaForm = (
   initialAgenda2Agenda: IAgenda2Agenda,
@@ -142,6 +143,16 @@ export const useAgenda2AgendaList = (dataService: IAgenda2AgendaService) => {
 
 
 export function useValidationsAgenda2Agenda() {
+
+  async function runValidation(data: IAgenda2Agenda, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agenda2agendaApi = new Agenda2AgendaApi(uri ?? '', token ?? '');
+
+    const result = await agenda2agendaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgenda2Agenda): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAgenda2Agenda() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

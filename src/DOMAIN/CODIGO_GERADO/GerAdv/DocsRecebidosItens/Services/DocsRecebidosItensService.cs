@@ -39,12 +39,12 @@ public partial class DocsRecebidosItensService(IOptions<AppSettings> appSettings
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBDocsRecebidosItens.SensivelCamposSqlX}
+                   {DBDocsRecebidosItens.SensivelCamposSqlX}, [ContatoCRM].[]
                    FROM {DBDocsRecebidosItens.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"ContatoCRM".dbo(oCnn)} (NOLOCK) ON ctcCodigo=driContatoCRM
+                   LEFT JOIN {"ContatoCRM".dbo(oCnn)} (NOLOCK) ON [ContatoCRM].[ctcCodigo]=[DocsRecebidosItens].[driContatoCRM]
  
                    {where}
-                   ORDER BY driNome
+                   ORDER BY [DocsRecebidosItens].[driNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<DocsRecebidosItensResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class DocsRecebidosItensService(IOptions<AppSettings> appSettings
             var validade = await validation.ValidateReg(regDocsRecebidosItens, this, contatocrmReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"DocsRecebidosItens: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regDocsRecebidosItens, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<DocsRecebidosItensResponse?> Validation([FromBody] Models.DocsRecebidosItens regDocsRecebidosItens, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("DocsRecebidosItens: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regDocsRecebidosItens == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regDocsRecebidosItens, this, contatocrmReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regDocsRecebidosItens.Id.IsEmptyIDNumber())
+            {
+                return new DocsRecebidosItensResponse();
+            }
+
+            return reader.Read(regDocsRecebidosItens.Id, oCnn);
         });
     }
 

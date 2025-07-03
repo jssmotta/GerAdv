@@ -31,7 +31,7 @@ public class RegimeTributacaoValidation : IRegimeTributacaoValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"RegimeTributacao '{reg.Nome}' já cadastrado.";
+            return $"Regime Tributacao '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

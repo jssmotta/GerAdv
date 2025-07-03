@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { DocumentosApi, DocumentosApiError } from '../Apis/ApiDocumentos';
 import { FilterDocumentos } from '../Filters/Documentos';
 import { IDocumentos } from '../Interfaces/interface.Documentos';
+import { DocumentosEmpty } from '../../Models/Documentos';
 
 export class DocumentosValidator {
   static validateDocumentos(documentos: IDocumentos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class DocumentosService implements IDocumentosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof DocumentosApiError) {
         throw error;

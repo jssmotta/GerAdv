@@ -37,7 +37,7 @@ public class InstanciaValidation : IInstanciaValidation
         if (string.IsNullOrWhiteSpace(reg.NroProcesso))
             return "NroProcesso é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"Instancia '{reg.NroProcesso}' já cadastrado.";
+            return $"Instancia '{reg.NroProcesso}' Divisao e/ou NroProcesso e/ou SubDivisao";
         // Processos
         if (!reg.Processo.IsEmptyIDNumber())
         {

@@ -39,12 +39,12 @@ public partial class ApensoService(IOptions<AppSettings> appSettings, IApensoRea
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBApenso.SensivelCamposSqlX}, proNroPasta
+                   {DBApenso.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBApenso.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=apeProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[Apenso].[apeProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [Apenso].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ApensoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class ApensoService(IOptions<AppSettings> appSettings, IApensoRea
             var validade = await validation.ValidateReg(regApenso, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Apenso: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regApenso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ApensoResponse?> Validation([FromBody] Models.Apenso regApenso, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Apenso: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regApenso == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regApenso, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regApenso.Id.IsEmptyIDNumber())
+            {
+                return new ApensoResponse();
+            }
+
+            return reader.Read(regApenso.Id, oCnn);
         });
     }
 

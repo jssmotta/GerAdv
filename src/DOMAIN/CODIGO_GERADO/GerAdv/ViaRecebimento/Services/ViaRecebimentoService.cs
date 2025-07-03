@@ -42,7 +42,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IV
                    FROM {DBViaRecebimento.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY vrbNome
+                   ORDER BY [ViaRecebimento].[vrbNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ViaRecebimentoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IV
             var validade = await validation.ValidateReg(regViaRecebimento, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ViaRecebimento: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regViaRecebimento, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ViaRecebimentoResponse?> Validation([FromBody] Models.ViaRecebimento regViaRecebimento, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ViaRecebimento: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regViaRecebimento == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regViaRecebimento, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regViaRecebimento.Id.IsEmptyIDNumber())
+            {
+                return new ViaRecebimentoResponse();
+            }
+
+            return reader.Read(regViaRecebimento.Id, oCnn);
         });
     }
 

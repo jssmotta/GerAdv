@@ -39,12 +39,12 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IProRe
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBProResumos.SensivelCamposSqlX}, proNroPasta
+                   {DBProResumos.SensivelCamposSqlX}, [Processos].[proNroPasta]
                    FROM {DBProResumos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON proCodigo=prsProcesso
+                   LEFT JOIN {"Processos".dbo(oCnn)} (NOLOCK) ON [Processos].[proCodigo]=[ProResumos].[prsProcesso]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ProResumos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProResumosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IProRe
             var validade = await validation.ValidateReg(regProResumos, this, processosReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProResumos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProResumos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProResumosResponse?> Validation([FromBody] Models.ProResumos regProResumos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProResumos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProResumos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProResumos, this, processosReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProResumos.Id.IsEmptyIDNumber())
+            {
+                return new ProResumosResponse();
+            }
+
+            return reader.Read(regProResumos.Id, oCnn);
         });
     }
 

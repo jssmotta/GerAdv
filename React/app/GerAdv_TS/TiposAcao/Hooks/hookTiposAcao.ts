@@ -4,6 +4,7 @@ import { ITiposAcaoService } from '../Services/TiposAcao.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITiposAcao } from '../Interfaces/interface.TiposAcao';
 import { isValidDate } from '@/app/tools/datetime';
+import { TiposAcaoApi } from '../Apis/ApiTiposAcao';
 
 export const useTiposAcaoForm = (
   initialTiposAcao: ITiposAcao,
@@ -142,6 +143,16 @@ export const useTiposAcaoList = (dataService: ITiposAcaoService) => {
 
 
 export function useValidationsTiposAcao() {
+
+  async function runValidation(data: ITiposAcao, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tiposacaoApi = new TiposAcaoApi(uri ?? '', token ?? '');
+
+    const result = await tiposacaoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITiposAcao): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTiposAcaoComboBox = (
   dataService: ITiposAcaoService,
   initialValue?: any

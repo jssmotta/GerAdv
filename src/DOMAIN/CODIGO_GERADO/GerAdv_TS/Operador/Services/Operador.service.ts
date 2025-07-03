@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { OperadorApi, OperadorApiError } from '../Apis/ApiOperador';
 import { FilterOperador } from '../Filters/Operador';
 import { IOperador } from '../Interfaces/interface.Operador';
+import { OperadorEmpty } from '../../Models/Operador';
 
 export class OperadorValidator {
   static validateOperador(operador: IOperador): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class OperadorService implements IOperadorService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof OperadorApiError) {
         throw error;

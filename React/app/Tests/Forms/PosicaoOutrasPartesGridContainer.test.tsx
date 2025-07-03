@@ -1,0 +1,16 @@
+﻿// PosicaoOutrasPartesGridContainer.test.tsx
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { IGridComponent } from '@/app/interfaces/IGridComponent';
+import PosicaoOutrasPartesGridContainer from '@/app/GerAdv_TS/PosicaoOutrasPartes/Components/PosicaoOutrasPartesGridContainer';
+describe('PosicaoOutrasPartesGridContainer', () => {
+  it('renders the grid component output', () => {
+    // Mock grid with a render method
+    const mockGrid: IGridComponent = {
+      render: () => <div data-testid='mock-grid'>Mock Grid Content</div>
+    };
+    render(<PosicaoOutrasPartesGridContainer grid={mockGrid} />);
+    // Assert the mock grid content is rendered
+    expect(screen.getByTestId('mock-grid')).toHaveTextContent('Mock Grid Content');
+  });
+});

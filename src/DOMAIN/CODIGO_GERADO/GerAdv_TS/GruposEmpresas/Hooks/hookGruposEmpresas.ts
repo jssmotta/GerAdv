@@ -4,6 +4,7 @@ import { IGruposEmpresasService } from '../Services/GruposEmpresas.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGruposEmpresas } from '../Interfaces/interface.GruposEmpresas';
 import { isValidDate } from '@/app/tools/datetime';
+import { GruposEmpresasApi } from '../Apis/ApiGruposEmpresas';
 
 export const useGruposEmpresasForm = (
   initialGruposEmpresas: IGruposEmpresas,
@@ -142,6 +143,16 @@ export const useGruposEmpresasList = (dataService: IGruposEmpresasService) => {
 
 
 export function useValidationsGruposEmpresas() {
+
+  async function runValidation(data: IGruposEmpresas, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const gruposempresasApi = new GruposEmpresasApi(uri ?? '', token ?? '');
+
+    const result = await gruposempresasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGruposEmpresas): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -173,7 +184,7 @@ if (data.icone.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useGruposEmpresasComboBox = (
   dataService: IGruposEmpresasService,
   initialValue?: any

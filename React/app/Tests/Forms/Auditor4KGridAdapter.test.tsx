@@ -1,0 +1,13 @@
+﻿// Auditor4KGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { Auditor4KGridAdapter } from '@/app/GerAdv_TS/Auditor4K/Adapter/Auditor4KGridAdapter';
+// Mock Auditor4KGrid component
+jest.mock('@/app/GerAdv_TS/Auditor4K/Crud/Grids/Auditor4KGrid', () => () => <div data-testid='auditor4k-grid-mock' />);
+describe('Auditor4KGridAdapter', () => {
+  it('should render Auditor4KGrid component', () => {
+    const adapter = new Auditor4KGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('auditor4k-grid-mock')).toBeInTheDocument();
+  });
+});

@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import PrecatoriaIncContainer from '@/app/GerAdv_TS/Precatoria/Components/PrecatoriaIncContainer';
+// PrecatoriaIncContainer.test.tsx
+// Mock do PrecatoriaInc
+jest.mock('@/app/GerAdv_TS/Precatoria/Crud/Inc/Precatoria', () => (props: any) => (
+<div data-testid='precatoria-inc-mock' {...props} />
+));
+describe('PrecatoriaIncContainer', () => {
+  it('deve renderizar PrecatoriaInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <PrecatoriaIncContainer id={id} navigator={mockNavigator} />
+  );
+  const precatoriaInc = getByTestId('precatoria-inc-mock');
+  expect(precatoriaInc).toBeInTheDocument();
+  expect(precatoriaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

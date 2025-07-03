@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { DivisaoTribunalApi, DivisaoTribunalApiError } from '../Apis/ApiDivisaoTribunal';
 import { FilterDivisaoTribunal } from '../Filters/DivisaoTribunal';
 import { IDivisaoTribunal } from '../Interfaces/interface.DivisaoTribunal';
+import { DivisaoTribunalEmpty } from '../../Models/DivisaoTribunal';
 
 export class DivisaoTribunalValidator {
   static validateDivisaoTribunal(divisaotribunal: IDivisaoTribunal): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class DivisaoTribunalService implements IDivisaoTribunalService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof DivisaoTribunalApiError) {
         throw error;

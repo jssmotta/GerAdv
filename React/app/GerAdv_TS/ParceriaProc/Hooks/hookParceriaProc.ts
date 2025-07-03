@@ -4,6 +4,7 @@ import { IParceriaProcService } from '../Services/ParceriaProc.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IParceriaProc } from '../Interfaces/interface.ParceriaProc';
 import { isValidDate } from '@/app/tools/datetime';
+import { ParceriaProcApi } from '../Apis/ApiParceriaProc';
 
 export const useParceriaProcForm = (
   initialParceriaProc: IParceriaProc,
@@ -142,6 +143,16 @@ export const useParceriaProcList = (dataService: IParceriaProcService) => {
 
 
 export function useValidationsParceriaProc() {
+
+  async function runValidation(data: IParceriaProc, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const parceriaprocApi = new ParceriaProcApi(uri ?? '', token ?? '');
+
+    const result = await parceriaprocApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IParceriaProc): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsParceriaProc() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

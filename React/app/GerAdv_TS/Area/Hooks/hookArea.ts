@@ -4,6 +4,7 @@ import { IAreaService } from '../Services/Area.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IArea } from '../Interfaces/interface.Area';
 import { isValidDate } from '@/app/tools/datetime';
+import { AreaApi } from '../Apis/ApiArea';
 
 export const useAreaForm = (
   initialArea: IArea,
@@ -142,6 +143,16 @@ export const useAreaList = (dataService: IAreaService) => {
 
 
 export function useValidationsArea() {
+
+  async function runValidation(data: IArea, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const areaApi = new AreaApi(uri ?? '', token ?? '');
+
+    const result = await areaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IArea): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 40) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useAreaComboBox = (
   dataService: IAreaService,
   initialValue?: any

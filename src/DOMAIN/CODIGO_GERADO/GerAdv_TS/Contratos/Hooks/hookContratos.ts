@@ -4,6 +4,7 @@ import { IContratosService } from '../Services/Contratos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IContratos } from '../Interfaces/interface.Contratos';
 import { isValidDate } from '@/app/tools/datetime';
+import { ContratosApi } from '../Apis/ApiContratos';
 
 export const useContratosForm = (
   initialContratos: IContratos,
@@ -142,6 +143,16 @@ export const useContratosList = (dataService: IContratosService) => {
 
 
 export function useValidationsContratos() {
+
+  async function runValidation(data: IContratos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const contratosApi = new ContratosApi(uri ?? '', token ?? '');
+
+    const result = await contratosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IContratos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -194,5 +205,5 @@ if (data.multa.length > 10) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

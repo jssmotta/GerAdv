@@ -2,12 +2,11 @@
 'use client';
 import { IProDespesas } from '@/app/GerAdv_TS/ProDespesas/Interfaces/interface.ProDespesas';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -41,8 +40,8 @@ export const ProDespesasForm: React.FC<ProDespesasFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ProDespesasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -239,7 +238,7 @@ const addValorCliente = (e: any) => {
               onChange={onChange}
               />
 
-
+            </div><div className='grid-container'>
               <InputInput
               type='text'
               maxLength={2048}
@@ -252,31 +251,31 @@ const addValorCliente = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'><InputCheckbox dataForm={prodespesasData} label='Tipo' name='tipo' checked={prodespesasData.tipo} onChange={onChange} />
+              <InputCheckbox dataForm={prodespesasData} label='Tipo' name='tipo' checked={prodespesasData.tipo} onChange={onChange} />
 
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='historico'
-            label='Historico'
-            dataForm={prodespesasData}
-            className='inputIncNome'
-            name='historico'
-            value={prodespesasData.historico}
-            onChange={onChange}
-            />
+              <InputInput
+              type='text'
+              maxLength={100}
+              id='historico'
+              label='Historico'
+              dataForm={prodespesasData}
+              className='inputIncNome'
+              name='historico'
+              value={prodespesasData.historico}
+              onChange={onChange}
+              />
 
-            <InputCheckbox dataForm={prodespesasData} label='LivroCaixa' name='livrocaixa' checked={prodespesasData.livrocaixa} onChange={onChange} />
+              <InputCheckbox dataForm={prodespesasData} label='LivroCaixa' name='livrocaixa' checked={prodespesasData.livrocaixa} onChange={onChange} />
+            </div>
+          </form>
+
+
+          {isMobile && (
+            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProDespesas' data={prodespesasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProDespesasForm-${prodespesasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+            )}
+            <DeleteButton page={'/pages/prodespesas'} id={prodespesasData.id} closeModel={onClose} dadoApi={dadoApi} />
           </div>
-        </form>
-
-
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProDespesas' data={prodespesasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProDespesasForm-${prodespesasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/prodespesas'} id={prodespesasData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+          <div className='form-spacer'></div>
+          </>
+        );
+      };

@@ -4,6 +4,7 @@ import { IOperadorEMailPopupService } from '../Services/OperadorEMailPopup.servi
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IOperadorEMailPopup } from '../Interfaces/interface.OperadorEMailPopup';
 import { isValidDate } from '@/app/tools/datetime';
+import { OperadorEMailPopupApi } from '../Apis/ApiOperadorEMailPopup';
 
 export const useOperadorEMailPopupForm = (
   initialOperadorEMailPopup: IOperadorEMailPopup,
@@ -142,6 +143,16 @@ export const useOperadorEMailPopupList = (dataService: IOperadorEMailPopupServic
 
 
 export function useValidationsOperadorEMailPopup() {
+
+  async function runValidation(data: IOperadorEMailPopup, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const operadoremailpopupApi = new OperadorEMailPopupApi(uri ?? '', token ?? '');
+
+    const result = await operadoremailpopupApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IOperadorEMailPopup): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -185,7 +196,7 @@ if (data.senha256.length > 4000) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useOperadorEMailPopupComboBox = (
   dataService: IOperadorEMailPopupService,
   initialValue?: any

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PreClientesApi, PreClientesApiError } from '../Apis/ApiPreClientes';
 import { FilterPreClientes } from '../Filters/PreClientes';
 import { IPreClientes } from '../Interfaces/interface.PreClientes';
+import { PreClientesEmpty } from '../../Models/PreClientes';
 
 export class PreClientesValidator {
   static validatePreClientes(preclientes: IPreClientes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PreClientesService implements IPreClientesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PreClientesApiError) {
         throw error;

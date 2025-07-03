@@ -37,7 +37,7 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             return "Descricao é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TipoCompromisso '{reg.Descricao}' já cadastrado.";
+            return $"Tipo Compromisso '{reg.Descricao}'  - Descricao";
         return string.Empty;
     }
 

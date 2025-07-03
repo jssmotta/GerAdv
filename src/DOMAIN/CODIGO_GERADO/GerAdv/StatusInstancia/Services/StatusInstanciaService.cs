@@ -43,7 +43,7 @@ public partial class StatusInstanciaService(IOptions<AppSettings> appSettings, I
                    FROM {DBStatusInstancia.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY istNome
+                   ORDER BY [StatusInstancia].[istNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<StatusInstanciaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class StatusInstanciaService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regStatusInstancia, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"StatusInstancia: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regStatusInstancia, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<StatusInstanciaResponse?> Validation([FromBody] Models.StatusInstancia regStatusInstancia, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("StatusInstancia: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regStatusInstancia == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regStatusInstancia, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regStatusInstancia.Id.IsEmptyIDNumber())
+            {
+                return new StatusInstanciaResponse();
+            }
+
+            return reader.Read(regStatusInstancia.Id, oCnn);
         });
     }
 

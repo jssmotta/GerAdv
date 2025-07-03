@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ObjetosApi, ObjetosApiError } from '../Apis/ApiObjetos';
 import { FilterObjetos } from '../Filters/Objetos';
 import { IObjetos } from '../Interfaces/interface.Objetos';
+import { ObjetosEmpty } from '../../Models/Objetos';
 
 export class ObjetosValidator {
   static validateObjetos(objetos: IObjetos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ObjetosService implements IObjetosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ObjetosApiError) {
         throw error;

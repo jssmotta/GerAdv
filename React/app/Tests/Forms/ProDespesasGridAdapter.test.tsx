@@ -1,0 +1,13 @@
+﻿// ProDespesasGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { ProDespesasGridAdapter } from '@/app/GerAdv_TS/ProDespesas/Adapter/ProDespesasGridAdapter';
+// Mock ProDespesasGrid component
+jest.mock('@/app/GerAdv_TS/ProDespesas/Crud/Grids/ProDespesasGrid', () => () => <div data-testid='prodespesas-grid-mock' />);
+describe('ProDespesasGridAdapter', () => {
+  it('should render ProDespesasGrid component', () => {
+    const adapter = new ProDespesasGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('prodespesas-grid-mock')).toBeInTheDocument();
+  });
+});

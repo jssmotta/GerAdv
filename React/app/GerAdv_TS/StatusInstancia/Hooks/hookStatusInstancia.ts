@@ -4,6 +4,7 @@ import { IStatusInstanciaService } from '../Services/StatusInstancia.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IStatusInstancia } from '../Interfaces/interface.StatusInstancia';
 import { isValidDate } from '@/app/tools/datetime';
+import { StatusInstanciaApi } from '../Apis/ApiStatusInstancia';
 
 export const useStatusInstanciaForm = (
   initialStatusInstancia: IStatusInstancia,
@@ -142,6 +143,16 @@ export const useStatusInstanciaList = (dataService: IStatusInstanciaService) => 
 
 
 export function useValidationsStatusInstancia() {
+
+  async function runValidation(data: IStatusInstancia, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const statusinstanciaApi = new StatusInstanciaApi(uri ?? '', token ?? '');
+
+    const result = await statusinstanciaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IStatusInstancia): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useStatusInstanciaComboBox = (
   dataService: IStatusInstanciaService,
   initialValue?: any

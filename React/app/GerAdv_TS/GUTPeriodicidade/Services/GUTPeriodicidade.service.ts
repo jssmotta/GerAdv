@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GUTPeriodicidadeApi, GUTPeriodicidadeApiError } from '../Apis/ApiGUTPeriodicidade';
 import { FilterGUTPeriodicidade } from '../Filters/GUTPeriodicidade';
 import { IGUTPeriodicidade } from '../Interfaces/interface.GUTPeriodicidade';
+import { GUTPeriodicidadeEmpty } from '../../Models/GUTPeriodicidade';
 
 export class GUTPeriodicidadeValidator {
   static validateGUTPeriodicidade(gutperiodicidade: IGUTPeriodicidade): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GUTPeriodicidadeService implements IGUTPeriodicidadeService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GUTPeriodicidadeApiError) {
         throw error;

@@ -10,16 +10,22 @@ import {CRUD_CONSTANTS} from '@/app/tools/crud';
 
 
 export class ServicosApiError extends Error {
-        constructor(
-            message: string,
-            public status: number,
-            public code?: string,
-            public originalError?: any
-        ) {
-            super(message);
-            this.name = 'ServicosApiError';
-        }
-    }
+  status: number;
+  code?: string;
+  originalError?: any;
+
+  constructor(message: string, status: number, code?: string, originalError?: any) {
+    super(message);
+    this.name = 'ServicosApiError';
+    this.status = status;
+    this.code = code;
+    this.originalError = originalError;
+  }
+
+  toString() {
+    return `${this.name}: ${this.message} (status: ${this.status})`;
+  }
+}
 
 export class ServicosApi {
     private authorization: string;
@@ -130,8 +136,9 @@ export class ServicosApi {
         const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Servicos_last_getById_${id}`);
         try {
             const response = await axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
-            const encoded = btoa(JSON.stringify(response.data));
-            localStorage.setItem(storageKey, encoded);
+            
+        const encoded = btoa(JSON.stringify(response.data));
+        localStorage.setItem(storageKey, encoded);
             return response;
         } catch (error: any) {
             const offlineData = localStorage.getItem(storageKey);
@@ -158,8 +165,9 @@ export class ServicosApi {
 
         try {
             const response = await axios.post(`${this.baseUrl}/GetListN/?max=${max}`, filtro, this.getHeaders());
-            const encoded = btoa(JSON.stringify(response.data));
-            localStorage.setItem(storageKey, encoded);
+            
+        const encoded = btoa(JSON.stringify(response.data));
+        localStorage.setItem(storageKey, encoded);
             return response;
         } catch (error: any) {
             const offlineData = localStorage.getItem(storageKey);
@@ -184,8 +192,9 @@ export class ServicosApi {
                 const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-Servicos_last_filter_data_${JSON.stringify(filtro)}`);
                 try {
                     const response = await axios.post(`${this.baseUrl}/Filter`, filtro, this.getHeaders());
-                    const encoded = btoa(JSON.stringify(response.data));
-                    localStorage.setItem(storageKey, encoded);
+                    
+        const encoded = btoa(JSON.stringify(response.data));
+        localStorage.setItem(storageKey, encoded);
                     return response;
                 } catch (error: any) {
                     const offlineData = localStorage.getItem(storageKey);
@@ -206,6 +215,25 @@ export class ServicosApi {
                     this.handleApiError(error, 'Erro ao filtrar Servicos');
                 }
             }
+
+
+    public async validation(regServicos: IServicos): Promise<{ isValid: boolean; message: string } | null> {
+        try {
+            const result = await axios.post(`${this.baseUrl}/validation`, regServicos as Servicos, this.getHeaders());
+            // Se a resposta for bem-sucedida, retorna true
+            return { isValid: true, message: 'Validação bem-sucedida' };
+        } catch (error: any) {
+            if (error.response && (error.response.status === 409 || error.response.status === 500)) {
+                if (error.response && error.response.data) {
+                    const { message } = error.response.data;
+                    // Erro de validação, o registro já existe
+                    const errorMessage = message || 'Verifique se o registro já existe!';
+                    return { isValid: false, message: errorMessage };                    
+                }
+            }
+            return { isValid: false, message: 'Erro desconhecido ao validar na base.' };;
+        }
+    }
 
 
     public async addAndUpdate(regServicos: IServicos): Promise<AxiosResponse> {

@@ -43,7 +43,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
                    FROM {DBStatusAndamento.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY sanNome
+                   ORDER BY [StatusAndamento].[sanNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<StatusAndamentoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regStatusAndamento, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"StatusAndamento: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regStatusAndamento, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<StatusAndamentoResponse?> Validation([FromBody] Models.StatusAndamento regStatusAndamento, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("StatusAndamento: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regStatusAndamento == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regStatusAndamento, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regStatusAndamento.Id.IsEmptyIDNumber())
+            {
+                return new StatusAndamentoResponse();
+            }
+
+            return reader.Read(regStatusAndamento.Id, oCnn);
         });
     }
 

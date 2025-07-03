@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import NECompromissosIncContainer from '@/app/GerAdv_TS/NECompromissos/Components/NECompromissosIncContainer';
+// NECompromissosIncContainer.test.tsx
+// Mock do NECompromissosInc
+jest.mock('@/app/GerAdv_TS/NECompromissos/Crud/Inc/NECompromissos', () => (props: any) => (
+<div data-testid='necompromissos-inc-mock' {...props} />
+));
+describe('NECompromissosIncContainer', () => {
+  it('deve renderizar NECompromissosInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <NECompromissosIncContainer id={id} navigator={mockNavigator} />
+  );
+  const necompromissosInc = getByTestId('necompromissos-inc-mock');
+  expect(necompromissosInc).toBeInTheDocument();
+  expect(necompromissosInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

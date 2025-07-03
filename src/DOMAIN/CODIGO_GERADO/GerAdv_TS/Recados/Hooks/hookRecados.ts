@@ -4,6 +4,7 @@ import { IRecadosService } from '../Services/Recados.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IRecados } from '../Interfaces/interface.Recados';
 import { isValidDate } from '@/app/tools/datetime';
+import { RecadosApi } from '../Apis/ApiRecados';
 
 export const useRecadosForm = (
   initialRecados: IRecados,
@@ -142,6 +143,16 @@ export const useRecadosList = (dataService: IRecadosService) => {
 
 
 export function useValidationsRecados() {
+
+  async function runValidation(data: IRecados, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const recadosApi = new RecadosApi(uri ?? '', token ?? '');
+
+    const result = await recadosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IRecados): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -179,5 +190,5 @@ if (data.listapara.length > 2147483647) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

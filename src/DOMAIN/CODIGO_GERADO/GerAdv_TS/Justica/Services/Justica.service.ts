@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { JusticaApi, JusticaApiError } from '../Apis/ApiJustica';
 import { FilterJustica } from '../Filters/Justica';
 import { IJustica } from '../Interfaces/interface.Justica';
+import { JusticaEmpty } from '../../Models/Justica';
 
 export class JusticaValidator {
   static validateJustica(justica: IJustica): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class JusticaService implements IJusticaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof JusticaApiError) {
         throw error;

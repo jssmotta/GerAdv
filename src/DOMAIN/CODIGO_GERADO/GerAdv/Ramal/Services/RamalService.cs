@@ -43,7 +43,7 @@ public partial class RamalService(IOptions<AppSettings> appSettings, IRamalReade
                    FROM {DBRamal.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY ramNome
+                   ORDER BY [Ramal].[ramNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<RamalResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class RamalService(IOptions<AppSettings> appSettings, IRamalReade
             var validade = await validation.ValidateReg(regRamal, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Ramal: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regRamal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<RamalResponse?> Validation([FromBody] Models.Ramal regRamal, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Ramal: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regRamal == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regRamal, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regRamal.Id.IsEmptyIDNumber())
+            {
+                return new RamalResponse();
+            }
+
+            return reader.Read(regRamal.Id, oCnn);
         });
     }
 

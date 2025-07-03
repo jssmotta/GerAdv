@@ -4,6 +4,7 @@ import { IGUTTipoService } from '../Services/GUTTipo.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGUTTipo } from '../Interfaces/interface.GUTTipo';
 import { isValidDate } from '@/app/tools/datetime';
+import { GUTTipoApi } from '../Apis/ApiGUTTipo';
 
 export const useGUTTipoForm = (
   initialGUTTipo: IGUTTipo,
@@ -142,6 +143,16 @@ export const useGUTTipoList = (dataService: IGUTTipoService) => {
 
 
 export function useValidationsGUTTipo() {
+
+  async function runValidation(data: IGUTTipo, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const guttipoApi = new GUTTipoApi(uri ?? '', token ?? '');
+
+    const result = await guttipoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGUTTipo): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 150) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useGUTTipoComboBox = (
   dataService: IGUTTipoService,
   initialValue?: any

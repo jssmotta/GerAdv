@@ -86,4 +86,26 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _prodespesasService.Validation(regProDespesas, uri);
+            if (result == null)
+            {
+                _logger.Warn("ProDespesas: Validation failed to add or update ProDespesas, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "ProDespesas: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

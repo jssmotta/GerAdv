@@ -43,7 +43,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IGraphReade
                    FROM {DBGraph.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY gphGuid
+                   ORDER BY [Graph].[gphGuid]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GraphResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IGraphReade
             var validade = await validation.ValidateReg(regGraph, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Graph: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGraph, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GraphResponse?> Validation([FromBody] Models.Graph regGraph, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Graph: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGraph == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGraph, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGraph.Id.IsEmptyIDNumber())
+            {
+                return new GraphResponse();
+            }
+
+            return reader.Read(regGraph.Id, oCnn);
         });
     }
 

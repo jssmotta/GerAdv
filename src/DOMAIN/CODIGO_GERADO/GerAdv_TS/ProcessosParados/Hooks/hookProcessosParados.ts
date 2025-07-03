@@ -4,6 +4,7 @@ import { IProcessosParadosService } from '../Services/ProcessosParados.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessosParados } from '../Interfaces/interface.ProcessosParados';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessosParadosApi } from '../Apis/ApiProcessosParados';
 
 export const useProcessosParadosForm = (
   initialProcessosParados: IProcessosParados,
@@ -142,6 +143,16 @@ export const useProcessosParadosList = (dataService: IProcessosParadosService) =
 
 
 export function useValidationsProcessosParados() {
+
+  async function runValidation(data: IProcessosParados, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processosparadosApi = new ProcessosParadosApi(uri ?? '', token ?? '');
+
+    const result = await processosparadosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessosParados): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsProcessosParados() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

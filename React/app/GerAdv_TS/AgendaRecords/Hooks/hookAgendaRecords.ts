@@ -4,6 +4,7 @@ import { IAgendaRecordsService } from '../Services/AgendaRecords.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgendaRecords } from '../Interfaces/interface.AgendaRecords';
 import { isValidDate } from '@/app/tools/datetime';
+import { AgendaRecordsApi } from '../Apis/ApiAgendaRecords';
 
 export const useAgendaRecordsForm = (
   initialAgendaRecords: IAgendaRecords,
@@ -142,6 +143,16 @@ export const useAgendaRecordsList = (dataService: IAgendaRecordsService) => {
 
 
 export function useValidationsAgendaRecords() {
+
+  async function runValidation(data: IAgendaRecords, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agendarecordsApi = new AgendaRecordsApi(uri ?? '', token ?? '');
+
+    const result = await agendarecordsApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgendaRecords): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsAgendaRecords() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

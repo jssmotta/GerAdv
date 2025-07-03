@@ -42,7 +42,7 @@ public partial class TipoOrigemSucumbenciaService(IOptions<AppSettings> appSetti
                    FROM {DBTipoOrigemSucumbencia.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY tosNome
+                   ORDER BY [TipoOrigemSucumbencia].[tosNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoOrigemSucumbenciaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class TipoOrigemSucumbenciaService(IOptions<AppSettings> appSetti
             var validade = await validation.ValidateReg(regTipoOrigemSucumbencia, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoOrigemSucumbencia: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoOrigemSucumbencia, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoOrigemSucumbenciaResponse?> Validation([FromBody] Models.TipoOrigemSucumbencia regTipoOrigemSucumbencia, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoOrigemSucumbencia: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoOrigemSucumbencia == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoOrigemSucumbencia, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoOrigemSucumbencia.Id.IsEmptyIDNumber())
+            {
+                return new TipoOrigemSucumbenciaResponse();
+            }
+
+            return reader.Read(regTipoOrigemSucumbencia.Id, oCnn);
         });
     }
 

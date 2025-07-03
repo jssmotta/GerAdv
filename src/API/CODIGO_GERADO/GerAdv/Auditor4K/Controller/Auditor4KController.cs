@@ -95,4 +95,26 @@ public partial class Auditor4KController(IAuditor4KService auditor4kService) : C
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.Auditor4K regAuditor4K, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _auditor4kService.Validation(regAuditor4K, uri);
+            if (result == null)
+            {
+                _logger.Warn("Auditor4K: Validation failed to add or update Auditor4K, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Auditor4K: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

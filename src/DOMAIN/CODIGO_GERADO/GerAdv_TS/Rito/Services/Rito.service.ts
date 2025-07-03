@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { RitoApi, RitoApiError } from '../Apis/ApiRito';
 import { FilterRito } from '../Filters/Rito';
 import { IRito } from '../Interfaces/interface.Rito';
+import { RitoEmpty } from '../../Models/Rito';
 
 export class RitoValidator {
   static validateRito(rito: IRito): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class RitoService implements IRitoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof RitoApiError) {
         throw error;

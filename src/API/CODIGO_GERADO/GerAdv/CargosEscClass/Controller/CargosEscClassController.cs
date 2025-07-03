@@ -95,4 +95,26 @@ public partial class CargosEscClassController(ICargosEscClassService cargosesccl
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.CargosEscClass regCargosEscClass, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _cargosescclassService.Validation(regCargosEscClass, uri);
+            if (result == null)
+            {
+                _logger.Warn("CargosEscClass: Validation failed to add or update CargosEscClass, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "CargosEscClass: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

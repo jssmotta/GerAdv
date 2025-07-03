@@ -5,7 +5,7 @@ import { useInstanciaForm, useInstanciaList, useValidationsInstancia } from '../
 import { IInstancia } from '../GerAdv_TS/Instancia/Interfaces/interface.Instancia';
 import { IInstanciaService } from '../GerAdv_TS/Instancia/Services/Instancia.service';
 import { InstanciaTestEmpty } from '../GerAdv_TS/Models/Instancia';
-import { useInstanciaComboBox } from '../GerAdv_TS/Instancia/Hooks/hookInstancia';
+
 
 // Mock do serviço
 const mockInstanciaService: jest.Mocked<IInstanciaService> = {
@@ -249,16 +249,14 @@ describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
     const mockData = [{ ...initialInstancia, id: 1, nroprocesso: 'Instancia Teste' }];
     mockInstanciaService.getAll.mockResolvedValue(mockData);
-    mockInstanciaService.getList.mockResolvedValue(mockData);
+    
 
     // Usa múltiplos hooks
     const { result: listResult } = renderHook(() => 
       useInstanciaList(mockInstanciaService)
     );
     
-     const { result: comboResult } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService)
-    );   
+       
 
     const { result: validationResult } = renderHook(() => 
       useValidationsInstancia()
@@ -269,10 +267,6 @@ describe('Integração de hooks', () => {
       await listResult.current.fetchData();
     });
 
-     
-    // Aguarda carregar opções no combo
-    
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Instancia Teste' }]);
     
    
 
@@ -280,7 +274,7 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Instancia Teste' }]);
+    
   
     expect(validation.isValid).toBe(true);
   });
@@ -304,160 +298,5 @@ describe('Integração de hooks', () => {
 
     expect(result.current.data.liminarpendente).toBe(true);
   });
-
-
-  test('deve carregar opções na inicialização', async () => {
-    const mockOptions = [
-      { id: 1, nroprocesso: 'Instancia 1' },
-      { id: 2, nroprocesso: 'Instancia 2' }
-    ];
-    mockInstanciaService.getList.mockResolvedValue(mockOptions as IInstancia[]);
-
-
-    const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService)
-    );
-
-    await waitFor(() => {
-      // Aguarda carregar as opções antes de verificar
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Instancia 1' },
-        { id: 2, nome: 'Instancia 2' }
-      ]);
-    });
-
-    expect(mockInstanciaService.getList).toHaveBeenCalled();
-  });
-
-  test('deve filtrar opções', async () => {
-    const mockOptions = [
-      { id: 1, nroprocesso: 'Instancia ABC' },
-      { id: 2, nroprocesso: 'Instancia XYZ' }
-    ];
-    mockInstanciaService.getList.mockResolvedValue(mockOptions as IInstancia[]);   
-
-
- const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService)
-    );
-
-
-    // Aguarda carregar as opções
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Instancia ABC' },
-        { id: 2, nome: 'Instancia XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Instancia ABC' }]);
-  });
-
-
-  test('deve limpar filtro quando texto vazio', async () => {
-    const mockOptions = [
-      { id: 1, nroprocesso: 'Instancia ABC' },
-      { id: 2, nroprocesso: 'Instancia XYZ' }
-    ];
-    mockInstanciaService.getList.mockResolvedValue(mockOptions as IInstancia[]);
-  
-
-
-    const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService)
-    );
-
-
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Instancia ABC' },
-        { id: 2, nome: 'Instancia XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    // Remove filtro
-    act(() => {
-      result.current.handleFilter('');
-    });
- 
-
-     expect(result.current.options).toEqual([
-          {id: 1, nome: 'Instancia ABC' },
-          {id: 2, nome: 'Instancia XYZ' }
-        ]);
-
-  });
-
-
-
- test('deve alterar valor selecionado', () => {
-    const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService)
-    );
-
-    const newValue = { id: 1, nroprocesso: 'Instancia Selecionado' };
-
-    act(() => {
-      result.current.handleValueChange(newValue);
-    });
-
-    expect(result.current.selectedValue).toEqual(newValue);
-  });
-
-  test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, nroprocesso: 'Instancia Inicial' };
-    
-    const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService, initialValue)
-    );
-
-    act(() => {
-      result.current.clearValue();
-    });
-
-    expect(result.current.selectedValue).toBe(null);
-  });
-
-
-describe('useInstanciaComboBox', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('deve inicializar com estado correto', () => {
-    const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService)
-    );
-
-    expect(result.current.options).toEqual([]);
-    expect(result.current.loading).toBe(true);
-    expect(result.current.selectedValue).toBeUndefined();
-  });
-
- 
-  test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, nroprocesso: 'Instancia Inicial' };
-    
-    const { result } = renderHook(() => 
-      useInstanciaComboBox(mockInstanciaService, initialValue)
-    );
-
-    expect(result.current.selectedValue).toEqual(initialValue);
-  });
-});
-
-
-
-
 
 

@@ -95,4 +95,26 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.TipoEndereco regTipoEndereco, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _tipoenderecoService.Validation(regTipoEndereco, uri);
+            if (result == null)
+            {
+                _logger.Warn("TipoEndereco: Validation failed to add or update TipoEndereco, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoEndereco: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

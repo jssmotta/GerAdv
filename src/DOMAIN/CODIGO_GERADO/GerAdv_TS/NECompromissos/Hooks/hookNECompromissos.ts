@@ -4,6 +4,7 @@ import { INECompromissosService } from '../Services/NECompromissos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { INECompromissos } from '../Interfaces/interface.NECompromissos';
 import { isValidDate } from '@/app/tools/datetime';
+import { NECompromissosApi } from '../Apis/ApiNECompromissos';
 
 export const useNECompromissosForm = (
   initialNECompromissos: INECompromissos,
@@ -142,6 +143,16 @@ export const useNECompromissosList = (dataService: INECompromissosService) => {
 
 
 export function useValidationsNECompromissos() {
+
+  async function runValidation(data: INECompromissos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const necompromissosApi = new NECompromissosApi(uri ?? '', token ?? '');
+
+    const result = await necompromissosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: INECompromissos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsNECompromissos() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

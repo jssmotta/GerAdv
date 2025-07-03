@@ -42,7 +42,7 @@ public partial class AndCompService(IOptions<AppSettings> appSettings, IAndCompR
                    FROM {DBAndComp.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY 
+                   ORDER BY [AndComp].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AndCompResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class AndCompService(IOptions<AppSettings> appSettings, IAndCompR
             var validade = await validation.ValidateReg(regAndComp, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"AndComp: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAndComp, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AndCompResponse?> Validation([FromBody] Models.AndComp regAndComp, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("AndComp: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAndComp == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAndComp, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAndComp.Id.IsEmptyIDNumber())
+            {
+                return new AndCompResponse();
+            }
+
+            return reader.Read(regAndComp.Id, oCnn);
         });
     }
 

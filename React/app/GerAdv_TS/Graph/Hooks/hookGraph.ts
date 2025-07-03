@@ -4,6 +4,7 @@ import { IGraphService } from '../Services/Graph.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IGraph } from '../Interfaces/interface.Graph';
 import { isValidDate } from '@/app/tools/datetime';
+import { GraphApi } from '../Apis/ApiGraph';
 
 export const useGraphForm = (
   initialGraph: IGraph,
@@ -142,6 +143,16 @@ export const useGraphList = (dataService: IGraphService) => {
 
 
 export function useValidationsGraph() {
+
+  async function runValidation(data: IGraph, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const graphApi = new GraphApi(uri ?? '', token ?? '');
+
+    const result = await graphApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IGraph): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsGraph() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

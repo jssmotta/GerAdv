@@ -31,7 +31,7 @@ public class UFValidation : IUFValidation
         if (string.IsNullOrWhiteSpace(reg.IdUF))
             return "ID é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"UF '{reg.IdUF}' já cadastrado.";
+            return $"UF '{reg.IdUF}' ID e/ou Pais";
         // Paises
         if (!reg.Pais.IsEmptyIDNumber())
         {

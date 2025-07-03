@@ -30,8 +30,19 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Outras Partes Cliente' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Outras Partes Cliente ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Outras Partes Cliente com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Outras Partes Cliente com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         // Cidade
@@ -51,15 +62,15 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
     {
         if (reg.CNPJ.Length == 0)
             return false;
-        var existingOutrasPartesCliente = (await service.Filter(new Filters.FilterOutrasPartesCliente { CNPJ = reg.CNPJ }, uri)).FirstOrDefault();
+        var existingOutrasPartesCliente = (await service.Filter(new Filters.FilterOutrasPartesCliente { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingOutrasPartesCliente != null && existingOutrasPartesCliente.Id > 0 && existingOutrasPartesCliente.Id != reg.Id;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.OutrasPartesCliente reg, IOutrasPartesClienteService service, string uri)
+    private async Task<(bool, OutrasPartesClienteResponseAll? )> IsCpfDuplicado(Models.OutrasPartesCliente reg, IOutrasPartesClienteService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingOutrasPartesCliente = (await service.Filter(new Filters.FilterOutrasPartesCliente { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingOutrasPartesCliente != null && existingOutrasPartesCliente.Id > 0 && existingOutrasPartesCliente.Id != reg.Id;
+            return (false, null);
+        var existingOutrasPartesCliente = (await service.Filter(new Filters.FilterOutrasPartesCliente { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingOutrasPartesCliente != null && existingOutrasPartesCliente.Id > 0 && existingOutrasPartesCliente.Id != reg.Id, existingOutrasPartesCliente);
     }
 }

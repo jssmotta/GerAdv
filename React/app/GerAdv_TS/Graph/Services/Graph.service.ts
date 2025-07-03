@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { GraphApi, GraphApiError } from '../Apis/ApiGraph';
 import { FilterGraph } from '../Filters/Graph';
 import { IGraph } from '../Interfaces/interface.Graph';
+import { GraphEmpty } from '../../Models/Graph';
 
 export class GraphValidator {
   static validateGraph(graph: IGraph): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class GraphService implements IGraphService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof GraphApiError) {
         throw error;

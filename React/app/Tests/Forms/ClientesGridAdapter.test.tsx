@@ -1,0 +1,13 @@
+﻿// ClientesGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { ClientesGridAdapter } from '@/app/GerAdv_TS/Clientes/Adapter/ClientesGridAdapter';
+// Mock ClientesGrid component
+jest.mock('@/app/GerAdv_TS/Clientes/Crud/Grids/ClientesGrid', () => () => <div data-testid='clientes-grid-mock' />);
+describe('ClientesGridAdapter', () => {
+  it('should render ClientesGrid component', () => {
+    const adapter = new ClientesGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('clientes-grid-mock')).toBeInTheDocument();
+  });
+});

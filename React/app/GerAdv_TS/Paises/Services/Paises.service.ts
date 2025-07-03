@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PaisesApi, PaisesApiError } from '../Apis/ApiPaises';
 import { FilterPaises } from '../Filters/Paises';
 import { IPaises } from '../Interfaces/interface.Paises';
+import { PaisesEmpty } from '../../Models/Paises';
 
 export class PaisesValidator {
   static validatePaises(paises: IPaises): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PaisesService implements IPaisesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PaisesApiError) {
         throw error;

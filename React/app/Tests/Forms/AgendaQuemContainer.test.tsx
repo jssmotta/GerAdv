@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import AgendaQuemIncContainer from '@/app/GerAdv_TS/AgendaQuem/Components/AgendaQuemIncContainer';
+// AgendaQuemIncContainer.test.tsx
+// Mock do AgendaQuemInc
+jest.mock('@/app/GerAdv_TS/AgendaQuem/Crud/Inc/AgendaQuem', () => (props: any) => (
+<div data-testid='agendaquem-inc-mock' {...props} />
+));
+describe('AgendaQuemIncContainer', () => {
+  it('deve renderizar AgendaQuemInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <AgendaQuemIncContainer id={id} navigator={mockNavigator} />
+  );
+  const agendaquemInc = getByTestId('agendaquem-inc-mock');
+  expect(agendaquemInc).toBeInTheDocument();
+  expect(agendaquemInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

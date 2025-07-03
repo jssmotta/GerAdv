@@ -42,7 +42,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
                    FROM {DBProcessOutputSources.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY posNome
+                   ORDER BY [ProcessOutputSources].[posNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ProcessOutputSourcesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -138,11 +138,49 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regProcessOutputSources, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ProcessOutputSources: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regProcessOutputSources, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ProcessOutputSourcesResponse?> Validation([FromBody] Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ProcessOutputSources: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regProcessOutputSources == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regProcessOutputSources, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regProcessOutputSources.Id.IsEmptyIDNumber())
+            {
+                return new ProcessOutputSourcesResponse();
+            }
+
+            return reader.Read(regProcessOutputSources.Id, oCnn);
         });
     }
 

@@ -4,6 +4,7 @@ import { INEPalavrasChavesService } from '../Services/NEPalavrasChaves.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { INEPalavrasChaves } from '../Interfaces/interface.NEPalavrasChaves';
 import { isValidDate } from '@/app/tools/datetime';
+import { NEPalavrasChavesApi } from '../Apis/ApiNEPalavrasChaves';
 
 export const useNEPalavrasChavesForm = (
   initialNEPalavrasChaves: INEPalavrasChaves,
@@ -142,6 +143,16 @@ export const useNEPalavrasChavesList = (dataService: INEPalavrasChavesService) =
 
 
 export function useValidationsNEPalavrasChaves() {
+
+  async function runValidation(data: INEPalavrasChaves, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const nepalavraschavesApi = new NEPalavrasChavesApi(uri ?? '', token ?? '');
+
+    const result = await nepalavraschavesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: INEPalavrasChaves): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useNEPalavrasChavesComboBox = (
   dataService: INEPalavrasChavesService,
   initialValue?: any

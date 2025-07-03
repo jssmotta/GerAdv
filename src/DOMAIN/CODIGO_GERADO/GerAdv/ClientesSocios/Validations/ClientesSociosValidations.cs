@@ -31,9 +31,20 @@ public class ClientesSociosValidation : IClientesSociosValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"ClientesSocios '{reg.Nome}' já cadastrado.";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Clientes Socios' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            return $"Clientes Socios '{reg.Nome}' Cliente e/ou Nome";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Clientes Socios ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Clientes Socios com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             return $"Clientes Socios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.";
         // Clientes
@@ -69,15 +80,15 @@ public class ClientesSociosValidation : IClientesSociosValidation
     {
         if (reg.CNPJ.Length == 0)
             return false;
-        var existingClientesSocios = (await service.Filter(new Filters.FilterClientesSocios { CNPJ = reg.CNPJ }, uri)).FirstOrDefault();
+        var existingClientesSocios = (await service.Filter(new Filters.FilterClientesSocios { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingClientesSocios != null && existingClientesSocios.Id > 0 && existingClientesSocios.Id != reg.Id;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.ClientesSocios reg, IClientesSociosService service, string uri)
+    private async Task<(bool, ClientesSociosResponseAll? )> IsCpfDuplicado(Models.ClientesSocios reg, IClientesSociosService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingClientesSocios = (await service.Filter(new Filters.FilterClientesSocios { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingClientesSocios != null && existingClientesSocios.Id > 0 && existingClientesSocios.Id != reg.Id;
+            return (false, null);
+        var existingClientesSocios = (await service.Filter(new Filters.FilterClientesSocios { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingClientesSocios != null && existingClientesSocios.Id > 0 && existingClientesSocios.Id != reg.Id, existingClientesSocios);
     }
 }

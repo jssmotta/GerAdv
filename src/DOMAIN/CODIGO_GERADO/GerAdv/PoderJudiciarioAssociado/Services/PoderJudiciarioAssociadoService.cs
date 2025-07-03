@@ -39,16 +39,16 @@ public partial class PoderJudiciarioAssociadoService(IOptions<AppSettings> appSe
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBPoderJudiciarioAssociado.SensivelCamposSqlX}, jusNome,areDescricao,triNome,forNome,cidNome
+                   {DBPoderJudiciarioAssociado.SensivelCamposSqlX}, [Justica].[jusNome],[Area].[areDescricao],[Tribunal].[triNome],[Foro].[forNome],[Cidade].[cidNome]
                    FROM {DBPoderJudiciarioAssociado.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=pjaJustica
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=pjaArea
-LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON triCodigo=pjaTribunal
-LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON forCodigo=pjaForo
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=pjaCidade
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[PoderJudiciarioAssociado].[pjaJustica]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[PoderJudiciarioAssociado].[pjaArea]
+LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON [Tribunal].[triCodigo]=[PoderJudiciarioAssociado].[pjaTribunal]
+LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON [Foro].[forCodigo]=[PoderJudiciarioAssociado].[pjaForo]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[PoderJudiciarioAssociado].[pjaCidade]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [PoderJudiciarioAssociado].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PoderJudiciarioAssociadoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -146,11 +146,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=pjaCidade
             var validade = await validation.ValidateReg(regPoderJudiciarioAssociado, this, justicaReader, areaReader, tribunalReader, foroReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"PoderJudiciarioAssociado: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPoderJudiciarioAssociado, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PoderJudiciarioAssociadoResponse?> Validation([FromBody] Models.PoderJudiciarioAssociado regPoderJudiciarioAssociado, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("PoderJudiciarioAssociado: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPoderJudiciarioAssociado == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPoderJudiciarioAssociado, this, justicaReader, areaReader, tribunalReader, foroReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPoderJudiciarioAssociado.Id.IsEmptyIDNumber())
+            {
+                return new PoderJudiciarioAssociadoResponse();
+            }
+
+            return reader.Read(regPoderJudiciarioAssociado.Id, oCnn);
         });
     }
 

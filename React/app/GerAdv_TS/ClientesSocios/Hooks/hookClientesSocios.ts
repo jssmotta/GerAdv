@@ -4,6 +4,7 @@ import { IClientesSociosService } from '../Services/ClientesSocios.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IClientesSocios } from '../Interfaces/interface.ClientesSocios';
 import { isValidDate } from '@/app/tools/datetime';
+import { ClientesSociosApi } from '../Apis/ApiClientesSocios';
 
 export const useClientesSociosForm = (
   initialClientesSocios: IClientesSocios,
@@ -142,6 +143,16 @@ export const useClientesSociosList = (dataService: IClientesSociosService) => {
 
 
 export function useValidationsClientesSocios() {
+
+  async function runValidation(data: IClientesSocios, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const clientessociosApi = new ClientesSociosApi(uri ?? '', token ?? '');
+
+    const result = await clientessociosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IClientesSocios): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -224,7 +235,7 @@ if (data.class.length > 1) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useClientesSociosComboBox = (
   dataService: IClientesSociosService,
   initialValue?: any

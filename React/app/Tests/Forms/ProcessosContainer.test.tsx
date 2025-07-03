@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProcessosIncContainer from '@/app/GerAdv_TS/Processos/Components/ProcessosIncContainer';
+// ProcessosIncContainer.test.tsx
+// Mock do ProcessosInc
+jest.mock('@/app/GerAdv_TS/Processos/Crud/Inc/Processos', () => (props: any) => (
+<div data-testid='processos-inc-mock' {...props} />
+));
+describe('ProcessosIncContainer', () => {
+  it('deve renderizar ProcessosInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProcessosIncContainer id={id} navigator={mockNavigator} />
+  );
+  const processosInc = getByTestId('processos-inc-mock');
+  expect(processosInc).toBeInTheDocument();
+  expect(processosInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

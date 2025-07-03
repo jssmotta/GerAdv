@@ -39,12 +39,12 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBOperadorGruposAgenda.SensivelCamposSqlX}, operNome
+                   {DBOperadorGruposAgenda.SensivelCamposSqlX}, [Operador].[operNome]
                    FROM {DBOperadorGruposAgenda.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=groOperador
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[OperadorGruposAgenda].[groOperador]
  
                    {where}
-                   ORDER BY groNome
+                   ORDER BY [OperadorGruposAgenda].[groNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OperadorGruposAgendaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regOperadorGruposAgenda, this, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"OperadorGruposAgenda: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOperadorGruposAgenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OperadorGruposAgendaResponse?> Validation([FromBody] Models.OperadorGruposAgenda regOperadorGruposAgenda, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("OperadorGruposAgenda: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOperadorGruposAgenda == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOperadorGruposAgenda, this, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOperadorGruposAgenda.Id.IsEmptyIDNumber())
+            {
+                return new OperadorGruposAgendaResponse();
+            }
+
+            return reader.Read(regOperadorGruposAgenda.Id, oCnn);
         });
     }
 

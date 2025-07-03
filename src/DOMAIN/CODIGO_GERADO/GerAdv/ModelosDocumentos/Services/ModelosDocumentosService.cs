@@ -39,12 +39,12 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBModelosDocumentos.SensivelCamposSqlX}, tpdNome
+                   {DBModelosDocumentos.SensivelCamposSqlX}, [TipoModeloDocumento].[tpdNome]
                    FROM {DBModelosDocumentos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"TipoModeloDocumento".dbo(oCnn)} (NOLOCK) ON tpdCodigo=mdcTipoModeloDocumento
+                   LEFT JOIN {"TipoModeloDocumento".dbo(oCnn)} (NOLOCK) ON [TipoModeloDocumento].[tpdCodigo]=[ModelosDocumentos].[mdcTipoModeloDocumento]
  
                    {where}
-                   ORDER BY mdcNome
+                   ORDER BY [ModelosDocumentos].[mdcNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ModelosDocumentosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regModelosDocumentos, this, tipomodelodocumentoReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ModelosDocumentos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regModelosDocumentos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ModelosDocumentosResponse?> Validation([FromBody] Models.ModelosDocumentos regModelosDocumentos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ModelosDocumentos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regModelosDocumentos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regModelosDocumentos, this, tipomodelodocumentoReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regModelosDocumentos.Id.IsEmptyIDNumber())
+            {
+                return new ModelosDocumentosResponse();
+            }
+
+            return reader.Read(regModelosDocumentos.Id, oCnn);
         });
     }
 

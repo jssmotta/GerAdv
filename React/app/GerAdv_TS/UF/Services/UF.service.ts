@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { UFApi, UFApiError } from '../Apis/ApiUF';
 import { FilterUF } from '../Filters/UF';
 import { IUF } from '../Interfaces/interface.UF';
+import { UFEmpty } from '../../Models/UF';
 
 export class UFValidator {
   static validateUF(uf: IUF): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class UFService implements IUFService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof UFApiError) {
         throw error;

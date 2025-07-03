@@ -4,6 +4,7 @@ import { IDocumentosService } from '../Services/Documentos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IDocumentos } from '../Interfaces/interface.Documentos';
 import { isValidDate } from '@/app/tools/datetime';
+import { DocumentosApi } from '../Apis/ApiDocumentos';
 
 export const useDocumentosForm = (
   initialDocumentos: IDocumentos,
@@ -142,6 +143,16 @@ export const useDocumentosList = (dataService: IDocumentosService) => {
 
 
 export function useValidationsDocumentos() {
+
+  async function runValidation(data: IDocumentos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const documentosApi = new DocumentosApi(uri ?? '', token ?? '');
+
+    const result = await documentosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IDocumentos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsDocumentos() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

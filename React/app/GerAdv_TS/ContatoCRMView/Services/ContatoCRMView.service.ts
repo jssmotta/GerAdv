@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ContatoCRMViewApi, ContatoCRMViewApiError } from '../Apis/ApiContatoCRMView';
 import { FilterContatoCRMView } from '../Filters/ContatoCRMView';
 import { IContatoCRMView } from '../Interfaces/interface.ContatoCRMView';
+import { ContatoCRMViewEmpty } from '../../Models/ContatoCRMView';
 
 export class ContatoCRMViewValidator {
   static validateContatoCRMView(contatocrmview: IContatoCRMView): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ContatoCRMViewService implements IContatoCRMViewService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ContatoCRMViewApiError) {
         throw error;

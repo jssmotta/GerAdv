@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ContratosApi, ContratosApiError } from '../Apis/ApiContratos';
 import { FilterContratos } from '../Filters/Contratos';
 import { IContratos } from '../Interfaces/interface.Contratos';
+import { ContratosEmpty } from '../../Models/Contratos';
 
 export class ContratosValidator {
   static validateContratos(contratos: IContratos): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ContratosService implements IContratosService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ContratosApiError) {
         throw error;

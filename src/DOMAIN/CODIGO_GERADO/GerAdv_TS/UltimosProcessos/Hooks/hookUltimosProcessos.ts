@@ -4,6 +4,7 @@ import { IUltimosProcessosService } from '../Services/UltimosProcessos.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IUltimosProcessos } from '../Interfaces/interface.UltimosProcessos';
 import { isValidDate } from '@/app/tools/datetime';
+import { UltimosProcessosApi } from '../Apis/ApiUltimosProcessos';
 
 export const useUltimosProcessosForm = (
   initialUltimosProcessos: IUltimosProcessos,
@@ -142,6 +143,16 @@ export const useUltimosProcessosList = (dataService: IUltimosProcessosService) =
 
 
 export function useValidationsUltimosProcessos() {
+
+  async function runValidation(data: IUltimosProcessos, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const ultimosprocessosApi = new UltimosProcessosApi(uri ?? '', token ?? '');
+
+    const result = await ultimosprocessosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IUltimosProcessos): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsUltimosProcessos() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

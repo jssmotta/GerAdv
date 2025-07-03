@@ -2,12 +2,11 @@
 'use client';
 import { IClientes } from '@/app/GerAdv_TS/Clientes/Interfaces/interface.Clientes';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -46,8 +45,8 @@ export const ClientesForm: React.FC<ClientesFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -275,7 +274,7 @@ const addValorCidade = (e: any) => {
                 onChange={onChange}
                 />
 
-
+              </div><div className='grid-container'>
                 <InputInput
                 type='text'
                 maxLength={2048}
@@ -288,331 +287,331 @@ const addValorCidade = (e: any) => {
                 onChange={onChange}
                 />
 
-              </div><div className='grid-container'><InputCheckbox dataForm={clientesData} label='Juridica' name='juridica' checked={clientesData.juridica} onChange={onChange} />
+                <InputCheckbox dataForm={clientesData} label='Juridica' name='juridica' checked={clientesData.juridica} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='nomefantasia'
-              label='NomeFantasia'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='nomefantasia'
-              value={clientesData.nomefantasia}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={1}
-              id='class'
-              label='Class'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='class'
-              value={clientesData.class}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={clientesData} label='Tipo' name='tipo' checked={clientesData.tipo} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dtnasc'
-              label='DtNasc'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='dtnasc'
-              value={clientesData.dtnasc}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='nomefantasia'
+                label='NomeFantasia'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='nomefantasia'
+                value={clientesData.nomefantasia}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={15}
-              id='inscest'
-              label='InscEst'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='inscest'
-              value={clientesData.inscest}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={1}
+                id='class'
+                label='Class'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='class'
+                value={clientesData.class}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={clientesData} label='Tipo' name='tipo' checked={clientesData.tipo} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dtnasc'
+                label='DtNasc'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='dtnasc'
+                value={clientesData.dtnasc}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='qualificacao'
-              label='Qualificacao'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='qualificacao'
-              value={clientesData.qualificacao}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={clientesData} label='Sexo' name='sexo' checked={clientesData.sexo} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='idade'
-              label='Idade'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='idade'
-              value={clientesData.idade}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={15}
+                id='inscest'
+                label='InscEst'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='inscest'
+                value={clientesData.inscest}
+                onChange={onChange}
+                />
 
 
-              <InputCnpj
-              type='text'
-              id='cnpj'
-              label='CNPJ'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='cnpj'
-              value={clientesData.cnpj}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='qualificacao'
+                label='Qualificacao'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='qualificacao'
+                value={clientesData.qualificacao}
+                onChange={onChange}
+                />
 
-            </div><div className='grid-container'>
-              <InputCpf
-              type='text'
-              id='cpf'
-              label='CPF'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='cpf'
-              value={clientesData.cpf}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='rg'
-              label='RG'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='rg'
-              value={clientesData.rg}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={clientesData} label='TipoCaptacao' name='tipocaptacao' checked={clientesData.tipocaptacao} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='observacao'
-              label='Observacao'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='observacao'
-              value={clientesData.observacao}
-              onChange={onChange}
-              />
+                <InputCheckbox dataForm={clientesData} label='Sexo' name='sexo' checked={clientesData.sexo} onChange={onChange} />
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='idade'
+                label='Idade'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='idade'
+                value={clientesData.idade}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='endereco'
-              label='Endereco'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='endereco'
-              value={clientesData.endereco}
-              onChange={onChange}
-              />
+                <InputCnpj
+                type='text'
+                id='cnpj'
+                label='CNPJ'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='cnpj'
+                value={clientesData.cnpj}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='bairro'
-              label='Bairro'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='bairro'
-              value={clientesData.bairro}
-              onChange={onChange}
-              />
+                <InputCpf
+                type='text'
+                id='cpf'
+                label='CPF'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='cpf'
+                value={clientesData.cpf}
+                onChange={onChange}
+                />
 
 
-              <CidadeComboBox
-              name={'cidade'}
-              dataForm={clientesData}
-              value={clientesData.cidade}
-              setValue={addValorCidade}
-              label={'Cidade'}
-              />
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='rg'
+                label='RG'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='rg'
+                value={clientesData.rg}
+                onChange={onChange}
+                />
 
-              <InputCep
-              type='text'
-              id='cep'
-              label='CEP'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='cep'
-              value={clientesData.cep}
-              onChange={onChange}
-              />
+                <InputCheckbox dataForm={clientesData} label='TipoCaptacao' name='tipocaptacao' checked={clientesData.tipocaptacao} onChange={onChange} />
 
-
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fax'
-              label='Fax'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='fax'
-              value={clientesData.fax}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='observacao'
+                label='Observacao'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='observacao'
+                value={clientesData.observacao}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='fone'
-              value={clientesData.fone}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='data'
-              value={clientesData.data}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='endereco'
+                label='Endereco'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='endereco'
+                value={clientesData.endereco}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={60}
-              id='homepage'
-              label='HomePage'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='homepage'
-              value={clientesData.homepage}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='bairro'
+                label='Bairro'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='bairro'
+                value={clientesData.bairro}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='email'
-              maxLength={255}
-              id='email'
-              label='EMail'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='email'
-              value={clientesData.email}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={clientesData} label='Obito' name='obito' checked={clientesData.obito} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='nomepai'
-              label='NomePai'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='nomepai'
-              value={clientesData.nomepai}
-              onChange={onChange}
-              />
+                <CidadeComboBox
+                name={'cidade'}
+                dataForm={clientesData}
+                value={clientesData.cidade}
+                setValue={addValorCidade}
+                label={'Cidade'}
+                />
+              </div><div className='grid-container'>
+                <InputCep
+                type='text'
+                id='cep'
+                label='CEP'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='cep'
+                value={clientesData.cep}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={30}
-              id='rgoexpeditor'
-              label='RGOExpeditor'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='rgoexpeditor'
-              value={clientesData.rgoexpeditor}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fax'
+                label='Fax'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='fax'
+                value={clientesData.fax}
+                onChange={onChange}
+                />
 
 
-              <RegimeTributacaoComboBox
-              name={'regimetributacao'}
-              dataForm={clientesData}
-              value={clientesData.regimetributacao}
-              setValue={addValorRegimeTributacao}
-              label={'Regime Tributacao'}
-              />
-
-              <EnquadramentoEmpresaComboBox
-              name={'enquadramentoempresa'}
-              dataForm={clientesData}
-              value={clientesData.enquadramentoempresa}
-              setValue={addValorEnquadramentoEmpresa}
-              label={'Enquadramento Empresa'}
-              />
-              <InputCheckbox dataForm={clientesData} label='ReportECBOnly' name='reportecbonly' checked={clientesData.reportecbonly} onChange={onChange} />
-              <InputCheckbox dataForm={clientesData} label='ProBono' name='probono' checked={clientesData.probono} onChange={onChange} />
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='cnh'
-              label='CNH'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='cnh'
-              value={clientesData.cnh}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fone'
+                label='Fone'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='fone'
+                value={clientesData.fone}
+                onChange={onChange}
+                />
 
 
-              <InputInput
-              type='text'
-              maxLength={120}
-              id='pessoacontato'
-              label='PessoaContato'
-              dataForm={clientesData}
-              className='inputIncNome'
-              name='pessoacontato'
-              value={clientesData.pessoacontato}
-              onChange={onChange}
-              />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='data'
+                label='Data'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='data'
+                value={clientesData.data}
+                onChange={onChange}
+                />
 
-              <InputCheckbox dataForm={clientesData} label='Ani' name='ani' checked={clientesData.ani} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={60}
+                id='homepage'
+                label='HomePage'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='homepage'
+                value={clientesData.homepage}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='email'
+                maxLength={255}
+                id='email'
+                label='EMail'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='email'
+                value={clientesData.email}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={clientesData} label='Obito' name='obito' checked={clientesData.obito} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='nomepai'
+                label='NomePai'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='nomepai'
+                value={clientesData.nomepai}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={30}
+                id='rgoexpeditor'
+                label='RGOExpeditor'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='rgoexpeditor'
+                value={clientesData.rgoexpeditor}
+                onChange={onChange}
+                />
+
+              </div><div className='grid-container'>
+                <RegimeTributacaoComboBox
+                name={'regimetributacao'}
+                dataForm={clientesData}
+                value={clientesData.regimetributacao}
+                setValue={addValorRegimeTributacao}
+                label={'Regime Tributacao'}
+                />
+
+                <EnquadramentoEmpresaComboBox
+                name={'enquadramentoempresa'}
+                dataForm={clientesData}
+                value={clientesData.enquadramentoempresa}
+                setValue={addValorEnquadramentoEmpresa}
+                label={'Enquadramento Empresa'}
+                />
+                <InputCheckbox dataForm={clientesData} label='ReportECBOnly' name='reportecbonly' checked={clientesData.reportecbonly} onChange={onChange} />
+                <InputCheckbox dataForm={clientesData} label='ProBono' name='probono' checked={clientesData.probono} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='cnh'
+                label='CNH'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='cnh'
+                value={clientesData.cnh}
+                onChange={onChange}
+                />
+
+
+                <InputInput
+                type='text'
+                maxLength={120}
+                id='pessoacontato'
+                label='PessoaContato'
+                dataForm={clientesData}
+                className='inputIncNome'
+                name='pessoacontato'
+                value={clientesData.pessoacontato}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={clientesData} label='Ani' name='ani' checked={clientesData.ani} onChange={onChange} />
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Clientes' data={clientesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ClientesForm-${clientesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/clientes'} id={clientesData.id} closeModel={onClose} dadoApi={dadoApi} />
             </div>
-          </form>
-
-
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Clientes' data={clientesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ClientesForm-${clientesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/clientes'} id={clientesData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

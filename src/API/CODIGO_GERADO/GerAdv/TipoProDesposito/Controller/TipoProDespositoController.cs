@@ -95,4 +95,26 @@ public partial class TipoProDespositoController(ITipoProDespositoService tipopro
             return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Validation([FromBody] Models.TipoProDesposito regTipoProDesposito, [FromRoute, Required] string uri)
+    {
+        try
+        {
+            var result = await _tipoprodespositoService.Validation(regTipoProDesposito, uri);
+            if (result == null)
+            {
+                _logger.Warn("TipoProDesposito: Validation failed to add or update TipoProDesposito, {0}", uri);
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoProDesposito: Validation failed with exception for uri = {0}", uri);
+            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+        }
+    }
 }

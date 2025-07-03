@@ -39,8 +39,19 @@ public class PrepostosValidation : IPrepostosValidation
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
-        if (!string.IsNullOrWhiteSpace(reg.CPF) && await IsCpfDuplicado(reg, service, uri))
-            return $"'Prepostos' com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        {
+            var testaCpf = await IsCpfDuplicado(reg, service, uri);
+            if (testaCpf.Item1 && testaCpf.Item2 != null)
+            {
+                return $"Prepostos ({testaCpf.Item2.Nome}) com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+            else if (testaCpf.Item1)
+            {
+                return $"Prepostos com cpf '{reg.CPF.MaskCpf()}' já cadastrado.";
+            }
+        }
+
         // Funcao
         if (!reg.Funcao.IsEmptyIDNumber())
         {
@@ -74,11 +85,11 @@ public class PrepostosValidation : IPrepostosValidation
         return string.Empty;
     }
 
-    private async Task<bool> IsCpfDuplicado(Models.Prepostos reg, IPrepostosService service, string uri)
+    private async Task<(bool, PrepostosResponseAll? )> IsCpfDuplicado(Models.Prepostos reg, IPrepostosService service, string uri)
     {
         if (reg.CPF.Length == 0)
-            return false;
-        var existingPrepostos = (await service.Filter(new Filters.FilterPrepostos { CPF = reg.CPF }, uri)).FirstOrDefault();
-        return existingPrepostos != null && existingPrepostos.Id > 0 && existingPrepostos.Id != reg.Id;
+            return (false, null);
+        var existingPrepostos = (await service.Filter(new Filters.FilterPrepostos { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        return (existingPrepostos != null && existingPrepostos.Id > 0 && existingPrepostos.Id != reg.Id, existingPrepostos);
     }
 }

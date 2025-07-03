@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import AnexamentoRegistrosIncContainer from '@/app/GerAdv_TS/AnexamentoRegistros/Components/AnexamentoRegistrosIncContainer';
+// AnexamentoRegistrosIncContainer.test.tsx
+// Mock do AnexamentoRegistrosInc
+jest.mock('@/app/GerAdv_TS/AnexamentoRegistros/Crud/Inc/AnexamentoRegistros', () => (props: any) => (
+<div data-testid='anexamentoregistros-inc-mock' {...props} />
+));
+describe('AnexamentoRegistrosIncContainer', () => {
+  it('deve renderizar AnexamentoRegistrosInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <AnexamentoRegistrosIncContainer id={id} navigator={mockNavigator} />
+  );
+  const anexamentoregistrosInc = getByTestId('anexamentoregistros-inc-mock');
+  expect(anexamentoregistrosInc).toBeInTheDocument();
+  expect(anexamentoregistrosInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

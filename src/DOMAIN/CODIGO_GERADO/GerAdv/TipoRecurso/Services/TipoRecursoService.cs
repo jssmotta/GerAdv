@@ -39,13 +39,13 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, ITipo
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBTipoRecurso.SensivelCamposSqlX}, jusNome,areDescricao
+                   {DBTipoRecurso.SensivelCamposSqlX}, [Justica].[jusNome],[Area].[areDescricao]
                    FROM {DBTipoRecurso.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON jusCodigo=trcJustica
-LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=trcArea
+                   LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[TipoRecurso].[trcJustica]
+LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[TipoRecurso].[trcArea]
  
                    {where}
-                   ORDER BY trcDescricao
+                   ORDER BY [TipoRecurso].[trcDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<TipoRecursoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON areCodigo=trcArea
             var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"TipoRecurso: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regTipoRecurso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<TipoRecursoResponse?> Validation([FromBody] Models.TipoRecurso regTipoRecurso, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("TipoRecurso: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regTipoRecurso == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regTipoRecurso.Id.IsEmptyIDNumber())
+            {
+                return new TipoRecursoResponse();
+            }
+
+            return reader.Read(regTipoRecurso.Id, oCnn);
         });
     }
 

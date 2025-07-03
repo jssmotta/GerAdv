@@ -4,6 +4,7 @@ import { ITipoCompromissoService } from '../Services/TipoCompromisso.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoCompromisso } from '../Interfaces/interface.TipoCompromisso';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoCompromissoApi } from '../Apis/ApiTipoCompromisso';
 
 export const useTipoCompromissoForm = (
   initialTipoCompromisso: ITipoCompromisso,
@@ -142,6 +143,16 @@ export const useTipoCompromissoList = (dataService: ITipoCompromissoService) => 
 
 
 export function useValidationsTipoCompromisso() {
+
+  async function runValidation(data: ITipoCompromisso, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tipocompromissoApi = new TipoCompromissoApi(uri ?? '', token ?? '');
+
+    const result = await tipocompromissoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoCompromisso): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 100) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoCompromissoComboBox = (
   dataService: ITipoCompromissoService,
   initialValue?: any

@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { FornecedoresApi, FornecedoresApiError } from '../Apis/ApiFornecedores';
 import { FilterFornecedores } from '../Filters/Fornecedores';
 import { IFornecedores } from '../Interfaces/interface.Fornecedores';
+import { FornecedoresEmpty } from '../../Models/Fornecedores';
 
 export class FornecedoresValidator {
   static validateFornecedores(fornecedores: IFornecedores): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class FornecedoresService implements IFornecedoresService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof FornecedoresApiError) {
         throw error;

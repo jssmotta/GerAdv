@@ -5,16 +5,16 @@ import { getParamFromUrl } from '@/app/tools/helpers';
 interface HonorariosDadosContratoIncContainerProps {
   id: number;
   navigator: INavigator;
+  onSuccess: (registro?: any) => void;
 }
-const HonorariosDadosContratoIncContainer: React.FC<HonorariosDadosContratoIncContainerProps> = ({ id, navigator }) => {
+const HonorariosDadosContratoIncContainer: React.FC<HonorariosDadosContratoIncContainerProps> = ({ id, navigator, onSuccess }) => {
   const handleClose = () => {};
-  const handleSuccess = () => {};
   const handleError = () => {};
   return (
   <HonorariosDadosContratoInc
   id={id}
   onClose={handleClose}
-  onSuccess={handleSuccess}
+  onSuccess={onSuccess}
   onError={handleError}
   />
 );

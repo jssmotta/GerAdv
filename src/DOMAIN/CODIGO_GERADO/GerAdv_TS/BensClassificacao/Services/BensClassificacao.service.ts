@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { BensClassificacaoApi, BensClassificacaoApiError } from '../Apis/ApiBensClassificacao';
 import { FilterBensClassificacao } from '../Filters/BensClassificacao';
 import { IBensClassificacao } from '../Interfaces/interface.BensClassificacao';
+import { BensClassificacaoEmpty } from '../../Models/BensClassificacao';
 
 export class BensClassificacaoValidator {
   static validateBensClassificacao(bensclassificacao: IBensClassificacao): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class BensClassificacaoService implements IBensClassificacaoService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof BensClassificacaoApiError) {
         throw error;

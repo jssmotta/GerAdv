@@ -4,6 +4,7 @@ import { IAnexamentoRegistrosService } from '../Services/AnexamentoRegistros.ser
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAnexamentoRegistros } from '../Interfaces/interface.AnexamentoRegistros';
 import { isValidDate } from '@/app/tools/datetime';
+import { AnexamentoRegistrosApi } from '../Apis/ApiAnexamentoRegistros';
 
 export const useAnexamentoRegistrosForm = (
   initialAnexamentoRegistros: IAnexamentoRegistros,
@@ -142,6 +143,16 @@ export const useAnexamentoRegistrosList = (dataService: IAnexamentoRegistrosServ
 
 
 export function useValidationsAnexamentoRegistros() {
+
+  async function runValidation(data: IAnexamentoRegistros, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const anexamentoregistrosApi = new AnexamentoRegistrosApi(uri ?? '', token ?? '');
+
+    const result = await anexamentoregistrosApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAnexamentoRegistros): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsAnexamentoRegistros() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

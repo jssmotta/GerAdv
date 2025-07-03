@@ -39,12 +39,12 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBFornecedores.SensivelCamposSqlX}, cidNome
+                   {DBFornecedores.SensivelCamposSqlX}, [Cidade].[cidNome]
                    FROM {DBFornecedores.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=forCidade
+                   LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Fornecedores].[forCidade]
  
                    {where}
-                   ORDER BY forNome
+                   ORDER BY [Fornecedores].[forNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<FornecedoresResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
             var validade = await validation.ValidateReg(regFornecedores, this, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Fornecedores: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regFornecedores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<FornecedoresResponse?> Validation([FromBody] Models.Fornecedores regFornecedores, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Fornecedores: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regFornecedores == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regFornecedores, this, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regFornecedores.Id.IsEmptyIDNumber())
+            {
+                return new FornecedoresResponse();
+            }
+
+            return reader.Read(regFornecedores.Id, oCnn);
         });
     }
 

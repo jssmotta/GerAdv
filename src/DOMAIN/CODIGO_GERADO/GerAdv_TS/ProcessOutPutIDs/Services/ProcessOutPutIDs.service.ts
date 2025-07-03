@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProcessOutPutIDsApi, ProcessOutPutIDsApiError } from '../Apis/ApiProcessOutPutIDs';
 import { FilterProcessOutPutIDs } from '../Filters/ProcessOutPutIDs';
 import { IProcessOutPutIDs } from '../Interfaces/interface.ProcessOutPutIDs';
+import { ProcessOutPutIDsEmpty } from '../../Models/ProcessOutPutIDs';
 
 export class ProcessOutPutIDsValidator {
   static validateProcessOutPutIDs(processoutputids: IProcessOutPutIDs): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ProcessOutPutIDsService implements IProcessOutPutIDsService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ProcessOutPutIDsApiError) {
         throw error;

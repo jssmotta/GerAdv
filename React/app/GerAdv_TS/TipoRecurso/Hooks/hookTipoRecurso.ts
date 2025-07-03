@@ -4,6 +4,7 @@ import { ITipoRecursoService } from '../Services/TipoRecurso.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { ITipoRecurso } from '../Interfaces/interface.TipoRecurso';
 import { isValidDate } from '@/app/tools/datetime';
+import { TipoRecursoApi } from '../Apis/ApiTipoRecurso';
 
 export const useTipoRecursoForm = (
   initialTipoRecurso: ITipoRecurso,
@@ -142,6 +143,16 @@ export const useTipoRecursoList = (dataService: ITipoRecursoService) => {
 
 
 export function useValidationsTipoRecurso() {
+
+  async function runValidation(data: ITipoRecurso, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const tiporecursoApi = new TipoRecursoApi(uri ?? '', token ?? '');
+
+    const result = await tiporecursoApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: ITipoRecurso): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.descricao.length > 50) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useTipoRecursoComboBox = (
   dataService: ITipoRecursoService,
   initialValue?: any

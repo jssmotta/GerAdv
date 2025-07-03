@@ -43,7 +43,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, ICargosRea
                    FROM {DBCargos.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY carNome
+                   ORDER BY [Cargos].[carNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<CargosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class CargosService(IOptions<AppSettings> appSettings, ICargosRea
             var validade = await validation.ValidateReg(regCargos, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Cargos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regCargos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<CargosResponse?> Validation([FromBody] Models.Cargos regCargos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Cargos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regCargos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regCargos, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regCargos.Id.IsEmptyIDNumber())
+            {
+                return new CargosResponse();
+            }
+
+            return reader.Read(regCargos.Id, oCnn);
         });
     }
 

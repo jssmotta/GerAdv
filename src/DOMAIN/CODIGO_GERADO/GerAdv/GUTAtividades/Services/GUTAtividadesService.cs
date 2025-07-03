@@ -39,13 +39,13 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IGU
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBGUTAtividades.SensivelCamposSqlX}, pcgNome,operNome
+                   {DBGUTAtividades.SensivelCamposSqlX}, [GUTPeriodicidade].[pcgNome],[Operador].[operNome]
                    FROM {DBGUTAtividades.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"GUTPeriodicidade".dbo(oCnn)} (NOLOCK) ON pcgCodigo=agtGUTPeriodicidade
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=agtOperador
+                   LEFT JOIN {"GUTPeriodicidade".dbo(oCnn)} (NOLOCK) ON [GUTPeriodicidade].[pcgCodigo]=[GUTAtividades].[agtGUTPeriodicidade]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[GUTAtividades].[agtOperador]
  
                    {where}
-                   ORDER BY agtNome
+                   ORDER BY [GUTAtividades].[agtNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<GUTAtividadesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=agtOperador
             var validade = await validation.ValidateReg(regGUTAtividades, this, gutperiodicidadeReader, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"GUTAtividades: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regGUTAtividades, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<GUTAtividadesResponse?> Validation([FromBody] Models.GUTAtividades regGUTAtividades, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("GUTAtividades: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regGUTAtividades == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regGUTAtividades, this, gutperiodicidadeReader, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regGUTAtividades.Id.IsEmptyIDNumber())
+            {
+                return new GUTAtividadesResponse();
+            }
+
+            return reader.Read(regGUTAtividades.Id, oCnn);
         });
     }
 

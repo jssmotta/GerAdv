@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { PosicaoOutrasPartesApi, PosicaoOutrasPartesApiError } from '../Apis/ApiPosicaoOutrasPartes';
 import { FilterPosicaoOutrasPartes } from '../Filters/PosicaoOutrasPartes';
 import { IPosicaoOutrasPartes } from '../Interfaces/interface.PosicaoOutrasPartes';
+import { PosicaoOutrasPartesEmpty } from '../../Models/PosicaoOutrasPartes';
 
 export class PosicaoOutrasPartesValidator {
   static validatePosicaoOutrasPartes(posicaooutraspartes: IPosicaoOutrasPartes): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class PosicaoOutrasPartesService implements IPosicaoOutrasPartesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof PosicaoOutrasPartesApiError) {
         throw error;

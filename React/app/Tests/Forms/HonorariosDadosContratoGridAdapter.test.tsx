@@ -1,0 +1,13 @@
+﻿// HonorariosDadosContratoGridAdapter.test.tsx
+import React from 'react';
+import { render } from '@testing-library/react';
+import { HonorariosDadosContratoGridAdapter } from '@/app/GerAdv_TS/HonorariosDadosContrato/Adapter/HonorariosDadosContratoGridAdapter';
+// Mock HonorariosDadosContratoGrid component
+jest.mock('@/app/GerAdv_TS/HonorariosDadosContrato/Crud/Grids/HonorariosDadosContratoGrid', () => () => <div data-testid='honorariosdadoscontrato-grid-mock' />);
+describe('HonorariosDadosContratoGridAdapter', () => {
+  it('should render HonorariosDadosContratoGrid component', () => {
+    const adapter = new HonorariosDadosContratoGridAdapter();
+    const { getByTestId } = render(<>{adapter.render()}</>);
+    expect(getByTestId('honorariosdadoscontrato-grid-mock')).toBeInTheDocument();
+  });
+});

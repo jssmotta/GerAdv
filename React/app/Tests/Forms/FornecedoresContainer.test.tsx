@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import FornecedoresIncContainer from '@/app/GerAdv_TS/Fornecedores/Components/FornecedoresIncContainer';
+// FornecedoresIncContainer.test.tsx
+// Mock do FornecedoresInc
+jest.mock('@/app/GerAdv_TS/Fornecedores/Crud/Inc/Fornecedores', () => (props: any) => (
+<div data-testid='fornecedores-inc-mock' {...props} />
+));
+describe('FornecedoresIncContainer', () => {
+  it('deve renderizar FornecedoresInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <FornecedoresIncContainer id={id} navigator={mockNavigator} />
+  );
+  const fornecedoresInc = getByTestId('fornecedores-inc-mock');
+  expect(fornecedoresInc).toBeInTheDocument();
+  expect(fornecedoresInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

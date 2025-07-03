@@ -4,6 +4,7 @@ import { IProcessOutputSourcesService } from '../Services/ProcessOutputSources.s
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessOutputSources } from '../Interfaces/interface.ProcessOutputSources';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessOutputSourcesApi } from '../Apis/ApiProcessOutputSources';
 
 export const useProcessOutputSourcesForm = (
   initialProcessOutputSources: IProcessOutputSources,
@@ -142,6 +143,16 @@ export const useProcessOutputSourcesList = (dataService: IProcessOutputSourcesSe
 
 
 export function useValidationsProcessOutputSources() {
+
+  async function runValidation(data: IProcessOutputSources, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processoutputsourcesApi = new ProcessOutputSourcesApi(uri ?? '', token ?? '');
+
+    const result = await processoutputsourcesApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessOutputSources): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -164,7 +175,7 @@ if (data.nome.length > 80) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useProcessOutputSourcesComboBox = (
   dataService: IProcessOutputSourcesService,
   initialValue?: any

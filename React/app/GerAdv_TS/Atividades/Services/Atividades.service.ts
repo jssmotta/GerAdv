@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { AtividadesApi, AtividadesApiError } from '../Apis/ApiAtividades';
 import { FilterAtividades } from '../Filters/Atividades';
 import { IAtividades } from '../Interfaces/interface.Atividades';
+import { AtividadesEmpty } from '../../Models/Atividades';
 
 export class AtividadesValidator {
   static validateAtividades(atividades: IAtividades): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class AtividadesService implements IAtividadesService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof AtividadesApiError) {
         throw error;

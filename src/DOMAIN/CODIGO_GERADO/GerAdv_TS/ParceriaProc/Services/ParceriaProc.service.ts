@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ParceriaProcApi, ParceriaProcApiError } from '../Apis/ApiParceriaProc';
 import { FilterParceriaProc } from '../Filters/ParceriaProc';
 import { IParceriaProc } from '../Interfaces/interface.ParceriaProc';
+import { ParceriaProcEmpty } from '../../Models/ParceriaProc';
 
 export class ParceriaProcValidator {
   static validateParceriaProc(parceriaproc: IParceriaProc): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class ParceriaProcService implements IParceriaProcService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof ParceriaProcApiError) {
         throw error;

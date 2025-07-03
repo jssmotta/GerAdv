@@ -39,12 +39,12 @@ public partial class OperadorGrupoService(IOptions<AppSettings> appSettings, IOp
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBOperadorGrupo.SensivelCamposSqlX}, operNome
+                   {DBOperadorGrupo.SensivelCamposSqlX}, [Operador].[operNome]
                    FROM {DBOperadorGrupo.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ogrOperador
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[OperadorGrupo].[ogrOperador]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [OperadorGrupo].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<OperadorGrupoResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -142,11 +142,49 @@ public partial class OperadorGrupoService(IOptions<AppSettings> appSettings, IOp
             var validade = await validation.ValidateReg(regOperadorGrupo, this, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"OperadorGrupo: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regOperadorGrupo, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<OperadorGrupoResponse?> Validation([FromBody] Models.OperadorGrupo regOperadorGrupo, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("OperadorGrupo: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regOperadorGrupo == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regOperadorGrupo, this, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regOperadorGrupo.Id.IsEmptyIDNumber())
+            {
+                return new OperadorGrupoResponse();
+            }
+
+            return reader.Read(regOperadorGrupo.Id, oCnn);
         });
     }
 

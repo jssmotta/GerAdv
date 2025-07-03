@@ -28,7 +28,7 @@ public class TiposAcaoValidation : ITiposAcaoValidation
         if (string.IsNullOrWhiteSpace(reg.Nome))
             return "Nome é obrigatório";
         if (await IsDuplicado(reg, service, uri))
-            return $"TiposAcao '{reg.Nome}' já cadastrado.";
+            return $"Tipos Acao '{reg.Nome}'  - Nome";
         return string.Empty;
     }
 

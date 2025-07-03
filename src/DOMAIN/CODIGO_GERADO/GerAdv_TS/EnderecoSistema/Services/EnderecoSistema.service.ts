@@ -3,6 +3,7 @@ import { CRUD_CONSTANTS } from '@/app/tools/crud';
 import { EnderecoSistemaApi, EnderecoSistemaApiError } from '../Apis/ApiEnderecoSistema';
 import { FilterEnderecoSistema } from '../Filters/EnderecoSistema';
 import { IEnderecoSistema } from '../Interfaces/interface.EnderecoSistema';
+import { EnderecoSistemaEmpty } from '../../Models/EnderecoSistema';
 
 export class EnderecoSistemaValidator {
   static validateEnderecoSistema(enderecosistema: IEnderecoSistema): { isValid: boolean; errors: string[] } {
@@ -36,8 +37,10 @@ export class EnderecoSistemaService implements IEnderecoSistemaService {
     }
 
     try {
+      
       const response = await this.api.getById(id);
       return response.data;
+
     } catch (error) {
       if (error instanceof EnderecoSistemaApiError) {
         throw error;

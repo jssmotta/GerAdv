@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import OperadorIncContainer from '@/app/GerAdv_TS/Operador/Components/OperadorIncContainer';
+// OperadorIncContainer.test.tsx
+// Mock do OperadorInc
+jest.mock('@/app/GerAdv_TS/Operador/Crud/Inc/Operador', () => (props: any) => (
+<div data-testid='operador-inc-mock' {...props} />
+));
+describe('OperadorIncContainer', () => {
+  it('deve renderizar OperadorInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <OperadorIncContainer id={id} navigator={mockNavigator} />
+  );
+  const operadorInc = getByTestId('operador-inc-mock');
+  expect(operadorInc).toBeInTheDocument();
+  expect(operadorInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

@@ -19,7 +19,7 @@ import PoderJudiciarioAssociadoWindow from './PoderJudiciarioAssociadoWindow';
 import ErrorMessage from '@/app/components/Cruds/ErrorMessage';
 import { usePoderJudiciarioAssociadoList } from '../../Hooks/hookPoderJudiciarioAssociado';
 import { LoadingSpinner } from '@/app/components/Cruds/LoadingSpinner';
-import { subscribeToNotifications } from '@/app/tools/NotifySystem';
+import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 const PoderJudiciarioAssociadoGrid: React.FC = () => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
@@ -108,6 +108,9 @@ const cancelDelete = () => {
 const displayError = error || errorMessage;
 useEffect(() => {
   const unsubscribe = subscribeToNotifications('*', (entity) => {
+    if (entity.action == NotifySystemActions.ERROR) {
+      return;
+    }
     reloadFilter();
   });
   return () => {
@@ -146,6 +149,7 @@ return (
     onError={handleError}
     selectedPoderJudiciarioAssociado={selectedPoderJudiciarioAssociado}
     />
+
     <ConfirmationModal
     isOpen={isModalOpen}
     onConfirm={confirmDelete}

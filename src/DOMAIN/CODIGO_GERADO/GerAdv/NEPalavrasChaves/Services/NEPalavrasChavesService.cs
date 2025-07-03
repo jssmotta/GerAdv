@@ -43,7 +43,7 @@ public partial class NEPalavrasChavesService(IOptions<AppSettings> appSettings, 
                    FROM {DBNEPalavrasChaves.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY npcNome
+                   ORDER BY [NEPalavrasChaves].[npcNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<NEPalavrasChavesResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class NEPalavrasChavesService(IOptions<AppSettings> appSettings, 
             var validade = await validation.ValidateReg(regNEPalavrasChaves, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"NEPalavrasChaves: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regNEPalavrasChaves, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<NEPalavrasChavesResponse?> Validation([FromBody] Models.NEPalavrasChaves regNEPalavrasChaves, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("NEPalavrasChaves: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regNEPalavrasChaves == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regNEPalavrasChaves, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regNEPalavrasChaves.Id.IsEmptyIDNumber())
+            {
+                return new NEPalavrasChavesResponse();
+            }
+
+            return reader.Read(regNEPalavrasChaves.Id, oCnn);
         });
     }
 

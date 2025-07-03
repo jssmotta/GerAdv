@@ -2,12 +2,11 @@
 'use client';
 import { IOperadorEMailPopup } from '@/app/GerAdv_TS/OperadorEMailPopup/Interfaces/interface.OperadorEMailPopup';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSystemContext } from '@/app/context/SystemContext';
 import { getParamFromUrl } from '@/app/tools/helpers';
 import '@/app/styles/CrudFormsBase.css';
 import '@/app/styles/CrudFormsMobile.css';
-import '@/app/styles/Inputs.css';
 import '@/app/styles/CrudForms.css'; // [ INDEX_SIZE ]
 import ButtonSalvarCrud from '@/app/components/Cruds/ButtonSalvarCrud';
 import { useIsMobile } from '@/app/context/MobileContext';
@@ -39,8 +38,8 @@ export const OperadorEMailPopupForm: React.FC<OperadorEMailPopupFormProps> = ({
   onSuccess, 
 }) => {
 const router = useRouter();
-const isMobile = useIsMobile();
 const { systemContext } = useSystemContext();
+const isMobile = useIsMobile();
 const dadoApi = new OperadorEMailPopupApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
@@ -234,7 +233,7 @@ const addValorOperador = (e: any) => {
             onChange={onChange}
             />
 
-
+          </div><div className='grid-container'>
             <InputInput
             type='text'
             maxLength={2048}
@@ -247,7 +246,7 @@ const addValorOperador = (e: any) => {
             onChange={onChange}
             />
 
-          </div><div className='grid-container'>
+
             <InputInput
             type='text'
             maxLength={2147483647}

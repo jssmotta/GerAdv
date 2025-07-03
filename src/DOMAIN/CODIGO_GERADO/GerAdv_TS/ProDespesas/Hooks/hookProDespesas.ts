@@ -4,6 +4,7 @@ import { IProDespesasService } from '../Services/ProDespesas.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProDespesas } from '../Interfaces/interface.ProDespesas';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProDespesasApi } from '../Apis/ApiProDespesas';
 
 export const useProDespesasForm = (
   initialProDespesas: IProDespesas,
@@ -142,6 +143,16 @@ export const useProDespesasList = (dataService: IProDespesasService) => {
 
 
 export function useValidationsProDespesas() {
+
+  async function runValidation(data: IProDespesas, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const prodespesasApi = new ProDespesasApi(uri ?? '', token ?? '');
+
+    const result = await prodespesasApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProDespesas): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsProDespesas() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

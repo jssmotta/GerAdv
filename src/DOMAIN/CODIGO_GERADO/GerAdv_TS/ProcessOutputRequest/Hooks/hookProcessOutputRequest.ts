@@ -4,6 +4,7 @@ import { IProcessOutputRequestService } from '../Services/ProcessOutputRequest.s
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IProcessOutputRequest } from '../Interfaces/interface.ProcessOutputRequest';
 import { isValidDate } from '@/app/tools/datetime';
+import { ProcessOutputRequestApi } from '../Apis/ApiProcessOutputRequest';
 
 export const useProcessOutputRequestForm = (
   initialProcessOutputRequest: IProcessOutputRequest,
@@ -142,6 +143,16 @@ export const useProcessOutputRequestList = (dataService: IProcessOutputRequestSe
 
 
 export function useValidationsProcessOutputRequest() {
+
+  async function runValidation(data: IProcessOutputRequest, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const processoutputrequestApi = new ProcessOutputRequestApi(uri ?? '', token ?? '');
+
+    const result = await processoutputrequestApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IProcessOutputRequest): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -158,5 +169,5 @@ export function useValidationsProcessOutputRequest() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }

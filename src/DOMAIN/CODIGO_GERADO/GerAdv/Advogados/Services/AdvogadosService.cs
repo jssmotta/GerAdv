@@ -39,14 +39,14 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IAdvoga
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBAdvogados.SensivelCamposSqlX}, carNome,escNome,cidNome
+                   {DBAdvogados.SensivelCamposSqlX}, [Cargos].[carNome],[Escritorios].[escNome],[Cidade].[cidNome]
                    FROM {DBAdvogados.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON carCodigo=advCargo
-LEFT JOIN {"Escritorios".dbo(oCnn)} (NOLOCK) ON escCodigo=advEscritorio
-LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=advCidade
+                   LEFT JOIN {"Cargos".dbo(oCnn)} (NOLOCK) ON [Cargos].[carCodigo]=[Advogados].[advCargo]
+LEFT JOIN {"Escritorios".dbo(oCnn)} (NOLOCK) ON [Escritorios].[escCodigo]=[Advogados].[advEscritorio]
+LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[Advogados].[advCidade]
  
                    {where}
-                   ORDER BY advNome
+                   ORDER BY [Advogados].[advNome]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AdvogadosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -144,11 +144,49 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON cidCodigo=advCidade
             var validade = await validation.ValidateReg(regAdvogados, this, cargosReader, escritoriosReader, cidadeReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Advogados: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regAdvogados, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AdvogadosResponse?> Validation([FromBody] Models.Advogados regAdvogados, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Advogados: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regAdvogados == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regAdvogados, this, cargosReader, escritoriosReader, cidadeReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regAdvogados.Id.IsEmptyIDNumber())
+            {
+                return new AdvogadosResponse();
+            }
+
+            return reader.Read(regAdvogados.Id, oCnn);
         });
     }
 

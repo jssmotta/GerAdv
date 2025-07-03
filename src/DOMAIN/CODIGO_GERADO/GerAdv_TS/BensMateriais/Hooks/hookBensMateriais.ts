@@ -4,6 +4,7 @@ import { IBensMateriaisService } from '../Services/BensMateriais.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IBensMateriais } from '../Interfaces/interface.BensMateriais';
 import { isValidDate } from '@/app/tools/datetime';
+import { BensMateriaisApi } from '../Apis/ApiBensMateriais';
 
 export const useBensMateriaisForm = (
   initialBensMateriais: IBensMateriais,
@@ -142,6 +143,16 @@ export const useBensMateriaisList = (dataService: IBensMateriaisService) => {
 
 
 export function useValidationsBensMateriais() {
+
+  async function runValidation(data: IBensMateriais, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const bensmateriaisApi = new BensMateriaisApi(uri ?? '', token ?? '');
+
+    const result = await bensmateriaisApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IBensMateriais): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -179,7 +190,7 @@ if (data.nomevendedor.length > 255) {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }export const useBensMateriaisComboBox = (
   dataService: IBensMateriaisService,
   initialValue?: any

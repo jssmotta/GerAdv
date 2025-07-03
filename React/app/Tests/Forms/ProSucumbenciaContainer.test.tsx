@@ -1,0 +1,21 @@
+﻿import React from 'react';
+import { render } from '@testing-library/react';
+import ProSucumbenciaIncContainer from '@/app/GerAdv_TS/ProSucumbencia/Components/ProSucumbenciaIncContainer';
+// ProSucumbenciaIncContainer.test.tsx
+// Mock do ProSucumbenciaInc
+jest.mock('@/app/GerAdv_TS/ProSucumbencia/Crud/Inc/ProSucumbencia', () => (props: any) => (
+<div data-testid='prosucumbencia-inc-mock' {...props} />
+));
+describe('ProSucumbenciaIncContainer', () => {
+  it('deve renderizar ProSucumbenciaInc com as props corretas', () => {
+    const mockNavigator = {} as any;
+    const id = 123;
+    const { getByTestId } = render(
+    <ProSucumbenciaIncContainer id={id} navigator={mockNavigator} />
+  );
+  const prosucumbenciaInc = getByTestId('prosucumbencia-inc-mock');
+  expect(prosucumbenciaInc).toBeInTheDocument();
+  expect(prosucumbenciaInc.getAttribute('id')).toBe(id.toString());
+
+});
+});

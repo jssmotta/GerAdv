@@ -4,6 +4,7 @@ import { IInstanciaService } from '../Services/Instancia.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IInstancia } from '../Interfaces/interface.Instancia';
 import { isValidDate } from '@/app/tools/datetime';
+import { InstanciaApi } from '../Apis/ApiInstancia';
 
 export const useInstanciaForm = (
   initialInstancia: IInstancia,
@@ -142,6 +143,16 @@ export const useInstanciaList = (dataService: IInstanciaService) => {
 
 
 export function useValidationsInstancia() {
+
+  async function runValidation(data: IInstancia, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const instanciaApi = new InstanciaApi(uri ?? '', token ?? '');
+
+    const result = await instanciaApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IInstancia): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -185,79 +196,5 @@ if (data.zkeyia.length > 25) {
 
   }
 
-  return { validate };
-}export const useInstanciaComboBox = (
-  dataService: IInstanciaService,
-  initialValue?: any
-) => {
-  const [options, setOptions] = useState<any[]>([]);
-  const [filteredOptions, setFilteredOptions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue);
-  const [hasLoaded, setHasLoaded] = useState(false);
-
-  const fetchOptions = useCallback(async () => {
-    if (loading) return; // Evita múltiplas requisições simultâneas
-    
-    setLoading(true);
-    try {
-      const response = await dataService.getList();
-      const mappedOptions = response.map(item => ({
-        id: item.id,
-        nome: item.nroprocesso
-      }));
-      setOptions(mappedOptions);
-      setFilteredOptions(mappedOptions);
-      setHasLoaded(true);
-    } catch (err) {
-      console.log('Erro ao buscar opções do ComboBox');
-    } finally {
-      setLoading(false);
-    }
-  }, [dataService, loading]);
-
-  const handleFilter = useCallback((filterText: string) => {
-    if (!filterText) {
-      setFilteredOptions(options);
-      return;
-    }
-    
-    const filter = filterText.toLowerCase();
-    const filtered = options.filter(option =>
-      option.nome.toLowerCase().includes(filter)
-    );
-    setFilteredOptions(filtered);
-  }, [options]);
-
-  const handleValueChange = useCallback((newValue: any) => {
-    setSelectedValue(newValue);
-  }, []);
-  
-  useEffect(() => {
-    if (!hasLoaded) {
-      fetchOptions();
-    }
-  }, [fetchOptions, hasLoaded]);
-
-  const refreshCallback = useCallback(() => {
-    if (hasLoaded) {
-      fetchOptions();
-    }
-  }, [fetchOptions, hasLoaded]);
-
-  useInstanciaNotifications(
-    refreshCallback, // onUpdate
-    refreshCallback, // onDelete
-    refreshCallback  // onAdd
-  );
-
-  return {
-    options: filteredOptions,
-    loading,
-    selectedValue,
-    handleFilter,
-    handleValueChange,
-    refreshOptions: fetchOptions,
-    clearValue: () => setSelectedValue(null)
-  };
-};
+ return { validate, runValidation };
+}

@@ -39,13 +39,13 @@ public partial class ContatoCRMOperadorService(IOptions<AppSettings> appSettings
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBContatoCRMOperador.SensivelCamposSqlX}, operNome
+                   {DBContatoCRMOperador.SensivelCamposSqlX}, [ContatoCRM].[],[Operador].[operNome]
                    FROM {DBContatoCRMOperador.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"ContatoCRM".dbo(oCnn)} (NOLOCK) ON ctcCodigo=ccoContatoCRM
-LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ccoOperador
+                   LEFT JOIN {"ContatoCRM".dbo(oCnn)} (NOLOCK) ON [ContatoCRM].[ctcCodigo]=[ContatoCRMOperador].[ccoContatoCRM]
+LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[ContatoCRMOperador].[ccoOperador]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [ContatoCRMOperador].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<ContatoCRMOperadorResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -143,11 +143,49 @@ LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=ccoOperador
             var validade = await validation.ValidateReg(regContatoCRMOperador, this, contatocrmReader, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"ContatoCRMOperador: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regContatoCRMOperador, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<ContatoCRMOperadorResponse?> Validation([FromBody] Models.ContatoCRMOperador regContatoCRMOperador, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("ContatoCRMOperador: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regContatoCRMOperador == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regContatoCRMOperador, this, contatocrmReader, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regContatoCRMOperador.Id.IsEmptyIDNumber())
+            {
+                return new ContatoCRMOperadorResponse();
+            }
+
+            return reader.Read(regContatoCRMOperador.Id, oCnn);
         });
     }
 

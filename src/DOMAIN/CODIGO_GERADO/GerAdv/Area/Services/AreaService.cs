@@ -43,7 +43,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IAreaReader 
                    FROM {DBArea.PTabelaNome.dbo(oCnn)} (NOLOCK)
                     
                    {where}
-                   ORDER BY areDescricao
+                   ORDER BY [Area].[areDescricao]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<AreaResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -141,11 +141,49 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IAreaReader 
             var validade = await validation.ValidateReg(regArea, this, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"Area: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regArea, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<AreaResponse?> Validation([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("Area: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regArea == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regArea, this, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regArea.Id.IsEmptyIDNumber())
+            {
+                return new AreaResponse();
+            }
+
+            return reader.Read(regArea.Id, oCnn);
         });
     }
 

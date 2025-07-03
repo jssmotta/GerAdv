@@ -38,12 +38,12 @@ public partial class PontoVirtualAcessosService(IOptions<AppSettings> appSetting
         }
 
         var query = $@"SELECT TOP ({max})
-                   {DBPontoVirtualAcessos.SensivelCamposSqlX}, operNome
+                   {DBPontoVirtualAcessos.SensivelCamposSqlX}, [Operador].[operNome]
                    FROM {DBPontoVirtualAcessos.PTabelaNome.dbo(oCnn)} (NOLOCK)
-                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON operCodigo=pvaOperador
+                   LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[PontoVirtualAcessos].[pvaOperador]
  
                    {where}
-                   ORDER BY 
+                   ORDER BY [PontoVirtualAcessos].[]
                    OPTION (OPTIMIZE FOR UNKNOWN)";
         var lista = new List<PontoVirtualAcessosResponseAll>(max);
         var ds = await ConfiguracoesDBT.GetDataTable2Async(query, parameters, oCnn);
@@ -139,11 +139,49 @@ public partial class PontoVirtualAcessosService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regPontoVirtualAcessos, this, operadorReader, uri, oCnn);
             if (validade.Length > 0)
             {
-                throw new Exception($"PontoVirtualAcessos: {validade}");
+                throw new Exception(validade);
             }
 
             var saved = writer.Write(regPontoVirtualAcessos, oCnn);
             return reader.Read(saved.ID, oCnn);
+        });
+    }
+
+    public async Task<PontoVirtualAcessosResponse?> Validation([FromBody] Models.PontoVirtualAcessos regPontoVirtualAcessos, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            {
+                throw new Exception("PontoVirtualAcessos: URI inválida");
+            }
+        }
+
+        return await Task.Run(async () =>
+        {
+            if (regPontoVirtualAcessos == null)
+            {
+                return null;
+            }
+
+            using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+            if (oCnn == null)
+            {
+                return null;
+            }
+
+            var validade = await validation.ValidateReg(regPontoVirtualAcessos, this, operadorReader, uri, oCnn);
+            if (validade.Length > 0)
+            {
+                throw new Exception(validade);
+            }
+
+            if (regPontoVirtualAcessos.Id.IsEmptyIDNumber())
+            {
+                return new PontoVirtualAcessosResponse();
+            }
+
+            return reader.Read(regPontoVirtualAcessos.Id, oCnn);
         });
     }
 

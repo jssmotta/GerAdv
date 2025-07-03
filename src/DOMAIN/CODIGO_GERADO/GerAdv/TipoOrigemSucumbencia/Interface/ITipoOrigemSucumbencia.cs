@@ -4,7 +4,8 @@ public partial interface ITipoOrigemSucumbenciaService
     Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Filter(Filters.FilterTipoOrigemSucumbencia filter, [FromRoute, Required] string uri = "");
     Task<TipoOrigemSucumbenciaResponse?> AddAndUpdate(Models.TipoOrigemSucumbencia regTipoOrigemSucumbencia, [FromRoute, Required] string uri = "");
     Task<TipoOrigemSucumbenciaResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<TipoOrigemSucumbenciaResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<TipoOrigemSucumbenciaResponse?> Validation(Models.TipoOrigemSucumbencia regTipoOrigemSucumbencia, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoOrigemSucumbencia? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

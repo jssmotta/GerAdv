@@ -4,6 +4,7 @@ import { IAgendaRepetirService } from '../Services/AgendaRepetir.service';
 import { NotifySystemActions, subscribeToNotifications } from '@/app/tools/NotifySystem';
 import { IAgendaRepetir } from '../Interfaces/interface.AgendaRepetir';
 import { isValidDate } from '@/app/tools/datetime';
+import { AgendaRepetirApi } from '../Apis/ApiAgendaRepetir';
 
 export const useAgendaRepetirForm = (
   initialAgendaRepetir: IAgendaRepetir,
@@ -142,6 +143,16 @@ export const useAgendaRepetirList = (dataService: IAgendaRepetirService) => {
 
 
 export function useValidationsAgendaRepetir() {
+
+  async function runValidation(data: IAgendaRepetir, uri?: string, token?: string): Promise<{ isValid: boolean; message: string } | null> {
+
+    const agendarepetirApi = new AgendaRepetirApi(uri ?? '', token ?? '');
+
+    const result = await agendarepetirApi.validation(data);
+
+    return result;
+  }
+
   function validate(data: IAgendaRepetir): { isValid: boolean; message: string } {
     if (!data) return { isValid: false, message: 'Dados não informados.' };
     
@@ -161,5 +172,5 @@ export function useValidationsAgendaRepetir() {
 
   }
 
-  return { validate };
+ return { validate, runValidation };
 }
