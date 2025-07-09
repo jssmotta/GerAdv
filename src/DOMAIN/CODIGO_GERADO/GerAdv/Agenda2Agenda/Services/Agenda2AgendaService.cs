@@ -146,7 +146,7 @@ public partial class Agenda2AgendaService(IOptions<AppSettings> appSettings, IAg
             }
 
             var saved = writer.Write(regAgenda2Agenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

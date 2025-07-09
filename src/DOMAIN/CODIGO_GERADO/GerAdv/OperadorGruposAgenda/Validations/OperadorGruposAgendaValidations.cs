@@ -18,8 +18,8 @@ public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var operadorgruposagendaoperadoresExists = await operadorgruposagendaoperadoresService.Filter(new Filters.FilterOperadorGruposAgendaOperadores { OperadorGruposAgenda = id }, uri);
-        if (operadorgruposagendaoperadoresExists != null && operadorgruposagendaoperadoresExists.Any())
+        var operadorgruposagendaoperadoresExists0 = await operadorgruposagendaoperadoresService.Filter(new Filters.FilterOperadorGruposAgendaOperadores { OperadorGruposAgenda = id }, uri);
+        if (operadorgruposagendaoperadoresExists0 != null && operadorgruposagendaoperadoresExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda Operadores associados a ele.";
         return string.Empty;
     }

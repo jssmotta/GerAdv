@@ -18,38 +18,38 @@ public class JusticaValidation : IJusticaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var acaoExists = await acaoService.Filter(new Filters.FilterAcao { Justica = id }, uri);
-        if (acaoExists != null && acaoExists.Any())
+        var acaoExists0 = await acaoService.Filter(new Filters.FilterAcao { Justica = id }, uri);
+        if (acaoExists0 != null && acaoExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Acao associados a ele.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Justica = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists1 = await agendaService.Filter(new Filters.FilterAgenda { Justica = id }, uri);
+        if (agendaExists1 != null && agendaExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Justica = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists2 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Justica = id }, uri);
+        if (agendafinanceiroExists2 != null && agendafinanceiroExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var areasjusticaExists = await areasjusticaService.Filter(new Filters.FilterAreasJustica { Justica = id }, uri);
-        if (areasjusticaExists != null && areasjusticaExists.Any())
+        var areasjusticaExists3 = await areasjusticaService.Filter(new Filters.FilterAreasJustica { Justica = id }, uri);
+        if (areasjusticaExists3 != null && areasjusticaExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Areas Justica associados a ele.";
-        var divisaotribunalExists = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Justica = id }, uri);
-        if (divisaotribunalExists != null && divisaotribunalExists.Any())
+        var divisaotribunalExists4 = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Justica = id }, uri);
+        if (divisaotribunalExists4 != null && divisaotribunalExists4.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.";
-        var faseExists = await faseService.Filter(new Filters.FilterFase { Justica = id }, uri);
-        if (faseExists != null && faseExists.Any())
+        var faseExists5 = await faseService.Filter(new Filters.FilterFase { Justica = id }, uri);
+        if (faseExists5 != null && faseExists5.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Fase associados a ele.";
-        var objetosExists = await objetosService.Filter(new Filters.FilterObjetos { Justica = id }, uri);
-        if (objetosExists != null && objetosExists.Any())
+        var objetosExists6 = await objetosService.Filter(new Filters.FilterObjetos { Justica = id }, uri);
+        if (objetosExists6 != null && objetosExists6.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Objetos associados a ele.";
-        var poderjudiciarioassociadoExists = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Justica = id }, uri);
-        if (poderjudiciarioassociadoExists != null && poderjudiciarioassociadoExists.Any())
+        var poderjudiciarioassociadoExists7 = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Justica = id }, uri);
+        if (poderjudiciarioassociadoExists7 != null && poderjudiciarioassociadoExists7.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Justica = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists8 = await processosService.Filter(new Filters.FilterProcessos { Justica = id }, uri);
+        if (processosExists8 != null && processosExists8.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
-        var tiporecursoExists = await tiporecursoService.Filter(new Filters.FilterTipoRecurso { Justica = id }, uri);
-        if (tiporecursoExists != null && tiporecursoExists.Any())
+        var tiporecursoExists9 = await tiporecursoService.Filter(new Filters.FilterTipoRecurso { Justica = id }, uri);
+        if (tiporecursoExists9 != null && tiporecursoExists9.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Tipo Recurso associados a ele.";
-        var tribunalExists = await tribunalService.Filter(new Filters.FilterTribunal { Justica = id }, uri);
-        if (tribunalExists != null && tribunalExists.Any())
+        var tribunalExists10 = await tribunalService.Filter(new Filters.FilterTribunal { Justica = id }, uri);
+        if (tribunalExists10 != null && tribunalExists10.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.";
         return string.Empty;
     }

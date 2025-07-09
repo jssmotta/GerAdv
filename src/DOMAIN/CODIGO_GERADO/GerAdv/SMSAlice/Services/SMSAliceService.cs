@@ -147,7 +147,7 @@ LEFT JOIN {"TipoEMail".dbo(oCnn)} (NOLOCK) ON [TipoEMail].[tmlCodigo]=[SMSAlice]
             }
 
             var saved = writer.Write(regSMSAlice, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

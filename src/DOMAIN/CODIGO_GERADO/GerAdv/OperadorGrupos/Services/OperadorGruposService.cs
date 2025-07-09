@@ -145,7 +145,7 @@ public partial class OperadorGruposService(IOptions<AppSettings> appSettings, IO
             }
 
             var saved = writer.Write(regOperadorGrupos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

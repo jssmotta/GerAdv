@@ -18,8 +18,8 @@ public class TipoValorProcessoValidation : ITipoValorProcessoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var provaloresExists = await provaloresService.Filter(new Filters.FilterProValores { TipoValorProcesso = id }, uri);
-        if (provaloresExists != null && provaloresExists.Any())
+        var provaloresExists0 = await provaloresService.Filter(new Filters.FilterProValores { TipoValorProcesso = id }, uri);
+        if (provaloresExists0 != null && provaloresExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Valores associados a ele.";
         return string.Empty;
     }

@@ -147,7 +147,7 @@ LEFT JOIN {"Historico".dbo(oCnn)} (NOLOCK) ON [Historico].[hisCodigo]=[Processos
             }
 
             var saved = writer.Write(regProcessosObsReport, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

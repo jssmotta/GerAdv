@@ -57,7 +57,7 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
         return key;
     }
 
-    private async Task<HealthCheckResult> SendNotificationsAndGetResult(SqlConnection oCnn)
+    private async Task<HealthCheckResult> SendNotificationsAndGetResult(MsiSqlConnection oCnn)
     {
         string key = GetScheduleKey();
 

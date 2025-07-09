@@ -143,7 +143,7 @@ public partial class ProPartesService(IOptions<AppSettings> appSettings, IProPar
             }
 
             var saved = writer.Write(regProPartes, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

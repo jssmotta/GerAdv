@@ -148,7 +148,7 @@ LEFT JOIN {"Cidade".dbo(oCnn)} (NOLOCK) ON [Cidade].[cidCodigo]=[BensMateriais].
             }
 
             var saved = writer.Write(regBensMateriais, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

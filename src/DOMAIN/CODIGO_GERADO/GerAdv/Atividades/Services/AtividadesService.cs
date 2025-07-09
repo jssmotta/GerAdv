@@ -145,7 +145,7 @@ public partial class AtividadesService(IOptions<AppSettings> appSettings, IAtivi
             }
 
             var saved = writer.Write(regAtividades, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

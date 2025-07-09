@@ -145,7 +145,7 @@ LEFT JOIN {"Prepostos".dbo(oCnn)} (NOLOCK) ON [Prepostos].[preCodigo]=[AgendaQue
             }
 
             var saved = writer.Write(regAgendaQuem, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

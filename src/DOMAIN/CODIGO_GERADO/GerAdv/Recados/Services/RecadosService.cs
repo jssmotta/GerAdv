@@ -151,7 +151,7 @@ LEFT JOIN {"Agenda".dbo(oCnn)} (NOLOCK) ON [Agenda].[ageCodigo]=[Recados].[recAg
             }
 
             var saved = writer.Write(regRecados, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

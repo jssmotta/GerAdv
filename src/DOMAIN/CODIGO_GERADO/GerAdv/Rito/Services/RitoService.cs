@@ -145,7 +145,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IRitoReader 
             }
 
             var saved = writer.Write(regRito, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

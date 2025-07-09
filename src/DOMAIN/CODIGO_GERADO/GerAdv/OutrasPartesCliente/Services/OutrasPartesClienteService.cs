@@ -146,7 +146,7 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
             }
 
             var saved = writer.Write(regOutrasPartesCliente, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

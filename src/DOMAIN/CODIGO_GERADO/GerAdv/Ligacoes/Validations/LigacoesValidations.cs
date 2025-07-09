@@ -18,8 +18,8 @@ public class LigacoesValidation : ILigacoesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Ligacoes = id }, uri);
-        if (recadosExists != null && recadosExists.Any())
+        var recadosExists0 = await recadosService.Filter(new Filters.FilterRecados { Ligacoes = id }, uri);
+        if (recadosExists0 != null && recadosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
         return string.Empty;
     }

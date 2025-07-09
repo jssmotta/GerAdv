@@ -150,7 +150,7 @@ LEFT JOIN {"Servicos".dbo(oCnn)} (NOLOCK) ON [Servicos].[serCodigo]=[HorasTrab].
             }
 
             var saved = writer.Write(regHorasTrab, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

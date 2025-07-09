@@ -146,7 +146,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IN
             }
 
             var saved = writer.Write(regNECompromissos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

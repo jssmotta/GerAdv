@@ -146,7 +146,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IProRe
             }
 
             var saved = writer.Write(regProResumos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

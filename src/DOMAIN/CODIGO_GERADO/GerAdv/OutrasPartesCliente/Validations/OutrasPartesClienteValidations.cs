@@ -18,8 +18,8 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var parteclienteoutrasExists = await parteclienteoutrasService.Filter(new Filters.FilterParteClienteOutras { Cliente = id }, uri);
-        if (parteclienteoutrasExists != null && parteclienteoutrasExists.Any())
+        var parteclienteoutrasExists0 = await parteclienteoutrasService.Filter(new Filters.FilterParteClienteOutras { Cliente = id }, uri);
+        if (parteclienteoutrasExists0 != null && parteclienteoutrasExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Parte Cliente Outras associados a ele.";
         return string.Empty;
     }

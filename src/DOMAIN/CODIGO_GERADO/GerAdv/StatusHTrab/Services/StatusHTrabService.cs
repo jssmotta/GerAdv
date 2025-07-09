@@ -142,7 +142,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IStat
             }
 
             var saved = writer.Write(regStatusHTrab, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

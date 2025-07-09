@@ -142,7 +142,7 @@ public partial class AgendaRepetirDiasService(IOptions<AppSettings> appSettings,
             }
 
             var saved = writer.Write(regAgendaRepetirDias, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

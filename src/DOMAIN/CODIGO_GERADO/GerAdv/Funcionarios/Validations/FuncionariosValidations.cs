@@ -18,20 +18,20 @@ public class FuncionariosValidation : IFuncionariosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Funcionario = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Funcionario = id }, uri);
+        if (agendaExists0 != null && agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Funcionario = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Funcionario = id }, uri);
+        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var agendaquemExists = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Funcionario = id }, uri);
-        if (agendaquemExists != null && agendaquemExists.Any())
+        var agendaquemExists2 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Funcionario = id }, uri);
+        if (agendaquemExists2 != null && agendaquemExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.";
-        var agendarepetirExists = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Funcionario = id }, uri);
-        if (agendarepetirExists != null && agendarepetirExists.Any())
+        var agendarepetirExists3 = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Funcionario = id }, uri);
+        if (agendarepetirExists3 != null && agendarepetirExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Repetir associados a ele.";
-        var horastrabExists = await horastrabService.Filter(new Filters.FilterHorasTrab { Funcionario = id }, uri);
-        if (horastrabExists != null && horastrabExists.Any())
+        var horastrabExists4 = await horastrabService.Filter(new Filters.FilterHorasTrab { Funcionario = id }, uri);
+        if (horastrabExists4 != null && horastrabExists4.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.";
         return string.Empty;
     }

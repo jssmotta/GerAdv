@@ -146,7 +146,7 @@ public partial class Apenso2Service(IOptions<AppSettings> appSettings, IApenso2R
             }
 
             var saved = writer.Write(regApenso2, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

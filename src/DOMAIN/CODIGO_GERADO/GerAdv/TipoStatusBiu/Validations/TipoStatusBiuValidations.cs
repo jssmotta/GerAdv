@@ -18,8 +18,8 @@ public class TipoStatusBiuValidation : ITipoStatusBiuValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var statusbiuExists = await statusbiuService.Filter(new Filters.FilterStatusBiu { TipoStatusBiu = id }, uri);
-        if (statusbiuExists != null && statusbiuExists.Any())
+        var statusbiuExists0 = await statusbiuService.Filter(new Filters.FilterStatusBiu { TipoStatusBiu = id }, uri);
+        if (statusbiuExists0 != null && statusbiuExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Status Biu associados a ele.";
         return string.Empty;
     }

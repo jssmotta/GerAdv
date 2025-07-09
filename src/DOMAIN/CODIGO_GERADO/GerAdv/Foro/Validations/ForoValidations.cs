@@ -18,17 +18,17 @@ public class ForoValidation : IForoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendarecordsExists = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Foro = id }, uri);
-        if (agendarecordsExists != null && agendarecordsExists.Any())
+        var agendarecordsExists0 = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Foro = id }, uri);
+        if (agendarecordsExists0 != null && agendarecordsExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Records associados a ele.";
-        var divisaotribunalExists = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Foro = id }, uri);
-        if (divisaotribunalExists != null && divisaotribunalExists.Any())
+        var divisaotribunalExists1 = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Foro = id }, uri);
+        if (divisaotribunalExists1 != null && divisaotribunalExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.";
-        var instanciaExists = await instanciaService.Filter(new Filters.FilterInstancia { Foro = id }, uri);
-        if (instanciaExists != null && instanciaExists.Any())
+        var instanciaExists2 = await instanciaService.Filter(new Filters.FilterInstancia { Foro = id }, uri);
+        if (instanciaExists2 != null && instanciaExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.";
-        var poderjudiciarioassociadoExists = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Foro = id }, uri);
-        if (poderjudiciarioassociadoExists != null && poderjudiciarioassociadoExists.Any())
+        var poderjudiciarioassociadoExists3 = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Foro = id }, uri);
+        if (poderjudiciarioassociadoExists3 != null && poderjudiciarioassociadoExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.";
         return string.Empty;
     }

@@ -142,7 +142,7 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, ITi
             }
 
             var saved = writer.Write(regTipoStatusBiu, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

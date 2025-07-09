@@ -18,8 +18,8 @@ public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var terceirosExists = await terceirosService.Filter(new Filters.FilterTerceiros { Situacao = id }, uri);
-        if (terceirosExists != null && terceirosExists.Any())
+        var terceirosExists0 = await terceirosService.Filter(new Filters.FilterTerceiros { Situacao = id }, uri);
+        if (terceirosExists0 != null && terceirosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Terceiros associados a ele.";
         return string.Empty;
     }

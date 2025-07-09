@@ -145,7 +145,7 @@ public partial class PenhoraStatusService(IOptions<AppSettings> appSettings, IPe
             }
 
             var saved = writer.Write(regPenhoraStatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

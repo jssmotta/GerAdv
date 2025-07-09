@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MenphisSI.GerAdv.Models;
+namespace MenphisSI.GerMDS.Models;
 
 public class User : OperadorResponse
 {

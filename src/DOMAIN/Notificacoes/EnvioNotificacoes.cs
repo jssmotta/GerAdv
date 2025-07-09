@@ -14,7 +14,7 @@ public enum E_TIPO_ENVIO
 
 public class EnvioNotificacoes
 {
-    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
+    private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
     {
         var ds = ObterCompromissos(oCnn, tipo, uri, operador);
         if (ds.Rows.Count == 0)
@@ -79,7 +79,7 @@ END;
     }
 
     private DataTable ObterCompromissos(
-        SqlConnection conexao,
+        MsiSqlConnection conexao,
         E_TIPO_ENVIO tipo,
         string uri,
         string operador,
@@ -161,23 +161,29 @@ ORDER BY vqaData;";
     }
 
     
-    public int EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string uri, SqlConnection oCnn)
+    public int EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
     {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;
-        var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
+        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;        
+
+        var reader = new MenphisSI.GerAdv.Readers.Operador();
+        var readerAdv = new MenphisSI.GerAdv.Readers.Advogados();
+        var readerFunc = new MenphisSI.GerAdv.Readers.Funcionarios();
+        var operadores = reader.Listar(100, uri, filtroOperadores, [], "operNome");
         var servicoEmail = new SendEmailApi();
         var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
         var count = 0;
 
         foreach (var operador in operadores)
         {
-            if (string.IsNullOrEmpty(operador.FEMailNet) || string.IsNullOrEmpty(operador.FNome))
+            if (string.IsNullOrEmpty(operador.EMailNet) || string.IsNullOrEmpty(operador.Nome))
             {
                 continue;
             }
 
-            var cNome = operador.FCadID == 1 ? DBAdvogados.ListarN(operador.FCadCod, oCnn).FNome
-                                             : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
+            var cNome = operador.CadID == 1 ?
+                      readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? "";
+
             if (cNome == null || cNome.Equals("")) continue;
 
             var conteudoHtml = ConteudoHtml(cNome, tipo, uri, oCnn);
@@ -189,7 +195,7 @@ ORDER BY vqaData;";
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.FEMailNet,
+                ParaEmail = operador.EMailNet,
                 ParaNome = cNome,
                 Assunto = assunto + cNome,
                 Mensagem = conteudoHtml,

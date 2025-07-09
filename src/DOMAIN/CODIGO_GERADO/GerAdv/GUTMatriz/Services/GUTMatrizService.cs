@@ -143,7 +143,7 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IGUTMat
             }
 
             var saved = writer.Write(regGUTMatriz, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

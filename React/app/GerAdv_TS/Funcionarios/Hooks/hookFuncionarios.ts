@@ -174,10 +174,10 @@ if (data.rg.length > 30) {
                                              return { isValid: false, message: 'O campo RG não pode ter mais de 30 caracteres.' };
                                          } 
 if (data.observacao.length > 2147483647) { 
-                                             return { isValid: false, message: 'O campo Observações não pode ter mais de 2147483647 caracteres.' };
+                                             return { isValid: false, message: 'O campo Observacao não pode ter mais de 2147483647 caracteres.' };
                                          } 
 if (data.endereco.length > 80) { 
-                                             return { isValid: false, message: 'O campo Endereço não pode ter mais de 80 caracteres.' };
+                                             return { isValid: false, message: 'O campo Endereco não pode ter mais de 80 caracteres.' };
                                          } 
 if (data.bairro.length > 50) { 
                                              return { isValid: false, message: 'O campo Bairro não pode ter mais de 50 caracteres.' };
@@ -195,7 +195,7 @@ if (data.fone.length > 2147483647) {
                                              return { isValid: false, message: 'O campo Fone não pode ter mais de 2147483647 caracteres.' };
                                          } 
 if (data.email.length > 60) { 
-                                             return { isValid: false, message: 'O campo E-mail não pode ter mais de 60 caracteres.' };
+                                             return { isValid: false, message: 'O campo EMail não pode ter mais de 60 caracteres.' };
                                          } 
 if (data.ctpsnumero.length > 15) { 
                                              return { isValid: false, message: 'O campo CTPSNumero não pode ter mais de 15 caracteres.' };

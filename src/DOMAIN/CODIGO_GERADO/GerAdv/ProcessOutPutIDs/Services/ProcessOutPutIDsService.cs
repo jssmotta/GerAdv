@@ -142,7 +142,7 @@ public partial class ProcessOutPutIDsService(IOptions<AppSettings> appSettings, 
             }
 
             var saved = writer.Write(regProcessOutPutIDs, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

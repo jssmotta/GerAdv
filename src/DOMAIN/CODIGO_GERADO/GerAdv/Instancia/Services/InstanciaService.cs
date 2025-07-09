@@ -149,7 +149,7 @@ LEFT JOIN {"TipoRecurso".dbo(oCnn)} (NOLOCK) ON [TipoRecurso].[trcCodigo]=[Insta
             }
 
             var saved = writer.Write(regInstancia, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

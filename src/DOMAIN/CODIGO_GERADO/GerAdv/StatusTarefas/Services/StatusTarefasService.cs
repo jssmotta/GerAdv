@@ -145,7 +145,7 @@ public partial class StatusTarefasService(IOptions<AppSettings> appSettings, ISt
             }
 
             var saved = writer.Write(regStatusTarefas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

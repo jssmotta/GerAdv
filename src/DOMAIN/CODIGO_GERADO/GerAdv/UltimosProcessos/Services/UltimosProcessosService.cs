@@ -143,7 +143,7 @@ public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, 
             }
 
             var saved = writer.Write(regUltimosProcessos, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

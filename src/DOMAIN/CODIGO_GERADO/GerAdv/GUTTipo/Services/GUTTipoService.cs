@@ -145,7 +145,7 @@ public partial class GUTTipoService(IOptions<AppSettings> appSettings, IGUTTipoR
             }
 
             var saved = writer.Write(regGUTTipo, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

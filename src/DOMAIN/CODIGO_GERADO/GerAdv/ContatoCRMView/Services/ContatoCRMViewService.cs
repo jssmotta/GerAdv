@@ -142,7 +142,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IC
             }
 
             var saved = writer.Write(regContatoCRMView, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

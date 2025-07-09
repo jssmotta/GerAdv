@@ -18,8 +18,8 @@ public class TipoProDespositoValidation : ITipoProDespositoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var prodepositosExists = await prodepositosService.Filter(new Filters.FilterProDepositos { TipoProDesposito = id }, uri);
-        if (prodepositosExists != null && prodepositosExists.Any())
+        var prodepositosExists0 = await prodepositosService.Filter(new Filters.FilterProDepositos { TipoProDesposito = id }, uri);
+        if (prodepositosExists0 != null && prodepositosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.";
         return string.Empty;
     }

@@ -18,8 +18,8 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var bensmateriaisExists = await bensmateriaisService.Filter(new Filters.FilterBensMateriais { BensClassificacao = id }, uri);
-        if (bensmateriaisExists != null && bensmateriaisExists.Any())
+        var bensmateriaisExists0 = await bensmateriaisService.Filter(new Filters.FilterBensMateriais { BensClassificacao = id }, uri);
+        if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.";
         return string.Empty;
     }

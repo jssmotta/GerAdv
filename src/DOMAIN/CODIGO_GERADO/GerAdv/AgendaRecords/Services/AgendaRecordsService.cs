@@ -146,7 +146,7 @@ LEFT JOIN {"Foro".dbo(oCnn)} (NOLOCK) ON [Foro].[forCodigo]=[AgendaRecords].[rag
             }
 
             var saved = writer.Write(regAgendaRecords, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

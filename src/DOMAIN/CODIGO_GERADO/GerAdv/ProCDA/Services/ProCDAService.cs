@@ -146,7 +146,7 @@ public partial class ProCDAService(IOptions<AppSettings> appSettings, IProCDARea
             }
 
             var saved = writer.Write(regProCDA, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

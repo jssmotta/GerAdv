@@ -826,6 +826,9 @@ public partial class ProcessosAll
     [JsonPropertyName("nomeadvogados")]
     public string NomeAdvogados { get; set; } = string.Empty;
 
+    [JsonPropertyName("nomeadvogados")]
+    public string NomeAdvogados { get; set; } = string.Empty;
+
     [JsonPropertyName("nomeclientes")]
     public string NomeClientes { get; set; } = string.Empty;
 

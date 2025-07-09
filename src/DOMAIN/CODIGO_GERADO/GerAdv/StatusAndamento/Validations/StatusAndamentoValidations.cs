@@ -18,8 +18,8 @@ public class StatusAndamentoValidation : IStatusAndamentoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var historicoExists = await historicoService.Filter(new Filters.FilterHistorico { StatusAndamento = id }, uri);
-        if (historicoExists != null && historicoExists.Any())
+        var historicoExists0 = await historicoService.Filter(new Filters.FilterHistorico { StatusAndamento = id }, uri);
+        if (historicoExists0 != null && historicoExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.";
         return string.Empty;
     }

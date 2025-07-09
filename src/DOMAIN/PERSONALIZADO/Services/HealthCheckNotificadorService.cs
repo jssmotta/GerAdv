@@ -65,7 +65,7 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
         return key;
     }
 
-    private async Task<HealthCheckResult> SendNotificationsAndGetResult(E_TIPO_ENVIO tipo, SqlConnection oCnn)
+    private async Task<HealthCheckResult> SendNotificationsAndGetResult(E_TIPO_ENVIO tipo, MsiSqlConnection oCnn)
     {
         string key = GetScheduleKey(tipo);
 

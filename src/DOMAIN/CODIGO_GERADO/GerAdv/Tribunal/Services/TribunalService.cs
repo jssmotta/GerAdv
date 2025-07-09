@@ -148,7 +148,7 @@ LEFT JOIN {"Instancia".dbo(oCnn)} (NOLOCK) ON [Instancia].[insCodigo]=[Tribunal]
             }
 
             var saved = writer.Write(regTribunal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

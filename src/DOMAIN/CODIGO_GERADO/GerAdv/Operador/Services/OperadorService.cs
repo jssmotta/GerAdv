@@ -146,7 +146,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IOperado
             }
 
             var saved = writer.Write(regOperador, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

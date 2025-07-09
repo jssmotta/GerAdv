@@ -142,7 +142,7 @@ public partial class EndTitService(IOptions<AppSettings> appSettings, IEndTitRea
             }
 
             var saved = writer.Write(regEndTit, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

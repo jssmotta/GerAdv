@@ -18,14 +18,14 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { TipoCompromisso = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { TipoCompromisso = id }, uri);
+        if (agendaExists0 != null && agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { TipoCompromisso = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { TipoCompromisso = id }, uri);
+        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var necompromissosExists = await necompromissosService.Filter(new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
-        if (necompromissosExists != null && necompromissosExists.Any())
+        var necompromissosExists2 = await necompromissosService.Filter(new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
+        if (necompromissosExists2 != null && necompromissosExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela N E Compromissos associados a ele.";
         return string.Empty;
     }

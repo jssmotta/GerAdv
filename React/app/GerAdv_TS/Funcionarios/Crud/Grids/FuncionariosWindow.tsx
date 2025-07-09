@@ -34,7 +34,7 @@ return (
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={600}
+  newHeight={905}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedFuncionarios?.id ?? 0).toString()}

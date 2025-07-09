@@ -18,8 +18,8 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var enderecosistemaExists = await enderecosistemaService.Filter(new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id }, uri);
-        if (enderecosistemaExists != null && enderecosistemaExists.Any())
+        var enderecosistemaExists0 = await enderecosistemaService.Filter(new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id }, uri);
+        if (enderecosistemaExists0 != null && enderecosistemaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.";
         return string.Empty;
     }

@@ -18,8 +18,8 @@ public class TipoEMailValidation : ITipoEMailValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var smsaliceExists = await smsaliceService.Filter(new Filters.FilterSMSAlice { TipoEMail = id }, uri);
-        if (smsaliceExists != null && smsaliceExists.Any())
+        var smsaliceExists0 = await smsaliceService.Filter(new Filters.FilterSMSAlice { TipoEMail = id }, uri);
+        if (smsaliceExists0 != null && smsaliceExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.";
         return string.Empty;
     }

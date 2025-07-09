@@ -18,8 +18,8 @@ public class RecadosValidation : IRecadosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var alarmsmsExists = await alarmsmsService.Filter(new Filters.FilterAlarmSMS { Recado = id }, uri);
-        if (alarmsmsExists != null && alarmsmsExists.Any())
+        var alarmsmsExists0 = await alarmsmsService.Filter(new Filters.FilterAlarmSMS { Recado = id }, uri);
+        if (alarmsmsExists0 != null && alarmsmsExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Alarm S M S associados a ele.";
         return string.Empty;
     }

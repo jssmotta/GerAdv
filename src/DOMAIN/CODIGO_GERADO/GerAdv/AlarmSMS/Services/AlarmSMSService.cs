@@ -148,7 +148,7 @@ LEFT JOIN {"Recados".dbo(oCnn)} (NOLOCK) ON [Recados].[recCodigo]=[AlarmSMS].[al
             }
 
             var saved = writer.Write(regAlarmSMS, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

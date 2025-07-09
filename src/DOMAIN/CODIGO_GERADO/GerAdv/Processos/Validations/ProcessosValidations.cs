@@ -18,116 +18,116 @@ public class ProcessosValidation : IProcessosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Processo = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Processo = id }, uri);
+        if (agendaExists0 != null && agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Processo = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Processo = id }, uri);
+        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var agendarepetirExists = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Processo = id }, uri);
-        if (agendarepetirExists != null && agendarepetirExists.Any())
+        var agendarepetirExists2 = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Processo = id }, uri);
+        if (agendarepetirExists2 != null && agendarepetirExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Repetir associados a ele.";
-        var andamentosmdExists = await andamentosmdService.Filter(new Filters.FilterAndamentosMD { Processo = id }, uri);
-        if (andamentosmdExists != null && andamentosmdExists.Any())
+        var andamentosmdExists3 = await andamentosmdService.Filter(new Filters.FilterAndamentosMD { Processo = id }, uri);
+        if (andamentosmdExists3 != null && andamentosmdExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Andamentos M D associados a ele.";
-        var apensoExists = await apensoService.Filter(new Filters.FilterApenso { Processo = id }, uri);
-        if (apensoExists != null && apensoExists.Any())
+        var apensoExists4 = await apensoService.Filter(new Filters.FilterApenso { Processo = id }, uri);
+        if (apensoExists4 != null && apensoExists4.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Apenso associados a ele.";
-        var apenso2Exists = await apenso2Service.Filter(new Filters.FilterApenso2 { Processo = id }, uri);
-        if (apenso2Exists != null && apenso2Exists.Any())
+        var apenso2Exists5 = await apenso2Service.Filter(new Filters.FilterApenso2 { Processo = id }, uri);
+        if (apenso2Exists5 != null && apenso2Exists5.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Apenso2 associados a ele.";
-        var contacorrenteExists = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Processo = id }, uri);
-        if (contacorrenteExists != null && contacorrenteExists.Any())
+        var contacorrenteExists6 = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Processo = id }, uri);
+        if (contacorrenteExists6 != null && contacorrenteExists6.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Conta Corrente associados a ele.";
-        var contatocrmExists = await contatocrmService.Filter(new Filters.FilterContatoCRM { Processo = id }, uri);
-        if (contatocrmExists != null && contatocrmExists.Any())
+        var contatocrmExists7 = await contatocrmService.Filter(new Filters.FilterContatoCRM { Processo = id }, uri);
+        if (contatocrmExists7 != null && contatocrmExists7.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contato C R M associados a ele.";
-        var contratosExists = await contratosService.Filter(new Filters.FilterContratos { Processo = id }, uri);
-        if (contratosExists != null && contratosExists.Any())
+        var contratosExists8 = await contratosService.Filter(new Filters.FilterContratos { Processo = id }, uri);
+        if (contratosExists8 != null && contratosExists8.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.";
-        var documentosExists = await documentosService.Filter(new Filters.FilterDocumentos { Processo = id }, uri);
-        if (documentosExists != null && documentosExists.Any())
+        var documentosExists9 = await documentosService.Filter(new Filters.FilterDocumentos { Processo = id }, uri);
+        if (documentosExists9 != null && documentosExists9.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Documentos associados a ele.";
-        var enderecosistemaExists = await enderecosistemaService.Filter(new Filters.FilterEnderecoSistema { Processo = id }, uri);
-        if (enderecosistemaExists != null && enderecosistemaExists.Any())
+        var enderecosistemaExists10 = await enderecosistemaService.Filter(new Filters.FilterEnderecoSistema { Processo = id }, uri);
+        if (enderecosistemaExists10 != null && enderecosistemaExists10.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.";
-        var historicoExists = await historicoService.Filter(new Filters.FilterHistorico { Processo = id }, uri);
-        if (historicoExists != null && historicoExists.Any())
+        var historicoExists11 = await historicoService.Filter(new Filters.FilterHistorico { Processo = id }, uri);
+        if (historicoExists11 != null && historicoExists11.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.";
-        var honorariosdadoscontratoExists = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Processo = id }, uri);
-        if (honorariosdadoscontratoExists != null && honorariosdadoscontratoExists.Any())
+        var honorariosdadoscontratoExists12 = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Processo = id }, uri);
+        if (honorariosdadoscontratoExists12 != null && honorariosdadoscontratoExists12.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Honorarios Dados Contrato associados a ele.";
-        var horastrabExists = await horastrabService.Filter(new Filters.FilterHorasTrab { Processo = id }, uri);
-        if (horastrabExists != null && horastrabExists.Any())
+        var horastrabExists13 = await horastrabService.Filter(new Filters.FilterHorasTrab { Processo = id }, uri);
+        if (horastrabExists13 != null && horastrabExists13.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.";
-        var instanciaExists = await instanciaService.Filter(new Filters.FilterInstancia { Processo = id }, uri);
-        if (instanciaExists != null && instanciaExists.Any())
+        var instanciaExists14 = await instanciaService.Filter(new Filters.FilterInstancia { Processo = id }, uri);
+        if (instanciaExists14 != null && instanciaExists14.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.";
-        var ligacoesExists = await ligacoesService.Filter(new Filters.FilterLigacoes { Processo = id }, uri);
-        if (ligacoesExists != null && ligacoesExists.Any())
+        var ligacoesExists15 = await ligacoesService.Filter(new Filters.FilterLigacoes { Processo = id }, uri);
+        if (ligacoesExists15 != null && ligacoesExists15.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.";
-        var livrocaixaExists = await livrocaixaService.Filter(new Filters.FilterLivroCaixa { Processo = id }, uri);
-        if (livrocaixaExists != null && livrocaixaExists.Any())
+        var livrocaixaExists16 = await livrocaixaService.Filter(new Filters.FilterLivroCaixa { Processo = id }, uri);
+        if (livrocaixaExists16 != null && livrocaixaExists16.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Livro Caixa associados a ele.";
-        var nenotasExists = await nenotasService.Filter(new Filters.FilterNENotas { Processo = id }, uri);
-        if (nenotasExists != null && nenotasExists.Any())
+        var nenotasExists17 = await nenotasService.Filter(new Filters.FilterNENotas { Processo = id }, uri);
+        if (nenotasExists17 != null && nenotasExists17.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.";
-        var parceriaprocExists = await parceriaprocService.Filter(new Filters.FilterParceriaProc { Processo = id }, uri);
-        if (parceriaprocExists != null && parceriaprocExists.Any())
+        var parceriaprocExists18 = await parceriaprocService.Filter(new Filters.FilterParceriaProc { Processo = id }, uri);
+        if (parceriaprocExists18 != null && parceriaprocExists18.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Parceria Proc associados a ele.";
-        var parteclienteoutrasExists = await parteclienteoutrasService.Filter(new Filters.FilterParteClienteOutras { Processo = id }, uri);
-        if (parteclienteoutrasExists != null && parteclienteoutrasExists.Any())
+        var parteclienteoutrasExists19 = await parteclienteoutrasService.Filter(new Filters.FilterParteClienteOutras { Processo = id }, uri);
+        if (parteclienteoutrasExists19 != null && parteclienteoutrasExists19.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Parte Cliente Outras associados a ele.";
-        var penhoraExists = await penhoraService.Filter(new Filters.FilterPenhora { Processo = id }, uri);
-        if (penhoraExists != null && penhoraExists.Any())
+        var penhoraExists20 = await penhoraService.Filter(new Filters.FilterPenhora { Processo = id }, uri);
+        if (penhoraExists20 != null && penhoraExists20.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Penhora associados a ele.";
-        var precatoriaExists = await precatoriaService.Filter(new Filters.FilterPrecatoria { Processo = id }, uri);
-        if (precatoriaExists != null && precatoriaExists.Any())
+        var precatoriaExists21 = await precatoriaService.Filter(new Filters.FilterPrecatoria { Processo = id }, uri);
+        if (precatoriaExists21 != null && precatoriaExists21.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Precatoria associados a ele.";
-        var procdaExists = await procdaService.Filter(new Filters.FilterProCDA { Processo = id }, uri);
-        if (procdaExists != null && procdaExists.Any())
+        var procdaExists22 = await procdaService.Filter(new Filters.FilterProCDA { Processo = id }, uri);
+        if (procdaExists22 != null && procdaExists22.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro C D A associados a ele.";
-        var processosobsreportExists = await processosobsreportService.Filter(new Filters.FilterProcessosObsReport { Processo = id }, uri);
-        if (processosobsreportExists != null && processosobsreportExists.Any())
+        var processosobsreportExists23 = await processosobsreportService.Filter(new Filters.FilterProcessosObsReport { Processo = id }, uri);
+        if (processosobsreportExists23 != null && processosobsreportExists23.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos Obs Report associados a ele.";
-        var processosparadosExists = await processosparadosService.Filter(new Filters.FilterProcessosParados { Processo = id }, uri);
-        if (processosparadosExists != null && processosparadosExists.Any())
+        var processosparadosExists24 = await processosparadosService.Filter(new Filters.FilterProcessosParados { Processo = id }, uri);
+        if (processosparadosExists24 != null && processosparadosExists24.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos Parados associados a ele.";
-        var processoutputrequestExists = await processoutputrequestService.Filter(new Filters.FilterProcessOutputRequest { Processo = id }, uri);
-        if (processoutputrequestExists != null && processoutputrequestExists.Any())
+        var processoutputrequestExists25 = await processoutputrequestService.Filter(new Filters.FilterProcessOutputRequest { Processo = id }, uri);
+        if (processoutputrequestExists25 != null && processoutputrequestExists25.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.";
-        var prodepositosExists = await prodepositosService.Filter(new Filters.FilterProDepositos { Processo = id }, uri);
-        if (prodepositosExists != null && prodepositosExists.Any())
+        var prodepositosExists26 = await prodepositosService.Filter(new Filters.FilterProDepositos { Processo = id }, uri);
+        if (prodepositosExists26 != null && prodepositosExists26.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.";
-        var prodespesasExists = await prodespesasService.Filter(new Filters.FilterProDespesas { Processo = id }, uri);
-        if (prodespesasExists != null && prodespesasExists.Any())
+        var prodespesasExists27 = await prodespesasService.Filter(new Filters.FilterProDespesas { Processo = id }, uri);
+        if (prodespesasExists27 != null && prodespesasExists27.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Despesas associados a ele.";
-        var proobservacoesExists = await proobservacoesService.Filter(new Filters.FilterProObservacoes { Processo = id }, uri);
-        if (proobservacoesExists != null && proobservacoesExists.Any())
+        var proobservacoesExists28 = await proobservacoesService.Filter(new Filters.FilterProObservacoes { Processo = id }, uri);
+        if (proobservacoesExists28 != null && proobservacoesExists28.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Observacoes associados a ele.";
-        var propartesExists = await propartesService.Filter(new Filters.FilterProPartes { Processo = id }, uri);
-        if (propartesExists != null && propartesExists.Any())
+        var propartesExists29 = await propartesService.Filter(new Filters.FilterProPartes { Processo = id }, uri);
+        if (propartesExists29 != null && propartesExists29.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Partes associados a ele.";
-        var proprocuradoresExists = await proprocuradoresService.Filter(new Filters.FilterProProcuradores { Processo = id }, uri);
-        if (proprocuradoresExists != null && proprocuradoresExists.Any())
+        var proprocuradoresExists30 = await proprocuradoresService.Filter(new Filters.FilterProProcuradores { Processo = id }, uri);
+        if (proprocuradoresExists30 != null && proprocuradoresExists30.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Procuradores associados a ele.";
-        var proresumosExists = await proresumosService.Filter(new Filters.FilterProResumos { Processo = id }, uri);
-        if (proresumosExists != null && proresumosExists.Any())
+        var proresumosExists31 = await proresumosService.Filter(new Filters.FilterProResumos { Processo = id }, uri);
+        if (proresumosExists31 != null && proresumosExists31.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Resumos associados a ele.";
-        var prosucumbenciaExists = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { Processo = id }, uri);
-        if (prosucumbenciaExists != null && prosucumbenciaExists.Any())
+        var prosucumbenciaExists32 = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { Processo = id }, uri);
+        if (prosucumbenciaExists32 != null && prosucumbenciaExists32.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.";
-        var provaloresExists = await provaloresService.Filter(new Filters.FilterProValores { Processo = id }, uri);
-        if (provaloresExists != null && provaloresExists.Any())
+        var provaloresExists33 = await provaloresService.Filter(new Filters.FilterProValores { Processo = id }, uri);
+        if (provaloresExists33 != null && provaloresExists33.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Valores associados a ele.";
-        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Processo = id }, uri);
-        if (recadosExists != null && recadosExists.Any())
+        var recadosExists34 = await recadosService.Filter(new Filters.FilterRecados { Processo = id }, uri);
+        if (recadosExists34 != null && recadosExists34.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
-        var terceirosExists = await terceirosService.Filter(new Filters.FilterTerceiros { Processo = id }, uri);
-        if (terceirosExists != null && terceirosExists.Any())
+        var terceirosExists35 = await terceirosService.Filter(new Filters.FilterTerceiros { Processo = id }, uri);
+        if (terceirosExists35 != null && terceirosExists35.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Terceiros associados a ele.";
-        var ultimosprocessosExists = await ultimosprocessosService.Filter(new Filters.FilterUltimosProcessos { Processo = id }, uri);
-        if (ultimosprocessosExists != null && ultimosprocessosExists.Any())
+        var ultimosprocessosExists36 = await ultimosprocessosService.Filter(new Filters.FilterUltimosProcessos { Processo = id }, uri);
+        if (ultimosprocessosExists36 != null && ultimosprocessosExists36.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Ultimos Processos associados a ele.";
         return string.Empty;
     }

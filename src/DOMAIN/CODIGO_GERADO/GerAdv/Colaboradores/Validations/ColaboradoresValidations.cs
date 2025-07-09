@@ -18,8 +18,8 @@ public class ColaboradoresValidation : IColaboradoresValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendarecordsExists = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Colaborador = id }, uri);
-        if (agendarecordsExists != null && agendarecordsExists.Any())
+        var agendarecordsExists0 = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Colaborador = id }, uri);
+        if (agendarecordsExists0 != null && agendarecordsExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Records associados a ele.";
         return string.Empty;
     }

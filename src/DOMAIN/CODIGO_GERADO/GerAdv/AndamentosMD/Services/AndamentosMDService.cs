@@ -146,7 +146,7 @@ public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IAnd
             }
 
             var saved = writer.Write(regAndamentosMD, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

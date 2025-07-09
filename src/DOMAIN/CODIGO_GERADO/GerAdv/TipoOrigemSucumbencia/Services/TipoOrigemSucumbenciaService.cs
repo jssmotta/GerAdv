@@ -142,7 +142,7 @@ public partial class TipoOrigemSucumbenciaService(IOptions<AppSettings> appSetti
             }
 
             var saved = writer.Write(regTipoOrigemSucumbencia, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

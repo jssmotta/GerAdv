@@ -52,8 +52,7 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
     builder.Services.AddHttpContextAccessor();
-    builder.Services.AddScoped<IUserService, UserService>();
-    builder.Services.AddSingleton<IWCfgService, WCfgService>();
+    builder.Services.AddScoped<IUserService, UserService>();    
 
     //builder.Services.AddSingleton<MenphisSI.DB.ITokenService, TokenService>();
 
@@ -86,7 +85,10 @@ try
         options.DefaultApiVersion = new ApiVersion(1, 0);
     });
 
+    builder.Services.AddAuthorization();
+    builder.Services.AddMemoryCache();
     builder.Services.AddHybridCache();
+
 
     builder.WebHost.ConfigureKestrel(options =>
     {
@@ -116,14 +118,29 @@ try
     //        });
     //});
 
+    string[] corsSites = builder.Configuration.GetSection("AppSettings:CORS:AllowedOrigins").Get<string[]>() ?? [];
+
+#if (DEBUG)
+    var listCors = new List<string>() { "http://localhost:3000" };   
+#else
+    var listCors = new List<string>();
+#endif
+
+    listCors.AddRange(corsSites);
+
+    if (System.Diagnostics.Debugger.IsAttached)
+    {
+        listCors.Add("http://localhost:3000");
+    }
+
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowAllOrigins",
+        options.AddPolicy("AllowSpecificOrigins",
             builder =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
+                builder.WithOrigins([.. listCors])
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
             });
     });
 
@@ -186,20 +203,20 @@ try
 
     var app = builder.Build();
 
-    EndpointRegistration.AddApiServices(app);
+    //EndpointRegistration.AddApiServices(app);
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.MapOpenApi();
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
-            c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-            c.DefaultModelsExpandDepth(-1);
-        });
-    }
+    //if (app.Environment.IsDevelopment())
+    //{
+    //    app.MapOpenApi();
+    //    app.UseSwagger();
+    //    app.UseSwaggerUI(c =>
+    //    {
+    //        c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
+    //        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    //        c.DefaultModelsExpandDepth(-1);
+    //    });
+    //}
     //else
     //{
     //    app.UseSwagger();

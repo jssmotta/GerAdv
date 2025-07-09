@@ -18,8 +18,8 @@ public class AcaoValidation : IAcaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var instanciaExists = await instanciaService.Filter(new Filters.FilterInstancia { Acao = id }, uri);
-        if (instanciaExists != null && instanciaExists.Any())
+        var instanciaExists0 = await instanciaService.Filter(new Filters.FilterInstancia { Acao = id }, uri);
+        if (instanciaExists0 != null && instanciaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.";
         return string.Empty;
     }

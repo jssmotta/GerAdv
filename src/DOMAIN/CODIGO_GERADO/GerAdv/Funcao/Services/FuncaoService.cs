@@ -145,7 +145,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFuncaoRea
             }
 
             var saved = writer.Write(regFuncao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

@@ -18,8 +18,8 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var prosucumbenciaExists = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id }, uri);
-        if (prosucumbenciaExists != null && prosucumbenciaExists.Any())
+        var prosucumbenciaExists0 = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id }, uri);
+        if (prosucumbenciaExists0 != null && prosucumbenciaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.";
         return string.Empty;
     }

@@ -18,8 +18,8 @@ public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var gutatividadesExists = await gutatividadesService.Filter(new Filters.FilterGUTAtividades { GUTPeriodicidade = id }, uri);
-        if (gutatividadesExists != null && gutatividadesExists.Any())
+        var gutatividadesExists0 = await gutatividadesService.Filter(new Filters.FilterGUTAtividades { GUTPeriodicidade = id }, uri);
+        if (gutatividadesExists0 != null && gutatividadesExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela G U T Atividades associados a ele.";
         return string.Empty;
     }

@@ -18,8 +18,8 @@ public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var modelosdocumentosExists = await modelosdocumentosService.Filter(new Filters.FilterModelosDocumentos { TipoModeloDocumento = id }, uri);
-        if (modelosdocumentosExists != null && modelosdocumentosExists.Any())
+        var modelosdocumentosExists0 = await modelosdocumentosService.Filter(new Filters.FilterModelosDocumentos { TipoModeloDocumento = id }, uri);
+        if (modelosdocumentosExists0 != null && modelosdocumentosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Modelos Documentos associados a ele.";
         return string.Empty;
     }

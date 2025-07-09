@@ -145,7 +145,7 @@ public partial class ServicosService(IOptions<AppSettings> appSettings, IServico
             }
 
             var saved = writer.Write(regServicos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

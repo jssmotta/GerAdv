@@ -146,7 +146,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
             }
 
             var saved = writer.Write(regOperadorGruposAgenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

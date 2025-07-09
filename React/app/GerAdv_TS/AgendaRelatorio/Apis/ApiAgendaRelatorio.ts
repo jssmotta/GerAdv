@@ -33,7 +33,7 @@ export class AgendaRelatorioApi {
     private notificationService: INotificationService;
     private uri: string;
 
-    constructor(uri: string, authorization: string, version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? '2')) {
+    constructor(uri: string, authorization: string, version: number = parseInt(process.env.NEXT_PUBLIC_URL_VERSION_API ?? '1')) {
         this.authorization = authorization;
         this.baseUrl = `${process.env.NEXT_PUBLIC_URL_API_BASE}${version}/${uri}/AgendaRelatorio`;
         this.notificationService = new NotificationService();

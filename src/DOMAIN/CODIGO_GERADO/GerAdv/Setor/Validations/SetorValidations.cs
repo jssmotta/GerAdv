@@ -18,8 +18,8 @@ public class SetorValidation : ISetorValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var prepostosExists = await prepostosService.Filter(new Filters.FilterPrepostos { Setor = id }, uri);
-        if (prepostosExists != null && prepostosExists.Any())
+        var prepostosExists0 = await prepostosService.Filter(new Filters.FilterPrepostos { Setor = id }, uri);
+        if (prepostosExists0 != null && prepostosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.";
         return string.Empty;
     }

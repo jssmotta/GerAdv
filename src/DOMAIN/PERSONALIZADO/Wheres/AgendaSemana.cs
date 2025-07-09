@@ -3,7 +3,7 @@
 namespace MenphisSI.GerAdv.Wheres;
 public static partial class AgendaSemana
 {
-    public static List<AgendaSemanaResponse> ReadList(string where, SqlConnection oCnn)
+    public static List<AgendaSemanaResponse> ReadList(string where, MsiSqlConnection oCnn)
     {
         var dbList = ListaAgendaSemana(sqlWhere: where, oCnn: oCnn);
         var result = new List<AgendaSemanaResponse>();
@@ -30,7 +30,7 @@ public static partial class AgendaSemana
         return result;
     }
 
-    private static List<DBAgendaSemana> ListaAgendaSemana(string sqlWhere, SqlConnection oCnn)
+    private static List<DBAgendaSemana> ListaAgendaSemana(string sqlWhere, MsiSqlConnection oCnn)
     {
         var result = new List<DBAgendaSemana>();
 

@@ -146,7 +146,7 @@ public partial class ApensoService(IOptions<AppSettings> appSettings, IApensoRea
             }
 
             var saved = writer.Write(regApenso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 
@@ -279,7 +279,7 @@ public partial class ApensoService(IOptions<AppSettings> appSettings, IApensoRea
 
         if (!string.IsNullOrEmpty(filtro.ApensoX))
         {
-            parameters.Add(new($"@{nameof(DBApensoDicInfo.ApensoX)}", filtro.ApensoX));
+            parameters.Add(new($"@{nameof(DBApensoDicInfo.Apenso)}", filtro.ApensoX));
         }
 
         if (!string.IsNullOrEmpty(filtro.Acao))
@@ -293,7 +293,7 @@ public partial class ApensoService(IOptions<AppSettings> appSettings, IApensoRea
         }
 
         var cWhere = filtro.Processo == int.MinValue ? string.Empty : $"{DBApensoDicInfo.Processo} = @{nameof(DBApensoDicInfo.Processo)}";
-        cWhere += filtro.ApensoX.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBApensoDicInfo.ApensoX} = @{nameof(DBApensoDicInfo.ApensoX)}";
+        cWhere += filtro.ApensoX.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBApensoDicInfo.Apenso} = @{nameof(DBApensoDicInfo.Apenso)}";
         cWhere += filtro.Acao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBApensoDicInfo.Acao} = @{nameof(DBApensoDicInfo.Acao)}";
         cWhere += filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBApensoDicInfo.OBS} = @{nameof(DBApensoDicInfo.OBS)}";
         return (cWhere, parameters);

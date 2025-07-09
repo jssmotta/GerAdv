@@ -145,7 +145,7 @@ public partial class EventoPrazoAgendaService(IOptions<AppSettings> appSettings,
             }
 
             var saved = writer.Write(regEventoPrazoAgenda, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

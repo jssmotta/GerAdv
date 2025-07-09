@@ -145,7 +145,7 @@ public partial class TipoEnderecoService(IOptions<AppSettings> appSettings, ITip
             }
 
             var saved = writer.Write(regTipoEndereco, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

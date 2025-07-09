@@ -423,7 +423,4 @@ public partial class OperadorAll
     /// </summary>
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = "";
-
-    [JsonPropertyName("nomestatusbiu")]
-    public string NomeStatusBiu { get; set; } = string.Empty;
 }

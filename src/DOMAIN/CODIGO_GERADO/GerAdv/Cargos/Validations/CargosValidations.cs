@@ -18,14 +18,14 @@ public class CargosValidation : ICargosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var advogadosExists = await advogadosService.Filter(new Filters.FilterAdvogados { Cargo = id }, uri);
-        if (advogadosExists != null && advogadosExists.Any())
+        var advogadosExists0 = await advogadosService.Filter(new Filters.FilterAdvogados { Cargo = id }, uri);
+        if (advogadosExists0 != null && advogadosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.";
-        var colaboradoresExists = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cargo = id }, uri);
-        if (colaboradoresExists != null && colaboradoresExists.Any())
+        var colaboradoresExists1 = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cargo = id }, uri);
+        if (colaboradoresExists1 != null && colaboradoresExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.";
-        var funcionariosExists = await funcionariosService.Filter(new Filters.FilterFuncionarios { Cargo = id }, uri);
-        if (funcionariosExists != null && funcionariosExists.Any())
+        var funcionariosExists2 = await funcionariosService.Filter(new Filters.FilterFuncionarios { Cargo = id }, uri);
+        if (funcionariosExists2 != null && funcionariosExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.";
         return string.Empty;
     }

@@ -18,8 +18,8 @@ public class RamalValidation : IRamalValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var ligacoesExists = await ligacoesService.Filter(new Filters.FilterLigacoes { Ramal = id }, uri);
-        if (ligacoesExists != null && ligacoesExists.Any())
+        var ligacoesExists0 = await ligacoesService.Filter(new Filters.FilterLigacoes { Ramal = id }, uri);
+        if (ligacoesExists0 != null && ligacoesExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.";
         return string.Empty;
     }

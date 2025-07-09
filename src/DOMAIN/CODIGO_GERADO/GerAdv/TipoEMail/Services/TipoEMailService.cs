@@ -142,7 +142,7 @@ public partial class TipoEMailService(IOptions<AppSettings> appSettings, ITipoEM
             }
 
             var saved = writer.Write(regTipoEMail, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

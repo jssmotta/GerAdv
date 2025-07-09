@@ -18,8 +18,8 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var clientesExists = await clientesService.Filter(new Filters.FilterClientes { EnquadramentoEmpresa = id }, uri);
-        if (clientesExists != null && clientesExists.Any())
+        var clientesExists0 = await clientesService.Filter(new Filters.FilterClientes { EnquadramentoEmpresa = id }, uri);
+        if (clientesExists0 != null && clientesExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Clientes associados a ele.";
         return string.Empty;
     }

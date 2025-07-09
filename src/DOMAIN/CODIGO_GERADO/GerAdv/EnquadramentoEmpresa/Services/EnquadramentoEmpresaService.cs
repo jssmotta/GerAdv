@@ -145,7 +145,7 @@ public partial class EnquadramentoEmpresaService(IOptions<AppSettings> appSettin
             }
 
             var saved = writer.Write(regEnquadramentoEmpresa, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

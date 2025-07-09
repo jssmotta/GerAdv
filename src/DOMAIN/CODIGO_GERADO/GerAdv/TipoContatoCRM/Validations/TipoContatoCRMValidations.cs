@@ -18,8 +18,8 @@ public class TipoContatoCRMValidation : ITipoContatoCRMValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var contatocrmExists = await contatocrmService.Filter(new Filters.FilterContatoCRM { TipoContatoCRM = id }, uri);
-        if (contatocrmExists != null && contatocrmExists.Any())
+        var contatocrmExists0 = await contatocrmService.Filter(new Filters.FilterContatoCRM { TipoContatoCRM = id }, uri);
+        if (contatocrmExists0 != null && contatocrmExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contato C R M associados a ele.";
         return string.Empty;
     }

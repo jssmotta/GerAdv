@@ -18,35 +18,35 @@ public class AdvogadosValidation : IAdvogadosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Advogado = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Advogado = id }, uri);
+        if (agendaExists0 != null && agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Advogado = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Advogado = id }, uri);
+        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var agendaquemExists = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Advogado = id }, uri);
-        if (agendaquemExists != null && agendaquemExists.Any())
+        var agendaquemExists2 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Advogado = id }, uri);
+        if (agendaquemExists2 != null && agendaquemExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.";
-        var agendarepetirExists = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Advogado = id }, uri);
-        if (agendarepetirExists != null && agendarepetirExists.Any())
+        var agendarepetirExists3 = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Advogado = id }, uri);
+        if (agendarepetirExists3 != null && agendarepetirExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Repetir associados a ele.";
-        var contratosExists = await contratosService.Filter(new Filters.FilterContratos { Advogado = id }, uri);
-        if (contratosExists != null && contratosExists.Any())
+        var contratosExists4 = await contratosService.Filter(new Filters.FilterContratos { Advogado = id }, uri);
+        if (contratosExists4 != null && contratosExists4.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.";
-        var horastrabExists = await horastrabService.Filter(new Filters.FilterHorasTrab { Advogado = id }, uri);
-        if (horastrabExists != null && horastrabExists.Any())
+        var horastrabExists5 = await horastrabService.Filter(new Filters.FilterHorasTrab { Advogado = id }, uri);
+        if (horastrabExists5 != null && horastrabExists5.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.";
-        var parceriaprocExists = await parceriaprocService.Filter(new Filters.FilterParceriaProc { Advogado = id }, uri);
-        if (parceriaprocExists != null && parceriaprocExists.Any())
+        var parceriaprocExists6 = await parceriaprocService.Filter(new Filters.FilterParceriaProc { Advogado = id }, uri);
+        if (parceriaprocExists6 != null && parceriaprocExists6.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Parceria Proc associados a ele.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { AdvOpo = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists7 = await processosService.Filter(new Filters.FilterProcessos { AdvOpo = id }, uri);
+        if (processosExists7 != null && processosExists7.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Advogado = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists8 = await processosService.Filter(new Filters.FilterProcessos { Advogado = id }, uri);
+        if (processosExists8 != null && processosExists8.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
-        var proprocuradoresExists = await proprocuradoresService.Filter(new Filters.FilterProProcuradores { Advogado = id }, uri);
-        if (proprocuradoresExists != null && proprocuradoresExists.Any())
+        var proprocuradoresExists9 = await proprocuradoresService.Filter(new Filters.FilterProProcuradores { Advogado = id }, uri);
+        if (proprocuradoresExists9 != null && proprocuradoresExists9.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Procuradores associados a ele.";
         return string.Empty;
     }

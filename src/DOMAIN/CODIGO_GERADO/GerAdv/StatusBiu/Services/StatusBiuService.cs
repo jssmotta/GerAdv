@@ -144,7 +144,7 @@ LEFT JOIN {"Operador".dbo(oCnn)} (NOLOCK) ON [Operador].[operCodigo]=[StatusBiu]
             }
 
             var saved = writer.Write(regStatusBiu, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

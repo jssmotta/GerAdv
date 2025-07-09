@@ -147,7 +147,7 @@ LEFT JOIN {"Area".dbo(oCnn)} (NOLOCK) ON [Area].[areCodigo]=[TipoRecurso].[trcAr
             }
 
             var saved = writer.Write(regTipoRecurso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

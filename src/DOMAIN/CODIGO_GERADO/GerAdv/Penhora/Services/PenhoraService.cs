@@ -147,7 +147,7 @@ LEFT JOIN {"PenhoraStatus".dbo(oCnn)} (NOLOCK) ON [PenhoraStatus].[phsCodigo]=[P
             }
 
             var saved = writer.Write(regPenhora, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

@@ -18,17 +18,17 @@ public class PrepostosValidation : IPrepostosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Preposto = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Preposto = id }, uri);
+        if (agendaExists0 != null && agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Preposto = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Preposto = id }, uri);
+        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var agendaquemExists = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Preposto = id }, uri);
-        if (agendaquemExists != null && agendaquemExists.Any())
+        var agendaquemExists2 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Preposto = id }, uri);
+        if (agendaquemExists2 != null && agendaquemExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Preposto = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists3 = await processosService.Filter(new Filters.FilterProcessos { Preposto = id }, uri);
+        if (processosExists3 != null && processosExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
         return string.Empty;
     }

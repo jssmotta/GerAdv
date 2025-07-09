@@ -146,7 +146,7 @@ public partial class FornecedoresService(IOptions<AppSettings> appSettings, IFor
             }
 
             var saved = writer.Write(regFornecedores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

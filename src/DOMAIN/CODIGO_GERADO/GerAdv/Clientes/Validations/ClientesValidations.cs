@@ -18,74 +18,74 @@ public class ClientesValidation : IClientesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agendaExists = await agendaService.Filter(new Filters.FilterAgenda { Cliente = id }, uri);
-        if (agendaExists != null && agendaExists.Any())
+        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Cliente = id }, uri);
+        if (agendaExists0 != null && agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda associados a ele.";
-        var agendafinanceiroExists = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Cliente = id }, uri);
-        if (agendafinanceiroExists != null && agendafinanceiroExists.Any())
+        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Cliente = id }, uri);
+        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.";
-        var agendarepetirExists = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Cliente = id }, uri);
-        if (agendarepetirExists != null && agendarepetirExists.Any())
+        var agendarepetirExists2 = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Cliente = id }, uri);
+        if (agendarepetirExists2 != null && agendarepetirExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Repetir associados a ele.";
-        var anexamentoregistrosExists = await anexamentoregistrosService.Filter(new Filters.FilterAnexamentoRegistros { Cliente = id }, uri);
-        if (anexamentoregistrosExists != null && anexamentoregistrosExists.Any())
+        var anexamentoregistrosExists3 = await anexamentoregistrosService.Filter(new Filters.FilterAnexamentoRegistros { Cliente = id }, uri);
+        if (anexamentoregistrosExists3 != null && anexamentoregistrosExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Anexamento Registros associados a ele.";
-        var clientessociosExists = await clientessociosService.Filter(new Filters.FilterClientesSocios { Cliente = id }, uri);
-        if (clientessociosExists != null && clientessociosExists.Any())
+        var clientessociosExists4 = await clientessociosService.Filter(new Filters.FilterClientesSocios { Cliente = id }, uri);
+        if (clientessociosExists4 != null && clientessociosExists4.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Clientes Socios associados a ele.";
-        var colaboradoresExists = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cliente = id }, uri);
-        if (colaboradoresExists != null && colaboradoresExists.Any())
+        var colaboradoresExists5 = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cliente = id }, uri);
+        if (colaboradoresExists5 != null && colaboradoresExists5.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.";
-        var contacorrenteExists = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Cliente = id }, uri);
-        if (contacorrenteExists != null && contacorrenteExists.Any())
+        var contacorrenteExists6 = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Cliente = id }, uri);
+        if (contacorrenteExists6 != null && contacorrenteExists6.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Conta Corrente associados a ele.";
-        var contatocrmExists = await contatocrmService.Filter(new Filters.FilterContatoCRM { Cliente = id }, uri);
-        if (contatocrmExists != null && contatocrmExists.Any())
+        var contatocrmExists7 = await contatocrmService.Filter(new Filters.FilterContatoCRM { Cliente = id }, uri);
+        if (contatocrmExists7 != null && contatocrmExists7.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contato C R M associados a ele.";
-        var contratosExists = await contratosService.Filter(new Filters.FilterContratos { Cliente = id }, uri);
-        if (contratosExists != null && contratosExists.Any())
+        var contratosExists8 = await contratosService.Filter(new Filters.FilterContratos { Cliente = id }, uri);
+        if (contratosExists8 != null && contratosExists8.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.";
-        var dadosprocuracaoExists = await dadosprocuracaoService.Filter(new Filters.FilterDadosProcuracao { Cliente = id }, uri);
-        if (dadosprocuracaoExists != null && dadosprocuracaoExists.Any())
+        var dadosprocuracaoExists9 = await dadosprocuracaoService.Filter(new Filters.FilterDadosProcuracao { Cliente = id }, uri);
+        if (dadosprocuracaoExists9 != null && dadosprocuracaoExists9.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Dados Procuracao associados a ele.";
-        var diario2Exists = await diario2Service.Filter(new Filters.FilterDiario2 { Cliente = id }, uri);
-        if (diario2Exists != null && diario2Exists.Any())
+        var diario2Exists10 = await diario2Service.Filter(new Filters.FilterDiario2 { Cliente = id }, uri);
+        if (diario2Exists10 != null && diario2Exists10.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Diario2 associados a ele.";
-        var gruposempresasExists = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Cliente = id }, uri);
-        if (gruposempresasExists != null && gruposempresasExists.Any())
+        var gruposempresasExists11 = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Cliente = id }, uri);
+        if (gruposempresasExists11 != null && gruposempresasExists11.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.";
-        var gruposempresascliExists = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Cliente = id }, uri);
-        if (gruposempresascliExists != null && gruposempresascliExists.Any())
+        var gruposempresascliExists12 = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Cliente = id }, uri);
+        if (gruposempresascliExists12 != null && gruposempresascliExists12.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas Cli associados a ele.";
-        var honorariosdadoscontratoExists = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Cliente = id }, uri);
-        if (honorariosdadoscontratoExists != null && honorariosdadoscontratoExists.Any())
+        var honorariosdadoscontratoExists13 = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Cliente = id }, uri);
+        if (honorariosdadoscontratoExists13 != null && honorariosdadoscontratoExists13.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Honorarios Dados Contrato associados a ele.";
-        var horastrabExists = await horastrabService.Filter(new Filters.FilterHorasTrab { Cliente = id }, uri);
-        if (horastrabExists != null && horastrabExists.Any())
+        var horastrabExists14 = await horastrabService.Filter(new Filters.FilterHorasTrab { Cliente = id }, uri);
+        if (horastrabExists14 != null && horastrabExists14.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.";
-        var ligacoesExists = await ligacoesService.Filter(new Filters.FilterLigacoes { Cliente = id }, uri);
-        if (ligacoesExists != null && ligacoesExists.Any())
+        var ligacoesExists15 = await ligacoesService.Filter(new Filters.FilterLigacoes { Cliente = id }, uri);
+        if (ligacoesExists15 != null && ligacoesExists15.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.";
-        var livrocaixaclientesExists = await livrocaixaclientesService.Filter(new Filters.FilterLivroCaixaClientes { Cliente = id }, uri);
-        if (livrocaixaclientesExists != null && livrocaixaclientesExists.Any())
+        var livrocaixaclientesExists16 = await livrocaixaclientesService.Filter(new Filters.FilterLivroCaixaClientes { Cliente = id }, uri);
+        if (livrocaixaclientesExists16 != null && livrocaixaclientesExists16.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Livro Caixa Clientes associados a ele.";
-        var operadoresExists = await operadoresService.Filter(new Filters.FilterOperadores { Cliente = id }, uri);
-        if (operadoresExists != null && operadoresExists.Any())
+        var operadoresExists17 = await operadoresService.Filter(new Filters.FilterOperadores { Cliente = id }, uri);
+        if (operadoresExists17 != null && operadoresExists17.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Operadores associados a ele.";
-        var preclientesExists = await preclientesService.Filter(new Filters.FilterPreClientes { IDRep = id }, uri);
-        if (preclientesExists != null && preclientesExists.Any())
+        var preclientesExists18 = await preclientesService.Filter(new Filters.FilterPreClientes { IDRep = id }, uri);
+        if (preclientesExists18 != null && preclientesExists18.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pre Clientes associados a ele.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Cliente = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists19 = await processosService.Filter(new Filters.FilterProcessos { Cliente = id }, uri);
+        if (processosExists19 != null && processosExists19.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
-        var prodespesasExists = await prodespesasService.Filter(new Filters.FilterProDespesas { Cliente = id }, uri);
-        if (prodespesasExists != null && prodespesasExists.Any())
+        var prodespesasExists20 = await prodespesasService.Filter(new Filters.FilterProDespesas { Cliente = id }, uri);
+        if (prodespesasExists20 != null && prodespesasExists20.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Despesas associados a ele.";
-        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Cliente = id }, uri);
-        if (recadosExists != null && recadosExists.Any())
+        var recadosExists21 = await recadosService.Filter(new Filters.FilterRecados { Cliente = id }, uri);
+        if (recadosExists21 != null && recadosExists21.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
-        var reuniaoExists = await reuniaoService.Filter(new Filters.FilterReuniao { Cliente = id }, uri);
-        if (reuniaoExists != null && reuniaoExists.Any())
+        var reuniaoExists22 = await reuniaoService.Filter(new Filters.FilterReuniao { Cliente = id }, uri);
+        if (reuniaoExists22 != null && reuniaoExists22.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Reuniao associados a ele.";
         return string.Empty;
     }

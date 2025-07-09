@@ -146,7 +146,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, ILivro
             }
 
             var saved = writer.Write(regLivroCaixa, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

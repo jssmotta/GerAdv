@@ -145,7 +145,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IAreaReader 
             }
 
             var saved = writer.Write(regArea, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

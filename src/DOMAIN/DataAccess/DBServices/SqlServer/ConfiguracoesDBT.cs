@@ -91,8 +91,29 @@ public class ConfiguracoesDBT
         return resultTable;
     }
 
-   
-   
+    public static DataTable? GetDataTable2(string cSql, SqlConnection? oCnn)
+    {
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var resultTable = new DataTable(command.CommandText);
+
+        try
+        {
+            var source = new TaskCompletionSource<DataTable>();
+            using var dataReader = command.ExecuteReader(CommandBehavior.Default);
+            resultTable.Load(dataReader);
+            source.SetResult(resultTable);
+        }
+
+        catch (Exception ex)
+        {
+            return ex.Message.ContemUpper("SHADOWS")
+                ? new()
+                : throw new Exception($"Get Data Table: {ex.Message}.<br />{cSql}");
+        }
+
+        return resultTable;
+    }
+
     public static DataTable? GetDataTable2(string cSql, MsiSqlConnection? oCnn)
     {
         using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);

@@ -18,8 +18,8 @@ public class PenhoraStatusValidation : IPenhoraStatusValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var penhoraExists = await penhoraService.Filter(new Filters.FilterPenhora { PenhoraStatus = id }, uri);
-        if (penhoraExists != null && penhoraExists.Any())
+        var penhoraExists0 = await penhoraService.Filter(new Filters.FilterPenhora { PenhoraStatus = id }, uri);
+        if (penhoraExists0 != null && penhoraExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Penhora associados a ele.";
         return string.Empty;
     }

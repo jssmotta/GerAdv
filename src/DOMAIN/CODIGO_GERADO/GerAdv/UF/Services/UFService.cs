@@ -146,7 +146,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IUFReader read
             }
 
             var saved = writer.Write(regUF, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

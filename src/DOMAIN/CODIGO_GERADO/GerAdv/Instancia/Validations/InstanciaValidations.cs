@@ -18,14 +18,14 @@ public class InstanciaValidation : IInstanciaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var nenotasExists = await nenotasService.Filter(new Filters.FilterNENotas { Instancia = id }, uri);
-        if (nenotasExists != null && nenotasExists.Any())
+        var nenotasExists0 = await nenotasService.Filter(new Filters.FilterNENotas { Instancia = id }, uri);
+        if (nenotasExists0 != null && nenotasExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.";
-        var prosucumbenciaExists = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { Instancia = id }, uri);
-        if (prosucumbenciaExists != null && prosucumbenciaExists.Any())
+        var prosucumbenciaExists1 = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { Instancia = id }, uri);
+        if (prosucumbenciaExists1 != null && prosucumbenciaExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.";
-        var tribunalExists = await tribunalService.Filter(new Filters.FilterTribunal { Instancia = id }, uri);
-        if (tribunalExists != null && tribunalExists.Any())
+        var tribunalExists2 = await tribunalService.Filter(new Filters.FilterTribunal { Instancia = id }, uri);
+        if (tribunalExists2 != null && tribunalExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.";
         return string.Empty;
     }

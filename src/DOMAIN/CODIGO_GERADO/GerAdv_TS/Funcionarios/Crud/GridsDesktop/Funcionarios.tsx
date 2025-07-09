@@ -176,6 +176,8 @@ const gridColumns = useMemo(() => [
   />, 
   <GridColumn field='nomecargos' title='Cargo' sortable={false} filterable={false} />, /* Track G.01 */
 
+  <GridColumn field='descricaofuncao' title='Função' sortable={false} filterable={false} />, /* Track G.01 */
+
   <GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} />, /* Track G.01 */
   <GridColumn
   field='id'

@@ -145,7 +145,7 @@ public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IT
             }
 
             var saved = writer.Write(regTipoContatoCRM, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

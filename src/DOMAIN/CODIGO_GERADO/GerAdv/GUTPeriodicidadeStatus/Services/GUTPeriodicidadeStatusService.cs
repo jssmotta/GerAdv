@@ -146,7 +146,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
             }
 
             var saved = writer.Write(regGUTPeriodicidadeStatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

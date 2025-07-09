@@ -18,14 +18,14 @@ public class ContatoCRMValidation : IContatoCRMValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var contatocrmoperadorExists = await contatocrmoperadorService.Filter(new Filters.FilterContatoCRMOperador { ContatoCRM = id }, uri);
-        if (contatocrmoperadorExists != null && contatocrmoperadorExists.Any())
+        var contatocrmoperadorExists0 = await contatocrmoperadorService.Filter(new Filters.FilterContatoCRMOperador { ContatoCRM = id }, uri);
+        if (contatocrmoperadorExists0 != null && contatocrmoperadorExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Contato C R M Operador associados a ele.";
-        var docsrecebidositensExists = await docsrecebidositensService.Filter(new Filters.FilterDocsRecebidosItens { ContatoCRM = id }, uri);
-        if (docsrecebidositensExists != null && docsrecebidositensExists.Any())
+        var docsrecebidositensExists1 = await docsrecebidositensService.Filter(new Filters.FilterDocsRecebidosItens { ContatoCRM = id }, uri);
+        if (docsrecebidositensExists1 != null && docsrecebidositensExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Docs Recebidos Itens associados a ele.";
-        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { ContatoCRM = id }, uri);
-        if (recadosExists != null && recadosExists.Any())
+        var recadosExists2 = await recadosService.Filter(new Filters.FilterRecados { ContatoCRM = id }, uri);
+        if (recadosExists2 != null && recadosExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
         return string.Empty;
     }

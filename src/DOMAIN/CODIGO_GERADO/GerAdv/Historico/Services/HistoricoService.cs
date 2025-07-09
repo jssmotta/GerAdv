@@ -150,7 +150,7 @@ LEFT JOIN {"StatusAndamento".dbo(oCnn)} (NOLOCK) ON [StatusAndamento].[sanCodigo
             }
 
             var saved = writer.Write(regHistorico, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

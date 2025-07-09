@@ -146,7 +146,7 @@ public partial class DocsRecebidosItensService(IOptions<AppSettings> appSettings
             }
 
             var saved = writer.Write(regDocsRecebidosItens, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

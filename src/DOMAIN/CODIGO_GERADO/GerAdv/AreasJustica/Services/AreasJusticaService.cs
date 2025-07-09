@@ -144,7 +144,7 @@ LEFT JOIN {"Justica".dbo(oCnn)} (NOLOCK) ON [Justica].[jusCodigo]=[AreasJustica]
             }
 
             var saved = writer.Write(regAreasJustica, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

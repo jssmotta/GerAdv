@@ -145,7 +145,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IGraphReade
             }
 
             var saved = writer.Write(regGraph, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

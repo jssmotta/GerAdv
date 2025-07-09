@@ -145,7 +145,7 @@ public partial class PosicaoOutrasPartesService(IOptions<AppSettings> appSetting
             }
 
             var saved = writer.Write(regPosicaoOutrasPartes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

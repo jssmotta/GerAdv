@@ -145,7 +145,7 @@ public partial class RamalService(IOptions<AppSettings> appSettings, IRamalReade
             }
 
             var saved = writer.Write(regRamal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

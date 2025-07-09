@@ -150,7 +150,7 @@ LEFT JOIN {"Tribunal".dbo(oCnn)} (NOLOCK) ON [Tribunal].[triCodigo]=[DivisaoTrib
             }
 
             var saved = writer.Write(regDivisaoTribunal, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

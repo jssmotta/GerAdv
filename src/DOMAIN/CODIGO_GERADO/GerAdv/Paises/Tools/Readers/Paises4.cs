@@ -6,26 +6,55 @@ namespace MenphisSI.GerAdv.Readers;
 public partial interface IPaisesReader
 {
     PaisesResponse? Read(int id, MsiSqlConnection oCnn);
+    PaisesResponse? Read(Entity.DBPaises dbRec, MsiSqlConnection oCnn);
     PaisesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PaisesResponse? Read(Entity.DBPaises dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection oCnn);
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PaisesResponse? Read(DBPaises dbRec);
     PaisesResponseAll? ReadAll(DBPaises dbRec, DataRow dr);
+    PaisesResponseAll? ReadAll(DBPaises dbRec, SqlDataReader dr);
     IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
+    IEnumerable<PaisesResponseAll> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
 }
 
 public partial class Paises : IPaisesReader
 {
-    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery(cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    static string BuildSqlQuery(string whereClause, string orderClause, int max, MsiSqlConnection? oCnn = null)
+    public IEnumerable<DBNomeID> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => DevourerSqlData.ListarNomeID(BuildSqlQuery("{paiCodigo, paiNome}", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    public IEnumerable<PaisesResponseAll> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => ListarTabela(BuildSqlQuery("*", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    private IEnumerable<PaisesResponseAll> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200)
+    {
+        using var oCnn = new MsiSqlConnection(uri);
+        return ReadLocalAsync().Result;
+        async Task<List<PaisesResponseAll>> ReadLocalAsync()
+        {
+            var result = new List<PaisesResponseAll>(max);
+            await using var connection = Configuracoes.GetConnectionByUri(uri);
+            await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
+            {
+                CommandTimeout = 0
+            };
+            cmd.Parameters.AddRange([..parameters]);
+            await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult).ConfigureAwait(false);
+            while (await reader.ReadAsync().ConfigureAwait(false))
+            {
+                if (await reader.IsDBNullAsync(1).ConfigureAwait(false))
+                    continue;
+                result.Add(ReadAll(new Entity.DBPaises(reader), reader)!);
+            }
+
+            return result;
+        }
+    }
+
+    static string BuildSqlQuery(string campos, string whereClause, string orderClause, int max, MsiSqlConnection? oCnn = null)
     {
         if (max <= 0)
         {
             max = 200;
         }
 
-        var query = new StringBuilder($"SELECT TOP ({max}) paiCodigo, paiNome FROM {"Paises".dbo(oCnn)} (NOLOCK) ");
+        var query = new StringBuilder($"SELECT TOP ({max}) {campos}  FROM {"Paises".dbo(oCnn)} (NOLOCK) ");
         if (!string.IsNullOrEmpty(whereClause))
         {
             query.Append(!whereClause.ToUpperInvariant().Contains(TSql.Where, StringComparison.OrdinalIgnoreCase) ? TSql.Where : string.Empty).Append(whereClause);
@@ -47,6 +76,11 @@ public partial class Paises : IPaisesReader
     {
         using var dbRec = new Entity.DBPaises(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
+    }
+
+    public PaisesResponse? Read(Entity.DBPaises dbRec, MsiSqlConnection oCnn)
+    {
+        return Read(dbRec);
     }
 
     public PaisesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
@@ -88,6 +122,22 @@ public partial class Paises : IPaisesReader
     }
 
     public PaisesResponseAll? ReadAll(DBPaises dbRec, DataRow dr)
+    {
+        if (dbRec == null)
+        {
+            return null;
+        }
+
+        var paises = new PaisesResponseAll
+        {
+            Id = dbRec.ID,
+            Nome = dbRec.FNome ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
+        };
+        return paises;
+    }
+
+    public PaisesResponseAll? ReadAll(DBPaises dbRec, SqlDataReader dr)
     {
         if (dbRec == null)
         {

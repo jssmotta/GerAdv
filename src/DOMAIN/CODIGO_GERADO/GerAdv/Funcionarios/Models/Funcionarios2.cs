@@ -427,6 +427,9 @@ public partial class FuncionariosAll
     [JsonPropertyName("nomecargos")]
     public string NomeCargos { get; set; } = string.Empty;
 
+    [JsonPropertyName("descricaofuncao")]
+    public string DescricaoFuncao { get; set; } = string.Empty;
+
     [JsonPropertyName("nomecidade")]
     public string NomeCidade { get; set; } = string.Empty;
 }

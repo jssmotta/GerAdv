@@ -146,7 +146,7 @@ public partial class PrecatoriaService(IOptions<AppSettings> appSettings, IPreca
             }
 
             var saved = writer.Write(regPrecatoria, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 
@@ -279,7 +279,7 @@ public partial class PrecatoriaService(IOptions<AppSettings> appSettings, IPreca
 
         if (!string.IsNullOrEmpty(filtro.PrecatoriaX))
         {
-            parameters.Add(new($"@{nameof(DBPrecatoriaDicInfo.PrecatoriaX)}", filtro.PrecatoriaX));
+            parameters.Add(new($"@{nameof(DBPrecatoriaDicInfo.Precatoria)}", filtro.PrecatoriaX));
         }
 
         if (!string.IsNullOrEmpty(filtro.Deprecante))
@@ -303,7 +303,7 @@ public partial class PrecatoriaService(IOptions<AppSettings> appSettings, IPreca
         }
 
         var cWhere = filtro.Processo == int.MinValue ? string.Empty : $"{DBPrecatoriaDicInfo.Processo} = @{nameof(DBPrecatoriaDicInfo.Processo)}";
-        cWhere += filtro.PrecatoriaX.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPrecatoriaDicInfo.PrecatoriaX} = @{nameof(DBPrecatoriaDicInfo.PrecatoriaX)}";
+        cWhere += filtro.PrecatoriaX.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPrecatoriaDicInfo.Precatoria} = @{nameof(DBPrecatoriaDicInfo.Precatoria)}";
         cWhere += filtro.Deprecante.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPrecatoriaDicInfo.Deprecante} = @{nameof(DBPrecatoriaDicInfo.Deprecante)}";
         cWhere += filtro.Deprecado.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPrecatoriaDicInfo.Deprecado} = @{nameof(DBPrecatoriaDicInfo.Deprecado)}";
         cWhere += filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.Operator) + $"{DBPrecatoriaDicInfo.OBS} = @{nameof(DBPrecatoriaDicInfo.OBS)}";

@@ -148,7 +148,7 @@ LEFT JOIN {"TipoOrigemSucumbencia".dbo(oCnn)} (NOLOCK) ON [TipoOrigemSucumbencia
             }
 
             var saved = writer.Write(regProSucumbencia, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

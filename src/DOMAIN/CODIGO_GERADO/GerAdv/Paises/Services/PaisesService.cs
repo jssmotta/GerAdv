@@ -145,7 +145,7 @@ public partial class PaisesService(IOptions<AppSettings> appSettings, IPaisesRea
             }
 
             var saved = writer.Write(regPaises, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

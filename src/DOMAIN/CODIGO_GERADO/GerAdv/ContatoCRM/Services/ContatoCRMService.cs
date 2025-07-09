@@ -149,7 +149,7 @@ LEFT JOIN {"TipoContatoCRM".dbo(oCnn)} (NOLOCK) ON [TipoContatoCRM].[tccCodigo]=
             }
 
             var saved = writer.Write(regContatoCRM, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

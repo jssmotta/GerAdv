@@ -156,7 +156,7 @@ LEFT JOIN {"Atividades".dbo(oCnn)} (NOLOCK) ON [Atividades].[atvCodigo]=[Process
             }
 
             var saved = writer.Write(regProcessos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

@@ -145,7 +145,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
             }
 
             var saved = writer.Write(regStatusAndamento, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

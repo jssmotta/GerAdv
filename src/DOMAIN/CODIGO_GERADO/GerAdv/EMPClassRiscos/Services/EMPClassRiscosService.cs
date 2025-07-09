@@ -145,7 +145,7 @@ public partial class EMPClassRiscosService(IOptions<AppSettings> appSettings, IE
             }
 
             var saved = writer.Write(regEMPClassRiscos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

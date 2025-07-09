@@ -21,3 +21,4 @@ global using MenphisSI.WebApi.BaseCommon.Helpers;
 global using System.Globalization;
 global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Routing;
+global using Microsoft.Extensions.Caching.Memory;

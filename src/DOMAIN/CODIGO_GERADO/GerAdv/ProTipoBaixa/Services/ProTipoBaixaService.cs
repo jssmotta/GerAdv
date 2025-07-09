@@ -145,7 +145,7 @@ public partial class ProTipoBaixaService(IOptions<AppSettings> appSettings, IPro
             }
 
             var saved = writer.Write(regProTipoBaixa, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

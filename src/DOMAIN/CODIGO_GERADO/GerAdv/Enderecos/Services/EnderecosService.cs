@@ -146,7 +146,7 @@ public partial class EnderecosService(IOptions<AppSettings> appSettings, IEndere
             }
 
             var saved = writer.Write(regEnderecos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

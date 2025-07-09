@@ -146,7 +146,7 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IP
             }
 
             var saved = writer.Write(regProObservacoes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

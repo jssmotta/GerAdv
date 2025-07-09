@@ -144,7 +144,7 @@ LEFT JOIN {"Alertas".dbo(oCnn)} (NOLOCK) ON [Alertas].[altCodigo]=[AlertasEnviad
             }
 
             var saved = writer.Write(regAlertasEnviados, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

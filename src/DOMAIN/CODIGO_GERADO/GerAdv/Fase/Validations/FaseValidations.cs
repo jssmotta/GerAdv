@@ -18,11 +18,11 @@ public class FaseValidation : IFaseValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var historicoExists = await historicoService.Filter(new Filters.FilterHistorico { Fase = id }, uri);
-        if (historicoExists != null && historicoExists.Any())
+        var historicoExists0 = await historicoService.Filter(new Filters.FilterHistorico { Fase = id }, uri);
+        if (historicoExists0 != null && historicoExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.";
-        var prodepositosExists = await prodepositosService.Filter(new Filters.FilterProDepositos { Fase = id }, uri);
-        if (prodepositosExists != null && prodepositosExists.Any())
+        var prodepositosExists1 = await prodepositosService.Filter(new Filters.FilterProDepositos { Fase = id }, uri);
+        if (prodepositosExists1 != null && prodepositosExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.";
         return string.Empty;
     }

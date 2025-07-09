@@ -142,7 +142,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
             }
 
             var saved = writer.Write(regProcessOutputSources, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

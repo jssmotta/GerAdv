@@ -146,7 +146,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IEscr
             }
 
             var saved = writer.Write(regEscritorios, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

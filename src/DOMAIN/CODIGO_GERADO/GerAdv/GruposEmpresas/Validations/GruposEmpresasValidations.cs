@@ -18,8 +18,8 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var gruposempresascliExists = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Grupo = id }, uri);
-        if (gruposempresascliExists != null && gruposempresascliExists.Any())
+        var gruposempresascliExists0 = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Grupo = id }, uri);
+        if (gruposempresascliExists0 != null && gruposempresascliExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas Cli associados a ele.";
         return string.Empty;
     }

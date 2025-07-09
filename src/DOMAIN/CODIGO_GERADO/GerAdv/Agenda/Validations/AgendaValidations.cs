@@ -18,20 +18,20 @@ public class AgendaValidation : IAgendaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var agenda2agendaExists = await agenda2agendaService.Filter(new Filters.FilterAgenda2Agenda { Agenda = id }, uri);
-        if (agenda2agendaExists != null && agenda2agendaExists.Any())
+        var agenda2agendaExists0 = await agenda2agendaService.Filter(new Filters.FilterAgenda2Agenda { Agenda = id }, uri);
+        if (agenda2agendaExists0 != null && agenda2agendaExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda2 Agenda associados a ele.";
-        var agendarecordsExists = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Agenda = id }, uri);
-        if (agendarecordsExists != null && agendarecordsExists.Any())
+        var agendarecordsExists1 = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Agenda = id }, uri);
+        if (agendarecordsExists1 != null && agendarecordsExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Records associados a ele.";
-        var agendastatusExists = await agendastatusService.Filter(new Filters.FilterAgendaStatus { Agenda = id }, uri);
-        if (agendastatusExists != null && agendastatusExists.Any())
+        var agendastatusExists2 = await agendastatusService.Filter(new Filters.FilterAgendaStatus { Agenda = id }, uri);
+        if (agendastatusExists2 != null && agendastatusExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Agenda Status associados a ele.";
-        var alarmsmsExists = await alarmsmsService.Filter(new Filters.FilterAlarmSMS { Agenda = id }, uri);
-        if (alarmsmsExists != null && alarmsmsExists.Any())
+        var alarmsmsExists3 = await alarmsmsService.Filter(new Filters.FilterAlarmSMS { Agenda = id }, uri);
+        if (alarmsmsExists3 != null && alarmsmsExists3.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Alarm S M S associados a ele.";
-        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Agenda = id }, uri);
-        if (recadosExists != null && recadosExists.Any())
+        var recadosExists4 = await recadosService.Filter(new Filters.FilterRecados { Agenda = id }, uri);
+        if (recadosExists4 != null && recadosExists4.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
         return string.Empty;
     }

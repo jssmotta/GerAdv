@@ -145,7 +145,7 @@ public partial class TiposAcaoService(IOptions<AppSettings> appSettings, ITiposA
             }
 
             var saved = writer.Write(regTiposAcao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

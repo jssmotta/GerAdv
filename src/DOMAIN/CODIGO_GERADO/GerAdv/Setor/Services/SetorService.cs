@@ -145,7 +145,7 @@ public partial class SetorService(IOptions<AppSettings> appSettings, ISetorReade
             }
 
             var saved = writer.Write(regSetor, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

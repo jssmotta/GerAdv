@@ -18,8 +18,8 @@ public class UFValidation : IUFValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var cidadeExists = await cidadeService.Filter(new Filters.FilterCidade { UF = id }, uri);
-        if (cidadeExists != null && cidadeExists.Any())
+        var cidadeExists0 = await cidadeService.Filter(new Filters.FilterCidade { UF = id }, uri);
+        if (cidadeExists0 != null && cidadeExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Cidade associados a ele.";
         return string.Empty;
     }

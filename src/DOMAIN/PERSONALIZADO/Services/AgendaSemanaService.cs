@@ -8,7 +8,7 @@ public partial class AgendaSemanaService
         throw new NotImplementedException();
     }
 #pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
-    public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string uri) => !Uris.ValidaUri(uri, _uris)
+    public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string uri) => !Uris.ValidaUri(uri, _appSettings)
             ? throw new Exception("AgendaSemana: URI inválida")
             : (IEnumerable<AgendaSemanaResponse?>?)await Task.Run(() =>
             {
@@ -40,7 +40,7 @@ public partial class AgendaSemanaService
 
     public async Task<IEnumerable<MenuAgendaSemana>?>? Monta(DateTime dataInicial, bool isMobile, string uri)
     {
-        if (!Uris.ValidaUri(uri, _uris))
+        if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("AgendaSemana: URI inválida");
         }

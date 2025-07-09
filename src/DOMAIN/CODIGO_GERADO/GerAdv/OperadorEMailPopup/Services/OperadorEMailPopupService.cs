@@ -146,7 +146,7 @@ public partial class OperadorEMailPopupService(IOptions<AppSettings> appSettings
             }
 
             var saved = writer.Write(regOperadorEMailPopup, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

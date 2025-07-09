@@ -18,8 +18,8 @@ public class GUTTipoValidation : IGUTTipoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var gutmatrizExists = await gutmatrizService.Filter(new Filters.FilterGUTMatriz { GUTTipo = id }, uri);
-        if (gutmatrizExists != null && gutmatrizExists.Any())
+        var gutmatrizExists0 = await gutmatrizService.Filter(new Filters.FilterGUTMatriz { GUTTipo = id }, uri);
+        if (gutmatrizExists0 != null && gutmatrizExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela G U T Matriz associados a ele.";
         return string.Empty;
     }

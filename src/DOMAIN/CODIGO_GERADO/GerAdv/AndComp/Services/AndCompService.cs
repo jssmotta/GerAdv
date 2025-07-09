@@ -142,7 +142,7 @@ public partial class AndCompService(IOptions<AppSettings> appSettings, IAndCompR
             }
 
             var saved = writer.Write(regAndComp, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

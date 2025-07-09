@@ -18,8 +18,8 @@ public class ReuniaoValidation : IReuniaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var reuniaopessoasExists = await reuniaopessoasService.Filter(new Filters.FilterReuniaoPessoas { Reuniao = id }, uri);
-        if (reuniaopessoasExists != null && reuniaopessoasExists.Any())
+        var reuniaopessoasExists0 = await reuniaopessoasService.Filter(new Filters.FilterReuniaoPessoas { Reuniao = id }, uri);
+        if (reuniaopessoasExists0 != null && reuniaopessoasExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Reuniao Pessoas associados a ele.";
         return string.Empty;
     }

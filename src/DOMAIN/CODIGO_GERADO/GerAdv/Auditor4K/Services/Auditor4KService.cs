@@ -145,7 +145,7 @@ public partial class Auditor4KService(IOptions<AppSettings> appSettings, IAudito
             }
 
             var saved = writer.Write(regAuditor4K, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

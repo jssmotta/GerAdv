@@ -18,8 +18,8 @@ public class EscritoriosValidation : IEscritoriosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var advogadosExists = await advogadosService.Filter(new Filters.FilterAdvogados { Escritorio = id }, uri);
-        if (advogadosExists != null && advogadosExists.Any())
+        var advogadosExists0 = await advogadosService.Filter(new Filters.FilterAdvogados { Escritorio = id }, uri);
+        if (advogadosExists0 != null && advogadosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.";
         return string.Empty;
     }

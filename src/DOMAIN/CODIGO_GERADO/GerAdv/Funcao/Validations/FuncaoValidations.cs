@@ -18,11 +18,11 @@ public class FuncaoValidation : IFuncaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var funcionariosExists = await funcionariosService.Filter(new Filters.FilterFuncionarios { Funcao = id }, uri);
-        if (funcionariosExists != null && funcionariosExists.Any())
+        var funcionariosExists0 = await funcionariosService.Filter(new Filters.FilterFuncionarios { Funcao = id }, uri);
+        if (funcionariosExists0 != null && funcionariosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.";
-        var prepostosExists = await prepostosService.Filter(new Filters.FilterPrepostos { Funcao = id }, uri);
-        if (prepostosExists != null && prepostosExists.Any())
+        var prepostosExists1 = await prepostosService.Filter(new Filters.FilterPrepostos { Funcao = id }, uri);
+        if (prepostosExists1 != null && prepostosExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.";
         return string.Empty;
     }

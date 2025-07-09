@@ -145,7 +145,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
             }
 
             var saved = writer.Write(regTipoCompromisso, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

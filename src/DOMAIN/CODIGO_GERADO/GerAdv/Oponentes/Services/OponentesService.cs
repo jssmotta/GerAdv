@@ -146,7 +146,7 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IOponen
             }
 
             var saved = writer.Write(regOponentes, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

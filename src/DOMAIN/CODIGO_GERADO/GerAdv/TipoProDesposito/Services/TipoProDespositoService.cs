@@ -142,7 +142,7 @@ public partial class TipoProDespositoService(IOptions<AppSettings> appSettings, 
             }
 
             var saved = writer.Write(regTipoProDesposito, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

@@ -142,7 +142,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IV
             }
 
             var saved = writer.Write(regViaRecebimento, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

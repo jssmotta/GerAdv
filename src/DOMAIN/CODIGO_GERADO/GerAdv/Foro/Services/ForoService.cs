@@ -146,7 +146,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IForoReader 
             }
 
             var saved = writer.Write(regForo, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

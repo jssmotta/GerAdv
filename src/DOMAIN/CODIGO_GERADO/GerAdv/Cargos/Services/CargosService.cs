@@ -145,7 +145,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, ICargosRea
             }
 
             var saved = writer.Write(regCargos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

@@ -145,7 +145,7 @@ public partial class NEPalavrasChavesService(IOptions<AppSettings> appSettings, 
             }
 
             var saved = writer.Write(regNEPalavrasChaves, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

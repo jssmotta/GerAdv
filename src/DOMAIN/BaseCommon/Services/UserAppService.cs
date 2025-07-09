@@ -1,25 +1,22 @@
-﻿using MenphisSI.GerEntityTools.Entity;
+﻿using IdentityModel.Client;
 using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using DBAdvogados = MenphisSI.GerAdv.DBAdvogados;
 namespace MenphisSI.BaseCommon;
 
 public partial class UserService : IUserService, IDisposable
 {
 
+
     private async Task<string> GenerateJwtToken(OperadorResponse user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        var key = Encoding.ASCII.GetBytes(_appSettings.Value.Secret);
 
         var claims = new[]
         {
             new Claim("id", user.Id.ToString()),
-            new Claim("tipo", user.CadID == 1 || user.Id == 1 ? "Medico" : "Funcionario"),
-            new Claim(RESET_KEY, user.StatusMessage == "Senha Resetada" ? RESET_KEY : "")
+            new Claim("tipo", user.CadID == 1 ? "Advogado" : "Funcionario"),
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -37,17 +34,16 @@ public partial class UserService : IUserService, IDisposable
         return tokenHandler.WriteToken(token);
     }
 
-
-    public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model, string uri)
+    public async Task<AuthenticateResponse?> Authenticate3(AuthenticateRequest model, string uri)
     {
         return await ExecuteWithMetrics("Authenticate", async () =>
         {
             ArgumentNullException.ThrowIfNull(model);
             if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
 
-            if (!Uris.ValidaUri(uri, _uris))
+           if (!Uris.ValidaUri(uri, _appSettings))
             {
-                _logger.Warn("Authenticate: URI não é valida {Uri} - {ValidUris}", uri, _uris);
+                _logger.Warn("Authenticate: URI não é valida {Uri}", uri);
                 throw new Exception("User: URI inválida");
             }
 
@@ -64,14 +60,20 @@ public partial class UserService : IUserService, IDisposable
 
             try
             {
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@email", user.EMailNet),                    
+                };
                 var dbMed = new DBAdvogados(
-                    sqlWhere: DBAdvogadosDicInfo.EMailSql(user.EMailNet),
-                    oCnn: oCnn);
+                                    parameters,
+                                    sqlWhere: DBAdvogadosDicInfo.EMail + " = @email",
+                                    oCnn: oCnn);
 
-                var tipo = dbMed.ID == 0 ? "Funcionario" : "Advogado";
+                var tipo = dbMed.ID == 0 ? "Funcionario" : "Medico";
 #if (DEBUG)
-                tipo = "Advogado";
+                tipo = "Medico";
 #endif
+
                 var token = await GenerateJwtToken(user).ConfigureAwait(false);
                 var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
 
@@ -84,5 +86,6 @@ public partial class UserService : IUserService, IDisposable
             }
         });
     }
-     
+
+
 }

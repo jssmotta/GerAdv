@@ -143,7 +143,7 @@ public partial class PontoVirtualAcessosService(IOptions<AppSettings> appSetting
             }
 
             var saved = writer.Write(regPontoVirtualAcessos, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

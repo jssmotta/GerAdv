@@ -18,8 +18,8 @@ public class RitoValidation : IRitoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Rito = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists0 = await processosService.Filter(new Filters.FilterProcessos { Rito = id }, uri);
+        if (processosExists0 != null && processosExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
         return string.Empty;
     }

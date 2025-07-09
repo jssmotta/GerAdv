@@ -143,7 +143,7 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IPon
             }
 
             var saved = writer.Write(regPontoVirtual, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

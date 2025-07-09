@@ -146,7 +146,7 @@ public partial class AlertasService(IOptions<AppSettings> appSettings, IAlertasR
             }
 
             var saved = writer.Write(regAlertas, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

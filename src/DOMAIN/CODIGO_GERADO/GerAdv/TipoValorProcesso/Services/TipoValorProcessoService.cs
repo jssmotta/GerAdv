@@ -142,7 +142,7 @@ public partial class TipoValorProcessoService(IOptions<AppSettings> appSettings,
             }
 
             var saved = writer.Write(regTipoValorProcesso, oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

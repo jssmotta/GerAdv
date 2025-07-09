@@ -147,7 +147,7 @@ LEFT JOIN {"GUTAtividades".dbo(oCnn)} (NOLOCK) ON [GUTAtividades].[agtCodigo]=[G
             }
 
             var saved = writer.Write(regGUTAtividadesMatriz, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

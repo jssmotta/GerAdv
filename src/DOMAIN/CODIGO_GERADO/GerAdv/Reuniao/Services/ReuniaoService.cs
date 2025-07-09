@@ -146,7 +146,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IReuniaoR
             }
 
             var saved = writer.Write(regReuniao, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

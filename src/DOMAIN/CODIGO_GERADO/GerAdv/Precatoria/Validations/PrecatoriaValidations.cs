@@ -18,11 +18,11 @@ public class PrecatoriaValidation : IPrecatoriaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var historicoExists = await historicoService.Filter(new Filters.FilterHistorico { Precatoria = id }, uri);
-        if (historicoExists != null && historicoExists.Any())
+        var historicoExists0 = await historicoService.Filter(new Filters.FilterHistorico { Precatoria = id }, uri);
+        if (historicoExists0 != null && historicoExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.";
-        var nenotasExists = await nenotasService.Filter(new Filters.FilterNENotas { Precatoria = id }, uri);
-        if (nenotasExists != null && nenotasExists.Any())
+        var nenotasExists1 = await nenotasService.Filter(new Filters.FilterNENotas { Precatoria = id }, uri);
+        if (nenotasExists1 != null && nenotasExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.";
         return string.Empty;
     }

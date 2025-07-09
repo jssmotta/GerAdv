@@ -147,7 +147,7 @@ LEFT JOIN {"TipoValorProcesso".dbo(oCnn)} (NOLOCK) ON [TipoValorProcesso].[ptvCo
             }
 
             var saved = writer.Write(regProValores, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

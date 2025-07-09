@@ -148,7 +148,7 @@ LEFT JOIN {"TipoProDesposito".dbo(oCnn)} (NOLOCK) ON [TipoProDesposito].[tpdCodi
             }
 
             var saved = writer.Write(regProDepositos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

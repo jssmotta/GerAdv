@@ -6,5 +6,4 @@ global using MenphisSI.GerAdv.Services;
 global using MenphisSI.GerAdv.Validations;
 global using MenphisSI.GerAdv.Writers;
 global using MenphisSI.GerAdv.Readers;
-global using MenphisSI.GerAdv.Entity;
 global using MenphisSI.GerAdv;

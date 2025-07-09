@@ -18,14 +18,14 @@ public class OponentesValidation : IOponentesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var gruposempresasExists = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Oponente = id }, uri);
-        if (gruposempresasExists != null && gruposempresasExists.Any())
+        var gruposempresasExists0 = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Oponente = id }, uri);
+        if (gruposempresasExists0 != null && gruposempresasExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.";
-        var oponentesreplegalExists = await oponentesreplegalService.Filter(new Filters.FilterOponentesRepLegal { Oponente = id }, uri);
-        if (oponentesreplegalExists != null && oponentesreplegalExists.Any())
+        var oponentesreplegalExists1 = await oponentesreplegalService.Filter(new Filters.FilterOponentesRepLegal { Oponente = id }, uri);
+        if (oponentesreplegalExists1 != null && oponentesreplegalExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Oponentes Rep Legal associados a ele.";
-        var processosExists = await processosService.Filter(new Filters.FilterProcessos { Oponente = id }, uri);
-        if (processosExists != null && processosExists.Any())
+        var processosExists2 = await processosService.Filter(new Filters.FilterProcessos { Oponente = id }, uri);
+        if (processosExists2 != null && processosExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.";
         return string.Empty;
     }

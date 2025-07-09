@@ -18,8 +18,8 @@ public class LivroCaixaValidation : ILivroCaixaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var livrocaixaclientesExists = await livrocaixaclientesService.Filter(new Filters.FilterLivroCaixaClientes { LivroCaixa = id }, uri);
-        if (livrocaixaclientesExists != null && livrocaixaclientesExists.Any())
+        var livrocaixaclientesExists0 = await livrocaixaclientesService.Filter(new Filters.FilterLivroCaixaClientes { LivroCaixa = id }, uri);
+        if (livrocaixaclientesExists0 != null && livrocaixaclientesExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Livro Caixa Clientes associados a ele.";
         return string.Empty;
     }

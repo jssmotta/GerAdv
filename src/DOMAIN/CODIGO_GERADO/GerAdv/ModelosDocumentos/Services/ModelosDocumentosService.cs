@@ -146,7 +146,7 @@ public partial class ModelosDocumentosService(IOptions<AppSettings> appSettings,
             }
 
             var saved = writer.Write(regModelosDocumentos, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

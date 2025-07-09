@@ -18,11 +18,11 @@ public class HistoricoValidation : IHistoricoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var processosobsreportExists = await processosobsreportService.Filter(new Filters.FilterProcessosObsReport { Historico = id }, uri);
-        if (processosobsreportExists != null && processosobsreportExists.Any())
+        var processosobsreportExists0 = await processosobsreportService.Filter(new Filters.FilterProcessosObsReport { Historico = id }, uri);
+        if (processosobsreportExists0 != null && processosobsreportExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Processos Obs Report associados a ele.";
-        var recadosExists = await recadosService.Filter(new Filters.FilterRecados { Historico = id }, uri);
-        if (recadosExists != null && recadosExists.Any())
+        var recadosExists1 = await recadosService.Filter(new Filters.FilterRecados { Historico = id }, uri);
+        if (recadosExists1 != null && recadosExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
         return string.Empty;
     }

@@ -18,8 +18,8 @@ public class StatusBiuValidation : IStatusBiuValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var operadorExists = await operadorService.Filter(new Filters.FilterOperador { StatusId = id }, uri);
-        if (operadorExists != null && operadorExists.Any())
+        var operadorExists0 = await operadorService.Filter(new Filters.FilterOperador { StatusId = id }, uri);
+        if (operadorExists0 != null && operadorExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Operador associados a ele.";
         return string.Empty;
     }

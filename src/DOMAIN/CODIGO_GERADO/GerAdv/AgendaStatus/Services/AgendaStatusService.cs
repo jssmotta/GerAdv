@@ -146,7 +146,7 @@ public partial class AgendaStatusService(IOptions<AppSettings> appSettings, IAge
             }
 
             var saved = writer.Write(regAgendaStatus, UserTools.GetAuthenticatedUserId(_httpContextAccessor), oCnn);
-            return reader.Read(saved.ID, oCnn);
+            return reader.Read(saved, oCnn);
         });
     }
 

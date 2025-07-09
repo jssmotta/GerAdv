@@ -18,14 +18,14 @@ public class TribunalValidation : ITribunalValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             return $"Registro com id {id} não encontrado.";
-        var divisaotribunalExists = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Tribunal = id }, uri);
-        if (divisaotribunalExists != null && divisaotribunalExists.Any())
+        var divisaotribunalExists0 = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Tribunal = id }, uri);
+        if (divisaotribunalExists0 != null && divisaotribunalExists0.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.";
-        var poderjudiciarioassociadoExists = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Tribunal = id }, uri);
-        if (poderjudiciarioassociadoExists != null && poderjudiciarioassociadoExists.Any())
+        var poderjudiciarioassociadoExists1 = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Tribunal = id }, uri);
+        if (poderjudiciarioassociadoExists1 != null && poderjudiciarioassociadoExists1.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.";
-        var tribenderecosExists = await tribenderecosService.Filter(new Filters.FilterTribEnderecos { Tribunal = id }, uri);
-        if (tribenderecosExists != null && tribenderecosExists.Any())
+        var tribenderecosExists2 = await tribenderecosService.Filter(new Filters.FilterTribEnderecos { Tribunal = id }, uri);
+        if (tribenderecosExists2 != null && tribenderecosExists2.Any())
             return "Não é possível excluir o registro, pois existem registros da tabela Trib Endereços associados a ele.";
         return string.Empty;
     }
