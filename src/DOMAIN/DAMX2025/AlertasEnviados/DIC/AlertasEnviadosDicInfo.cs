@@ -11,11 +11,6 @@ public static partial class DBAlertasEnviadosDicInfo
     public const string Alerta = "aloAlerta"; // LOCALIZACAO 170523
     public const string DataAlertado = "aloDataAlertado"; // LOCALIZACAO 170523
     public const string Visualizado = "aloVisualizado"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Operador,
@@ -34,18 +29,7 @@ public static partial class DBAlertasEnviadosDicInfo
     public static DBInfoSystem AloVisualizado => new(0, PTabelaNome, CampoCodigo, Visualizado, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoBoolean);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string OperadorDiff(int id) => Operador.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string OperadorSql(int id) => Operador.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string OperadorIsNull => Operador.SqlCmdIsNull() ?? string.Empty;
-    public static string OperadorNotIsNull => Operador.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string AlertaDiff(int id) => Alerta.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string AlertaSql(int id) => Alerta.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string AlertaIsNull => Alerta.SqlCmdIsNull() ?? string.Empty;
-    public static string AlertaNotIsNull => Alerta.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DataAlertadoSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataAlertado}]");
     public static string DataAlertadoSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataAlertado}]");
     public static string DataAlertadoSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataAlertado}]");
@@ -65,7 +49,7 @@ public static partial class DBAlertasEnviadosDicInfo
     public static string VisualizadoSqlSim => Visualizado.SqlCmdBoolSim() ?? string.Empty;
     public static string VisualizadoSqlNao => Visualizado.SqlCmdBoolNao() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

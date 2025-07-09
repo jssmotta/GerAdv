@@ -45,7 +45,6 @@ public partial class DBTribEnderecos
         }
     }
 
-    public string CEPMask() => DevourerOne.MaskCep(FCEP);
     [XmlAttribute]
     public string? FCEP
     {

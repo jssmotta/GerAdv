@@ -10,11 +10,6 @@ public static partial class DBUltimosProcessosDicInfo
     public const string Processo = "ultProcesso"; // LOCALIZACAO 170523
     public const string Quando = "ultQuando"; // LOCALIZACAO 170523
     public const string Quem = "ultQuem"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Processo,
@@ -31,13 +26,7 @@ public static partial class DBUltimosProcessosDicInfo
     public static DBInfoSystem UltQuem => new(0, PTabelaNome, CampoCodigo, Quem, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string ProcessoDiff(int id) => Processo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ProcessoSql(int id) => Processo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ProcessoIsNull => Processo.SqlCmdIsNull() ?? string.Empty;
-    public static string ProcessoNotIsNull => Processo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string QuandoSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{Quando}]");
     public static string QuandoSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{Quando}]");
     public static string QuandoSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{Quando}]");
@@ -53,12 +42,7 @@ public static partial class DBUltimosProcessosDicInfo
     public static string QuandoIsNull => Quando.SqlCmdIsNull() ?? string.Empty;
     public static string QuandoNotIsNull => Quando.SqlCmdNotIsNull() ?? string.Empty;
 
-    public static string QuemDiff(int id) => Quem.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemSql(int id) => Quem.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemIsNull => Quem.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemNotIsNull => Quem.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

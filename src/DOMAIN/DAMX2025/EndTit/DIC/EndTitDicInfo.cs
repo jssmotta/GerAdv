@@ -9,11 +9,6 @@ public static partial class DBEndTitDicInfo
     public const string TablePrefix = "ett";
     public const string Endereco = "ettEndereco"; // LOCALIZACAO 170523
     public const string Titulo = "ettTitulo"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Endereco,
@@ -28,19 +23,8 @@ public static partial class DBEndTitDicInfo
     public static DBInfoSystem EttTitulo => new(0, PTabelaNome, CampoCodigo, Titulo, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string EnderecoDiff(int id) => Endereco.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string EnderecoSql(int id) => Endereco.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string EnderecoIsNull => Endereco.SqlCmdIsNull() ?? string.Empty;
-    public static string EnderecoNotIsNull => Endereco.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string TituloDiff(int id) => Titulo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string TituloSql(int id) => Titulo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string TituloIsNull => Titulo.SqlCmdIsNull() ?? string.Empty;
-    public static string TituloNotIsNull => Titulo.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

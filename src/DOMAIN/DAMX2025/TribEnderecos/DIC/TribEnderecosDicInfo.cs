@@ -14,11 +14,6 @@ public static partial class DBTribEnderecosDicInfo
     public const string Fone = "treFone"; // LOCALIZACAO 170523
     public const string Fax = "treFax"; // LOCALIZACAO 170523
     public const string OBS = "treOBS"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Tribunal,
@@ -43,18 +38,7 @@ public static partial class DBTribEnderecosDicInfo
     public static DBInfoSystem TreOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string TribunalDiff(int id) => Tribunal.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string TribunalSql(int id) => Tribunal.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string TribunalIsNull => Tribunal.SqlCmdIsNull() ?? string.Empty;
-    public static string TribunalNotIsNull => Tribunal.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string CidadeDiff(int id) => Cidade.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CidadeSql(int id) => Cidade.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CidadeIsNull => Cidade.SqlCmdIsNull() ?? string.Empty;
-    public static string CidadeNotIsNull => Cidade.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string EnderecoSql(string text) => Endereco.SqlCmdTextIgual(text, 80) ?? string.Empty;
     public static string EnderecoSqlNotIsNull => Endereco.SqlCmdNotIsNull() ?? string.Empty;
     public static string EnderecoSqlIsNull => Endereco.SqlCmdIsNull() ?? string.Empty;
@@ -95,7 +79,7 @@ public static partial class DBTribEnderecosDicInfo
     public static string OBSSqlLike(string text) => OBS.SqlCmdTextLike(text) ?? string.Empty;
     public static string OBSSqlLikeInit(string text) => OBS.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string OBSSqlLikeSpaces(string? text) => OBS.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

@@ -11,11 +11,6 @@ public static partial class DBPontoVirtualAcessosDicInfo
     public const string DataHora = "pvaDataHora"; // LOCALIZACAO 170523
     public const string Tipo = "pvaTipo"; // LOCALIZACAO 170523
     public const string Origem = "pvaOrigem"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Operador,
@@ -34,13 +29,7 @@ public static partial class DBPontoVirtualAcessosDicInfo
     public static DBInfoSystem PvaOrigem => new(0, PTabelaNome, CampoCodigo, Origem, 150, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string OperadorDiff(int id) => Operador.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string OperadorSql(int id) => Operador.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string OperadorIsNull => Operador.SqlCmdIsNull() ?? string.Empty;
-    public static string OperadorNotIsNull => Operador.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DataHoraSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataHora}]");
     public static string DataHoraSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataHora}]");
     public static string DataHoraSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataHora}]");
@@ -68,7 +57,7 @@ public static partial class DBPontoVirtualAcessosDicInfo
     public static string OrigemSqlLike(string text) => Origem.SqlCmdTextLike(text) ?? string.Empty;
     public static string OrigemSqlLikeInit(string text) => Origem.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string OrigemSqlLikeSpaces(string? text) => Origem.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

@@ -4,15 +4,6 @@ namespace MenphisSI.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBPosicaoOutrasPartes : VAuditor, ICadastros, IAuditor
 {
-#if (DEBUG)
-#if (!shadowsDisabled && !shadows_MenphisSI_GerAdv && !shadows_MenphisSI_GerAdv_PosicaoOutrasPartes)
-#pragma warning disable CA1822 // Mark members as static
-
-//public bool CertSignature() => DicionarioDeDadosManagedDatabaseCode.CodeSigntature_DBPosicaoOutrasPartes();
-#pragma warning restore CA1822 // Mark members as static
-
-#endif
-#endif
 #region TableDefinition_PosicaoOutrasPartes
     [XmlIgnore]
     public string TabelaNome => "PosicaoOutrasPartes";
@@ -62,20 +53,8 @@ public partial class DBPosicaoOutrasPartes : VAuditor, ICadastros, IAuditor
             CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
-#if (forWeb)
-public int Update(MsiSqlConnection? oCnn = null, int insertId = 0)
-{
-    if (oCnn != null) return UpdateX(oCnn, insertId);
-    using var cnn = Configuracoes.GetConnectionRw();
-    return UpdateX(cnn, insertId);
-}
-#endif
 #region GravarDados_PosicaoOutrasPartes
-#if (forWeb)
-                private int UpdateX(MsiSqlConnection? oCnn, int insertId = 0)
-#else
     public int Update(MsiSqlConnection? oCnn, int insertId = 0)
-#endif
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)

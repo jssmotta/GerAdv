@@ -9,11 +9,6 @@ public static partial class DBAndCompDicInfo
     public const string TablePrefix = "acp";
     public const string Andamento = "acpAndamento"; // LOCALIZACAO 170523
     public const string Compromisso = "acpCompromisso"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Andamento,
@@ -28,19 +23,8 @@ public static partial class DBAndCompDicInfo
     public static DBInfoSystem AcpCompromisso => new(0, PTabelaNome, CampoCodigo, Compromisso, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string AndamentoDiff(int id) => Andamento.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string AndamentoSql(int id) => Andamento.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string AndamentoIsNull => Andamento.SqlCmdIsNull() ?? string.Empty;
-    public static string AndamentoNotIsNull => Andamento.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string CompromissoDiff(int id) => Compromisso.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CompromissoSql(int id) => Compromisso.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CompromissoIsNull => Compromisso.SqlCmdIsNull() ?? string.Empty;
-    public static string CompromissoNotIsNull => Compromisso.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

@@ -119,7 +119,6 @@ public partial class DBForo
         }
     }
 
-    public string CEPMask() => DevourerOne.MaskCep(FCEP);
     [XmlAttribute]
     public string? FCEP
     {

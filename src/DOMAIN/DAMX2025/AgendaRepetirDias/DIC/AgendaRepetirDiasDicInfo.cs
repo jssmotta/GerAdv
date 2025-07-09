@@ -11,11 +11,6 @@ public static partial class DBAgendaRepetirDiasDicInfo
     public const string Master = "rpdMaster"; // LOCALIZACAO 170523
     public const string Dia = "rpdDia"; // LOCALIZACAO 170523
     public const string Hora = "rpdHora"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => HoraFinal,
@@ -34,7 +29,6 @@ public static partial class DBAgendaRepetirDiasDicInfo
     public static DBInfoSystem RpdHora => new(0, PTabelaNome, CampoCodigo, Hora, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoDatetime);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
     public static string HoraFinalSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{HoraFinal}]");
     public static string HoraFinalSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{HoraFinal}]");
@@ -51,16 +45,6 @@ public static partial class DBAgendaRepetirDiasDicInfo
     public static string HoraFinalIsNull => HoraFinal.SqlCmdIsNull() ?? string.Empty;
     public static string HoraFinalNotIsNull => HoraFinal.SqlCmdNotIsNull() ?? string.Empty;
 
-    public static string MasterDiff(int id) => Master.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string MasterSql(int id) => Master.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string MasterIsNull => Master.SqlCmdIsNull() ?? string.Empty;
-    public static string MasterNotIsNull => Master.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string DiaDiff(int id) => Dia.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string DiaSql(int id) => Dia.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string DiaIsNull => Dia.SqlCmdIsNull() ?? string.Empty;
-    public static string DiaNotIsNull => Dia.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string HoraSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{Hora}]");
     public static string HoraSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{Hora}]");
     public static string HoraSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{Hora}]");
@@ -76,7 +60,7 @@ public static partial class DBAgendaRepetirDiasDicInfo
     public static string HoraIsNull => Hora.SqlCmdIsNull() ?? string.Empty;
     public static string HoraNotIsNull => Hora.SqlCmdNotIsNull() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

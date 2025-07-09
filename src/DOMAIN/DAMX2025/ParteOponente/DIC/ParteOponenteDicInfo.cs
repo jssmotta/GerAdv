@@ -23,19 +23,8 @@ public static partial class DBParteOponenteDicInfo
     public static DBInfoSystem OpoProcesso => new(0, PTabelaNome, CampoCodigo, Processo, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBProcessosDicInfo.CampoCodigo, DBProcessosDicInfo.TabelaNome, new DBProcessosODicInfo(), false); // DBI 11 
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string OponenteDiff(int id) => Oponente.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string OponenteSql(int id) => Oponente.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string OponenteIsNull => Oponente.SqlCmdIsNull() ?? string.Empty;
-    public static string OponenteNotIsNull => Oponente.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string ProcessoDiff(int id) => Processo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ProcessoSql(int id) => Processo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ProcessoIsNull => Processo.SqlCmdIsNull() ?? string.Empty;
-    public static string ProcessoNotIsNull => Processo.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

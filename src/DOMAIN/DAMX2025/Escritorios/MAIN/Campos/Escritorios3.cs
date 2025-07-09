@@ -11,8 +11,6 @@ public partial class DBEscritorios
     private protected string? m_FCNPJ, m_FNome, m_FOAB, m_FEndereco, m_FBairro, m_FCEP, m_FFone, m_FFax, m_FSite, m_FEMail, m_FOBS, m_FAdvResponsavel, m_FSecretaria, m_FInscEst;
     [XmlIgnore]
     private protected bool m_FCasa, m_FParceria, m_FCorrespondente, m_FTop, m_FEtiqueta, m_FBold;
-    public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
-
     [XmlAttribute]
     public string? FCNPJ
     {
@@ -109,7 +107,6 @@ public partial class DBEscritorios
         }
     }
 
-    public string CEPMask() => DevourerOne.MaskCep(FCEP);
     [XmlAttribute]
     public string? FCEP
     {

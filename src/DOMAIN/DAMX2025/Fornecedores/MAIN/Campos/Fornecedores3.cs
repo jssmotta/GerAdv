@@ -59,8 +59,6 @@ public partial class DBFornecedores
         }
     }
 
-    public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
-
     [XmlAttribute]
     public string? FCNPJ
     {

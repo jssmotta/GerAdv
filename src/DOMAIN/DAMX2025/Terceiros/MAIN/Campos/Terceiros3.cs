@@ -81,7 +81,6 @@ public partial class DBTerceiros
         }
     }
 
-    public string CEPMask() => DevourerOne.MaskCep(FCEP);
     [XmlAttribute]
     public string? FCEP
     {

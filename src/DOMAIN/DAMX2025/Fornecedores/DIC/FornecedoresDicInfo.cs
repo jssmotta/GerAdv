@@ -35,11 +35,6 @@ public static partial class DBFornecedoresDicInfo
     public const string QuemAtu = "forQuemAtu"; // LOCALIZACAO 170523
     public const string DtAtu = "forDtAtu"; // LOCALIZACAO 170523
     public const string Visto = "forVisto"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Grupo,
@@ -106,13 +101,7 @@ public static partial class DBFornecedoresDicInfo
     public static DBInfoSystem ForVisto => new(0, PTabelaNome, CampoCodigo, Visto, DevourerOne.PCaptionFieldAuditorVisto, DevourerOne.PTooltipAuditorVisto, ETipoDadosSysteminfo.SysteminfoBooleanVisto);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string GrupoDiff(int id) => Grupo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string GrupoSql(int id) => Grupo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string GrupoIsNull => Grupo.SqlCmdIsNull() ?? string.Empty;
-    public static string GrupoNotIsNull => Grupo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string NomeSql(string text) => Nome.SqlCmdTextIgual(text, 80) ?? string.Empty;
     public static string NomeSqlNotIsNull => Nome.SqlCmdNotIsNull() ?? string.Empty;
     public static string NomeSqlIsNull => Nome.SqlCmdIsNull() ?? string.Empty;
@@ -121,11 +110,6 @@ public static partial class DBFornecedoresDicInfo
     public static string NomeSqlLike(string text) => Nome.SqlCmdTextLike(text) ?? string.Empty;
     public static string NomeSqlLikeInit(string text) => Nome.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string NomeSqlLikeSpaces(string? text) => Nome.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string SubGrupoDiff(int id) => SubGrupo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string SubGrupoSql(int id) => SubGrupo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string SubGrupoIsNull => SubGrupo.SqlCmdIsNull() ?? string.Empty;
-    public static string SubGrupoNotIsNull => SubGrupo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string TipoSql(bool valueCheck) => Tipo.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
     public static string TipoSqlSim => Tipo.SqlCmdBoolSim() ?? string.Empty;
     public static string TipoSqlNao => Tipo.SqlCmdBoolNao() ?? string.Empty;
@@ -190,11 +174,6 @@ public static partial class DBFornecedoresDicInfo
     public static string CEPSqlLike(string text) => CEP.SqlCmdTextLike(text) ?? string.Empty;
     public static string CEPSqlLikeInit(string text) => CEP.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string CEPSqlLikeSpaces(string? text) => CEP.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string CidadeDiff(int id) => Cidade.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CidadeSql(int id) => Cidade.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CidadeIsNull => Cidade.SqlCmdIsNull() ?? string.Empty;
-    public static string CidadeNotIsNull => Cidade.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string FoneSql(string text) => Fone.SqlCmdTextIgual(text) ?? string.Empty;
     public static string FoneSqlNotIsNull => Fone.SqlCmdNotIsNull() ?? string.Empty;
     public static string FoneSqlIsNull => Fone.SqlCmdIsNull() ?? string.Empty;
@@ -260,11 +239,6 @@ public static partial class DBFornecedoresDicInfo
     public static string BoldSqlNao => Bold.SqlCmdBoolNao() ?? string.Empty;
 
     public static string GUIDSql(string text) => GUID.SqlCmdTextIgual(text, 100) ?? string.Empty;
-    public static string QuemCadDiff(int id) => QuemCad.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemCadSql(int id) => QuemCad.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemCadIsNull => QuemCad.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemCadNotIsNull => QuemCad.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DtCadSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtCad}]");
     public static string DtCadSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtCad}]");
     public static string DtCadSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtCad}]");
@@ -279,11 +253,6 @@ public static partial class DBFornecedoresDicInfo
     public static string DtCadSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DtCad}]");
     public static string DtCadIsNull => DtCad.SqlCmdIsNull() ?? string.Empty;
     public static string DtCadNotIsNull => DtCad.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string QuemAtuDiff(int id) => QuemAtu.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemAtuSql(int id) => QuemAtu.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemAtuIsNull => QuemAtu.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemAtuNotIsNull => QuemAtu.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string DtAtuSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtAtu}]");
     public static string DtAtuSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtAtu}]");
@@ -300,7 +269,7 @@ public static partial class DBFornecedoresDicInfo
     public static string DtAtuIsNull => DtAtu.SqlCmdIsNull() ?? string.Empty;
     public static string DtAtuNotIsNull => DtAtu.SqlCmdNotIsNull() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

@@ -4,15 +4,6 @@ namespace MenphisSI.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBContatoCRM : VAuditor, ICadastros, IAuditor
 {
-#if (DEBUG)
-#if (!shadowsDisabled && !shadows_MenphisSI_GerAdv && !shadows_MenphisSI_GerAdv_ContatoCRM)
-#pragma warning disable CA1822 // Mark members as static
-
-//public bool CertSignature() => DicionarioDeDadosManagedDatabaseCode.CodeSigntature_DBContatoCRM();
-#pragma warning restore CA1822 // Mark members as static
-
-#endif
-#endif
 #region TableDefinition_ContatoCRM
     [XmlIgnore]
     public string TabelaNome => "ContatoCRM";
@@ -50,20 +41,8 @@ public partial class DBContatoCRM : VAuditor, ICadastros, IAuditor
         }
     }
 
-#if (forWeb)
-public int Update(MsiSqlConnection? oCnn = null, int insertId = 0)
-{
-    if (oCnn != null) return UpdateX(oCnn, insertId);
-    using var cnn = Configuracoes.GetConnectionRw();
-    return UpdateX(cnn, insertId);
-}
-#endif
 #region GravarDados_ContatoCRM
-#if (forWeb)
-                private int UpdateX(MsiSqlConnection? oCnn, int insertId = 0)
-#else
     public int Update(MsiSqlConnection? oCnn, int insertId = 0)
-#endif
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)

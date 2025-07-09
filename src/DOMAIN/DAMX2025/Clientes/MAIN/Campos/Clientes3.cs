@@ -210,8 +210,6 @@ public partial class DBClientes
         }
     }
 
-    public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
-
     [XmlAttribute]
     public string? FCNPJ
     {

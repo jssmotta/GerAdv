@@ -38,11 +38,6 @@ public static partial class DBContaCorrenteDicInfo
     public const string QuemAtu = "ctoQuemAtu"; // LOCALIZACAO 170523
     public const string DtAtu = "ctoDtAtu"; // LOCALIZACAO 170523
     public const string Visto = "ctoVisto"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => CIAcordo,
@@ -115,36 +110,10 @@ public static partial class DBContaCorrenteDicInfo
     public static DBInfoSystem CtoVisto => new(0, PTabelaNome, CampoCodigo, Visto, DevourerOne.PCaptionFieldAuditorVisto, DevourerOne.PTooltipAuditorVisto, ETipoDadosSysteminfo.SysteminfoBooleanVisto);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string CIAcordoDiff(int id) => CIAcordo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CIAcordoSql(int id) => CIAcordo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CIAcordoIsNull => CIAcordo.SqlCmdIsNull() ?? string.Empty;
-    public static string CIAcordoNotIsNull => CIAcordo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string QuitadoSql(bool valueCheck) => Quitado.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
     public static string QuitadoSqlSim => Quitado.SqlCmdBoolSim() ?? string.Empty;
     public static string QuitadoSqlNao => Quitado.SqlCmdBoolNao() ?? string.Empty;
-
-    public static string IDContratoDiff(int id) => IDContrato.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string IDContratoSql(int id) => IDContrato.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string IDContratoIsNull => IDContrato.SqlCmdIsNull() ?? string.Empty;
-    public static string IDContratoNotIsNull => IDContrato.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string QuitadoIDDiff(int id) => QuitadoID.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuitadoIDSql(int id) => QuitadoID.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuitadoIDIsNull => QuitadoID.SqlCmdIsNull() ?? string.Empty;
-    public static string QuitadoIDNotIsNull => QuitadoID.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string DebitoIDDiff(int id) => DebitoID.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string DebitoIDSql(int id) => DebitoID.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string DebitoIDIsNull => DebitoID.SqlCmdIsNull() ?? string.Empty;
-    public static string DebitoIDNotIsNull => DebitoID.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string LivroCaixaIDDiff(int id) => LivroCaixaID.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string LivroCaixaIDSql(int id) => LivroCaixaID.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string LivroCaixaIDIsNull => LivroCaixaID.SqlCmdIsNull() ?? string.Empty;
-    public static string LivroCaixaIDNotIsNull => LivroCaixaID.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string SucumbenciaSql(bool valueCheck) => Sucumbencia.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
     public static string SucumbenciaSqlSim => Sucumbencia.SqlCmdBoolSim() ?? string.Empty;
@@ -169,16 +138,6 @@ public static partial class DBContaCorrenteDicInfo
     public static string DtOriginalIsNull => DtOriginal.SqlCmdIsNull() ?? string.Empty;
     public static string DtOriginalNotIsNull => DtOriginal.SqlCmdNotIsNull() ?? string.Empty;
 
-    public static string ProcessoDiff(int id) => Processo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ProcessoSql(int id) => Processo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ProcessoIsNull => Processo.SqlCmdIsNull() ?? string.Empty;
-    public static string ProcessoNotIsNull => Processo.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string ParcelaXDiff(int id) => ParcelaX.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ParcelaXSql(int id) => ParcelaX.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ParcelaXIsNull => ParcelaX.SqlCmdIsNull() ?? string.Empty;
-    public static string ParcelaXNotIsNull => ParcelaX.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DataSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{Data}]");
     public static string DataSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{Data}]");
     public static string DataSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{Data}]");
@@ -193,11 +152,6 @@ public static partial class DBContaCorrenteDicInfo
     public static string DataSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{Data}]");
     public static string DataIsNull => Data.SqlCmdIsNull() ?? string.Empty;
     public static string DataNotIsNull => Data.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string ClienteDiff(int id) => Cliente.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ClienteSql(int id) => Cliente.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ClienteIsNull => Cliente.SqlCmdIsNull() ?? string.Empty;
-    public static string ClienteNotIsNull => Cliente.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string HistoricoSql(string text) => Historico.SqlCmdTextIgual(text) ?? string.Empty;
     public static string HistoricoSqlNotIsNull => Historico.SqlCmdNotIsNull() ?? string.Empty;
@@ -223,21 +177,6 @@ public static partial class DBContaCorrenteDicInfo
     public static string LCSqlSim => LC.SqlCmdBoolSim() ?? string.Empty;
     public static string LCSqlNao => LC.SqlCmdBoolNao() ?? string.Empty;
 
-    public static string IDHTrabDiff(int id) => IDHTrab.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string IDHTrabSql(int id) => IDHTrab.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string IDHTrabIsNull => IDHTrab.SqlCmdIsNull() ?? string.Empty;
-    public static string IDHTrabNotIsNull => IDHTrab.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string NroParcelasDiff(int id) => NroParcelas.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string NroParcelasSql(int id) => NroParcelas.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string NroParcelasIsNull => NroParcelas.SqlCmdIsNull() ?? string.Empty;
-    public static string NroParcelasNotIsNull => NroParcelas.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string ParcelaPrincipalIDDiff(int id) => ParcelaPrincipalID.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ParcelaPrincipalIDSql(int id) => ParcelaPrincipalID.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ParcelaPrincipalIDIsNull => ParcelaPrincipalID.SqlCmdIsNull() ?? string.Empty;
-    public static string ParcelaPrincipalIDNotIsNull => ParcelaPrincipalID.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string HideSql(bool valueCheck) => Hide.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
     public static string HideSqlSim => Hide.SqlCmdBoolSim() ?? string.Empty;
     public static string HideSqlNao => Hide.SqlCmdBoolNao() ?? string.Empty;
@@ -258,11 +197,6 @@ public static partial class DBContaCorrenteDicInfo
     public static string DataPgtoNotIsNull => DataPgto.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string GUIDSql(string text) => GUID.SqlCmdTextIgual(text, 100) ?? string.Empty;
-    public static string QuemCadDiff(int id) => QuemCad.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemCadSql(int id) => QuemCad.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemCadIsNull => QuemCad.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemCadNotIsNull => QuemCad.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DtCadSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtCad}]");
     public static string DtCadSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtCad}]");
     public static string DtCadSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtCad}]");
@@ -277,11 +211,6 @@ public static partial class DBContaCorrenteDicInfo
     public static string DtCadSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DtCad}]");
     public static string DtCadIsNull => DtCad.SqlCmdIsNull() ?? string.Empty;
     public static string DtCadNotIsNull => DtCad.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string QuemAtuDiff(int id) => QuemAtu.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemAtuSql(int id) => QuemAtu.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemAtuIsNull => QuemAtu.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemAtuNotIsNull => QuemAtu.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string DtAtuSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtAtu}]");
     public static string DtAtuSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtAtu}]");
@@ -298,7 +227,7 @@ public static partial class DBContaCorrenteDicInfo
     public static string DtAtuIsNull => DtAtu.SqlCmdIsNull() ?? string.Empty;
     public static string DtAtuNotIsNull => DtAtu.SqlCmdNotIsNull() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

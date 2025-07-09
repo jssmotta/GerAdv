@@ -10,11 +10,6 @@ public static partial class DBContatoCRMViewDicInfo
     public const string CGUID = "ccwCGUID"; // LOCALIZACAO 170523
     public const string Data = "ccwData"; // LOCALIZACAO 170523
     public const string IP = "ccwIP"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => CGUID,
@@ -31,7 +26,6 @@ public static partial class DBContatoCRMViewDicInfo
     public static DBInfoSystem CcwIP => new(0, PTabelaNome, CampoCodigo, IP, 50, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
     public static string CGUIDSql(string text) => CGUID.SqlCmdTextIgual(text, 100) ?? string.Empty;
     public static string CGUIDSqlNotIsNull => CGUID.SqlCmdNotIsNull() ?? string.Empty;
@@ -64,7 +58,7 @@ public static partial class DBContatoCRMViewDicInfo
     public static string IPSqlLike(string text) => IP.SqlCmdTextLike(text) ?? string.Empty;
     public static string IPSqlLikeInit(string text) => IP.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string IPSqlLikeSpaces(string? text) => IP.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

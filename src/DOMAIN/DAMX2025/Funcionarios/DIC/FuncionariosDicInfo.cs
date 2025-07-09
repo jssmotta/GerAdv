@@ -46,11 +46,6 @@ public static partial class DBFuncionariosDicInfo
     public const string QuemAtu = "funQuemAtu"; // LOCALIZACAO 170523
     public const string DtAtu = "funDtAtu"; // LOCALIZACAO 170523
     public const string Visto = "funVisto"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => EMailPro,
@@ -139,7 +134,6 @@ public static partial class DBFuncionariosDicInfo
     public static DBInfoSystem FunVisto => new(0, PTabelaNome, CampoCodigo, Visto, DevourerOne.PCaptionFieldAuditorVisto, DevourerOne.PTooltipAuditorVisto, ETipoDadosSysteminfo.SysteminfoBooleanVisto);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
     public static string EMailProSql(string text) => EMailPro.SqlCmdTextIgual(text, 255) ?? string.Empty;
     public static string EMailProSqlNotIsNull => EMailPro.SqlCmdNotIsNull() ?? string.Empty;
@@ -149,11 +143,6 @@ public static partial class DBFuncionariosDicInfo
     public static string EMailProSqlLike(string text) => EMailPro.SqlCmdTextLike(text) ?? string.Empty;
     public static string EMailProSqlLikeInit(string text) => EMailPro.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string EMailProSqlLikeSpaces(string? text) => EMailPro.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string CargoDiff(int id) => Cargo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CargoSql(int id) => Cargo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CargoIsNull => Cargo.SqlCmdIsNull() ?? string.Empty;
-    public static string CargoNotIsNull => Cargo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string NomeSql(string text) => Nome.SqlCmdTextIgual(text, 60) ?? string.Empty;
     public static string NomeSqlNotIsNull => Nome.SqlCmdNotIsNull() ?? string.Empty;
     public static string NomeSqlIsNull => Nome.SqlCmdIsNull() ?? string.Empty;
@@ -162,11 +151,6 @@ public static partial class DBFuncionariosDicInfo
     public static string NomeSqlLike(string text) => Nome.SqlCmdTextLike(text) ?? string.Empty;
     public static string NomeSqlLikeInit(string text) => Nome.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string NomeSqlLikeSpaces(string? text) => Nome.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string FuncaoDiff(int id) => Funcao.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string FuncaoSql(int id) => Funcao.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string FuncaoIsNull => Funcao.SqlCmdIsNull() ?? string.Empty;
-    public static string FuncaoNotIsNull => Funcao.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string SexoSql(bool valueCheck) => Sexo.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
     public static string SexoSqlSim => Sexo.SqlCmdBoolSim() ?? string.Empty;
     public static string SexoSqlNao => Sexo.SqlCmdBoolNao() ?? string.Empty;
@@ -223,11 +207,6 @@ public static partial class DBFuncionariosDicInfo
     public static string BairroSqlLike(string text) => Bairro.SqlCmdTextLike(text) ?? string.Empty;
     public static string BairroSqlLikeInit(string text) => Bairro.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string BairroSqlLikeSpaces(string? text) => Bairro.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string CidadeDiff(int id) => Cidade.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CidadeSql(int id) => Cidade.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CidadeIsNull => Cidade.SqlCmdIsNull() ?? string.Empty;
-    public static string CidadeNotIsNull => Cidade.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string CEPSql(string text) => CEP.SqlCmdTextIgual(text, 10) ?? string.Empty;
     public static string CEPSqlNotIsNull => CEP.SqlCmdNotIsNull() ?? string.Empty;
     public static string CEPSqlIsNull => CEP.SqlCmdIsNull() ?? string.Empty;
@@ -400,11 +379,6 @@ public static partial class DBFuncionariosDicInfo
     public static string BoldSqlNao => Bold.SqlCmdBoolNao() ?? string.Empty;
 
     public static string GUIDSql(string text) => GUID.SqlCmdTextIgual(text, 150) ?? string.Empty;
-    public static string QuemCadDiff(int id) => QuemCad.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemCadSql(int id) => QuemCad.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemCadIsNull => QuemCad.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemCadNotIsNull => QuemCad.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DtCadSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtCad}]");
     public static string DtCadSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtCad}]");
     public static string DtCadSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtCad}]");
@@ -419,11 +393,6 @@ public static partial class DBFuncionariosDicInfo
     public static string DtCadSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DtCad}]");
     public static string DtCadIsNull => DtCad.SqlCmdIsNull() ?? string.Empty;
     public static string DtCadNotIsNull => DtCad.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string QuemAtuDiff(int id) => QuemAtu.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemAtuSql(int id) => QuemAtu.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemAtuIsNull => QuemAtu.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemAtuNotIsNull => QuemAtu.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string DtAtuSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtAtu}]");
     public static string DtAtuSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtAtu}]");
@@ -440,7 +409,7 @@ public static partial class DBFuncionariosDicInfo
     public static string DtAtuIsNull => DtAtu.SqlCmdIsNull() ?? string.Empty;
     public static string DtAtuNotIsNull => DtAtu.SqlCmdNotIsNull() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

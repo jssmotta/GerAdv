@@ -145,8 +145,6 @@ public partial class DBPreClientes
         }
     }
 
-    public string MaskCNPJ => DevourerOne.MaskCnpj(FCNPJ);
-
     [XmlAttribute]
     public string? FCNPJ
     {

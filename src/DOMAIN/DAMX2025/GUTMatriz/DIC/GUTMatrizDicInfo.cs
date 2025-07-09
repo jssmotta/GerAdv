@@ -10,11 +10,6 @@ public static partial class DBGUTMatrizDicInfo
     public const string Descricao = "gutDescricao"; // LOCALIZACAO 170523
     public const string GUTTipo = "gutGUTTipo"; // LOCALIZACAO 170523
     public const string Valor = "gutValor"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Descricao,
@@ -31,7 +26,6 @@ public static partial class DBGUTMatrizDicInfo
     public static DBInfoSystem GutValor => new(0, PTabelaNome, CampoCodigo, Valor, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoNumber);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
     public static string DescricaoSql(string text) => Descricao.SqlCmdTextIgual(text, 150) ?? string.Empty;
     public static string DescricaoSqlNotIsNull => Descricao.SqlCmdNotIsNull() ?? string.Empty;
@@ -41,17 +35,7 @@ public static partial class DBGUTMatrizDicInfo
     public static string DescricaoSqlLike(string text) => Descricao.SqlCmdTextLike(text) ?? string.Empty;
     public static string DescricaoSqlLikeInit(string text) => Descricao.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string DescricaoSqlLikeSpaces(string? text) => Descricao.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string GUTTipoDiff(int id) => GUTTipo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string GUTTipoSql(int id) => GUTTipo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string GUTTipoIsNull => GUTTipo.SqlCmdIsNull() ?? string.Empty;
-    public static string GUTTipoNotIsNull => GUTTipo.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string ValorDiff(int id) => Valor.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ValorSql(int id) => Valor.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ValorIsNull => Valor.SqlCmdIsNull() ?? string.Empty;
-    public static string ValorNotIsNull => Valor.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

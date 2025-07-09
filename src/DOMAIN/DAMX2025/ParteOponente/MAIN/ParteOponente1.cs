@@ -4,15 +4,6 @@ namespace MenphisSI.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBParteOponente : XCodeIdBase, ICadastros
 {
-#if (DEBUG)
-#if (!shadowsDisabled && !shadows_MenphisSI_GerAdv && !shadows_MenphisSI_GerAdv_ParteOponente)
-#pragma warning disable CA1822 // Mark members as static
-
-//public bool CertSignature() => DicionarioDeDadosManagedDatabaseCode.CodeSigntature_DBParteOponente();
-#pragma warning restore CA1822 // Mark members as static
-
-#endif
-#endif
 #region TableDefinition_ParteOponente
     [XmlIgnore]
     public string TabelaNome => "ParteOponente";
@@ -22,20 +13,8 @@ public partial class DBParteOponente : XCodeIdBase, ICadastros
     }
 
 #endregion
-#if (forWeb)
-public int Update(MsiSqlConnection? oCnn = null, int insertId = 0)
-{
-    if (oCnn != null) return UpdateX(oCnn, insertId);
-    using var cnn = Configuracoes.GetConnectionRw();
-    return UpdateX(cnn, insertId);
-}
-#endif
 #region GravarDados_ParteOponente
-#if (forWeb)
-                private int UpdateX(MsiSqlConnection? oCnn, int insertId = 0)
-#else
     public int Update(MsiSqlConnection? oCnn, int insertId = 0)
-#endif
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)

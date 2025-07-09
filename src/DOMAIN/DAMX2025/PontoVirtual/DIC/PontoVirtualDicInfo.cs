@@ -11,11 +11,6 @@ public static partial class DBPontoVirtualDicInfo
     public const string HoraSaida = "pvtHoraSaida"; // LOCALIZACAO 170523
     public const string Operador = "pvtOperador"; // LOCALIZACAO 170523
     public const string Key = "pvtKey"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => HoraEntrada,
@@ -34,7 +29,6 @@ public static partial class DBPontoVirtualDicInfo
     public static DBInfoSystem PvtKey => new(0, PTabelaNome, CampoCodigo, Key, 23, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
     public static string HoraEntradaSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{HoraEntrada}]");
     public static string HoraEntradaSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{HoraEntrada}]");
@@ -66,11 +60,6 @@ public static partial class DBPontoVirtualDicInfo
     public static string HoraSaidaIsNull => HoraSaida.SqlCmdIsNull() ?? string.Empty;
     public static string HoraSaidaNotIsNull => HoraSaida.SqlCmdNotIsNull() ?? string.Empty;
 
-    public static string OperadorDiff(int id) => Operador.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string OperadorSql(int id) => Operador.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string OperadorIsNull => Operador.SqlCmdIsNull() ?? string.Empty;
-    public static string OperadorNotIsNull => Operador.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string KeySql(string text) => Key.SqlCmdTextIgual(text, 23) ?? string.Empty;
     public static string KeySqlNotIsNull => Key.SqlCmdNotIsNull() ?? string.Empty;
     public static string KeySqlIsNull => Key.SqlCmdIsNull() ?? string.Empty;
@@ -79,7 +68,7 @@ public static partial class DBPontoVirtualDicInfo
     public static string KeySqlLike(string text) => Key.SqlCmdTextLike(text) ?? string.Empty;
     public static string KeySqlLikeInit(string text) => Key.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string KeySqlLikeSpaces(string? text) => Key.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

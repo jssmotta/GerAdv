@@ -22,11 +22,6 @@ public static partial class DBAgendaSemanaDicInfo
     public const string Cliente = "xxxCliente"; // LOCALIZACAO 170523
     public const string NomeCliente = "xxxNomeCliente"; // LOCALIZACAO 170523
     public const string Tipo = "xxxTipo"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => ParaNome,
@@ -67,7 +62,9 @@ public static partial class DBAgendaSemanaDicInfo
     public static DBInfoSystem XxxTipo => new(0, PTabelaNome, CampoCodigo, Tipo, 100, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
+#region SMART_SQLServices 
+#endregion // 005 " : string.Empty)} 
+
     [Serializable]
     public enum NomesCamposTabela
     {

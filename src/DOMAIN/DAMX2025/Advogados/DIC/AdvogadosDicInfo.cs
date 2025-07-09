@@ -51,11 +51,6 @@ public static partial class DBAdvogadosDicInfo
     public const string QuemAtu = "advQuemAtu"; // LOCALIZACAO 170523
     public const string DtAtu = "advDtAtu"; // LOCALIZACAO 170523
     public const string Visto = "advVisto"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Cargo,
@@ -154,13 +149,7 @@ public static partial class DBAdvogadosDicInfo
     public static DBInfoSystem AdvVisto => new(0, PTabelaNome, CampoCodigo, Visto, DevourerOne.PCaptionFieldAuditorVisto, DevourerOne.PTooltipAuditorVisto, ETipoDadosSysteminfo.SysteminfoBooleanVisto);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string CargoDiff(int id) => Cargo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CargoSql(int id) => Cargo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CargoIsNull => Cargo.SqlCmdIsNull() ?? string.Empty;
-    public static string CargoNotIsNull => Cargo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string EMailProSql(string text) => EMailPro.SqlCmdTextIgual(text, 255) ?? string.Empty;
     public static string EMailProSqlNotIsNull => EMailPro.SqlCmdNotIsNull() ?? string.Empty;
     public static string EMailProSqlIsNull => EMailPro.SqlCmdIsNull() ?? string.Empty;
@@ -205,11 +194,6 @@ public static partial class DBAdvogadosDicInfo
     public static string NomeMaeSqlLike(string text) => NomeMae.SqlCmdTextLike(text) ?? string.Empty;
     public static string NomeMaeSqlLikeInit(string text) => NomeMae.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string NomeMaeSqlLikeSpaces(string? text) => NomeMae.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string EscritorioDiff(int id) => Escritorio.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string EscritorioSql(int id) => Escritorio.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string EscritorioIsNull => Escritorio.SqlCmdIsNull() ?? string.Empty;
-    public static string EscritorioNotIsNull => Escritorio.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string EstagiarioSql(bool valueCheck) => Estagiario.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
     public static string EstagiarioSqlSim => Estagiario.SqlCmdBoolSim() ?? string.Empty;
     public static string EstagiarioSqlNao => Estagiario.SqlCmdBoolNao() ?? string.Empty;
@@ -238,11 +222,6 @@ public static partial class DBAdvogadosDicInfo
     public static string EnderecoSqlLike(string text) => Endereco.SqlCmdTextLike(text) ?? string.Empty;
     public static string EnderecoSqlLikeInit(string text) => Endereco.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string EnderecoSqlLikeSpaces(string? text) => Endereco.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string CidadeDiff(int id) => Cidade.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CidadeSql(int id) => Cidade.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CidadeIsNull => Cidade.SqlCmdIsNull() ?? string.Empty;
-    public static string CidadeNotIsNull => Cidade.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string CEPSql(string text) => CEP.SqlCmdTextIgual(text, 10) ?? string.Empty;
     public static string CEPSqlNotIsNull => CEP.SqlCmdNotIsNull() ?? string.Empty;
     public static string CEPSqlIsNull => CEP.SqlCmdIsNull() ?? string.Empty;
@@ -295,11 +274,6 @@ public static partial class DBAdvogadosDicInfo
     public static string FaxSqlLike(string text) => Fax.SqlCmdTextLike(text) ?? string.Empty;
     public static string FaxSqlLikeInit(string text) => Fax.SqlCmdTextLikeInit(text) ?? string.Empty;
     public static string FaxSqlLikeSpaces(string? text) => Fax.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string ComissaoDiff(int id) => Comissao.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ComissaoSql(int id) => Comissao.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ComissaoIsNull => Comissao.SqlCmdIsNull() ?? string.Empty;
-    public static string ComissaoNotIsNull => Comissao.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DtInicioSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtInicio}]");
     public static string DtInicioSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtInicio}]");
     public static string DtInicioSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtInicio}]");
@@ -430,11 +404,6 @@ public static partial class DBAdvogadosDicInfo
     public static string BoldSqlNao => Bold.SqlCmdBoolNao() ?? string.Empty;
 
     public static string GUIDSql(string text) => GUID.SqlCmdTextIgual(text, 150) ?? string.Empty;
-    public static string QuemCadDiff(int id) => QuemCad.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemCadSql(int id) => QuemCad.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemCadIsNull => QuemCad.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemCadNotIsNull => QuemCad.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DtCadSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtCad}]");
     public static string DtCadSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtCad}]");
     public static string DtCadSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtCad}]");
@@ -449,11 +418,6 @@ public static partial class DBAdvogadosDicInfo
     public static string DtCadSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DtCad}]");
     public static string DtCadIsNull => DtCad.SqlCmdIsNull() ?? string.Empty;
     public static string DtCadNotIsNull => DtCad.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string QuemAtuDiff(int id) => QuemAtu.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string QuemAtuSql(int id) => QuemAtu.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string QuemAtuIsNull => QuemAtu.SqlCmdIsNull() ?? string.Empty;
-    public static string QuemAtuNotIsNull => QuemAtu.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string DtAtuSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtAtu}]");
     public static string DtAtuSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtAtu}]");
@@ -470,7 +434,7 @@ public static partial class DBAdvogadosDicInfo
     public static string DtAtuIsNull => DtAtu.SqlCmdIsNull() ?? string.Empty;
     public static string DtAtuNotIsNull => DtAtu.SqlCmdNotIsNull() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela

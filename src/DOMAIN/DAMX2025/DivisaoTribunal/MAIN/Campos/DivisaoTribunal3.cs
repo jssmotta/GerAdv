@@ -143,7 +143,6 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public string CEPMask() => DevourerOne.MaskCep(FCEP);
     [XmlAttribute]
     public string? FCEP
     {

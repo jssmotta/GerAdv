@@ -17,11 +17,6 @@ public static partial class DBAgendaRelatorioDicInfo
     public const string NomeForo = "xxxNomeForo"; // LOCALIZACAO 170523
     public const string NomeJustica = "xxxNomeJustica"; // LOCALIZACAO 170523
     public const string NomeArea = "xxxNomeArea"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Data,
@@ -52,7 +47,9 @@ public static partial class DBAgendaRelatorioDicInfo
     public static DBInfoSystem XxxNomeArea => new(0, PTabelaNome, CampoCodigo, NomeArea, 40, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoText, true, false, false);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
+#region SMART_SQLServices 
+#endregion // 005 " : string.Empty)} 
+
     [Serializable]
     public enum NomesCamposTabela
     {

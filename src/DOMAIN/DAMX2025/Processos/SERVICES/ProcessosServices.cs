@@ -12,22 +12,6 @@ public partial class DBProcessos
     public string MValorCacheCalculoProvStr { get => m_FValorCacheCalculoProv.ToString("0.00"); set => FValorCacheCalculoProv = DevourerOne.ConvertString2Decimal(value); }
 
     [XmlIgnore]
-    public DateTime FDataEntradaWithHora
-    {
-        set
-        {
-            pFldFDataEntrada = true;
-            m_FDataEntrada = value;
-        }
-    }
-
-    [XmlIgnore]
-    public string MDataEntradaDataX_DataHora => $"{m_FDataEntrada:dd/MM/yyyy HH:mm:ss}";
-
-    [XmlIgnore]
-    public string MDataEntradaX_Hora => $"{m_FDataEntrada:HH:mm:ss}";
-
-    [XmlIgnore]
     public string MValorCausaInicialStr { get => m_FValorCausaInicial.ToString("0.00"); set => FValorCausaInicial = DevourerOne.ConvertString2Decimal(value); }
 
     [XmlIgnore]
@@ -43,38 +27,6 @@ public partial class DBProcessos
     public string MValorStr { get => m_FValor.ToString("0.00"); set => FValor = DevourerOne.ConvertString2Decimal(value); }
 
     [XmlIgnore]
-    public DateTime FDtBaixaWithHora
-    {
-        set
-        {
-            pFldFDtBaixa = true;
-            m_FDtBaixa = value;
-        }
-    }
-
-    [XmlIgnore]
-    public string MDtBaixaDataX_DataHora => $"{m_FDtBaixa:dd/MM/yyyy HH:mm:ss}";
-
-    [XmlIgnore]
-    public string MDtBaixaX_Hora => $"{m_FDtBaixa:HH:mm:ss}";
-
-    [XmlIgnore]
-    public DateTime FZKeyQuandoWithHora
-    {
-        set
-        {
-            pFldFZKeyQuando = true;
-            m_FZKeyQuando = value;
-        }
-    }
-
-    [XmlIgnore]
-    public string MZKeyQuandoDataX_DataHora => $"{m_FZKeyQuando:dd/MM/yyyy HH:mm:ss}";
-
-    [XmlIgnore]
-    public string MZKeyQuandoX_Hora => $"{m_FZKeyQuando:HH:mm:ss}";
-
-    [XmlIgnore]
     public string MHonorarioValorStr { get => m_FHonorarioValor.ToString("0.00"); set => FHonorarioValor = DevourerOne.ConvertString2Decimal(value); }
 
     [XmlIgnore]
@@ -88,8 +40,4 @@ public partial class DBProcessos
 
     [XmlIgnore]
     public string MValorCondenacaoCalculadoStr { get => m_FValorCondenacaoCalculado.ToString("0.00"); set => FValorCondenacaoCalculado = DevourerOne.ConvertString2Decimal(value); }
-#if (forWeb)
-[XmlIgnore]
-public string TRClick => DevourerOne.TableTrClick(ID, "PROCESSOSINC");
-#endif
 }

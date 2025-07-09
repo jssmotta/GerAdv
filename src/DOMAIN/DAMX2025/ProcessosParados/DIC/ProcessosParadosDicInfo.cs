@@ -14,11 +14,6 @@ public static partial class DBProcessosParadosDicInfo
     public const string Operador = "pprOperador"; // LOCALIZACAO 170523
     public const string DataHistorico = "pprDataHistorico"; // LOCALIZACAO 170523
     public const string DataNENotas = "pprDataNENotas"; // LOCALIZACAO 170523
-    public static string CampoCodigoDiff(int id) => CampoCodigo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string CampoCodigoSql(int id) => CampoCodigo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string CampoCodigoIsNull => CampoCodigo.SqlCmdIsNull() ?? string.Empty;
-    public static string CampoCodigoNotIsNull => CampoCodigo.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Processo,
@@ -43,23 +38,7 @@ public static partial class DBProcessosParadosDicInfo
     public static DBInfoSystem PprDataNENotas => new(0, PTabelaNome, CampoCodigo, DataNENotas, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoDatetime);
 
 #endregion
-    public static bool IsThisTable(string nomeTabela) => nomeTabela.ToUpper().Equals(TabelaNome.ToUpper());
 #region SMART_SQLServices 
-    public static string ProcessoDiff(int id) => Processo.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string ProcessoSql(int id) => Processo.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string ProcessoIsNull => Processo.SqlCmdIsNull() ?? string.Empty;
-    public static string ProcessoNotIsNull => Processo.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string SemanaDiff(int id) => Semana.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string SemanaSql(int id) => Semana.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string SemanaIsNull => Semana.SqlCmdIsNull() ?? string.Empty;
-    public static string SemanaNotIsNull => Semana.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string AnoDiff(int id) => Ano.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string AnoSql(int id) => Ano.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string AnoIsNull => Ano.SqlCmdIsNull() ?? string.Empty;
-    public static string AnoNotIsNull => Ano.SqlCmdNotIsNull() ?? string.Empty;
-
     public static string DataHoraSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataHora}]");
     public static string DataHoraSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataHora}]");
     public static string DataHoraSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataHora}]");
@@ -74,11 +53,6 @@ public static partial class DBProcessosParadosDicInfo
     public static string DataHoraSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataHora}]");
     public static string DataHoraIsNull => DataHora.SqlCmdIsNull() ?? string.Empty;
     public static string DataHoraNotIsNull => DataHora.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string OperadorDiff(int id) => Operador.SqlCmdNumberDiff(id) ?? string.Empty;
-    public static string OperadorSql(int id) => Operador.SqlCmdNumberIgual(id) ?? string.Empty;
-    public static string OperadorIsNull => Operador.SqlCmdIsNull() ?? string.Empty;
-    public static string OperadorNotIsNull => Operador.SqlCmdNotIsNull() ?? string.Empty;
 
     public static string DataHistoricoSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataHistorico}]");
     public static string DataHistoricoSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataHistorico}]");
@@ -110,7 +84,7 @@ public static partial class DBProcessosParadosDicInfo
     public static string DataNENotasIsNull => DataNENotas.SqlCmdIsNull() ?? string.Empty;
     public static string DataNENotasNotIsNull => DataNENotas.SqlCmdNotIsNull() ?? string.Empty;
 
-#endregion // 005             
+#endregion // 005 " : string.Empty)} 
 
     [Serializable]
     public enum NomesCamposTabela
