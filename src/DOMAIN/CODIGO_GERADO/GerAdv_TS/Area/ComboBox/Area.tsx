@@ -53,7 +53,7 @@ const loadRecordForEdit = async (id: number) => {
     setAction(ActionEditar);
     handleValueChange({ id: record.id, nome: record.descricao });
   } catch (error) {
-  console.log('Erro ao carregar Area:');
+  console.log('Erro ao carregar Área:');
 }
 };
 

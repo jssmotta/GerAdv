@@ -13,8 +13,8 @@ import { AreaEmpty, AreaTestEmpty } from '@/app/GerAdv_TS/Models/Area';
 jest.mock('@/app/GerAdv_TS/Area/Hooks/hookArea', () => ({
   useAreaComboBox: jest.fn(() => ({
     options: [
-    { ...AreaEmpty(), id: 1, descricao: 'Area 1' },
-    { ...AreaEmpty(), id: 2, descricao: 'Area 2' },
+    { ...AreaEmpty(), id: 1, descricao: 'Área 1' },
+    { ...AreaEmpty(), id: 2, descricao: 'Área 2' },
     ], 
     loading: false, 
     selectedValue: null, 
@@ -71,7 +71,7 @@ jest.mock('@/app/GerAdv_TS/Area/Crud/Grids/AreaWindow', () => {
     }}
     data-testid='combo-box'
   >
-  <option value=''>Select {props.textField === 'descricao' ? 'Area' : 'Item'}</option>
+  <option value=''>Select {props.textField === 'descricao' ? 'Área' : 'Item'}</option>
     {props.data?.map((item: any) => (
       <option key={item.id} value={item.id}>
         {item.descricao}
@@ -91,12 +91,12 @@ jest.mock('@/app/GerAdv_TS/Area/Crud/Grids/AreaWindow', () => {
   }));
   // Dados mock para os testes
   const mockOptions = [
-  { ...AreaTestEmpty(), id: 1, descricao: 'Area 1' },
-  { ...AreaTestEmpty(), id: 2, descricao: 'Area 2' },
+  { ...AreaTestEmpty(), id: 1, descricao: 'Área 1' },
+  { ...AreaTestEmpty(), id: 2, descricao: 'Área 2' },
 ];
 // Props padr�o para o componente
 const defaultProps = {
-  label: 'Area',
+  label: 'Área',
   name: 'area',
   value: 0, 
   setValue: jest.fn(), 
@@ -127,19 +127,19 @@ describe('AreaComboBox', () => {
   it('renders label and ComboBox', () => {
     render(<AreaComboBox {...defaultProps} />);
     // Verificar se o label � renderizado
-    expect(screen.getByText('Area')).toBeInTheDocument();
+    expect(screen.getByText('Área')).toBeInTheDocument();
     // Verificar se o combobox � renderizado
     const combobox = screen.getByRole('combobox');
     expect(combobox).toBeInTheDocument();
     // Verificar se a op��o padr�o est� presente
-    expect(screen.getByText('Select Area')).toBeInTheDocument();
+    expect(screen.getByText('Select Área')).toBeInTheDocument();
   });
   it('calls setValue on ComboBox change', () => {
     render(<AreaComboBox {...defaultProps} />);
     const combobox = screen.getByRole('combobox');
 
     fireEvent.change(combobox, { target: { value: '1' } });
-    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...AreaTestEmpty(), id: 1, descricao: 'Area 1' });
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...AreaTestEmpty(), id: 1, descricao: 'Área 1' });
   });
   it('shows loading state', () => {
     // Mock loading state

@@ -35,9 +35,9 @@ export const useReuniaoForm = (
       const dados = await dataService.fetchReuniaoById(id);
       setData(dados);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Reuniao';
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Reunião';
       setError(errorMessage);
-      console.log('Erro ao carregar Reuniao');
+      console.log('Erro ao carregar Reunião');
     } finally {
       setLoading(false);
     }

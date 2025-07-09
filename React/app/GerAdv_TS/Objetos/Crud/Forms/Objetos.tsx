@@ -172,7 +172,7 @@ const addValorJustica = (e: any) => {
               dataForm={objetosData}
               value={objetosData.justica}
               setValue={addValorJustica}
-              label={'Justica'}
+              label={'Justiça'}
               />
 
               <AreaComboBox
@@ -180,7 +180,7 @@ const addValorJustica = (e: any) => {
               dataForm={objetosData}
               value={objetosData.area}
               setValue={addValorArea}
-              label={'Area'}
+              label={'Área'}
               />
             </div>
           </form>

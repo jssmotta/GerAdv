@@ -317,7 +317,7 @@ const addValorCidade = (e: any) => {
                     useEffect(() => {
                       const el = document.querySelector('.nameFormMobile');
                       if (el) {
-                        el.textContent = agendaData?.id == 0 ? 'Editar Agenda' : 'Adicionar Agenda';
+                        el.textContent = agendaData?.id == 0 ? 'Editar Agenda' : 'Adicionar Compromisso';
                       }
                     }, [agendaData.id]);
                     return (
@@ -535,7 +535,7 @@ const addValorCidade = (e: any) => {
                               dataForm={agendaData}
                               value={agendaData.area}
                               setValue={addValorArea}
-                              label={'Area'}
+                              label={'Área'}
                               />
 
                               <JusticaComboBox
@@ -543,7 +543,7 @@ const addValorCidade = (e: any) => {
                               dataForm={agendaData}
                               value={agendaData.justica}
                               setValue={addValorJustica}
-                              label={'Justica'}
+                              label={'Justiça'}
                               />
 
                               <ProcessosComboBox

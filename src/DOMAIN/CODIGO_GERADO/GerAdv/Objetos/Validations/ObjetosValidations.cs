@@ -35,7 +35,7 @@ public class ObjetosValidation : IObjetosValidation
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
-                return $"Justica não encontrado ({regJustica?.Id}).";
+                return $"Justiça não encontrado ({regJustica?.Id}).";
             }
         }
 
@@ -45,7 +45,7 @@ public class ObjetosValidation : IObjetosValidation
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
-                return $"Area não encontrado ({regArea?.Id}).";
+                return $"Área não encontrado ({regArea?.Id}).";
             }
         }
 

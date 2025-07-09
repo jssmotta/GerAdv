@@ -134,9 +134,9 @@ const gridColumns = useMemo(() => [
   title='Trib Endereços'
   cells={{ data: EditarCellTribEnderecos }}
   />, 
-  <GridColumn field='descricaoarea' title='Area' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='descricaoarea' title='Área' sortable={false} filterable={false} />, /* Track G.01 */
 
-  <GridColumn field='nomejustica' title='Justica' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='nomejustica' title='Justiça' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nroprocessoinstancia' title='Instancia' sortable={false} filterable={false} />, /* Track G.01 */
   <GridColumn

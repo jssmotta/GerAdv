@@ -138,7 +138,7 @@ const addValorAgenda = (e: any) => {
             dataForm={agendastatusData}
             value={agendastatusData.agenda}
             setValue={addValorAgenda}
-            label={'Agenda'}
+            label={'Compromisso'}
             />
 
             <InputInput

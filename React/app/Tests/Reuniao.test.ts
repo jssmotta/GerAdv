@@ -48,7 +48,7 @@ describe('useReuniaoForm', () => {
     const mockEvent = {
       target: {
         name: 'pauta',
-        value: 'Novo Reuniao',
+        value: 'Novo Reunião',
         type: 'text',
         checked: false
       }
@@ -58,11 +58,11 @@ describe('useReuniaoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.pauta).toBe('Novo Reuniao');
+    expect(result.current.data.pauta).toBe('Novo Reunião');
   });
 
-   test('deve carregar Reuniao por ID', async () => {
-    const mockReuniao = { ...initialReuniao, id: 1, pauta: 'Reuniao Teste' };
+   test('deve carregar Reunião por ID', async () => {
+    const mockReuniao = { ...initialReuniao, id: 1, pauta: 'Reunião Teste' };
     mockReuniaoService.fetchReuniaoById.mockResolvedValue(mockReuniao);
 
     const { result } = renderHook(() => 
@@ -78,8 +78,8 @@ describe('useReuniaoForm', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  test('deve lidar com erro ao carregar Reuniao', async () => {
-    const errorMessage = 'Erro ao carregar Reuniao';
+  test('deve lidar com erro ao carregar Reunião', async () => {
+    const errorMessage = 'Erro ao carregar Reunião';
     mockReuniaoService.fetchReuniaoById.mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => 
@@ -144,8 +144,8 @@ describe('useReuniaoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialReuniao, id: 1, pauta: 'Reuniao 1' },
-      { ...initialReuniao, id: 2, pauta: 'Reuniao 2' }
+      { ...initialReuniao, id: 1, pauta: 'Reunião 1' },
+      { ...initialReuniao, id: 2, pauta: 'Reunião 2' }
     ];
     mockReuniaoService.getAll.mockResolvedValue(mockData);
 
@@ -179,8 +179,8 @@ describe('useReuniaoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialReuniao, id: 1, pauta: 'Reuniao Filtrado' }];
-    const filtro = { pauta: 'Reuniao' };
+    const mockData = [{ ...initialReuniao, id: 1, pauta: 'Reunião Filtrado' }];
+    const filtro = { pauta: 'Reunião' };
     mockReuniaoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -200,7 +200,7 @@ describe('useValidationsReuniao', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsReuniao());
 
-    const validData = { ...initialReuniao, pauta: 'Reuniao Válido' };
+    const validData = { ...initialReuniao, pauta: 'Reunião Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -226,7 +226,7 @@ describe('useValidationsReuniao', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialReuniao, id: 1, pauta: 'Reuniao Teste' }];
+    const mockData = [{ ...initialReuniao, id: 1, pauta: 'Reunião Teste' }];
     mockReuniaoService.getAll.mockResolvedValue(mockData);
     
 

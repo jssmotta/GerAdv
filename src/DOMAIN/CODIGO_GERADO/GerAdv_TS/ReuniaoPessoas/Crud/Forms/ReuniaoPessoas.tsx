@@ -160,7 +160,7 @@ const addValorReuniao = (e: any) => {
               dataForm={reuniaopessoasData}
               value={reuniaopessoasData.reuniao}
               setValue={addValorReuniao}
-              label={'Reuniao'}
+              label={'Reunião'}
               />
 
               <OperadorComboBox

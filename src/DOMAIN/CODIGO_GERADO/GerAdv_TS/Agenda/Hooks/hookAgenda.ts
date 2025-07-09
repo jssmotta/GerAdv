@@ -35,9 +35,9 @@ export const useAgendaForm = (
       const dados = await dataService.fetchAgendaById(id);
       setData(dados);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Agenda';
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Compromisso';
       setError(errorMessage);
-      console.log('Erro ao carregar Agenda');
+      console.log('Erro ao carregar Compromisso');
     } finally {
       setLoading(false);
     }

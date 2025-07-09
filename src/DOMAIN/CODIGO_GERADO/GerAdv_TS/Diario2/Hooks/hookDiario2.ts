@@ -35,9 +35,9 @@ export const useDiario2Form = (
       const dados = await dataService.fetchDiario2ById(id);
       setData(dados);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Diario2';
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Diário';
       setError(errorMessage);
-      console.log('Erro ao carregar Diario2');
+      console.log('Erro ao carregar Diário');
     } finally {
       setLoading(false);
     }

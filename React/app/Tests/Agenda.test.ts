@@ -48,7 +48,7 @@ describe('useAgendaForm', () => {
     const mockEvent = {
       target: {
         name: 'compromisso',
-        value: 'Novo Agenda',
+        value: 'Novo Compromisso',
         type: 'text',
         checked: false
       }
@@ -58,11 +58,11 @@ describe('useAgendaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.compromisso).toBe('Novo Agenda');
+    expect(result.current.data.compromisso).toBe('Novo Compromisso');
   });
 
-   test('deve carregar Agenda por ID', async () => {
-    const mockAgenda = { ...initialAgenda, id: 1, compromisso: 'Agenda Teste' };
+   test('deve carregar Compromisso por ID', async () => {
+    const mockAgenda = { ...initialAgenda, id: 1, compromisso: 'Compromisso Teste' };
     mockAgendaService.fetchAgendaById.mockResolvedValue(mockAgenda);
 
     const { result } = renderHook(() => 
@@ -78,8 +78,8 @@ describe('useAgendaForm', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  test('deve lidar com erro ao carregar Agenda', async () => {
-    const errorMessage = 'Erro ao carregar Agenda';
+  test('deve lidar com erro ao carregar Compromisso', async () => {
+    const errorMessage = 'Erro ao carregar Compromisso';
     mockAgendaService.fetchAgendaById.mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => 
@@ -144,8 +144,8 @@ describe('useAgendaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialAgenda, id: 1, compromisso: 'Agenda 1' },
-      { ...initialAgenda, id: 2, compromisso: 'Agenda 2' }
+      { ...initialAgenda, id: 1, compromisso: 'Compromisso 1' },
+      { ...initialAgenda, id: 2, compromisso: 'Compromisso 2' }
     ];
     mockAgendaService.getAll.mockResolvedValue(mockData);
 
@@ -179,8 +179,8 @@ describe('useAgendaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialAgenda, id: 1, compromisso: 'Agenda Filtrado' }];
-    const filtro = { compromisso: 'Agenda' };
+    const mockData = [{ ...initialAgenda, id: 1, compromisso: 'Compromisso Filtrado' }];
+    const filtro = { compromisso: 'Compromisso' };
     mockAgendaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -200,7 +200,7 @@ describe('useValidationsAgenda', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsAgenda());
 
-    const validData = { ...initialAgenda, compromisso: 'Agenda Válido' };
+    const validData = { ...initialAgenda, compromisso: 'Compromisso Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -226,7 +226,7 @@ describe('useValidationsAgenda', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialAgenda, id: 1, compromisso: 'Agenda Teste' }];
+    const mockData = [{ ...initialAgenda, id: 1, compromisso: 'Compromisso Teste' }];
     mockAgendaService.getAll.mockResolvedValue(mockData);
     
 

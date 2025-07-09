@@ -86,7 +86,7 @@ public class ClientesValidation : IClientesValidation
             return "Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.";
         var reuniaoExists22 = await reuniaoService.Filter(new Filters.FilterReuniao { Cliente = id }, uri);
         if (reuniaoExists22 != null && reuniaoExists22.Any())
-            return "Não é possível excluir o registro, pois existem registros da tabela Reuniao associados a ele.";
+            return "Não é possível excluir o registro, pois existem registros da tabela Reunião associados a ele.";
         return string.Empty;
     }
 

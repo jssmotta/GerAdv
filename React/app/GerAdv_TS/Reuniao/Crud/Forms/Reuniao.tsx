@@ -110,7 +110,7 @@ const addValorCliente = (e: any) => {
   useEffect(() => {
     const el = document.querySelector('.nameFormMobile');
     if (el) {
-      el.textContent = reuniaoData?.id == 0 ? 'Editar Reuniao' : 'Adicionar Reuniao';
+      el.textContent = reuniaoData?.id == 0 ? 'Editar Reuniao' : 'Adicionar Reunião';
     }
   }, [reuniaoData.id]);
   return (

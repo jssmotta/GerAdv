@@ -48,7 +48,7 @@ describe('useDiario2Form', () => {
     const mockEvent = {
       target: {
         name: 'nome',
-        value: 'Novo Diario2',
+        value: 'Novo Diário',
         type: 'text',
         checked: false
       }
@@ -58,11 +58,11 @@ describe('useDiario2Form', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.nome).toBe('Novo Diario2');
+    expect(result.current.data.nome).toBe('Novo Diário');
   });
 
-   test('deve carregar Diario2 por ID', async () => {
-    const mockDiario2 = { ...initialDiario2, id: 1, nome: 'Diario2 Teste' };
+   test('deve carregar Diário por ID', async () => {
+    const mockDiario2 = { ...initialDiario2, id: 1, nome: 'Diário Teste' };
     mockDiario2Service.fetchDiario2ById.mockResolvedValue(mockDiario2);
 
     const { result } = renderHook(() => 
@@ -78,8 +78,8 @@ describe('useDiario2Form', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  test('deve lidar com erro ao carregar Diario2', async () => {
-    const errorMessage = 'Erro ao carregar Diario2';
+  test('deve lidar com erro ao carregar Diário', async () => {
+    const errorMessage = 'Erro ao carregar Diário';
     mockDiario2Service.fetchDiario2ById.mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => 
@@ -144,8 +144,8 @@ describe('useDiario2List', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialDiario2, id: 1, nome: 'Diario2 1' },
-      { ...initialDiario2, id: 2, nome: 'Diario2 2' }
+      { ...initialDiario2, id: 1, nome: 'Diário 1' },
+      { ...initialDiario2, id: 2, nome: 'Diário 2' }
     ];
     mockDiario2Service.getAll.mockResolvedValue(mockData);
 
@@ -179,8 +179,8 @@ describe('useDiario2List', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialDiario2, id: 1, nome: 'Diario2 Filtrado' }];
-    const filtro = { nome: 'Diario2' };
+    const mockData = [{ ...initialDiario2, id: 1, nome: 'Diário Filtrado' }];
+    const filtro = { nome: 'Diário' };
     mockDiario2Service.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -200,7 +200,7 @@ describe('useValidationsDiario2', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsDiario2());
 
-    const validData = { ...initialDiario2, nome: 'Diario2 Válido' };
+    const validData = { ...initialDiario2, nome: 'Diário Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -247,7 +247,7 @@ describe('useValidationsDiario2', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialDiario2, id: 1, nome: 'Diario2 Teste' }];
+    const mockData = [{ ...initialDiario2, id: 1, nome: 'Diário Teste' }];
     mockDiario2Service.getAll.mockResolvedValue(mockData);
     mockDiario2Service.getList.mockResolvedValue(mockData);
 
@@ -272,7 +272,7 @@ describe('Integração de hooks', () => {
      
     // Aguarda carregar opções no combo
     
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Diario2 Teste' }]);
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Diário Teste' }]);
     
    
 
@@ -280,15 +280,15 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Diario2 Teste' }]);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Diário Teste' }]);
   
     expect(validation.isValid).toBe(true);
   });
 }); 
 test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
-      { id: 1, nome: 'Diario2 1' },
-      { id: 2, nome: 'Diario2 2' }
+      { id: 1, nome: 'Diário 1' },
+      { id: 2, nome: 'Diário 2' }
     ];
     mockDiario2Service.getList.mockResolvedValue(mockOptions as IDiario2[]);
 
@@ -300,8 +300,8 @@ test('deve carregar opções na inicialização', async () => {
     await waitFor(() => {
       // Aguarda carregar as opções antes de verificar
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Diario2 1' },
-        { id: 2, nome: 'Diario2 2' }
+        { id: 1, nome: 'Diário 1' },
+        { id: 2, nome: 'Diário 2' }
       ]);
     });
 
@@ -311,8 +311,8 @@ test('deve carregar opções na inicialização', async () => {
 
   test('deve filtrar opções', async () => {
     const mockOptions = [
-      { id: 1, nome: 'Diario2 ABC' },
-      { id: 2, nome: 'Diario2 XYZ' }
+      { id: 1, nome: 'Diário ABC' },
+      { id: 2, nome: 'Diário XYZ' }
     ];
     mockDiario2Service.getList.mockResolvedValue(mockOptions as IDiario2[]);   
 
@@ -323,8 +323,8 @@ test('deve carregar opções na inicialização', async () => {
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Diario2 ABC' },
-        { id: 2, nome: 'Diario2 XYZ' }
+        { id: 1, nome: 'Diário ABC' },
+        { id: 2, nome: 'Diário XYZ' }
       ]);
     });
 
@@ -333,14 +333,14 @@ test('deve carregar opções na inicialização', async () => {
       result.current.handleFilter('ABC');
     });
 
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Diario2 ABC' }]);
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Diário ABC' }]);
   });
 
 
   test('deve limpar filtro quando texto vazio', async () => {
     const mockOptions = [
-      { id: 1, nome: 'Diario2 ABC' },
-      { id: 2, nome: 'Diario2 XYZ' }
+      { id: 1, nome: 'Diário ABC' },
+      { id: 2, nome: 'Diário XYZ' }
     ];
     mockDiario2Service.getList.mockResolvedValue(mockOptions as IDiario2[]);
   
@@ -351,8 +351,8 @@ test('deve carregar opções na inicialização', async () => {
     );
     await waitFor(() => {
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Diario2 ABC' },
-        { id: 2, nome: 'Diario2 XYZ' }
+        { id: 1, nome: 'Diário ABC' },
+        { id: 2, nome: 'Diário XYZ' }
       ]);
     });
 
@@ -368,8 +368,8 @@ test('deve carregar opções na inicialização', async () => {
  
 
      expect(result.current.options).toEqual([
-          {id: 1, nome: 'Diario2 ABC' },
-          {id: 2, nome: 'Diario2 XYZ' }
+          {id: 1, nome: 'Diário ABC' },
+          {id: 2, nome: 'Diário XYZ' }
         ]);
 
   });
@@ -381,7 +381,7 @@ test('deve carregar opções na inicialização', async () => {
       useDiario2ComboBox(mockDiario2Service)
     );
 
-    const newValue = { id: 1, nome: 'Diario2 Selecionado' };
+    const newValue = { id: 1, nome: 'Diário Selecionado' };
 
     act(() => {
       result.current.handleValueChange(newValue);
@@ -391,7 +391,7 @@ test('deve carregar opções na inicialização', async () => {
   });
 
   test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, nome: 'Diario2 Inicial' };
+    const initialValue = { id: 1, nome: 'Diário Inicial' };
     
     const { result } = renderHook(() => 
       useDiario2ComboBox(mockDiario2Service, initialValue)
@@ -422,7 +422,7 @@ describe('useDiario2ComboBox', () => {
 
  
   test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, nome: 'Diario2 Inicial' };
+    const initialValue = { id: 1, nome: 'Diário Inicial' };
     
     const { result } = renderHook(() => 
       useDiario2ComboBox(mockDiario2Service, initialValue)

@@ -48,7 +48,7 @@ describe('useSituacaoForm', () => {
     const mockEvent = {
       target: {
         name: 'parte_int',
-        value: 'Novo Situacao',
+        value: 'Novo Situação',
         type: 'text',
         checked: false
       }
@@ -58,11 +58,11 @@ describe('useSituacaoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.parte_int).toBe('Novo Situacao');
+    expect(result.current.data.parte_int).toBe('Novo Situação');
   });
 
-   test('deve carregar Situacao por ID', async () => {
-    const mockSituacao = { ...initialSituacao, id: 1, parte_int: 'Situacao Teste' };
+   test('deve carregar Situação por ID', async () => {
+    const mockSituacao = { ...initialSituacao, id: 1, parte_int: 'Situação Teste' };
     mockSituacaoService.fetchSituacaoById.mockResolvedValue(mockSituacao);
 
     const { result } = renderHook(() => 
@@ -78,8 +78,8 @@ describe('useSituacaoForm', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  test('deve lidar com erro ao carregar Situacao', async () => {
-    const errorMessage = 'Erro ao carregar Situacao';
+  test('deve lidar com erro ao carregar Situação', async () => {
+    const errorMessage = 'Erro ao carregar Situação';
     mockSituacaoService.fetchSituacaoById.mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => 
@@ -144,8 +144,8 @@ describe('useSituacaoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialSituacao, id: 1, parte_int: 'Situacao 1' },
-      { ...initialSituacao, id: 2, parte_int: 'Situacao 2' }
+      { ...initialSituacao, id: 1, parte_int: 'Situação 1' },
+      { ...initialSituacao, id: 2, parte_int: 'Situação 2' }
     ];
     mockSituacaoService.getAll.mockResolvedValue(mockData);
 
@@ -179,8 +179,8 @@ describe('useSituacaoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialSituacao, id: 1, parte_int: 'Situacao Filtrado' }];
-    const filtro = { parte_int: 'Situacao' };
+    const mockData = [{ ...initialSituacao, id: 1, parte_int: 'Situação Filtrado' }];
+    const filtro = { parte_int: 'Situação' };
     mockSituacaoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -200,7 +200,7 @@ describe('useValidationsSituacao', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsSituacao());
 
-    const validData = { ...initialSituacao, parte_int: 'Situacao Válido' };
+    const validData = { ...initialSituacao, parte_int: 'Situação Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -226,7 +226,7 @@ describe('useValidationsSituacao', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialSituacao, id: 1, parte_int: 'Situacao Teste' }];
+    const mockData = [{ ...initialSituacao, id: 1, parte_int: 'Situação Teste' }];
     mockSituacaoService.getAll.mockResolvedValue(mockData);
     
 

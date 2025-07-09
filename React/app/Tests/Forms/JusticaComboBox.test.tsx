@@ -13,8 +13,8 @@ import { JusticaEmpty, JusticaTestEmpty } from '@/app/GerAdv_TS/Models/Justica';
 jest.mock('@/app/GerAdv_TS/Justica/Hooks/hookJustica', () => ({
   useJusticaComboBox: jest.fn(() => ({
     options: [
-    { ...JusticaEmpty(), id: 1, nome: 'Justica 1' },
-    { ...JusticaEmpty(), id: 2, nome: 'Justica 2' },
+    { ...JusticaEmpty(), id: 1, nome: 'Justiça 1' },
+    { ...JusticaEmpty(), id: 2, nome: 'Justiça 2' },
     ], 
     loading: false, 
     selectedValue: null, 
@@ -71,7 +71,7 @@ jest.mock('@/app/GerAdv_TS/Justica/Crud/Grids/JusticaWindow', () => {
     }}
     data-testid='combo-box'
   >
-  <option value=''>Select {props.textField === 'nome' ? 'Justica' : 'Item'}</option>
+  <option value=''>Select {props.textField === 'nome' ? 'Justiça' : 'Item'}</option>
     {props.data?.map((item: any) => (
       <option key={item.id} value={item.id}>
         {item.nome}
@@ -91,12 +91,12 @@ jest.mock('@/app/GerAdv_TS/Justica/Crud/Grids/JusticaWindow', () => {
   }));
   // Dados mock para os testes
   const mockOptions = [
-  { ...JusticaTestEmpty(), id: 1, nome: 'Justica 1' },
-  { ...JusticaTestEmpty(), id: 2, nome: 'Justica 2' },
+  { ...JusticaTestEmpty(), id: 1, nome: 'Justiça 1' },
+  { ...JusticaTestEmpty(), id: 2, nome: 'Justiça 2' },
 ];
 // Props padr�o para o componente
 const defaultProps = {
-  label: 'Justica',
+  label: 'Justiça',
   name: 'justica',
   value: 0, 
   setValue: jest.fn(), 
@@ -127,19 +127,19 @@ describe('JusticaComboBox', () => {
   it('renders label and ComboBox', () => {
     render(<JusticaComboBox {...defaultProps} />);
     // Verificar se o label � renderizado
-    expect(screen.getByText('Justica')).toBeInTheDocument();
+    expect(screen.getByText('Justiça')).toBeInTheDocument();
     // Verificar se o combobox � renderizado
     const combobox = screen.getByRole('combobox');
     expect(combobox).toBeInTheDocument();
     // Verificar se a op��o padr�o est� presente
-    expect(screen.getByText('Select Justica')).toBeInTheDocument();
+    expect(screen.getByText('Select Justiça')).toBeInTheDocument();
   });
   it('calls setValue on ComboBox change', () => {
     render(<JusticaComboBox {...defaultProps} />);
     const combobox = screen.getByRole('combobox');
 
     fireEvent.change(combobox, { target: { value: '1' } });
-    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...JusticaTestEmpty(), id: 1, nome: 'Justica 1' });
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...JusticaTestEmpty(), id: 1, nome: 'Justiça 1' });
   });
   it('shows loading state', () => {
     // Mock loading state

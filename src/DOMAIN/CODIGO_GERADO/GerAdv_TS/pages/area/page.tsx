@@ -7,7 +7,7 @@ const AreaPage: React.FC = () => {
   const AreaGrid = new AreaGridAdapter();
   return (
   <PageLayout>
-    <PageTitle title='Area' />
+    <PageTitle title='Área' />
     <AreaGridContainer grid={AreaGrid} />
   </PageLayout>
 );

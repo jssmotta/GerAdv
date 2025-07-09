@@ -7,7 +7,7 @@ const ReuniaoPage: React.FC = () => {
   const ReuniaoGrid = new ReuniaoGridAdapter();
   return (
   <PageLayout>
-    <PageTitle title='Reuniao' />
+    <PageTitle title='Reunião' />
     <ReuniaoGridContainer grid={ReuniaoGrid} />
   </PageLayout>
 );

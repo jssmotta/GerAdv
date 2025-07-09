@@ -53,7 +53,7 @@ const loadRecordForEdit = async (id: number) => {
     setAction(ActionEditar);
     handleValueChange({ id: record.id, nome: record.nome });
   } catch (error) {
-  console.log('Erro ao carregar Justica:');
+  console.log('Erro ao carregar Justiça:');
 }
 };
 

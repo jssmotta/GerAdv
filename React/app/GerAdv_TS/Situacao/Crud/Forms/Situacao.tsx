@@ -88,7 +88,7 @@ const handleDirectSave = () => {
 useEffect(() => {
   const el = document.querySelector('.nameFormMobile');
   if (el) {
-    el.textContent = situacaoData?.id == 0 ? 'Editar Situacao' : 'Adicionar Situacao';
+    el.textContent = situacaoData?.id == 0 ? 'Editar Situacao' : 'Adicionar Situação';
   }
 }, [situacaoData.id]);
 return (

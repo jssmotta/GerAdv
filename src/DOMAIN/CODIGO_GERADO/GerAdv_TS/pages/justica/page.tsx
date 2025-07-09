@@ -7,7 +7,7 @@ const JusticaPage: React.FC = () => {
   const JusticaGrid = new JusticaGridAdapter();
   return (
   <PageLayout>
-    <PageTitle title='Justica' />
+    <PageTitle title='Justiça' />
     <JusticaGridContainer grid={JusticaGrid} />
   </PageLayout>
 );

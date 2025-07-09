@@ -155,7 +155,7 @@ export class SituacaoApi {
                     config: {},
                 } as AxiosResponse;
             }
-            this.handleApiError(error, `Erro ao buscar Situacao com ID ${id}`);
+            this.handleApiError(error, `Erro ao buscar Situação com ID ${id}`);
         }
     }
 
@@ -231,7 +231,7 @@ export class SituacaoApi {
                 }
             }
 
-            this.handleApiError(error, 'Erro ao salvar Situacao');
+            this.handleApiError(error, 'Erro ao salvar Situação');
         }
     }
 
@@ -261,7 +261,7 @@ export class SituacaoApi {
                     throw new Error(error.data.message || 'Erro ao excluir.');
                 }
             }
-             this.handleApiError(error, `Erro ao excluir Situacao com ID ${id}`);                
+             this.handleApiError(error, `Erro ao excluir Situação com ID ${id}`);                
         }
     }
 

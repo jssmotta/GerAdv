@@ -132,7 +132,7 @@ const addValorOperador = (e: any) => {
     useEffect(() => {
       const el = document.querySelector('.nameFormMobile');
       if (el) {
-        el.textContent = diario2Data?.id == 0 ? 'Editar Diario2' : 'Adicionar Diario2';
+        el.textContent = diario2Data?.id == 0 ? 'Editar Diario2' : 'Adicionar Diário';
       }
     }, [diario2Data.id]);
     return (

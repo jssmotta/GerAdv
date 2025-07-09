@@ -30,7 +30,7 @@ return (
 <>
 {!isOpen ? <></> : <>
   <EditWindow
-  tableTitle='Justica'
+  tableTitle='Justiça'
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}

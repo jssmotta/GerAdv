@@ -155,7 +155,7 @@ export class ReuniaoApi {
                     config: {},
                 } as AxiosResponse;
             }
-            this.handleApiError(error, `Erro ao buscar Reuniao com ID ${id}`);
+            this.handleApiError(error, `Erro ao buscar Reunião com ID ${id}`);
         }
     }
 
@@ -231,7 +231,7 @@ export class ReuniaoApi {
                 }
             }
 
-            this.handleApiError(error, 'Erro ao salvar Reuniao');
+            this.handleApiError(error, 'Erro ao salvar Reunião');
         }
     }
 
@@ -261,7 +261,7 @@ export class ReuniaoApi {
                     throw new Error(error.data.message || 'Erro ao excluir.');
                 }
             }
-             this.handleApiError(error, `Erro ao excluir Reuniao com ID ${id}`);                
+             this.handleApiError(error, `Erro ao excluir Reunião com ID ${id}`);                
         }
     }
 

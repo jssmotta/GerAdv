@@ -244,7 +244,7 @@ const addValorJustica = (e: any) => {
                     dataForm={divisaotribunalData}
                     value={divisaotribunalData.justica}
                     setValue={addValorJustica}
-                    label={'Justica'}
+                    label={'Justiça'}
                     />
 
                     <InputInput
@@ -265,7 +265,7 @@ const addValorJustica = (e: any) => {
                     dataForm={divisaotribunalData}
                     value={divisaotribunalData.area}
                     setValue={addValorArea}
-                    label={'Area'}
+                    label={'Área'}
                     />
 
                     <CidadeComboBox

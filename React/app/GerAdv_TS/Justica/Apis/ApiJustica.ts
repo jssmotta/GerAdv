@@ -155,7 +155,7 @@ export class JusticaApi {
                     config: {},
                 } as AxiosResponse;
             }
-            this.handleApiError(error, `Erro ao buscar Justica com ID ${id}`);
+            this.handleApiError(error, `Erro ao buscar Justiça com ID ${id}`);
         }
     }
     
@@ -260,7 +260,7 @@ export class JusticaApi {
                 }
             }
 
-            this.handleApiError(error, 'Erro ao salvar Justica');
+            this.handleApiError(error, 'Erro ao salvar Justiça');
         }
     }
 
@@ -290,7 +290,7 @@ export class JusticaApi {
                     throw new Error(error.data.message || 'Erro ao excluir.');
                 }
             }
-             this.handleApiError(error, `Erro ao excluir Justica com ID ${id}`);                
+             this.handleApiError(error, `Erro ao excluir Justiça com ID ${id}`);                
         }
     }
 

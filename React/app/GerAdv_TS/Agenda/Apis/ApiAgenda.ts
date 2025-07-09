@@ -155,7 +155,7 @@ export class AgendaApi {
                     config: {},
                 } as AxiosResponse;
             }
-            this.handleApiError(error, `Erro ao buscar Agenda com ID ${id}`);
+            this.handleApiError(error, `Erro ao buscar Compromisso com ID ${id}`);
         }
     }
 
@@ -231,7 +231,7 @@ export class AgendaApi {
                 }
             }
 
-            this.handleApiError(error, 'Erro ao salvar Agenda');
+            this.handleApiError(error, 'Erro ao salvar Compromisso');
         }
     }
 
@@ -261,7 +261,7 @@ export class AgendaApi {
                     throw new Error(error.data.message || 'Erro ao excluir.');
                 }
             }
-             this.handleApiError(error, `Erro ao excluir Agenda com ID ${id}`);                
+             this.handleApiError(error, `Erro ao excluir Compromisso com ID ${id}`);                
         }
     }
 

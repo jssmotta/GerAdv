@@ -515,7 +515,7 @@ const addValorProcesso = (e: any) => {
                   dataForm={recadosData}
                   value={recadosData.agenda}
                   setValue={addValorAgenda}
-                  label={'Agenda'}
+                  label={'Compromisso'}
                   />
                 </div>
               </form>

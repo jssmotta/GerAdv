@@ -35,9 +35,9 @@ export const useAreaForm = (
       const dados = await dataService.fetchAreaById(id);
       setData(dados);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Area';
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Área';
       setError(errorMessage);
-      console.log('Erro ao carregar Area');
+      console.log('Erro ao carregar Área');
     } finally {
       setLoading(false);
     }

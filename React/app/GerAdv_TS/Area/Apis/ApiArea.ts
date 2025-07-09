@@ -155,7 +155,7 @@ export class AreaApi {
                     config: {},
                 } as AxiosResponse;
             }
-            this.handleApiError(error, `Erro ao buscar Area com ID ${id}`);
+            this.handleApiError(error, `Erro ao buscar Área com ID ${id}`);
         }
     }
     
@@ -260,7 +260,7 @@ export class AreaApi {
                 }
             }
 
-            this.handleApiError(error, 'Erro ao salvar Area');
+            this.handleApiError(error, 'Erro ao salvar Área');
         }
     }
 
@@ -290,7 +290,7 @@ export class AreaApi {
                     throw new Error(error.data.message || 'Erro ao excluir.');
                 }
             }
-             this.handleApiError(error, `Erro ao excluir Area com ID ${id}`);                
+             this.handleApiError(error, `Erro ao excluir Área com ID ${id}`);                
         }
     }
 

@@ -820,11 +820,11 @@ const gridColumns = useMemo(() => [
 
   <GridColumn field='nomeclientes' title='Clientes' sortable={false} filterable={false} />, /* Track G.01 */
 
-  <GridColumn field='nomejustica' title='Justica' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='nomejustica' title='Justiça' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nomeoponentes' title='Oponentes' sortable={false} filterable={false} />, /* Track G.01 */
 
-  <GridColumn field='descricaoarea' title='Area' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='descricaoarea' title='Área' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} />, /* Track G.01 */
 

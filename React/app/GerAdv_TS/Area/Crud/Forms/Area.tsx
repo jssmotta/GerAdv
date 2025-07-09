@@ -87,7 +87,7 @@ const handleDirectSave = () => {
 useEffect(() => {
   const el = document.querySelector('.nameFormMobile');
   if (el) {
-    el.textContent = areaData?.id == 0 ? 'Editar Area' : 'Adicionar Area';
+    el.textContent = areaData?.id == 0 ? 'Editar Area' : 'Adicionar Área';
   }
 }, [areaData.id]);
 return (
@@ -113,12 +113,12 @@ return (
           <InputDescription
           type='text'
           id='descricao'
-          label='area'
+          label='área'
           dataForm={areaData}
           className='inputIncNome'
           name='descricao'
           value={areaData.descricao}
-          placeholder={`Digite nome area`}
+          placeholder={`Digite nome área`}
           onChange={onChange}
           required
           disabled={areaData.id > 0}

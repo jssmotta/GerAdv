@@ -597,7 +597,7 @@ const addValorCidade = (e: any) => {
                               dataForm={agendafinanceiroData}
                               value={agendafinanceiroData.area}
                               setValue={addValorArea}
-                              label={'Area'}
+                              label={'Área'}
                               />
 
                               <JusticaComboBox
@@ -605,7 +605,7 @@ const addValorCidade = (e: any) => {
                               dataForm={agendafinanceiroData}
                               value={agendafinanceiroData.justica}
                               setValue={addValorJustica}
-                              label={'Justica'}
+                              label={'Justiça'}
                               />
                             </div><div className='grid-container'>
                               <ProcessosComboBox

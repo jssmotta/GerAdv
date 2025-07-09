@@ -26,7 +26,7 @@ public class AlarmSMSValidation : IAlarmSMSValidation
         if (reg == null)
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
-            return "Descricao é obrigatório";
+            return "Descrição é obrigatório";
         // Operador
         if (!reg.Operador.IsEmptyIDNumber())
         {

@@ -73,9 +73,9 @@ const ExcluirLinha = (e: any) => {
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
 
-  <GridColumn field='nomejustica' title='Justica' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='nomejustica' title='Justiça' sortable={false} filterable={false} />, /* Track G.01 */
 
-  <GridColumn field='descricaoarea' title='Area' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='descricaoarea' title='Área' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nometribunal' title='Tribunal' sortable={false} filterable={false} />, /* Track G.01 */
 

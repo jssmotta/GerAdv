@@ -35,9 +35,9 @@ export const useJusticaForm = (
       const dados = await dataService.fetchJusticaById(id);
       setData(dados);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Justica';
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Justiça';
       setError(errorMessage);
-      console.log('Erro ao carregar Justica');
+      console.log('Erro ao carregar Justiça');
     } finally {
       setLoading(false);
     }

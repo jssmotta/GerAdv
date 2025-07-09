@@ -96,7 +96,7 @@ public class AgendaValidation : IAgendaValidation
             var regArea = areaReader.Read(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
-                return $"Area não encontrado ({regArea?.Id}).";
+                return $"Área não encontrado ({regArea?.Id}).";
             }
         }
 
@@ -106,7 +106,7 @@ public class AgendaValidation : IAgendaValidation
             var regJustica = justicaReader.Read(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
-                return $"Justica não encontrado ({regJustica?.Id}).";
+                return $"Justiça não encontrado ({regJustica?.Id}).";
             }
         }
 

@@ -31,7 +31,7 @@ public class ReuniaoPessoasValidation : IReuniaoPessoasValidation
             var regReuniao = reuniaoReader.Read(reg.Reuniao, oCnn);
             if (regReuniao == null || regReuniao.Id != reg.Reuniao)
             {
-                return $"Reuniao não encontrado ({regReuniao?.Id}).";
+                return $"Reunião não encontrado ({regReuniao?.Id}).";
             }
         }
 

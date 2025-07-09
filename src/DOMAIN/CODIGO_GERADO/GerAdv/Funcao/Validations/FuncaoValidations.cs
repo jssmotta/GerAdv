@@ -32,7 +32,7 @@ public class FuncaoValidation : IFuncaoValidation
         if (reg == null)
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
-            return "Descricao é obrigatório";
+            return "Descrição é obrigatório";
         return string.Empty;
     }
 }

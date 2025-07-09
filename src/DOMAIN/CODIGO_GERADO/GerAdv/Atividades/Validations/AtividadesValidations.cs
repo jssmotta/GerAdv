@@ -29,7 +29,7 @@ public class AtividadesValidation : IAtividadesValidation
         if (reg == null)
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
-            return "Descricao é obrigatório";
+            return "Descrição é obrigatório";
         if (await IsDuplicado(reg, service, uri))
             return $"Atividades '{reg.Descricao}'  - Descricao";
         return string.Empty;

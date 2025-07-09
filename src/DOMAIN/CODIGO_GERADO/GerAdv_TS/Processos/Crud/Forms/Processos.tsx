@@ -556,7 +556,7 @@ const addValorAdvOpo = (e: any) => {
                               dataForm={processosData}
                               value={processosData.justica}
                               setValue={addValorJustica}
-                              label={'Justica'}
+                              label={'Justiça'}
                               />
 
                               <AdvogadosComboBox
@@ -609,7 +609,7 @@ const addValorAdvOpo = (e: any) => {
                               dataForm={processosData}
                               value={processosData.area}
                               setValue={addValorArea}
-                              label={'Area'}
+                              label={'Área'}
                               />
 
                               <CidadeComboBox
@@ -625,7 +625,7 @@ const addValorAdvOpo = (e: any) => {
                               dataForm={processosData}
                               value={processosData.situacao}
                               setValue={addValorSituacao}
-                              label={'Situacao'}
+                              label={'Situação'}
                               />
                               <InputCheckbox dataForm={processosData} label='IDSituacao' name='idsituacao' checked={processosData.idsituacao} onChange={onChange} />
 

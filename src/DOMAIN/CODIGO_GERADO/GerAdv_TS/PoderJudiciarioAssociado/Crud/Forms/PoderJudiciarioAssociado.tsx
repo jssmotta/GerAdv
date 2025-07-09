@@ -230,7 +230,7 @@ const addValorJustica = (e: any) => {
                     dataForm={poderjudiciarioassociadoData}
                     value={poderjudiciarioassociadoData.justica}
                     setValue={addValorJustica}
-                    label={'Justica'}
+                    label={'Justiça'}
                     />
 
                     <InputInput
@@ -251,7 +251,7 @@ const addValorJustica = (e: any) => {
                     dataForm={poderjudiciarioassociadoData}
                     value={poderjudiciarioassociadoData.area}
                     setValue={addValorArea}
-                    label={'Area'}
+                    label={'Área'}
                     />
 
                     <InputInput

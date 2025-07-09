@@ -48,7 +48,7 @@ describe('useJusticaForm', () => {
     const mockEvent = {
       target: {
         name: 'nome',
-        value: 'Novo Justica',
+        value: 'Novo Justiça',
         type: 'text',
         checked: false
       }
@@ -58,11 +58,11 @@ describe('useJusticaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.nome).toBe('Novo Justica');
+    expect(result.current.data.nome).toBe('Novo Justiça');
   });
 
-   test('deve carregar Justica por ID', async () => {
-    const mockJustica = { ...initialJustica, id: 1, nome: 'Justica Teste' };
+   test('deve carregar Justiça por ID', async () => {
+    const mockJustica = { ...initialJustica, id: 1, nome: 'Justiça Teste' };
     mockJusticaService.fetchJusticaById.mockResolvedValue(mockJustica);
 
     const { result } = renderHook(() => 
@@ -78,8 +78,8 @@ describe('useJusticaForm', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  test('deve lidar com erro ao carregar Justica', async () => {
-    const errorMessage = 'Erro ao carregar Justica';
+  test('deve lidar com erro ao carregar Justiça', async () => {
+    const errorMessage = 'Erro ao carregar Justiça';
     mockJusticaService.fetchJusticaById.mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => 
@@ -144,8 +144,8 @@ describe('useJusticaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialJustica, id: 1, nome: 'Justica 1' },
-      { ...initialJustica, id: 2, nome: 'Justica 2' }
+      { ...initialJustica, id: 1, nome: 'Justiça 1' },
+      { ...initialJustica, id: 2, nome: 'Justiça 2' }
     ];
     mockJusticaService.getAll.mockResolvedValue(mockData);
 
@@ -179,8 +179,8 @@ describe('useJusticaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialJustica, id: 1, nome: 'Justica Filtrado' }];
-    const filtro = { nome: 'Justica' };
+    const mockData = [{ ...initialJustica, id: 1, nome: 'Justiça Filtrado' }];
+    const filtro = { nome: 'Justiça' };
     mockJusticaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -200,7 +200,7 @@ describe('useValidationsJustica', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsJustica());
 
-    const validData = { ...initialJustica, nome: 'Justica Válido' };
+    const validData = { ...initialJustica, nome: 'Justiça Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -247,7 +247,7 @@ describe('useValidationsJustica', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialJustica, id: 1, nome: 'Justica Teste' }];
+    const mockData = [{ ...initialJustica, id: 1, nome: 'Justiça Teste' }];
     mockJusticaService.getAll.mockResolvedValue(mockData);
     mockJusticaService.getList.mockResolvedValue(mockData);
 
@@ -272,7 +272,7 @@ describe('Integração de hooks', () => {
      
     // Aguarda carregar opções no combo
     
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Justica Teste' }]);
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Justiça Teste' }]);
     
    
 
@@ -280,15 +280,15 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Justica Teste' }]);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Justiça Teste' }]);
   
     expect(validation.isValid).toBe(true);
   });
 }); 
 test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
-      { id: 1, nome: 'Justica 1' },
-      { id: 2, nome: 'Justica 2' }
+      { id: 1, nome: 'Justiça 1' },
+      { id: 2, nome: 'Justiça 2' }
     ];
     mockJusticaService.getList.mockResolvedValue(mockOptions as IJustica[]);
 
@@ -300,8 +300,8 @@ test('deve carregar opções na inicialização', async () => {
     await waitFor(() => {
       // Aguarda carregar as opções antes de verificar
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Justica 1' },
-        { id: 2, nome: 'Justica 2' }
+        { id: 1, nome: 'Justiça 1' },
+        { id: 2, nome: 'Justiça 2' }
       ]);
     });
 
@@ -311,8 +311,8 @@ test('deve carregar opções na inicialização', async () => {
 
   test('deve filtrar opções', async () => {
     const mockOptions = [
-      { id: 1, nome: 'Justica ABC' },
-      { id: 2, nome: 'Justica XYZ' }
+      { id: 1, nome: 'Justiça ABC' },
+      { id: 2, nome: 'Justiça XYZ' }
     ];
     mockJusticaService.getList.mockResolvedValue(mockOptions as IJustica[]);   
 
@@ -323,8 +323,8 @@ test('deve carregar opções na inicialização', async () => {
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Justica ABC' },
-        { id: 2, nome: 'Justica XYZ' }
+        { id: 1, nome: 'Justiça ABC' },
+        { id: 2, nome: 'Justiça XYZ' }
       ]);
     });
 
@@ -333,14 +333,14 @@ test('deve carregar opções na inicialização', async () => {
       result.current.handleFilter('ABC');
     });
 
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Justica ABC' }]);
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Justiça ABC' }]);
   });
 
 
   test('deve limpar filtro quando texto vazio', async () => {
     const mockOptions = [
-      { id: 1, nome: 'Justica ABC' },
-      { id: 2, nome: 'Justica XYZ' }
+      { id: 1, nome: 'Justiça ABC' },
+      { id: 2, nome: 'Justiça XYZ' }
     ];
     mockJusticaService.getList.mockResolvedValue(mockOptions as IJustica[]);
   
@@ -351,8 +351,8 @@ test('deve carregar opções na inicialização', async () => {
     );
     await waitFor(() => {
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Justica ABC' },
-        { id: 2, nome: 'Justica XYZ' }
+        { id: 1, nome: 'Justiça ABC' },
+        { id: 2, nome: 'Justiça XYZ' }
       ]);
     });
 
@@ -368,8 +368,8 @@ test('deve carregar opções na inicialização', async () => {
  
 
      expect(result.current.options).toEqual([
-          {id: 1, nome: 'Justica ABC' },
-          {id: 2, nome: 'Justica XYZ' }
+          {id: 1, nome: 'Justiça ABC' },
+          {id: 2, nome: 'Justiça XYZ' }
         ]);
 
   });
@@ -381,7 +381,7 @@ test('deve carregar opções na inicialização', async () => {
       useJusticaComboBox(mockJusticaService)
     );
 
-    const newValue = { id: 1, nome: 'Justica Selecionado' };
+    const newValue = { id: 1, nome: 'Justiça Selecionado' };
 
     act(() => {
       result.current.handleValueChange(newValue);
@@ -391,7 +391,7 @@ test('deve carregar opções na inicialização', async () => {
   });
 
   test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, nome: 'Justica Inicial' };
+    const initialValue = { id: 1, nome: 'Justiça Inicial' };
     
     const { result } = renderHook(() => 
       useJusticaComboBox(mockJusticaService, initialValue)
@@ -422,7 +422,7 @@ describe('useJusticaComboBox', () => {
 
  
   test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, nome: 'Justica Inicial' };
+    const initialValue = { id: 1, nome: 'Justiça Inicial' };
     
     const { result } = renderHook(() => 
       useJusticaComboBox(mockJusticaService, initialValue)

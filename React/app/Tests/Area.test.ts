@@ -48,7 +48,7 @@ describe('useAreaForm', () => {
     const mockEvent = {
       target: {
         name: 'descricao',
-        value: 'Novo Area',
+        value: 'Novo Área',
         type: 'text',
         checked: false
       }
@@ -58,11 +58,11 @@ describe('useAreaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.descricao).toBe('Novo Area');
+    expect(result.current.data.descricao).toBe('Novo Área');
   });
 
-   test('deve carregar Area por ID', async () => {
-    const mockArea = { ...initialArea, id: 1, descricao: 'Area Teste' };
+   test('deve carregar Área por ID', async () => {
+    const mockArea = { ...initialArea, id: 1, descricao: 'Área Teste' };
     mockAreaService.fetchAreaById.mockResolvedValue(mockArea);
 
     const { result } = renderHook(() => 
@@ -78,8 +78,8 @@ describe('useAreaForm', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  test('deve lidar com erro ao carregar Area', async () => {
-    const errorMessage = 'Erro ao carregar Area';
+  test('deve lidar com erro ao carregar Área', async () => {
+    const errorMessage = 'Erro ao carregar Área';
     mockAreaService.fetchAreaById.mockRejectedValue(new Error(errorMessage));
 
     const { result } = renderHook(() => 
@@ -144,8 +144,8 @@ describe('useAreaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialArea, id: 1, descricao: 'Area 1' },
-      { ...initialArea, id: 2, descricao: 'Area 2' }
+      { ...initialArea, id: 1, descricao: 'Área 1' },
+      { ...initialArea, id: 2, descricao: 'Área 2' }
     ];
     mockAreaService.getAll.mockResolvedValue(mockData);
 
@@ -179,8 +179,8 @@ describe('useAreaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialArea, id: 1, descricao: 'Area Filtrado' }];
-    const filtro = { descricao: 'Area' };
+    const mockData = [{ ...initialArea, id: 1, descricao: 'Área Filtrado' }];
+    const filtro = { descricao: 'Área' };
     mockAreaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -200,7 +200,7 @@ describe('useValidationsArea', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsArea());
 
-    const validData = { ...initialArea, descricao: 'Area Válido' };
+    const validData = { ...initialArea, descricao: 'Área Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -247,7 +247,7 @@ describe('useValidationsArea', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialArea, id: 1, descricao: 'Area Teste' }];
+    const mockData = [{ ...initialArea, id: 1, descricao: 'Área Teste' }];
     mockAreaService.getAll.mockResolvedValue(mockData);
     mockAreaService.getList.mockResolvedValue(mockData);
 
@@ -272,7 +272,7 @@ describe('Integração de hooks', () => {
      
     // Aguarda carregar opções no combo
     
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Area Teste' }]);
+      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Área Teste' }]);
     
    
 
@@ -280,7 +280,7 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Area Teste' }]);
+     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Área Teste' }]);
   
     expect(validation.isValid).toBe(true);
   });
@@ -309,8 +309,8 @@ describe('Integração de hooks', () => {
  
 test('deve carregar opções na inicialização', async () => {
     const mockOptions = [
-      { id: 1, descricao: 'Area 1' },
-      { id: 2, descricao: 'Area 2' }
+      { id: 1, descricao: 'Área 1' },
+      { id: 2, descricao: 'Área 2' }
     ];
     mockAreaService.getList.mockResolvedValue(mockOptions as IArea[]);
 
@@ -322,8 +322,8 @@ test('deve carregar opções na inicialização', async () => {
     await waitFor(() => {
       // Aguarda carregar as opções antes de verificar
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Area 1' },
-        { id: 2, nome: 'Area 2' }
+        { id: 1, nome: 'Área 1' },
+        { id: 2, nome: 'Área 2' }
       ]);
     });
 
@@ -333,8 +333,8 @@ test('deve carregar opções na inicialização', async () => {
 
   test('deve filtrar opções', async () => {
     const mockOptions = [
-      { id: 1, descricao: 'Area ABC' },
-      { id: 2, descricao: 'Area XYZ' }
+      { id: 1, descricao: 'Área ABC' },
+      { id: 2, descricao: 'Área XYZ' }
     ];
     mockAreaService.getList.mockResolvedValue(mockOptions as IArea[]);   
 
@@ -345,8 +345,8 @@ test('deve carregar opções na inicialização', async () => {
     // Aguarda carregar as opções
     await waitFor(() => {
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Area ABC' },
-        { id: 2, nome: 'Area XYZ' }
+        { id: 1, nome: 'Área ABC' },
+        { id: 2, nome: 'Área XYZ' }
       ]);
     });
 
@@ -355,14 +355,14 @@ test('deve carregar opções na inicialização', async () => {
       result.current.handleFilter('ABC');
     });
 
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Area ABC' }]);
+    expect(result.current.options).toEqual([{ id: 1, nome: 'Área ABC' }]);
   });
 
 
   test('deve limpar filtro quando texto vazio', async () => {
     const mockOptions = [
-      { id: 1, descricao: 'Area ABC' },
-      { id: 2, descricao: 'Area XYZ' }
+      { id: 1, descricao: 'Área ABC' },
+      { id: 2, descricao: 'Área XYZ' }
     ];
     mockAreaService.getList.mockResolvedValue(mockOptions as IArea[]);
   
@@ -373,8 +373,8 @@ test('deve carregar opções na inicialização', async () => {
     );
     await waitFor(() => {
       expect(result.current.options).toEqual([
-        { id: 1, nome: 'Area ABC' },
-        { id: 2, nome: 'Area XYZ' }
+        { id: 1, nome: 'Área ABC' },
+        { id: 2, nome: 'Área XYZ' }
       ]);
     });
 
@@ -390,8 +390,8 @@ test('deve carregar opções na inicialização', async () => {
  
 
      expect(result.current.options).toEqual([
-          {id: 1, nome: 'Area ABC' },
-          {id: 2, nome: 'Area XYZ' }
+          {id: 1, nome: 'Área ABC' },
+          {id: 2, nome: 'Área XYZ' }
         ]);
 
   });
@@ -403,7 +403,7 @@ test('deve carregar opções na inicialização', async () => {
       useAreaComboBox(mockAreaService)
     );
 
-    const newValue = { id: 1, descricao: 'Area Selecionado' };
+    const newValue = { id: 1, descricao: 'Área Selecionado' };
 
     act(() => {
       result.current.handleValueChange(newValue);
@@ -413,7 +413,7 @@ test('deve carregar opções na inicialização', async () => {
   });
 
   test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, descricao: 'Area Inicial' };
+    const initialValue = { id: 1, descricao: 'Área Inicial' };
     
     const { result } = renderHook(() => 
       useAreaComboBox(mockAreaService, initialValue)
@@ -444,7 +444,7 @@ describe('useAreaComboBox', () => {
 
  
   test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, descricao: 'Area Inicial' };
+    const initialValue = { id: 1, descricao: 'Área Inicial' };
     
     const { result } = renderHook(() => 
       useAreaComboBox(mockAreaService, initialValue)

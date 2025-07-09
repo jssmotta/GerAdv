@@ -35,9 +35,9 @@ export const useSituacaoForm = (
       const dados = await dataService.fetchSituacaoById(id);
       setData(dados);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Situacao';
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Situação';
       setError(errorMessage);
-      console.log('Erro ao carregar Situacao');
+      console.log('Erro ao carregar Situação');
     } finally {
       setLoading(false);
     }

@@ -29,7 +29,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         if (reg == null)
             return "Objeto está nulo";
         if (string.IsNullOrWhiteSpace(reg.Descricao))
-            return "Descricao é obrigatório";
+            return "Descrição é obrigatório";
         // Oponentes
         if (!reg.Oponente.IsEmptyIDNumber())
         {

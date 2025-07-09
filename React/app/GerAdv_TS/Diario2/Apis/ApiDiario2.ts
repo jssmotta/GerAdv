@@ -155,7 +155,7 @@ export class Diario2Api {
                     config: {},
                 } as AxiosResponse;
             }
-            this.handleApiError(error, `Erro ao buscar Diario2 com ID ${id}`);
+            this.handleApiError(error, `Erro ao buscar Diário com ID ${id}`);
         }
     }
     
@@ -260,7 +260,7 @@ export class Diario2Api {
                 }
             }
 
-            this.handleApiError(error, 'Erro ao salvar Diario2');
+            this.handleApiError(error, 'Erro ao salvar Diário');
         }
     }
 
@@ -290,7 +290,7 @@ export class Diario2Api {
                     throw new Error(error.data.message || 'Erro ao excluir.');
                 }
             }
-             this.handleApiError(error, `Erro ao excluir Diario2 com ID ${id}`);                
+             this.handleApiError(error, `Erro ao excluir Diário com ID ${id}`);                
         }
     }
 

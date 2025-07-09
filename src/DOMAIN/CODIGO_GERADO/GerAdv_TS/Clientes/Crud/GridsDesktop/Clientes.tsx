@@ -334,7 +334,7 @@ const EditarCellReuniao = (props: any) => {
   return (
   <>
   <td>
-    <div onClick={() => openConsultaReuniao(props.dataItem.id)}><span title='Editar Reuniao'><SvgIcon icon={pencilIcon} /></span></div>
+    <div onClick={() => openConsultaReuniao(props.dataItem.id)}><span title='Editar Reunião'><SvgIcon icon={pencilIcon} /></span></div>
   </td>
 </>
 );
@@ -531,7 +531,7 @@ const gridColumns = useMemo(() => [
   filterable={false}
   sortable={false}
   width={'65px'}
-  title='Reuniao'
+  title='Reunião'
   cells={{ data: EditarCellReuniao }}
   />, 
   <GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} />, /* Track G.01 */

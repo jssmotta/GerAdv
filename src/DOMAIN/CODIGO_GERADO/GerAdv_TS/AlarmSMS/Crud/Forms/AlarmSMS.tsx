@@ -294,7 +294,7 @@ const addValorOperador = (e: any) => {
               dataForm={alarmsmsData}
               value={alarmsmsData.agenda}
               setValue={addValorAgenda}
-              label={'Agenda'}
+              label={'Compromisso'}
               />
 
               <RecadosComboBox

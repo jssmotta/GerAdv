@@ -13,8 +13,8 @@ import { Diario2Empty, Diario2TestEmpty } from '@/app/GerAdv_TS/Models/Diario2';
 jest.mock('@/app/GerAdv_TS/Diario2/Hooks/hookDiario2', () => ({
   useDiario2ComboBox: jest.fn(() => ({
     options: [
-    { ...Diario2Empty(), id: 1, nome: 'Diario2 1' },
-    { ...Diario2Empty(), id: 2, nome: 'Diario2 2' },
+    { ...Diario2Empty(), id: 1, nome: 'Diário 1' },
+    { ...Diario2Empty(), id: 2, nome: 'Diário 2' },
     ], 
     loading: false, 
     selectedValue: null, 
@@ -71,7 +71,7 @@ jest.mock('@/app/GerAdv_TS/Diario2/Crud/Grids/Diario2Window', () => {
     }}
     data-testid='combo-box'
   >
-  <option value=''>Select {props.textField === 'nome' ? 'Diario2' : 'Item'}</option>
+  <option value=''>Select {props.textField === 'nome' ? 'Diário' : 'Item'}</option>
     {props.data?.map((item: any) => (
       <option key={item.id} value={item.id}>
         {item.nome}
@@ -91,12 +91,12 @@ jest.mock('@/app/GerAdv_TS/Diario2/Crud/Grids/Diario2Window', () => {
   }));
   // Dados mock para os testes
   const mockOptions = [
-  { ...Diario2TestEmpty(), id: 1, nome: 'Diario2 1' },
-  { ...Diario2TestEmpty(), id: 2, nome: 'Diario2 2' },
+  { ...Diario2TestEmpty(), id: 1, nome: 'Diário 1' },
+  { ...Diario2TestEmpty(), id: 2, nome: 'Diário 2' },
 ];
 // Props padr�o para o componente
 const defaultProps = {
-  label: 'Diario2',
+  label: 'Diário',
   name: 'diario2',
   value: 0, 
   setValue: jest.fn(), 
@@ -127,19 +127,19 @@ describe('Diario2ComboBox', () => {
   it('renders label and ComboBox', () => {
     render(<Diario2ComboBox {...defaultProps} />);
     // Verificar se o label � renderizado
-    expect(screen.getByText('Diario2')).toBeInTheDocument();
+    expect(screen.getByText('Diário')).toBeInTheDocument();
     // Verificar se o combobox � renderizado
     const combobox = screen.getByRole('combobox');
     expect(combobox).toBeInTheDocument();
     // Verificar se a op��o padr�o est� presente
-    expect(screen.getByText('Select Diario2')).toBeInTheDocument();
+    expect(screen.getByText('Select Diário')).toBeInTheDocument();
   });
   it('calls setValue on ComboBox change', () => {
     render(<Diario2ComboBox {...defaultProps} />);
     const combobox = screen.getByRole('combobox');
 
     fireEvent.change(combobox, { target: { value: '1' } });
-    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...Diario2TestEmpty(), id: 1, nome: 'Diario2 1' });
+    expect(defaultProps.setValue).toHaveBeenCalledWith({ ...Diario2TestEmpty(), id: 1, nome: 'Diário 1' });
   });
   it('shows loading state', () => {
     // Mock loading state
