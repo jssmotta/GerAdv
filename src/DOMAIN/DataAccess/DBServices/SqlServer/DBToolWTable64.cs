@@ -65,7 +65,7 @@ public class DBToolWTable
         SqlUsed = "";
     }
 
-    public string RecUpdate(SqlConnection? oCnn, bool insertConvertedId)
+    public string RecUpdate(MsiSqlConnection? oCnn, bool insertConvertedId)
     {
         if (oCnn is null) throw new ArgumentException("oCnn is null = RecUpdate()");
         using var oTrans = oCnn.BeginTransaction();
@@ -73,9 +73,9 @@ public class DBToolWTable
         var cSql = new StringBuilder("set dateformat ymd;");
         if (Insert || insertConvertedId)
         {
-            cSql.Append("INSERT INTO [dbo].[");
-            cSql.Append(Table);
-            cSql.Append("] (");
+            cSql.Append("INSERT INTO ");
+            cSql.Append(Table.dbo(oCnn));
+            cSql.Append(" (");
             cSql.Append(string.Join(",", _mSqlPre));
             cSql.Append(") VALUES (");
             cSql.Append(string.Join(",", _mSqlPos));
@@ -83,15 +83,15 @@ public class DBToolWTable
         }
         else
         {
-            cSql.Append("UPDATE TOP (1) [dbo].[");
-            cSql.Append(Table);
-            cSql.Append("] SET ");
+            cSql.Append("UPDATE TOP (1) ");
+            cSql.Append(Table.dbo(oCnn));
+            cSql.Append(" SET ");
             cSql.Append(string.Join(",", _mSqlPre));
             cSql.Append(" WHERE ");
             cSql.Append(Where);
         }
 
-        using var cmd = new SqlCommand(cSql.ToString(), oCnn, oTrans);
+        using var cmd = new SqlCommand(cSql.ToString(), oCnn?.InnerConnection, oTrans);
         for (var nv = 0; nv < _lstCampos.Count; nv++)
             cmd.Parameters.AddWithValue(_lstCampos[nv], _lstValue[nv]);
 
@@ -122,7 +122,7 @@ public class DBToolWTable
     }
 
 
-    public string RecUpdate(SqlConnection? oCnn) //Grava os dados
+    public string RecUpdate(MsiSqlConnection? oCnn) //Grava os dados
     {
         try
         {
@@ -153,10 +153,10 @@ public class DBToolWTable
                             throw new Exception("Não foi possível gerar um ID único após várias tentativas");
 
 
-                        var cSqlC = $"SELECT MAX({CampoCodigo}) FROM {Table.dbo()} WITH (UPDLOCK, HOLDLOCK);";
+                        var cSqlC = $"SELECT MAX({CampoCodigo}) FROM {Table.dbo(oCnn)} WITH (UPDLOCK, HOLDLOCK);";
 
                         {
-                            using var cmd = new SqlCommand(cSqlC, oCnn);
+                            using var cmd = new SqlCommand(cSqlC, oCnn?.InnerConnection);
                             cmd.Transaction = oTrans;
                             var result = cmd.ExecuteScalar();
                             _mID = result != DBNull.Value ? Convert.ToInt64(result) : 0;
@@ -168,10 +168,10 @@ public class DBToolWTable
                         try
                         {
                             using var cmd = new SqlCommand(
-                                $"IF NOT EXISTS (SELECT 1 FROM {Table.dbo()} WITH (UPDLOCK, HOLDLOCK) WHERE {CampoCodigo} = @id) " +
+                                $"IF NOT EXISTS (SELECT 1 FROM {Table.dbo(oCnn)} WITH (UPDLOCK, HOLDLOCK) WHERE {CampoCodigo} = @id) " +
                                 $"BEGIN /* Sucesso - ID está livre */ SELECT 0; END " +
                                 $"ELSE BEGIN /* Falha - ID já existe */ SELECT 1; END",
-                                oCnn
+                                oCnn?.InnerConnection
                             );
 
                             cmd.Parameters.AddWithValue("@id", _mID);
@@ -227,7 +227,7 @@ public class DBToolWTable
 
                     if (Where.NãoContemUpper(" IN ")) cSql.Append(" TOP (1) ");
 
-                    cSql.Append($"{Table.dbo()} SET {cPreSql} WHERE {Where};");
+                    cSql.Append($"{Table.dbo(oCnn)} SET {cPreSql} WHERE {Where};");
                     cSql.Insert(0, "set dateformat ymd;");
                 }
 
@@ -240,9 +240,9 @@ public class DBToolWTable
                     {
                         started = false;
 
-                        cSql = new($"set dateformat ymd; INSERT INTO {Table.dbo()} ({cPreSql}) VALUES ({(string.Join(",", _mSqlPos))});");
+                        cSql = new($"set dateformat ymd; INSERT INTO {Table.dbo(oCnn)} ({cPreSql}) VALUES ({(string.Join(",", _mSqlPos))});");
                     }
-                    using var cmd = new SqlCommand(cSql.ToString(), oCnn, oTrans);
+                    using var cmd = new SqlCommand(cSql.ToString(), oCnn?.InnerConnection, oTrans);
                     for (var nv = 0; nv < _lstCampos.Count; nv++)
                         cmd.Parameters.AddWithValue(_lstCampos[nv], _lstValue[nv]);
 
@@ -259,7 +259,7 @@ public class DBToolWTable
                                 {
                                     int GetID()
                                     {
-                                        using var cmdX = new SqlCommand($"SELECT TOP (1) {CampoCodigo} FROM {Table.dbo()} ORDER BY {CampoCodigo.SqlOrderDesc()};", oCnn)
+                                        using var cmdX = new SqlCommand($"SELECT TOP (1) {CampoCodigo} FROM {Table.dbo(oCnn)} ORDER BY {CampoCodigo.SqlOrderDesc()};", oCnn?.InnerConnection)
                                         {
                                             Transaction = oTrans
                                         };
@@ -351,7 +351,7 @@ public class DBToolWTable
         return RRandom.Next(minValue: 2, maxValue: NRandom); //08-07-2015 (2,5) | 03-12-2013
     }
 
-    private int ObtemUltimoIDInserido(SqlConnection? conn, SqlTransaction? trans)
+    private int ObtemUltimoIDInserido(MsiSqlConnection? conn, SqlTransaction? trans)
     {
         using var cmd = conn.CreateCommand();
         cmd.CommandText = "SELECT @@identity as ID";

@@ -20,3 +20,4 @@ global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using MenphisSI.WebApi.BaseCommon.Helpers;
 global using System.Globalization;
 global using System.ComponentModel.DataAnnotations;
+global using Microsoft.AspNetCore.Routing;

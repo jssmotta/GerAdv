@@ -10,7 +10,7 @@ public class ConfiguracoesDBT
     public static string CmdSql(in string cSql) => $"{SQLNoCount}{cSql}";
 
    
-    public static DataTable? GetDataTable(SqlCommand command, CommandBehavior cmdBehavior, SqlConnection? oCnn)
+    public static DataTable? GetDataTable(SqlCommand command, CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
         {
@@ -38,16 +38,16 @@ public class ConfiguracoesDBT
         return resultTable;
 
     }
-    public static DataTable GetDataTable(string cSql, SqlConnection? oCnn)
+    public static DataTable GetDataTable(string cSql, MsiSqlConnection? oCnn)
      =>
           GetDataTable3(cSql, oCnn) ?? throw new Exception(cSql);
-    public static DataTable? GetDataTable3(string cSql, SqlConnection? oCnn)
+    public static DataTable? GetDataTable3(string cSql, MsiSqlConnection? oCnn)
     {
       
         if (oCnn is null) throw new Exception("Conexão fechada DataTable.");
 
         var trans = oCnn.BeginTransaction();
-        using var command = new SqlCommand($"{DevourerConsts.SQLNoCount}{cSql}", oCnn, trans);
+        using var command = new SqlCommand($"{DevourerConsts.SQLNoCount}{cSql}", oCnn?.InnerConnection, trans);
         
         try
         {
@@ -68,12 +68,12 @@ public class ConfiguracoesDBT
     }
 
  
-    public static DataTable? GetDataTable(in string? cSql, in CommandBehavior cmdBehavior, SqlConnection? oCnn)
+    public static DataTable? GetDataTable(in string? cSql, in CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
         
 
         if (oCnn is null) throw new Exception("Conexão nula GetDataTable");
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
         var resultTable = new DataTable(command.CommandText);
 
         try
@@ -93,9 +93,9 @@ public class ConfiguracoesDBT
 
    
    
-    public static DataTable? GetDataTable2(string cSql, SqlConnection? oCnn)
+    public static DataTable? GetDataTable2(string cSql, MsiSqlConnection? oCnn)
     {
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
         using var resultTable = new DataTable(command.CommandText);
 
         try
@@ -116,9 +116,45 @@ public class ConfiguracoesDBT
         return resultTable;
     }
 
-    public static async Task<DataTable?> GetDataTable2Async(string cSql, SqlConnection? oCnn)
+    public static async Task<DataTable?> GetDataTable2Async(string cSql, List<SqlParameter> parametros, MsiSqlConnection? oCnn)
     {
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
+        foreach (var param in parametros)
+        {
+            if (!command.Parameters.Contains(param.ParameterName))
+            {
+                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                {
+                    SqlDbType = param.SqlDbType,
+                    Direction = param.Direction,
+                    Size = param.Size,
+                    Precision = param.Precision,
+                    Scale = param.Scale
+                };
+                command.Parameters.Add(newParam);
+            }
+        }
+        var resultTable = new DataTable(command.CommandText);
+
+        try
+        {
+            using var dataReader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+            resultTable.Load(dataReader);
+        }
+        catch (Exception ex)
+        {
+            return ex.Message.ContemUpper("SHADOWS")
+                ? new()
+                : throw new Exception($"Get Data Table: {ex.Message}.<br />{cSql}");
+        }
+
+        return resultTable;
+    }
+
+
+    public static async Task<DataTable?> GetDataTable2Async(string cSql, MsiSqlConnection? oCnn)
+    {
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
         var resultTable = new DataTable(command.CommandText);
 
         try
@@ -135,10 +171,10 @@ public class ConfiguracoesDBT
 
         return resultTable;
     } 
-    public static SqlConnection? GetConnection(string? cStrConn)
+    public static MsiSqlConnection? GetConnection(string? cStrConn)
     {
 
-        var oCnnSql = new SqlConnection { ConnectionString = $"{cStrConn};ApplicationIntent=ReadOnly;MultipleActiveResultSets=true;" };
+        var oCnnSql = new MsiSqlConnection { ConnectionString = $"{cStrConn};ApplicationIntent=ReadOnly;MultipleActiveResultSets=true;" };
 
         try
         {
@@ -161,10 +197,10 @@ public class ConfiguracoesDBT
         TipoNone = 0
     }
 
-    public static SqlDataAdapter GetDataAdapter(in string sqlSelect, SqlConnection conn, SqlTransaction? trans,
+    public static SqlDataAdapter GetDataAdapter(in string sqlSelect, MsiSqlConnection conn, SqlTransaction? trans,
         E_TipoSQLCommandTransaction tipoTransSelect)
     {
-        var sqlAd = new SqlDataAdapter($"{SQLNoCount}{sqlSelect}", conn);
+        var sqlAd = new SqlDataAdapter($"{SQLNoCount}{sqlSelect}", conn?.InnerConnection);
         if (trans == null) return sqlAd;
         switch (tipoTransSelect)
         {
@@ -182,7 +218,7 @@ public class ConfiguracoesDBT
         return sqlAd;
     }
    
-    public static bool ExecuteSql(string? cSql, SqlConnection? conn, SqlTransaction? trans = null)
+    public static bool ExecuteSql(string? cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
     {
         if (conn is null || cSql is null) return false;
 
@@ -205,9 +241,10 @@ public class ConfiguracoesDBT
     }
 
      
-    public static bool ExecuteSqlCreate(string cSql, SqlConnection? conn, SqlTransaction? trans = null)
+    public static bool ExecuteSqlCreate(string cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
     {
         if (conn is null) return false;
+        var commit = trans == null;
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = cSql;
@@ -216,7 +253,7 @@ public class ConfiguracoesDBT
         try
         {
             cmd.ExecuteNonQuery();
-            trans.Commit();
+            if (commit) trans.Commit();
             return true;
         }
 
@@ -230,11 +267,11 @@ public class ConfiguracoesDBT
         }
     }
 
-    public static string DeleteCommand(SqlConnection? oCnn, in bool lTop1 = false)
+    public static string DeleteCommand(MsiSqlConnection? oCnn, in bool lTop1 = false)
         => $"DELETE {(lTop1 ? " TOP (1) " : "")}";
  
     
-    public static bool CreatePmk(in string tabela, string campoCodigo, SqlConnection? oCnn)
+    public static bool CreatePmk(in string tabela, string campoCodigo, MsiSqlConnection? oCnn)
     {
         if (oCnn is null) return false;
         if (ConfigSys.ReadCfgSysX($"{nameof(CreatePmk)}-{tabela}-{campoCodigo}", oCnn) == 2) return true;
@@ -251,20 +288,6 @@ public class ConfiguracoesDBT
         sbSql.Append(
             $" WHERE tc.constraint_type = 'PRIMARY KEY' AND t.TABLE_NAME='{tabela}' ) ALTER TABLE {tabela} ADD PRIMARY KEY ({campoCodigo})");
         return ExecuteSql(sbSql.ToString(), oCnn, null);
-    }
-
-    public static int GetFieldId(in string cWhere, in string campoRetorno, in string cTabela, in SqlConnection? oCnn)
-    {
-        using var cmd = new SqlCommand(cmdText: $"Select TOP 1 {campoRetorno} From {cTabela} Where {cWhere}",
-            connection: oCnn);
-        return int.TryParse(cmd.ExecuteScalar().ToString(), out var retId) ? retId : 0;
-    }
-
-    public static string GetField(in string cWhere, in string campoRetorno, in string cTabela, in SqlConnection? oCnn)
-    {
-        using var cmd = new SqlCommand(cmdText: $"Select TOP 1 {campoRetorno} From {cTabela} Where {cWhere}",
-            connection: oCnn);
-        return cmd.ExecuteScalar()?.ToString() ?? string.Empty;
     }
 
     internal static async Task<string> GetScalarAsync(string cSql, SqlConnection oCnn)
@@ -286,6 +309,77 @@ public class ConfiguracoesDBT
             throw new Exception($"Erro ao executar GetScalarAsync: {ex.Message}. SQL: {cSql}", ex);
         }
     }
+
+    public static bool ExecuteDelete(string? cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
+    {
+        if (conn is null || cSql is null) return false;
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = cSql;
+        trans ??= conn.BeginTransaction();
+        cmd.Transaction = trans;
+        try
+        {
+            cmd.ExecuteNonQuery();
+            trans.Commit();
+            return true;
+        }
+        catch (SqlException ex)
+        {
+            trans.Rollback();
+
+            if (ex.Number == 547)
+            {
+                throw new Exception($"Este registro não pode ser excluído, pois está vinculado a outros registros.");
+            }
+            throw new Exception($"Erro ao executar Delete: {ex.Message}.");
+        }
+        catch
+        {
+            trans.Rollback();
+        }
+
+        return false;
+    }
+
+    public static DataTable? GetDataTable(List<SqlParameter> parameters, in string? cSql, in CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
+    {
+        if (oCnn is null) throw new Exception("Conexão nula GetDataTable");
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
+
+        foreach (var param in parameters)
+        {
+            if (!command.Parameters.Contains(param.ParameterName))
+            {
+                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                {
+                    SqlDbType = param.SqlDbType,
+                    Direction = param.Direction,
+                    Size = param.Size,
+                    Precision = param.Precision,
+                    Scale = param.Scale
+                };
+                command.Parameters.Add(newParam);
+            }
+        }
+
+        var resultTable = new DataTable(command.CommandText);
+
+        try
+        {
+            var source = new TaskCompletionSource<DataTable>();
+            using var dataReader = command.ExecuteReader(cmdBehavior);
+            resultTable.Load(dataReader);
+            source.SetResult(resultTable);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Erro GetDataTable " + ex.Message);
+        }
+
+        return resultTable;
+    }
+
 }
 
- 
+

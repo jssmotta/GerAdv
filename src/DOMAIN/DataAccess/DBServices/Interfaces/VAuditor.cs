@@ -4,24 +4,20 @@ namespace MenphisSI;
 [Serializable]
 public class VAuditor : XCodeIdBase
 {
-
-    [JsonPropertyName("id")]
-    public int Id => m_IdRegistro; // Gambiarra
-
     /// 26-03-2019 18:30
     /// <param name="key"></param>
     /// <param name="oCnn"></param>
     /// <param name="valueDefault"></param>
     /// <returns></returns>
-    public string ReadCfgC(in string? key, in SqlConnection? oCnn, in string valueDefault = "") =>
+    public string ReadCfgC(in string? key, in MsiSqlConnection? oCnn, in string valueDefault = "") =>
         ConfigSys.ReadCfgSysC(key, ID, oCnn, valueDefault);
-    public void WriteCfgC(in string? key, in string value, in SqlConnection? oCnn)
+    public void WriteCfgC(in string? key, in string value, in MsiSqlConnection? oCnn)
         => ConfigSys.WriteCfgSysC(key, ID, value, oCnn);
 
-    public string ReadCfgMemo(in string? key, in SqlConnection? oCnn, in string valueDefault = "") =>
+    public string ReadCfgMemo(in string? key, in MsiSqlConnection? oCnn, in string valueDefault = "") =>
         ConfigSys.ReadCfgSysMemo(key, ID, oCnn);
 
-    public void WriteCfgMemo(in string? key, in string value, in SqlConnection? oCnn)
+    public void WriteCfgMemo(in string? key, in string value, in MsiSqlConnection? oCnn)
         => ConfigSys.WriteCfgSysMemo(key, ID, value, oCnn);
 
     /// <summary>
@@ -31,9 +27,9 @@ public class VAuditor : XCodeIdBase
     /// <param name="oCnn"></param>
     /// <param name="valueDefault"></param>
     /// <returns></returns>
-    public int ReadCfg(in string key, in SqlConnection? oCnn, in int valueDefault = -1) =>
+    public int ReadCfg(in string key, in MsiSqlConnection? oCnn, in int valueDefault = -1) =>
         ConfigSys.ReadCfgSys(key, ID, oCnn, valueDefault);
-    public void WriteCfg(in string key, in int value, in SqlConnection? oCnn) =>
+    public void WriteCfg(in string key, in int value, in MsiSqlConnection? oCnn) =>
      ConfigSys.WriteCfgSys(key, ID, value, oCnn);
 
     /// <summary>
@@ -43,12 +39,12 @@ public class VAuditor : XCodeIdBase
     /// <param name="oCnn"></param>
     /// <param name="valueDefault"></param>
     /// <returns></returns>
-    public bool ReadCfgBool(in string key, in SqlConnection? oCnn, in bool valueDefault = false)
+    public bool ReadCfgBool(in string key, in MsiSqlConnection? oCnn, in bool valueDefault = false)
     {
         var ret = ConfigSys.ReadCfgSysC(key, ID, oCnn, valueDefault ? "True" : "False");
         return ret.IsEmpty() ? (valueDefault ? "True" : "False").IsEquals("True") : ret.IsEquals("True");
     }
-    public void WriteCfgBool(in string key, in bool value, in SqlConnection? oCnn) =>
+    public void WriteCfgBool(in string key, in bool value, in MsiSqlConnection? oCnn) =>
      ConfigSys.WriteCfgSysC(key, ID, value ? "True" : "False", oCnn);
 
     [XmlIgnore]

@@ -1,32 +1,25 @@
-
-#if (!forIDBConn)
-#if (!forAccess)
- 
-
 using System.ComponentModel;
 
- 
-
 namespace MenphisSI;
- 
-public class DBToolWTable32
+
+public class DBToolWTableGuid
 {
-   
+
     [Browsable(false)]
- 
+
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool IsMachineCode;
 
     private byte _hasUpdates;
     private const int PMaxTries = 15;
-    private int _mID;
+    private Guid? _mID;
     private readonly List<string> _mSqlPre = [];
     private readonly List<string> _mSqlPos = [];
     private readonly List<string> _lstCampos = [];
     private readonly List<object> _lstValue = [];
- 
-    public DBToolWTable32()
+
+    public DBToolWTableGuid()
     {
         Table = "";
         CampoCodigo = "";
@@ -34,17 +27,17 @@ public class DBToolWTable32
         LastError = "";
         SqlUsed = "";
     }
-  
+
     public string LastError { get; private set; }
     public string Where { get; set; }
     public string Table { get; set; }
     public string CampoCodigo;
     public string SqlUsed { get; private set; }
-     
+
     public bool Insert { get; set; }
-    public int GetCodigo() => _mID;
- 
-    public DBToolWTable32(in string tabelaName, string campoCodigoNome, bool isInsert)
+    public Guid GetCodigo() => _mID ?? throw new Exception("Id == null");
+
+    public DBToolWTableGuid(in string tabelaName, string campoCodigoNome, bool isInsert)
     {
         Table = tabelaName;
         CampoCodigo = campoCodigoNome;
@@ -55,7 +48,7 @@ public class DBToolWTable32
         SqlUsed = "";
     }
 
-    public DBToolWTable32(in string tabelaName, bool isInsert)
+    public DBToolWTableGuid(in string tabelaName, bool isInsert)
     {
         Table = tabelaName;
         Insert = isInsert;
@@ -64,20 +57,23 @@ public class DBToolWTable32
         LastError = "";
         SqlUsed = "";
     }
- 
-    public string RecUpdate(MsiSqlConnection? oCnn, bool insertConvertedId)  
+
+    
+    public string RecUpdate(MsiSqlConnection? oCnn)
     {
         if (oCnn is null) throw new ArgumentException("oCnn is null = RecUpdate()");
         using var oTrans = oCnn.BeginTransaction();
- 
+
         var cSql = new StringBuilder("set dateformat ymd;");
-        if (Insert || insertConvertedId)
+        if (Insert)
         {
             cSql.Append("INSERT INTO ");
             cSql.Append(Table.dbo(oCnn));
             cSql.Append(" (");
             cSql.Append(string.Join(",", _mSqlPre));
-            cSql.Append(") VALUES (");
+            cSql.Append(") OUTPUT INSERTED.");
+            cSql.Append(CampoCodigo); 
+            cSql.Append(" VALUES (");
             cSql.Append(string.Join(",", _mSqlPos));
             cSql.Append(')');
         }
@@ -93,127 +89,99 @@ public class DBToolWTable32
 
         using var cmd = new SqlCommand(cSql.ToString(), oCnn?.InnerConnection, oTrans);
         for (var nv = 0; nv < _lstCampos.Count; nv++)
-            cmd.Parameters.AddWithValue(_lstCampos[nv], _lstValue[nv]);
+        {
+            var paramValue = _lstValue[nv];
+            if (paramValue is string strValue && Guid.TryParse(strValue, out var guidValue))
+            {
+                cmd.Parameters.AddWithValue(_lstCampos[nv], guidValue);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue(_lstCampos[nv], paramValue);
+            }
+        }
 
         SqlUsed = cSql.ToString();
         try
         {
-            cmd.ExecuteNonQuery();
+            if (Insert)
+            {
+                var result = cmd.ExecuteScalar();
+                _mID = result != null ? (Guid)result : throw new Exception("Failed to retrieve inserted ID");
+            }
+            else
+            {
+                cmd.ExecuteNonQuery();
+            }
             oTrans.Commit();
         }
-        catch (SqlException ex)  
+        catch (SqlException ex)
         {
             oTrans.Rollback();
-            LastError = ex.Message; 
+            LastError = ex.Message;
 
-            return "";                
+            if (LastError.Contains("Cannot insert duplicate key row"))
+            {
+                return "ERROR_VIOLACAO_DE_CHAVE";
+            }
+
+            return "";
         }
-        catch (Exception ex)  
+        catch (Exception ex)
         {
             LastError = ex.Message;
             oTrans.Rollback();
             if (--MaxReportError > 0)
                 GeneralSystemErrorTraper.GetError(ex, $"RollBack--{Table}--Sql:{cSql}");
 
-            return "";                
+            return "";
         }
 
         return "OK";
     }
 
-     
-    public string RecUpdate(MsiSqlConnection? oCnn) //Grava os dados
+
+    public string RecUpdateX(MsiSqlConnection? oCnn) //Grava os dados
     {
         try
         {
             if (oCnn is null) throw new ArgumentException("oCnn is null = RecUpdate()");
 
-            var ret = ExecuteUpdate(); 
+            var ret = ExecuteUpdate();
             return ret;
 
             string ExecuteUpdate()
             {
-                
+
 
                 var nCurrTrie = 0;
-              
+
                 var cSql = new StringBuilder();
                 var cPreSql = string.Join(",", _mSqlPre);
 
                 var oTrans = oCnn.BeginTransaction();
 
-                void ReadNewId(bool addCampoCodigo = false)
-                {
-                    int maxRetries = 10; 
-                    int retryCount = 0;
-
-                    while (true)
-                    {
-                        if (retryCount++ >= maxRetries)
-                            throw new Exception("Não foi possível gerar um ID único após várias tentativas");
-
-                      
-                        var cSqlC = $"SELECT MAX({CampoCodigo}) FROM {Table.dbo(oCnn)} WITH (UPDLOCK, HOLDLOCK);";
-
-                        {
-                            using var cmd = new SqlCommand(cSqlC, oCnn?.InnerConnection);
-                            cmd.Transaction = oTrans;
-                            var result = cmd.ExecuteScalar();
-                            _mID = result != DBNull.Value ? Convert.ToInt32(result) : 0;
-                        }
-
-                        _mID += SRandom();
-
-                       
-                        try
-                        {
-                            using var cmd = new SqlCommand(
-                                $"IF NOT EXISTS (SELECT 1 FROM {Table.dbo(oCnn)} WITH (UPDLOCK, HOLDLOCK) WHERE {CampoCodigo} = @id) " +
-                                $"BEGIN /* Sucesso - ID está livre */ SELECT 0; END " +
-                                $"ELSE BEGIN /* Falha - ID já existe */ SELECT 1; END",
-                                oCnn?.InnerConnection
-                            );
-
-                            cmd.Parameters.AddWithValue("@id", _mID);
-                            cmd.Transaction = oTrans;
-
-                            if ((int)cmd.ExecuteScalar() == 0)
-                                break;  
-                             
-                        }
-                        catch (Exception)
-                        {
-                            if (retryCount >= maxRetries)
-                                throw; 
-                        }
-                    }
-
-                    if (!addCampoCodigo)
-                        return;
-
-                    Fields(CampoCodigo, _mID, ETiposCampos.FNumber);
-                    cPreSql = string.Join(",", _mSqlPre);
-                }
-
                 if (Insert)
                 {
-                    
-                    if (!string.IsNullOrEmpty(CampoCodigo))
-                    {
+                    cSql.Append("INSERT INTO ");
+                    cSql.Append(Table.dbo(oCnn));
+                    cSql.Append(" (");
+                    cSql.Append(string.Join(",", _mSqlPre));
+                    cSql.Append(") OUTPUT INSERTED.");
+                    cSql.Append(CampoCodigo); // Adiciona a cláusula OUTPUT
+                    cSql.Append(" VALUES (");
+                    cSql.Append(string.Join(",", _mSqlPos));
+                    cSql.Append(')');
 
-                        if (Identity.IsNão())  
-                            ReadNewId(true);
-
-                    }
                 }
                 else
                 {
-                    
+
                     if (_mSqlPre.Count <= 2)
                     {
                         if (cPreSql.Contains("DtAtu") && cPreSql.Contains("QuemAtu"))
 
-                            return "OK"; 
+                            return "OK";
 
                         switch (_mSqlPre.Count)
                         {
@@ -223,115 +191,88 @@ public class DBToolWTable32
                         }
                     }
 
-                    cSql = new("UPDATE ");  
+                    cSql = new("UPDATE ");
 
-                    if (Where.NãoContemUpper(" IN ")) cSql.Append(" TOP (1) "); 
+                    if (Where.NãoContemUpper(" IN ")) cSql.Append(" TOP (1) ");
 
                     cSql.Append($"{Table.dbo(oCnn)} SET {cPreSql} WHERE {Where};");
                     cSql.Insert(0, "set dateformat ymd;");
                 }
 
-                var started = Insert;
+                //var started = Insert;
 
-                while (true)
+
+
+                //if (started)
+                //{
+                //    started = false; 
+
+                //    cSql = new($"set dateformat ymd; INSERT INTO {Table.dbo()} ({cPreSql}) VALUES ({(string.Join(",", _mSqlPos))});");
+                //}
+                using var cmd = new SqlCommand(cSql.ToString(), oCnn?.InnerConnection, oTrans);
+                for (var nv = 0; nv < _lstCampos.Count; nv++)
+                    cmd.Parameters.AddWithValue(_lstCampos[nv], _lstValue[nv]);
+
+                try
                 {
-
-                    if (started)
+                    if (Insert)
                     {
-                        started = false; 
-
-                        cSql = new($"set dateformat ymd; INSERT INTO {Table.dbo(oCnn)} ({cPreSql}) VALUES ({(string.Join(",", _mSqlPos))});");
+                        var result = cmd.ExecuteScalar();                         
+                         _mID = result != null ? (Guid)result : throw new Exception("Failed to retrieve inserted ID");                     
                     }
-                    using var cmd = new SqlCommand(cSql.ToString(), oCnn?.InnerConnection, oTrans);
-                    for (var nv = 0; nv < _lstCampos.Count; nv++)
-                        cmd.Parameters.AddWithValue(_lstCampos[nv], _lstValue[nv]); 
-
-                    try
+                    else
                     {
                         cmd.ExecuteNonQuery();
-                        if (Insert && _mID == 0)
-                        {
-                            if (Identity)
-                                _mID = ObtemUltimoIDInserido(oCnn, oTrans);
-                            else
-                            {
-                                if (CampoCodigo.NotIsEmpty())
-                                { 
-                                    int GetID()
-                                    {
-                                        using var cmdX = new SqlCommand($"SELECT TOP (1) {CampoCodigo} FROM {Table.dbo(oCnn)} ORDER BY {CampoCodigo.SqlOrderDesc()};", oCnn?.InnerConnection)
-                                        {
-                                            Transaction = oTrans
-                                        };
-                                        var ret = cmdX.ExecuteScalar();
-                                        return ret != null
-                                            ? DBNull.Value.Equals(ret) ? 0 : Convert.ToInt32(ret.ToString())
-                                            : 0;
-                                    }
-
-                                    _mID = GetID();
-                                }
-                            }
-                        }
- 
-                        oTrans.Commit();
-                        SqlUsed = cSql.ToString();
                     }
 
-                    catch (SqlException ex)
-                    {
-                        oTrans.Rollback();
-                        LastError = ex.Message;
-                        if (LastError.ContemUpper("Não é possível inserir o valor NULL"))
-                            return "ERROR_CAMPO_NULL";
-
-                        if (LastError.ContemUpper("Cannot insert duplicate key row"))
-                        {
-                          
-                            return "ERROR_VIOLACAO_DE_CHAVE";
-                        }
-
-                        if (LastError.ContemUpper("PRIMARY KEY") ||  
-                            ex.ErrorCode == -2146232060)  
-                        {
-                            nCurrTrie++;
-                            if (nCurrTrie == PMaxTries)
-                            {
-                                if (LastError.ContemUpper("PRIMARY KEY"))       
-                                {
-                                    if (--MaxReportError > 0)
-                                        GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave Primária {Table}");
-                                    
-                                }
-
-                                return "ERROR";
-                            }
-                            if (!Insert || CampoCodigo.IsEmpty()) return string.Empty; 
-                            oTrans = oCnn.BeginTransaction();
-                            ReadNewId();
-
-                            _lstValue[^1] = _mID;  
-
-                            continue;
-
-                        }
-
-                        return string.Empty;
-                    }
-                    catch (Exception ex)
-                    {
-                        oTrans.Rollback();
-                        LastError = ex.Message;
-
-                        if (--MaxReportError > 0)
-                            GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave {Table}");
-
-                        return string.Empty;
-                    }
-
-                    oTrans.Dispose();
-                    return "OK";
+                    oTrans.Commit();
+                    SqlUsed = cSql.ToString();
                 }
+
+                catch (SqlException ex)
+                {
+                    oTrans.Rollback();
+                    LastError = ex.Message;
+
+                    if (LastError.ContemUpper("Não é possível inserir o valor NULL"))
+                        return "ERROR_CAMPO_NULL";
+
+                    if (LastError.ContemUpper("Cannot insert duplicate key row"))
+                    {
+                        return "ERROR_VIOLACAO_DE_CHAVE";
+                    }
+
+                    if (LastError.ContemUpper("PRIMARY KEY") ||
+                        ex.ErrorCode == -2146232060)
+                    {
+                        nCurrTrie++;
+                        if (nCurrTrie == PMaxTries)
+                        {
+                            if (LastError.ContemUpper("PRIMARY KEY"))
+                            {
+                                if (--MaxReportError > 0)
+                                    GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave Primária {Table}");
+                            }
+                            return "ERROR";
+                        }
+                    }
+
+                    return string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    oTrans.Rollback();
+                    LastError = ex.Message;
+
+                    if (--MaxReportError > 0)
+                        GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave {Table}");
+
+                    return string.Empty;
+                }
+
+                oTrans.Dispose();
+                return "OK";
+
             }
         }
         catch (Exception e)
@@ -351,36 +292,23 @@ public class DBToolWTable32
         return RRandom.Next(minValue: 2, maxValue: NRandom); //08-07-2015 (2,5) | 03-12-2013
     }
 
-    private int ObtemUltimoIDInserido(MsiSqlConnection? conn, SqlTransaction? trans)
-    {
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "SELECT @@identity as ID";
-        if (trans != null)
-            cmd.Transaction = trans;
 
-        var obj = cmd.ExecuteScalar();
-        return !DBNull.Value.Equals(obj)
-             ? Convert.ToInt32(obj)
-             : throw new("N\u00E3o consegiur obter o \u00FAltimo Id da tabela " + Table);
 
-    }
- 
-    public bool Identity;
-    
+
     public bool HasUpdates
     {
         get
         {
-            if (_hasUpdates == 0) _hasUpdates =  _mSqlPre.Count > 0 ? (byte)1 : (byte)2;
+            if (_hasUpdates == 0) _hasUpdates = _mSqlPre.Count > 0 ? (byte)1 : (byte)2;
             return _hasUpdates == 1;
         }
     }
-   
+
     public void Fields(in string nomeCampo, DateTime? value, ETiposCampos tipo)
     {
         string cSqlValue;
         var cFormat = tipo == ETiposCampos.FDateUltraFull ? "yyyy-MM-dd HH:mm:ss.fff" : "yyyy-MM-dd HH:mm:ss";
-        
+
         if (tipo == ETiposCampos.FNow)
         {
             var cTime = DevourerOne.DateTimeUtc; // DevourerOne.DateTimeUtc;
@@ -389,9 +317,9 @@ public class DBToolWTable32
             else
             {
                 cSqlValue = Convert.ToDateTime(value).ToString(format: cFormat);
-                if (cSqlValue.IndexOf("00:00:00", StringComparison.Ordinal) != -1)                     
+                if (cSqlValue.IndexOf("00:00:00", StringComparison.Ordinal) != -1)
                     cSqlValue = cTime.ToString(format: cFormat);
-                
+
             }
         }
         else
@@ -409,7 +337,7 @@ public class DBToolWTable32
         else
             _mSqlPre.Add($"{nomeCampo}={valData}");
     }
-   
+
     private string? CheckIfExists(in string cSqlValue, string nomeCampo)
     {
         if (!IsMachineCode && _lstCampos.Count > 0)
@@ -448,7 +376,7 @@ public class DBToolWTable32
         _lstCampos.Add(nomeCampo);
         return $"@{nomeCampo}";
     }
-    
+
     private string PrixValue(in decimal cSqlValue, string nomeCampo, ETiposCampos tipo)
     {
         if (_lstCampos
@@ -459,7 +387,7 @@ public class DBToolWTable32
                 ? tipo == ETiposCampos.FNumberNull ? DBNull.Value : 0
                 : cSqlValue;
         }
-      
+
         if (cSqlValue < Convert.ToDecimal(0.001))
         {
             if (tipo == ETiposCampos.FNumberNull)
@@ -478,7 +406,7 @@ public class DBToolWTable32
         _lstCampos.Add(nomeCampo);
         return $"@{nomeCampo}";
     }
-    
+
     public void Fields(in string nomeCampo, long value, ETiposCampos tipo)
     {
 
@@ -507,7 +435,7 @@ public class DBToolWTable32
             _mSqlPre.Add($"{nomeCampo}={cSqlValue}");
         }
     }
- 
+
     public void Fields(in string nomeCampo, int value, ETiposCampos tipo)
     {
         if (CheckIfExists(value == 0 &&
@@ -525,7 +453,7 @@ public class DBToolWTable32
             _mSqlPre.Add($"{nomeCampo}={cSqlValue}");
     }
 
-    
+
     public void Fields(in string nomeCampo, byte[]? value, ETiposCampos tipo)
     {
 
@@ -556,10 +484,10 @@ public class DBToolWTable32
         else
             _mSqlPre.Add($"{nomeCampo}={cSqlValue}");
     }
-     
+
 
     public static int MaxReportError { get; private set; } = 10;
- 
+
     public void Fields(in string nomeCampo, decimal value, ETiposCampos tipo)
     {
         var cSqlValue = PrixValue(value, nomeCampo, tipo);
@@ -569,14 +497,14 @@ public class DBToolWTable32
         if (Insert)
         {
             _mSqlPre.Add(nomeCampo);
-            _mSqlPos.Add(cSqlValue); 
+            _mSqlPos.Add(cSqlValue);
         }
         else
             _mSqlPre.Add($"{nomeCampo}={cSqlValue}");
     }
 
     public void Fields(in string nomeCampo, bool value, ETiposCampos tipo)
-    {          
+    {
 
         var cSqlValue = CheckIfExists(value ? "1" : "0", nomeCampo);
         if (cSqlValue == null)
@@ -590,6 +518,3 @@ public class DBToolWTable32
             _mSqlPre.Add($"{nomeCampo}={cSqlValue}");
     }
 }
-
-#endif
-#endif

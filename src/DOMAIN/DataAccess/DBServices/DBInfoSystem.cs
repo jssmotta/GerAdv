@@ -3,6 +3,9 @@ namespace MenphisSI.DB;
 [Serializable]
 public class DBInfoSystem : IDBInfoSystem
 {
+
+   
+
     public string GetForeingTabela() => FForeingKeyTable ?? string.Empty;
    
     public bool TipoData() =>

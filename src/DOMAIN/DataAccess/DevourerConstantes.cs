@@ -91,7 +91,6 @@ public static partial class DevourerOne
     public const string PNroPis = "N\u00BA do PIS";  
     public const string PNroSerieCtps = "N\u00BA de s\u00E9rie da carteira de trabalho";
 
-
-      
+    
 }
 

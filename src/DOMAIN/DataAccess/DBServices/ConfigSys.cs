@@ -9,7 +9,7 @@ namespace MenphisSI;
 public static partial class ConfigSys
 {
 
-    private static bool ExecuteSql(string cSql, SqlConnection? conn)
+    private static bool ExecuteSql(string cSql, MsiSqlConnection? conn)
     {
         if (conn is null) return false;
         using var cmd = conn.CreateCommand();
@@ -34,30 +34,30 @@ public static partial class ConfigSys
     /// <param name="cKey"></param>
     /// <param name="operador"></param>
     /// <param name="oCnn"></param>
-    public static bool DeleteKeyCfgSys(string cKey, int operador, SqlConnection? oCnn)
+    public static bool DeleteKeyCfgSys(string cKey, int operador, MsiSqlConnection? oCnn)
     =>
-        ExecuteSql($"delete from [dbo].WCfgSys where Usuario={operador} AND Chave like '{cKey.Replace("'", "''")}'", oCnn);
+        ExecuteSql($"delete from {"WCfgSys".dbo(oCnn)} where Usuario={operador} AND Chave like '{cKey.Replace("'", "''")}'", oCnn);
 
-    public static bool DeleteKeyCfgSys(string cKey, SqlConnection? oCnn)
+    public static bool DeleteKeyCfgSys(string cKey, MsiSqlConnection? oCnn)
 =>
-    ExecuteSql($"delete from [dbo].WCfgSys where Chave like '{cKey.Replace("'", "''")}'", oCnn);
+    ExecuteSql($"delete from {"WCfgSys".dbo(oCnn)} where Chave like '{cKey.Replace("'", "''")}'", oCnn);
 
-    public static bool WriteCfgSys(string cKey, int nValue, SqlConnection? oCnnP)
+    public static bool WriteCfgSys(string cKey, int nValue, MsiSqlConnection? oCnnP)
         => iWrite(cKey, nValue.ToString(), oCnnP);
 
-    public static bool WriteCfgSys64(string cKey, long nValue, SqlConnection? oCnnP)
+    public static bool WriteCfgSys64(string cKey, long nValue, MsiSqlConnection? oCnnP)
         => iWrite(cKey, nValue.ToString(), oCnnP);
 
-    public static void WriteCfgSys(string cKey, int operador, long nValue, SqlConnection? oCnnP)
+    public static void WriteCfgSys(string cKey, int operador, long nValue, MsiSqlConnection? oCnnP)
         => iWrite(cKey, nValue.ToString(), oCnnP, operador);
-    public static void WriteCfgSys64(string cKey, int operador, long nValue, SqlConnection? oCnnP)
+    public static void WriteCfgSys64(string cKey, int operador, long nValue, MsiSqlConnection? oCnnP)
     => iWrite(cKey, nValue.ToString(), oCnnP, operador);
 
-    private static bool iWrite(string? cKey, string cValue, SqlConnection? oCnnP, int operador = -1000)
+    private static bool iWrite(string? cKey, string cValue, MsiSqlConnection? oCnnP, int operador = -1000)
     {
         if (oCnnP is null ||
             string.IsNullOrEmpty(cKey.trim())) return false;
-         
+
 
         using var trans = oCnnP.BeginTransaction();
         using var cmd =
@@ -65,8 +65,8 @@ public static partial class ConfigSys
             {
                 Transaction = trans,
                 CommandType = CommandType.StoredProcedure,
-                CommandText = operador == -1000 ? "dbo.MenphisSI_sp_WriteCfg" : "dbo.MenphisSI_sp_WriteCfgUser",
-                Connection = oCnnP,
+                CommandText = operador == -1000 ? "MenphisSI_sp_WriteCfg".dbo(oCnnP) : "MenphisSI_sp_WriteCfgUser".dbo(oCnnP),
+                Connection = oCnnP?.InnerConnection,
                 CommandTimeout = 40
             };
         {
@@ -106,7 +106,7 @@ public static partial class ConfigSys
             {
                 trans.Rollback();
                 var err = ex.Message;
-               // GeneralSystemErrorTraper.GetError(ex, cmd.CommandText, oCnnP.ConnectionString);
+                // GeneralSystemErrorTraper.GetError(ex, cmd.CommandText, oCnnP.ConnectionString);
             }
             catch (Exception ex)
             {
@@ -117,7 +117,7 @@ public static partial class ConfigSys
         return false;
     }
 
-    private static bool iWriteMemo(string? cKey, string cValue, SqlConnection? oCnnP, int operador = -1000)
+    private static bool iWriteMemo(string? cKey, string cValue, MsiSqlConnection? oCnnP, int operador = -1000)
     {
         if (oCnnP is null || cKey is null) return false;
 
@@ -127,8 +127,8 @@ public static partial class ConfigSys
             {
                 Transaction = trans,
                 CommandType = CommandType.StoredProcedure,
-                CommandText = operador == -1000 ? "dbo.MenphisSI_sp_WriteCfgMemo" : "dbo.MenphisSI_sp_WriteCfgMemoUser",
-                Connection = oCnnP
+                CommandText = operador == -1000 ? "MenphisSI_sp_WriteCfgMemo".dbo(oCnnP) : "MenphisSI_sp_WriteCfgMemoUser".dbo(oCnnP),
+                Connection = oCnnP?.InnerConnection
             };
         {
             if (operador != -1000)
@@ -183,33 +183,20 @@ public static partial class ConfigSys
     /// <param name="operador"></param>
     /// <param name="nValue"></param>
     /// <param name="oCnn"></param>
-    public static void WriteCfgSys(string cKey, int operador, int nValue, SqlConnection? oCnnP)
+    public static void WriteCfgSys(string cKey, int operador, int nValue, MsiSqlConnection? oCnnP)
     => iWrite(cKey, nValue.ToString(), oCnnP, operador);
-    /// <summary>
-    /// Monitoramento pelo meu sistema - 02-07-2016
-    /// </summary>
-    /// <param name="keyValue"></param>
-    /// <param name="oCnn"></param>
-    /// <returns></returns>
-    //public static string GetValueKey(string keyValue, SqlConnection? oCnn)
-    //{
-    //    var ckey = $"gkey-value-{keyValue}";
-    //    var cRet = ReadCfgSysC(ckey);
-    //    return cRet.Equals(string.Empty) ? keyValue : cRet;
-    //}
-    public static bool WriteCfgSysC(string cKey, string cValue, SqlConnection? oCnnP)
+
+    public static bool WriteCfgSysC(string cKey, string cValue, MsiSqlConnection? oCnnP)
         => iWrite(cKey, cValue, oCnnP);
-    //public static bool DeleteCfgSys(string cKey, SqlConnection? oCnnP)
-    // =>
-    //    ConfiguracoesDBT.ExecuteSql($"DELETE TOP (1) FROM WcfgSys where Chave='{cKey.Replace("'", "''")}';", oCnnP);
-   
+
+
     /// <summary>
     /// Refactorado 17-06-2019 16:18
     /// </summary>
     /// <param name="cKey"></param>
     /// <param name="cValue"></param>
     /// <param name="oCnnP"></param>
-    public static bool WriteCfgSysMemo(in string cKey, in string cValue, SqlConnection? oCnnP) => cKey.Equals(string.Empty) ? throw new(" cKey is EMPTY! 17-06-2019 16:09") : iWriteMemo(cKey, cValue, oCnnP);
+    public static bool WriteCfgSysMemo(in string cKey, in string cValue, MsiSqlConnection? oCnnP) => cKey.Equals(string.Empty) ? throw new(" cKey is EMPTY! 17-06-2019 16:09") : iWriteMemo(cKey, cValue, oCnnP);
 
     /// <summary>
     /// Refactorado 17-06-2019 15:57
@@ -218,9 +205,9 @@ public static partial class ConfigSys
     /// <param name="operador"></param>
     /// <param name="cValue"></param>
     /// <param name="oCnn"></param>
-    public static bool WriteCfgSysC(string? cKey, int operador, string cValue, SqlConnection? oCnn)
+    public static bool WriteCfgSysC(string? cKey, int operador, string cValue, MsiSqlConnection? oCnn)
     => iWrite(cKey, cValue, oCnn, operador);
-    public static void WriteCfgSysMemo(in string? cKey, in int operador, string cValue, in SqlConnection? oCnn)
+    public static void WriteCfgSysMemo(in string? cKey, in int operador, string cValue, in MsiSqlConnection? oCnn)
     {
         if (cKey.IsEquals(string.Empty))
             throw new("cKey Is Empty()! 17-06-2019 16:06");
@@ -228,17 +215,17 @@ public static partial class ConfigSys
         if (cValue.IsEmpty()) cValue = string.Empty;
         iWriteMemo(cKey, cValue, oCnn, operador);
     }
-    public static int ReadCfgSysX(string cKey, SqlConnection? oCnn)
-    { 
+    public static int ReadCfgSysX(string cKey, MsiSqlConnection? oCnn)
+    {
         try
         {
             using var cmd =
                new SqlCommand
                {
                    // Transaction = trans,
-                   CommandText = "dbo.MenphisSI_sp_WReadCfg",
+                   CommandText = "MenphisSI_sp_WReadCfg".dbo(oCnn),
                    CommandType = CommandType.StoredProcedure,
-                   Connection = oCnn
+                   Connection = oCnn?.InnerConnection
                };
             cmd.Parameters.Add(new()
             {
@@ -264,30 +251,6 @@ public static partial class ConfigSys
         }
     }
 
-    ///// <summary>
-    ///// 08-09-2015
-    ///// </summary>
-    ///// <param name="cKey"></param>
-    ///// <param name="operador"></param>
-    ///// <param name="oCnn"></param>
-    ///// <returns></returns>
-    //public static void DeleteCfgSys(string cKey, int operador, SqlConnection? oCnn)
-    //{
-    //    if (oCnn is null) return;
-
-    //    using var cmd = oCnn.CreateCommand();
-    //    cmd.CommandText = $"Select TOP (1) Valor from [dbo].WCfgSys (NOLOCK) where Usuario={operador} and Chave like '{cKey}';";
-    //    var trans = oCnn.BeginTransaction();
-    //    cmd.Transaction = trans;
-    //    try
-    //    {
-    //        cmd.ExecuteNonQuery();
-    //        trans.Commit();
-    //    }
-    //    catch
-    //    {
-    //    }
-    //}
 
     /// <summary>
     /// Otimizado em 07-06-2015
@@ -296,7 +259,7 @@ public static partial class ConfigSys
     /// <param name="operador"></param>
     /// <param name="oCnn"></param>
     /// <returns></returns>
-    public static int ReadCfgSys(string cKey, int operador, SqlConnection? oCnn)
+    public static int ReadCfgSys(string cKey, int operador, MsiSqlConnection? oCnn)
     {
 
         if (oCnn == null)
@@ -307,8 +270,8 @@ public static partial class ConfigSys
             using var cmd =
                 new SqlCommand
                 {
-                    CommandText = "dbo.MenphisSI_sp_WReadCfgUser",
-                    Connection = oCnn,
+                    CommandText = "MenphisSI_sp_WReadCfgUser".dbo(oCnn),
+                    Connection = oCnn?.InnerConnection,
                     CommandTimeout = 10,
                     CommandType = CommandType.StoredProcedure
 
@@ -338,7 +301,7 @@ public static partial class ConfigSys
         }
 
     }
-    public static long ReadCfgSys64(string cKey, int operador, SqlConnection? oCnn)
+    public static long ReadCfgSys64(string cKey, int operador, MsiSqlConnection? oCnn)
     {
 #if (DEBUG)
         if (oCnn == null)
@@ -349,8 +312,8 @@ public static partial class ConfigSys
         using var cmd =
             new SqlCommand
             {
-                CommandText = "dbo.MenphisSI_sp_WReadCfgUser",
-                Connection = oCnn,
+                CommandText = "MenphisSI_sp_WReadCfgUser".dbo(oCnn),
+                Connection = oCnn?.InnerConnection,
                 CommandType = CommandType.StoredProcedure
             };
         cmd.Parameters.Add(new()
@@ -379,7 +342,7 @@ public static partial class ConfigSys
     /// <param name="cKey"></param>
     /// <param name="oCnn"></param>
     /// <returns></returns>
-    public static long ReadCfgSys64(string cKey, SqlConnection? oCnn)
+    public static long ReadCfgSys64(string cKey, MsiSqlConnection? oCnn)
     {
 #if (DEBUG)
         if (oCnn == null)
@@ -390,8 +353,8 @@ public static partial class ConfigSys
         using var cmd =
             new SqlCommand
             {
-                CommandText = "dbo.MenphisSI_sp_WReadCfg",
-                Connection = oCnn,
+                CommandText = "MenphisSI_sp_WReadCfg".dbo(oCnn),
+                Connection = oCnn?.InnerConnection,
                 CommandType = CommandType.StoredProcedure
             };
         cmd.Parameters.Add(new()
@@ -405,14 +368,14 @@ public static partial class ConfigSys
         return ret != null && long.TryParse(ret.ToString(), out var nRet) ? nRet : -1;
     }
 
-    public static string ReadCfgSysCX(string cKey, SqlConnection? oCnn, string defValue = "")
+    public static string ReadCfgSysCX(string cKey, MsiSqlConnection? oCnn, string defValue = "")
     {
         using var cmd =
          new SqlCommand
          {
              CommandType = CommandType.StoredProcedure,
-             CommandText = "dbo.MenphisSI_sp_WReadCfg",
-             Connection = oCnn
+             CommandText = "MenphisSI_sp_WReadCfg".dbo(oCnn),
+             Connection = oCnn?.InnerConnection
          };
         cmd.Parameters.Add(new()
         {
@@ -424,7 +387,7 @@ public static partial class ConfigSys
         var ret = cmd.ExecuteScalar(); // 27-01-2017
         return ret?.ToString() ?? defValue;
     }
-    public static string ReadCfgSysMemo(string cKey, SqlConnection? oCnn)
+    public static string ReadCfgSysMemo(string cKey, MsiSqlConnection? oCnn)
     {
         if (oCnn == null) return "";
 
@@ -432,8 +395,8 @@ public static partial class ConfigSys
          new SqlCommand
          {
              CommandType = CommandType.StoredProcedure,
-             CommandText = "dbo.MenphisSI_sp_WReadCfgMemo",
-             Connection = oCnn
+             CommandText = "MenphisSI_sp_WReadCfgMemo".dbo(oCnn),
+             Connection = oCnn?.InnerConnection
          };
         cmd.Parameters.Add(new()
         {
@@ -446,33 +409,55 @@ public static partial class ConfigSys
         var ret = cmd.ExecuteScalar(); // 27-01-2017
         return ret != null ? ret?.ToString() ?? string.Empty : string.Empty;
     }
-    public static string ReadCfgSysC(string? cKey, int operador, SqlConnection? oCnn, string defaultRet = "")
+
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    public static string ReadCfgSysC(string? cKey, int operador, MsiSqlConnection? oCnn, string defaultRet = "")
     {
         if (cKey == null) return defaultRet;
 
         using var cmd = new SqlCommand
         {
             CommandType = CommandType.StoredProcedure,
-            CommandText = "dbo.MenphisSI_sp_WReadCfgUser",
-            Connection = oCnn
+            CommandText = "MenphisSI_sp_WReadCfgUser".dbo(oCnn),
+            Connection = oCnn?.InnerConnection
         };
-        cmd.Parameters.Add(new()
+
+        try
         {
-            SqlDbType = SqlDbType.Int,
-            ParameterName = "@UserId",
-            Value = operador,
-            Direction = ParameterDirection.Input
-        });
-        cmd.Parameters.Add(new()
+            cmd.Parameters.Add(new()
+            {
+                SqlDbType = SqlDbType.Int,
+                ParameterName = "@UserId",
+                Value = operador,
+                Direction = ParameterDirection.Input
+            });
+            cmd.Parameters.Add(new()
+            {
+                SqlDbType = SqlDbType.Text,
+                ParameterName = "@Chave",
+                Value = cKey,
+                Direction = ParameterDirection.Input
+            });
+            var ret = cmd.ExecuteScalar(); // 27-01-2017
+            return (ret != null)
+                ? ret?.ToString() ?? defaultRet : defaultRet;
+        }
+        catch (SqlException ex)
         {
-            SqlDbType = SqlDbType.Text,
-            ParameterName = "@Chave",
-            Value = cKey,
-            Direction = ParameterDirection.Input
-        });
-        var ret = cmd.ExecuteScalar(); // 27-01-2017
-        return (ret != null)
-            ? ret?.ToString() ?? defaultRet : defaultRet;
+            Logger.Error(ex, "Erro de SqlException ao executar o comando SQL. Contexto: {CommandText}, ConnectionString: {ConnectionString}",
+            cmd.CommandText,
+            oCnn?.ConnectionString ?? "Conex�o nula");
+
+            return defaultRet; 
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Erro ao executar o comando SQL. Contexto: {CommandText}, ConnectionString: {ConnectionString}",
+            cmd.CommandText,
+              oCnn?.ConnectionString ?? "Conex�o nula");
+            return defaultRet; 
+        }
     }
     /// <summary>
     /// 24-03-2019* 20:00
@@ -482,13 +467,13 @@ public static partial class ConfigSys
     /// <param name="oCnn"></param>
     /// <param name="defaultRet"></param>
     /// <returns></returns>
-    public static int ReadCfgSys(string cKey, int operador, SqlConnection? oCnn, int defaultRet = 0)
+    public static int ReadCfgSys(string cKey, int operador, MsiSqlConnection? oCnn, int defaultRet = 0)
     {
         using var cmd = new SqlCommand
         {
             CommandType = CommandType.StoredProcedure,
-            CommandText = "dbo.MenphisSI_sp_WReadCfgUser",
-            Connection = oCnn
+            CommandText = "MenphisSI_sp_WReadCfgUser".dbo(oCnn),
+            Connection = oCnn?.InnerConnection
         };
         cmd.Parameters.Add(new()
         {
@@ -515,14 +500,14 @@ public static partial class ConfigSys
     /// <param name="operador"></param>
     /// <param name="oCnn"></param>
     /// <returns></returns>
-    public static string ReadCfgSysMemo(string? cKey, int operador, in SqlConnection? oCnn)
+    public static string ReadCfgSysMemo(string? cKey, int operador, in MsiSqlConnection? oCnn)
     {
         if (oCnn is null || cKey is null) return "";
         using var cmd = new SqlCommand
         {
             CommandType = CommandType.StoredProcedure,
-            CommandText = "dbo.MenphisSI_sp_WReadCfgMemoUser",
-            Connection = oCnn
+            CommandText = "MenphisSI_sp_WReadCfgMemoUser".dbo(oCnn),
+            Connection = oCnn?.InnerConnection
         };
         cmd.Parameters.Add(new()
         {
@@ -542,22 +527,22 @@ public static partial class ConfigSys
         var ret = cmd.ExecuteScalar(); // 27-01-2017
         return ret != null ? ret?.ToString() ?? string.Empty : string.Empty;
     }
-    public static void WriteCfgSysS(in string cKey, in string cValue, int operador, SqlConnection? oCnnP)
+    public static void WriteCfgSysS(in string cKey, in string cValue, int operador, MsiSqlConnection? oCnnP)
         => iWrite(cKey, cValue, oCnnP, operador);
-    public static void WriteCfgSysS(string cKey, in string cValue, SqlConnection? oCnnP)
+    public static void WriteCfgSysS(string cKey, in string cValue, MsiSqlConnection? oCnnP)
     {
         if (cKey.Length > 2048) cKey = cKey[..2040];
         iWrite(cKey, cValue, oCnnP);
     }
 
-    public static string ReadCfgSysS(string cKey, SqlConnection? oCnn)
+    public static string ReadCfgSysS(string cKey, MsiSqlConnection? oCnn)
     {
         if (cKey.Length > 2048) cKey = cKey[..2040];
         using var cmd = new SqlCommand
         {
             CommandType = CommandType.StoredProcedure,
-            CommandText = "dbo.MenphisSI_sp_WReadCfgUser",
-            Connection = oCnn
+            CommandText = "MenphisSI_sp_WReadCfgUser".dbo(oCnn),
+            Connection = oCnn?.InnerConnection
         };
         cmd.Parameters.Add(new()
         {
@@ -571,217 +556,5 @@ public static partial class ConfigSys
             ? ret?.ToString() ?? string.Empty : string.Empty;
     }
 
-#if (forWeb)
-    /// <summary>
-    /// Identificação do titulo de Legislação
-    /// </summary>
-    /// <returns></returns>
-    public static int IdTipoLegislacao()
-    {
-        try
-        {
-            //int isX = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdTipoLegislacao"].ToString());
-            //return isX;
-            var isX = ReadCfgSys("IdTipoLegislacao");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Legisla\u00E7\u00E3o Federal", "IdTipoLegislacao");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Legislação Municipal
-    /// </summary>
-    /// <returns></returns>
-    public static int IdTipoLegislacaoMunicipal()
-    {
-        try
-        {
-            //int isX = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdTipoLegislacaoMunicipal"].ToString());
-            //return isX;
-            var isX = ReadCfgSys("IdTipoLegislacaoMunicipal");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Legisla\u00E7\u00E3o Municipal", "IdTipoLegislacaoMunicipal");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Jurisprudência
-    /// </summary>
-    /// <returns></returns>
-    public static int IdTipoJurisprudencia()
-    {
-        try
-        {
-            var isX = ReadCfgSys("IdTipoJurisprudencia");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Legisla\u00E7\u00E3o & Jurisprud\u00EAncia", "IdTipoJurisprudencia");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Legislação da Justiça do Trabalho
-    /// </summary>
-    /// <returns></returns>
-    // ReSharper disable once InconsistentNaming
-    public static int IdTipoLegislacaoJT()
-    {
-        try
-        {
-            var isX = ReadCfgSys("IdTipoLegislacaoJT");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Legisla\u00E7\u00E3o Justi\u00E7a do Trabalho", "IdTipoLegislacaoJT");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Acordãos e Sentenças
-    /// </summary>
-    /// <returns></returns>
-    public static int IdTipoAcordaosESetencas()
-    {
-        try
-        {
-            var isX = ReadCfgSys("IdTipoAdSt");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Acord\u00E3os & Senten\u00E7as", "IdTipoAdSt");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Jurisprudência Tributária
-    /// </summary>
-    /// <returns></returns>
-    public static int IdTipoLegislacaoJpt()
-    {
-        try
-        {
-            var isX = ReadCfgSys("IdTipoLegislacaoJPT");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Jurisprud\u00EAncia Tribut\u00E1ria", "IdTipoLegislacaoJPT");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Legislação Estadual
-    /// </summary>
-    /// <returns></returns>
-    public static int IdTipoLegislacaoEstadual()
-    {
-        try
-        {
-            //int isX = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdTipoLegislacaoEstadual"].ToString());
-            //return isX;
-            var isX = ReadCfgSys("IdTipoLegislacaoEstadual");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Legisla\u00E7\u00E3o Estadual", "IdTipoLegislacaoEstadual");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
 
-    /// <summary>
-    /// Indica se o registro na tabela de Titulos da agenda de endereços é da Menphis SI
-    /// </summary>
-    /// <returns></returns>
-    public static int IdWizardData()
-    {
-        try
-        {
-            var isX = ReadCfgSys(cKey: "IdWizData");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Dados do Assistente", "IdWizData");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-    /// <summary>
-    /// Identificação do titulo de Jurisprudência Tributária
-    /// </summary>
-    /// <returns></returns>
-    // ReSharper disable once InconsistentNaming
-    public static int IdTipoLegislacaoJPT()
-    {
-        try
-        {
-            var isX = ReadCfgSys("IdTipoLegislacaoJPT");// Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["IdWizData"].ToString());
-            if (isX <= 0) isX = AddTitulo("Jurisprud\u00EAncia Tribut\u00E1ria", "IdTipoLegislacaoJPT");
-            return isX;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-
-    public static int AddTitulo(string assunto,
-        string key)
-    {
-        var cNome = assunto.Trim();
-        var cSql = new StringBuilder();
-        if (cNome.ToUpper().IndexOf("%", StringComparison.Ordinal) == -1)
-        {
-            cSql.Append($"Select TOP (1) tipCodigo FROM dbo.TipoEndereco WHERE tipDescricao {DevourerOne.MsiCollate} = '");
-            cSql.Append(cNome.Replace("'", "''"));
-            cSql.Append("'");
-        }
-        else
-        {
-            cSql.Append($"select TOP (1) tipCodigo from dbo.TipoEndereco where tipDescricao {DevourerOne.MsiCollate} = '");
-            cSql.Append(cNome.Replace("'", "''"));
-            cSql.Append("'");
-        }
-
-        using var oCnn = Configuracoes.GetConnectionRw();
-        var nId = DevourerSqlData.GetTotal(cSql.ToString(), oCnn);
-
-        //using var ds = ConfiguracoesDBT.GetDataTable(cSql.ToString(), oCnn); if (ds !=null)            
-        //nId = Convert.ToInt32(ds.Rows[0][0]);           
-
-        if (nId <= 0)
-        {
-            var clsW = new MenphisSI.DBToolWTable32
-            {
-                Table = "TipoEndereco",
-                Insert = true
-            };
-            clsW.Fields("tipDescricao", assunto, ETiposCampos.FString);
-            clsW.Fields("tipQuemCad", 1, ETiposCampos.FNumberNull);
-            clsW.Fields("tipDtCad", "now", ETiposCampos.FNow);
-            clsW.Fields("tipVisto", false, ETiposCampos.FBoolean);
-            clsW.Fields("tipGUID", Guid.NewGuid().ToString(), ETiposCampos.FString);
-            clsW.RecUpdate(oCnn);
-            nId = clsW.GetCodigo();
-
-            if (nId <= 0)
-                throw new("Tipo Endereco (" + assunto + ") retornou id == 0 ao gravar!");
-
-        }
-
-        WriteCfgSys(assunto, nId, oCnn);
-        WriteCfgSys(key, nId, oCnn);
-        return nId;
-    }
-#endif
 }

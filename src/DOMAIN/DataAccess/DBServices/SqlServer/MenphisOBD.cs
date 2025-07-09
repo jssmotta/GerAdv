@@ -3,7 +3,7 @@
 ///// 18-02-2014 3.0.0 Removidas funções que estavam em desuso
 ///// 16/07/2012 2.0.4 DevourerOne.WriteLogNT
 ///// 13/08/2015 - nTestUnit
-///// 30-05-2015 - SqlConnection Only
+///// 30-05-2015 - MsiSqlConnection Only
 //using System;
 //
 //using Microsoft.Data.SqlClient; //INSERI!!!
@@ -49,7 +49,7 @@ namespace MenphisSI.DB;
 //        /// <param name="dr"></param>
 //        /// <param name="conn"></param>
 //        /// <param name="trans"></param>
-//        protected abstract void CarregarDadosBd(DataRow dr, SqlConnection conn, SqlTransaction trans);
+//        protected abstract void CarregarDadosBd(DataRow dr, MsiSqlConnection conn, SqlTransaction trans);
 //        //protected abstract void MontarSQLAtualizacao(StringBuilder sbSQL);
 //        //protected abstract void MontarSQLInsercaoCampos(StringBuilder sbSQL);
 //        //protected abstract void MontarSQLInsercaoValores(StringBuilder sbSQL);
@@ -59,7 +59,7 @@ namespace MenphisSI.DB;
 //        /// </summary>
 //        /// <param name="conn">Conexão para ser usada no armazenamento.</param>
 //        /// <param name="trans">Transação para ser usada no armazenamento.</param>
-//        //public bool Armazenar(long nCodigo, SqlConnection conn, SqlTransaction trans)
+//        //public bool Armazenar(long nCodigo, MsiSqlConnection conn, SqlTransaction trans)
 //        //{
 //        //    // verifica se o objeto não existe ainda no banco de dados
 //        //    if (nCodigo <= 0) // pNULL_ID)
@@ -79,7 +79,7 @@ namespace MenphisSI.DB;
 //        /// </summary>
 //        /// <param name="conn">Conexão a ser usada na inserção.</param>
 //        /// <param name="trans">Transação a ser usada na inserção.</param>
-//        //public bool Excluir(long CurrID, SqlConnection conn, SqlTransaction trans)
+//        //public bool Excluir(long CurrID, MsiSqlConnection conn, SqlTransaction trans)
 //        //{
 //        //    StringBuilder sbSQL = new StringBuilder();
 //        //    if (CurrID <= 0)
@@ -118,7 +118,7 @@ namespace MenphisSI.DB;
 //        /// </summary>
 //        /// <param name="conn">Conexão a ser usada na atualização.</param>
 //        /// <param name="trans">Transação a ser usada na atualização.</param>
-//        //protected bool Atualizar(long nCodigo, SqlConnection conn, SqlTransaction trans)
+//        //protected bool Atualizar(long nCodigo, MsiSqlConnection conn, SqlTransaction trans)
 //        //{
 //        //    StringBuilder sbSQL = new StringBuilder();
 //        //    sbSQL.Append("UPDATE ");
@@ -154,7 +154,7 @@ namespace MenphisSI.DB;
 //        /// <param name="conn"></param>
 //        /// <param name="trans"></param>
 //        /// <returns></returns>
-//        internal bool ExecuteSql(string cSql, SqlConnection conn, SqlTransaction trans)
+//        internal bool ExecuteSql(string cSql, MsiSqlConnection conn, SqlTransaction trans)
 //        {
 //            using (var cmd = conn.CreateCommand())
 //            {
@@ -183,7 +183,7 @@ namespace MenphisSI.DB;
 //        /// <param name="id">Identificador único do registro na sua entidade no banco de dados.</param>
 //        /// <param name="oCnn">Conexão a ser usada na carga.</param>
 //        /// <param name="oTrans">Transação a ser usada na carga.</param>
-//        protected virtual void Carregar(long id, SqlConnection? oCnn, SqlTransaction? oTrans)
+//        protected virtual void Carregar(long id, MsiSqlConnection? oCnn, SqlTransaction? oTrans)
 //        {
 //            if (id == 0) { return; }
 //            var sbSql = new StringBuilder();
@@ -258,7 +258,7 @@ namespace MenphisSI.DB;
 //        /// basta colocar a lista de campos com suas respectivas direções de ordenaçao.
 //        /// (e.g. "Usuario.ds_nome ASC, Usuario.ds_sobrenome DESC")</param>
 //        /// <returns></returns>
-//        protected static SqlDataReader GetDataReader(SqlConnection conn, SqlTransaction trans, string tabelaSelect, string camposSelect, string filtroWhere, string clausulaOrdenacao)
+//        protected static SqlDataReader GetDataReader(MsiSqlConnection conn, SqlTransaction trans, string tabelaSelect, string camposSelect, string filtroWhere, string clausulaOrdenacao)
 //        {
 //            var sbSQL = new StringBuilder();
 //            sbSQL.Append("SELECT ");
@@ -301,7 +301,7 @@ namespace MenphisSI.DB;
 //        /// <param name="filtroWhere"></param>
 //        /// <param name="clausulaOrdenacao"></param>
 //        /// <returns></returns>
-//        protected static DataSet GetDataSet(SqlConnection conn, SqlTransaction trans, string tabelaSelect, string camposSelect, string filtroWhere, string clausulaOrdenacao)
+//        protected static DataSet GetDataSet(MsiSqlConnection conn, SqlTransaction trans, string tabelaSelect, string camposSelect, string filtroWhere, string clausulaOrdenacao)
 //        {
 //            var sbSQL = new StringBuilder();
 //            sbSQL.Append("SELECT ");
@@ -353,7 +353,7 @@ namespace MenphisSI.DB;
 //        /// <param name="tabelaSelect"></param>
 //        /// <param name="filtroWhere"></param>
 //        /// <returns></returns>
-//        protected static DataSet QuickGetDataSet(int nTops, SqlConnection conn, string tabelaSelect, string filtroWhere)
+//        protected static DataSet QuickGetDataSet(int nTops, MsiSqlConnection conn, string tabelaSelect, string filtroWhere)
 //        {
 //            var sbSQL = new StringBuilder();
 //            sbSQL.Append("SELECT top ");
@@ -387,7 +387,7 @@ namespace MenphisSI.DB;
 //        /// <param name="tabelaSelect"></param>
 //        /// <param name="filtroWhere"></param>
 //        /// <returns></returns>
-//        protected static DataSet QuickGetDataSet(SqlConnection conn, string tabelaSelect, string filtroWhere)
+//        protected static DataSet QuickGetDataSet(MsiSqlConnection conn, string tabelaSelect, string filtroWhere)
 //        {
 //            var sbSql = new StringBuilder();
 //            sbSql.Append("SELECT  * ");
@@ -411,7 +411,7 @@ namespace MenphisSI.DB;
 //            }
 //            return ds;
 //        }
-//        public static DataSet ListarDs(string tabela, string cSqlMain, string cWhere, string cOrder, SqlConnection? oCnn)
+//        public static DataSet ListarDs(string tabela, string cSqlMain, string cWhere, string cOrder, MsiSqlConnection? oCnn)
 //        {
 //            var cSql = new StringBuilder();
 //            if (!cSqlMain.Equals(string.Empty))
@@ -446,7 +446,7 @@ namespace MenphisSI.DB;
 //        /// <param name="cSQL"></param>
 //        /// <param name="nTipoCMD"></param>
 //        /// <returns></returns>
-//        protected static DataSet GetDataSet(SqlConnection conn, string cSQL, ConfiguracoesDBT.E_TipoSQLCommandTransaction nTipoCMD)
+//        protected static DataSet GetDataSet(MsiSqlConnection conn, string cSQL, ConfiguracoesDBT.E_TipoSQLCommandTransaction nTipoCMD)
 //        {
 //            var ds = new DataSet();
 //            var adap = ConfiguracoesDBT.GetDataAdapter($"{DevourerOne.SQLNoCount}{cSQL}", conn, null, nTipoCMD);
@@ -477,7 +477,7 @@ namespace MenphisSI.DB;
 //        /// <param name="trans"></param>
 //        /// <param name="cSql"></param>
 //        /// <returns></returns>
-//        protected static DataSet GetDataSet(SqlConnection conn, string cSql)
+//        protected static DataSet GetDataSet(MsiSqlConnection conn, string cSql)
 //        {
 //            var ds = new DataSet();
 //            var adap = ConfiguracoesDBT.GetDataAdapter($"{DevourerOne.SQLNoCount}{cSql}", conn, null, tipoTransSelect: 0);
@@ -578,7 +578,7 @@ namespace MenphisSI.DB;
 //        /// <param name="conn"></param>
 //        /// <param name="trans"></param>
 //        /// <returns></returns>
-//        protected long ObtemUltimoIDInserido(SqlConnection conn, SqlTransaction trans)
+//        protected long ObtemUltimoIDInserido(MsiSqlConnection conn, SqlTransaction trans)
 //        {
 //            long ret = -1;
 //            var sbSQL = new StringBuilder();
@@ -600,7 +600,7 @@ namespace MenphisSI.DB;
 //            }
 //            return ret;
 //        }
-//        //protected long GetNextID(string cNomeTable, string cNomeCampoCodigo, SqlConnection conn, SqlTransaction trans)
+//        //protected long GetNextID(string cNomeTable, string cNomeCampoCodigo, MsiSqlConnection conn, SqlTransaction trans)
 //        //{
 //        //    long ret = -1;
 //        //    var cSQL = new StringBuilder();

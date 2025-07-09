@@ -1,8 +1,7 @@
-﻿using MenphisSI.Infrastructure.Connections;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Timers;
 
-namespace MenphisSI;
+namespace MenphisSI.Connections;
 
 public static class DbConnectionFactory
 {
@@ -139,54 +138,5 @@ public static class DbConnectionFactory
     public static ConnectionScope CreateScope(string connectionString)
     {
         return new ConnectionScope(GetConnection(connectionString));
-    }
-}
-
-public class ConnectionScope : IDisposable
-{
-    public MsiSqlConnection Connection { get; }
-
-    internal ConnectionScope(MsiSqlConnection connection)
-    {
-        Connection = connection;
-    }
-
-    public void Dispose()
-    {
-        DbConnectionFactory.ReturnConnection(Connection);
-    }
-}
-
-public static class DbConnectionFactoryExtensions
-{
-    public static MsiSqlConnection GetConnection(this ConfiguracoesDBT dbConfig, string connectionString)
-    {
-        return DbConnectionFactory.GetConnection(connectionString);
-    }
-
-    public static async Task<T> UseConnectionAsync<T>(this ConfiguracoesDBT dbConfig, string connectionString, Func<MsiSqlConnection, Task<T>> action)
-    {
-        using var scope = DbConnectionFactory.CreateScope(connectionString);
-        return await action(scope.Connection);
-    }
-}
-
-public class PoolStats
-{
-    public int TotalConnections { get; set; }
-    public int IdleConnections { get; set; }
-    public int ActiveConnections { get; set; }
-}
-
-// Wrapper class to track LastUsed timestamp
-public class ConnectionWrapper
-{
-    public MsiSqlConnection Connection { get; }
-    public DateTime LastUsed { get; set; }
-
-    public ConnectionWrapper(MsiSqlConnection connection)
-    {
-        Connection = connection;
-        LastUsed = DateTime.Now;
     }
 }

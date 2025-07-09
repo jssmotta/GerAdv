@@ -1,7 +1,6 @@
-﻿
-namespace MenphisSI;
+﻿namespace MenphisSI;
 
-public interface ICadastrosAuditor : ICadastros
+public interface ICadastrosAuditorGuid : ICadastrosGuid
 {
     string IMDtCadDataX_DataHora();
 }
@@ -9,8 +8,10 @@ public interface ICadastrosAuditor : ICadastros
 /// <summary>
 /// Janeiro-2018
 /// </summary>
-public interface ICadastros
-{ 
+public interface ICadastrosGuid
+{
+    void SetValueByNameField(string nomeCampo, object value);
+    object? GetValueByNameField(string nomeCampo); 
     void CarregarDadosBd(DataRow? dbRec);
     void CarregarDadosBd(SqlDataReader dbRec);
     void SetAuditor(int usuarioId);
@@ -18,15 +19,15 @@ public interface ICadastros
     string ICampoCodigo();
     string ICampoNome();
     string IPrefixo();
-    int GetID();
+    Guid GetID();
     int IQuemCad();
     int IQuemAtu();
     public string IDtCadDataX_DataHora();
     public string IDtAtuDataX_DataHora();
 
 #if (pCacheableApp)
-		int Update(MsiSqlConnection? oCnn, int insertId, bool isOffLine);
+		int Update(MsiSqlConnection? oCnn, Guid insertId, bool isOffLine);
 #else
-    int Update(MsiSqlConnection? oCnn, int insertId = 0);
+    int Update(MsiSqlConnection? oCnn);
 #endif
 }

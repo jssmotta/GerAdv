@@ -1,11 +1,11 @@
 ﻿
-namespace MenphisSI.Internal;
+namespace MenphisSI;
 
 [Serializable]
-internal class XCodeIdBase //: StylesCad - Deixou o Sistema lento, muitas heranças.
+public class XCodeIdBaseGuid
 {
-    private protected int m_IdRegistro;
-    private protected int SetId { set => m_IdRegistro = value; }
+    private protected Guid m_IdRegistro;
+    private protected Guid SetId { set => m_IdRegistro = value; }
 
     /// <summary>
     /// Informa se existe dados alterados para serem gravados
@@ -16,14 +16,17 @@ internal class XCodeIdBase //: StylesCad - Deixou o Sistema lento, muitas heran�
     /// <summary>
     /// 07-01-2017 15:50
     /// </summary>
-    public int Código => m_IdRegistro;
+    public Guid Código => m_IdRegistro;
 
     /// <summary>
     /// Campo código
     /// </summary>
-    public int ID { get => m_IdRegistro; set => m_IdRegistro = value; }
-   
+    public Guid ID { get => m_IdRegistro; set => m_IdRegistro = value; }        
+    
     [XmlIgnore]
     public int Error { get; set; }
+
+    [XmlIgnore]
+    public string? ErrorDescription { get; set; }
 }
 
