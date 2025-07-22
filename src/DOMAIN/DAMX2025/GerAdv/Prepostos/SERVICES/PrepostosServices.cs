@@ -1,0 +1,7 @@
+// ReSharper disable once CheckNamespace
+namespace MenphisSI.SG.GerAdv;
+public partial class DBPrepostos
+{
+    [XmlIgnore]
+    public string MSalarioStr { get => m_FSalario.ToString("0.00"); set => FSalario = DevourerOne.ConvertString2Decimal(value); }
+}

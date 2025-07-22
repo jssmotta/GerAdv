@@ -1,0 +1,48 @@
+using MenphisSI.SG.GerAdv.DicInfo;
+
+// ReSharper disable once CheckNamespace
+namespace MenphisSI.SG.GerAdv;
+public static partial class DBAreasJusticaDicInfo
+{
+    public const string CampoCodigo = "arjCodigo";
+    public const string CampoNome = "";
+    public const string TablePrefix = "arj";
+    public const string Area = "arjArea"; // LOCALIZACAO 170523
+    public const string Justica = "arjJustica"; // LOCALIZACAO 170523
+    public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
+    {
+        1 => Area,
+        2 => Justica,
+        _ => string.Empty
+    };
+    public static string TabelaNome => PTabelaNome;
+
+    public const string PTabelaNome = "AreasJustica";
+#region PropriedadesDaTabela
+    public static DBInfoSystem ArjArea => new(0, PTabelaNome, CampoCodigo, Area, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false)
+    {
+        Prefixo = "arj"
+    }; // DBI 11 
+    public static DBInfoSystem ArjJustica => new(0, PTabelaNome, CampoCodigo, Justica, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false)
+    {
+        Prefixo = "arj"
+    }; // DBI 11 
+
+#endregion
+#region SMART_SQLServices 
+#endregion // 005 " : string.Empty)} 
+
+    [Serializable]
+    public enum NomesCamposTabela
+    {
+        ArjArea = 1,
+        ArjJustica = 2
+    }
+
+    public static DBInfoSystem? GetInfoSystemByEnum(NomesCamposTabela idTable) => idTable switch
+    {
+        NomesCamposTabela.ArjArea => ArjArea,
+        NomesCamposTabela.ArjJustica => ArjJustica,
+        _ => null
+    };
+}

@@ -1,0 +1,150 @@
+using MenphisSI.SG.GerAdv.DicInfo;
+
+// ReSharper disable once CheckNamespace
+namespace MenphisSI.SG.GerAdv;
+public static partial class DBSMSAliceDicInfo
+{
+    public const string CampoCodigo = "smaCodigo";
+    public const string CampoNome = "smaNome";
+    public const string TablePrefix = "sma";
+    public const string Operador = "smaOperador"; // LOCALIZACAO 170523
+    public const string Nome = "smaNome"; // LOCALIZACAO 170523
+    public const string TipoEMail = "smaTipoEMail"; // LOCALIZACAO 170523
+    public const string GUID = "smaGUID"; // LOCALIZACAO 170523
+    public const string QuemCad = "smaQuemCad"; // LOCALIZACAO 170523
+    public const string DtCad = "smaDtCad"; // LOCALIZACAO 170523
+    public const string QuemAtu = "smaQuemAtu"; // LOCALIZACAO 170523
+    public const string DtAtu = "smaDtAtu"; // LOCALIZACAO 170523
+    public const string Visto = "smaVisto"; // LOCALIZACAO 170523
+    public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
+    {
+        1 => Operador,
+        2 => Nome,
+        3 => TipoEMail,
+        4 => GUID,
+        5 => QuemCad,
+        6 => DtCad,
+        7 => QuemAtu,
+        8 => DtAtu,
+        9 => Visto,
+        _ => string.Empty
+    };
+    public static string TabelaNome => PTabelaNome;
+
+    public const string PTabelaNome = "SMSAlice";
+#region PropriedadesDaTabela
+    public static DBInfoSystem SmaOperador => new(0, PTabelaNome, CampoCodigo, Operador, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    }; // DBI 11 
+    public static DBInfoSystem SmaNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    };
+    public static DBInfoSystem SmaTipoEMail => new(0, PTabelaNome, CampoCodigo, TipoEMail, DevourerOne.PSemDescricao, Captions.PCaption_Semdica, ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoEMailDicInfo.CampoCodigo, DBTipoEMailDicInfo.TabelaNome, new DBTipoEMailODicInfo(), false)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    }; // DBI 11 
+    public static DBInfoSystem SmaGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, DevourerOne.PGuid, DevourerOne.PTooltipGuid, ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    };
+    public static DBInfoSystem SmaQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, DevourerOne.PCaptionFieldQuemCad, DevourerOne.PTooltipQuemCad, ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    }; // DBI 11 
+    public static DBInfoSystem SmaDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DevourerOne.PCaptionFieldDtCad, DevourerOne.PTooltipDtCad, ETipoDadosSysteminfo.SysteminfoDataCadastramento)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    };
+    public static DBInfoSystem SmaQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, DevourerOne.PCaptionFieldQuemAtu, DevourerOne.PTooltipQuemAtu, ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
+    {
+        Prefixo = "sma"
+    }; // DBI 11 
+    public static DBInfoSystem SmaDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DevourerOne.PCaptionFieldDtAtu, DevourerOne.PTooltipDtAtu, ETipoDadosSysteminfo.SysteminfoDataModificacao)
+    {
+        Prefixo = "sma"
+    };
+    public static DBInfoSystem SmaVisto => new(0, PTabelaNome, CampoCodigo, Visto, DevourerOne.PCaptionFieldAuditorVisto, DevourerOne.PTooltipAuditorVisto, ETipoDadosSysteminfo.SysteminfoBooleanVisto)
+    {
+        IsRequired = true,
+        Prefixo = "sma"
+    };
+
+#endregion
+#region SMART_SQLServices 
+    public static string NomeSql(string text) => Nome.SqlCmdTextIgual(text, 150) ?? string.Empty;
+    public static string NomeSqlNotIsNull => Nome.SqlCmdNotIsNull() ?? string.Empty;
+    public static string NomeSqlIsNull => Nome.SqlCmdIsNull() ?? string.Empty;
+
+    public static string NomeSqlDiff(string text) => Nome.SqlCmdTextDiff(text) ?? string.Empty;
+    public static string NomeSqlLike(string text) => Nome.SqlCmdTextLike(text) ?? string.Empty;
+    public static string NomeSqlLikeInit(string text) => Nome.SqlCmdTextLikeInit(text) ?? string.Empty;
+    public static string NomeSqlLikeSpaces(string? text) => Nome.SqlCmdTextLikeSpaces(text) ?? string.Empty;
+    public static string GUIDSql(string text) => GUID.SqlCmdTextIgual(text, 100) ?? string.Empty;
+    public static string DtCadSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtCad}]");
+    public static string DtCadSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtCad}]");
+    public static string DtCadSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtCad}]");
+    public static string DtCadSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DtCad}]");
+    public static string DtCadSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DtCad}]");
+    public static string DtCadSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DtCad}]");
+    public static string DtCadSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DtCad}]");
+    public static string DtCadSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DtCad}]");
+    public static string DtCadSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DtCad}]");
+    public static string DtCadSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DtCad}]");
+    public static string DtCadSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DtCad}]");
+    public static string DtCadSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DtCad}]");
+    public static string DtCadIsNull => DtCad.SqlCmdIsNull() ?? string.Empty;
+    public static string DtCadNotIsNull => DtCad.SqlCmdNotIsNull() ?? string.Empty;
+
+    public static string DtAtuSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DtAtu}]");
+    public static string DtAtuSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DtAtu}]");
+    public static string DtAtuSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DtAtu}]");
+    public static string DtAtuSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DtAtu}]");
+    public static string DtAtuSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DtAtu}]");
+    public static string DtAtuSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DtAtu}]");
+    public static string DtAtuSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DtAtu}]");
+    public static string DtAtuSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DtAtu}]");
+    public static string DtAtuSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DtAtu}]");
+    public static string DtAtuSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DtAtu}]");
+    public static string DtAtuSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DtAtu}]");
+    public static string DtAtuSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DtAtu}]");
+    public static string DtAtuIsNull => DtAtu.SqlCmdIsNull() ?? string.Empty;
+    public static string DtAtuNotIsNull => DtAtu.SqlCmdNotIsNull() ?? string.Empty;
+
+#endregion // 005 " : string.Empty)} 
+
+    [Serializable]
+    public enum NomesCamposTabela
+    {
+        SmaOperador = 1,
+        SmaNome = 2,
+        SmaTipoEMail = 3,
+        SmaGUID = 4,
+        SmaQuemCad = 5,
+        SmaDtCad = 6,
+        SmaQuemAtu = 7,
+        SmaDtAtu = 8,
+        SmaVisto = 9
+    }
+
+    public static DBInfoSystem? GetInfoSystemByEnum(NomesCamposTabela idTable) => idTable switch
+    {
+        NomesCamposTabela.SmaOperador => SmaOperador,
+        NomesCamposTabela.SmaNome => SmaNome,
+        NomesCamposTabela.SmaTipoEMail => SmaTipoEMail,
+        NomesCamposTabela.SmaGUID => SmaGUID,
+        NomesCamposTabela.SmaQuemCad => SmaQuemCad,
+        NomesCamposTabela.SmaDtCad => SmaDtCad,
+        NomesCamposTabela.SmaQuemAtu => SmaQuemAtu,
+        NomesCamposTabela.SmaDtAtu => SmaDtAtu,
+        NomesCamposTabela.SmaVisto => SmaVisto,
+        _ => null
+    };
+}

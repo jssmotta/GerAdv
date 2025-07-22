@@ -1,0 +1,19 @@
+// ReSharper disable once CheckNamespace
+namespace MenphisSI.SG.GerAdv;
+public partial class DBLigacoes
+{
+    public const string CadastroGuid = "64e08ef7-4fa7-4db2-95fd-3484cc16d972";
+    public const string PTabelaNome = "Ligacoes";
+    public const string CamposSqlX = " Ligacoes.* ";
+    public const string SensivelCamposSqlX = " Ligacoes.* ";
+    public static string CamposSqlAlias => CamposSqlX;
+
+    public const string CampoCodigo = "ligCodigo";
+    public const string CampoNome = "ligNome";
+    public const string PTabelaPrefixo = "lig";
+#pragma warning disable CA1822 // Mark members as static
+
+    public string Prefixo => PTabelaPrefixo;
+#pragma warning restore CA1822 // Mark members as static
+
+}
