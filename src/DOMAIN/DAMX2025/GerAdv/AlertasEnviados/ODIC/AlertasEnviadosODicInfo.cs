@@ -4,61 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBAlertasEnviadosODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBAlertasEnviadosDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAlertasEnviadosDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAlertasEnviadosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBAlertasEnviadosDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBAlertasEnviadosDicInfo.Operador => DBAlertasEnviadosDicInfo.AloOperador,
-        DBAlertasEnviadosDicInfo.Alerta => DBAlertasEnviadosDicInfo.AloAlerta,
-        DBAlertasEnviadosDicInfo.DataAlertado => DBAlertasEnviadosDicInfo.AloDataAlertado,
-        DBAlertasEnviadosDicInfo.Visualizado => DBAlertasEnviadosDicInfo.AloVisualizado,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBAlertasEnviadosDicInfo.CampoCodigo;
     public static string TCampoNome => DBAlertasEnviadosDicInfo.CampoNome;
     public static string TTabelaNome => DBAlertasEnviadosDicInfo.TabelaNome;
     public static string TTablePrefix => DBAlertasEnviadosDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBAlertasEnviadosDicInfo.AloOperador, DBAlertasEnviadosDicInfo.AloAlerta, DBAlertasEnviadosDicInfo.AloDataAlertado, DBAlertasEnviadosDicInfo.AloVisualizado];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAlertasEnviadosDicInfo.AloOperador, DBAlertasEnviadosDicInfo.AloAlerta, DBAlertasEnviadosDicInfo.AloDataAlertado, DBAlertasEnviadosDicInfo.AloVisualizado];
+    public static ImmutableArray<DBInfoSystem> List => [DBAlertasEnviadosDicInfo.AloOperador, DBAlertasEnviadosDicInfo.AloAlerta, DBAlertasEnviadosDicInfo.AloDataAlertado, DBAlertasEnviadosDicInfo.AloVisualizado];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAlertasEnviadosDicInfo.AloOperador, DBAlertasEnviadosDicInfo.AloAlerta, DBAlertasEnviadosDicInfo.AloDataAlertado, DBAlertasEnviadosDicInfo.AloVisualizado];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "aloAlerta",
-            "aloOperador"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["aloAlerta", "aloOperador"]);
         var result = campos.Where(campo => !campo.Equals(DBAlertasEnviadosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "aloAlerta",
-            "aloCodigo",
-            "aloOperador"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["aloAlerta", "aloCodigo", "aloOperador"]);
         var result = campos.Where(campo => !campo.Equals(DBAlertasEnviadosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

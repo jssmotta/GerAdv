@@ -2,32 +2,37 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBFuncionarios
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
-    private protected bool pFldFEMailPro, pFldFCargo, pFldFNome, pFldFFuncao, pFldFRegistro, pFldFRG, pFldFTipo, pFldFObservacao, pFldFContato, pFldFFax, pFldFFone, pFldFEMail, pFldFPeriodo_Ini, pFldFPeriodo_Fim, pFldFCTPSNumero, pFldFCTPSSerie, pFldFPIS, pFldFSalario, pFldFCTPSDtEmissao, pFldFData, pFldFLiberaAgenda, pFldFPasta;
+    private protected bool pFldFEMailPro, pFldFCargo, pFldFNome, pFldFFuncao, pFldFSexo, pFldFRegistro, pFldFCPF, pFldFRG, pFldFTipo, pFldFObservacao, pFldFEndereco, pFldFBairro, pFldFCidade, pFldFCEP, pFldFContato, pFldFFax, pFldFFone, pFldFEMail, pFldFPeriodo_Ini, pFldFPeriodo_Fim, pFldFCTPSNumero, pFldFCTPSSerie, pFldFPIS, pFldFSalario, pFldFCTPSDtEmissao, pFldFDtNasc, pFldFData, pFldFLiberaAgenda, pFldFPasta, pFldFClass, pFldFEtiqueta, pFldFAni, pFldFBold;
     [XmlIgnore]
-    private protected int m_FCargo, m_FFuncao;
+    private protected int m_FCargo, m_FFuncao, m_FCidade;
     [XmlIgnore]
-    private protected string? m_FEMailPro, m_FRegistro, m_FRG, m_FObservacao, m_FContato, m_FFax, m_FFone, m_FEMail, m_FCTPSNumero, m_FCTPSSerie, m_FPIS, m_FPasta;
+    private protected string? m_FEMailPro, m_FNome, m_FRegistro, m_FCPF, m_FRG, m_FObservacao, m_FEndereco, m_FBairro, m_FCEP, m_FContato, m_FFax, m_FFone, m_FEMail, m_FCTPSNumero, m_FCTPSSerie, m_FPIS, m_FPasta, m_FClass;
     [XmlIgnore]
-    private protected DateTime? m_FPeriodo_Ini, m_FPeriodo_Fim, m_FCTPSDtEmissao, m_FData;
+    private protected DateTime? m_FPeriodo_Ini, m_FPeriodo_Fim, m_FCTPSDtEmissao, m_FDtNasc, m_FData;
     [XmlIgnore]
-    private protected bool m_FTipo, m_FLiberaAgenda;
+    private protected bool m_FSexo, m_FTipo, m_FLiberaAgenda, m_FEtiqueta, m_FAni, m_FBold;
     [XmlIgnore]
     private protected decimal m_FSalario;
+    [StringLength(255, ErrorMessage = "A propriedade FEMailPro da tabela Funcionarios deve ter no máximo 255 caracteres.")]
     public string? FEMailPro
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEMailPro ?? string.Empty;
         set
         {
             pFldFEMailPro = pFldFEMailPro || !(m_FEMailPro ?? string.Empty).Equals(value);
             if (pFldFEMailPro)
-                m_FEMailPro = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEMailPro = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FCargo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCargo;
         set
         {
@@ -37,19 +42,25 @@ public partial class DBFuncionarios
         }
     }
 
+    [StringLength(60, ErrorMessage = "A propriedade FNome da tabela Funcionarios deve ter no máximo 60 caracteres.")]
     public string? FNome
     {
-        get => sex.m_FNome ?? string.Empty;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FNome ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !sex.m_FNome.IsEquals(value);
+            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                sex.m_FNome = value.trim().FixAbc().Length > 60 ? value.trim().substring(0, 60).FixAbc() : value.trim().FixAbc(); // SEX_ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 60 ? trimmed.AsSpan(0, 60).ToString() : trimmed;
+            }
         }
     }
 
     public int FFuncao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFuncao;
         set
         {
@@ -59,30 +70,73 @@ public partial class DBFuncionarios
         }
     }
 
+    public bool FSexo
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FSexo;
+        set
+        {
+            pFldFSexo = pFldFSexo || value != m_FSexo;
+            if (pFldFSexo)
+                m_FSexo = value;
+        }
+    }
+
+    [StringLength(20, ErrorMessage = "A propriedade FRegistro da tabela Funcionarios deve ter no máximo 20 caracteres.")]
     public string? FRegistro
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRegistro ?? string.Empty;
         set
         {
             pFldFRegistro = pFldFRegistro || !(m_FRegistro ?? string.Empty).Equals(value);
             if (pFldFRegistro)
-                m_FRegistro = value.trim().Length > 20 ? value.trim().substring(0, 20) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FRegistro = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela Funcionarios deve ter no máximo 11 caracteres.")]
+    public string? FCPF
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FCPF ?? string.Empty;
+        set
+        {
+            pFldFCPF = pFldFCPF || !(m_FCPF ?? string.Empty).Equals(value);
+            if (pFldFCPF)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                var valueCpf = trimmed.Length > 11 ? trimmed.AsSpan(0, 11).ToString() : trimmed;
+                if (valueCpf.IsValidCpf())
+                    m_FCPF = valueCpf;
+                else
+                    throw new ArgumentException("CPF inválido ou não informado corretamente.", nameof(value));
+            }
+        }
+    }
+
+    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela Funcionarios deve ter no máximo 30 caracteres.")]
     public string? FRG
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRG ?? string.Empty;
         set
         {
             pFldFRG = pFldFRG || !(m_FRG ?? string.Empty).Equals(value);
             if (pFldFRG)
-                m_FRG = value.trim().Length > 30 ? value.trim().substring(0, 30) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FRG = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+            }
         }
     }
 
     public bool FTipo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipo;
         set
         {
@@ -94,6 +148,7 @@ public partial class DBFuncionarios
 
     public string? FObservacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObservacao ?? string.Empty;
         set
         {
@@ -103,8 +158,69 @@ public partial class DBFuncionarios
         }
     }
 
+    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela Funcionarios deve ter no máximo 80 caracteres.")]
+    public string? FEndereco
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FEndereco ?? string.Empty;
+        set
+        {
+            pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
+            if (pFldFEndereco)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEndereco = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+            }
+        }
+    }
+
+    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela Funcionarios deve ter no máximo 50 caracteres.")]
+    public string? FBairro
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FBairro ?? string.Empty;
+        set
+        {
+            pFldFBairro = pFldFBairro || !(m_FBairro ?? string.Empty).Equals(value);
+            if (pFldFBairro)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FBairro = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
+        }
+    }
+
+    public int FCidade
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FCidade;
+        set
+        {
+            pFldFCidade = pFldFCidade || value != m_FCidade;
+            if (pFldFCidade)
+                m_FCidade = value;
+        }
+    }
+
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela Funcionarios deve ter no máximo 10 caracteres.")]
+    public string? FCEP
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FCEP ?? string.Empty;
+        set
+        {
+            pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
+            if (pFldFCEP)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
+        }
+    }
+
     public string? FContato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContato ?? string.Empty;
         set
         {
@@ -116,6 +232,7 @@ public partial class DBFuncionarios
 
     public string? FFax
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFax ?? string.Empty;
         set
         {
@@ -127,6 +244,7 @@ public partial class DBFuncionarios
 
     public string? FFone
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFone ?? string.Empty;
         set
         {
@@ -136,19 +254,24 @@ public partial class DBFuncionarios
         }
     }
 
+    [StringLength(60, ErrorMessage = "A propriedade FEMail da tabela Funcionarios deve ter no máximo 60 caracteres.")]
     public string? FEMail
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEMail ?? string.Empty;
         set
         {
             pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
             if (pFldFEMail)
-                m_FEMail = value.trim().Length > 60 ? value.trim().substring(0, 60) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEMail = trimmed.Length > 60 ? trimmed.AsSpan(0, 60).ToString() : trimmed;
+                if (m_FEMail.IsValidEmail())
+                    return;
+                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MPeriodo_Ini => Convert.ToDateTime(m_FPeriodo_Ini);
 
     public string? FPeriodo_Ini
     {
@@ -163,9 +286,6 @@ public partial class DBFuncionarios
         }
     }
 
-    [XmlIgnore]
-    public DateTime MPeriodo_Fim => Convert.ToDateTime(m_FPeriodo_Fim);
-
     public string? FPeriodo_Fim
     {
         get => $"{m_FPeriodo_Fim:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FPeriodo_Fim:dd/MM/yyyy}";
@@ -179,41 +299,57 @@ public partial class DBFuncionarios
         }
     }
 
+    [StringLength(15, ErrorMessage = "A propriedade FCTPSNumero da tabela Funcionarios deve ter no máximo 15 caracteres.")]
     public string? FCTPSNumero
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCTPSNumero ?? string.Empty;
         set
         {
             pFldFCTPSNumero = pFldFCTPSNumero || !(m_FCTPSNumero ?? string.Empty).Equals(value);
             if (pFldFCTPSNumero)
-                m_FCTPSNumero = value.trim().Length > 15 ? value.trim().substring(0, 15) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCTPSNumero = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FCTPSSerie da tabela Funcionarios deve ter no máximo 10 caracteres.")]
     public string? FCTPSSerie
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCTPSSerie ?? string.Empty;
         set
         {
             pFldFCTPSSerie = pFldFCTPSSerie || !(m_FCTPSSerie ?? string.Empty).Equals(value);
             if (pFldFCTPSSerie)
-                m_FCTPSSerie = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCTPSSerie = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(20, ErrorMessage = "A propriedade FPIS da tabela Funcionarios deve ter no máximo 20 caracteres.")]
     public string? FPIS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPIS ?? string.Empty;
         set
         {
             pFldFPIS = pFldFPIS || !(m_FPIS ?? string.Empty).Equals(value);
             if (pFldFPIS)
-                m_FPIS = value.trim().Length > 20 ? value.trim().substring(0, 20) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPIS = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+            }
         }
     }
 
     public decimal FSalario
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSalario;
         set
         {
@@ -223,9 +359,6 @@ public partial class DBFuncionarios
             m_FSalario = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MCTPSDtEmissao => Convert.ToDateTime(m_FCTPSDtEmissao);
 
     public string? FCTPSDtEmissao
     {
@@ -240,8 +373,18 @@ public partial class DBFuncionarios
         }
     }
 
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
+    public string? FDtNasc
+    {
+        get => $"{m_FDtNasc:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtNasc:dd/MM/yyyy}";
+        set
+        {
+            var(setUpNow, changed, data) = DevourerOne.DateUp7(pFldFDtNasc, m_FDtNasc, value);
+            if (!setUpNow)
+                return;
+            pFldFDtNasc = changed;
+            m_FDtNasc = data;
+        }
+    }
 
     public string? FData
     {
@@ -258,6 +401,7 @@ public partial class DBFuncionarios
 
     public bool FLiberaAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiberaAgenda;
         set
         {
@@ -267,14 +411,71 @@ public partial class DBFuncionarios
         }
     }
 
+    [StringLength(200, ErrorMessage = "A propriedade FPasta da tabela Funcionarios deve ter no máximo 200 caracteres.")]
     public string? FPasta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPasta ?? string.Empty;
         set
         {
             pFldFPasta = pFldFPasta || !(m_FPasta ?? string.Empty).Equals(value);
             if (pFldFPasta)
-                m_FPasta = value.trim().Length > 200 ? value.trim().substring(0, 200) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPasta = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+            }
+        }
+    }
+
+    [StringLength(1, ErrorMessage = "A propriedade FClass da tabela Funcionarios deve ter no máximo 1 caracteres.")]
+    public string? FClass
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FClass ?? string.Empty;
+        set
+        {
+            pFldFClass = pFldFClass || !(m_FClass ?? string.Empty).Equals(value);
+            if (pFldFClass)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FClass = trimmed.Length > 1 ? trimmed.AsSpan(0, 1).ToString() : trimmed;
+            }
+        }
+    }
+
+    public bool FEtiqueta
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FEtiqueta;
+        set
+        {
+            pFldFEtiqueta = pFldFEtiqueta || value != m_FEtiqueta;
+            if (pFldFEtiqueta)
+                m_FEtiqueta = value;
+        }
+    }
+
+    public bool FAni
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FAni;
+        set
+        {
+            pFldFAni = pFldFAni || value != m_FAni;
+            if (pFldFAni)
+                m_FAni = value;
+        }
+    }
+
+    public bool FBold
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FBold;
+        set
+        {
+            pFldFBold = pFldFBold || value != m_FBold;
+            if (pFldFBold)
+                m_FBold = value;
         }
     }
 
@@ -291,16 +492,19 @@ public partial class DBFuncionarios
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

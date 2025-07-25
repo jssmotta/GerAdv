@@ -45,36 +45,6 @@ public static partial class DBPontoVirtualAcessosDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string DataHoraSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataHora}]");
-    public static string DataHoraSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataHora}]");
-    public static string DataHoraSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataHora}]");
-    public static string DataHoraIsNull => DataHora.SqlCmdIsNull() ?? string.Empty;
-    public static string DataHoraNotIsNull => DataHora.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string TipoSql(bool valueCheck) => Tipo.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
-    public static string TipoSqlSim => Tipo.SqlCmdBoolSim() ?? string.Empty;
-    public static string TipoSqlNao => Tipo.SqlCmdBoolNao() ?? string.Empty;
-
-    public static string OrigemSql(string text) => Origem.SqlCmdTextIgual(text, 150) ?? string.Empty;
-    public static string OrigemSqlNotIsNull => Origem.SqlCmdNotIsNull() ?? string.Empty;
-    public static string OrigemSqlIsNull => Origem.SqlCmdIsNull() ?? string.Empty;
-
-    public static string OrigemSqlDiff(string text) => Origem.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string OrigemSqlLike(string text) => Origem.SqlCmdTextLike(text) ?? string.Empty;
-    public static string OrigemSqlLikeInit(string text) => Origem.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string OrigemSqlLikeSpaces(string? text) => Origem.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

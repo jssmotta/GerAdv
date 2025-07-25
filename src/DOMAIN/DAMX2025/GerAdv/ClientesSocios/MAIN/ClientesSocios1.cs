@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBClientesSocios : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_ClientesSocios
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBClientesSocios(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBClientesSocios(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_ClientesSocios
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'cscNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -108,7 +108,7 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFDtNasc)
             clsW.Fields(DBClientesSociosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
         if (pFldFNome)
-            clsW.Fields(DBClientesSociosDicInfo.Nome, sex.m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBClientesSociosDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFSite)
             clsW.Fields(DBClientesSociosDicInfo.Site, m_FSite, ETiposCampos.FString);
         if (pFldFRepresentanteLegal)
@@ -116,17 +116,17 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFCliente)
             clsW.Fields(DBClientesSociosDicInfo.Cliente, m_FCliente, ETiposCampos.FNumberNull);
         if (pFldFEndereco)
-            clsW.Fields(DBClientesSociosDicInfo.Endereco, sex.m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBClientesSociosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
-            clsW.Fields(DBClientesSociosDicInfo.Bairro, sex.m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBClientesSociosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
         if (pFldFCEP)
-            clsW.Fields(DBClientesSociosDicInfo.CEP, sex.m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBClientesSociosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFCidade)
             clsW.Fields(DBClientesSociosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
         if (pFldFRG)
             clsW.Fields(DBClientesSociosDicInfo.RG, m_FRG, ETiposCampos.FString);
         if (pFldFCPF)
-            clsW.Fields(DBClientesSociosDicInfo.CPF, sex.m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBClientesSociosDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFFone)
             clsW.Fields(DBClientesSociosDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFParticipacao)
@@ -164,7 +164,7 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFFax)
             clsW.Fields(DBClientesSociosDicInfo.Fax, m_FFax, ETiposCampos.FString);
         if (pFldFClass)
-            clsW.Fields(DBClientesSociosDicInfo.Class, sex.m_FClass, ETiposCampos.FString);
+            clsW.Fields(DBClientesSociosDicInfo.Class, m_FClass, ETiposCampos.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
             clsW.Fields(DBClientesSociosDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
         if (pFldFAni || ID.IsEmptyIDNumber())
@@ -212,7 +212,7 @@ public partial class DBClientesSocios : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

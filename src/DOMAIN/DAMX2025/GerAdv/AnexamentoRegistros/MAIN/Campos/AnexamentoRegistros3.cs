@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBAnexamentoRegistros
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCliente, pFldFGUIDReg, pFldFCodigoReg, pFldFIDReg, pFldFData;
     [XmlIgnore]
@@ -13,6 +12,7 @@ public partial class DBAnexamentoRegistros
     private protected DateTime? m_FData;
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -22,19 +22,25 @@ public partial class DBAnexamentoRegistros
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FGUIDReg da tabela AnexamentoRegistros deve ter no máximo 100 caracteres.")]
     public string? FGUIDReg
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FGUIDReg ?? string.Empty;
         set
         {
             pFldFGUIDReg = pFldFGUIDReg || !(m_FGUIDReg ?? string.Empty).Equals(value);
             if (pFldFGUIDReg)
-                m_FGUIDReg = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FGUIDReg = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public int FCodigoReg
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCodigoReg;
         set
         {
@@ -46,6 +52,7 @@ public partial class DBAnexamentoRegistros
 
     public int FIDReg
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDReg;
         set
         {
@@ -54,9 +61,6 @@ public partial class DBAnexamentoRegistros
                 m_FIDReg = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -84,16 +88,19 @@ public partial class DBAnexamentoRegistros
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

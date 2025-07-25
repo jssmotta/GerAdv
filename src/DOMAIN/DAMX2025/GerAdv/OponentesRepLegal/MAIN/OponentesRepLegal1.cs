@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBOponentesRepLegal : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_OponentesRepLegal
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBOponentesRepLegal(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBOponentesRepLegal(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_OponentesRepLegal
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'oprNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -94,7 +94,7 @@ public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
         }
 
         if (pFldFNome)
-            clsW.Fields(DBOponentesRepLegalDicInfo.Nome, sex.m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBOponentesRepLegalDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFFone)
             clsW.Fields(DBOponentesRepLegalDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFOponente)
@@ -102,15 +102,15 @@ public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFSexo || ID.IsEmptyIDNumber())
             clsW.Fields(DBOponentesRepLegalDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFCPF)
-            clsW.Fields(DBOponentesRepLegalDicInfo.CPF, sex.m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBOponentesRepLegalDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             clsW.Fields(DBOponentesRepLegalDicInfo.RG, m_FRG, ETiposCampos.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBOponentesRepLegalDicInfo.Endereco, sex.m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBOponentesRepLegalDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
-            clsW.Fields(DBOponentesRepLegalDicInfo.Bairro, sex.m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBOponentesRepLegalDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
         if (pFldFCEP)
-            clsW.Fields(DBOponentesRepLegalDicInfo.CEP, sex.m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBOponentesRepLegalDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFCidade)
             clsW.Fields(DBOponentesRepLegalDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
         if (pFldFFax)
@@ -162,7 +162,7 @@ public partial class DBOponentesRepLegal : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBLivroCaixaClientes
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFLivroCaixa, pFldFCliente, pFldFLancado;
     [XmlIgnore]
@@ -11,6 +10,7 @@ public partial class DBLivroCaixaClientes
     private protected bool m_FLancado;
     public int FLivroCaixa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLivroCaixa;
         set
         {
@@ -22,6 +22,7 @@ public partial class DBLivroCaixaClientes
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -33,6 +34,7 @@ public partial class DBLivroCaixaClientes
 
     public bool FLancado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLancado;
         set
         {
@@ -55,16 +57,19 @@ public partial class DBLivroCaixaClientes
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

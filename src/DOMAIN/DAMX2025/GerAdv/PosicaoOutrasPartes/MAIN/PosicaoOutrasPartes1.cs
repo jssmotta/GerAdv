@@ -13,7 +13,6 @@ public partial class DBPosicaoOutrasPartes : VAuditor, ICadastros, IAuditor
     }
 
 #endregion
-    public DBPosicaoOutrasPartes(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBPosicaoOutrasPartes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBPosicaoOutrasPartes : VAuditor, ICadastros, IAuditor
     }
 
 #region GravarDados_PosicaoOutrasPartes
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -134,7 +133,7 @@ public partial class DBPosicaoOutrasPartes : VAuditor, ICadastros, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

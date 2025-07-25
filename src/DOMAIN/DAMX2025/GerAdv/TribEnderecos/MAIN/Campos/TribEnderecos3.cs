@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBTribEnderecos
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFTribunal, pFldFCidade, pFldFEndereco, pFldFCEP, pFldFFone, pFldFFax, pFldFOBS;
     [XmlIgnore]
@@ -11,6 +10,7 @@ public partial class DBTribEnderecos
     private protected string? m_FEndereco, m_FCEP, m_FFone, m_FFax, m_FOBS;
     public int FTribunal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTribunal;
         set
         {
@@ -22,6 +22,7 @@ public partial class DBTribEnderecos
 
     public int FCidade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCidade;
         set
         {
@@ -31,30 +32,41 @@ public partial class DBTribEnderecos
         }
     }
 
+    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela TribEnderecos deve ter no máximo 80 caracteres.")]
     public string? FEndereco
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEndereco ?? string.Empty;
         set
         {
             pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
             if (pFldFEndereco)
-                m_FEndereco = value.trim().Length > 80 ? value.trim().substring(0, 80) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEndereco = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela TribEnderecos deve ter no máximo 10 caracteres.")]
     public string? FCEP
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCEP ?? string.Empty;
         set
         {
             pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
             if (pFldFCEP)
-                m_FCEP = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
     public string? FFone
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFone ?? string.Empty;
         set
         {
@@ -66,6 +78,7 @@ public partial class DBTribEnderecos
 
     public string? FFax
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFax ?? string.Empty;
         set
         {
@@ -77,6 +90,7 @@ public partial class DBTribEnderecos
 
     public string? FOBS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOBS ?? string.Empty;
         set
         {
@@ -99,16 +113,19 @@ public partial class DBTribEnderecos
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

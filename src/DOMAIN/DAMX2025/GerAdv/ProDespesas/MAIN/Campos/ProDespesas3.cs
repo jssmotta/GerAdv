@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProDespesas
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFLigacaoID, pFldFCliente, pFldFCorrigido, pFldFData, pFldFValorOriginal, pFldFProcesso, pFldFQuitado, pFldFDataCorrecao, pFldFValor, pFldFTipo, pFldFHistorico, pFldFLivroCaixa;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBProDespesas
     private protected decimal m_FValorOriginal, m_FValor;
     public int FLigacaoID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLigacaoID;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBProDespesas
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -39,6 +40,7 @@ public partial class DBProDespesas
 
     public bool FCorrigido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCorrigido;
         set
         {
@@ -47,9 +49,6 @@ public partial class DBProDespesas
                 m_FCorrigido = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -66,6 +65,7 @@ public partial class DBProDespesas
 
     public decimal FValorOriginal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorOriginal;
         set
         {
@@ -78,6 +78,7 @@ public partial class DBProDespesas
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -89,6 +90,7 @@ public partial class DBProDespesas
 
     public int FQuitado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuitado;
         set
         {
@@ -97,9 +99,6 @@ public partial class DBProDespesas
                 m_FQuitado = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataCorrecao => Convert.ToDateTime(m_FDataCorrecao);
 
     public string? FDataCorrecao
     {
@@ -116,6 +115,7 @@ public partial class DBProDespesas
 
     public decimal FValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValor;
         set
         {
@@ -128,6 +128,7 @@ public partial class DBProDespesas
 
     public bool FTipo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipo;
         set
         {
@@ -137,19 +138,25 @@ public partial class DBProDespesas
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FHistorico da tabela ProDespesas deve ter no máximo 100 caracteres.")]
     public string? FHistorico
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHistorico ?? string.Empty;
         set
         {
             pFldFHistorico = pFldFHistorico || !(m_FHistorico ?? string.Empty).Equals(value);
             if (pFldFHistorico)
-                m_FHistorico = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FHistorico = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public bool FLivroCaixa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLivroCaixa;
         set
         {
@@ -172,16 +179,19 @@ public partial class DBProDespesas
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

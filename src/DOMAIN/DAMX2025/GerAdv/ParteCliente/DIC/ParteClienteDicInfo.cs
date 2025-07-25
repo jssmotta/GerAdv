@@ -29,9 +29,6 @@ public static partial class DBParteClienteDicInfo
     }; // DBI 11 
 
 #endregion
-#region SMART_SQLServices 
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

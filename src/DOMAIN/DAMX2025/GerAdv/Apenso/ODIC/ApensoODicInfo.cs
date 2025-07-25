@@ -4,65 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBApensoODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBApensoDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBApensoDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBApensoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBApensoDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBApensoDicInfo.Processo => DBApensoDicInfo.ApeProcesso,
-        DBApensoDicInfo.Apenso => DBApensoDicInfo.ApeApenso,
-        DBApensoDicInfo.Acao => DBApensoDicInfo.ApeAcao,
-        DBApensoDicInfo.DtDist => DBApensoDicInfo.ApeDtDist,
-        DBApensoDicInfo.OBS => DBApensoDicInfo.ApeOBS,
-        DBApensoDicInfo.ValorCausa => DBApensoDicInfo.ApeValorCausa,
-        DBApensoDicInfo.QuemCad => DBApensoDicInfo.ApeQuemCad,
-        DBApensoDicInfo.DtCad => DBApensoDicInfo.ApeDtCad,
-        DBApensoDicInfo.QuemAtu => DBApensoDicInfo.ApeQuemAtu,
-        DBApensoDicInfo.DtAtu => DBApensoDicInfo.ApeDtAtu,
-        DBApensoDicInfo.Visto => DBApensoDicInfo.ApeVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBApensoDicInfo.CampoCodigo;
     public static string TCampoNome => DBApensoDicInfo.CampoNome;
     public static string TTabelaNome => DBApensoDicInfo.TabelaNome;
     public static string TTablePrefix => DBApensoDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBApensoDicInfo.ApeProcesso, DBApensoDicInfo.ApeApenso, DBApensoDicInfo.ApeAcao, DBApensoDicInfo.ApeDtDist, DBApensoDicInfo.ApeOBS, DBApensoDicInfo.ApeValorCausa, DBApensoDicInfo.ApeQuemCad, DBApensoDicInfo.ApeDtCad, DBApensoDicInfo.ApeQuemAtu, DBApensoDicInfo.ApeDtAtu, DBApensoDicInfo.ApeVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBApensoDicInfo.ApeProcesso, DBApensoDicInfo.ApeApenso, DBApensoDicInfo.ApeAcao, DBApensoDicInfo.ApeDtDist, DBApensoDicInfo.ApeOBS, DBApensoDicInfo.ApeValorCausa];
+    public static ImmutableArray<DBInfoSystem> List => [DBApensoDicInfo.ApeProcesso, DBApensoDicInfo.ApeApenso, DBApensoDicInfo.ApeAcao, DBApensoDicInfo.ApeDtDist, DBApensoDicInfo.ApeOBS, DBApensoDicInfo.ApeValorCausa, DBApensoDicInfo.ApeQuemCad, DBApensoDicInfo.ApeDtCad, DBApensoDicInfo.ApeQuemAtu, DBApensoDicInfo.ApeDtAtu, DBApensoDicInfo.ApeVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBApensoDicInfo.ApeProcesso, DBApensoDicInfo.ApeApenso, DBApensoDicInfo.ApeAcao, DBApensoDicInfo.ApeDtDist, DBApensoDicInfo.ApeOBS, DBApensoDicInfo.ApeValorCausa];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "apeCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["apeCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBApensoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "apeCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["apeCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBApensoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

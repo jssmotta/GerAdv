@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBHorasTrab
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFIDContatoCRM, pFldFHonorario, pFldFIDAgenda, pFldFData, pFldFCliente, pFldFStatus, pFldFProcesso, pFldFAdvogado, pFldFFuncionario, pFldFHrIni, pFldFHrFim, pFldFTempo, pFldFValor, pFldFOBS, pFldFAnexo, pFldFAnexoComp, pFldFAnexoUNC, pFldFServico;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBHorasTrab
     private protected decimal m_FTempo, m_FValor;
     public int FIDContatoCRM
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDContatoCRM;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBHorasTrab
 
     public bool FHonorario
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHonorario;
         set
         {
@@ -39,6 +40,7 @@ public partial class DBHorasTrab
 
     public int FIDAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDAgenda;
         set
         {
@@ -47,9 +49,6 @@ public partial class DBHorasTrab
                 m_FIDAgenda = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -66,6 +65,7 @@ public partial class DBHorasTrab
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -77,6 +77,7 @@ public partial class DBHorasTrab
 
     public int FStatus
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FStatus;
         set
         {
@@ -88,6 +89,7 @@ public partial class DBHorasTrab
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -99,6 +101,7 @@ public partial class DBHorasTrab
 
     public int FAdvogado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdvogado;
         set
         {
@@ -110,6 +113,7 @@ public partial class DBHorasTrab
 
     public int FFuncionario
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFuncionario;
         set
         {
@@ -119,30 +123,41 @@ public partial class DBHorasTrab
         }
     }
 
+    [StringLength(5, ErrorMessage = "A propriedade FHrIni da tabela HorasTrab deve ter no máximo 5 caracteres.")]
     public string? FHrIni
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHrIni ?? string.Empty;
         set
         {
             pFldFHrIni = pFldFHrIni || !(m_FHrIni ?? string.Empty).Equals(value);
             if (pFldFHrIni)
-                m_FHrIni = value.trim().Length > 5 ? value.trim().substring(0, 5) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FHrIni = trimmed.Length > 5 ? trimmed.AsSpan(0, 5).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(5, ErrorMessage = "A propriedade FHrFim da tabela HorasTrab deve ter no máximo 5 caracteres.")]
     public string? FHrFim
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHrFim ?? string.Empty;
         set
         {
             pFldFHrFim = pFldFHrFim || !(m_FHrFim ?? string.Empty).Equals(value);
             if (pFldFHrFim)
-                m_FHrFim = value.trim().Length > 5 ? value.trim().substring(0, 5) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FHrFim = trimmed.Length > 5 ? trimmed.AsSpan(0, 5).ToString() : trimmed;
+            }
         }
     }
 
     public decimal FTempo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTempo;
         set
         {
@@ -155,6 +170,7 @@ public partial class DBHorasTrab
 
     public decimal FValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValor;
         set
         {
@@ -167,6 +183,7 @@ public partial class DBHorasTrab
 
     public string? FOBS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOBS ?? string.Empty;
         set
         {
@@ -176,41 +193,57 @@ public partial class DBHorasTrab
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FAnexo da tabela HorasTrab deve ter no máximo 255 caracteres.")]
     public string? FAnexo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAnexo ?? string.Empty;
         set
         {
             pFldFAnexo = pFldFAnexo || !(m_FAnexo ?? string.Empty).Equals(value);
             if (pFldFAnexo)
-                m_FAnexo = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAnexo = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FAnexoComp da tabela HorasTrab deve ter no máximo 50 caracteres.")]
     public string? FAnexoComp
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAnexoComp ?? string.Empty;
         set
         {
             pFldFAnexoComp = pFldFAnexoComp || !(m_FAnexoComp ?? string.Empty).Equals(value);
             if (pFldFAnexoComp)
-                m_FAnexoComp = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAnexoComp = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FAnexoUNC da tabela HorasTrab deve ter no máximo 255 caracteres.")]
     public string? FAnexoUNC
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAnexoUNC ?? string.Empty;
         set
         {
             pFldFAnexoUNC = pFldFAnexoUNC || !(m_FAnexoUNC ?? string.Empty).Equals(value);
             if (pFldFAnexoUNC)
-                m_FAnexoUNC = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAnexoUNC = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FServico
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FServico;
         set
         {
@@ -233,16 +266,19 @@ public partial class DBHorasTrab
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

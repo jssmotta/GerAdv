@@ -6,168 +6,73 @@ public partial class DBAreasJustica
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area]))
-                m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica]))
-                m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBAreasJustica(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area]))
-                m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica]))
-                m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do AreasJustica: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_AreasJustica
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [arjCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAreasJusticaDicInfo.Area)))
+                m_FArea = Convert.ToInt32(getValue(DBAreasJusticaDicInfo.Area));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAreasJusticaDicInfo.Justica)))
+                m_FJustica = Convert.ToInt32(getValue(DBAreasJusticaDicInfo.Justica));
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area]))
-            m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica]))
-            m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do AreasJustica: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_AreasJustica
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area])) m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Area]))
-            m_FArea = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Area]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]); if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica])) m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAreasJusticaDicInfo.Justica]))
-            m_FJustica = Convert.ToInt32(dbRec[DBAreasJusticaDicInfo.Justica]);
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do AreasJustica: {ex.Message}", ex);
+        }
     }
-#endregion
 }

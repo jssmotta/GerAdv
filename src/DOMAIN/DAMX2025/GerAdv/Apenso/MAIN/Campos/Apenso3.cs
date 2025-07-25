@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBApenso
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFProcesso, pFldFApenso, pFldFAcao, pFldFDtDist, pFldFOBS, pFldFValorCausa;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBApenso
     private protected decimal m_FValorCausa;
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -24,30 +24,37 @@ public partial class DBApenso
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FApenso da tabela Apenso deve ter no máximo 25 caracteres.")]
     public string? FApenso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FApenso ?? string.Empty;
         set
         {
             pFldFApenso = pFldFApenso || !(m_FApenso ?? string.Empty).Equals(value);
             if (pFldFApenso)
-                m_FApenso = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FApenso = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FAcao da tabela Apenso deve ter no máximo 25 caracteres.")]
     public string? FAcao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAcao ?? string.Empty;
         set
         {
             pFldFAcao = pFldFAcao || !(m_FAcao ?? string.Empty).Equals(value);
             if (pFldFAcao)
-                m_FAcao = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAcao = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDtDist => Convert.ToDateTime(m_FDtDist);
 
     public string? FDtDist
     {
@@ -64,6 +71,7 @@ public partial class DBApenso
 
     public string? FOBS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOBS ?? string.Empty;
         set
         {
@@ -75,6 +83,7 @@ public partial class DBApenso
 
     public decimal FValorCausa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCausa;
         set
         {
@@ -98,16 +107,19 @@ public partial class DBApenso
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

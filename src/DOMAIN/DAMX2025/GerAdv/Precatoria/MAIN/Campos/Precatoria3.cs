@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBPrecatoria
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFDtDist, pFldFProcesso, pFldFPrecatoria, pFldFDeprecante, pFldFDeprecado, pFldFOBS, pFldFBold;
     [XmlIgnore]
@@ -13,9 +12,6 @@ public partial class DBPrecatoria
     private protected DateTime? m_FDtDist;
     [XmlIgnore]
     private protected bool m_FBold;
-    [XmlIgnore]
-    public DateTime MDtDist => Convert.ToDateTime(m_FDtDist);
-
     public string? FDtDist
     {
         get => $"{m_FDtDist:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtDist:dd/MM/yyyy}";
@@ -31,6 +27,7 @@ public partial class DBPrecatoria
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -40,41 +37,57 @@ public partial class DBPrecatoria
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FPrecatoria da tabela Precatoria deve ter no máximo 25 caracteres.")]
     public string? FPrecatoria
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPrecatoria ?? string.Empty;
         set
         {
             pFldFPrecatoria = pFldFPrecatoria || !(m_FPrecatoria ?? string.Empty).Equals(value);
             if (pFldFPrecatoria)
-                m_FPrecatoria = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPrecatoria = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(60, ErrorMessage = "A propriedade FDeprecante da tabela Precatoria deve ter no máximo 60 caracteres.")]
     public string? FDeprecante
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDeprecante ?? string.Empty;
         set
         {
             pFldFDeprecante = pFldFDeprecante || !(m_FDeprecante ?? string.Empty).Equals(value);
             if (pFldFDeprecante)
-                m_FDeprecante = value.trim().Length > 60 ? value.trim().substring(0, 60) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDeprecante = trimmed.Length > 60 ? trimmed.AsSpan(0, 60).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(60, ErrorMessage = "A propriedade FDeprecado da tabela Precatoria deve ter no máximo 60 caracteres.")]
     public string? FDeprecado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDeprecado ?? string.Empty;
         set
         {
             pFldFDeprecado = pFldFDeprecado || !(m_FDeprecado ?? string.Empty).Equals(value);
             if (pFldFDeprecado)
-                m_FDeprecado = value.trim().Length > 60 ? value.trim().substring(0, 60) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDeprecado = trimmed.Length > 60 ? trimmed.AsSpan(0, 60).ToString() : trimmed;
+            }
         }
     }
 
     public string? FOBS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOBS ?? string.Empty;
         set
         {
@@ -86,6 +99,7 @@ public partial class DBPrecatoria
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -108,16 +122,19 @@ public partial class DBPrecatoria
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -2,26 +2,31 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBModelosDocumentos
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFNome, pFldFRemuneracao, pFldFAssinatura, pFldFHeader, pFldFFooter, pFldFExtra1, pFldFExtra2, pFldFExtra3, pFldFOutorgante, pFldFOutorgados, pFldFPoderes, pFldFObjeto, pFldFTitulo, pFldFTestemunhas, pFldFTipoModeloDocumento, pFldFCSS;
     [XmlIgnore]
     private protected int m_FTipoModeloDocumento;
     [XmlIgnore]
     private protected string? m_FNome, m_FRemuneracao, m_FAssinatura, m_FHeader, m_FFooter, m_FExtra1, m_FExtra2, m_FExtra3, m_FOutorgante, m_FOutorgados, m_FPoderes, m_FObjeto, m_FTitulo, m_FTestemunhas, m_FCSS;
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela ModelosDocumentos deve ter no máximo 50 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
     public string? FRemuneracao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRemuneracao ?? string.Empty;
         set
         {
@@ -33,6 +38,7 @@ public partial class DBModelosDocumentos
 
     public string? FAssinatura
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAssinatura ?? string.Empty;
         set
         {
@@ -44,6 +50,7 @@ public partial class DBModelosDocumentos
 
     public string? FHeader
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHeader ?? string.Empty;
         set
         {
@@ -55,6 +62,7 @@ public partial class DBModelosDocumentos
 
     public string? FFooter
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFooter ?? string.Empty;
         set
         {
@@ -66,6 +74,7 @@ public partial class DBModelosDocumentos
 
     public string? FExtra1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExtra1 ?? string.Empty;
         set
         {
@@ -77,6 +86,7 @@ public partial class DBModelosDocumentos
 
     public string? FExtra2
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExtra2 ?? string.Empty;
         set
         {
@@ -88,6 +98,7 @@ public partial class DBModelosDocumentos
 
     public string? FExtra3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExtra3 ?? string.Empty;
         set
         {
@@ -99,6 +110,7 @@ public partial class DBModelosDocumentos
 
     public string? FOutorgante
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOutorgante ?? string.Empty;
         set
         {
@@ -110,6 +122,7 @@ public partial class DBModelosDocumentos
 
     public string? FOutorgados
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOutorgados ?? string.Empty;
         set
         {
@@ -121,6 +134,7 @@ public partial class DBModelosDocumentos
 
     public string? FPoderes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPoderes ?? string.Empty;
         set
         {
@@ -132,6 +146,7 @@ public partial class DBModelosDocumentos
 
     public string? FObjeto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObjeto ?? string.Empty;
         set
         {
@@ -141,19 +156,25 @@ public partial class DBModelosDocumentos
         }
     }
 
+    [StringLength(2000, ErrorMessage = "A propriedade FTitulo da tabela ModelosDocumentos deve ter no máximo 2000 caracteres.")]
     public string? FTitulo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTitulo ?? string.Empty;
         set
         {
             pFldFTitulo = pFldFTitulo || !(m_FTitulo ?? string.Empty).Equals(value);
             if (pFldFTitulo)
-                m_FTitulo = value.trim().Length > 2000 ? value.trim().substring(0, 2000) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FTitulo = trimmed.Length > 2000 ? trimmed.AsSpan(0, 2000).ToString() : trimmed;
+            }
         }
     }
 
     public string? FTestemunhas
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTestemunhas ?? string.Empty;
         set
         {
@@ -165,6 +186,7 @@ public partial class DBModelosDocumentos
 
     public int FTipoModeloDocumento
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoModeloDocumento;
         set
         {
@@ -176,6 +198,7 @@ public partial class DBModelosDocumentos
 
     public string? FCSS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCSS ?? string.Empty;
         set
         {
@@ -198,16 +221,19 @@ public partial class DBModelosDocumentos
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

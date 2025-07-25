@@ -4,90 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBInstanciaODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBInstanciaDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBInstanciaDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBInstanciaDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBInstanciaDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBInstanciaDicInfo.LiminarPedida => DBInstanciaDicInfo.InsLiminarPedida,
-        DBInstanciaDicInfo.Objeto => DBInstanciaDicInfo.InsObjeto,
-        DBInstanciaDicInfo.StatusResultado => DBInstanciaDicInfo.InsStatusResultado,
-        DBInstanciaDicInfo.LiminarPendente => DBInstanciaDicInfo.InsLiminarPendente,
-        DBInstanciaDicInfo.InterpusemosRecurso => DBInstanciaDicInfo.InsInterpusemosRecurso,
-        DBInstanciaDicInfo.LiminarConcedida => DBInstanciaDicInfo.InsLiminarConcedida,
-        DBInstanciaDicInfo.LiminarNegada => DBInstanciaDicInfo.InsLiminarNegada,
-        DBInstanciaDicInfo.Processo => DBInstanciaDicInfo.InsProcesso,
-        DBInstanciaDicInfo.Data => DBInstanciaDicInfo.InsData,
-        DBInstanciaDicInfo.LiminarParcial => DBInstanciaDicInfo.InsLiminarParcial,
-        DBInstanciaDicInfo.LiminarResultado => DBInstanciaDicInfo.InsLiminarResultado,
-        DBInstanciaDicInfo.NroProcesso => DBInstanciaDicInfo.InsNroProcesso,
-        DBInstanciaDicInfo.Divisao => DBInstanciaDicInfo.InsDivisao,
-        DBInstanciaDicInfo.LiminarCliente => DBInstanciaDicInfo.InsLiminarCliente,
-        DBInstanciaDicInfo.Comarca => DBInstanciaDicInfo.InsComarca,
-        DBInstanciaDicInfo.SubDivisao => DBInstanciaDicInfo.InsSubDivisao,
-        DBInstanciaDicInfo.Principal => DBInstanciaDicInfo.InsPrincipal,
-        DBInstanciaDicInfo.Acao => DBInstanciaDicInfo.InsAcao,
-        DBInstanciaDicInfo.Foro => DBInstanciaDicInfo.InsForo,
-        DBInstanciaDicInfo.TipoRecurso => DBInstanciaDicInfo.InsTipoRecurso,
-        DBInstanciaDicInfo.ZKey => DBInstanciaDicInfo.InsZKey,
-        DBInstanciaDicInfo.ZKeyQuem => DBInstanciaDicInfo.InsZKeyQuem,
-        DBInstanciaDicInfo.ZKeyQuando => DBInstanciaDicInfo.InsZKeyQuando,
-        DBInstanciaDicInfo.NroAntigo => DBInstanciaDicInfo.InsNroAntigo,
-        DBInstanciaDicInfo.AccessCode => DBInstanciaDicInfo.InsAccessCode,
-        DBInstanciaDicInfo.Julgador => DBInstanciaDicInfo.InsJulgador,
-        DBInstanciaDicInfo.ZKeyIA => DBInstanciaDicInfo.InsZKeyIA,
-        DBInstanciaDicInfo.GUID => DBInstanciaDicInfo.InsGUID,
-        DBInstanciaDicInfo.QuemCad => DBInstanciaDicInfo.InsQuemCad,
-        DBInstanciaDicInfo.DtCad => DBInstanciaDicInfo.InsDtCad,
-        DBInstanciaDicInfo.QuemAtu => DBInstanciaDicInfo.InsQuemAtu,
-        DBInstanciaDicInfo.DtAtu => DBInstanciaDicInfo.InsDtAtu,
-        DBInstanciaDicInfo.Visto => DBInstanciaDicInfo.InsVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBInstanciaDicInfo.CampoCodigo;
     public static string TCampoNome => DBInstanciaDicInfo.CampoNome;
     public static string TTabelaNome => DBInstanciaDicInfo.TabelaNome;
     public static string TTablePrefix => DBInstanciaDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGUID, DBInstanciaDicInfo.InsQuemCad, DBInstanciaDicInfo.InsDtCad, DBInstanciaDicInfo.InsQuemAtu, DBInstanciaDicInfo.InsDtAtu, DBInstanciaDicInfo.InsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGUID, DBInstanciaDicInfo.InsQuemCad, DBInstanciaDicInfo.InsDtCad, DBInstanciaDicInfo.InsQuemAtu, DBInstanciaDicInfo.InsDtAtu, DBInstanciaDicInfo.InsVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBInstanciaDicInfo.InsLiminarPedida, DBInstanciaDicInfo.InsObjeto, DBInstanciaDicInfo.InsStatusResultado, DBInstanciaDicInfo.InsLiminarPendente, DBInstanciaDicInfo.InsInterpusemosRecurso, DBInstanciaDicInfo.InsLiminarConcedida, DBInstanciaDicInfo.InsLiminarNegada, DBInstanciaDicInfo.InsProcesso, DBInstanciaDicInfo.InsData, DBInstanciaDicInfo.InsLiminarParcial, DBInstanciaDicInfo.InsLiminarResultado, DBInstanciaDicInfo.InsNroProcesso, DBInstanciaDicInfo.InsDivisao, DBInstanciaDicInfo.InsLiminarCliente, DBInstanciaDicInfo.InsComarca, DBInstanciaDicInfo.InsSubDivisao, DBInstanciaDicInfo.InsPrincipal, DBInstanciaDicInfo.InsAcao, DBInstanciaDicInfo.InsForo, DBInstanciaDicInfo.InsTipoRecurso, DBInstanciaDicInfo.InsZKey, DBInstanciaDicInfo.InsZKeyQuem, DBInstanciaDicInfo.InsZKeyQuando, DBInstanciaDicInfo.InsNroAntigo, DBInstanciaDicInfo.InsAccessCode, DBInstanciaDicInfo.InsJulgador, DBInstanciaDicInfo.InsZKeyIA, DBInstanciaDicInfo.InsGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "insCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["insCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBInstanciaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "insCodigo",
-            "insDivisao",
-            "insNroProcesso",
-            "insSubDivisao"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["insCodigo", "insDivisao", "insNroProcesso", "insSubDivisao"]);
         var result = campos.Where(campo => !campo.Equals(DBInstanciaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

@@ -13,7 +13,6 @@ public partial class DBStatusBiu : XCodeIdBase, ICadastros
     }
 
 #endregion
-    public DBStatusBiu(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBStatusBiu(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBStatusBiu : XCodeIdBase, ICadastros
     }
 
 #region GravarDados_StatusBiu
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBStatusBiu : XCodeIdBase, ICadastros
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'stbNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -113,7 +113,7 @@ public partial class DBStatusBiu : XCodeIdBase, ICadastros
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

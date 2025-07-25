@@ -4,64 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBProcessosObsReportODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBProcessosObsReportDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProcessosObsReportDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProcessosObsReportDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBProcessosObsReportDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBProcessosObsReportDicInfo.Data => DBProcessosObsReportDicInfo.PrrData,
-        DBProcessosObsReportDicInfo.Processo => DBProcessosObsReportDicInfo.PrrProcesso,
-        DBProcessosObsReportDicInfo.Observacao => DBProcessosObsReportDicInfo.PrrObservacao,
-        DBProcessosObsReportDicInfo.Historico => DBProcessosObsReportDicInfo.PrrHistorico,
-        DBProcessosObsReportDicInfo.QuemCad => DBProcessosObsReportDicInfo.PrrQuemCad,
-        DBProcessosObsReportDicInfo.DtCad => DBProcessosObsReportDicInfo.PrrDtCad,
-        DBProcessosObsReportDicInfo.QuemAtu => DBProcessosObsReportDicInfo.PrrQuemAtu,
-        DBProcessosObsReportDicInfo.DtAtu => DBProcessosObsReportDicInfo.PrrDtAtu,
-        DBProcessosObsReportDicInfo.Visto => DBProcessosObsReportDicInfo.PrrVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBProcessosObsReportDicInfo.CampoCodigo;
     public static string TCampoNome => DBProcessosObsReportDicInfo.CampoNome;
     public static string TTabelaNome => DBProcessosObsReportDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessosObsReportDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBProcessosObsReportDicInfo.PrrData, DBProcessosObsReportDicInfo.PrrProcesso, DBProcessosObsReportDicInfo.PrrObservacao, DBProcessosObsReportDicInfo.PrrHistorico, DBProcessosObsReportDicInfo.PrrQuemCad, DBProcessosObsReportDicInfo.PrrDtCad, DBProcessosObsReportDicInfo.PrrQuemAtu, DBProcessosObsReportDicInfo.PrrDtAtu, DBProcessosObsReportDicInfo.PrrVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessosObsReportDicInfo.PrrData, DBProcessosObsReportDicInfo.PrrProcesso, DBProcessosObsReportDicInfo.PrrObservacao, DBProcessosObsReportDicInfo.PrrHistorico];
+    public static ImmutableArray<DBInfoSystem> List => [DBProcessosObsReportDicInfo.PrrData, DBProcessosObsReportDicInfo.PrrProcesso, DBProcessosObsReportDicInfo.PrrObservacao, DBProcessosObsReportDicInfo.PrrHistorico, DBProcessosObsReportDicInfo.PrrQuemCad, DBProcessosObsReportDicInfo.PrrDtCad, DBProcessosObsReportDicInfo.PrrQuemAtu, DBProcessosObsReportDicInfo.PrrDtAtu, DBProcessosObsReportDicInfo.PrrVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProcessosObsReportDicInfo.PrrData, DBProcessosObsReportDicInfo.PrrProcesso, DBProcessosObsReportDicInfo.PrrObservacao, DBProcessosObsReportDicInfo.PrrHistorico];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "prrProcesso"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["prrProcesso"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessosObsReportDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "prrCodigo",
-            "prrProcesso"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["prrCodigo", "prrProcesso"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessosObsReportDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

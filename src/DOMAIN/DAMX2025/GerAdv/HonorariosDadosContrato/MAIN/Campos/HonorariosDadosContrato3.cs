@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBHonorariosDadosContrato
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCliente, pFldFFixo, pFldFVariavel, pFldFPercSucesso, pFldFProcesso, pFldFArquivoContrato, pFldFTextoContrato, pFldFValorFixo, pFldFObservacao, pFldFDataContrato;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBHonorariosDadosContrato
     private protected decimal m_FPercSucesso, m_FValorFixo;
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBHonorariosDadosContrato
 
     public bool FFixo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFixo;
         set
         {
@@ -39,6 +40,7 @@ public partial class DBHonorariosDadosContrato
 
     public bool FVariavel
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FVariavel;
         set
         {
@@ -50,6 +52,7 @@ public partial class DBHonorariosDadosContrato
 
     public decimal FPercSucesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercSucesso;
         set
         {
@@ -62,6 +65,7 @@ public partial class DBHonorariosDadosContrato
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -71,19 +75,25 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
+    [StringLength(2048, ErrorMessage = "A propriedade FArquivoContrato da tabela HonorariosDadosContrato deve ter no máximo 2048 caracteres.")]
     public string? FArquivoContrato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FArquivoContrato ?? string.Empty;
         set
         {
             pFldFArquivoContrato = pFldFArquivoContrato || !(m_FArquivoContrato ?? string.Empty).Equals(value);
             if (pFldFArquivoContrato)
-                m_FArquivoContrato = value.trim().Length > 2048 ? value.trim().substring(0, 2048) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FArquivoContrato = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+            }
         }
     }
 
     public string? FTextoContrato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTextoContrato ?? string.Empty;
         set
         {
@@ -95,6 +105,7 @@ public partial class DBHonorariosDadosContrato
 
     public decimal FValorFixo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorFixo;
         set
         {
@@ -105,19 +116,21 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
+    [StringLength(2048, ErrorMessage = "A propriedade FObservacao da tabela HonorariosDadosContrato deve ter no máximo 2048 caracteres.")]
     public string? FObservacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObservacao ?? string.Empty;
         set
         {
             pFldFObservacao = pFldFObservacao || !(m_FObservacao ?? string.Empty).Equals(value);
             if (pFldFObservacao)
-                m_FObservacao = value.trim().Length > 2048 ? value.trim().substring(0, 2048) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FObservacao = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataContrato => Convert.ToDateTime(m_FDataContrato);
 
     public string? FDataContrato
     {
@@ -145,16 +158,19 @@ public partial class DBHonorariosDadosContrato
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

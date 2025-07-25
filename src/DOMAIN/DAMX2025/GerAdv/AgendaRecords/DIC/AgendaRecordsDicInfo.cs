@@ -108,66 +108,6 @@ public static partial class DBAgendaRecordsDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string Aviso1Sql(bool valueCheck) => Aviso1.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
-    public static string Aviso1SqlSim => Aviso1.SqlCmdBoolSim() ?? string.Empty;
-    public static string Aviso1SqlNao => Aviso1.SqlCmdBoolNao() ?? string.Empty;
-
-    public static string Aviso2Sql(bool valueCheck) => Aviso2.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
-    public static string Aviso2SqlSim => Aviso2.SqlCmdBoolSim() ?? string.Empty;
-    public static string Aviso2SqlNao => Aviso2.SqlCmdBoolNao() ?? string.Empty;
-
-    public static string Aviso3Sql(bool valueCheck) => Aviso3.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
-    public static string Aviso3SqlSim => Aviso3.SqlCmdBoolSim() ?? string.Empty;
-    public static string Aviso3SqlNao => Aviso3.SqlCmdBoolNao() ?? string.Empty;
-
-    public static string DataAviso1SqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataAviso1}]");
-    public static string DataAviso1SqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataAviso1}]");
-    public static string DataAviso1SqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataAviso1}]");
-    public static string DataAviso1SqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataAviso1}]");
-    public static string DataAviso1SqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataAviso1}]");
-    public static string DataAviso1IsNull => DataAviso1.SqlCmdIsNull() ?? string.Empty;
-    public static string DataAviso1NotIsNull => DataAviso1.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string DataAviso2SqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataAviso2}]");
-    public static string DataAviso2SqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataAviso2}]");
-    public static string DataAviso2SqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataAviso2}]");
-    public static string DataAviso2SqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataAviso2}]");
-    public static string DataAviso2SqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataAviso2}]");
-    public static string DataAviso2IsNull => DataAviso2.SqlCmdIsNull() ?? string.Empty;
-    public static string DataAviso2NotIsNull => DataAviso2.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string DataAviso3SqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataAviso3}]");
-    public static string DataAviso3SqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataAviso3}]");
-    public static string DataAviso3SqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataAviso3}]");
-    public static string DataAviso3SqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataAviso3}]");
-    public static string DataAviso3SqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataAviso3}]");
-    public static string DataAviso3IsNull => DataAviso3.SqlCmdIsNull() ?? string.Empty;
-    public static string DataAviso3NotIsNull => DataAviso3.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

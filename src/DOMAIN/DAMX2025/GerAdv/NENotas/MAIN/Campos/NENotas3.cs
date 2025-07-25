@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBNENotas
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFApenso, pFldFPrecatoria, pFldFInstancia, pFldFMovPro, pFldFNome, pFldFNotaExpedida, pFldFRevisada, pFldFProcesso, pFldFPalavraChave, pFldFData, pFldFNotaPublicada;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBNENotas
     private protected bool m_FMovPro, m_FNotaExpedida, m_FRevisada;
     public int FApenso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FApenso;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBNENotas
 
     public int FPrecatoria
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPrecatoria;
         set
         {
@@ -37,6 +38,7 @@ public partial class DBNENotas
 
     public int FInstancia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FInstancia;
         set
         {
@@ -48,6 +50,7 @@ public partial class DBNENotas
 
     public bool FMovPro
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMovPro;
         set
         {
@@ -57,19 +60,25 @@ public partial class DBNENotas
         }
     }
 
+    [StringLength(20, ErrorMessage = "A propriedade FNome da tabela NENotas deve ter no máximo 20 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 20 ? value.trim().substring(0, 20) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+            }
         }
     }
 
     public bool FNotaExpedida
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNotaExpedida;
         set
         {
@@ -81,6 +90,7 @@ public partial class DBNENotas
 
     public bool FRevisada
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRevisada;
         set
         {
@@ -92,6 +102,7 @@ public partial class DBNENotas
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -103,6 +114,7 @@ public partial class DBNENotas
 
     public int FPalavraChave
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPalavraChave;
         set
         {
@@ -111,9 +123,6 @@ public partial class DBNENotas
                 m_FPalavraChave = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -130,6 +139,7 @@ public partial class DBNENotas
 
     public string? FNotaPublicada
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNotaPublicada ?? string.Empty;
         set
         {
@@ -152,16 +162,19 @@ public partial class DBNENotas
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -4,57 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBTipoValorProcessoODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBTipoValorProcessoDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBTipoValorProcessoDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBTipoValorProcessoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBTipoValorProcessoDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBTipoValorProcessoDicInfo.Descricao => DBTipoValorProcessoDicInfo.PtvDescricao,
-        DBTipoValorProcessoDicInfo.GUID => DBTipoValorProcessoDicInfo.PtvGUID,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBTipoValorProcessoDicInfo.CampoCodigo;
     public static string TCampoNome => DBTipoValorProcessoDicInfo.CampoNome;
     public static string TTabelaNome => DBTipoValorProcessoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoValorProcessoDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBTipoValorProcessoDicInfo.PtvDescricao, DBTipoValorProcessoDicInfo.PtvGUID];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTipoValorProcessoDicInfo.PtvDescricao, DBTipoValorProcessoDicInfo.PtvGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBTipoValorProcessoDicInfo.PtvDescricao, DBTipoValorProcessoDicInfo.PtvGUID];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTipoValorProcessoDicInfo.PtvDescricao, DBTipoValorProcessoDicInfo.PtvGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "ptvDescricao"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ptvDescricao"]);
         var result = campos.Where(campo => !campo.Equals(DBTipoValorProcessoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "ptvCodigo",
-            "ptvDescricao"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ptvCodigo", "ptvDescricao"]);
         var result = campos.Where(campo => !campo.Equals(DBTipoValorProcessoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

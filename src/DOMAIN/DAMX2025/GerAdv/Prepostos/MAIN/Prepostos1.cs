@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBPrepostos : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_Prepostos
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBPrepostos(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBPrepostos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_Prepostos
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'preNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -96,7 +96,7 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
         if (string.IsNullOrEmpty(m_FGUID))
             FGUID = Guid.NewGuid().ToString();
         if (pFldFNome)
-            clsW.Fields(DBPrepostosDicInfo.Nome, sex.m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFFuncao)
             clsW.Fields(DBPrepostosDicInfo.Funcao, m_FFuncao, ETiposCampos.FNumberNull);
         if (pFldFSetor)
@@ -110,7 +110,7 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFIdade)
             clsW.Fields(DBPrepostosDicInfo.Idade, m_FIdade, ETiposCampos.FNumberNull);
         if (pFldFCPF)
-            clsW.Fields(DBPrepostosDicInfo.CPF, sex.m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             clsW.Fields(DBPrepostosDicInfo.RG, m_FRG, ETiposCampos.FString);
         if (pFldFPeriodo_Ini)
@@ -134,13 +134,13 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFObservacao)
             clsW.Fields(DBPrepostosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBPrepostosDicInfo.Endereco, sex.m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
-            clsW.Fields(DBPrepostosDicInfo.Bairro, sex.m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
         if (pFldFCidade)
             clsW.Fields(DBPrepostosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
         if (pFldFCEP)
-            clsW.Fields(DBPrepostosDicInfo.CEP, sex.m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFFone)
             clsW.Fields(DBPrepostosDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFFax)
@@ -152,7 +152,7 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFMae)
             clsW.Fields(DBPrepostosDicInfo.Mae, m_FMae, ETiposCampos.FString);
         if (pFldFClass)
-            clsW.Fields(DBPrepostosDicInfo.Class, sex.m_FClass, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Class, m_FClass, ETiposCampos.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
             clsW.Fields(DBPrepostosDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
         if (pFldFAni || ID.IsEmptyIDNumber())
@@ -200,7 +200,7 @@ public partial class DBPrepostos : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

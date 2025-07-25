@@ -4,66 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBDocsRecebidosItensODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBDocsRecebidosItensDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBDocsRecebidosItensDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBDocsRecebidosItensDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBDocsRecebidosItensDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBDocsRecebidosItensDicInfo.ContatoCRM => DBDocsRecebidosItensDicInfo.DriContatoCRM,
-        DBDocsRecebidosItensDicInfo.Nome => DBDocsRecebidosItensDicInfo.DriNome,
-        DBDocsRecebidosItensDicInfo.Devolvido => DBDocsRecebidosItensDicInfo.DriDevolvido,
-        DBDocsRecebidosItensDicInfo.SeraDevolvido => DBDocsRecebidosItensDicInfo.DriSeraDevolvido,
-        DBDocsRecebidosItensDicInfo.Observacoes => DBDocsRecebidosItensDicInfo.DriObservacoes,
-        DBDocsRecebidosItensDicInfo.Bold => DBDocsRecebidosItensDicInfo.DriBold,
-        DBDocsRecebidosItensDicInfo.GUID => DBDocsRecebidosItensDicInfo.DriGUID,
-        DBDocsRecebidosItensDicInfo.QuemCad => DBDocsRecebidosItensDicInfo.DriQuemCad,
-        DBDocsRecebidosItensDicInfo.DtCad => DBDocsRecebidosItensDicInfo.DriDtCad,
-        DBDocsRecebidosItensDicInfo.QuemAtu => DBDocsRecebidosItensDicInfo.DriQuemAtu,
-        DBDocsRecebidosItensDicInfo.DtAtu => DBDocsRecebidosItensDicInfo.DriDtAtu,
-        DBDocsRecebidosItensDicInfo.Visto => DBDocsRecebidosItensDicInfo.DriVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBDocsRecebidosItensDicInfo.CampoCodigo;
     public static string TCampoNome => DBDocsRecebidosItensDicInfo.CampoNome;
     public static string TTabelaNome => DBDocsRecebidosItensDicInfo.TabelaNome;
     public static string TTablePrefix => DBDocsRecebidosItensDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriBold, DBDocsRecebidosItensDicInfo.DriGUID, DBDocsRecebidosItensDicInfo.DriQuemCad, DBDocsRecebidosItensDicInfo.DriDtCad, DBDocsRecebidosItensDicInfo.DriQuemAtu, DBDocsRecebidosItensDicInfo.DriDtAtu, DBDocsRecebidosItensDicInfo.DriVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriBold, DBDocsRecebidosItensDicInfo.DriGUID, DBDocsRecebidosItensDicInfo.DriQuemCad, DBDocsRecebidosItensDicInfo.DriDtCad, DBDocsRecebidosItensDicInfo.DriQuemAtu, DBDocsRecebidosItensDicInfo.DriDtAtu, DBDocsRecebidosItensDicInfo.DriVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBDocsRecebidosItensDicInfo.DriContatoCRM, DBDocsRecebidosItensDicInfo.DriNome, DBDocsRecebidosItensDicInfo.DriDevolvido, DBDocsRecebidosItensDicInfo.DriSeraDevolvido, DBDocsRecebidosItensDicInfo.DriObservacoes, DBDocsRecebidosItensDicInfo.DriGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "driCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["driCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBDocsRecebidosItensDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "driCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["driCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBDocsRecebidosItensDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

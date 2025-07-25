@@ -4,64 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBTiposAcaoODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBTiposAcaoDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBTiposAcaoDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBTiposAcaoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBTiposAcaoDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBTiposAcaoDicInfo.Nome => DBTiposAcaoDicInfo.TacNome,
-        DBTiposAcaoDicInfo.Inativo => DBTiposAcaoDicInfo.TacInativo,
-        DBTiposAcaoDicInfo.Bold => DBTiposAcaoDicInfo.TacBold,
-        DBTiposAcaoDicInfo.GUID => DBTiposAcaoDicInfo.TacGUID,
-        DBTiposAcaoDicInfo.QuemCad => DBTiposAcaoDicInfo.TacQuemCad,
-        DBTiposAcaoDicInfo.DtCad => DBTiposAcaoDicInfo.TacDtCad,
-        DBTiposAcaoDicInfo.QuemAtu => DBTiposAcaoDicInfo.TacQuemAtu,
-        DBTiposAcaoDicInfo.DtAtu => DBTiposAcaoDicInfo.TacDtAtu,
-        DBTiposAcaoDicInfo.Visto => DBTiposAcaoDicInfo.TacVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBTiposAcaoDicInfo.CampoCodigo;
     public static string TCampoNome => DBTiposAcaoDicInfo.CampoNome;
     public static string TTabelaNome => DBTiposAcaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBTiposAcaoDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold, DBTiposAcaoDicInfo.TacGUID, DBTiposAcaoDicInfo.TacQuemCad, DBTiposAcaoDicInfo.TacDtCad, DBTiposAcaoDicInfo.TacQuemAtu, DBTiposAcaoDicInfo.TacDtAtu, DBTiposAcaoDicInfo.TacVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacBold, DBTiposAcaoDicInfo.TacGUID, DBTiposAcaoDicInfo.TacQuemCad, DBTiposAcaoDicInfo.TacDtCad, DBTiposAcaoDicInfo.TacQuemAtu, DBTiposAcaoDicInfo.TacDtAtu, DBTiposAcaoDicInfo.TacVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTiposAcaoDicInfo.TacNome, DBTiposAcaoDicInfo.TacInativo, DBTiposAcaoDicInfo.TacGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "tacCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["tacCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBTiposAcaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "tacCodigo",
-            "tacNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["tacCodigo", "tacNome"]);
         var result = campos.Where(campo => !campo.Equals(DBTiposAcaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

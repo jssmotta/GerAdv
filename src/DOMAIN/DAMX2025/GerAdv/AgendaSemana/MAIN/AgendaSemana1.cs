@@ -11,7 +11,6 @@ public partial class DBAgendaSemana : XCodeIdBase
     }
 
 #endregion
-    public DBAgendaSemana(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
 #region ListarDados_AgendaSemana
     public static IEnumerable<DBAgendaSemana> Listar(string? cSqlMain, string? cWhere, string? cOrder, string? cCnn)
     {

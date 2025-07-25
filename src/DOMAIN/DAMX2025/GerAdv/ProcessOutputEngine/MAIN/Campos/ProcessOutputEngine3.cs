@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProcessOutputEngine
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFNome, pFldFDatabase, pFldFTabela, pFldFCampo, pFldFValor, pFldFOutput, pFldFAdministrador, pFldFOutputSource, pFldFDisabledItem, pFldFIDModulo, pFldFIsOnlyProcesso, pFldFMyID, pFldFGUID;
     [XmlIgnore]
@@ -11,63 +10,89 @@ public partial class DBProcessOutputEngine
     private protected string? m_FNome, m_FDatabase, m_FTabela, m_FCampo, m_FValor, m_FOutput, m_FGUID;
     [XmlIgnore]
     private protected bool m_FAdministrador, m_FDisabledItem, m_FIsOnlyProcesso;
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FDatabase da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
     public string? FDatabase
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDatabase ?? string.Empty;
         set
         {
             pFldFDatabase = pFldFDatabase || !(m_FDatabase ?? string.Empty).Equals(value);
             if (pFldFDatabase)
-                m_FDatabase = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDatabase = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FTabela da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
     public string? FTabela
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTabela ?? string.Empty;
         set
         {
             pFldFTabela = pFldFTabela || !(m_FTabela ?? string.Empty).Equals(value);
             if (pFldFTabela)
-                m_FTabela = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FTabela = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FCampo da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
     public string? FCampo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCampo ?? string.Empty;
         set
         {
             pFldFCampo = pFldFCampo || !(m_FCampo ?? string.Empty).Equals(value);
             if (pFldFCampo)
-                m_FCampo = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCampo = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FValor da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
     public string? FValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValor ?? string.Empty;
         set
         {
             pFldFValor = pFldFValor || !(m_FValor ?? string.Empty).Equals(value);
             if (pFldFValor)
-                m_FValor = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FValor = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public string? FOutput
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOutput ?? string.Empty;
         set
         {
@@ -79,6 +104,7 @@ public partial class DBProcessOutputEngine
 
     public bool FAdministrador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdministrador;
         set
         {
@@ -90,6 +116,7 @@ public partial class DBProcessOutputEngine
 
     public int FOutputSource
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOutputSource;
         set
         {
@@ -101,6 +128,7 @@ public partial class DBProcessOutputEngine
 
     public bool FDisabledItem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDisabledItem;
         set
         {
@@ -112,6 +140,7 @@ public partial class DBProcessOutputEngine
 
     public int FIDModulo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDModulo;
         set
         {
@@ -123,6 +152,7 @@ public partial class DBProcessOutputEngine
 
     public bool FIsOnlyProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIsOnlyProcesso;
         set
         {
@@ -134,6 +164,7 @@ public partial class DBProcessOutputEngine
 
     public int FMyID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMyID;
         set
         {
@@ -143,8 +174,10 @@ public partial class DBProcessOutputEngine
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela ProcessOutputEngine deve ter no máximo 100 caracteres.")]
     public string? FGUID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FGUID ?? string.Empty;
         set
         {
@@ -167,16 +200,19 @@ public partial class DBProcessOutputEngine
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBHistorico
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFExtraID, pFldFIDNE, pFldFExtraGUID, pFldFLiminarOrigem, pFldFNaoPublicavel, pFldFProcesso, pFldFPrecatoria, pFldFApenso, pFldFIDInstProcesso, pFldFFase, pFldFData, pFldFObservacao, pFldFAgendado, pFldFConcluido, pFldFMesmaAgenda, pFldFSAD, pFldFResumido, pFldFStatusAndamento, pFldFTop;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBHistorico
     private protected bool m_FNaoPublicavel, m_FAgendado, m_FConcluido, m_FMesmaAgenda, m_FResumido, m_FTop;
     public int FExtraID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExtraID;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBHistorico
 
     public int FIDNE
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDNE;
         set
         {
@@ -35,19 +36,25 @@ public partial class DBHistorico
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FExtraGUID da tabela Historico deve ter no máximo 100 caracteres.")]
     public string? FExtraGUID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExtraGUID ?? string.Empty;
         set
         {
             pFldFExtraGUID = pFldFExtraGUID || !(m_FExtraGUID ?? string.Empty).Equals(value);
             if (pFldFExtraGUID)
-                m_FExtraGUID = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FExtraGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public int FLiminarOrigem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarOrigem;
         set
         {
@@ -59,6 +66,7 @@ public partial class DBHistorico
 
     public bool FNaoPublicavel
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNaoPublicavel;
         set
         {
@@ -70,6 +78,7 @@ public partial class DBHistorico
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -81,6 +90,7 @@ public partial class DBHistorico
 
     public int FPrecatoria
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPrecatoria;
         set
         {
@@ -92,6 +102,7 @@ public partial class DBHistorico
 
     public int FApenso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FApenso;
         set
         {
@@ -103,6 +114,7 @@ public partial class DBHistorico
 
     public int FIDInstProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDInstProcesso;
         set
         {
@@ -114,6 +126,7 @@ public partial class DBHistorico
 
     public int FFase
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFase;
         set
         {
@@ -122,9 +135,6 @@ public partial class DBHistorico
                 m_FFase = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -141,6 +151,7 @@ public partial class DBHistorico
 
     public string? FObservacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObservacao ?? string.Empty;
         set
         {
@@ -152,6 +163,7 @@ public partial class DBHistorico
 
     public bool FAgendado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAgendado;
         set
         {
@@ -163,6 +175,7 @@ public partial class DBHistorico
 
     public bool FConcluido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FConcluido;
         set
         {
@@ -174,6 +187,7 @@ public partial class DBHistorico
 
     public bool FMesmaAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMesmaAgenda;
         set
         {
@@ -185,6 +199,7 @@ public partial class DBHistorico
 
     public int FSAD
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSAD;
         set
         {
@@ -196,6 +211,7 @@ public partial class DBHistorico
 
     public bool FResumido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FResumido;
         set
         {
@@ -207,6 +223,7 @@ public partial class DBHistorico
 
     public int FStatusAndamento
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FStatusAndamento;
         set
         {
@@ -218,6 +235,7 @@ public partial class DBHistorico
 
     public bool FTop
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTop;
         set
         {
@@ -240,16 +258,19 @@ public partial class DBHistorico
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -10,10 +10,9 @@ public partial class DBAgendaSemana
     private protected DateTime? m_FData, m_FHora, m_FHoraFinal;
     [XmlIgnore]
     private protected bool m_FConcluido, m_FLiberado, m_FImportante;
-    public string? FParaNome { get => m_FParaNome ?? string.Empty; set => m_FParaNome = value; }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
+    [StringLength(60, ErrorMessage = "A propriedade FParaNome da tabela AgendaSemana deve ter no máximo 60 caracteres.")]
+    public string? FParaNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FParaNome ?? string.Empty; set => m_FParaNome = value; }
 
     public string? FData
     {
@@ -26,11 +25,10 @@ public partial class DBAgendaSemana
         }
     }
 
-    public int FFuncionario { get => m_FFuncionario; set => m_FFuncionario = value; }
-    public int FAdvogado { get => m_FAdvogado; set => m_FAdvogado = value; }
-
-    [XmlIgnore]
-    public DateTime MHora => Convert.ToDateTime(m_FHora);
+    public int FFuncionario {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FFuncionario; set => m_FFuncionario = value; }
+    public int FAdvogado {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FAdvogado; set => m_FAdvogado = value; }
 
     public string? FHora
     {
@@ -43,14 +41,16 @@ public partial class DBAgendaSemana
         }
     }
 
-    public int FTipoCompromisso { get => m_FTipoCompromisso; set => m_FTipoCompromisso = value; }
-    public string? FCompromisso { get => m_FCompromisso ?? string.Empty; set => m_FCompromisso = value; }
-    public bool FConcluido { get => m_FConcluido; set => m_FConcluido = value; }
-    public bool FLiberado { get => m_FLiberado; set => m_FLiberado = value; }
-    public bool FImportante { get => m_FImportante; set => m_FImportante = value; }
-
-    [XmlIgnore]
-    public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
+    public int FTipoCompromisso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FTipoCompromisso; set => m_FTipoCompromisso = value; }
+    public string? FCompromisso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FCompromisso ?? string.Empty; set => m_FCompromisso = value; }
+    public bool FConcluido {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FConcluido; set => m_FConcluido = value; }
+    public bool FLiberado {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FLiberado; set => m_FLiberado = value; }
+    public bool FImportante {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FImportante; set => m_FImportante = value; }
 
     public string? FHoraFinal
     {
@@ -63,8 +63,17 @@ public partial class DBAgendaSemana
         }
     }
 
-    public string? FNome { get => m_FNome ?? string.Empty; set => m_FNome = value; }
-    public int FCliente { get => m_FCliente; set => m_FCliente = value; }
-    public string? FNomeCliente { get => m_FNomeCliente ?? string.Empty; set => m_FNomeCliente = value; }
-    public string? FTipo { get => m_FTipo ?? string.Empty; set => m_FTipo = value; }
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela AgendaSemana deve ter no máximo 80 caracteres.")]
+    public string? FNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FNome ?? string.Empty; set => m_FNome = value; }
+    public int FCliente {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FCliente; set => m_FCliente = value; }
+
+    [StringLength(80, ErrorMessage = "A propriedade FNomeCliente da tabela AgendaSemana deve ter no máximo 80 caracteres.")]
+    public string? FNomeCliente {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FNomeCliente ?? string.Empty; set => m_FNomeCliente = value; }
+
+    [StringLength(100, ErrorMessage = "A propriedade FTipo da tabela AgendaSemana deve ter no máximo 100 caracteres.")]
+    public string? FTipo {[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FTipo ?? string.Empty; set => m_FTipo = value; }
 }

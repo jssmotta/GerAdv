@@ -4,74 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBOponentesRepLegalODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBOponentesRepLegalDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBOponentesRepLegalDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBOponentesRepLegalDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBOponentesRepLegalDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => true;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBOponentesRepLegalDicInfo.Nome => DBOponentesRepLegalDicInfo.OprNome,
-        DBOponentesRepLegalDicInfo.Fone => DBOponentesRepLegalDicInfo.OprFone,
-        DBOponentesRepLegalDicInfo.Oponente => DBOponentesRepLegalDicInfo.OprOponente,
-        DBOponentesRepLegalDicInfo.Sexo => DBOponentesRepLegalDicInfo.OprSexo,
-        DBOponentesRepLegalDicInfo.CPF => DBOponentesRepLegalDicInfo.OprCPF,
-        DBOponentesRepLegalDicInfo.RG => DBOponentesRepLegalDicInfo.OprRG,
-        DBOponentesRepLegalDicInfo.Endereco => DBOponentesRepLegalDicInfo.OprEndereco,
-        DBOponentesRepLegalDicInfo.Bairro => DBOponentesRepLegalDicInfo.OprBairro,
-        DBOponentesRepLegalDicInfo.CEP => DBOponentesRepLegalDicInfo.OprCEP,
-        DBOponentesRepLegalDicInfo.Cidade => DBOponentesRepLegalDicInfo.OprCidade,
-        DBOponentesRepLegalDicInfo.Fax => DBOponentesRepLegalDicInfo.OprFax,
-        DBOponentesRepLegalDicInfo.EMail => DBOponentesRepLegalDicInfo.OprEMail,
-        DBOponentesRepLegalDicInfo.Site => DBOponentesRepLegalDicInfo.OprSite,
-        DBOponentesRepLegalDicInfo.Observacao => DBOponentesRepLegalDicInfo.OprObservacao,
-        DBOponentesRepLegalDicInfo.Bold => DBOponentesRepLegalDicInfo.OprBold,
-        DBOponentesRepLegalDicInfo.QuemCad => DBOponentesRepLegalDicInfo.OprQuemCad,
-        DBOponentesRepLegalDicInfo.DtCad => DBOponentesRepLegalDicInfo.OprDtCad,
-        DBOponentesRepLegalDicInfo.QuemAtu => DBOponentesRepLegalDicInfo.OprQuemAtu,
-        DBOponentesRepLegalDicInfo.DtAtu => DBOponentesRepLegalDicInfo.OprDtAtu,
-        DBOponentesRepLegalDicInfo.Visto => DBOponentesRepLegalDicInfo.OprVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBOponentesRepLegalDicInfo.CampoCodigo;
     public static string TCampoNome => DBOponentesRepLegalDicInfo.CampoNome;
     public static string TTabelaNome => DBOponentesRepLegalDicInfo.TabelaNome;
     public static string TTablePrefix => DBOponentesRepLegalDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao, DBOponentesRepLegalDicInfo.OprBold, DBOponentesRepLegalDicInfo.OprQuemCad, DBOponentesRepLegalDicInfo.OprDtCad, DBOponentesRepLegalDicInfo.OprQuemAtu, DBOponentesRepLegalDicInfo.OprDtAtu, DBOponentesRepLegalDicInfo.OprVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao];
+    public static ImmutableArray<DBInfoSystem> List => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao, DBOponentesRepLegalDicInfo.OprBold, DBOponentesRepLegalDicInfo.OprQuemCad, DBOponentesRepLegalDicInfo.OprDtCad, DBOponentesRepLegalDicInfo.OprQuemAtu, DBOponentesRepLegalDicInfo.OprDtAtu, DBOponentesRepLegalDicInfo.OprVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "oprCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["oprCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOponentesRepLegalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "oprCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["oprCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOponentesRepLegalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

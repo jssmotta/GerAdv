@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBContaCorrente
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCIAcordo, pFldFQuitado, pFldFIDContrato, pFldFQuitadoID, pFldFDebitoID, pFldFLivroCaixaID, pFldFSucumbencia, pFldFDistRegra, pFldFDtOriginal, pFldFProcesso, pFldFParcelaX, pFldFValor, pFldFData, pFldFCliente, pFldFHistorico, pFldFContrato, pFldFPago, pFldFDistribuir, pFldFLC, pFldFIDHTrab, pFldFNroParcelas, pFldFValorPrincipal, pFldFParcelaPrincipalID, pFldFHide, pFldFDataPgto;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBContaCorrente
     private protected decimal m_FValor, m_FValorPrincipal;
     public int FCIAcordo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCIAcordo;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBContaCorrente
 
     public bool FQuitado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuitado;
         set
         {
@@ -39,6 +40,7 @@ public partial class DBContaCorrente
 
     public int FIDContrato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDContrato;
         set
         {
@@ -50,6 +52,7 @@ public partial class DBContaCorrente
 
     public int FQuitadoID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuitadoID;
         set
         {
@@ -61,6 +64,7 @@ public partial class DBContaCorrente
 
     public int FDebitoID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDebitoID;
         set
         {
@@ -72,6 +76,7 @@ public partial class DBContaCorrente
 
     public int FLivroCaixaID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLivroCaixaID;
         set
         {
@@ -83,6 +88,7 @@ public partial class DBContaCorrente
 
     public bool FSucumbencia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSucumbencia;
         set
         {
@@ -94,6 +100,7 @@ public partial class DBContaCorrente
 
     public bool FDistRegra
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDistRegra;
         set
         {
@@ -102,9 +109,6 @@ public partial class DBContaCorrente
                 m_FDistRegra = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDtOriginal => Convert.ToDateTime(m_FDtOriginal);
 
     public string? FDtOriginal
     {
@@ -121,6 +125,7 @@ public partial class DBContaCorrente
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -132,6 +137,7 @@ public partial class DBContaCorrente
 
     public int FParcelaX
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FParcelaX;
         set
         {
@@ -143,6 +149,7 @@ public partial class DBContaCorrente
 
     public decimal FValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValor;
         set
         {
@@ -152,9 +159,6 @@ public partial class DBContaCorrente
             m_FValor = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -171,6 +175,7 @@ public partial class DBContaCorrente
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -182,6 +187,7 @@ public partial class DBContaCorrente
 
     public string? FHistorico
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHistorico ?? string.Empty;
         set
         {
@@ -193,6 +199,7 @@ public partial class DBContaCorrente
 
     public bool FContrato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContrato;
         set
         {
@@ -204,6 +211,7 @@ public partial class DBContaCorrente
 
     public bool FPago
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPago;
         set
         {
@@ -215,6 +223,7 @@ public partial class DBContaCorrente
 
     public bool FDistribuir
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDistribuir;
         set
         {
@@ -226,6 +235,7 @@ public partial class DBContaCorrente
 
     public bool FLC
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLC;
         set
         {
@@ -237,6 +247,7 @@ public partial class DBContaCorrente
 
     public int FIDHTrab
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDHTrab;
         set
         {
@@ -248,6 +259,7 @@ public partial class DBContaCorrente
 
     public int FNroParcelas
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroParcelas;
         set
         {
@@ -259,6 +271,7 @@ public partial class DBContaCorrente
 
     public decimal FValorPrincipal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorPrincipal;
         set
         {
@@ -271,6 +284,7 @@ public partial class DBContaCorrente
 
     public int FParcelaPrincipalID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FParcelaPrincipalID;
         set
         {
@@ -282,6 +296,7 @@ public partial class DBContaCorrente
 
     public bool FHide
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHide;
         set
         {
@@ -290,9 +305,6 @@ public partial class DBContaCorrente
                 m_FHide = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataPgto => Convert.ToDateTime(m_FDataPgto);
 
     public string? FDataPgto
     {
@@ -320,16 +332,19 @@ public partial class DBContaCorrente
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

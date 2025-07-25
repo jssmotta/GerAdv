@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBAgendaRecords
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFAgenda, pFldFJulgador, pFldFClientesSocios, pFldFPerito, pFldFColaborador, pFldFForo, pFldFAviso1, pFldFAviso2, pFldFAviso3, pFldFCrmAviso1, pFldFCrmAviso2, pFldFCrmAviso3, pFldFDataAviso1, pFldFDataAviso2, pFldFDataAviso3;
     [XmlIgnore]
@@ -13,6 +12,7 @@ public partial class DBAgendaRecords
     private protected bool m_FAviso1, m_FAviso2, m_FAviso3;
     public int FAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAgenda;
         set
         {
@@ -24,6 +24,7 @@ public partial class DBAgendaRecords
 
     public int FJulgador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FJulgador;
         set
         {
@@ -35,6 +36,7 @@ public partial class DBAgendaRecords
 
     public int FClientesSocios
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FClientesSocios;
         set
         {
@@ -46,6 +48,7 @@ public partial class DBAgendaRecords
 
     public int FPerito
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPerito;
         set
         {
@@ -57,6 +60,7 @@ public partial class DBAgendaRecords
 
     public int FColaborador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FColaborador;
         set
         {
@@ -68,6 +72,7 @@ public partial class DBAgendaRecords
 
     public int FForo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FForo;
         set
         {
@@ -79,6 +84,7 @@ public partial class DBAgendaRecords
 
     public bool FAviso1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAviso1;
         set
         {
@@ -90,6 +96,7 @@ public partial class DBAgendaRecords
 
     public bool FAviso2
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAviso2;
         set
         {
@@ -101,6 +108,7 @@ public partial class DBAgendaRecords
 
     public bool FAviso3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAviso3;
         set
         {
@@ -112,6 +120,7 @@ public partial class DBAgendaRecords
 
     public int FCrmAviso1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCrmAviso1;
         set
         {
@@ -123,6 +132,7 @@ public partial class DBAgendaRecords
 
     public int FCrmAviso2
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCrmAviso2;
         set
         {
@@ -134,6 +144,7 @@ public partial class DBAgendaRecords
 
     public int FCrmAviso3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCrmAviso3;
         set
         {
@@ -142,9 +153,6 @@ public partial class DBAgendaRecords
                 m_FCrmAviso3 = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataAviso1 => Convert.ToDateTime(m_FDataAviso1);
 
     public string? FDataAviso1
     {
@@ -159,9 +167,6 @@ public partial class DBAgendaRecords
         }
     }
 
-    [XmlIgnore]
-    public DateTime MDataAviso2 => Convert.ToDateTime(m_FDataAviso2);
-
     public string? FDataAviso2
     {
         get => $"{m_FDataAviso2:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataAviso2:dd/MM/yyyy}";
@@ -174,9 +179,6 @@ public partial class DBAgendaRecords
             m_FDataAviso2 = data;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataAviso3 => Convert.ToDateTime(m_FDataAviso3);
 
     public string? FDataAviso3
     {
@@ -204,16 +206,19 @@ public partial class DBAgendaRecords
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

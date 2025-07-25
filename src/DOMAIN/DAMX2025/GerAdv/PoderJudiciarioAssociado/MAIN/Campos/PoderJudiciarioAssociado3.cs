@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBPoderJudiciarioAssociado
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFJustica, pFldFJusticaNome, pFldFArea, pFldFAreaNome, pFldFTribunal, pFldFTribunalNome, pFldFForo, pFldFForoNome, pFldFCidade, pFldFSubDivisaoNome, pFldFCidadeNome, pFldFSubDivisao, pFldFTipo;
     [XmlIgnore]
@@ -11,6 +10,7 @@ public partial class DBPoderJudiciarioAssociado
     private protected string? m_FJusticaNome, m_FAreaNome, m_FTribunalNome, m_FForoNome, m_FSubDivisaoNome, m_FCidadeNome;
     public int FJustica
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FJustica;
         set
         {
@@ -20,19 +20,25 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FJusticaNome da tabela PoderJudiciarioAssociado deve ter no máximo 255 caracteres.")]
     public string? FJusticaNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FJusticaNome ?? string.Empty;
         set
         {
             pFldFJusticaNome = pFldFJusticaNome || !(m_FJusticaNome ?? string.Empty).Equals(value);
             if (pFldFJusticaNome)
-                m_FJusticaNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FJusticaNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FArea
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FArea;
         set
         {
@@ -42,19 +48,25 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FAreaNome da tabela PoderJudiciarioAssociado deve ter no máximo 255 caracteres.")]
     public string? FAreaNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAreaNome ?? string.Empty;
         set
         {
             pFldFAreaNome = pFldFAreaNome || !(m_FAreaNome ?? string.Empty).Equals(value);
             if (pFldFAreaNome)
-                m_FAreaNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAreaNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FTribunal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTribunal;
         set
         {
@@ -64,19 +76,25 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FTribunalNome da tabela PoderJudiciarioAssociado deve ter no máximo 255 caracteres.")]
     public string? FTribunalNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTribunalNome ?? string.Empty;
         set
         {
             pFldFTribunalNome = pFldFTribunalNome || !(m_FTribunalNome ?? string.Empty).Equals(value);
             if (pFldFTribunalNome)
-                m_FTribunalNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FTribunalNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FForo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FForo;
         set
         {
@@ -86,19 +104,25 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FForoNome da tabela PoderJudiciarioAssociado deve ter no máximo 255 caracteres.")]
     public string? FForoNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FForoNome ?? string.Empty;
         set
         {
             pFldFForoNome = pFldFForoNome || !(m_FForoNome ?? string.Empty).Equals(value);
             if (pFldFForoNome)
-                m_FForoNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FForoNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FCidade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCidade;
         set
         {
@@ -108,30 +132,41 @@ public partial class DBPoderJudiciarioAssociado
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FSubDivisaoNome da tabela PoderJudiciarioAssociado deve ter no máximo 255 caracteres.")]
     public string? FSubDivisaoNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSubDivisaoNome ?? string.Empty;
         set
         {
             pFldFSubDivisaoNome = pFldFSubDivisaoNome || !(m_FSubDivisaoNome ?? string.Empty).Equals(value);
             if (pFldFSubDivisaoNome)
-                m_FSubDivisaoNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSubDivisaoNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FCidadeNome da tabela PoderJudiciarioAssociado deve ter no máximo 255 caracteres.")]
     public string? FCidadeNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCidadeNome ?? string.Empty;
         set
         {
             pFldFCidadeNome = pFldFCidadeNome || !(m_FCidadeNome ?? string.Empty).Equals(value);
             if (pFldFCidadeNome)
-                m_FCidadeNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCidadeNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FSubDivisao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSubDivisao;
         set
         {
@@ -143,6 +178,7 @@ public partial class DBPoderJudiciarioAssociado
 
     public int FTipo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipo;
         set
         {
@@ -165,16 +201,19 @@ public partial class DBPoderJudiciarioAssociado
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

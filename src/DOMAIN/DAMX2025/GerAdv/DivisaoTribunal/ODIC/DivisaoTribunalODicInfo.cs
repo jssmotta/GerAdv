@@ -4,83 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBDivisaoTribunalODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBDivisaoTribunalDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBDivisaoTribunalDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBDivisaoTribunalDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBDivisaoTribunalDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBDivisaoTribunalDicInfo.NumCodigo => DBDivisaoTribunalDicInfo.DivNumCodigo,
-        DBDivisaoTribunalDicInfo.Justica => DBDivisaoTribunalDicInfo.DivJustica,
-        DBDivisaoTribunalDicInfo.NomeEspecial => DBDivisaoTribunalDicInfo.DivNomeEspecial,
-        DBDivisaoTribunalDicInfo.Area => DBDivisaoTribunalDicInfo.DivArea,
-        DBDivisaoTribunalDicInfo.Cidade => DBDivisaoTribunalDicInfo.DivCidade,
-        DBDivisaoTribunalDicInfo.Foro => DBDivisaoTribunalDicInfo.DivForo,
-        DBDivisaoTribunalDicInfo.Tribunal => DBDivisaoTribunalDicInfo.DivTribunal,
-        DBDivisaoTribunalDicInfo.CodigoDiv => DBDivisaoTribunalDicInfo.DivCodigoDiv,
-        DBDivisaoTribunalDicInfo.Endereco => DBDivisaoTribunalDicInfo.DivEndereco,
-        DBDivisaoTribunalDicInfo.Fone => DBDivisaoTribunalDicInfo.DivFone,
-        DBDivisaoTribunalDicInfo.Fax => DBDivisaoTribunalDicInfo.DivFax,
-        DBDivisaoTribunalDicInfo.CEP => DBDivisaoTribunalDicInfo.DivCEP,
-        DBDivisaoTribunalDicInfo.Obs => DBDivisaoTribunalDicInfo.DivObs,
-        DBDivisaoTribunalDicInfo.EMail => DBDivisaoTribunalDicInfo.DivEMail,
-        DBDivisaoTribunalDicInfo.Andar => DBDivisaoTribunalDicInfo.DivAndar,
-        DBDivisaoTribunalDicInfo.Etiqueta => DBDivisaoTribunalDicInfo.DivEtiqueta,
-        DBDivisaoTribunalDicInfo.Bold => DBDivisaoTribunalDicInfo.DivBold,
-        DBDivisaoTribunalDicInfo.GUID => DBDivisaoTribunalDicInfo.DivGUID,
-        DBDivisaoTribunalDicInfo.QuemCad => DBDivisaoTribunalDicInfo.DivQuemCad,
-        DBDivisaoTribunalDicInfo.DtCad => DBDivisaoTribunalDicInfo.DivDtCad,
-        DBDivisaoTribunalDicInfo.QuemAtu => DBDivisaoTribunalDicInfo.DivQuemAtu,
-        DBDivisaoTribunalDicInfo.DtAtu => DBDivisaoTribunalDicInfo.DivDtAtu,
-        DBDivisaoTribunalDicInfo.Visto => DBDivisaoTribunalDicInfo.DivVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBDivisaoTribunalDicInfo.CampoCodigo;
     public static string TCampoNome => DBDivisaoTribunalDicInfo.CampoNome;
     public static string TTabelaNome => DBDivisaoTribunalDicInfo.TabelaNome;
     public static string TTablePrefix => DBDivisaoTribunalDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold, DBDivisaoTribunalDicInfo.DivGUID, DBDivisaoTribunalDicInfo.DivQuemCad, DBDivisaoTribunalDicInfo.DivDtCad, DBDivisaoTribunalDicInfo.DivQuemAtu, DBDivisaoTribunalDicInfo.DivDtAtu, DBDivisaoTribunalDicInfo.DivVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivEtiqueta, DBDivisaoTribunalDicInfo.DivBold, DBDivisaoTribunalDicInfo.DivGUID, DBDivisaoTribunalDicInfo.DivQuemCad, DBDivisaoTribunalDicInfo.DivDtCad, DBDivisaoTribunalDicInfo.DivQuemAtu, DBDivisaoTribunalDicInfo.DivDtAtu, DBDivisaoTribunalDicInfo.DivVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBDivisaoTribunalDicInfo.DivNumCodigo, DBDivisaoTribunalDicInfo.DivJustica, DBDivisaoTribunalDicInfo.DivNomeEspecial, DBDivisaoTribunalDicInfo.DivArea, DBDivisaoTribunalDicInfo.DivCidade, DBDivisaoTribunalDicInfo.DivForo, DBDivisaoTribunalDicInfo.DivTribunal, DBDivisaoTribunalDicInfo.DivCodigoDiv, DBDivisaoTribunalDicInfo.DivEndereco, DBDivisaoTribunalDicInfo.DivFone, DBDivisaoTribunalDicInfo.DivFax, DBDivisaoTribunalDicInfo.DivCEP, DBDivisaoTribunalDicInfo.DivObs, DBDivisaoTribunalDicInfo.DivEMail, DBDivisaoTribunalDicInfo.DivAndar, DBDivisaoTribunalDicInfo.DivGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "divCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["divCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBDivisaoTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "divArea",
-            "divCidade",
-            "divCodigo",
-            "divForo",
-            "divJustica",
-            "divNumCodigo",
-            "divTribunal"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["divArea", "divCidade", "divCodigo", "divForo", "divJustica", "divNumCodigo", "divTribunal"]);
         var result = campos.Where(campo => !campo.Equals(DBDivisaoTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

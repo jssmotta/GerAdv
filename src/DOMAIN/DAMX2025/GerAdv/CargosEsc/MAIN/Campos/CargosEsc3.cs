@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBCargosEsc
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFPercentual, pFldFNome, pFldFClassificacao;
     [XmlIgnore]
@@ -13,6 +12,7 @@ public partial class DBCargosEsc
     private protected decimal m_FPercentual;
     public decimal FPercentual
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercentual;
         set
         {
@@ -23,19 +23,25 @@ public partial class DBCargosEsc
         }
     }
 
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela CargosEsc deve ter no máximo 80 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 80 ? value.trim().substring(0, 80) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+            }
         }
     }
 
     public int FClassificacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FClassificacao;
         set
         {
@@ -58,16 +64,19 @@ public partial class DBCargosEsc
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBUF
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFDDD, pFldFID, pFldFPais, pFldFTop, pFldFDescricao;
     [XmlIgnore]
@@ -11,30 +10,41 @@ public partial class DBUF
     private protected string? m_FDDD, m_FID, m_FDescricao;
     [XmlIgnore]
     private protected bool m_FTop;
+    [StringLength(10, ErrorMessage = "A propriedade FDDD da tabela UF deve ter no máximo 10 caracteres.")]
     public string? FDDD
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDDD ?? string.Empty;
         set
         {
             pFldFDDD = pFldFDDD || !(m_FDDD ?? string.Empty).Equals(value);
             if (pFldFDDD)
-                m_FDDD = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDDD = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(4, ErrorMessage = "A propriedade FID da tabela UF deve ter no máximo 4 caracteres.")]
     public string? FID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FID ?? string.Empty;
         set
         {
             pFldFID = pFldFID || !(m_FID ?? string.Empty).Equals(value);
             if (pFldFID)
-                m_FID = value.trim().Length > 4 ? value.trim().substring(0, 4) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FID = trimmed.Length > 4 ? trimmed.AsSpan(0, 4).ToString() : trimmed;
+            }
         }
     }
 
     public int FPais
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPais;
         set
         {
@@ -46,6 +56,7 @@ public partial class DBUF
 
     public bool FTop
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTop;
         set
         {
@@ -55,14 +66,19 @@ public partial class DBUF
         }
     }
 
+    [StringLength(40, ErrorMessage = "A propriedade FDescricao da tabela UF deve ter no máximo 40 caracteres.")]
     public string? FDescricao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDescricao ?? string.Empty;
         set
         {
             pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
             if (pFldFDescricao)
-                m_FDescricao = value.trim().Length > 40 ? value.trim().substring(0, 40) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDescricao = trimmed.Length > 40 ? trimmed.AsSpan(0, 40).ToString() : trimmed;
+            }
         }
     }
 
@@ -79,16 +95,19 @@ public partial class DBUF
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

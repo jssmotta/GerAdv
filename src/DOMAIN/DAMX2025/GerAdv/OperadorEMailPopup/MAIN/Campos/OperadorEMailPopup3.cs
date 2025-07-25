@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBOperadorEMailPopup
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFOperador, pFldFNome, pFldFSenha, pFldFSMTP, pFldFPOP3, pFldFAutenticacao, pFldFDescricao, pFldFUsuario, pFldFPortaSmtp, pFldFPortaPop3, pFldFAssinatura, pFldFSenha256;
     [XmlIgnore]
@@ -13,6 +12,7 @@ public partial class DBOperadorEMailPopup
     private protected bool m_FAutenticacao;
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -22,52 +22,73 @@ public partial class DBOperadorEMailPopup
         }
     }
 
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela OperadorEMailPopup deve ter no máximo 80 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 80 ? value.trim().substring(0, 80) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FSenha da tabela OperadorEMailPopup deve ter no máximo 50 caracteres.")]
     public string? FSenha
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSenha ?? string.Empty;
         set
         {
             pFldFSenha = pFldFSenha || !(m_FSenha ?? string.Empty).Equals(value);
             if (pFldFSenha)
-                m_FSenha = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSenha = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FSMTP da tabela OperadorEMailPopup deve ter no máximo 255 caracteres.")]
     public string? FSMTP
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSMTP ?? string.Empty;
         set
         {
             pFldFSMTP = pFldFSMTP || !(m_FSMTP ?? string.Empty).Equals(value);
             if (pFldFSMTP)
-                m_FSMTP = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSMTP = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FPOP3 da tabela OperadorEMailPopup deve ter no máximo 255 caracteres.")]
     public string? FPOP3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPOP3 ?? string.Empty;
         set
         {
             pFldFPOP3 = pFldFPOP3 || !(m_FPOP3 ?? string.Empty).Equals(value);
             if (pFldFPOP3)
-                m_FPOP3 = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPOP3 = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public bool FAutenticacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAutenticacao;
         set
         {
@@ -77,30 +98,41 @@ public partial class DBOperadorEMailPopup
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FDescricao da tabela OperadorEMailPopup deve ter no máximo 100 caracteres.")]
     public string? FDescricao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDescricao ?? string.Empty;
         set
         {
             pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
             if (pFldFDescricao)
-                m_FDescricao = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDescricao = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FUsuario da tabela OperadorEMailPopup deve ter no máximo 50 caracteres.")]
     public string? FUsuario
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FUsuario ?? string.Empty;
         set
         {
             pFldFUsuario = pFldFUsuario || !(m_FUsuario ?? string.Empty).Equals(value);
             if (pFldFUsuario)
-                m_FUsuario = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FUsuario = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
     public int FPortaSmtp
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPortaSmtp;
         set
         {
@@ -112,6 +144,7 @@ public partial class DBOperadorEMailPopup
 
     public int FPortaPop3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPortaPop3;
         set
         {
@@ -123,6 +156,7 @@ public partial class DBOperadorEMailPopup
 
     public string? FAssinatura
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAssinatura ?? string.Empty;
         set
         {
@@ -132,14 +166,19 @@ public partial class DBOperadorEMailPopup
         }
     }
 
+    [StringLength(4000, ErrorMessage = "A propriedade FSenha256 da tabela OperadorEMailPopup deve ter no máximo 4000 caracteres.")]
     public string? FSenha256
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSenha256 ?? string.Empty;
         set
         {
             pFldFSenha256 = pFldFSenha256 || !(m_FSenha256 ?? string.Empty).Equals(value);
             if (pFldFSenha256)
-                m_FSenha256 = value.trim().Length > 4000 ? value.trim().substring(0, 4000) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSenha256 = trimmed.Length > 4000 ? trimmed.AsSpan(0, 4000).ToString() : trimmed;
+            }
         }
     }
 
@@ -156,16 +195,19 @@ public partial class DBOperadorEMailPopup
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

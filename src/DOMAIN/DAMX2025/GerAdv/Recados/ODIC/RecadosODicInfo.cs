@@ -4,95 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBRecadosODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBRecadosDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBRecadosDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBRecadosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBRecadosDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBRecadosDicInfo.ClienteNome => DBRecadosDicInfo.RecClienteNome,
-        DBRecadosDicInfo.De => DBRecadosDicInfo.RecDe,
-        DBRecadosDicInfo.Para => DBRecadosDicInfo.RecPara,
-        DBRecadosDicInfo.Assunto => DBRecadosDicInfo.RecAssunto,
-        DBRecadosDicInfo.Concluido => DBRecadosDicInfo.RecConcluido,
-        DBRecadosDicInfo.Processo => DBRecadosDicInfo.RecProcesso,
-        DBRecadosDicInfo.Cliente => DBRecadosDicInfo.RecCliente,
-        DBRecadosDicInfo.Recado => DBRecadosDicInfo.RecRecado,
-        DBRecadosDicInfo.Urgente => DBRecadosDicInfo.RecUrgente,
-        DBRecadosDicInfo.Importante => DBRecadosDicInfo.RecImportante,
-        DBRecadosDicInfo.Hora => DBRecadosDicInfo.RecHora,
-        DBRecadosDicInfo.Data => DBRecadosDicInfo.RecData,
-        DBRecadosDicInfo.Voltara => DBRecadosDicInfo.RecVoltara,
-        DBRecadosDicInfo.Pessoal => DBRecadosDicInfo.RecPessoal,
-        DBRecadosDicInfo.Retornar => DBRecadosDicInfo.RecRetornar,
-        DBRecadosDicInfo.RetornoData => DBRecadosDicInfo.RecRetornoData,
-        DBRecadosDicInfo.Emotion => DBRecadosDicInfo.RecEmotion,
-        DBRecadosDicInfo.InternetID => DBRecadosDicInfo.RecInternetID,
-        DBRecadosDicInfo.Uploaded => DBRecadosDicInfo.RecUploaded,
-        DBRecadosDicInfo.Natureza => DBRecadosDicInfo.RecNatureza,
-        DBRecadosDicInfo.BIU => DBRecadosDicInfo.RecBIU,
-        DBRecadosDicInfo.AguardarRetorno => DBRecadosDicInfo.RecAguardarRetorno,
-        DBRecadosDicInfo.AguardarRetornoPara => DBRecadosDicInfo.RecAguardarRetornoPara,
-        DBRecadosDicInfo.AguardarRetornoOK => DBRecadosDicInfo.RecAguardarRetornoOK,
-        DBRecadosDicInfo.ParaID => DBRecadosDicInfo.RecParaID,
-        DBRecadosDicInfo.NaoPublicavel => DBRecadosDicInfo.RecNaoPublicavel,
-        DBRecadosDicInfo.IsContatoCRM => DBRecadosDicInfo.RecIsContatoCRM,
-        DBRecadosDicInfo.MasterID => DBRecadosDicInfo.RecMasterID,
-        DBRecadosDicInfo.ListaPara => DBRecadosDicInfo.RecListaPara,
-        DBRecadosDicInfo.Typed => DBRecadosDicInfo.RecTyped,
-        DBRecadosDicInfo.AssuntoRecado => DBRecadosDicInfo.RecAssuntoRecado,
-        DBRecadosDicInfo.Historico => DBRecadosDicInfo.RecHistorico,
-        DBRecadosDicInfo.ContatoCRM => DBRecadosDicInfo.RecContatoCRM,
-        DBRecadosDicInfo.Ligacoes => DBRecadosDicInfo.RecLigacoes,
-        DBRecadosDicInfo.Agenda => DBRecadosDicInfo.RecAgenda,
-        DBRecadosDicInfo.GUID => DBRecadosDicInfo.RecGUID,
-        DBRecadosDicInfo.QuemCad => DBRecadosDicInfo.RecQuemCad,
-        DBRecadosDicInfo.DtCad => DBRecadosDicInfo.RecDtCad,
-        DBRecadosDicInfo.QuemAtu => DBRecadosDicInfo.RecQuemAtu,
-        DBRecadosDicInfo.DtAtu => DBRecadosDicInfo.RecDtAtu,
-        DBRecadosDicInfo.Visto => DBRecadosDicInfo.RecVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBRecadosDicInfo.CampoCodigo;
     public static string TCampoNome => DBRecadosDicInfo.CampoNome;
     public static string TTabelaNome => DBRecadosDicInfo.TabelaNome;
     public static string TTablePrefix => DBRecadosDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBRecadosDicInfo.RecClienteNome, DBRecadosDicInfo.RecDe, DBRecadosDicInfo.RecPara, DBRecadosDicInfo.RecAssunto, DBRecadosDicInfo.RecConcluido, DBRecadosDicInfo.RecProcesso, DBRecadosDicInfo.RecCliente, DBRecadosDicInfo.RecRecado, DBRecadosDicInfo.RecUrgente, DBRecadosDicInfo.RecImportante, DBRecadosDicInfo.RecHora, DBRecadosDicInfo.RecData, DBRecadosDicInfo.RecVoltara, DBRecadosDicInfo.RecPessoal, DBRecadosDicInfo.RecRetornar, DBRecadosDicInfo.RecRetornoData, DBRecadosDicInfo.RecEmotion, DBRecadosDicInfo.RecInternetID, DBRecadosDicInfo.RecUploaded, DBRecadosDicInfo.RecNatureza, DBRecadosDicInfo.RecBIU, DBRecadosDicInfo.RecAguardarRetorno, DBRecadosDicInfo.RecAguardarRetornoPara, DBRecadosDicInfo.RecAguardarRetornoOK, DBRecadosDicInfo.RecParaID, DBRecadosDicInfo.RecNaoPublicavel, DBRecadosDicInfo.RecIsContatoCRM, DBRecadosDicInfo.RecMasterID, DBRecadosDicInfo.RecListaPara, DBRecadosDicInfo.RecTyped, DBRecadosDicInfo.RecAssuntoRecado, DBRecadosDicInfo.RecHistorico, DBRecadosDicInfo.RecContatoCRM, DBRecadosDicInfo.RecLigacoes, DBRecadosDicInfo.RecAgenda, DBRecadosDicInfo.RecGUID, DBRecadosDicInfo.RecQuemCad, DBRecadosDicInfo.RecDtCad, DBRecadosDicInfo.RecQuemAtu, DBRecadosDicInfo.RecDtAtu, DBRecadosDicInfo.RecVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBRecadosDicInfo.RecClienteNome, DBRecadosDicInfo.RecDe, DBRecadosDicInfo.RecPara, DBRecadosDicInfo.RecAssunto, DBRecadosDicInfo.RecConcluido, DBRecadosDicInfo.RecProcesso, DBRecadosDicInfo.RecCliente, DBRecadosDicInfo.RecRecado, DBRecadosDicInfo.RecUrgente, DBRecadosDicInfo.RecImportante, DBRecadosDicInfo.RecHora, DBRecadosDicInfo.RecData, DBRecadosDicInfo.RecVoltara, DBRecadosDicInfo.RecPessoal, DBRecadosDicInfo.RecRetornar, DBRecadosDicInfo.RecRetornoData, DBRecadosDicInfo.RecEmotion, DBRecadosDicInfo.RecInternetID, DBRecadosDicInfo.RecUploaded, DBRecadosDicInfo.RecNatureza, DBRecadosDicInfo.RecBIU, DBRecadosDicInfo.RecAguardarRetorno, DBRecadosDicInfo.RecAguardarRetornoPara, DBRecadosDicInfo.RecAguardarRetornoOK, DBRecadosDicInfo.RecParaID, DBRecadosDicInfo.RecNaoPublicavel, DBRecadosDicInfo.RecIsContatoCRM, DBRecadosDicInfo.RecMasterID, DBRecadosDicInfo.RecListaPara, DBRecadosDicInfo.RecTyped, DBRecadosDicInfo.RecAssuntoRecado, DBRecadosDicInfo.RecHistorico, DBRecadosDicInfo.RecContatoCRM, DBRecadosDicInfo.RecLigacoes, DBRecadosDicInfo.RecAgenda, DBRecadosDicInfo.RecGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBRecadosDicInfo.RecClienteNome, DBRecadosDicInfo.RecDe, DBRecadosDicInfo.RecPara, DBRecadosDicInfo.RecAssunto, DBRecadosDicInfo.RecConcluido, DBRecadosDicInfo.RecProcesso, DBRecadosDicInfo.RecCliente, DBRecadosDicInfo.RecRecado, DBRecadosDicInfo.RecUrgente, DBRecadosDicInfo.RecImportante, DBRecadosDicInfo.RecHora, DBRecadosDicInfo.RecData, DBRecadosDicInfo.RecVoltara, DBRecadosDicInfo.RecPessoal, DBRecadosDicInfo.RecRetornar, DBRecadosDicInfo.RecRetornoData, DBRecadosDicInfo.RecEmotion, DBRecadosDicInfo.RecInternetID, DBRecadosDicInfo.RecUploaded, DBRecadosDicInfo.RecNatureza, DBRecadosDicInfo.RecBIU, DBRecadosDicInfo.RecAguardarRetorno, DBRecadosDicInfo.RecAguardarRetornoPara, DBRecadosDicInfo.RecAguardarRetornoOK, DBRecadosDicInfo.RecParaID, DBRecadosDicInfo.RecNaoPublicavel, DBRecadosDicInfo.RecIsContatoCRM, DBRecadosDicInfo.RecMasterID, DBRecadosDicInfo.RecListaPara, DBRecadosDicInfo.RecTyped, DBRecadosDicInfo.RecAssuntoRecado, DBRecadosDicInfo.RecHistorico, DBRecadosDicInfo.RecContatoCRM, DBRecadosDicInfo.RecLigacoes, DBRecadosDicInfo.RecAgenda, DBRecadosDicInfo.RecGUID, DBRecadosDicInfo.RecQuemCad, DBRecadosDicInfo.RecDtCad, DBRecadosDicInfo.RecQuemAtu, DBRecadosDicInfo.RecDtAtu, DBRecadosDicInfo.RecVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBRecadosDicInfo.RecClienteNome, DBRecadosDicInfo.RecDe, DBRecadosDicInfo.RecPara, DBRecadosDicInfo.RecAssunto, DBRecadosDicInfo.RecConcluido, DBRecadosDicInfo.RecProcesso, DBRecadosDicInfo.RecCliente, DBRecadosDicInfo.RecRecado, DBRecadosDicInfo.RecUrgente, DBRecadosDicInfo.RecImportante, DBRecadosDicInfo.RecHora, DBRecadosDicInfo.RecData, DBRecadosDicInfo.RecVoltara, DBRecadosDicInfo.RecPessoal, DBRecadosDicInfo.RecRetornar, DBRecadosDicInfo.RecRetornoData, DBRecadosDicInfo.RecEmotion, DBRecadosDicInfo.RecInternetID, DBRecadosDicInfo.RecUploaded, DBRecadosDicInfo.RecNatureza, DBRecadosDicInfo.RecBIU, DBRecadosDicInfo.RecAguardarRetorno, DBRecadosDicInfo.RecAguardarRetornoPara, DBRecadosDicInfo.RecAguardarRetornoOK, DBRecadosDicInfo.RecParaID, DBRecadosDicInfo.RecNaoPublicavel, DBRecadosDicInfo.RecIsContatoCRM, DBRecadosDicInfo.RecMasterID, DBRecadosDicInfo.RecListaPara, DBRecadosDicInfo.RecTyped, DBRecadosDicInfo.RecAssuntoRecado, DBRecadosDicInfo.RecHistorico, DBRecadosDicInfo.RecContatoCRM, DBRecadosDicInfo.RecLigacoes, DBRecadosDicInfo.RecAgenda, DBRecadosDicInfo.RecGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "recCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["recCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBRecadosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "recCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["recCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBRecadosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

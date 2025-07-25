@@ -4,71 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBProcessOutputEngineODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBProcessOutputEngineDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProcessOutputEngineDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProcessOutputEngineDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBProcessOutputEngineDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBProcessOutputEngineDicInfo.Nome => DBProcessOutputEngineDicInfo.PoeNome,
-        DBProcessOutputEngineDicInfo.Database => DBProcessOutputEngineDicInfo.PoeDatabase,
-        DBProcessOutputEngineDicInfo.Tabela => DBProcessOutputEngineDicInfo.PoeTabela,
-        DBProcessOutputEngineDicInfo.Campo => DBProcessOutputEngineDicInfo.PoeCampo,
-        DBProcessOutputEngineDicInfo.Valor => DBProcessOutputEngineDicInfo.PoeValor,
-        DBProcessOutputEngineDicInfo.Output => DBProcessOutputEngineDicInfo.PoeOutput,
-        DBProcessOutputEngineDicInfo.Administrador => DBProcessOutputEngineDicInfo.PoeAdministrador,
-        DBProcessOutputEngineDicInfo.OutputSource => DBProcessOutputEngineDicInfo.PoeOutputSource,
-        DBProcessOutputEngineDicInfo.DisabledItem => DBProcessOutputEngineDicInfo.PoeDisabledItem,
-        DBProcessOutputEngineDicInfo.IDModulo => DBProcessOutputEngineDicInfo.PoeIDModulo,
-        DBProcessOutputEngineDicInfo.IsOnlyProcesso => DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso,
-        DBProcessOutputEngineDicInfo.MyID => DBProcessOutputEngineDicInfo.PoeMyID,
-        DBProcessOutputEngineDicInfo.GUID => DBProcessOutputEngineDicInfo.PoeGUID,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBProcessOutputEngineDicInfo.CampoCodigo;
     public static string TCampoNome => DBProcessOutputEngineDicInfo.CampoNome;
     public static string TTabelaNome => DBProcessOutputEngineDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessOutputEngineDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID, DBProcessOutputEngineDicInfo.PoeGUID];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID, DBProcessOutputEngineDicInfo.PoeGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID, DBProcessOutputEngineDicInfo.PoeGUID];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID, DBProcessOutputEngineDicInfo.PoeGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "poeCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["poeCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessOutputEngineDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "poeCampo",
-            "poeCodigo",
-            "poeDatabase",
-            "poeTabela",
-            "poeValor"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["poeCampo", "poeCodigo", "poeDatabase", "poeTabela", "poeValor"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessOutputEngineDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

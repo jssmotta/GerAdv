@@ -43,28 +43,6 @@ public static partial class DBAlertasEnviadosDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string DataAlertadoSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataAlertado}]");
-    public static string DataAlertadoSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataAlertado}]");
-    public static string DataAlertadoIsNull => DataAlertado.SqlCmdIsNull() ?? string.Empty;
-    public static string DataAlertadoNotIsNull => DataAlertado.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string VisualizadoSql(bool valueCheck) => Visualizado.SqlCmdBoolCheck(valueCheck) ?? string.Empty;
-    public static string VisualizadoSqlSim => Visualizado.SqlCmdBoolSim() ?? string.Empty;
-    public static string VisualizadoSqlNao => Visualizado.SqlCmdBoolNao() ?? string.Empty;
-
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBFornecedores : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_Fornecedores
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBFornecedores(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBFornecedores(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_Fornecedores
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'forNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -98,7 +98,7 @@ public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFGrupo)
             clsW.Fields(DBFornecedoresDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumberNull);
         if (pFldFNome)
-            clsW.Fields(DBFornecedoresDicInfo.Nome, sex.m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBFornecedoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFSubGrupo)
             clsW.Fields(DBFornecedoresDicInfo.SubGrupo, m_FSubGrupo, ETiposCampos.FNumberNull);
         if (pFldFTipo || ID.IsEmptyIDNumber())
@@ -110,15 +110,15 @@ public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFInscEst)
             clsW.Fields(DBFornecedoresDicInfo.InscEst, m_FInscEst, ETiposCampos.FString);
         if (pFldFCPF)
-            clsW.Fields(DBFornecedoresDicInfo.CPF, sex.m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBFornecedoresDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             clsW.Fields(DBFornecedoresDicInfo.RG, m_FRG, ETiposCampos.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBFornecedoresDicInfo.Endereco, sex.m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBFornecedoresDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
-            clsW.Fields(DBFornecedoresDicInfo.Bairro, sex.m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBFornecedoresDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
         if (pFldFCEP)
-            clsW.Fields(DBFornecedoresDicInfo.CEP, sex.m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBFornecedoresDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFCidade)
             clsW.Fields(DBFornecedoresDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
         if (pFldFFone)
@@ -180,7 +180,7 @@ public partial class DBFornecedores : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

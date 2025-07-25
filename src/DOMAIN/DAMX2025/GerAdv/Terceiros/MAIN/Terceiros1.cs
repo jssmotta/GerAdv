@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBTerceiros : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBTerceiros : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_Terceiros
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBTerceiros : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBTerceiros(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBTerceiros(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBTerceiros : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_Terceiros
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBTerceiros : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'terNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -160,7 +160,7 @@ public partial class DBTerceiros : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

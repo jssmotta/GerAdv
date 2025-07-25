@@ -4,74 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBProValoresODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBProValoresDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProValoresDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProValoresDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBProValoresDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBProValoresDicInfo.Processo => DBProValoresDicInfo.PrvProcesso,
-        DBProValoresDicInfo.TipoValorProcesso => DBProValoresDicInfo.PrvTipoValorProcesso,
-        DBProValoresDicInfo.Indice => DBProValoresDicInfo.PrvIndice,
-        DBProValoresDicInfo.Ignorar => DBProValoresDicInfo.PrvIgnorar,
-        DBProValoresDicInfo.Data => DBProValoresDicInfo.PrvData,
-        DBProValoresDicInfo.ValorOriginal => DBProValoresDicInfo.PrvValorOriginal,
-        DBProValoresDicInfo.PercMulta => DBProValoresDicInfo.PrvPercMulta,
-        DBProValoresDicInfo.ValorMulta => DBProValoresDicInfo.PrvValorMulta,
-        DBProValoresDicInfo.PercJuros => DBProValoresDicInfo.PrvPercJuros,
-        DBProValoresDicInfo.ValorOriginalCorrigidoIndice => DBProValoresDicInfo.PrvValorOriginalCorrigidoIndice,
-        DBProValoresDicInfo.ValorMultaCorrigido => DBProValoresDicInfo.PrvValorMultaCorrigido,
-        DBProValoresDicInfo.ValorJurosCorrigido => DBProValoresDicInfo.PrvValorJurosCorrigido,
-        DBProValoresDicInfo.ValorFinal => DBProValoresDicInfo.PrvValorFinal,
-        DBProValoresDicInfo.DataUltimaCorrecao => DBProValoresDicInfo.PrvDataUltimaCorrecao,
-        DBProValoresDicInfo.GUID => DBProValoresDicInfo.PrvGUID,
-        DBProValoresDicInfo.QuemCad => DBProValoresDicInfo.PrvQuemCad,
-        DBProValoresDicInfo.DtCad => DBProValoresDicInfo.PrvDtCad,
-        DBProValoresDicInfo.QuemAtu => DBProValoresDicInfo.PrvQuemAtu,
-        DBProValoresDicInfo.DtAtu => DBProValoresDicInfo.PrvDtAtu,
-        DBProValoresDicInfo.Visto => DBProValoresDicInfo.PrvVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBProValoresDicInfo.CampoCodigo;
     public static string TCampoNome => DBProValoresDicInfo.CampoNome;
     public static string TTabelaNome => DBProValoresDicInfo.TabelaNome;
     public static string TTablePrefix => DBProValoresDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBProValoresDicInfo.PrvProcesso, DBProValoresDicInfo.PrvTipoValorProcesso, DBProValoresDicInfo.PrvIndice, DBProValoresDicInfo.PrvIgnorar, DBProValoresDicInfo.PrvData, DBProValoresDicInfo.PrvValorOriginal, DBProValoresDicInfo.PrvPercMulta, DBProValoresDicInfo.PrvValorMulta, DBProValoresDicInfo.PrvPercJuros, DBProValoresDicInfo.PrvValorOriginalCorrigidoIndice, DBProValoresDicInfo.PrvValorMultaCorrigido, DBProValoresDicInfo.PrvValorJurosCorrigido, DBProValoresDicInfo.PrvValorFinal, DBProValoresDicInfo.PrvDataUltimaCorrecao, DBProValoresDicInfo.PrvGUID, DBProValoresDicInfo.PrvQuemCad, DBProValoresDicInfo.PrvDtCad, DBProValoresDicInfo.PrvQuemAtu, DBProValoresDicInfo.PrvDtAtu, DBProValoresDicInfo.PrvVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProValoresDicInfo.PrvProcesso, DBProValoresDicInfo.PrvTipoValorProcesso, DBProValoresDicInfo.PrvIndice, DBProValoresDicInfo.PrvIgnorar, DBProValoresDicInfo.PrvData, DBProValoresDicInfo.PrvValorOriginal, DBProValoresDicInfo.PrvPercMulta, DBProValoresDicInfo.PrvValorMulta, DBProValoresDicInfo.PrvPercJuros, DBProValoresDicInfo.PrvValorOriginalCorrigidoIndice, DBProValoresDicInfo.PrvValorMultaCorrigido, DBProValoresDicInfo.PrvValorJurosCorrigido, DBProValoresDicInfo.PrvValorFinal, DBProValoresDicInfo.PrvDataUltimaCorrecao, DBProValoresDicInfo.PrvGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBProValoresDicInfo.PrvProcesso, DBProValoresDicInfo.PrvTipoValorProcesso, DBProValoresDicInfo.PrvIndice, DBProValoresDicInfo.PrvIgnorar, DBProValoresDicInfo.PrvData, DBProValoresDicInfo.PrvValorOriginal, DBProValoresDicInfo.PrvPercMulta, DBProValoresDicInfo.PrvValorMulta, DBProValoresDicInfo.PrvPercJuros, DBProValoresDicInfo.PrvValorOriginalCorrigidoIndice, DBProValoresDicInfo.PrvValorMultaCorrigido, DBProValoresDicInfo.PrvValorJurosCorrigido, DBProValoresDicInfo.PrvValorFinal, DBProValoresDicInfo.PrvDataUltimaCorrecao, DBProValoresDicInfo.PrvGUID, DBProValoresDicInfo.PrvQuemCad, DBProValoresDicInfo.PrvDtCad, DBProValoresDicInfo.PrvQuemAtu, DBProValoresDicInfo.PrvDtAtu, DBProValoresDicInfo.PrvVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProValoresDicInfo.PrvProcesso, DBProValoresDicInfo.PrvTipoValorProcesso, DBProValoresDicInfo.PrvIndice, DBProValoresDicInfo.PrvIgnorar, DBProValoresDicInfo.PrvData, DBProValoresDicInfo.PrvValorOriginal, DBProValoresDicInfo.PrvPercMulta, DBProValoresDicInfo.PrvValorMulta, DBProValoresDicInfo.PrvPercJuros, DBProValoresDicInfo.PrvValorOriginalCorrigidoIndice, DBProValoresDicInfo.PrvValorMultaCorrigido, DBProValoresDicInfo.PrvValorJurosCorrigido, DBProValoresDicInfo.PrvValorFinal, DBProValoresDicInfo.PrvDataUltimaCorrecao, DBProValoresDicInfo.PrvGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "prvCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["prvCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBProValoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "prvCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["prvCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBProValoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

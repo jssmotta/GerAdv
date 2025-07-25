@@ -2,37 +2,47 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBSituacao
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFParte_Int, pFldFParte_Opo, pFldFTop, pFldFBold;
     [XmlIgnore]
     private protected string? m_FParte_Int, m_FParte_Opo;
     [XmlIgnore]
     private protected bool m_FTop, m_FBold;
+    [StringLength(30, ErrorMessage = "A propriedade FParte_Int da tabela Situacao deve ter no máximo 30 caracteres.")]
     public string? FParte_Int
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FParte_Int ?? string.Empty;
         set
         {
             pFldFParte_Int = pFldFParte_Int || !(m_FParte_Int ?? string.Empty).Equals(value);
             if (pFldFParte_Int)
-                m_FParte_Int = value.trim().Length > 30 ? value.trim().substring(0, 30) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FParte_Int = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(30, ErrorMessage = "A propriedade FParte_Opo da tabela Situacao deve ter no máximo 30 caracteres.")]
     public string? FParte_Opo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FParte_Opo ?? string.Empty;
         set
         {
             pFldFParte_Opo = pFldFParte_Opo || !(m_FParte_Opo ?? string.Empty).Equals(value);
             if (pFldFParte_Opo)
-                m_FParte_Opo = value.trim().Length > 30 ? value.trim().substring(0, 30) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FParte_Opo = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+            }
         }
     }
 
     public bool FTop
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTop;
         set
         {
@@ -44,6 +54,7 @@ public partial class DBSituacao
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -66,16 +77,19 @@ public partial class DBSituacao
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

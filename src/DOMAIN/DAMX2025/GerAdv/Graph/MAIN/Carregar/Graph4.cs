@@ -6,454 +6,134 @@ public partial class DBGraph
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem]))
-                m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId]))
-                m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBGraph(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem]))
-                m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId]))
-                m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do Graph: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_Graph
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [gphCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBGraphDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBGraphDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.Imagem)))
+                m_FImagem = getValue(DBGraphDicInfo.Imagem) as byte[] ?? [0];
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBGraphDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBGraphDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.TabelaId)))
+                m_FTabelaId = Convert.ToInt32(getValue(DBGraphDicInfo.TabelaId));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBGraphDicInfo.Visto));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FGUID = getValue(DBGraphDicInfo.GUID)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FTabela = getValue(DBGraphDicInfo.Tabela)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty; m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;  } catch {}  try { m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty; m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId]))
-            m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 1000
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem]))
-            m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do Graph: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_Graph
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty; m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;  } catch {}  try { m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty; m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FTabela = dbRec[DBGraphDicInfo.Tabela]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId])) m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.TabelaId]))
-            m_FTabelaId = Convert.ToInt32(dbRec[DBGraphDicInfo.TabelaId]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 1000
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem])) m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Imagem]))
-            m_FImagem = dbRec[DBGraphDicInfo.Imagem] as byte[] ?? [0];
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FGUID = dbRec[DBGraphDicInfo.GUID]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBGraphDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBGraphDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto])) m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBGraphDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBGraphDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do Graph: {ex.Message}", ex);
+        }
     }
-#endregion
 }

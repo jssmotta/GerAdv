@@ -35,24 +35,6 @@ public static partial class DBUltimosProcessosDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string QuandoSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{Quando}]");
-    public static string QuandoSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{Quando}]");
-    public static string QuandoSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{Quando}]");
-    public static string QuandoSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{Quando}]");
-    public static string QuandoSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{Quando}]");
-    public static string QuandoSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{Quando}]");
-    public static string QuandoSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{Quando}]");
-    public static string QuandoSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{Quando}]");
-    public static string QuandoSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{Quando}]");
-    public static string QuandoSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{Quando}]");
-    public static string QuandoSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{Quando}]");
-    public static string QuandoSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{Quando}]");
-    public static string QuandoIsNull => Quando.SqlCmdIsNull() ?? string.Empty;
-    public static string QuandoNotIsNull => Quando.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

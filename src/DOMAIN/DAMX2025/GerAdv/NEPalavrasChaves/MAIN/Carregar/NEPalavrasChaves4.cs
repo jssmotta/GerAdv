@@ -6,374 +6,117 @@ public partial class DBNEPalavrasChaves
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold]))
-                m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBNEPalavrasChaves(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold]))
-                m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do NEPalavrasChaves: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_NEPalavrasChaves
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [npcCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.Bold)))
+                m_FBold = Convert.ToBoolean(getValue(DBNEPalavrasChavesDicInfo.Bold));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBNEPalavrasChavesDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBNEPalavrasChavesDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBNEPalavrasChavesDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBNEPalavrasChavesDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBNEPalavrasChavesDicInfo.Visto));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FNome = getValue(DBNEPalavrasChavesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold]))
-            m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do NEPalavrasChaves: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_NEPalavrasChaves
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNome = dbRec[DBNEPalavrasChavesDicInfo.Nome]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold])) m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Bold]))
-            m_FBold = (bool)dbRec[DBNEPalavrasChavesDicInfo.Bold];
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBNEPalavrasChavesDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBNEPalavrasChavesDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto])) m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBNEPalavrasChavesDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBNEPalavrasChavesDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do NEPalavrasChaves: {ex.Message}", ex);
+        }
     }
-#endregion
 }

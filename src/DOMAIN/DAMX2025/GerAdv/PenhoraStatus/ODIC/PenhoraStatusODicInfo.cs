@@ -4,61 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBPenhoraStatusODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBPenhoraStatusDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBPenhoraStatusDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBPenhoraStatusDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBPenhoraStatusDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBPenhoraStatusDicInfo.Nome => DBPenhoraStatusDicInfo.PhsNome,
-        DBPenhoraStatusDicInfo.GUID => DBPenhoraStatusDicInfo.PhsGUID,
-        DBPenhoraStatusDicInfo.QuemCad => DBPenhoraStatusDicInfo.PhsQuemCad,
-        DBPenhoraStatusDicInfo.DtCad => DBPenhoraStatusDicInfo.PhsDtCad,
-        DBPenhoraStatusDicInfo.QuemAtu => DBPenhoraStatusDicInfo.PhsQuemAtu,
-        DBPenhoraStatusDicInfo.DtAtu => DBPenhoraStatusDicInfo.PhsDtAtu,
-        DBPenhoraStatusDicInfo.Visto => DBPenhoraStatusDicInfo.PhsVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBPenhoraStatusDicInfo.CampoCodigo;
     public static string TCampoNome => DBPenhoraStatusDicInfo.CampoNome;
     public static string TTabelaNome => DBPenhoraStatusDicInfo.TabelaNome;
     public static string TTablePrefix => DBPenhoraStatusDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBPenhoraStatusDicInfo.PhsNome, DBPenhoraStatusDicInfo.PhsGUID, DBPenhoraStatusDicInfo.PhsQuemCad, DBPenhoraStatusDicInfo.PhsDtCad, DBPenhoraStatusDicInfo.PhsQuemAtu, DBPenhoraStatusDicInfo.PhsDtAtu, DBPenhoraStatusDicInfo.PhsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBPenhoraStatusDicInfo.PhsNome, DBPenhoraStatusDicInfo.PhsGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBPenhoraStatusDicInfo.PhsNome, DBPenhoraStatusDicInfo.PhsGUID, DBPenhoraStatusDicInfo.PhsQuemCad, DBPenhoraStatusDicInfo.PhsDtCad, DBPenhoraStatusDicInfo.PhsQuemAtu, DBPenhoraStatusDicInfo.PhsDtAtu, DBPenhoraStatusDicInfo.PhsVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBPenhoraStatusDicInfo.PhsNome, DBPenhoraStatusDicInfo.PhsGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "phsCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["phsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBPenhoraStatusDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "phsCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["phsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBPenhoraStatusDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

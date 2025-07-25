@@ -4,65 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBLivroCaixaClientesODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBLivroCaixaClientesDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBLivroCaixaClientesDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBLivroCaixaClientesDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBLivroCaixaClientesDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBLivroCaixaClientesDicInfo.LivroCaixa => DBLivroCaixaClientesDicInfo.LccLivroCaixa,
-        DBLivroCaixaClientesDicInfo.Cliente => DBLivroCaixaClientesDicInfo.LccCliente,
-        DBLivroCaixaClientesDicInfo.Lancado => DBLivroCaixaClientesDicInfo.LccLancado,
-        DBLivroCaixaClientesDicInfo.QuemCad => DBLivroCaixaClientesDicInfo.LccQuemCad,
-        DBLivroCaixaClientesDicInfo.DtCad => DBLivroCaixaClientesDicInfo.LccDtCad,
-        DBLivroCaixaClientesDicInfo.QuemAtu => DBLivroCaixaClientesDicInfo.LccQuemAtu,
-        DBLivroCaixaClientesDicInfo.DtAtu => DBLivroCaixaClientesDicInfo.LccDtAtu,
-        DBLivroCaixaClientesDicInfo.Visto => DBLivroCaixaClientesDicInfo.LccVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBLivroCaixaClientesDicInfo.CampoCodigo;
     public static string TCampoNome => DBLivroCaixaClientesDicInfo.CampoNome;
     public static string TTabelaNome => DBLivroCaixaClientesDicInfo.TabelaNome;
     public static string TTablePrefix => DBLivroCaixaClientesDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBLivroCaixaClientesDicInfo.LccLivroCaixa, DBLivroCaixaClientesDicInfo.LccCliente, DBLivroCaixaClientesDicInfo.LccLancado, DBLivroCaixaClientesDicInfo.LccQuemCad, DBLivroCaixaClientesDicInfo.LccDtCad, DBLivroCaixaClientesDicInfo.LccQuemAtu, DBLivroCaixaClientesDicInfo.LccDtAtu, DBLivroCaixaClientesDicInfo.LccVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBLivroCaixaClientesDicInfo.LccLivroCaixa, DBLivroCaixaClientesDicInfo.LccCliente, DBLivroCaixaClientesDicInfo.LccLancado];
+    public static ImmutableArray<DBInfoSystem> List => [DBLivroCaixaClientesDicInfo.LccLivroCaixa, DBLivroCaixaClientesDicInfo.LccCliente, DBLivroCaixaClientesDicInfo.LccLancado, DBLivroCaixaClientesDicInfo.LccQuemCad, DBLivroCaixaClientesDicInfo.LccDtCad, DBLivroCaixaClientesDicInfo.LccQuemAtu, DBLivroCaixaClientesDicInfo.LccDtAtu, DBLivroCaixaClientesDicInfo.LccVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBLivroCaixaClientesDicInfo.LccLivroCaixa, DBLivroCaixaClientesDicInfo.LccCliente, DBLivroCaixaClientesDicInfo.LccLancado];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "lccCliente",
-            "lccLivroCaixa"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["lccCliente", "lccLivroCaixa"]);
         var result = campos.Where(campo => !campo.Equals(DBLivroCaixaClientesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "lccCliente",
-            "lccCodigo",
-            "lccLivroCaixa"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["lccCliente", "lccCodigo", "lccLivroCaixa"]);
         var result = campos.Where(campo => !campo.Equals(DBLivroCaixaClientesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

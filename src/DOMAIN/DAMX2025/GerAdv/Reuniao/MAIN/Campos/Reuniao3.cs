@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBReuniao
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCliente, pFldFIDAgenda, pFldFData, pFldFPauta, pFldFATA, pFldFHoraInicial, pFldFHoraFinal, pFldFExterna, pFldFHoraSaida, pFldFHoraRetorno, pFldFPrincipaisDecisoes, pFldFBold;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBReuniao
     private protected bool m_FExterna, m_FBold;
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBReuniao
 
     public int FIDAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDAgenda;
         set
         {
@@ -34,9 +35,6 @@ public partial class DBReuniao
                 m_FIDAgenda = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -53,6 +51,7 @@ public partial class DBReuniao
 
     public string? FPauta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPauta ?? string.Empty;
         set
         {
@@ -64,6 +63,7 @@ public partial class DBReuniao
 
     public string? FATA
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FATA ?? string.Empty;
         set
         {
@@ -72,9 +72,6 @@ public partial class DBReuniao
                 m_FATA = value.trim().FixAbc() ?? string.Empty;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraInicial => Convert.ToDateTime(m_FHoraInicial);
 
     public string? FHoraInicial
     {
@@ -105,9 +102,6 @@ public partial class DBReuniao
             }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
     public string? FHoraFinal
     {
@@ -141,6 +135,7 @@ public partial class DBReuniao
 
     public bool FExterna
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExterna;
         set
         {
@@ -149,9 +144,6 @@ public partial class DBReuniao
                 m_FExterna = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraSaida => Convert.ToDateTime(m_FHoraSaida);
 
     public string? FHoraSaida
     {
@@ -182,9 +174,6 @@ public partial class DBReuniao
             }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraRetorno => Convert.ToDateTime(m_FHoraRetorno);
 
     public string? FHoraRetorno
     {
@@ -218,6 +207,7 @@ public partial class DBReuniao
 
     public string? FPrincipaisDecisoes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPrincipaisDecisoes ?? string.Empty;
         set
         {
@@ -229,6 +219,7 @@ public partial class DBReuniao
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -251,16 +242,19 @@ public partial class DBReuniao
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -4,57 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBContatoCRMViewODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBContatoCRMViewDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBContatoCRMViewDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBContatoCRMViewDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBContatoCRMViewDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBContatoCRMViewDicInfo.CGUID => DBContatoCRMViewDicInfo.CcwCGUID,
-        DBContatoCRMViewDicInfo.Data => DBContatoCRMViewDicInfo.CcwData,
-        DBContatoCRMViewDicInfo.IP => DBContatoCRMViewDicInfo.CcwIP,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBContatoCRMViewDicInfo.CampoCodigo;
     public static string TCampoNome => DBContatoCRMViewDicInfo.CampoNome;
     public static string TTabelaNome => DBContatoCRMViewDicInfo.TabelaNome;
     public static string TTablePrefix => DBContatoCRMViewDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBContatoCRMViewDicInfo.CcwCGUID, DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBContatoCRMViewDicInfo.CcwCGUID, DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
+    public static ImmutableArray<DBInfoSystem> List => [DBContatoCRMViewDicInfo.CcwCGUID, DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBContatoCRMViewDicInfo.CcwCGUID, DBContatoCRMViewDicInfo.CcwData, DBContatoCRMViewDicInfo.CcwIP];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "ccwCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ccwCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBContatoCRMViewDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "ccwCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ccwCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBContatoCRMViewDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

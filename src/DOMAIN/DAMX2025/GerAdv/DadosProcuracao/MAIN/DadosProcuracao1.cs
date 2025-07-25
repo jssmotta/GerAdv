@@ -13,7 +13,6 @@ public partial class DBDadosProcuracao : VAuditor, ICadastros, IAuditor
     }
 
 #endregion
-    public DBDadosProcuracao(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     // REF. 250325
     public DBDadosProcuracao(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
@@ -42,7 +41,7 @@ public partial class DBDadosProcuracao : VAuditor, ICadastros, IAuditor
     }
 
 #region GravarDados_DadosProcuracao
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -129,7 +128,7 @@ public partial class DBDadosProcuracao : VAuditor, ICadastros, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

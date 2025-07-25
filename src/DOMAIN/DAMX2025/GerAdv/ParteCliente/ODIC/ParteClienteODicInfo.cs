@@ -4,39 +4,45 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBParteClienteODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBParteClienteDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBParteClienteDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBParteClienteDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBParteClienteDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBParteClienteDicInfo.Cliente => DBParteClienteDicInfo.CliCliente,
-        DBParteClienteDicInfo.Processo => DBParteClienteDicInfo.CliProcesso,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBParteClienteDicInfo.CampoCodigo;
     public static string TCampoNome => DBParteClienteDicInfo.CampoNome;
     public static string TTabelaNome => DBParteClienteDicInfo.TabelaNome;
     public static string TTablePrefix => DBParteClienteDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBParteClienteDicInfo.CliCliente, DBParteClienteDicInfo.CliProcesso];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBParteClienteDicInfo.CliCliente, DBParteClienteDicInfo.CliProcesso];
+    public static ImmutableArray<DBInfoSystem> List => [DBParteClienteDicInfo.CliCliente, DBParteClienteDicInfo.CliProcesso];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBParteClienteDicInfo.CliCliente, DBParteClienteDicInfo.CliProcesso];
 
-    public static List<DBInfoSystem> ListPk() => [];
-    public static List<DBInfoSystem> ListPkIndices() => [];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ImmutableArray<DBInfoSystem> ListPk() => [];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ImmutableArray<DBInfoSystem> ListPkIndices() => [];
 }
 #endif

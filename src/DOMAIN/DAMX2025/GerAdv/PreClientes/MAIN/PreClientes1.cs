@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBPreClientes : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_PreClientes
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBPreClientes(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBPreClientes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_PreClientes
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'cliNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -98,7 +98,7 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFQuemIndicou)
             clsW.Fields(DBPreClientesDicInfo.QuemIndicou, m_FQuemIndicou, ETiposCampos.FString);
         if (pFldFNome)
-            clsW.Fields(DBPreClientesDicInfo.Nome, sex.m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBPreClientesDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFAdv)
             clsW.Fields(DBPreClientesDicInfo.Adv, m_FAdv, ETiposCampos.FNumberNull);
         if (pFldFIDRep)
@@ -108,7 +108,7 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFNomeFantasia)
             clsW.Fields(DBPreClientesDicInfo.NomeFantasia, m_FNomeFantasia, ETiposCampos.FString);
         if (pFldFClass)
-            clsW.Fields(DBPreClientesDicInfo.Class, sex.m_FClass, ETiposCampos.FString);
+            clsW.Fields(DBPreClientesDicInfo.Class, m_FClass, ETiposCampos.FString);
         if (pFldFTipo || ID.IsEmptyIDNumber())
             clsW.Fields(DBPreClientesDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFDtNasc)
@@ -124,7 +124,7 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFCNPJ)
             clsW.Fields(DBPreClientesDicInfo.CNPJ, m_FCNPJ, ETiposCampos.FString);
         if (pFldFCPF)
-            clsW.Fields(DBPreClientesDicInfo.CPF, sex.m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBPreClientesDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             clsW.Fields(DBPreClientesDicInfo.RG, m_FRG, ETiposCampos.FString);
         if (pFldFTipoCaptacao || ID.IsEmptyIDNumber())
@@ -132,13 +132,13 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFObservacao)
             clsW.Fields(DBPreClientesDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBPreClientesDicInfo.Endereco, sex.m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBPreClientesDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
-            clsW.Fields(DBPreClientesDicInfo.Bairro, sex.m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBPreClientesDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
         if (pFldFCidade)
             clsW.Fields(DBPreClientesDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
         if (pFldFCEP)
-            clsW.Fields(DBPreClientesDicInfo.CEP, sex.m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBPreClientesDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFFax)
             clsW.Fields(DBPreClientesDicInfo.Fax, m_FFax, ETiposCampos.FString);
         if (pFldFFone)
@@ -204,7 +204,7 @@ public partial class DBPreClientes : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

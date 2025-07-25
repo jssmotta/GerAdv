@@ -4,77 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBBensMateriaisODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBBensMateriaisDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBBensMateriaisDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBBensMateriaisDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBBensMateriaisDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBBensMateriaisDicInfo.Nome => DBBensMateriaisDicInfo.BmtNome,
-        DBBensMateriaisDicInfo.BensClassificacao => DBBensMateriaisDicInfo.BmtBensClassificacao,
-        DBBensMateriaisDicInfo.DataCompra => DBBensMateriaisDicInfo.BmtDataCompra,
-        DBBensMateriaisDicInfo.DataFimDaGarantia => DBBensMateriaisDicInfo.BmtDataFimDaGarantia,
-        DBBensMateriaisDicInfo.NFNRO => DBBensMateriaisDicInfo.BmtNFNRO,
-        DBBensMateriaisDicInfo.Fornecedor => DBBensMateriaisDicInfo.BmtFornecedor,
-        DBBensMateriaisDicInfo.ValorBem => DBBensMateriaisDicInfo.BmtValorBem,
-        DBBensMateriaisDicInfo.NroSerieProduto => DBBensMateriaisDicInfo.BmtNroSerieProduto,
-        DBBensMateriaisDicInfo.Comprador => DBBensMateriaisDicInfo.BmtComprador,
-        DBBensMateriaisDicInfo.Cidade => DBBensMateriaisDicInfo.BmtCidade,
-        DBBensMateriaisDicInfo.GarantiaLoja => DBBensMateriaisDicInfo.BmtGarantiaLoja,
-        DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja => DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja,
-        DBBensMateriaisDicInfo.Observacoes => DBBensMateriaisDicInfo.BmtObservacoes,
-        DBBensMateriaisDicInfo.NomeVendedor => DBBensMateriaisDicInfo.BmtNomeVendedor,
-        DBBensMateriaisDicInfo.Bold => DBBensMateriaisDicInfo.BmtBold,
-        DBBensMateriaisDicInfo.GUID => DBBensMateriaisDicInfo.BmtGUID,
-        DBBensMateriaisDicInfo.QuemCad => DBBensMateriaisDicInfo.BmtQuemCad,
-        DBBensMateriaisDicInfo.DtCad => DBBensMateriaisDicInfo.BmtDtCad,
-        DBBensMateriaisDicInfo.QuemAtu => DBBensMateriaisDicInfo.BmtQuemAtu,
-        DBBensMateriaisDicInfo.DtAtu => DBBensMateriaisDicInfo.BmtDtAtu,
-        DBBensMateriaisDicInfo.Visto => DBBensMateriaisDicInfo.BmtVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBBensMateriaisDicInfo.CampoCodigo;
     public static string TCampoNome => DBBensMateriaisDicInfo.CampoNome;
     public static string TTabelaNome => DBBensMateriaisDicInfo.TabelaNome;
     public static string TTablePrefix => DBBensMateriaisDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtBold, DBBensMateriaisDicInfo.BmtGUID, DBBensMateriaisDicInfo.BmtQuemCad, DBBensMateriaisDicInfo.BmtDtCad, DBBensMateriaisDicInfo.BmtQuemAtu, DBBensMateriaisDicInfo.BmtDtAtu, DBBensMateriaisDicInfo.BmtVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtBold, DBBensMateriaisDicInfo.BmtGUID, DBBensMateriaisDicInfo.BmtQuemCad, DBBensMateriaisDicInfo.BmtDtCad, DBBensMateriaisDicInfo.BmtQuemAtu, DBBensMateriaisDicInfo.BmtDtAtu, DBBensMateriaisDicInfo.BmtVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBBensMateriaisDicInfo.BmtNome, DBBensMateriaisDicInfo.BmtBensClassificacao, DBBensMateriaisDicInfo.BmtDataCompra, DBBensMateriaisDicInfo.BmtDataFimDaGarantia, DBBensMateriaisDicInfo.BmtNFNRO, DBBensMateriaisDicInfo.BmtFornecedor, DBBensMateriaisDicInfo.BmtValorBem, DBBensMateriaisDicInfo.BmtNroSerieProduto, DBBensMateriaisDicInfo.BmtComprador, DBBensMateriaisDicInfo.BmtCidade, DBBensMateriaisDicInfo.BmtGarantiaLoja, DBBensMateriaisDicInfo.BmtDataTerminoDaGarantiaDaLoja, DBBensMateriaisDicInfo.BmtObservacoes, DBBensMateriaisDicInfo.BmtNomeVendedor, DBBensMateriaisDicInfo.BmtGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "bmtCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["bmtCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBBensMateriaisDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "bmtCodigo",
-            "bmtFornecedor",
-            "bmtNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["bmtCodigo", "bmtFornecedor", "bmtNome"]);
         var result = campos.Where(campo => !campo.Equals(DBBensMateriaisDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

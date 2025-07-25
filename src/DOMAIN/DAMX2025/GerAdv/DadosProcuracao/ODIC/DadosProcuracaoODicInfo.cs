@@ -4,69 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBDadosProcuracaoODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBDadosProcuracaoDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBDadosProcuracaoDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBDadosProcuracaoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBDadosProcuracaoDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBDadosProcuracaoDicInfo.Cliente => DBDadosProcuracaoDicInfo.PrcCliente,
-        DBDadosProcuracaoDicInfo.EstadoCivil => DBDadosProcuracaoDicInfo.PrcEstadoCivil,
-        DBDadosProcuracaoDicInfo.Nacionalidade => DBDadosProcuracaoDicInfo.PrcNacionalidade,
-        DBDadosProcuracaoDicInfo.Profissao => DBDadosProcuracaoDicInfo.PrcProfissao,
-        DBDadosProcuracaoDicInfo.CTPS => DBDadosProcuracaoDicInfo.PrcCTPS,
-        DBDadosProcuracaoDicInfo.PisPasep => DBDadosProcuracaoDicInfo.PrcPisPasep,
-        DBDadosProcuracaoDicInfo.Remuneracao => DBDadosProcuracaoDicInfo.PrcRemuneracao,
-        DBDadosProcuracaoDicInfo.Objeto => DBDadosProcuracaoDicInfo.PrcObjeto,
-        DBDadosProcuracaoDicInfo.GUID => DBDadosProcuracaoDicInfo.PrcGUID,
-        DBDadosProcuracaoDicInfo.QuemCad => DBDadosProcuracaoDicInfo.PrcQuemCad,
-        DBDadosProcuracaoDicInfo.DtCad => DBDadosProcuracaoDicInfo.PrcDtCad,
-        DBDadosProcuracaoDicInfo.QuemAtu => DBDadosProcuracaoDicInfo.PrcQuemAtu,
-        DBDadosProcuracaoDicInfo.DtAtu => DBDadosProcuracaoDicInfo.PrcDtAtu,
-        DBDadosProcuracaoDicInfo.Visto => DBDadosProcuracaoDicInfo.PrcVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBDadosProcuracaoDicInfo.CampoCodigo;
     public static string TCampoNome => DBDadosProcuracaoDicInfo.CampoNome;
     public static string TTabelaNome => DBDadosProcuracaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBDadosProcuracaoDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto, DBDadosProcuracaoDicInfo.PrcGUID, DBDadosProcuracaoDicInfo.PrcQuemCad, DBDadosProcuracaoDicInfo.PrcDtCad, DBDadosProcuracaoDicInfo.PrcQuemAtu, DBDadosProcuracaoDicInfo.PrcDtAtu, DBDadosProcuracaoDicInfo.PrcVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto, DBDadosProcuracaoDicInfo.PrcGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto, DBDadosProcuracaoDicInfo.PrcGUID, DBDadosProcuracaoDicInfo.PrcQuemCad, DBDadosProcuracaoDicInfo.PrcDtCad, DBDadosProcuracaoDicInfo.PrcQuemAtu, DBDadosProcuracaoDicInfo.PrcDtAtu, DBDadosProcuracaoDicInfo.PrcVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBDadosProcuracaoDicInfo.PrcCliente, DBDadosProcuracaoDicInfo.PrcEstadoCivil, DBDadosProcuracaoDicInfo.PrcNacionalidade, DBDadosProcuracaoDicInfo.PrcProfissao, DBDadosProcuracaoDicInfo.PrcCTPS, DBDadosProcuracaoDicInfo.PrcPisPasep, DBDadosProcuracaoDicInfo.PrcRemuneracao, DBDadosProcuracaoDicInfo.PrcObjeto, DBDadosProcuracaoDicInfo.PrcGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "prcCliente"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["prcCliente"]);
         var result = campos.Where(campo => !campo.Equals(DBDadosProcuracaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "prcCliente",
-            "prcCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["prcCliente", "prcCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBDadosProcuracaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

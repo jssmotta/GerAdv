@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBAlertas
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFNome, pFldFData, pFldFOperador, pFldFDataAte;
     [XmlIgnore]
@@ -11,19 +10,21 @@ public partial class DBAlertas
     private protected string? m_FNome;
     [XmlIgnore]
     private protected DateTime? m_FData, m_FDataAte;
+    [StringLength(2048, ErrorMessage = "A propriedade FNome da tabela Alertas deve ter no máximo 2048 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 2048 ? value.trim().substring(0, 2048) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -40,6 +41,7 @@ public partial class DBAlertas
 
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -48,9 +50,6 @@ public partial class DBAlertas
                 m_FOperador = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataAte => Convert.ToDateTime(m_FDataAte);
 
     public string? FDataAte
     {
@@ -78,16 +77,19 @@ public partial class DBAlertas
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

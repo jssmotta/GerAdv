@@ -4,62 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBParceriaProcODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBParceriaProcDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBParceriaProcDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBParceriaProcDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBParceriaProcDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBParceriaProcDicInfo.Advogado => DBParceriaProcDicInfo.ParAdvogado,
-        DBParceriaProcDicInfo.Processo => DBParceriaProcDicInfo.ParProcesso,
-        DBParceriaProcDicInfo.GUID => DBParceriaProcDicInfo.ParGUID,
-        DBParceriaProcDicInfo.QuemCad => DBParceriaProcDicInfo.ParQuemCad,
-        DBParceriaProcDicInfo.DtCad => DBParceriaProcDicInfo.ParDtCad,
-        DBParceriaProcDicInfo.QuemAtu => DBParceriaProcDicInfo.ParQuemAtu,
-        DBParceriaProcDicInfo.DtAtu => DBParceriaProcDicInfo.ParDtAtu,
-        DBParceriaProcDicInfo.Visto => DBParceriaProcDicInfo.ParVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBParceriaProcDicInfo.CampoCodigo;
     public static string TCampoNome => DBParceriaProcDicInfo.CampoNome;
     public static string TTabelaNome => DBParceriaProcDicInfo.TabelaNome;
     public static string TTablePrefix => DBParceriaProcDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGUID, DBParceriaProcDicInfo.ParQuemCad, DBParceriaProcDicInfo.ParDtCad, DBParceriaProcDicInfo.ParQuemAtu, DBParceriaProcDicInfo.ParDtAtu, DBParceriaProcDicInfo.ParVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGUID, DBParceriaProcDicInfo.ParQuemCad, DBParceriaProcDicInfo.ParDtCad, DBParceriaProcDicInfo.ParQuemAtu, DBParceriaProcDicInfo.ParDtAtu, DBParceriaProcDicInfo.ParVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "parCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["parCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBParceriaProcDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "parCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["parCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBParceriaProcDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

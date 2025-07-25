@@ -24,17 +24,6 @@ public static partial class DBTipoOrigemSucumbenciaDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string NomeSql(string text) => Nome.SqlCmdTextIgual(text, 50) ?? string.Empty;
-    public static string NomeSqlNotIsNull => Nome.SqlCmdNotIsNull() ?? string.Empty;
-    public static string NomeSqlIsNull => Nome.SqlCmdIsNull() ?? string.Empty;
-
-    public static string NomeSqlDiff(string text) => Nome.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string NomeSqlLike(string text) => Nome.SqlCmdTextLike(text) ?? string.Empty;
-    public static string NomeSqlLikeInit(string text) => Nome.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string NomeSqlLikeSpaces(string? text) => Nome.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

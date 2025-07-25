@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBEnderecoSistema
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCadastro, pFldFCadastroExCod, pFldFTipoEnderecoSistema, pFldFProcesso, pFldFMotivo, pFldFContatoNoLocal, pFldFCidade, pFldFEndereco, pFldFBairro, pFldFCEP, pFldFFone, pFldFFax, pFldFObservacao;
     [XmlIgnore]
@@ -11,6 +10,7 @@ public partial class DBEnderecoSistema
     private protected string? m_FMotivo, m_FContatoNoLocal, m_FEndereco, m_FBairro, m_FCEP, m_FFone, m_FFax, m_FObservacao;
     public int FCadastro
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCadastro;
         set
         {
@@ -22,6 +22,7 @@ public partial class DBEnderecoSistema
 
     public int FCadastroExCod
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCadastroExCod;
         set
         {
@@ -33,6 +34,7 @@ public partial class DBEnderecoSistema
 
     public int FTipoEnderecoSistema
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoEnderecoSistema;
         set
         {
@@ -44,6 +46,7 @@ public partial class DBEnderecoSistema
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -53,30 +56,41 @@ public partial class DBEnderecoSistema
         }
     }
 
+    [StringLength(200, ErrorMessage = "A propriedade FMotivo da tabela EnderecoSistema deve ter no máximo 200 caracteres.")]
     public string? FMotivo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMotivo ?? string.Empty;
         set
         {
             pFldFMotivo = pFldFMotivo || !(m_FMotivo ?? string.Empty).Equals(value);
             if (pFldFMotivo)
-                m_FMotivo = value.trim().Length > 200 ? value.trim().substring(0, 200) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FMotivo = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FContatoNoLocal da tabela EnderecoSistema deve ter no máximo 50 caracteres.")]
     public string? FContatoNoLocal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContatoNoLocal ?? string.Empty;
         set
         {
             pFldFContatoNoLocal = pFldFContatoNoLocal || !(m_FContatoNoLocal ?? string.Empty).Equals(value);
             if (pFldFContatoNoLocal)
-                m_FContatoNoLocal = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FContatoNoLocal = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
     public int FCidade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCidade;
         set
         {
@@ -86,41 +100,57 @@ public partial class DBEnderecoSistema
         }
     }
 
+    [StringLength(150, ErrorMessage = "A propriedade FEndereco da tabela EnderecoSistema deve ter no máximo 150 caracteres.")]
     public string? FEndereco
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEndereco ?? string.Empty;
         set
         {
             pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
             if (pFldFEndereco)
-                m_FEndereco = value.trim().Length > 150 ? value.trim().substring(0, 150) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEndereco = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela EnderecoSistema deve ter no máximo 50 caracteres.")]
     public string? FBairro
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBairro ?? string.Empty;
         set
         {
             pFldFBairro = pFldFBairro || !(m_FBairro ?? string.Empty).Equals(value);
             if (pFldFBairro)
-                m_FBairro = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FBairro = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela EnderecoSistema deve ter no máximo 10 caracteres.")]
     public string? FCEP
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCEP ?? string.Empty;
         set
         {
             pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
             if (pFldFCEP)
-                m_FCEP = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
     public string? FFone
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFone ?? string.Empty;
         set
         {
@@ -132,6 +162,7 @@ public partial class DBEnderecoSistema
 
     public string? FFax
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFax ?? string.Empty;
         set
         {
@@ -143,6 +174,7 @@ public partial class DBEnderecoSistema
 
     public string? FObservacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObservacao ?? string.Empty;
         set
         {
@@ -165,16 +197,19 @@ public partial class DBEnderecoSistema
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

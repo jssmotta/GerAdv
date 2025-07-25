@@ -4,70 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBNENotasODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBNENotasDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBNENotasDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBNENotasDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBNENotasDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBNENotasDicInfo.Apenso => DBNENotasDicInfo.NepApenso,
-        DBNENotasDicInfo.Precatoria => DBNENotasDicInfo.NepPrecatoria,
-        DBNENotasDicInfo.Instancia => DBNENotasDicInfo.NepInstancia,
-        DBNENotasDicInfo.MovPro => DBNENotasDicInfo.NepMovPro,
-        DBNENotasDicInfo.Nome => DBNENotasDicInfo.NepNome,
-        DBNENotasDicInfo.NotaExpedida => DBNENotasDicInfo.NepNotaExpedida,
-        DBNENotasDicInfo.Revisada => DBNENotasDicInfo.NepRevisada,
-        DBNENotasDicInfo.Processo => DBNENotasDicInfo.NepProcesso,
-        DBNENotasDicInfo.PalavraChave => DBNENotasDicInfo.NepPalavraChave,
-        DBNENotasDicInfo.Data => DBNENotasDicInfo.NepData,
-        DBNENotasDicInfo.NotaPublicada => DBNENotasDicInfo.NepNotaPublicada,
-        DBNENotasDicInfo.QuemCad => DBNENotasDicInfo.NepQuemCad,
-        DBNENotasDicInfo.DtCad => DBNENotasDicInfo.NepDtCad,
-        DBNENotasDicInfo.QuemAtu => DBNENotasDicInfo.NepQuemAtu,
-        DBNENotasDicInfo.DtAtu => DBNENotasDicInfo.NepDtAtu,
-        DBNENotasDicInfo.Visto => DBNENotasDicInfo.NepVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBNENotasDicInfo.CampoCodigo;
     public static string TCampoNome => DBNENotasDicInfo.CampoNome;
     public static string TTabelaNome => DBNENotasDicInfo.TabelaNome;
     public static string TTablePrefix => DBNENotasDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBNENotasDicInfo.NepApenso, DBNENotasDicInfo.NepPrecatoria, DBNENotasDicInfo.NepInstancia, DBNENotasDicInfo.NepMovPro, DBNENotasDicInfo.NepNome, DBNENotasDicInfo.NepNotaExpedida, DBNENotasDicInfo.NepRevisada, DBNENotasDicInfo.NepProcesso, DBNENotasDicInfo.NepPalavraChave, DBNENotasDicInfo.NepData, DBNENotasDicInfo.NepNotaPublicada, DBNENotasDicInfo.NepQuemCad, DBNENotasDicInfo.NepDtCad, DBNENotasDicInfo.NepQuemAtu, DBNENotasDicInfo.NepDtAtu, DBNENotasDicInfo.NepVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBNENotasDicInfo.NepApenso, DBNENotasDicInfo.NepPrecatoria, DBNENotasDicInfo.NepInstancia, DBNENotasDicInfo.NepMovPro, DBNENotasDicInfo.NepNome, DBNENotasDicInfo.NepNotaExpedida, DBNENotasDicInfo.NepRevisada, DBNENotasDicInfo.NepProcesso, DBNENotasDicInfo.NepPalavraChave, DBNENotasDicInfo.NepData, DBNENotasDicInfo.NepNotaPublicada];
+    public static ImmutableArray<DBInfoSystem> List => [DBNENotasDicInfo.NepApenso, DBNENotasDicInfo.NepPrecatoria, DBNENotasDicInfo.NepInstancia, DBNENotasDicInfo.NepMovPro, DBNENotasDicInfo.NepNome, DBNENotasDicInfo.NepNotaExpedida, DBNENotasDicInfo.NepRevisada, DBNENotasDicInfo.NepProcesso, DBNENotasDicInfo.NepPalavraChave, DBNENotasDicInfo.NepData, DBNENotasDicInfo.NepNotaPublicada, DBNENotasDicInfo.NepQuemCad, DBNENotasDicInfo.NepDtCad, DBNENotasDicInfo.NepQuemAtu, DBNENotasDicInfo.NepDtAtu, DBNENotasDicInfo.NepVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBNENotasDicInfo.NepApenso, DBNENotasDicInfo.NepPrecatoria, DBNENotasDicInfo.NepInstancia, DBNENotasDicInfo.NepMovPro, DBNENotasDicInfo.NepNome, DBNENotasDicInfo.NepNotaExpedida, DBNENotasDicInfo.NepRevisada, DBNENotasDicInfo.NepProcesso, DBNENotasDicInfo.NepPalavraChave, DBNENotasDicInfo.NepData, DBNENotasDicInfo.NepNotaPublicada];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "nepCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["nepCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBNENotasDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "nepCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["nepCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBNENotasDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

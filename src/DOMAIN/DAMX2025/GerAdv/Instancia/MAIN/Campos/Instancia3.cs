@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBInstancia
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFLiminarPedida, pFldFObjeto, pFldFStatusResultado, pFldFLiminarPendente, pFldFInterpusemosRecurso, pFldFLiminarConcedida, pFldFLiminarNegada, pFldFProcesso, pFldFData, pFldFLiminarParcial, pFldFLiminarResultado, pFldFNroProcesso, pFldFDivisao, pFldFLiminarCliente, pFldFComarca, pFldFSubDivisao, pFldFPrincipal, pFldFAcao, pFldFForo, pFldFTipoRecurso, pFldFZKey, pFldFZKeyQuem, pFldFZKeyQuando, pFldFNroAntigo, pFldFAccessCode, pFldFJulgador, pFldFZKeyIA;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBInstancia
     private protected bool m_FLiminarPendente, m_FInterpusemosRecurso, m_FLiminarConcedida, m_FLiminarNegada, m_FLiminarParcial, m_FLiminarCliente, m_FPrincipal;
     public string? FLiminarPedida
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarPedida ?? string.Empty;
         set
         {
@@ -24,19 +24,25 @@ public partial class DBInstancia
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FObjeto da tabela Instancia deve ter no máximo 255 caracteres.")]
     public string? FObjeto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObjeto ?? string.Empty;
         set
         {
             pFldFObjeto = pFldFObjeto || !(m_FObjeto ?? string.Empty).Equals(value);
             if (pFldFObjeto)
-                m_FObjeto = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FObjeto = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FStatusResultado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FStatusResultado;
         set
         {
@@ -48,6 +54,7 @@ public partial class DBInstancia
 
     public bool FLiminarPendente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarPendente;
         set
         {
@@ -59,6 +66,7 @@ public partial class DBInstancia
 
     public bool FInterpusemosRecurso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FInterpusemosRecurso;
         set
         {
@@ -70,6 +78,7 @@ public partial class DBInstancia
 
     public bool FLiminarConcedida
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarConcedida;
         set
         {
@@ -81,6 +90,7 @@ public partial class DBInstancia
 
     public bool FLiminarNegada
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarNegada;
         set
         {
@@ -92,6 +102,7 @@ public partial class DBInstancia
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -100,9 +111,6 @@ public partial class DBInstancia
                 m_FProcesso = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -119,6 +127,7 @@ public partial class DBInstancia
 
     public bool FLiminarParcial
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarParcial;
         set
         {
@@ -130,6 +139,7 @@ public partial class DBInstancia
 
     public string? FLiminarResultado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarResultado ?? string.Empty;
         set
         {
@@ -139,19 +149,25 @@ public partial class DBInstancia
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FNroProcesso da tabela Instancia deve ter no máximo 25 caracteres.")]
     public string? FNroProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroProcesso ?? string.Empty;
         set
         {
             pFldFNroProcesso = pFldFNroProcesso || !(m_FNroProcesso ?? string.Empty).Equals(value);
             if (pFldFNroProcesso)
-                m_FNroProcesso = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroProcesso = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
 
     public int FDivisao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDivisao;
         set
         {
@@ -163,6 +179,7 @@ public partial class DBInstancia
 
     public bool FLiminarCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLiminarCliente;
         set
         {
@@ -174,6 +191,7 @@ public partial class DBInstancia
 
     public int FComarca
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FComarca;
         set
         {
@@ -185,6 +203,7 @@ public partial class DBInstancia
 
     public int FSubDivisao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSubDivisao;
         set
         {
@@ -196,6 +215,7 @@ public partial class DBInstancia
 
     public bool FPrincipal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPrincipal;
         set
         {
@@ -207,6 +227,7 @@ public partial class DBInstancia
 
     public int FAcao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAcao;
         set
         {
@@ -218,6 +239,7 @@ public partial class DBInstancia
 
     public int FForo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FForo;
         set
         {
@@ -229,6 +251,7 @@ public partial class DBInstancia
 
     public int FTipoRecurso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoRecurso;
         set
         {
@@ -238,19 +261,25 @@ public partial class DBInstancia
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FZKey da tabela Instancia deve ter no máximo 25 caracteres.")]
     public string? FZKey
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FZKey ?? string.Empty;
         set
         {
             pFldFZKey = pFldFZKey || !(m_FZKey ?? string.Empty).Equals(value);
             if (pFldFZKey)
-                m_FZKey = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FZKey = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
 
     public int FZKeyQuem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FZKeyQuem;
         set
         {
@@ -259,9 +288,6 @@ public partial class DBInstancia
                 m_FZKeyQuem = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MZKeyQuando => Convert.ToDateTime(m_FZKeyQuando);
 
     public string? FZKeyQuando
     {
@@ -276,30 +302,41 @@ public partial class DBInstancia
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FNroAntigo da tabela Instancia deve ter no máximo 25 caracteres.")]
     public string? FNroAntigo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroAntigo ?? string.Empty;
         set
         {
             pFldFNroAntigo = pFldFNroAntigo || !(m_FNroAntigo ?? string.Empty).Equals(value);
             if (pFldFNroAntigo)
-                m_FNroAntigo = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroAntigo = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FAccessCode da tabela Instancia deve ter no máximo 100 caracteres.")]
     public string? FAccessCode
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAccessCode ?? string.Empty;
         set
         {
             pFldFAccessCode = pFldFAccessCode || !(m_FAccessCode ?? string.Empty).Equals(value);
             if (pFldFAccessCode)
-                m_FAccessCode = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAccessCode = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public int FJulgador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FJulgador;
         set
         {
@@ -309,14 +346,19 @@ public partial class DBInstancia
         }
     }
 
+    [StringLength(25, ErrorMessage = "A propriedade FZKeyIA da tabela Instancia deve ter no máximo 25 caracteres.")]
     public string? FZKeyIA
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FZKeyIA ?? string.Empty;
         set
         {
             pFldFZKeyIA = pFldFZKeyIA || !(m_FZKeyIA ?? string.Empty).Equals(value);
             if (pFldFZKeyIA)
-                m_FZKeyIA = value.trim().Length > 25 ? value.trim().substring(0, 25) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FZKeyIA = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
         }
     }
 
@@ -333,16 +375,19 @@ public partial class DBInstancia
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -4,61 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBCargosODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBCargosDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBCargosDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBCargosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBCargosDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBCargosDicInfo.Nome => DBCargosDicInfo.CarNome,
-        DBCargosDicInfo.QuemCad => DBCargosDicInfo.CarQuemCad,
-        DBCargosDicInfo.DtCad => DBCargosDicInfo.CarDtCad,
-        DBCargosDicInfo.QuemAtu => DBCargosDicInfo.CarQuemAtu,
-        DBCargosDicInfo.DtAtu => DBCargosDicInfo.CarDtAtu,
-        DBCargosDicInfo.Visto => DBCargosDicInfo.CarVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBCargosDicInfo.CampoCodigo;
     public static string TCampoNome => DBCargosDicInfo.CampoNome;
     public static string TTabelaNome => DBCargosDicInfo.TabelaNome;
     public static string TTablePrefix => DBCargosDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBCargosDicInfo.CarNome, DBCargosDicInfo.CarQuemCad, DBCargosDicInfo.CarDtCad, DBCargosDicInfo.CarQuemAtu, DBCargosDicInfo.CarDtAtu, DBCargosDicInfo.CarVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBCargosDicInfo.CarNome];
+    public static ImmutableArray<DBInfoSystem> List => [DBCargosDicInfo.CarNome, DBCargosDicInfo.CarQuemCad, DBCargosDicInfo.CarDtCad, DBCargosDicInfo.CarQuemAtu, DBCargosDicInfo.CarDtAtu, DBCargosDicInfo.CarVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBCargosDicInfo.CarNome];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "carCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["carCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBCargosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "carCodigo",
-            "carNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["carCodigo", "carNome"]);
         var result = campos.Where(campo => !campo.Equals(DBCargosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

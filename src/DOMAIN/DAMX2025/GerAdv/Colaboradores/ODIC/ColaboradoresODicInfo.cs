@@ -4,81 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBColaboradoresODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBColaboradoresDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBColaboradoresDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBColaboradoresDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBColaboradoresDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => true;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBColaboradoresDicInfo.Cargo => DBColaboradoresDicInfo.ColCargo,
-        DBColaboradoresDicInfo.Cliente => DBColaboradoresDicInfo.ColCliente,
-        DBColaboradoresDicInfo.Sexo => DBColaboradoresDicInfo.ColSexo,
-        DBColaboradoresDicInfo.Nome => DBColaboradoresDicInfo.ColNome,
-        DBColaboradoresDicInfo.CPF => DBColaboradoresDicInfo.ColCPF,
-        DBColaboradoresDicInfo.RG => DBColaboradoresDicInfo.ColRG,
-        DBColaboradoresDicInfo.DtNasc => DBColaboradoresDicInfo.ColDtNasc,
-        DBColaboradoresDicInfo.Idade => DBColaboradoresDicInfo.ColIdade,
-        DBColaboradoresDicInfo.Endereco => DBColaboradoresDicInfo.ColEndereco,
-        DBColaboradoresDicInfo.Bairro => DBColaboradoresDicInfo.ColBairro,
-        DBColaboradoresDicInfo.CEP => DBColaboradoresDicInfo.ColCEP,
-        DBColaboradoresDicInfo.Cidade => DBColaboradoresDicInfo.ColCidade,
-        DBColaboradoresDicInfo.Fone => DBColaboradoresDicInfo.ColFone,
-        DBColaboradoresDicInfo.Observacao => DBColaboradoresDicInfo.ColObservacao,
-        DBColaboradoresDicInfo.EMail => DBColaboradoresDicInfo.ColEMail,
-        DBColaboradoresDicInfo.CNH => DBColaboradoresDicInfo.ColCNH,
-        DBColaboradoresDicInfo.Class => DBColaboradoresDicInfo.ColClass,
-        DBColaboradoresDicInfo.Etiqueta => DBColaboradoresDicInfo.ColEtiqueta,
-        DBColaboradoresDicInfo.Ani => DBColaboradoresDicInfo.ColAni,
-        DBColaboradoresDicInfo.Bold => DBColaboradoresDicInfo.ColBold,
-        DBColaboradoresDicInfo.QuemCad => DBColaboradoresDicInfo.ColQuemCad,
-        DBColaboradoresDicInfo.DtCad => DBColaboradoresDicInfo.ColDtCad,
-        DBColaboradoresDicInfo.QuemAtu => DBColaboradoresDicInfo.ColQuemAtu,
-        DBColaboradoresDicInfo.DtAtu => DBColaboradoresDicInfo.ColDtAtu,
-        DBColaboradoresDicInfo.Visto => DBColaboradoresDicInfo.ColVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBColaboradoresDicInfo.CampoCodigo;
     public static string TCampoNome => DBColaboradoresDicInfo.CampoNome;
     public static string TTabelaNome => DBColaboradoresDicInfo.TabelaNome;
     public static string TTablePrefix => DBColaboradoresDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBColaboradoresDicInfo.ColCargo, DBColaboradoresDicInfo.ColCliente, DBColaboradoresDicInfo.ColSexo, DBColaboradoresDicInfo.ColNome, DBColaboradoresDicInfo.ColCPF, DBColaboradoresDicInfo.ColRG, DBColaboradoresDicInfo.ColDtNasc, DBColaboradoresDicInfo.ColIdade, DBColaboradoresDicInfo.ColEndereco, DBColaboradoresDicInfo.ColBairro, DBColaboradoresDicInfo.ColCEP, DBColaboradoresDicInfo.ColCidade, DBColaboradoresDicInfo.ColFone, DBColaboradoresDicInfo.ColObservacao, DBColaboradoresDicInfo.ColEMail, DBColaboradoresDicInfo.ColCNH, DBColaboradoresDicInfo.ColClass, DBColaboradoresDicInfo.ColEtiqueta, DBColaboradoresDicInfo.ColAni, DBColaboradoresDicInfo.ColBold, DBColaboradoresDicInfo.ColQuemCad, DBColaboradoresDicInfo.ColDtCad, DBColaboradoresDicInfo.ColQuemAtu, DBColaboradoresDicInfo.ColDtAtu, DBColaboradoresDicInfo.ColVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBColaboradoresDicInfo.ColCargo, DBColaboradoresDicInfo.ColCliente, DBColaboradoresDicInfo.ColSexo, DBColaboradoresDicInfo.ColNome, DBColaboradoresDicInfo.ColCPF, DBColaboradoresDicInfo.ColRG, DBColaboradoresDicInfo.ColDtNasc, DBColaboradoresDicInfo.ColIdade, DBColaboradoresDicInfo.ColEndereco, DBColaboradoresDicInfo.ColBairro, DBColaboradoresDicInfo.ColCEP, DBColaboradoresDicInfo.ColCidade, DBColaboradoresDicInfo.ColFone, DBColaboradoresDicInfo.ColObservacao, DBColaboradoresDicInfo.ColEMail, DBColaboradoresDicInfo.ColCNH, DBColaboradoresDicInfo.ColClass];
+    public static ImmutableArray<DBInfoSystem> List => [DBColaboradoresDicInfo.ColCargo, DBColaboradoresDicInfo.ColCliente, DBColaboradoresDicInfo.ColSexo, DBColaboradoresDicInfo.ColNome, DBColaboradoresDicInfo.ColCPF, DBColaboradoresDicInfo.ColRG, DBColaboradoresDicInfo.ColDtNasc, DBColaboradoresDicInfo.ColIdade, DBColaboradoresDicInfo.ColEndereco, DBColaboradoresDicInfo.ColBairro, DBColaboradoresDicInfo.ColCEP, DBColaboradoresDicInfo.ColCidade, DBColaboradoresDicInfo.ColFone, DBColaboradoresDicInfo.ColObservacao, DBColaboradoresDicInfo.ColEMail, DBColaboradoresDicInfo.ColCNH, DBColaboradoresDicInfo.ColClass, DBColaboradoresDicInfo.ColEtiqueta, DBColaboradoresDicInfo.ColAni, DBColaboradoresDicInfo.ColBold, DBColaboradoresDicInfo.ColQuemCad, DBColaboradoresDicInfo.ColDtCad, DBColaboradoresDicInfo.ColQuemAtu, DBColaboradoresDicInfo.ColDtAtu, DBColaboradoresDicInfo.ColVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBColaboradoresDicInfo.ColCargo, DBColaboradoresDicInfo.ColCliente, DBColaboradoresDicInfo.ColSexo, DBColaboradoresDicInfo.ColNome, DBColaboradoresDicInfo.ColCPF, DBColaboradoresDicInfo.ColRG, DBColaboradoresDicInfo.ColDtNasc, DBColaboradoresDicInfo.ColIdade, DBColaboradoresDicInfo.ColEndereco, DBColaboradoresDicInfo.ColBairro, DBColaboradoresDicInfo.ColCEP, DBColaboradoresDicInfo.ColCidade, DBColaboradoresDicInfo.ColFone, DBColaboradoresDicInfo.ColObservacao, DBColaboradoresDicInfo.ColEMail, DBColaboradoresDicInfo.ColCNH, DBColaboradoresDicInfo.ColClass];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "colCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["colCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBColaboradoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "colCliente",
-            "colCodigo",
-            "colNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["colCliente", "colCodigo", "colNome"]);
         var result = campos.Where(campo => !campo.Equals(DBColaboradoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

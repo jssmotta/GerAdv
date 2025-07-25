@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProSucumbencia
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFProcesso, pFldFInstancia, pFldFData, pFldFNome, pFldFTipoOrigemSucumbencia, pFldFValor, pFldFPercentual;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBProSucumbencia
     private protected decimal m_FValor;
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBProSucumbencia
 
     public int FInstancia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FInstancia;
         set
         {
@@ -34,9 +35,6 @@ public partial class DBProSucumbencia
                 m_FInstancia = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -51,19 +49,25 @@ public partial class DBProSucumbencia
         }
     }
 
+    [StringLength(2048, ErrorMessage = "A propriedade FNome da tabela ProSucumbencia deve ter no máximo 2048 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 2048 ? value.trim().substring(0, 2048) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+            }
         }
     }
 
     public int FTipoOrigemSucumbencia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoOrigemSucumbencia;
         set
         {
@@ -75,6 +79,7 @@ public partial class DBProSucumbencia
 
     public decimal FValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValor;
         set
         {
@@ -85,14 +90,19 @@ public partial class DBProSucumbencia
         }
     }
 
+    [StringLength(5, ErrorMessage = "A propriedade FPercentual da tabela ProSucumbencia deve ter no máximo 5 caracteres.")]
     public string? FPercentual
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercentual ?? string.Empty;
         set
         {
             pFldFPercentual = pFldFPercentual || !(m_FPercentual ?? string.Empty).Equals(value);
             if (pFldFPercentual)
-                m_FPercentual = value.trim().Length > 5 ? value.trim().substring(0, 5) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPercentual = trimmed.Length > 5 ? trimmed.AsSpan(0, 5).ToString() : trimmed;
+            }
         }
     }
 
@@ -109,16 +119,19 @@ public partial class DBProSucumbencia
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

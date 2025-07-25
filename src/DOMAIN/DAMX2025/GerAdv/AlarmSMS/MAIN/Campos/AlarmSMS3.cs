@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBAlarmSMS
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFDescricao, pFldFHora, pFldFMinuto, pFldFD1, pFldFD2, pFldFD3, pFldFD4, pFldFD5, pFldFD6, pFldFD7, pFldFEMail, pFldFDesativar, pFldFToday, pFldFExcetoDiasFelizes, pFldFDesktop, pFldFAlertarDataHora, pFldFOperador, pFldFGuidExo, pFldFAgenda, pFldFRecado, pFldFEmocao;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBAlarmSMS
     private protected bool m_FD1, m_FD2, m_FD3, m_FD4, m_FD5, m_FD6, m_FD7, m_FDesativar, m_FExcetoDiasFelizes, m_FDesktop;
     public string? FDescricao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDescricao ?? string.Empty;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBAlarmSMS
 
     public int FHora
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHora;
         set
         {
@@ -37,6 +38,7 @@ public partial class DBAlarmSMS
 
     public int FMinuto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMinuto;
         set
         {
@@ -48,6 +50,7 @@ public partial class DBAlarmSMS
 
     public bool FD1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD1;
         set
         {
@@ -59,6 +62,7 @@ public partial class DBAlarmSMS
 
     public bool FD2
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD2;
         set
         {
@@ -70,6 +74,7 @@ public partial class DBAlarmSMS
 
     public bool FD3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD3;
         set
         {
@@ -81,6 +86,7 @@ public partial class DBAlarmSMS
 
     public bool FD4
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD4;
         set
         {
@@ -92,6 +98,7 @@ public partial class DBAlarmSMS
 
     public bool FD5
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD5;
         set
         {
@@ -103,6 +110,7 @@ public partial class DBAlarmSMS
 
     public bool FD6
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD6;
         set
         {
@@ -114,6 +122,7 @@ public partial class DBAlarmSMS
 
     public bool FD7
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FD7;
         set
         {
@@ -123,19 +132,28 @@ public partial class DBAlarmSMS
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FEMail da tabela AlarmSMS deve ter no máximo 50 caracteres.")]
     public string? FEMail
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEMail ?? string.Empty;
         set
         {
             pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
             if (pFldFEMail)
-                m_FEMail = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEMail = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                if (m_FEMail.IsValidEmail())
+                    return;
+                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+            }
         }
     }
 
     public bool FDesativar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDesativar;
         set
         {
@@ -144,9 +162,6 @@ public partial class DBAlarmSMS
                 m_FDesativar = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MToday => Convert.ToDateTime(m_FToday);
 
     public string? FToday
     {
@@ -163,6 +178,7 @@ public partial class DBAlarmSMS
 
     public bool FExcetoDiasFelizes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExcetoDiasFelizes;
         set
         {
@@ -174,6 +190,7 @@ public partial class DBAlarmSMS
 
     public bool FDesktop
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDesktop;
         set
         {
@@ -182,9 +199,6 @@ public partial class DBAlarmSMS
                 m_FDesktop = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MAlertarDataHora => Convert.ToDateTime(m_FAlertarDataHora);
 
     public string? FAlertarDataHora
     {
@@ -201,6 +215,7 @@ public partial class DBAlarmSMS
 
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -210,19 +225,25 @@ public partial class DBAlarmSMS
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FGuidExo da tabela AlarmSMS deve ter no máximo 100 caracteres.")]
     public string? FGuidExo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FGuidExo ?? string.Empty;
         set
         {
             pFldFGuidExo = pFldFGuidExo || !(m_FGuidExo ?? string.Empty).Equals(value);
             if (pFldFGuidExo)
-                m_FGuidExo = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FGuidExo = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public int FAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAgenda;
         set
         {
@@ -234,6 +255,7 @@ public partial class DBAlarmSMS
 
     public int FRecado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRecado;
         set
         {
@@ -245,6 +267,7 @@ public partial class DBAlarmSMS
 
     public int FEmocao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEmocao;
         set
         {
@@ -267,16 +290,19 @@ public partial class DBAlarmSMS
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

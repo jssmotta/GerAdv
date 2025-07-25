@@ -2,7 +2,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
+public partial class DBColaboradores : VAuditor, ICadastros, IAuditor
 {
 #region TableDefinition_Colaboradores
     [XmlIgnore]
@@ -13,7 +13,6 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #endregion
-    public DBColaboradores(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     public DBColaboradores(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
@@ -54,7 +53,7 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
     }
 
 #region GravarDados_Colaboradores
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -72,7 +71,8 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
 #endif
         if (this.FNome.IsEmpty())
         {
-            throw new Exception("Campo 'colNome' está vazio!");
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Nome' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
@@ -100,9 +100,9 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFSexo || ID.IsEmptyIDNumber())
             clsW.Fields(DBColaboradoresDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFNome)
-            clsW.Fields(DBColaboradoresDicInfo.Nome, sex.m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBColaboradoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFCPF)
-            clsW.Fields(DBColaboradoresDicInfo.CPF, sex.m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBColaboradoresDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             clsW.Fields(DBColaboradoresDicInfo.RG, m_FRG, ETiposCampos.FString);
         if (pFldFDtNasc)
@@ -110,11 +110,11 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFIdade)
             clsW.Fields(DBColaboradoresDicInfo.Idade, m_FIdade, ETiposCampos.FNumberNull);
         if (pFldFEndereco)
-            clsW.Fields(DBColaboradoresDicInfo.Endereco, sex.m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBColaboradoresDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
-            clsW.Fields(DBColaboradoresDicInfo.Bairro, sex.m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBColaboradoresDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
         if (pFldFCEP)
-            clsW.Fields(DBColaboradoresDicInfo.CEP, sex.m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBColaboradoresDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFCidade)
             clsW.Fields(DBColaboradoresDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
         if (pFldFFone)
@@ -126,7 +126,7 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
         if (pFldFCNH)
             clsW.Fields(DBColaboradoresDicInfo.CNH, m_FCNH, ETiposCampos.FString);
         if (pFldFClass)
-            clsW.Fields(DBColaboradoresDicInfo.Class, sex.m_FClass, ETiposCampos.FString);
+            clsW.Fields(DBColaboradoresDicInfo.Class, m_FClass, ETiposCampos.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
             clsW.Fields(DBColaboradoresDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
         if (pFldFAni || ID.IsEmptyIDNumber())
@@ -172,7 +172,7 @@ public partial class DBColaboradores : VSexo, ICadastrosAuditor, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

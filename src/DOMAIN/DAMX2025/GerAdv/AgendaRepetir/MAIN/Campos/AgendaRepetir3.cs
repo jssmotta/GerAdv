@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBAgendaRepetir
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFAdvogado, pFldFCliente, pFldFDataFinal, pFldFFuncionario, pFldFHoraFinal, pFldFProcesso, pFldFPessoal, pFldFFrequencia, pFldFDia, pFldFMes, pFldFHora, pFldFIDQuem, pFldFIDQuem2, pFldFMensagem, pFldFIDTipo, pFldFID1, pFldFID2, pFldFID3, pFldFID4, pFldFSegunda, pFldFQuarta, pFldFQuinta, pFldFSexta, pFldFSabado, pFldFDomingo, pFldFTerca;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBAgendaRepetir
     private protected bool m_FPessoal, m_FSegunda, m_FQuarta, m_FQuinta, m_FSexta, m_FSabado, m_FDomingo, m_FTerca;
     public int FAdvogado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdvogado;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBAgendaRepetir
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -34,9 +35,6 @@ public partial class DBAgendaRepetir
                 m_FCliente = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataFinal => Convert.ToDateTime(m_FDataFinal);
 
     public string? FDataFinal
     {
@@ -53,6 +51,7 @@ public partial class DBAgendaRepetir
 
     public int FFuncionario
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFuncionario;
         set
         {
@@ -61,9 +60,6 @@ public partial class DBAgendaRepetir
                 m_FFuncionario = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
     public string? FHoraFinal
     {
@@ -97,6 +93,7 @@ public partial class DBAgendaRepetir
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -108,6 +105,7 @@ public partial class DBAgendaRepetir
 
     public bool FPessoal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPessoal;
         set
         {
@@ -119,6 +117,7 @@ public partial class DBAgendaRepetir
 
     public int FFrequencia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFrequencia;
         set
         {
@@ -130,6 +129,7 @@ public partial class DBAgendaRepetir
 
     public int FDia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDia;
         set
         {
@@ -141,6 +141,7 @@ public partial class DBAgendaRepetir
 
     public int FMes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMes;
         set
         {
@@ -149,9 +150,6 @@ public partial class DBAgendaRepetir
                 m_FMes = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHora => Convert.ToDateTime(m_FHora);
 
     public string? FHora
     {
@@ -185,6 +183,7 @@ public partial class DBAgendaRepetir
 
     public int FIDQuem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDQuem;
         set
         {
@@ -196,6 +195,7 @@ public partial class DBAgendaRepetir
 
     public int FIDQuem2
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDQuem2;
         set
         {
@@ -207,6 +207,7 @@ public partial class DBAgendaRepetir
 
     public string? FMensagem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMensagem ?? string.Empty;
         set
         {
@@ -218,6 +219,7 @@ public partial class DBAgendaRepetir
 
     public int FIDTipo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDTipo;
         set
         {
@@ -229,6 +231,7 @@ public partial class DBAgendaRepetir
 
     public int FID1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FID1;
         set
         {
@@ -240,6 +243,7 @@ public partial class DBAgendaRepetir
 
     public int FID2
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FID2;
         set
         {
@@ -251,6 +255,7 @@ public partial class DBAgendaRepetir
 
     public int FID3
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FID3;
         set
         {
@@ -262,6 +267,7 @@ public partial class DBAgendaRepetir
 
     public int FID4
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FID4;
         set
         {
@@ -273,6 +279,7 @@ public partial class DBAgendaRepetir
 
     public bool FSegunda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSegunda;
         set
         {
@@ -284,6 +291,7 @@ public partial class DBAgendaRepetir
 
     public bool FQuarta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuarta;
         set
         {
@@ -295,6 +303,7 @@ public partial class DBAgendaRepetir
 
     public bool FQuinta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuinta;
         set
         {
@@ -306,6 +315,7 @@ public partial class DBAgendaRepetir
 
     public bool FSexta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSexta;
         set
         {
@@ -317,6 +327,7 @@ public partial class DBAgendaRepetir
 
     public bool FSabado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSabado;
         set
         {
@@ -328,6 +339,7 @@ public partial class DBAgendaRepetir
 
     public bool FDomingo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDomingo;
         set
         {
@@ -339,6 +351,7 @@ public partial class DBAgendaRepetir
 
     public bool FTerca
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTerca;
         set
         {
@@ -361,16 +374,19 @@ public partial class DBAgendaRepetir
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

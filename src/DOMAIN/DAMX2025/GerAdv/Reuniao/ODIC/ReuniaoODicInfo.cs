@@ -4,72 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBReuniaoODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBReuniaoDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBReuniaoDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBReuniaoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBReuniaoDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBReuniaoDicInfo.Cliente => DBReuniaoDicInfo.RenCliente,
-        DBReuniaoDicInfo.IDAgenda => DBReuniaoDicInfo.RenIDAgenda,
-        DBReuniaoDicInfo.Data => DBReuniaoDicInfo.RenData,
-        DBReuniaoDicInfo.Pauta => DBReuniaoDicInfo.RenPauta,
-        DBReuniaoDicInfo.ATA => DBReuniaoDicInfo.RenATA,
-        DBReuniaoDicInfo.HoraInicial => DBReuniaoDicInfo.RenHoraInicial,
-        DBReuniaoDicInfo.HoraFinal => DBReuniaoDicInfo.RenHoraFinal,
-        DBReuniaoDicInfo.Externa => DBReuniaoDicInfo.RenExterna,
-        DBReuniaoDicInfo.HoraSaida => DBReuniaoDicInfo.RenHoraSaida,
-        DBReuniaoDicInfo.HoraRetorno => DBReuniaoDicInfo.RenHoraRetorno,
-        DBReuniaoDicInfo.PrincipaisDecisoes => DBReuniaoDicInfo.RenPrincipaisDecisoes,
-        DBReuniaoDicInfo.Bold => DBReuniaoDicInfo.RenBold,
-        DBReuniaoDicInfo.GUID => DBReuniaoDicInfo.RenGUID,
-        DBReuniaoDicInfo.QuemCad => DBReuniaoDicInfo.RenQuemCad,
-        DBReuniaoDicInfo.DtCad => DBReuniaoDicInfo.RenDtCad,
-        DBReuniaoDicInfo.QuemAtu => DBReuniaoDicInfo.RenQuemAtu,
-        DBReuniaoDicInfo.DtAtu => DBReuniaoDicInfo.RenDtAtu,
-        DBReuniaoDicInfo.Visto => DBReuniaoDicInfo.RenVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBReuniaoDicInfo.CampoCodigo;
     public static string TCampoNome => DBReuniaoDicInfo.CampoNome;
     public static string TTabelaNome => DBReuniaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBReuniaoDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenBold, DBReuniaoDicInfo.RenGUID, DBReuniaoDicInfo.RenQuemCad, DBReuniaoDicInfo.RenDtCad, DBReuniaoDicInfo.RenQuemAtu, DBReuniaoDicInfo.RenDtAtu, DBReuniaoDicInfo.RenVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenBold, DBReuniaoDicInfo.RenGUID, DBReuniaoDicInfo.RenQuemCad, DBReuniaoDicInfo.RenDtCad, DBReuniaoDicInfo.RenQuemAtu, DBReuniaoDicInfo.RenDtAtu, DBReuniaoDicInfo.RenVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBReuniaoDicInfo.RenCliente, DBReuniaoDicInfo.RenIDAgenda, DBReuniaoDicInfo.RenData, DBReuniaoDicInfo.RenPauta, DBReuniaoDicInfo.RenATA, DBReuniaoDicInfo.RenHoraInicial, DBReuniaoDicInfo.RenHoraFinal, DBReuniaoDicInfo.RenExterna, DBReuniaoDicInfo.RenHoraSaida, DBReuniaoDicInfo.RenHoraRetorno, DBReuniaoDicInfo.RenPrincipaisDecisoes, DBReuniaoDicInfo.RenGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "renCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["renCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBReuniaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "renCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["renCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBReuniaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

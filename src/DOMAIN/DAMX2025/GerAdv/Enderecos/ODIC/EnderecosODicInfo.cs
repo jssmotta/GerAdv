@@ -4,66 +4,45 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBEnderecosODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBEnderecosDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBEnderecosDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBEnderecosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBEnderecosDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBEnderecosDicInfo.TopIndex => DBEnderecosDicInfo.EndTopIndex,
-        DBEnderecosDicInfo.Descricao => DBEnderecosDicInfo.EndDescricao,
-        DBEnderecosDicInfo.Contato => DBEnderecosDicInfo.EndContato,
-        DBEnderecosDicInfo.DtNasc => DBEnderecosDicInfo.EndDtNasc,
-        DBEnderecosDicInfo.Endereco => DBEnderecosDicInfo.EndEndereco,
-        DBEnderecosDicInfo.Bairro => DBEnderecosDicInfo.EndBairro,
-        DBEnderecosDicInfo.Privativo => DBEnderecosDicInfo.EndPrivativo,
-        DBEnderecosDicInfo.AddContato => DBEnderecosDicInfo.EndAddContato,
-        DBEnderecosDicInfo.CEP => DBEnderecosDicInfo.EndCEP,
-        DBEnderecosDicInfo.OAB => DBEnderecosDicInfo.EndOAB,
-        DBEnderecosDicInfo.OBS => DBEnderecosDicInfo.EndOBS,
-        DBEnderecosDicInfo.Fone => DBEnderecosDicInfo.EndFone,
-        DBEnderecosDicInfo.Fax => DBEnderecosDicInfo.EndFax,
-        DBEnderecosDicInfo.Tratamento => DBEnderecosDicInfo.EndTratamento,
-        DBEnderecosDicInfo.Cidade => DBEnderecosDicInfo.EndCidade,
-        DBEnderecosDicInfo.Site => DBEnderecosDicInfo.EndSite,
-        DBEnderecosDicInfo.EMail => DBEnderecosDicInfo.EndEMail,
-        DBEnderecosDicInfo.Quem => DBEnderecosDicInfo.EndQuem,
-        DBEnderecosDicInfo.QuemIndicou => DBEnderecosDicInfo.EndQuemIndicou,
-        DBEnderecosDicInfo.ReportECBOnly => DBEnderecosDicInfo.EndReportECBOnly,
-        DBEnderecosDicInfo.Etiqueta => DBEnderecosDicInfo.EndEtiqueta,
-        DBEnderecosDicInfo.Ani => DBEnderecosDicInfo.EndAni,
-        DBEnderecosDicInfo.Bold => DBEnderecosDicInfo.EndBold,
-        DBEnderecosDicInfo.GUID => DBEnderecosDicInfo.EndGUID,
-        DBEnderecosDicInfo.QuemCad => DBEnderecosDicInfo.EndQuemCad,
-        DBEnderecosDicInfo.DtCad => DBEnderecosDicInfo.EndDtCad,
-        DBEnderecosDicInfo.QuemAtu => DBEnderecosDicInfo.EndQuemAtu,
-        DBEnderecosDicInfo.DtAtu => DBEnderecosDicInfo.EndDtAtu,
-        DBEnderecosDicInfo.Visto => DBEnderecosDicInfo.EndVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBEnderecosDicInfo.CampoCodigo;
     public static string TCampoNome => DBEnderecosDicInfo.CampoNome;
     public static string TTabelaNome => DBEnderecosDicInfo.TabelaNome;
     public static string TTablePrefix => DBEnderecosDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndEtiqueta, DBEnderecosDicInfo.EndAni, DBEnderecosDicInfo.EndBold, DBEnderecosDicInfo.EndGUID, DBEnderecosDicInfo.EndQuemCad, DBEnderecosDicInfo.EndDtCad, DBEnderecosDicInfo.EndQuemAtu, DBEnderecosDicInfo.EndDtAtu, DBEnderecosDicInfo.EndVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndEtiqueta, DBEnderecosDicInfo.EndAni, DBEnderecosDicInfo.EndBold, DBEnderecosDicInfo.EndGUID, DBEnderecosDicInfo.EndQuemCad, DBEnderecosDicInfo.EndDtCad, DBEnderecosDicInfo.EndQuemAtu, DBEnderecosDicInfo.EndDtAtu, DBEnderecosDicInfo.EndVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndGUID];
 
-    public static List<DBInfoSystem> ListPk() => [];
-    public static List<DBInfoSystem> ListPkIndices() => [];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ImmutableArray<DBInfoSystem> ListPk() => [];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ImmutableArray<DBInfoSystem> ListPkIndices() => [];
 }
 #endif

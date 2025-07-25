@@ -4,85 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBContaCorrenteODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBContaCorrenteDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBContaCorrenteDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBContaCorrenteDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBContaCorrenteDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBContaCorrenteDicInfo.CIAcordo => DBContaCorrenteDicInfo.CtoCIAcordo,
-        DBContaCorrenteDicInfo.Quitado => DBContaCorrenteDicInfo.CtoQuitado,
-        DBContaCorrenteDicInfo.IDContrato => DBContaCorrenteDicInfo.CtoIDContrato,
-        DBContaCorrenteDicInfo.QuitadoID => DBContaCorrenteDicInfo.CtoQuitadoID,
-        DBContaCorrenteDicInfo.DebitoID => DBContaCorrenteDicInfo.CtoDebitoID,
-        DBContaCorrenteDicInfo.LivroCaixaID => DBContaCorrenteDicInfo.CtoLivroCaixaID,
-        DBContaCorrenteDicInfo.Sucumbencia => DBContaCorrenteDicInfo.CtoSucumbencia,
-        DBContaCorrenteDicInfo.DistRegra => DBContaCorrenteDicInfo.CtoDistRegra,
-        DBContaCorrenteDicInfo.DtOriginal => DBContaCorrenteDicInfo.CtoDtOriginal,
-        DBContaCorrenteDicInfo.Processo => DBContaCorrenteDicInfo.CtoProcesso,
-        DBContaCorrenteDicInfo.ParcelaX => DBContaCorrenteDicInfo.CtoParcelaX,
-        DBContaCorrenteDicInfo.Valor => DBContaCorrenteDicInfo.CtoValor,
-        DBContaCorrenteDicInfo.Data => DBContaCorrenteDicInfo.CtoData,
-        DBContaCorrenteDicInfo.Cliente => DBContaCorrenteDicInfo.CtoCliente,
-        DBContaCorrenteDicInfo.Historico => DBContaCorrenteDicInfo.CtoHistorico,
-        DBContaCorrenteDicInfo.Contrato => DBContaCorrenteDicInfo.CtoContrato,
-        DBContaCorrenteDicInfo.Pago => DBContaCorrenteDicInfo.CtoPago,
-        DBContaCorrenteDicInfo.Distribuir => DBContaCorrenteDicInfo.CtoDistribuir,
-        DBContaCorrenteDicInfo.LC => DBContaCorrenteDicInfo.CtoLC,
-        DBContaCorrenteDicInfo.IDHTrab => DBContaCorrenteDicInfo.CtoIDHTrab,
-        DBContaCorrenteDicInfo.NroParcelas => DBContaCorrenteDicInfo.CtoNroParcelas,
-        DBContaCorrenteDicInfo.ValorPrincipal => DBContaCorrenteDicInfo.CtoValorPrincipal,
-        DBContaCorrenteDicInfo.ParcelaPrincipalID => DBContaCorrenteDicInfo.CtoParcelaPrincipalID,
-        DBContaCorrenteDicInfo.Hide => DBContaCorrenteDicInfo.CtoHide,
-        DBContaCorrenteDicInfo.DataPgto => DBContaCorrenteDicInfo.CtoDataPgto,
-        DBContaCorrenteDicInfo.GUID => DBContaCorrenteDicInfo.CtoGUID,
-        DBContaCorrenteDicInfo.QuemCad => DBContaCorrenteDicInfo.CtoQuemCad,
-        DBContaCorrenteDicInfo.DtCad => DBContaCorrenteDicInfo.CtoDtCad,
-        DBContaCorrenteDicInfo.QuemAtu => DBContaCorrenteDicInfo.CtoQuemAtu,
-        DBContaCorrenteDicInfo.DtAtu => DBContaCorrenteDicInfo.CtoDtAtu,
-        DBContaCorrenteDicInfo.Visto => DBContaCorrenteDicInfo.CtoVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBContaCorrenteDicInfo.CampoCodigo;
     public static string TCampoNome => DBContaCorrenteDicInfo.CampoNome;
     public static string TTabelaNome => DBContaCorrenteDicInfo.TabelaNome;
     public static string TTablePrefix => DBContaCorrenteDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBContaCorrenteDicInfo.CtoCIAcordo, DBContaCorrenteDicInfo.CtoQuitado, DBContaCorrenteDicInfo.CtoIDContrato, DBContaCorrenteDicInfo.CtoQuitadoID, DBContaCorrenteDicInfo.CtoDebitoID, DBContaCorrenteDicInfo.CtoLivroCaixaID, DBContaCorrenteDicInfo.CtoSucumbencia, DBContaCorrenteDicInfo.CtoDistRegra, DBContaCorrenteDicInfo.CtoDtOriginal, DBContaCorrenteDicInfo.CtoProcesso, DBContaCorrenteDicInfo.CtoParcelaX, DBContaCorrenteDicInfo.CtoValor, DBContaCorrenteDicInfo.CtoData, DBContaCorrenteDicInfo.CtoCliente, DBContaCorrenteDicInfo.CtoHistorico, DBContaCorrenteDicInfo.CtoContrato, DBContaCorrenteDicInfo.CtoPago, DBContaCorrenteDicInfo.CtoDistribuir, DBContaCorrenteDicInfo.CtoLC, DBContaCorrenteDicInfo.CtoIDHTrab, DBContaCorrenteDicInfo.CtoNroParcelas, DBContaCorrenteDicInfo.CtoValorPrincipal, DBContaCorrenteDicInfo.CtoParcelaPrincipalID, DBContaCorrenteDicInfo.CtoHide, DBContaCorrenteDicInfo.CtoDataPgto, DBContaCorrenteDicInfo.CtoGUID, DBContaCorrenteDicInfo.CtoQuemCad, DBContaCorrenteDicInfo.CtoDtCad, DBContaCorrenteDicInfo.CtoQuemAtu, DBContaCorrenteDicInfo.CtoDtAtu, DBContaCorrenteDicInfo.CtoVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBContaCorrenteDicInfo.CtoCIAcordo, DBContaCorrenteDicInfo.CtoQuitado, DBContaCorrenteDicInfo.CtoIDContrato, DBContaCorrenteDicInfo.CtoQuitadoID, DBContaCorrenteDicInfo.CtoDebitoID, DBContaCorrenteDicInfo.CtoLivroCaixaID, DBContaCorrenteDicInfo.CtoSucumbencia, DBContaCorrenteDicInfo.CtoDistRegra, DBContaCorrenteDicInfo.CtoDtOriginal, DBContaCorrenteDicInfo.CtoProcesso, DBContaCorrenteDicInfo.CtoParcelaX, DBContaCorrenteDicInfo.CtoValor, DBContaCorrenteDicInfo.CtoData, DBContaCorrenteDicInfo.CtoCliente, DBContaCorrenteDicInfo.CtoHistorico, DBContaCorrenteDicInfo.CtoContrato, DBContaCorrenteDicInfo.CtoPago, DBContaCorrenteDicInfo.CtoDistribuir, DBContaCorrenteDicInfo.CtoLC, DBContaCorrenteDicInfo.CtoIDHTrab, DBContaCorrenteDicInfo.CtoNroParcelas, DBContaCorrenteDicInfo.CtoValorPrincipal, DBContaCorrenteDicInfo.CtoParcelaPrincipalID, DBContaCorrenteDicInfo.CtoHide, DBContaCorrenteDicInfo.CtoDataPgto, DBContaCorrenteDicInfo.CtoGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBContaCorrenteDicInfo.CtoCIAcordo, DBContaCorrenteDicInfo.CtoQuitado, DBContaCorrenteDicInfo.CtoIDContrato, DBContaCorrenteDicInfo.CtoQuitadoID, DBContaCorrenteDicInfo.CtoDebitoID, DBContaCorrenteDicInfo.CtoLivroCaixaID, DBContaCorrenteDicInfo.CtoSucumbencia, DBContaCorrenteDicInfo.CtoDistRegra, DBContaCorrenteDicInfo.CtoDtOriginal, DBContaCorrenteDicInfo.CtoProcesso, DBContaCorrenteDicInfo.CtoParcelaX, DBContaCorrenteDicInfo.CtoValor, DBContaCorrenteDicInfo.CtoData, DBContaCorrenteDicInfo.CtoCliente, DBContaCorrenteDicInfo.CtoHistorico, DBContaCorrenteDicInfo.CtoContrato, DBContaCorrenteDicInfo.CtoPago, DBContaCorrenteDicInfo.CtoDistribuir, DBContaCorrenteDicInfo.CtoLC, DBContaCorrenteDicInfo.CtoIDHTrab, DBContaCorrenteDicInfo.CtoNroParcelas, DBContaCorrenteDicInfo.CtoValorPrincipal, DBContaCorrenteDicInfo.CtoParcelaPrincipalID, DBContaCorrenteDicInfo.CtoHide, DBContaCorrenteDicInfo.CtoDataPgto, DBContaCorrenteDicInfo.CtoGUID, DBContaCorrenteDicInfo.CtoQuemCad, DBContaCorrenteDicInfo.CtoDtCad, DBContaCorrenteDicInfo.CtoQuemAtu, DBContaCorrenteDicInfo.CtoDtAtu, DBContaCorrenteDicInfo.CtoVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBContaCorrenteDicInfo.CtoCIAcordo, DBContaCorrenteDicInfo.CtoQuitado, DBContaCorrenteDicInfo.CtoIDContrato, DBContaCorrenteDicInfo.CtoQuitadoID, DBContaCorrenteDicInfo.CtoDebitoID, DBContaCorrenteDicInfo.CtoLivroCaixaID, DBContaCorrenteDicInfo.CtoSucumbencia, DBContaCorrenteDicInfo.CtoDistRegra, DBContaCorrenteDicInfo.CtoDtOriginal, DBContaCorrenteDicInfo.CtoProcesso, DBContaCorrenteDicInfo.CtoParcelaX, DBContaCorrenteDicInfo.CtoValor, DBContaCorrenteDicInfo.CtoData, DBContaCorrenteDicInfo.CtoCliente, DBContaCorrenteDicInfo.CtoHistorico, DBContaCorrenteDicInfo.CtoContrato, DBContaCorrenteDicInfo.CtoPago, DBContaCorrenteDicInfo.CtoDistribuir, DBContaCorrenteDicInfo.CtoLC, DBContaCorrenteDicInfo.CtoIDHTrab, DBContaCorrenteDicInfo.CtoNroParcelas, DBContaCorrenteDicInfo.CtoValorPrincipal, DBContaCorrenteDicInfo.CtoParcelaPrincipalID, DBContaCorrenteDicInfo.CtoHide, DBContaCorrenteDicInfo.CtoDataPgto, DBContaCorrenteDicInfo.CtoGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "ctoCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ctoCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBContaCorrenteDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "ctoCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ctoCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBContaCorrenteDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

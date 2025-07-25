@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBCidade
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFDDD, pFldFTop, pFldFComarca, pFldFCapital, pFldFNome, pFldFUF, pFldFSigla;
     [XmlIgnore]
@@ -11,19 +10,25 @@ public partial class DBCidade
     private protected string? m_FDDD, m_FNome, m_FSigla;
     [XmlIgnore]
     private protected bool m_FTop, m_FComarca, m_FCapital;
+    [StringLength(10, ErrorMessage = "A propriedade FDDD da tabela Cidade deve ter no máximo 10 caracteres.")]
     public string? FDDD
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDDD ?? string.Empty;
         set
         {
             pFldFDDD = pFldFDDD || !(m_FDDD ?? string.Empty).Equals(value);
             if (pFldFDDD)
-                m_FDDD = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDDD = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
     public bool FTop
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTop;
         set
         {
@@ -35,6 +40,7 @@ public partial class DBCidade
 
     public bool FComarca
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FComarca;
         set
         {
@@ -46,6 +52,7 @@ public partial class DBCidade
 
     public bool FCapital
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCapital;
         set
         {
@@ -55,19 +62,25 @@ public partial class DBCidade
         }
     }
 
+    [StringLength(40, ErrorMessage = "A propriedade FNome da tabela Cidade deve ter no máximo 40 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 40 ? value.trim().substring(0, 40) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 40 ? trimmed.AsSpan(0, 40).ToString() : trimmed;
+            }
         }
     }
 
     public int FUF
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FUF;
         set
         {
@@ -77,14 +90,19 @@ public partial class DBCidade
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FSigla da tabela Cidade deve ter no máximo 10 caracteres.")]
     public string? FSigla
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSigla ?? string.Empty;
         set
         {
             pFldFSigla = pFldFSigla || !(m_FSigla ?? string.Empty).Equals(value);
             if (pFldFSigla)
-                m_FSigla = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSigla = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
@@ -101,16 +119,19 @@ public partial class DBCidade
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBOperadores
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFEnviado, pFldFCasa, pFldFCasaID, pFldFCasaCodigo, pFldFIsNovo, pFldFCliente, pFldFGrupo, pFldFNome, pFldFEMail, pFldFSenha, pFldFAtivado, pFldFAtualizarSenha, pFldFSenha256, pFldFSuporteSenha256, pFldFSuporteMaxAge;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBOperadores
     private protected bool m_FEnviado, m_FCasa, m_FIsNovo, m_FAtivado, m_FAtualizarSenha;
     public bool FEnviado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEnviado;
         set
         {
@@ -26,6 +26,7 @@ public partial class DBOperadores
 
     public bool FCasa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCasa;
         set
         {
@@ -37,6 +38,7 @@ public partial class DBOperadores
 
     public int FCasaID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCasaID;
         set
         {
@@ -48,6 +50,7 @@ public partial class DBOperadores
 
     public int FCasaCodigo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCasaCodigo;
         set
         {
@@ -59,6 +62,7 @@ public partial class DBOperadores
 
     public bool FIsNovo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIsNovo;
         set
         {
@@ -70,6 +74,7 @@ public partial class DBOperadores
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -81,6 +86,7 @@ public partial class DBOperadores
 
     public int FGrupo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FGrupo;
         set
         {
@@ -90,41 +96,60 @@ public partial class DBOperadores
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela Operadores deve ter no máximo 50 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(150, ErrorMessage = "A propriedade FEMail da tabela Operadores deve ter no máximo 150 caracteres.")]
     public string? FEMail
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEMail ?? string.Empty;
         set
         {
             pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
             if (pFldFEMail)
-                m_FEMail = value.trim().Length > 150 ? value.trim().substring(0, 150) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEMail = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                if (m_FEMail.IsValidEmail())
+                    return;
+                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+            }
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FSenha da tabela Operadores deve ter no máximo 10 caracteres.")]
     public string? FSenha
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSenha ?? string.Empty;
         set
         {
             pFldFSenha = pFldFSenha || !(m_FSenha ?? string.Empty).Equals(value);
             if (pFldFSenha)
-                m_FSenha = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSenha = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
     public bool FAtivado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAtivado;
         set
         {
@@ -136,6 +161,7 @@ public partial class DBOperadores
 
     public bool FAtualizarSenha
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAtualizarSenha;
         set
         {
@@ -145,30 +171,37 @@ public partial class DBOperadores
         }
     }
 
+    [StringLength(4000, ErrorMessage = "A propriedade FSenha256 da tabela Operadores deve ter no máximo 4000 caracteres.")]
     public string? FSenha256
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSenha256 ?? string.Empty;
         set
         {
             pFldFSenha256 = pFldFSenha256 || !(m_FSenha256 ?? string.Empty).Equals(value);
             if (pFldFSenha256)
-                m_FSenha256 = value.trim().Length > 4000 ? value.trim().substring(0, 4000) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSenha256 = trimmed.Length > 4000 ? trimmed.AsSpan(0, 4000).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(4000, ErrorMessage = "A propriedade FSuporteSenha256 da tabela Operadores deve ter no máximo 4000 caracteres.")]
     public string? FSuporteSenha256
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSuporteSenha256 ?? string.Empty;
         set
         {
             pFldFSuporteSenha256 = pFldFSuporteSenha256 || !(m_FSuporteSenha256 ?? string.Empty).Equals(value);
             if (pFldFSuporteSenha256)
-                m_FSuporteSenha256 = value.trim().Length > 4000 ? value.trim().substring(0, 4000) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FSuporteSenha256 = trimmed.Length > 4000 ? trimmed.AsSpan(0, 4000).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MSuporteMaxAge => Convert.ToDateTime(m_FSuporteMaxAge);
 
     public string? FSuporteMaxAge
     {
@@ -196,16 +229,19 @@ public partial class DBOperadores
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

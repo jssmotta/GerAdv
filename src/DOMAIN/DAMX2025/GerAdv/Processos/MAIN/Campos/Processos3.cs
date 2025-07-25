@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProcessos
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFAdvParc, pFldFAJGPedidoNegado, pFldFAJGCliente, pFldFAJGPedidoNegadoOPO, pFldFNotificarPOE, pFldFValorProvisionado, pFldFAJGOponente, pFldFValorCacheCalculo, pFldFAJGPedidoOPO, pFldFValorCacheCalculoProv, pFldFConsiderarParado, pFldFValorCalculado, pFldFAJGConcedidoOPO, pFldFCobranca, pFldFDataEntrada, pFldFPenhora, pFldFAJGPedido, pFldFTipoBaixa, pFldFClassRisco, pFldFIsApenso, pFldFValorCausaInicial, pFldFAJGConcedido, pFldFObsBCX, pFldFValorCausaDefinitivo, pFldFPercProbExito, pFldFMNA, pFldFPercExito, pFldFNroExtra, pFldFAdvOpo, pFldFExtra, pFldFJustica, pFldFAdvogado, pFldFNroCaixa, pFldFPreposto, pFldFCliente, pFldFOponente, pFldFArea, pFldFCidade, pFldFSituacao, pFldFIDSituacao, pFldFValor, pFldFRito, pFldFFato, pFldFNroPasta, pFldFAtividade, pFldFCaixaMorto, pFldFBaixado, pFldFDtBaixa, pFldFMotivoBaixa, pFldFOBS, pFldFPrinted, pFldFZKey, pFldFZKeyQuem, pFldFZKeyQuando, pFldFResumo, pFldFNaoImprimir, pFldFEletronico, pFldFNroContrato, pFldFPercProbExitoJustificativa, pFldFHonorarioValor, pFldFHonorarioPercentual, pFldFHonorarioSucumbencia, pFldFFaseAuditoria, pFldFValorCondenacao, pFldFValorCondenacaoCalculado, pFldFValorCondenacaoProvisorio;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBProcessos
     private protected decimal m_FValorProvisionado, m_FValorCacheCalculo, m_FValorCacheCalculoProv, m_FValorCausaInicial, m_FValorCausaDefinitivo, m_FPercProbExito, m_FPercExito, m_FValor, m_FHonorarioValor, m_FHonorarioPercentual, m_FHonorarioSucumbencia, m_FValorCondenacao, m_FValorCondenacaoCalculado;
     public int FAdvParc
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdvParc;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBProcessos
 
     public bool FAJGPedidoNegado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGPedidoNegado;
         set
         {
@@ -39,6 +40,7 @@ public partial class DBProcessos
 
     public bool FAJGCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGCliente;
         set
         {
@@ -50,6 +52,7 @@ public partial class DBProcessos
 
     public bool FAJGPedidoNegadoOPO
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGPedidoNegadoOPO;
         set
         {
@@ -61,6 +64,7 @@ public partial class DBProcessos
 
     public bool FNotificarPOE
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNotificarPOE;
         set
         {
@@ -72,6 +76,7 @@ public partial class DBProcessos
 
     public decimal FValorProvisionado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorProvisionado;
         set
         {
@@ -84,6 +89,7 @@ public partial class DBProcessos
 
     public bool FAJGOponente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGOponente;
         set
         {
@@ -95,6 +101,7 @@ public partial class DBProcessos
 
     public decimal FValorCacheCalculo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCacheCalculo;
         set
         {
@@ -107,6 +114,7 @@ public partial class DBProcessos
 
     public bool FAJGPedidoOPO
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGPedidoOPO;
         set
         {
@@ -118,6 +126,7 @@ public partial class DBProcessos
 
     public decimal FValorCacheCalculoProv
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCacheCalculoProv;
         set
         {
@@ -130,6 +139,7 @@ public partial class DBProcessos
 
     public bool FConsiderarParado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FConsiderarParado;
         set
         {
@@ -141,6 +151,7 @@ public partial class DBProcessos
 
     public bool FValorCalculado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCalculado;
         set
         {
@@ -152,6 +163,7 @@ public partial class DBProcessos
 
     public bool FAJGConcedidoOPO
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGConcedidoOPO;
         set
         {
@@ -163,6 +175,7 @@ public partial class DBProcessos
 
     public bool FCobranca
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCobranca;
         set
         {
@@ -171,9 +184,6 @@ public partial class DBProcessos
                 m_FCobranca = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataEntrada => Convert.ToDateTime(m_FDataEntrada);
 
     public string? FDataEntrada
     {
@@ -190,6 +200,7 @@ public partial class DBProcessos
 
     public bool FPenhora
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPenhora;
         set
         {
@@ -201,6 +212,7 @@ public partial class DBProcessos
 
     public bool FAJGPedido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGPedido;
         set
         {
@@ -212,6 +224,7 @@ public partial class DBProcessos
 
     public int FTipoBaixa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoBaixa;
         set
         {
@@ -223,6 +236,7 @@ public partial class DBProcessos
 
     public int FClassRisco
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FClassRisco;
         set
         {
@@ -234,6 +248,7 @@ public partial class DBProcessos
 
     public bool FIsApenso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIsApenso;
         set
         {
@@ -245,6 +260,7 @@ public partial class DBProcessos
 
     public decimal FValorCausaInicial
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCausaInicial;
         set
         {
@@ -257,6 +273,7 @@ public partial class DBProcessos
 
     public bool FAJGConcedido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAJGConcedido;
         set
         {
@@ -268,6 +285,7 @@ public partial class DBProcessos
 
     public string? FObsBCX
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObsBCX ?? string.Empty;
         set
         {
@@ -279,6 +297,7 @@ public partial class DBProcessos
 
     public decimal FValorCausaDefinitivo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCausaDefinitivo;
         set
         {
@@ -291,6 +310,7 @@ public partial class DBProcessos
 
     public decimal FPercProbExito
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercProbExito;
         set
         {
@@ -303,6 +323,7 @@ public partial class DBProcessos
 
     public bool FMNA
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMNA;
         set
         {
@@ -314,6 +335,7 @@ public partial class DBProcessos
 
     public decimal FPercExito
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercExito;
         set
         {
@@ -324,19 +346,25 @@ public partial class DBProcessos
         }
     }
 
+    [StringLength(35, ErrorMessage = "A propriedade FNroExtra da tabela Processos deve ter no máximo 35 caracteres.")]
     public string? FNroExtra
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroExtra ?? string.Empty;
         set
         {
             pFldFNroExtra = pFldFNroExtra || !(m_FNroExtra ?? string.Empty).Equals(value);
             if (pFldFNroExtra)
-                m_FNroExtra = value.trim().Length > 35 ? value.trim().substring(0, 35) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroExtra = trimmed.Length > 35 ? trimmed.AsSpan(0, 35).ToString() : trimmed;
+            }
         }
     }
 
     public int FAdvOpo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdvOpo;
         set
         {
@@ -348,6 +376,7 @@ public partial class DBProcessos
 
     public bool FExtra
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExtra;
         set
         {
@@ -359,6 +388,7 @@ public partial class DBProcessos
 
     public int FJustica
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FJustica;
         set
         {
@@ -370,6 +400,7 @@ public partial class DBProcessos
 
     public int FAdvogado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdvogado;
         set
         {
@@ -379,19 +410,25 @@ public partial class DBProcessos
         }
     }
 
+    [StringLength(20, ErrorMessage = "A propriedade FNroCaixa da tabela Processos deve ter no máximo 20 caracteres.")]
     public string? FNroCaixa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroCaixa ?? string.Empty;
         set
         {
             pFldFNroCaixa = pFldFNroCaixa || !(m_FNroCaixa ?? string.Empty).Equals(value);
             if (pFldFNroCaixa)
-                m_FNroCaixa = value.trim().Length > 20 ? value.trim().substring(0, 20) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroCaixa = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+            }
         }
     }
 
     public int FPreposto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPreposto;
         set
         {
@@ -403,6 +440,7 @@ public partial class DBProcessos
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -414,6 +452,7 @@ public partial class DBProcessos
 
     public int FOponente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOponente;
         set
         {
@@ -425,6 +464,7 @@ public partial class DBProcessos
 
     public int FArea
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FArea;
         set
         {
@@ -436,6 +476,7 @@ public partial class DBProcessos
 
     public int FCidade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCidade;
         set
         {
@@ -447,6 +488,7 @@ public partial class DBProcessos
 
     public int FSituacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSituacao;
         set
         {
@@ -458,6 +500,7 @@ public partial class DBProcessos
 
     public bool FIDSituacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIDSituacao;
         set
         {
@@ -469,6 +512,7 @@ public partial class DBProcessos
 
     public decimal FValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValor;
         set
         {
@@ -481,6 +525,7 @@ public partial class DBProcessos
 
     public int FRito
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRito;
         set
         {
@@ -492,6 +537,7 @@ public partial class DBProcessos
 
     public string? FFato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFato ?? string.Empty;
         set
         {
@@ -501,19 +547,25 @@ public partial class DBProcessos
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FNroPasta da tabela Processos deve ter no máximo 10 caracteres.")]
     public string? FNroPasta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroPasta ?? string.Empty;
         set
         {
             pFldFNroPasta = pFldFNroPasta || !(m_FNroPasta ?? string.Empty).Equals(value);
             if (pFldFNroPasta)
-                m_FNroPasta = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroPasta = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
     public int FAtividade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAtividade;
         set
         {
@@ -523,19 +575,25 @@ public partial class DBProcessos
         }
     }
 
+    [StringLength(10, ErrorMessage = "A propriedade FCaixaMorto da tabela Processos deve ter no máximo 10 caracteres.")]
     public string? FCaixaMorto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCaixaMorto ?? string.Empty;
         set
         {
             pFldFCaixaMorto = pFldFCaixaMorto || !(m_FCaixaMorto ?? string.Empty).Equals(value);
             if (pFldFCaixaMorto)
-                m_FCaixaMorto = value.trim().Length > 10 ? value.trim().substring(0, 10) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCaixaMorto = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+            }
         }
     }
 
     public bool FBaixado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBaixado;
         set
         {
@@ -544,9 +602,6 @@ public partial class DBProcessos
                 m_FBaixado = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDtBaixa => Convert.ToDateTime(m_FDtBaixa);
 
     public string? FDtBaixa
     {
@@ -563,6 +618,7 @@ public partial class DBProcessos
 
     public string? FMotivoBaixa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMotivoBaixa ?? string.Empty;
         set
         {
@@ -574,6 +630,7 @@ public partial class DBProcessos
 
     public string? FOBS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOBS ?? string.Empty;
         set
         {
@@ -585,6 +642,7 @@ public partial class DBProcessos
 
     public bool FPrinted
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPrinted;
         set
         {
@@ -594,19 +652,25 @@ public partial class DBProcessos
         }
     }
 
+    [StringLength(20, ErrorMessage = "A propriedade FZKey da tabela Processos deve ter no máximo 20 caracteres.")]
     public string? FZKey
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FZKey ?? string.Empty;
         set
         {
             pFldFZKey = pFldFZKey || !(m_FZKey ?? string.Empty).Equals(value);
             if (pFldFZKey)
-                m_FZKey = value.trim().Length > 20 ? value.trim().substring(0, 20) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FZKey = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+            }
         }
     }
 
     public int FZKeyQuem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FZKeyQuem;
         set
         {
@@ -615,9 +679,6 @@ public partial class DBProcessos
                 m_FZKeyQuem = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MZKeyQuando => Convert.ToDateTime(m_FZKeyQuando);
 
     public string? FZKeyQuando
     {
@@ -634,6 +695,7 @@ public partial class DBProcessos
 
     public string? FResumo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FResumo ?? string.Empty;
         set
         {
@@ -645,6 +707,7 @@ public partial class DBProcessos
 
     public bool FNaoImprimir
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNaoImprimir;
         set
         {
@@ -656,6 +719,7 @@ public partial class DBProcessos
 
     public bool FEletronico
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEletronico;
         set
         {
@@ -665,30 +729,41 @@ public partial class DBProcessos
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FNroContrato da tabela Processos deve ter no máximo 100 caracteres.")]
     public string? FNroContrato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroContrato ?? string.Empty;
         set
         {
             pFldFNroContrato = pFldFNroContrato || !(m_FNroContrato ?? string.Empty).Equals(value);
             if (pFldFNroContrato)
-                m_FNroContrato = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroContrato = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(1024, ErrorMessage = "A propriedade FPercProbExitoJustificativa da tabela Processos deve ter no máximo 1024 caracteres.")]
     public string? FPercProbExitoJustificativa
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercProbExitoJustificativa ?? string.Empty;
         set
         {
             pFldFPercProbExitoJustificativa = pFldFPercProbExitoJustificativa || !(m_FPercProbExitoJustificativa ?? string.Empty).Equals(value);
             if (pFldFPercProbExitoJustificativa)
-                m_FPercProbExitoJustificativa = value.trim().Length > 1024 ? value.trim().substring(0, 1024) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPercProbExitoJustificativa = trimmed.Length > 1024 ? trimmed.AsSpan(0, 1024).ToString() : trimmed;
+            }
         }
     }
 
     public decimal FHonorarioValor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHonorarioValor;
         set
         {
@@ -701,6 +776,7 @@ public partial class DBProcessos
 
     public decimal FHonorarioPercentual
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHonorarioPercentual;
         set
         {
@@ -713,6 +789,7 @@ public partial class DBProcessos
 
     public decimal FHonorarioSucumbencia
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHonorarioSucumbencia;
         set
         {
@@ -725,6 +802,7 @@ public partial class DBProcessos
 
     public int FFaseAuditoria
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFaseAuditoria;
         set
         {
@@ -736,6 +814,7 @@ public partial class DBProcessos
 
     public decimal FValorCondenacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCondenacao;
         set
         {
@@ -748,6 +827,7 @@ public partial class DBProcessos
 
     public decimal FValorCondenacaoCalculado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCondenacaoCalculado;
         set
         {
@@ -760,6 +840,7 @@ public partial class DBProcessos
 
     public int FValorCondenacaoProvisorio
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorCondenacaoProvisorio;
         set
         {
@@ -782,16 +863,19 @@ public partial class DBProcessos
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

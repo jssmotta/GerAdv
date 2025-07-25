@@ -6,640 +6,173 @@ public partial class DBDadosProcuracao
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente]))
-                m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBDadosProcuracao(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente]))
-                m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do DadosProcuracao: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_DadosProcuracao
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [prcCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBDadosProcuracaoDicInfo.Cliente)))
+                m_FCliente = Convert.ToInt32(getValue(DBDadosProcuracaoDicInfo.Cliente));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBDadosProcuracaoDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBDadosProcuracaoDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBDadosProcuracaoDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBDadosProcuracaoDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBDadosProcuracaoDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBDadosProcuracaoDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBDadosProcuracaoDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBDadosProcuracaoDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBDadosProcuracaoDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBDadosProcuracaoDicInfo.Visto));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FCTPS = getValue(DBDadosProcuracaoDicInfo.CTPS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FEstadoCivil = getValue(DBDadosProcuracaoDicInfo.EstadoCivil)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FGUID = getValue(DBDadosProcuracaoDicInfo.GUID)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FNacionalidade = getValue(DBDadosProcuracaoDicInfo.Nacionalidade)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FObjeto = getValue(DBDadosProcuracaoDicInfo.Objeto)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FPisPasep = getValue(DBDadosProcuracaoDicInfo.PisPasep)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FProfissao = getValue(DBDadosProcuracaoDicInfo.Profissao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FRemuneracao = getValue(DBDadosProcuracaoDicInfo.Remuneracao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente]))
-            m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty; m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;  } catch {}  try { m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty; m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty; m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;  } catch {}  try { m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty; m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty; m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;  } catch {}  try { m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty; m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty; m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;  } catch {}  try { m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty; m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty; m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;  } catch {}  try { m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty; m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty; m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;  } catch {}  try { m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty; m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty; m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;  } catch {}  try { m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty; m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do DadosProcuracao: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_DadosProcuracao
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente])) m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Cliente]))
-            m_FCliente = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.Cliente]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty; m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;  } catch {}  try { m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty; m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FEstadoCivil = dbRec[DBDadosProcuracaoDicInfo.EstadoCivil]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty; m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;  } catch {}  try { m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty; m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNacionalidade = dbRec[DBDadosProcuracaoDicInfo.Nacionalidade]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty; m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;  } catch {}  try { m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty; m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FProfissao = dbRec[DBDadosProcuracaoDicInfo.Profissao]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty; m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;  } catch {}  try { m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty; m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FCTPS = dbRec[DBDadosProcuracaoDicInfo.CTPS]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty; m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;  } catch {}  try { m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty; m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FPisPasep = dbRec[DBDadosProcuracaoDicInfo.PisPasep]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty; m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;  } catch {}  try { m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty; m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FRemuneracao = dbRec[DBDadosProcuracaoDicInfo.Remuneracao]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty; m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;  } catch {}  try { m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty; m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FObjeto = dbRec[DBDadosProcuracaoDicInfo.Objeto]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty; m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FGUID = dbRec[DBDadosProcuracaoDicInfo.GUID]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBDadosProcuracaoDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBDadosProcuracaoDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto])) m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBDadosProcuracaoDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBDadosProcuracaoDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do DadosProcuracao: {ex.Message}", ex);
+        }
     }
-#endregion
 }

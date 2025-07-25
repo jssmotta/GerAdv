@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBGraph
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFTabela, pFldFTabelaId, pFldFImagem;
     [XmlIgnore]
@@ -11,19 +10,25 @@ public partial class DBGraph
     private protected string? m_FTabela;
     [XmlIgnore]
     private protected byte[]? m_FImagem;
+    [StringLength(80, ErrorMessage = "A propriedade FTabela da tabela Graph deve ter no máximo 80 caracteres.")]
     public string? FTabela
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTabela ?? string.Empty;
         set
         {
             pFldFTabela = pFldFTabela || !(m_FTabela ?? string.Empty).Equals(value);
             if (pFldFTabela)
-                m_FTabela = value.trim().Length > 80 ? value.trim().substring(0, 80) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FTabela = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+            }
         }
     }
 
     public int FTabelaId
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTabelaId;
         set
         {
@@ -35,6 +40,7 @@ public partial class DBGraph
 
     public byte[] FImagem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FImagem ?? [0];
         set
         {
@@ -56,16 +62,19 @@ public partial class DBGraph
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

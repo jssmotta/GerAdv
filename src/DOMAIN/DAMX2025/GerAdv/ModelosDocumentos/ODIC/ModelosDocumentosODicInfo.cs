@@ -4,77 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBModelosDocumentosODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBModelosDocumentosDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBModelosDocumentosDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBModelosDocumentosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBModelosDocumentosDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBModelosDocumentosDicInfo.Nome => DBModelosDocumentosDicInfo.MdcNome,
-        DBModelosDocumentosDicInfo.Remuneracao => DBModelosDocumentosDicInfo.MdcRemuneracao,
-        DBModelosDocumentosDicInfo.Assinatura => DBModelosDocumentosDicInfo.MdcAssinatura,
-        DBModelosDocumentosDicInfo.Header => DBModelosDocumentosDicInfo.MdcHeader,
-        DBModelosDocumentosDicInfo.Footer => DBModelosDocumentosDicInfo.MdcFooter,
-        DBModelosDocumentosDicInfo.Extra1 => DBModelosDocumentosDicInfo.MdcExtra1,
-        DBModelosDocumentosDicInfo.Extra2 => DBModelosDocumentosDicInfo.MdcExtra2,
-        DBModelosDocumentosDicInfo.Extra3 => DBModelosDocumentosDicInfo.MdcExtra3,
-        DBModelosDocumentosDicInfo.Outorgante => DBModelosDocumentosDicInfo.MdcOutorgante,
-        DBModelosDocumentosDicInfo.Outorgados => DBModelosDocumentosDicInfo.MdcOutorgados,
-        DBModelosDocumentosDicInfo.Poderes => DBModelosDocumentosDicInfo.MdcPoderes,
-        DBModelosDocumentosDicInfo.Objeto => DBModelosDocumentosDicInfo.MdcObjeto,
-        DBModelosDocumentosDicInfo.Titulo => DBModelosDocumentosDicInfo.MdcTitulo,
-        DBModelosDocumentosDicInfo.Testemunhas => DBModelosDocumentosDicInfo.MdcTestemunhas,
-        DBModelosDocumentosDicInfo.TipoModeloDocumento => DBModelosDocumentosDicInfo.MdcTipoModeloDocumento,
-        DBModelosDocumentosDicInfo.CSS => DBModelosDocumentosDicInfo.MdcCSS,
-        DBModelosDocumentosDicInfo.GUID => DBModelosDocumentosDicInfo.MdcGUID,
-        DBModelosDocumentosDicInfo.QuemCad => DBModelosDocumentosDicInfo.MdcQuemCad,
-        DBModelosDocumentosDicInfo.DtCad => DBModelosDocumentosDicInfo.MdcDtCad,
-        DBModelosDocumentosDicInfo.QuemAtu => DBModelosDocumentosDicInfo.MdcQuemAtu,
-        DBModelosDocumentosDicInfo.DtAtu => DBModelosDocumentosDicInfo.MdcDtAtu,
-        DBModelosDocumentosDicInfo.Visto => DBModelosDocumentosDicInfo.MdcVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBModelosDocumentosDicInfo.CampoCodigo;
     public static string TCampoNome => DBModelosDocumentosDicInfo.CampoNome;
     public static string TTabelaNome => DBModelosDocumentosDicInfo.TabelaNome;
     public static string TTablePrefix => DBModelosDocumentosDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBModelosDocumentosDicInfo.MdcNome, DBModelosDocumentosDicInfo.MdcRemuneracao, DBModelosDocumentosDicInfo.MdcAssinatura, DBModelosDocumentosDicInfo.MdcHeader, DBModelosDocumentosDicInfo.MdcFooter, DBModelosDocumentosDicInfo.MdcExtra1, DBModelosDocumentosDicInfo.MdcExtra2, DBModelosDocumentosDicInfo.MdcExtra3, DBModelosDocumentosDicInfo.MdcOutorgante, DBModelosDocumentosDicInfo.MdcOutorgados, DBModelosDocumentosDicInfo.MdcPoderes, DBModelosDocumentosDicInfo.MdcObjeto, DBModelosDocumentosDicInfo.MdcTitulo, DBModelosDocumentosDicInfo.MdcTestemunhas, DBModelosDocumentosDicInfo.MdcTipoModeloDocumento, DBModelosDocumentosDicInfo.MdcCSS, DBModelosDocumentosDicInfo.MdcGUID, DBModelosDocumentosDicInfo.MdcQuemCad, DBModelosDocumentosDicInfo.MdcDtCad, DBModelosDocumentosDicInfo.MdcQuemAtu, DBModelosDocumentosDicInfo.MdcDtAtu, DBModelosDocumentosDicInfo.MdcVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBModelosDocumentosDicInfo.MdcNome, DBModelosDocumentosDicInfo.MdcRemuneracao, DBModelosDocumentosDicInfo.MdcAssinatura, DBModelosDocumentosDicInfo.MdcHeader, DBModelosDocumentosDicInfo.MdcFooter, DBModelosDocumentosDicInfo.MdcExtra1, DBModelosDocumentosDicInfo.MdcExtra2, DBModelosDocumentosDicInfo.MdcExtra3, DBModelosDocumentosDicInfo.MdcOutorgante, DBModelosDocumentosDicInfo.MdcOutorgados, DBModelosDocumentosDicInfo.MdcPoderes, DBModelosDocumentosDicInfo.MdcObjeto, DBModelosDocumentosDicInfo.MdcTitulo, DBModelosDocumentosDicInfo.MdcTestemunhas, DBModelosDocumentosDicInfo.MdcTipoModeloDocumento, DBModelosDocumentosDicInfo.MdcCSS, DBModelosDocumentosDicInfo.MdcGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBModelosDocumentosDicInfo.MdcNome, DBModelosDocumentosDicInfo.MdcRemuneracao, DBModelosDocumentosDicInfo.MdcAssinatura, DBModelosDocumentosDicInfo.MdcHeader, DBModelosDocumentosDicInfo.MdcFooter, DBModelosDocumentosDicInfo.MdcExtra1, DBModelosDocumentosDicInfo.MdcExtra2, DBModelosDocumentosDicInfo.MdcExtra3, DBModelosDocumentosDicInfo.MdcOutorgante, DBModelosDocumentosDicInfo.MdcOutorgados, DBModelosDocumentosDicInfo.MdcPoderes, DBModelosDocumentosDicInfo.MdcObjeto, DBModelosDocumentosDicInfo.MdcTitulo, DBModelosDocumentosDicInfo.MdcTestemunhas, DBModelosDocumentosDicInfo.MdcTipoModeloDocumento, DBModelosDocumentosDicInfo.MdcCSS, DBModelosDocumentosDicInfo.MdcGUID, DBModelosDocumentosDicInfo.MdcQuemCad, DBModelosDocumentosDicInfo.MdcDtCad, DBModelosDocumentosDicInfo.MdcQuemAtu, DBModelosDocumentosDicInfo.MdcDtAtu, DBModelosDocumentosDicInfo.MdcVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBModelosDocumentosDicInfo.MdcNome, DBModelosDocumentosDicInfo.MdcRemuneracao, DBModelosDocumentosDicInfo.MdcAssinatura, DBModelosDocumentosDicInfo.MdcHeader, DBModelosDocumentosDicInfo.MdcFooter, DBModelosDocumentosDicInfo.MdcExtra1, DBModelosDocumentosDicInfo.MdcExtra2, DBModelosDocumentosDicInfo.MdcExtra3, DBModelosDocumentosDicInfo.MdcOutorgante, DBModelosDocumentosDicInfo.MdcOutorgados, DBModelosDocumentosDicInfo.MdcPoderes, DBModelosDocumentosDicInfo.MdcObjeto, DBModelosDocumentosDicInfo.MdcTitulo, DBModelosDocumentosDicInfo.MdcTestemunhas, DBModelosDocumentosDicInfo.MdcTipoModeloDocumento, DBModelosDocumentosDicInfo.MdcCSS, DBModelosDocumentosDicInfo.MdcGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "mdcNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["mdcNome"]);
         var result = campos.Where(campo => !campo.Equals(DBModelosDocumentosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "mdcCodigo",
-            "mdcNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["mdcCodigo", "mdcNome"]);
         var result = campos.Where(campo => !campo.Equals(DBModelosDocumentosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

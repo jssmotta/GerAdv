@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBDadosProcuracao
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCliente, pFldFEstadoCivil, pFldFNacionalidade, pFldFProfissao, pFldFCTPS, pFldFPisPasep, pFldFRemuneracao, pFldFObjeto;
     [XmlIgnore]
@@ -11,6 +10,7 @@ public partial class DBDadosProcuracao
     private protected string? m_FEstadoCivil, m_FNacionalidade, m_FProfissao, m_FCTPS, m_FPisPasep, m_FRemuneracao, m_FObjeto;
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -20,63 +20,89 @@ public partial class DBDadosProcuracao
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FEstadoCivil da tabela DadosProcuracao deve ter no máximo 100 caracteres.")]
     public string? FEstadoCivil
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEstadoCivil ?? string.Empty;
         set
         {
             pFldFEstadoCivil = pFldFEstadoCivil || !(m_FEstadoCivil ?? string.Empty).Equals(value);
             if (pFldFEstadoCivil)
-                m_FEstadoCivil = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEstadoCivil = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FNacionalidade da tabela DadosProcuracao deve ter no máximo 100 caracteres.")]
     public string? FNacionalidade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNacionalidade ?? string.Empty;
         set
         {
             pFldFNacionalidade = pFldFNacionalidade || !(m_FNacionalidade ?? string.Empty).Equals(value);
             if (pFldFNacionalidade)
-                m_FNacionalidade = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNacionalidade = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FProfissao da tabela DadosProcuracao deve ter no máximo 100 caracteres.")]
     public string? FProfissao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProfissao ?? string.Empty;
         set
         {
             pFldFProfissao = pFldFProfissao || !(m_FProfissao ?? string.Empty).Equals(value);
             if (pFldFProfissao)
-                m_FProfissao = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FProfissao = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FCTPS da tabela DadosProcuracao deve ter no máximo 100 caracteres.")]
     public string? FCTPS
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCTPS ?? string.Empty;
         set
         {
             pFldFCTPS = pFldFCTPS || !(m_FCTPS ?? string.Empty).Equals(value);
             if (pFldFCTPS)
-                m_FCTPS = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCTPS = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FPisPasep da tabela DadosProcuracao deve ter no máximo 100 caracteres.")]
     public string? FPisPasep
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPisPasep ?? string.Empty;
         set
         {
             pFldFPisPasep = pFldFPisPasep || !(m_FPisPasep ?? string.Empty).Equals(value);
             if (pFldFPisPasep)
-                m_FPisPasep = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPisPasep = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public string? FRemuneracao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRemuneracao ?? string.Empty;
         set
         {
@@ -88,6 +114,7 @@ public partial class DBDadosProcuracao
 
     public string? FObjeto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObjeto ?? string.Empty;
         set
         {
@@ -110,16 +137,19 @@ public partial class DBDadosProcuracao
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

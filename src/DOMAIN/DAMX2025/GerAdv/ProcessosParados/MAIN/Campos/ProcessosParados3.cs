@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProcessosParados
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFProcesso, pFldFSemana, pFldFAno, pFldFDataHora, pFldFOperador, pFldFDataHistorico, pFldFDataNENotas;
     [XmlIgnore]
@@ -11,6 +10,7 @@ public partial class DBProcessosParados
     private protected DateTime? m_FDataHora, m_FDataHistorico, m_FDataNENotas;
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -22,6 +22,7 @@ public partial class DBProcessosParados
 
     public int FSemana
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSemana;
         set
         {
@@ -33,6 +34,7 @@ public partial class DBProcessosParados
 
     public int FAno
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAno;
         set
         {
@@ -41,9 +43,6 @@ public partial class DBProcessosParados
                 m_FAno = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataHora => Convert.ToDateTime(m_FDataHora);
 
     public string? FDataHora
     {
@@ -60,6 +59,7 @@ public partial class DBProcessosParados
 
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -68,9 +68,6 @@ public partial class DBProcessosParados
                 m_FOperador = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataHistorico => Convert.ToDateTime(m_FDataHistorico);
 
     public string? FDataHistorico
     {
@@ -84,9 +81,6 @@ public partial class DBProcessosParados
             m_FDataHistorico = data;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataNENotas => Convert.ToDateTime(m_FDataNENotas);
 
     public string? FDataNENotas
     {
@@ -114,16 +108,19 @@ public partial class DBProcessosParados
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

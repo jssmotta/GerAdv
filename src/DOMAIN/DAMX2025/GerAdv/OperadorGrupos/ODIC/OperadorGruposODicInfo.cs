@@ -4,60 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBOperadorGruposODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBOperadorGruposDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBOperadorGruposDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBOperadorGruposDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBOperadorGruposDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBOperadorGruposDicInfo.Nome => DBOperadorGruposDicInfo.OpgNome,
-        DBOperadorGruposDicInfo.QuemCad => DBOperadorGruposDicInfo.OpgQuemCad,
-        DBOperadorGruposDicInfo.DtCad => DBOperadorGruposDicInfo.OpgDtCad,
-        DBOperadorGruposDicInfo.QuemAtu => DBOperadorGruposDicInfo.OpgQuemAtu,
-        DBOperadorGruposDicInfo.DtAtu => DBOperadorGruposDicInfo.OpgDtAtu,
-        DBOperadorGruposDicInfo.Visto => DBOperadorGruposDicInfo.OpgVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBOperadorGruposDicInfo.CampoCodigo;
     public static string TCampoNome => DBOperadorGruposDicInfo.CampoNome;
     public static string TTabelaNome => DBOperadorGruposDicInfo.TabelaNome;
     public static string TTablePrefix => DBOperadorGruposDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBOperadorGruposDicInfo.OpgNome, DBOperadorGruposDicInfo.OpgQuemCad, DBOperadorGruposDicInfo.OpgDtCad, DBOperadorGruposDicInfo.OpgQuemAtu, DBOperadorGruposDicInfo.OpgDtAtu, DBOperadorGruposDicInfo.OpgVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBOperadorGruposDicInfo.OpgNome];
+    public static ImmutableArray<DBInfoSystem> List => [DBOperadorGruposDicInfo.OpgNome, DBOperadorGruposDicInfo.OpgQuemCad, DBOperadorGruposDicInfo.OpgDtCad, DBOperadorGruposDicInfo.OpgQuemAtu, DBOperadorGruposDicInfo.OpgDtAtu, DBOperadorGruposDicInfo.OpgVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOperadorGruposDicInfo.OpgNome];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "opgCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opgCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOperadorGruposDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "opgCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opgCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOperadorGruposDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

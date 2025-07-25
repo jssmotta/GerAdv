@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBRecados
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFClienteNome, pFldFDe, pFldFPara, pFldFAssunto, pFldFConcluido, pFldFProcesso, pFldFCliente, pFldFRecado, pFldFUrgente, pFldFImportante, pFldFHora, pFldFData, pFldFVoltara, pFldFPessoal, pFldFRetornar, pFldFRetornoData, pFldFEmotion, pFldFInternetID, pFldFUploaded, pFldFNatureza, pFldFBIU, pFldFAguardarRetorno, pFldFAguardarRetornoPara, pFldFAguardarRetornoOK, pFldFParaID, pFldFNaoPublicavel, pFldFIsContatoCRM, pFldFMasterID, pFldFListaPara, pFldFTyped, pFldFAssuntoRecado, pFldFHistorico, pFldFContatoCRM, pFldFLigacoes, pFldFAgenda;
     [XmlIgnore]
@@ -13,52 +12,73 @@ public partial class DBRecados
     private protected DateTime? m_FHora, m_FData, m_FRetornoData;
     [XmlIgnore]
     private protected bool m_FConcluido, m_FUrgente, m_FImportante, m_FVoltara, m_FPessoal, m_FRetornar, m_FUploaded, m_FBIU, m_FAguardarRetorno, m_FAguardarRetornoOK, m_FNaoPublicavel, m_FIsContatoCRM, m_FTyped;
+    [StringLength(255, ErrorMessage = "A propriedade FClienteNome da tabela Recados deve ter no máximo 255 caracteres.")]
     public string? FClienteNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FClienteNome ?? string.Empty;
         set
         {
             pFldFClienteNome = pFldFClienteNome || !(m_FClienteNome ?? string.Empty).Equals(value);
             if (pFldFClienteNome)
-                m_FClienteNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FClienteNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FDe da tabela Recados deve ter no máximo 50 caracteres.")]
     public string? FDe
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDe ?? string.Empty;
         set
         {
             pFldFDe = pFldFDe || !(m_FDe ?? string.Empty).Equals(value);
             if (pFldFDe)
-                m_FDe = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDe = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FPara da tabela Recados deve ter no máximo 50 caracteres.")]
     public string? FPara
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPara ?? string.Empty;
         set
         {
             pFldFPara = pFldFPara || !(m_FPara ?? string.Empty).Equals(value);
             if (pFldFPara)
-                m_FPara = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPara = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FAssunto da tabela Recados deve ter no máximo 255 caracteres.")]
     public string? FAssunto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAssunto ?? string.Empty;
         set
         {
             pFldFAssunto = pFldFAssunto || !(m_FAssunto ?? string.Empty).Equals(value);
             if (pFldFAssunto)
-                m_FAssunto = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAssunto = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public bool FConcluido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FConcluido;
         set
         {
@@ -70,6 +90,7 @@ public partial class DBRecados
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -81,6 +102,7 @@ public partial class DBRecados
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -92,6 +114,7 @@ public partial class DBRecados
 
     public string? FRecado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRecado ?? string.Empty;
         set
         {
@@ -103,6 +126,7 @@ public partial class DBRecados
 
     public bool FUrgente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FUrgente;
         set
         {
@@ -114,6 +138,7 @@ public partial class DBRecados
 
     public bool FImportante
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FImportante;
         set
         {
@@ -122,9 +147,6 @@ public partial class DBRecados
                 m_FImportante = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHora => Convert.ToDateTime(m_FHora);
 
     public string? FHora
     {
@@ -156,9 +178,6 @@ public partial class DBRecados
         }
     }
 
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
-
     public string? FData
     {
         get => $"{m_FData:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FData:dd/MM/yyyy}";
@@ -174,6 +193,7 @@ public partial class DBRecados
 
     public bool FVoltara
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FVoltara;
         set
         {
@@ -185,6 +205,7 @@ public partial class DBRecados
 
     public bool FPessoal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPessoal;
         set
         {
@@ -196,6 +217,7 @@ public partial class DBRecados
 
     public bool FRetornar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRetornar;
         set
         {
@@ -204,9 +226,6 @@ public partial class DBRecados
                 m_FRetornar = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MRetornoData => Convert.ToDateTime(m_FRetornoData);
 
     public string? FRetornoData
     {
@@ -223,6 +242,7 @@ public partial class DBRecados
 
     public int FEmotion
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEmotion;
         set
         {
@@ -234,6 +254,7 @@ public partial class DBRecados
 
     public int FInternetID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FInternetID;
         set
         {
@@ -245,6 +266,7 @@ public partial class DBRecados
 
     public bool FUploaded
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FUploaded;
         set
         {
@@ -256,6 +278,7 @@ public partial class DBRecados
 
     public int FNatureza
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNatureza;
         set
         {
@@ -267,6 +290,7 @@ public partial class DBRecados
 
     public bool FBIU
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBIU;
         set
         {
@@ -278,6 +302,7 @@ public partial class DBRecados
 
     public bool FAguardarRetorno
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAguardarRetorno;
         set
         {
@@ -287,19 +312,25 @@ public partial class DBRecados
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FAguardarRetornoPara da tabela Recados deve ter no máximo 255 caracteres.")]
     public string? FAguardarRetornoPara
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAguardarRetornoPara ?? string.Empty;
         set
         {
             pFldFAguardarRetornoPara = pFldFAguardarRetornoPara || !(m_FAguardarRetornoPara ?? string.Empty).Equals(value);
             if (pFldFAguardarRetornoPara)
-                m_FAguardarRetornoPara = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAguardarRetornoPara = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public bool FAguardarRetornoOK
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAguardarRetornoOK;
         set
         {
@@ -311,6 +342,7 @@ public partial class DBRecados
 
     public int FParaID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FParaID;
         set
         {
@@ -322,6 +354,7 @@ public partial class DBRecados
 
     public bool FNaoPublicavel
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNaoPublicavel;
         set
         {
@@ -333,6 +366,7 @@ public partial class DBRecados
 
     public bool FIsContatoCRM
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIsContatoCRM;
         set
         {
@@ -344,6 +378,7 @@ public partial class DBRecados
 
     public int FMasterID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMasterID;
         set
         {
@@ -355,6 +390,7 @@ public partial class DBRecados
 
     public string? FListaPara
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FListaPara ?? string.Empty;
         set
         {
@@ -366,6 +402,7 @@ public partial class DBRecados
 
     public bool FTyped
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTyped;
         set
         {
@@ -377,6 +414,7 @@ public partial class DBRecados
 
     public int FAssuntoRecado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAssuntoRecado;
         set
         {
@@ -388,6 +426,7 @@ public partial class DBRecados
 
     public int FHistorico
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FHistorico;
         set
         {
@@ -399,6 +438,7 @@ public partial class DBRecados
 
     public int FContatoCRM
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContatoCRM;
         set
         {
@@ -410,6 +450,7 @@ public partial class DBRecados
 
     public int FLigacoes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLigacoes;
         set
         {
@@ -421,6 +462,7 @@ public partial class DBRecados
 
     public int FAgenda
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAgenda;
         set
         {
@@ -443,16 +485,19 @@ public partial class DBRecados
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

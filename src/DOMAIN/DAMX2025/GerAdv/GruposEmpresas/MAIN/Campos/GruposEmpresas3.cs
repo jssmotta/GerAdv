@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBGruposEmpresas
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFEMail, pFldFInativo, pFldFOponente, pFldFDescricao, pFldFObservacoes, pFldFCliente, pFldFIcone, pFldFDespesaUnificada;
     [XmlIgnore]
@@ -11,19 +10,28 @@ public partial class DBGruposEmpresas
     private protected string? m_FEMail, m_FDescricao, m_FObservacoes, m_FIcone;
     [XmlIgnore]
     private protected bool m_FInativo, m_FDespesaUnificada;
+    [StringLength(255, ErrorMessage = "A propriedade FEMail da tabela GruposEmpresas deve ter no máximo 255 caracteres.")]
     public string? FEMail
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEMail ?? string.Empty;
         set
         {
             pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
             if (pFldFEMail)
-                m_FEMail = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FEMail = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                if (m_FEMail.IsValidEmail())
+                    return;
+                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+            }
         }
     }
 
     public bool FInativo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FInativo;
         set
         {
@@ -35,6 +43,7 @@ public partial class DBGruposEmpresas
 
     public int FOponente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOponente;
         set
         {
@@ -44,19 +53,25 @@ public partial class DBGruposEmpresas
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FDescricao da tabela GruposEmpresas deve ter no máximo 50 caracteres.")]
     public string? FDescricao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDescricao ?? string.Empty;
         set
         {
             pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
             if (pFldFDescricao)
-                m_FDescricao = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FDescricao = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
     public string? FObservacoes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObservacoes ?? string.Empty;
         set
         {
@@ -68,6 +83,7 @@ public partial class DBGruposEmpresas
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -77,19 +93,25 @@ public partial class DBGruposEmpresas
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FIcone da tabela GruposEmpresas deve ter no máximo 255 caracteres.")]
     public string? FIcone
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIcone ?? string.Empty;
         set
         {
             pFldFIcone = pFldFIcone || !(m_FIcone ?? string.Empty).Equals(value);
             if (pFldFIcone)
-                m_FIcone = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FIcone = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public bool FDespesaUnificada
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDespesaUnificada;
         set
         {
@@ -112,16 +134,19 @@ public partial class DBGruposEmpresas
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

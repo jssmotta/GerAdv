@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBPontoVirtual
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFHoraEntrada, pFldFHoraSaida, pFldFOperador, pFldFKey;
     [XmlIgnore]
@@ -11,9 +10,6 @@ public partial class DBPontoVirtual
     private protected string? m_FKey;
     [XmlIgnore]
     private protected DateTime? m_FHoraEntrada, m_FHoraSaida;
-    [XmlIgnore]
-    public DateTime MHoraEntrada => Convert.ToDateTime(m_FHoraEntrada);
-
     public string? FHoraEntrada
     {
         // fdDate2 TRACE CODE
@@ -43,9 +39,6 @@ public partial class DBPontoVirtual
             }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraSaida => Convert.ToDateTime(m_FHoraSaida);
 
     public string? FHoraSaida
     {
@@ -79,6 +72,7 @@ public partial class DBPontoVirtual
 
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -88,14 +82,19 @@ public partial class DBPontoVirtual
         }
     }
 
+    [StringLength(23, ErrorMessage = "A propriedade FKey da tabela PontoVirtual deve ter no máximo 23 caracteres.")]
     public string? FKey
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FKey ?? string.Empty;
         set
         {
             pFldFKey = pFldFKey || !(m_FKey ?? string.Empty).Equals(value);
             if (pFldFKey)
-                m_FKey = value.trim().Length > 23 ? value.trim().substring(0, 23) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FKey = trimmed.Length > 23 ? trimmed.AsSpan(0, 23).ToString() : trimmed;
+            }
         }
     }
 
@@ -112,16 +111,19 @@ public partial class DBPontoVirtual
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

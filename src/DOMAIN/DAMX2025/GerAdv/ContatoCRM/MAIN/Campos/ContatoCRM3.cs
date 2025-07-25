@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBContatoCRM
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFAgeClienteAvisado, pFldFDocsViaRecebimento, pFldFNaoPublicavel, pFldFNotificar, pFldFOcultar, pFldFAssunto, pFldFIsDocsRecebidos, pFldFQuemNotificou, pFldFDataNotificou, pFldFOperador, pFldFCliente, pFldFHoraNotificou, pFldFObjetoNotificou, pFldFPessoaContato, pFldFData, pFldFTempo, pFldFHoraInicial, pFldFHoraFinal, pFldFProcesso, pFldFImportante, pFldFUrgente, pFldFGerarHoraTrabalhada, pFldFExibirNoTopo, pFldFTipoContatoCRM, pFldFContato, pFldFEmocao, pFldFContinuar, pFldFBold;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBContatoCRM
     private protected decimal m_FTempo;
     public int FAgeClienteAvisado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAgeClienteAvisado;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBContatoCRM
 
     public int FDocsViaRecebimento
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDocsViaRecebimento;
         set
         {
@@ -39,6 +40,7 @@ public partial class DBContatoCRM
 
     public bool FNaoPublicavel
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNaoPublicavel;
         set
         {
@@ -50,6 +52,7 @@ public partial class DBContatoCRM
 
     public bool FNotificar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNotificar;
         set
         {
@@ -61,6 +64,7 @@ public partial class DBContatoCRM
 
     public bool FOcultar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOcultar;
         set
         {
@@ -70,19 +74,25 @@ public partial class DBContatoCRM
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FAssunto da tabela ContatoCRM deve ter no máximo 255 caracteres.")]
     public string? FAssunto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAssunto ?? string.Empty;
         set
         {
             pFldFAssunto = pFldFAssunto || !(m_FAssunto ?? string.Empty).Equals(value);
             if (pFldFAssunto)
-                m_FAssunto = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAssunto = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public bool FIsDocsRecebidos
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIsDocsRecebidos;
         set
         {
@@ -94,6 +104,7 @@ public partial class DBContatoCRM
 
     public int FQuemNotificou
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuemNotificou;
         set
         {
@@ -102,9 +113,6 @@ public partial class DBContatoCRM
                 m_FQuemNotificou = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataNotificou => Convert.ToDateTime(m_FDataNotificou);
 
     public string? FDataNotificou
     {
@@ -121,6 +129,7 @@ public partial class DBContatoCRM
 
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -132,6 +141,7 @@ public partial class DBContatoCRM
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -140,9 +150,6 @@ public partial class DBContatoCRM
                 m_FCliente = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraNotificou => Convert.ToDateTime(m_FHoraNotificou);
 
     public string? FHoraNotificou
     {
@@ -176,6 +183,7 @@ public partial class DBContatoCRM
 
     public int FObjetoNotificou
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObjetoNotificou;
         set
         {
@@ -185,19 +193,21 @@ public partial class DBContatoCRM
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FPessoaContato da tabela ContatoCRM deve ter no máximo 255 caracteres.")]
     public string? FPessoaContato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPessoaContato ?? string.Empty;
         set
         {
             pFldFPessoaContato = pFldFPessoaContato || !(m_FPessoaContato ?? string.Empty).Equals(value);
             if (pFldFPessoaContato)
-                m_FPessoaContato = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPessoaContato = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -214,6 +224,7 @@ public partial class DBContatoCRM
 
     public decimal FTempo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTempo;
         set
         {
@@ -223,9 +234,6 @@ public partial class DBContatoCRM
             m_FTempo = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraInicial => Convert.ToDateTime(m_FHoraInicial);
 
     public string? FHoraInicial
     {
@@ -256,9 +264,6 @@ public partial class DBContatoCRM
             }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
     public string? FHoraFinal
     {
@@ -292,6 +297,7 @@ public partial class DBContatoCRM
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -303,6 +309,7 @@ public partial class DBContatoCRM
 
     public bool FImportante
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FImportante;
         set
         {
@@ -314,6 +321,7 @@ public partial class DBContatoCRM
 
     public bool FUrgente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FUrgente;
         set
         {
@@ -325,6 +333,7 @@ public partial class DBContatoCRM
 
     public bool FGerarHoraTrabalhada
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FGerarHoraTrabalhada;
         set
         {
@@ -336,6 +345,7 @@ public partial class DBContatoCRM
 
     public bool FExibirNoTopo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FExibirNoTopo;
         set
         {
@@ -347,6 +357,7 @@ public partial class DBContatoCRM
 
     public int FTipoContatoCRM
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoContatoCRM;
         set
         {
@@ -358,6 +369,7 @@ public partial class DBContatoCRM
 
     public string? FContato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContato ?? string.Empty;
         set
         {
@@ -369,6 +381,7 @@ public partial class DBContatoCRM
 
     public int FEmocao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEmocao;
         set
         {
@@ -380,6 +393,7 @@ public partial class DBContatoCRM
 
     public bool FContinuar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContinuar;
         set
         {
@@ -391,6 +405,7 @@ public partial class DBContatoCRM
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -413,16 +428,19 @@ public partial class DBContatoCRM
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

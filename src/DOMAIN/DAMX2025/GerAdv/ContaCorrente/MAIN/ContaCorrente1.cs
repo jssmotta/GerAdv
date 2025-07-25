@@ -13,7 +13,6 @@ public partial class DBContaCorrente : VAuditor, ICadastros, IAuditor
     }
 
 #endregion
-    public DBContaCorrente(in int nCodigo, MsiSqlConnection? oCnn) => Carregar(id: nCodigo, oCnn: oCnn);
     // REF. 250325
     public DBContaCorrente(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
@@ -42,7 +41,7 @@ public partial class DBContaCorrente : VAuditor, ICadastros, IAuditor
     }
 
 #region GravarDados_ContaCorrente
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
@@ -163,7 +162,7 @@ public partial class DBContaCorrente : VAuditor, ICadastros, IAuditor
             Error = -2;
             ErrorDescription = "900xh100 - O registro não pode ser incluído, tente mais tarde.";
 #if (!IgnoreExploreMSIDb)
-            DevourerOne.ExplodeErrorWindows(clsW.Table, clsW.LastError, ErrorDescription, cRet);
+            throw new Exception($"{clsW.Table} {clsW.LastError}, {ErrorDescription}, {cRet}");
 #endif
         }
 

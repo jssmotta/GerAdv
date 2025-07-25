@@ -6,370 +6,116 @@ public partial class DBRamal
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBRamal(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do Ramal: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_Ramal
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [ramCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBRamalDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBRamalDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBRamalDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBRamalDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBRamalDicInfo.Visto));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FNome = getValue(DBRamalDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FObs = getValue(DBRamalDicInfo.Obs)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty; m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;  } catch {}  try { m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty; m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do Ramal: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_Ramal
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNome = dbRec[DBRamalDicInfo.Nome]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty; m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;  } catch {}  try { m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty; m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FObs = dbRec[DBRamalDicInfo.Obs]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBRamalDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBRamalDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto])) m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBRamalDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBRamalDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do Ramal: {ex.Message}", ex);
+        }
     }
-#endregion
 }

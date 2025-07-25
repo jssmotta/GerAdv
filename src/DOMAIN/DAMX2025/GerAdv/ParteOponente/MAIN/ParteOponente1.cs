@@ -14,7 +14,7 @@ public partial class DBParteOponente : XCodeIdBase, ICadastros
 
 #endregion
 #region GravarDados_ParteOponente
-    public int Update(MsiSqlConnection? oCnn, int insertId = 0)
+    internal int Update(MsiSqlConnection? oCnn, int insertId = 0)
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)

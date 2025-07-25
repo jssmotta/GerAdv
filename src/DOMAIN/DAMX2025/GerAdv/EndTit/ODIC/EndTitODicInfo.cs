@@ -4,58 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBEndTitODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBEndTitDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBEndTitDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBEndTitDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBEndTitDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBEndTitDicInfo.Endereco => DBEndTitDicInfo.EttEndereco,
-        DBEndTitDicInfo.Titulo => DBEndTitDicInfo.EttTitulo,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBEndTitDicInfo.CampoCodigo;
     public static string TCampoNome => DBEndTitDicInfo.CampoNome;
     public static string TTabelaNome => DBEndTitDicInfo.TabelaNome;
     public static string TTablePrefix => DBEndTitDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBEndTitDicInfo.EttEndereco, DBEndTitDicInfo.EttTitulo];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBEndTitDicInfo.EttEndereco, DBEndTitDicInfo.EttTitulo];
+    public static ImmutableArray<DBInfoSystem> List => [DBEndTitDicInfo.EttEndereco, DBEndTitDicInfo.EttTitulo];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEndTitDicInfo.EttEndereco, DBEndTitDicInfo.EttTitulo];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "ettCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ettCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBEndTitDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "ettCodigo",
-            "ettEndereco",
-            "ettTitulo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["ettCodigo", "ettEndereco", "ettTitulo"]);
         var result = campos.Where(campo => !campo.Equals(DBEndTitDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

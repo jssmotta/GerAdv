@@ -4,73 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBTribunalODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBTribunalDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBTribunalDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBTribunalDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBTribunalDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBTribunalDicInfo.Nome => DBTribunalDicInfo.TriNome,
-        DBTribunalDicInfo.Area => DBTribunalDicInfo.TriArea,
-        DBTribunalDicInfo.Justica => DBTribunalDicInfo.TriJustica,
-        DBTribunalDicInfo.Descricao => DBTribunalDicInfo.TriDescricao,
-        DBTribunalDicInfo.Instancia => DBTribunalDicInfo.TriInstancia,
-        DBTribunalDicInfo.Sigla => DBTribunalDicInfo.TriSigla,
-        DBTribunalDicInfo.Web => DBTribunalDicInfo.TriWeb,
-        DBTribunalDicInfo.Etiqueta => DBTribunalDicInfo.TriEtiqueta,
-        DBTribunalDicInfo.Bold => DBTribunalDicInfo.TriBold,
-        DBTribunalDicInfo.GUID => DBTribunalDicInfo.TriGUID,
-        DBTribunalDicInfo.QuemCad => DBTribunalDicInfo.TriQuemCad,
-        DBTribunalDicInfo.DtCad => DBTribunalDicInfo.TriDtCad,
-        DBTribunalDicInfo.QuemAtu => DBTribunalDicInfo.TriQuemAtu,
-        DBTribunalDicInfo.DtAtu => DBTribunalDicInfo.TriDtAtu,
-        DBTribunalDicInfo.Visto => DBTribunalDicInfo.TriVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBTribunalDicInfo.CampoCodigo;
     public static string TCampoNome => DBTribunalDicInfo.CampoNome;
     public static string TTabelaNome => DBTribunalDicInfo.TabelaNome;
     public static string TTablePrefix => DBTribunalDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGUID, DBTribunalDicInfo.TriQuemCad, DBTribunalDicInfo.TriDtCad, DBTribunalDicInfo.TriQuemAtu, DBTribunalDicInfo.TriDtAtu, DBTribunalDicInfo.TriVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriEtiqueta, DBTribunalDicInfo.TriBold, DBTribunalDicInfo.TriGUID, DBTribunalDicInfo.TriQuemCad, DBTribunalDicInfo.TriDtCad, DBTribunalDicInfo.TriQuemAtu, DBTribunalDicInfo.TriDtAtu, DBTribunalDicInfo.TriVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTribunalDicInfo.TriNome, DBTribunalDicInfo.TriArea, DBTribunalDicInfo.TriJustica, DBTribunalDicInfo.TriDescricao, DBTribunalDicInfo.TriInstancia, DBTribunalDicInfo.TriSigla, DBTribunalDicInfo.TriWeb, DBTribunalDicInfo.TriGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "triCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["triCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "triArea",
-            "triCodigo",
-            "triDescricao",
-            "triInstancia",
-            "triJustica"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["triArea", "triCodigo", "triDescricao", "triInstancia", "triJustica"]);
         var result = campos.Where(campo => !campo.Equals(DBTribunalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

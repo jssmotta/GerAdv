@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBLigacoes
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFAssunto, pFldFAgeClienteAvisado, pFldFCelular, pFldFCliente, pFldFContato, pFldFDataRealizada, pFldFQuemID, pFldFTelefonista, pFldFUltimoAviso, pFldFHoraFinal, pFldFNome, pFldFQuemCodigo, pFldFSolicitante, pFldFPara, pFldFFone, pFldFRamal, pFldFParticular, pFldFRealizada, pFldFStatus, pFldFData, pFldFHora, pFldFUrgente, pFldFLigarPara, pFldFProcesso, pFldFStartScreen, pFldFEmotion, pFldFBold;
     [XmlIgnore]
@@ -13,19 +12,25 @@ public partial class DBLigacoes
     private protected DateTime? m_FDataRealizada, m_FUltimoAviso, m_FHoraFinal, m_FData, m_FHora;
     [XmlIgnore]
     private protected bool m_FCelular, m_FParticular, m_FRealizada, m_FUrgente, m_FStartScreen, m_FBold;
+    [StringLength(200, ErrorMessage = "A propriedade FAssunto da tabela Ligacoes deve ter no máximo 200 caracteres.")]
     public string? FAssunto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAssunto ?? string.Empty;
         set
         {
             pFldFAssunto = pFldFAssunto || !(m_FAssunto ?? string.Empty).Equals(value);
             if (pFldFAssunto)
-                m_FAssunto = value.trim().Length > 200 ? value.trim().substring(0, 200) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAssunto = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+            }
         }
     }
 
     public int FAgeClienteAvisado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAgeClienteAvisado;
         set
         {
@@ -37,6 +42,7 @@ public partial class DBLigacoes
 
     public bool FCelular
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCelular;
         set
         {
@@ -48,6 +54,7 @@ public partial class DBLigacoes
 
     public int FCliente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCliente;
         set
         {
@@ -57,19 +64,21 @@ public partial class DBLigacoes
         }
     }
 
+    [StringLength(200, ErrorMessage = "A propriedade FContato da tabela Ligacoes deve ter no máximo 200 caracteres.")]
     public string? FContato
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FContato ?? string.Empty;
         set
         {
             pFldFContato = pFldFContato || !(m_FContato ?? string.Empty).Equals(value);
             if (pFldFContato)
-                m_FContato = value.trim().Length > 200 ? value.trim().substring(0, 200) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FContato = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataRealizada => Convert.ToDateTime(m_FDataRealizada);
 
     public string? FDataRealizada
     {
@@ -86,6 +95,7 @@ public partial class DBLigacoes
 
     public int FQuemID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuemID;
         set
         {
@@ -97,6 +107,7 @@ public partial class DBLigacoes
 
     public int FTelefonista
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTelefonista;
         set
         {
@@ -105,9 +116,6 @@ public partial class DBLigacoes
                 m_FTelefonista = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MUltimoAviso => Convert.ToDateTime(m_FUltimoAviso);
 
     public string? FUltimoAviso
     {
@@ -121,9 +129,6 @@ public partial class DBLigacoes
             m_FUltimoAviso = data;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHoraFinal => Convert.ToDateTime(m_FHoraFinal);
 
     public string? FHoraFinal
     {
@@ -155,19 +160,25 @@ public partial class DBLigacoes
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela Ligacoes deve ter no máximo 50 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
     public int FQuemCodigo
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FQuemCodigo;
         set
         {
@@ -179,6 +190,7 @@ public partial class DBLigacoes
 
     public int FSolicitante
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSolicitante;
         set
         {
@@ -188,19 +200,25 @@ public partial class DBLigacoes
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FPara da tabela Ligacoes deve ter no máximo 100 caracteres.")]
     public string? FPara
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPara ?? string.Empty;
         set
         {
             pFldFPara = pFldFPara || !(m_FPara ?? string.Empty).Equals(value);
             if (pFldFPara)
-                m_FPara = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FPara = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public string? FFone
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFone ?? string.Empty;
         set
         {
@@ -212,6 +230,7 @@ public partial class DBLigacoes
 
     public int FRamal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRamal;
         set
         {
@@ -223,6 +242,7 @@ public partial class DBLigacoes
 
     public bool FParticular
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FParticular;
         set
         {
@@ -234,6 +254,7 @@ public partial class DBLigacoes
 
     public bool FRealizada
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FRealizada;
         set
         {
@@ -245,6 +266,7 @@ public partial class DBLigacoes
 
     public string? FStatus
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FStatus ?? string.Empty;
         set
         {
@@ -253,9 +275,6 @@ public partial class DBLigacoes
                 m_FStatus = value.trim().FixAbc() ?? string.Empty;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -269,9 +288,6 @@ public partial class DBLigacoes
             m_FData = data;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MHora => Convert.ToDateTime(m_FHora);
 
     public string? FHora
     {
@@ -305,6 +321,7 @@ public partial class DBLigacoes
 
     public bool FUrgente
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FUrgente;
         set
         {
@@ -314,19 +331,25 @@ public partial class DBLigacoes
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FLigarPara da tabela Ligacoes deve ter no máximo 255 caracteres.")]
     public string? FLigarPara
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FLigarPara ?? string.Empty;
         set
         {
             pFldFLigarPara = pFldFLigarPara || !(m_FLigarPara ?? string.Empty).Equals(value);
             if (pFldFLigarPara)
-                m_FLigarPara = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FLigarPara = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -338,6 +361,7 @@ public partial class DBLigacoes
 
     public bool FStartScreen
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FStartScreen;
         set
         {
@@ -349,6 +373,7 @@ public partial class DBLigacoes
 
     public int FEmotion
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FEmotion;
         set
         {
@@ -360,6 +385,7 @@ public partial class DBLigacoes
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -382,16 +408,19 @@ public partial class DBLigacoes
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

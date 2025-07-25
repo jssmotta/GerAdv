@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBBensMateriais
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFNome, pFldFBensClassificacao, pFldFDataCompra, pFldFDataFimDaGarantia, pFldFNFNRO, pFldFFornecedor, pFldFValorBem, pFldFNroSerieProduto, pFldFComprador, pFldFCidade, pFldFGarantiaLoja, pFldFDataTerminoDaGarantiaDaLoja, pFldFObservacoes, pFldFNomeVendedor, pFldFBold;
     [XmlIgnore]
@@ -15,19 +14,25 @@ public partial class DBBensMateriais
     private protected bool m_FGarantiaLoja, m_FBold;
     [XmlIgnore]
     private protected decimal m_FValorBem;
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela BensMateriais deve ter no máximo 80 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 80 ? value.trim().substring(0, 80) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+            }
         }
     }
 
     public int FBensClassificacao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBensClassificacao;
         set
         {
@@ -36,9 +41,6 @@ public partial class DBBensMateriais
                 m_FBensClassificacao = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataCompra => Convert.ToDateTime(m_FDataCompra);
 
     public string? FDataCompra
     {
@@ -53,9 +55,6 @@ public partial class DBBensMateriais
         }
     }
 
-    [XmlIgnore]
-    public DateTime MDataFimDaGarantia => Convert.ToDateTime(m_FDataFimDaGarantia);
-
     public string? FDataFimDaGarantia
     {
         get => $"{m_FDataFimDaGarantia:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDataFimDaGarantia:dd/MM/yyyy}";
@@ -69,19 +68,25 @@ public partial class DBBensMateriais
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FNFNRO da tabela BensMateriais deve ter no máximo 255 caracteres.")]
     public string? FNFNRO
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNFNRO ?? string.Empty;
         set
         {
             pFldFNFNRO = pFldFNFNRO || !(m_FNFNRO ?? string.Empty).Equals(value);
             if (pFldFNFNRO)
-                m_FNFNRO = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNFNRO = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FFornecedor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FFornecedor;
         set
         {
@@ -93,6 +98,7 @@ public partial class DBBensMateriais
 
     public decimal FValorBem
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorBem;
         set
         {
@@ -103,30 +109,41 @@ public partial class DBBensMateriais
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FNroSerieProduto da tabela BensMateriais deve ter no máximo 100 caracteres.")]
     public string? FNroSerieProduto
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNroSerieProduto ?? string.Empty;
         set
         {
             pFldFNroSerieProduto = pFldFNroSerieProduto || !(m_FNroSerieProduto ?? string.Empty).Equals(value);
             if (pFldFNroSerieProduto)
-                m_FNroSerieProduto = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNroSerieProduto = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
+    [StringLength(100, ErrorMessage = "A propriedade FComprador da tabela BensMateriais deve ter no máximo 100 caracteres.")]
     public string? FComprador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FComprador ?? string.Empty;
         set
         {
             pFldFComprador = pFldFComprador || !(m_FComprador ?? string.Empty).Equals(value);
             if (pFldFComprador)
-                m_FComprador = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FComprador = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public int FCidade
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCidade;
         set
         {
@@ -138,6 +155,7 @@ public partial class DBBensMateriais
 
     public bool FGarantiaLoja
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FGarantiaLoja;
         set
         {
@@ -146,9 +164,6 @@ public partial class DBBensMateriais
                 m_FGarantiaLoja = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataTerminoDaGarantiaDaLoja => Convert.ToDateTime(m_FDataTerminoDaGarantiaDaLoja);
 
     public string? FDataTerminoDaGarantiaDaLoja
     {
@@ -165,6 +180,7 @@ public partial class DBBensMateriais
 
     public string? FObservacoes
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FObservacoes ?? string.Empty;
         set
         {
@@ -174,19 +190,25 @@ public partial class DBBensMateriais
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FNomeVendedor da tabela BensMateriais deve ter no máximo 255 caracteres.")]
     public string? FNomeVendedor
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNomeVendedor ?? string.Empty;
         set
         {
             pFldFNomeVendedor = pFldFNomeVendedor || !(m_FNomeVendedor ?? string.Empty).Equals(value);
             if (pFldFNomeVendedor)
-                m_FNomeVendedor = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNomeVendedor = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -209,16 +231,19 @@ public partial class DBBensMateriais
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

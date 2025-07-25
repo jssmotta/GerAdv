@@ -4,62 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBGUTPeriodicidadeStatusODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBGUTPeriodicidadeStatusDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBGUTPeriodicidadeStatusDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBGUTPeriodicidadeStatusDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBGUTPeriodicidadeStatusDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBGUTPeriodicidadeStatusDicInfo.GUTAtividade => DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade,
-        DBGUTPeriodicidadeStatusDicInfo.DataRealizado => DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado,
-        DBGUTPeriodicidadeStatusDicInfo.GUID => DBGUTPeriodicidadeStatusDicInfo.PgsGUID,
-        DBGUTPeriodicidadeStatusDicInfo.QuemCad => DBGUTPeriodicidadeStatusDicInfo.PgsQuemCad,
-        DBGUTPeriodicidadeStatusDicInfo.DtCad => DBGUTPeriodicidadeStatusDicInfo.PgsDtCad,
-        DBGUTPeriodicidadeStatusDicInfo.QuemAtu => DBGUTPeriodicidadeStatusDicInfo.PgsQuemAtu,
-        DBGUTPeriodicidadeStatusDicInfo.DtAtu => DBGUTPeriodicidadeStatusDicInfo.PgsDtAtu,
-        DBGUTPeriodicidadeStatusDicInfo.Visto => DBGUTPeriodicidadeStatusDicInfo.PgsVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBGUTPeriodicidadeStatusDicInfo.CampoCodigo;
     public static string TCampoNome => DBGUTPeriodicidadeStatusDicInfo.CampoNome;
     public static string TTabelaNome => DBGUTPeriodicidadeStatusDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTPeriodicidadeStatusDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID, DBGUTPeriodicidadeStatusDicInfo.PgsQuemCad, DBGUTPeriodicidadeStatusDicInfo.PgsDtCad, DBGUTPeriodicidadeStatusDicInfo.PgsQuemAtu, DBGUTPeriodicidadeStatusDicInfo.PgsDtAtu, DBGUTPeriodicidadeStatusDicInfo.PgsVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID, DBGUTPeriodicidadeStatusDicInfo.PgsQuemCad, DBGUTPeriodicidadeStatusDicInfo.PgsDtCad, DBGUTPeriodicidadeStatusDicInfo.PgsQuemAtu, DBGUTPeriodicidadeStatusDicInfo.PgsDtAtu, DBGUTPeriodicidadeStatusDicInfo.PgsVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "pgsCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["pgsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "pgsCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["pgsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

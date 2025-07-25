@@ -4,52 +4,45 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBAgendaSemanaODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBAgendaSemanaDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAgendaSemanaDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAgendaSemanaDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => true;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBAgendaSemanaDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => false;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBAgendaSemanaDicInfo.ParaNome => DBAgendaSemanaDicInfo.XxxParaNome,
-        DBAgendaSemanaDicInfo.Data => DBAgendaSemanaDicInfo.XxxData,
-        DBAgendaSemanaDicInfo.Funcionario => DBAgendaSemanaDicInfo.XxxFuncionario,
-        DBAgendaSemanaDicInfo.Advogado => DBAgendaSemanaDicInfo.XxxAdvogado,
-        DBAgendaSemanaDicInfo.Hora => DBAgendaSemanaDicInfo.XxxHora,
-        DBAgendaSemanaDicInfo.TipoCompromisso => DBAgendaSemanaDicInfo.XxxTipoCompromisso,
-        DBAgendaSemanaDicInfo.Compromisso => DBAgendaSemanaDicInfo.XxxCompromisso,
-        DBAgendaSemanaDicInfo.Concluido => DBAgendaSemanaDicInfo.XxxConcluido,
-        DBAgendaSemanaDicInfo.Liberado => DBAgendaSemanaDicInfo.XxxLiberado,
-        DBAgendaSemanaDicInfo.Importante => DBAgendaSemanaDicInfo.XxxImportante,
-        DBAgendaSemanaDicInfo.HoraFinal => DBAgendaSemanaDicInfo.XxxHoraFinal,
-        DBAgendaSemanaDicInfo.Nome => DBAgendaSemanaDicInfo.XxxNome,
-        DBAgendaSemanaDicInfo.Cliente => DBAgendaSemanaDicInfo.XxxCliente,
-        DBAgendaSemanaDicInfo.NomeCliente => DBAgendaSemanaDicInfo.XxxNomeCliente,
-        DBAgendaSemanaDicInfo.Tipo => DBAgendaSemanaDicInfo.XxxTipo,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBAgendaSemanaDicInfo.CampoCodigo;
     public static string TCampoNome => DBAgendaSemanaDicInfo.CampoNome;
     public static string TTabelaNome => DBAgendaSemanaDicInfo.TabelaNome;
     public static string TTablePrefix => DBAgendaSemanaDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBAgendaSemanaDicInfo.XxxParaNome, DBAgendaSemanaDicInfo.XxxData, DBAgendaSemanaDicInfo.XxxFuncionario, DBAgendaSemanaDicInfo.XxxAdvogado, DBAgendaSemanaDicInfo.XxxHora, DBAgendaSemanaDicInfo.XxxTipoCompromisso, DBAgendaSemanaDicInfo.XxxCompromisso, DBAgendaSemanaDicInfo.XxxConcluido, DBAgendaSemanaDicInfo.XxxLiberado, DBAgendaSemanaDicInfo.XxxImportante, DBAgendaSemanaDicInfo.XxxHoraFinal, DBAgendaSemanaDicInfo.XxxNome, DBAgendaSemanaDicInfo.XxxCliente, DBAgendaSemanaDicInfo.XxxNomeCliente, DBAgendaSemanaDicInfo.XxxTipo];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBAgendaSemanaDicInfo.XxxParaNome, DBAgendaSemanaDicInfo.XxxData, DBAgendaSemanaDicInfo.XxxFuncionario, DBAgendaSemanaDicInfo.XxxAdvogado, DBAgendaSemanaDicInfo.XxxHora, DBAgendaSemanaDicInfo.XxxTipoCompromisso, DBAgendaSemanaDicInfo.XxxCompromisso, DBAgendaSemanaDicInfo.XxxConcluido, DBAgendaSemanaDicInfo.XxxLiberado, DBAgendaSemanaDicInfo.XxxImportante, DBAgendaSemanaDicInfo.XxxHoraFinal, DBAgendaSemanaDicInfo.XxxNome, DBAgendaSemanaDicInfo.XxxCliente, DBAgendaSemanaDicInfo.XxxNomeCliente, DBAgendaSemanaDicInfo.XxxTipo];
+    public static ImmutableArray<DBInfoSystem> List => [DBAgendaSemanaDicInfo.XxxParaNome, DBAgendaSemanaDicInfo.XxxData, DBAgendaSemanaDicInfo.XxxFuncionario, DBAgendaSemanaDicInfo.XxxAdvogado, DBAgendaSemanaDicInfo.XxxHora, DBAgendaSemanaDicInfo.XxxTipoCompromisso, DBAgendaSemanaDicInfo.XxxCompromisso, DBAgendaSemanaDicInfo.XxxConcluido, DBAgendaSemanaDicInfo.XxxLiberado, DBAgendaSemanaDicInfo.XxxImportante, DBAgendaSemanaDicInfo.XxxHoraFinal, DBAgendaSemanaDicInfo.XxxNome, DBAgendaSemanaDicInfo.XxxCliente, DBAgendaSemanaDicInfo.XxxNomeCliente, DBAgendaSemanaDicInfo.XxxTipo];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAgendaSemanaDicInfo.XxxParaNome, DBAgendaSemanaDicInfo.XxxData, DBAgendaSemanaDicInfo.XxxFuncionario, DBAgendaSemanaDicInfo.XxxAdvogado, DBAgendaSemanaDicInfo.XxxHora, DBAgendaSemanaDicInfo.XxxTipoCompromisso, DBAgendaSemanaDicInfo.XxxCompromisso, DBAgendaSemanaDicInfo.XxxConcluido, DBAgendaSemanaDicInfo.XxxLiberado, DBAgendaSemanaDicInfo.XxxImportante, DBAgendaSemanaDicInfo.XxxHoraFinal, DBAgendaSemanaDicInfo.XxxNome, DBAgendaSemanaDicInfo.XxxCliente, DBAgendaSemanaDicInfo.XxxNomeCliente, DBAgendaSemanaDicInfo.XxxTipo];
 
-    public static List<DBInfoSystem> ListPk() => [];
-    public static List<DBInfoSystem> ListPkIndices() => [];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ImmutableArray<DBInfoSystem> ListPk() => [];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ImmutableArray<DBInfoSystem> ListPkIndices() => [];
 }
 #endif

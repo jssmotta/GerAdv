@@ -62,54 +62,6 @@ public static partial class DBProcessosParadosDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string DataHoraSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataHora}]");
-    public static string DataHoraSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataHora}]");
-    public static string DataHoraSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataHora}]");
-    public static string DataHoraSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataHora}]");
-    public static string DataHoraSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataHora}]");
-    public static string DataHoraIsNull => DataHora.SqlCmdIsNull() ?? string.Empty;
-    public static string DataHoraNotIsNull => DataHora.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string DataHistoricoSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataHistorico}]");
-    public static string DataHistoricoSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataHistorico}]");
-    public static string DataHistoricoIsNull => DataHistorico.SqlCmdIsNull() ?? string.Empty;
-    public static string DataHistoricoNotIsNull => DataHistorico.SqlCmdNotIsNull() ?? string.Empty;
-
-    public static string DataNENotasSqlEntre(DateTime date1, DateTime date2) => DevourerOne.AppendDataSqlBetween20(date1, date2, $"[{DataNENotas}]");
-    public static string DataNENotasSqlIgual(DateTime dateT) => DevourerOne.AppendDataSqlDataIgual20(dateT, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMaior(DateTime dateT) => DevourerOne.AppendDataSqlMaiorQue20(dateT, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMaiorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMaiorOuIgual20(dateT, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMenor(DateTime dateT) => DevourerOne.AppendDataSqlMenorQue20(dateT, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMenorIgual(DateTime dateT) => DevourerOne.AppendDataSqlMenorOuIgual20(dateT, $"[{DataNENotas}]");
-    public static string DataNENotasSqlEntre(string dateStr1, string dateStr2) => DevourerOne.AppendDataSqlBetween20(dateStr1, dateStr2, $"[{DataNENotas}]");
-    public static string DataNENotasSqlIgual(string dateStr) => DevourerOne.AppendDataSqlDataIgual(dateStr, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMaior(string dateStr) => DevourerOne.AppendDataSqlMaiorQue(dateStr, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMaiorIgual(string dateStr) => DevourerOne.AppendDataSqlMaiorOuIgual(dateStr, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMenor(string dateStr) => DevourerOne.AppendDataSqlMenorQue20(dateStr, $"[{DataNENotas}]");
-    public static string DataNENotasSqlMenorIgual(string dateStr) => DevourerOne.AppendDataSqlMenorOuIgual(dateStr, $"[{DataNENotas}]");
-    public static string DataNENotasIsNull => DataNENotas.SqlCmdIsNull() ?? string.Empty;
-    public static string DataNENotasNotIsNull => DataNENotas.SqlCmdNotIsNull() ?? string.Empty;
-
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

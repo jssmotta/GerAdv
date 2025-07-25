@@ -38,17 +38,6 @@ public static partial class DBGUTMatrizDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string DescricaoSql(string text) => Descricao.SqlCmdTextIgual(text, 150) ?? string.Empty;
-    public static string DescricaoSqlNotIsNull => Descricao.SqlCmdNotIsNull() ?? string.Empty;
-    public static string DescricaoSqlIsNull => Descricao.SqlCmdIsNull() ?? string.Empty;
-
-    public static string DescricaoSqlDiff(string text) => Descricao.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string DescricaoSqlLike(string text) => Descricao.SqlCmdTextLike(text) ?? string.Empty;
-    public static string DescricaoSqlLikeInit(string text) => Descricao.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string DescricaoSqlLikeSpaces(string? text) => Descricao.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

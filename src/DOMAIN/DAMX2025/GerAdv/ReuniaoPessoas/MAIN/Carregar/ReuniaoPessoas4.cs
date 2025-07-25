@@ -6,378 +6,118 @@ public partial class DBReuniaoPessoas
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador]))
-                m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao]))
-                m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBReuniaoPessoas(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador]))
-                m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao]))
-                m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do ReuniaoPessoas: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_ReuniaoPessoas
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [rnpCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBReuniaoPessoasDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBReuniaoPessoasDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.Operador)))
+                m_FOperador = Convert.ToInt32(getValue(DBReuniaoPessoasDicInfo.Operador));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBReuniaoPessoasDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBReuniaoPessoasDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.Reuniao)))
+                m_FReuniao = Convert.ToInt32(getValue(DBReuniaoPessoasDicInfo.Reuniao));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBReuniaoPessoasDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBReuniaoPessoasDicInfo.Visto));
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao]))
-            m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador]))
-            m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do ReuniaoPessoas: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_ReuniaoPessoas
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao])) m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Reuniao]))
-            m_FReuniao = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Reuniao]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Operador]))
-            m_FOperador = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.Operador]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBReuniaoPessoasDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBReuniaoPessoasDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBReuniaoPessoasDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBReuniaoPessoasDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do ReuniaoPessoas: {ex.Message}", ex);
+        }
     }
-#endregion
 }

@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBNECompromissos
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFPalavraChave, pFldFProvisionar, pFldFTipoCompromisso, pFldFTextoCompromisso, pFldFBold;
     [XmlIgnore]
@@ -13,6 +12,7 @@ public partial class DBNECompromissos
     private protected bool m_FProvisionar, m_FBold;
     public int FPalavraChave
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPalavraChave;
         set
         {
@@ -24,6 +24,7 @@ public partial class DBNECompromissos
 
     public bool FProvisionar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProvisionar;
         set
         {
@@ -35,6 +36,7 @@ public partial class DBNECompromissos
 
     public int FTipoCompromisso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoCompromisso;
         set
         {
@@ -46,6 +48,7 @@ public partial class DBNECompromissos
 
     public string? FTextoCompromisso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTextoCompromisso ?? string.Empty;
         set
         {
@@ -57,6 +60,7 @@ public partial class DBNECompromissos
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -79,16 +83,19 @@ public partial class DBNECompromissos
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

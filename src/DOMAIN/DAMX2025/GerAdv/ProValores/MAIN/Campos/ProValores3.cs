@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProValores
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFProcesso, pFldFTipoValorProcesso, pFldFIndice, pFldFIgnorar, pFldFData, pFldFValorOriginal, pFldFPercMulta, pFldFValorMulta, pFldFPercJuros, pFldFValorOriginalCorrigidoIndice, pFldFValorMultaCorrigido, pFldFValorJurosCorrigido, pFldFValorFinal, pFldFDataUltimaCorrecao;
     [XmlIgnore]
@@ -17,6 +16,7 @@ public partial class DBProValores
     private protected decimal m_FValorOriginal, m_FPercMulta, m_FValorMulta, m_FPercJuros, m_FValorOriginalCorrigidoIndice, m_FValorMultaCorrigido, m_FValorJurosCorrigido, m_FValorFinal;
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -28,6 +28,7 @@ public partial class DBProValores
 
     public int FTipoValorProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoValorProcesso;
         set
         {
@@ -37,19 +38,25 @@ public partial class DBProValores
         }
     }
 
+    [StringLength(20, ErrorMessage = "A propriedade FIndice da tabela ProValores deve ter no máximo 20 caracteres.")]
     public string? FIndice
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIndice ?? string.Empty;
         set
         {
             pFldFIndice = pFldFIndice || !(m_FIndice ?? string.Empty).Equals(value);
             if (pFldFIndice)
-                m_FIndice = value.trim().Length > 20 ? value.trim().substring(0, 20) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FIndice = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+            }
         }
     }
 
     public bool FIgnorar
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIgnorar;
         set
         {
@@ -58,9 +65,6 @@ public partial class DBProValores
                 m_FIgnorar = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -77,6 +81,7 @@ public partial class DBProValores
 
     public decimal FValorOriginal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorOriginal;
         set
         {
@@ -89,6 +94,7 @@ public partial class DBProValores
 
     public decimal FPercMulta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercMulta;
         set
         {
@@ -101,6 +107,7 @@ public partial class DBProValores
 
     public decimal FValorMulta
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorMulta;
         set
         {
@@ -113,6 +120,7 @@ public partial class DBProValores
 
     public decimal FPercJuros
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPercJuros;
         set
         {
@@ -125,6 +133,7 @@ public partial class DBProValores
 
     public decimal FValorOriginalCorrigidoIndice
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorOriginalCorrigidoIndice;
         set
         {
@@ -137,6 +146,7 @@ public partial class DBProValores
 
     public decimal FValorMultaCorrigido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorMultaCorrigido;
         set
         {
@@ -149,6 +159,7 @@ public partial class DBProValores
 
     public decimal FValorJurosCorrigido
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorJurosCorrigido;
         set
         {
@@ -161,6 +172,7 @@ public partial class DBProValores
 
     public decimal FValorFinal
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FValorFinal;
         set
         {
@@ -170,9 +182,6 @@ public partial class DBProValores
             m_FValorFinal = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataUltimaCorrecao => Convert.ToDateTime(m_FDataUltimaCorrecao);
 
     public string? FDataUltimaCorrecao
     {
@@ -200,16 +209,19 @@ public partial class DBProValores
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

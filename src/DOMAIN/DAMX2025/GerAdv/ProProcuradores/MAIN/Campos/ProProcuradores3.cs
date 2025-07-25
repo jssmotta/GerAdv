@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBProProcuradores
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFAdvogado, pFldFNome, pFldFProcesso, pFldFData, pFldFSubstabelecimento, pFldFProcuracao, pFldFBold;
     [XmlIgnore]
@@ -15,6 +14,7 @@ public partial class DBProProcuradores
     private protected bool m_FSubstabelecimento, m_FProcuracao, m_FBold;
     public int FAdvogado
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FAdvogado;
         set
         {
@@ -24,19 +24,25 @@ public partial class DBProProcuradores
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela ProProcuradores deve ter no máximo 255 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -45,9 +51,6 @@ public partial class DBProProcuradores
                 m_FProcesso = value;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -64,6 +67,7 @@ public partial class DBProProcuradores
 
     public bool FSubstabelecimento
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FSubstabelecimento;
         set
         {
@@ -75,6 +79,7 @@ public partial class DBProProcuradores
 
     public bool FProcuracao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcuracao;
         set
         {
@@ -86,6 +91,7 @@ public partial class DBProProcuradores
 
     public bool FBold
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FBold;
         set
         {
@@ -108,16 +114,19 @@ public partial class DBProProcuradores
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

@@ -4,69 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBProcessOutputRequestODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBProcessOutputRequestDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProcessOutputRequestDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProcessOutputRequestDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBProcessOutputRequestDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => false;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBProcessOutputRequestDicInfo.ProcessOutputEngine => DBProcessOutputRequestDicInfo.PorProcessOutputEngine,
-        DBProcessOutputRequestDicInfo.Operador => DBProcessOutputRequestDicInfo.PorOperador,
-        DBProcessOutputRequestDicInfo.Processo => DBProcessOutputRequestDicInfo.PorProcesso,
-        DBProcessOutputRequestDicInfo.UltimoIdTabelaExo => DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo,
-        DBProcessOutputRequestDicInfo.GUID => DBProcessOutputRequestDicInfo.PorGUID,
-        DBProcessOutputRequestDicInfo.QuemCad => DBProcessOutputRequestDicInfo.PorQuemCad,
-        DBProcessOutputRequestDicInfo.DtCad => DBProcessOutputRequestDicInfo.PorDtCad,
-        DBProcessOutputRequestDicInfo.QuemAtu => DBProcessOutputRequestDicInfo.PorQuemAtu,
-        DBProcessOutputRequestDicInfo.DtAtu => DBProcessOutputRequestDicInfo.PorDtAtu,
-        DBProcessOutputRequestDicInfo.Visto => DBProcessOutputRequestDicInfo.PorVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBProcessOutputRequestDicInfo.CampoCodigo;
     public static string TCampoNome => DBProcessOutputRequestDicInfo.CampoNome;
     public static string TTabelaNome => DBProcessOutputRequestDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessOutputRequestDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo, DBProcessOutputRequestDicInfo.PorGUID, DBProcessOutputRequestDicInfo.PorQuemCad, DBProcessOutputRequestDicInfo.PorDtCad, DBProcessOutputRequestDicInfo.PorQuemAtu, DBProcessOutputRequestDicInfo.PorDtAtu, DBProcessOutputRequestDicInfo.PorVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo, DBProcessOutputRequestDicInfo.PorGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo, DBProcessOutputRequestDicInfo.PorGUID, DBProcessOutputRequestDicInfo.PorQuemCad, DBProcessOutputRequestDicInfo.PorDtCad, DBProcessOutputRequestDicInfo.PorQuemAtu, DBProcessOutputRequestDicInfo.PorDtAtu, DBProcessOutputRequestDicInfo.PorVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputRequestDicInfo.PorProcessOutputEngine, DBProcessOutputRequestDicInfo.PorOperador, DBProcessOutputRequestDicInfo.PorProcesso, DBProcessOutputRequestDicInfo.PorUltimoIdTabelaExo, DBProcessOutputRequestDicInfo.PorGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "porOperador",
-            "porProcesso",
-            "porProcessOutputEngine"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["porOperador", "porProcesso", "porProcessOutputEngine"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessOutputRequestDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "porCodigo",
-            "porOperador",
-            "porProcesso",
-            "porProcessOutputEngine"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["porCodigo", "porOperador", "porProcesso", "porProcessOutputEngine"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessOutputRequestDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif

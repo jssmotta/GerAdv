@@ -2,26 +2,27 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBContatoCRMView
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFCGUID, pFldFData, pFldFIP;
     [XmlIgnore]
     private protected string? m_FCGUID, m_FIP;
     [XmlIgnore]
     private protected DateTime? m_FData;
+    [StringLength(100, ErrorMessage = "A propriedade FCGUID da tabela ContatoCRMView deve ter no máximo 100 caracteres.")]
     public string? FCGUID
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FCGUID ?? string.Empty;
         set
         {
             pFldFCGUID = pFldFCGUID || !(m_FCGUID ?? string.Empty).Equals(value);
             if (pFldFCGUID)
-                m_FCGUID = value.trim().Length > 100 ? value.trim().substring(0, 100) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FCGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
-
-    [XmlIgnore]
-    public DateTime MData => Convert.ToDateTime(m_FData);
 
     public string? FData
     {
@@ -36,14 +37,19 @@ public partial class DBContatoCRMView
         }
     }
 
+    [StringLength(50, ErrorMessage = "A propriedade FIP da tabela ContatoCRMView deve ter no máximo 50 caracteres.")]
     public string? FIP
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIP ?? string.Empty;
         set
         {
             pFldFIP = pFldFIP || !(m_FIP ?? string.Empty).Equals(value);
             if (pFldFIP)
-                m_FIP = value.trim().Length > 50 ? value.trim().substring(0, 50) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FIP = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
@@ -60,16 +66,19 @@ public partial class DBContatoCRMView
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

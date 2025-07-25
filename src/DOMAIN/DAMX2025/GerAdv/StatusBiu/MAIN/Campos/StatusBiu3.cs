@@ -2,26 +2,31 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBStatusBiu
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFNome, pFldFTipoStatusBiu, pFldFOperador, pFldFIcone;
     [XmlIgnore]
     private protected int m_FTipoStatusBiu, m_FOperador, m_FIcone;
     [XmlIgnore]
     private protected string? m_FNome;
+    [StringLength(1024, ErrorMessage = "A propriedade FNome da tabela StatusBiu deve ter no máximo 1024 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 1024 ? value.trim().substring(0, 1024) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 1024 ? trimmed.AsSpan(0, 1024).ToString() : trimmed;
+            }
         }
     }
 
     public int FTipoStatusBiu
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FTipoStatusBiu;
         set
         {
@@ -33,6 +38,7 @@ public partial class DBStatusBiu
 
     public int FOperador
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FOperador;
         set
         {
@@ -44,6 +50,7 @@ public partial class DBStatusBiu
 
     public int FIcone
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FIcone;
         set
         {
@@ -66,16 +73,19 @@ public partial class DBStatusBiu
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

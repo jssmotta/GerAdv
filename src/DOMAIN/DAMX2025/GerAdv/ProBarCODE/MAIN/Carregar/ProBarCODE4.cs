@@ -6,332 +6,114 @@ public partial class DBProBarCODE
     {
         if (dbRec is null)
             return;
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo]))
-                m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBProBarCODE(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo]))
-                m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do ProBarCODE: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_ProBarCODE
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
-            return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBProBarCODEDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBProBarCODEDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBProBarCODEDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBProBarCODEDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBProBarCODEDicInfo.Processo)))
+                m_FProcesso = Convert.ToInt32(getValue(DBProBarCODEDicInfo.Processo));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBProBarCODEDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBProBarCODEDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBProBarCODEDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBProBarCODEDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBProBarCODEDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBProBarCODEDicInfo.Visto));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FBarCODE = getValue(DBProBarCODEDicInfo.BarCODE)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-        // Não tem campo código no DEVOURER
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty; m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;  } catch {}  try { m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty; m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo]))
-            m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do ProBarCODE: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_ProBarCODE
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-        // Não tem campo código no DEVOURER
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty; m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;  } catch {}  try { m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty; m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FBarCODE = dbRec[DBProBarCODEDicInfo.BarCODE]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo])) m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Processo]))
-            m_FProcesso = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.Processo]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBProBarCODEDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBProBarCODEDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto])) m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBProBarCODEDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBProBarCODEDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do ProBarCODE: {ex.Message}", ex);
+        }
     }
-#endregion
 }

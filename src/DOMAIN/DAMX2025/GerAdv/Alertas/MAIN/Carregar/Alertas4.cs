@@ -6,458 +6,135 @@ public partial class DBAlertas
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data]))
-                m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte]))
-                m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador]))
-                m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
+        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
     }
 
     public DBAlertas(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;
-        if (DBNull.Value.Equals(dbRec[CampoCodigo]))
-            return;
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-        // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data]))
-                m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);
+            InitFromRecord(name => dbRec[name]);
         }
-        catch
+        catch (Exception ex)
         {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte]))
-                m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu]))
-                m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad]))
-                m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador]))
-                m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu]))
-                m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad]))
-                m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto]))
-                m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
+            throw new Exception($"Erro ao carregar dados do Alertas: {ex.Message}", ex);
         }
     }
 
-#region CarregarDados_Alertas
-    protected void Carregar(int id, MsiSqlConnection? oCnn)
+    private void InitFromRecord(Func<string, object?> getValue)
     {
-        if (id.IsEmptyIDNumber())
+        if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [altCodigo] = @ThisIDToLoad", oCnn?.InnerConnection);
-        cmd.Parameters.AddWithValue("@ThisIDToLoad", id);
-        using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
-        if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        ID = Convert.ToInt32(getValue(CampoCodigo));
+        // Checkpoint Carregar 
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.Data)))
+                m_FData = Convert.ToDateTime(getValue(DBAlertasDicInfo.Data));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.DataAte)))
+                m_FDataAte = Convert.ToDateTime(getValue(DBAlertasDicInfo.DataAte));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.DtAtu)))
+                m_FDtAtu = Convert.ToDateTime(getValue(DBAlertasDicInfo.DtAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.DtCad)))
+                m_FDtCad = Convert.ToDateTime(getValue(DBAlertasDicInfo.DtCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.Operador)))
+                m_FOperador = Convert.ToInt32(getValue(DBAlertasDicInfo.Operador));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.QuemAtu)))
+                m_FQuemAtu = Convert.ToInt32(getValue(DBAlertasDicInfo.QuemAtu));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.QuemCad)))
+                m_FQuemCad = Convert.ToInt32(getValue(DBAlertasDicInfo.QuemCad));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            if (!DBNull.Value.Equals(getValue(DBAlertasDicInfo.Visto)))
+                m_FVisto = Convert.ToBoolean(getValue(DBAlertasDicInfo.Visto));
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            m_FNome = getValue(DBAlertasDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
     }
 
     public void CarregarDadosBd(DataRow? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data]))
-            m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador]))
-            m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte]))
-            m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do Alertas: {ex.Message}", ex);
+        }
     }
 
-#endregion
-#region CarregarDados_Alertas
     public void CarregarDadosBd(SqlDataReader? dbRec)
     {
-        if (dbRec == null)
+        if (dbRec is null)
             return;
-#if (fastAndSecureCode)
-try
-{
-#endif
-        ID = Convert.ToInt32(dbRec[CampoCodigo]);
-#if (DEBUG)
-if (ID == 0)
-{
-throw new Exception($"ID==0: {TabelaNome}");
-}
-#endif
-#if (fastAndSecureCode)
-} 
-catch
-{
-try { ID = Convert.ToInt32(dbRec[CampoCodigo]); } catch { } 
-}
-
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 203
-m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty; m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty; } catch { }
-
-#else
-        m_FNome = dbRec[DBAlertasDicInfo.Nome]?.ToString() ?? string.Empty;
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data])) m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Data]))
-            m_FData = Convert.ToDateTime(dbRec[DBAlertasDicInfo.Data]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador])) m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Operador]))
-            m_FOperador = Convert.ToInt32(dbRec[DBAlertasDicInfo.Operador]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte])) m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DataAte]))
-            m_FDataAte = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DataAte]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad])) m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemCad]))
-            m_FQuemCad = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad])) m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtCad]))
-            m_FDtCad = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtCad]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 3
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu])) m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.QuemAtu]))
-            m_FQuemAtu = Convert.ToInt32(dbRec[DBAlertasDicInfo.QuemAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 7
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]); if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu])) m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]); } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.DtAtu]))
-            m_FDtAtu = Convert.ToDateTime(dbRec[DBAlertasDicInfo.DtAtu]);
-#endif
-#endif
-#if (NofastCodeLoadToDebug)
-// region JMen - nType = 2
-if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];  } catch {}  try { if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto]; if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];  } catch {}  try { 
-#else
-#if (fastAndSecureCode)
-try {if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto])) m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto]; } catch { }
-
-#else
-        if (!DBNull.Value.Equals(dbRec[DBAlertasDicInfo.Visto]))
-            m_FVisto = (bool)dbRec[DBAlertasDicInfo.Visto];
-#endif
-#endif
-    ///RELATION_READ///
+        try
+        {
+            InitFromRecord(name => dbRec[name]);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Erro ao carregar dados do Alertas: {ex.Message}", ex);
+        }
     }
-#endregion
 }

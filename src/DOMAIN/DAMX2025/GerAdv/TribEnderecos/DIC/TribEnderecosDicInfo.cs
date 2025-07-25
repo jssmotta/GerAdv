@@ -59,49 +59,6 @@ public static partial class DBTribEnderecosDicInfo
     };
 
 #endregion
-#region SMART_SQLServices 
-    public static string EnderecoSql(string text) => Endereco.SqlCmdTextIgual(text, 80) ?? string.Empty;
-    public static string EnderecoSqlNotIsNull => Endereco.SqlCmdNotIsNull() ?? string.Empty;
-    public static string EnderecoSqlIsNull => Endereco.SqlCmdIsNull() ?? string.Empty;
-
-    public static string EnderecoSqlDiff(string text) => Endereco.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string EnderecoSqlLike(string text) => Endereco.SqlCmdTextLike(text) ?? string.Empty;
-    public static string EnderecoSqlLikeInit(string text) => Endereco.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string EnderecoSqlLikeSpaces(string? text) => Endereco.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string CEPSql(string text) => CEP.SqlCmdTextIgual(text, 10) ?? string.Empty;
-    public static string CEPSqlNotIsNull => CEP.SqlCmdNotIsNull() ?? string.Empty;
-    public static string CEPSqlIsNull => CEP.SqlCmdIsNull() ?? string.Empty;
-
-    public static string CEPSqlDiff(string text) => CEP.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string CEPSqlLike(string text) => CEP.SqlCmdTextLike(text) ?? string.Empty;
-    public static string CEPSqlLikeInit(string text) => CEP.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string CEPSqlLikeSpaces(string? text) => CEP.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string FoneSql(string text) => Fone.SqlCmdTextIgual(text) ?? string.Empty;
-    public static string FoneSqlNotIsNull => Fone.SqlCmdNotIsNull() ?? string.Empty;
-    public static string FoneSqlIsNull => Fone.SqlCmdIsNull() ?? string.Empty;
-
-    public static string FoneSqlDiff(string text) => Fone.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string FoneSqlLike(string text) => Fone.SqlCmdTextLike(text) ?? string.Empty;
-    public static string FoneSqlLikeInit(string text) => Fone.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string FoneSqlLikeSpaces(string? text) => Fone.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string FaxSql(string text) => Fax.SqlCmdTextIgual(text) ?? string.Empty;
-    public static string FaxSqlNotIsNull => Fax.SqlCmdNotIsNull() ?? string.Empty;
-    public static string FaxSqlIsNull => Fax.SqlCmdIsNull() ?? string.Empty;
-
-    public static string FaxSqlDiff(string text) => Fax.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string FaxSqlLike(string text) => Fax.SqlCmdTextLike(text) ?? string.Empty;
-    public static string FaxSqlLikeInit(string text) => Fax.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string FaxSqlLikeSpaces(string? text) => Fax.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-    public static string OBSSql(string text) => OBS.SqlCmdTextIgual(text) ?? string.Empty;
-    public static string OBSSqlNotIsNull => OBS.SqlCmdNotIsNull() ?? string.Empty;
-    public static string OBSSqlIsNull => OBS.SqlCmdIsNull() ?? string.Empty;
-
-    public static string OBSSqlDiff(string text) => OBS.SqlCmdTextDiff(text) ?? string.Empty;
-    public static string OBSSqlLike(string text) => OBS.SqlCmdTextLike(text) ?? string.Empty;
-    public static string OBSSqlLikeInit(string text) => OBS.SqlCmdTextLikeInit(text) ?? string.Empty;
-    public static string OBSSqlLikeSpaces(string? text) => OBS.SqlCmdTextLikeSpaces(text) ?? string.Empty;
-#endregion // 005 " : string.Empty)} 
-
     [Serializable]
     public enum NomesCamposTabela
     {

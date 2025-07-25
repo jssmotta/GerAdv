@@ -2,7 +2,6 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming
 public partial class DBPenhora
 {
-    // LOCALIZADOR: 09-06-2017 // Checkpoint campos Sexo
     [XmlIgnore]
     private protected bool pFldFProcesso, pFldFNome, pFldFDescricao, pFldFDataPenhora, pFldFPenhoraStatus, pFldFMaster;
     [XmlIgnore]
@@ -13,6 +12,7 @@ public partial class DBPenhora
     private protected DateTime? m_FDataPenhora;
     public int FProcesso
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FProcesso;
         set
         {
@@ -22,19 +22,25 @@ public partial class DBPenhora
         }
     }
 
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela Penhora deve ter no máximo 255 caracteres.")]
     public string? FNome
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FNome ?? string.Empty;
         set
         {
             pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
             if (pFldFNome)
-                m_FNome = value.trim().Length > 255 ? value.trim().substring(0, 255) : value.trim(); // ABC_FIND_CODE123
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+            }
         }
     }
 
     public string? FDescricao
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FDescricao ?? string.Empty;
         set
         {
@@ -43,9 +49,6 @@ public partial class DBPenhora
                 m_FDescricao = value.trim().FixAbc() ?? string.Empty;
         }
     }
-
-    [XmlIgnore]
-    public DateTime MDataPenhora => Convert.ToDateTime(m_FDataPenhora);
 
     public string? FDataPenhora
     {
@@ -62,6 +65,7 @@ public partial class DBPenhora
 
     public int FPenhoraStatus
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FPenhoraStatus;
         set
         {
@@ -73,6 +77,7 @@ public partial class DBPenhora
 
     public int FMaster
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => m_FMaster;
         set
         {
@@ -95,16 +100,19 @@ public partial class DBPenhora
     public string ICampoCodigo() => CampoCodigo;
     public string ICampoNome() => CampoNome;
     public string IPrefixo() => PTabelaPrefixo;
-    public List<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkFields() => throw new NotImplementedException();
-    public List<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetID() => ID;
 }

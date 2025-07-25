@@ -4,90 +4,54 @@ namespace MenphisSI.SG.GerAdv.DicInfo;
 [Serializable]
 public partial class DBOponentesODicInfo : IODicInfo
 {
-    public List<DBInfoSystem> IListFields() => List;
-    public List<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
-    public List<DBInfoSystem> IPkFields() => ListPk();
-    public List<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IListFields() => List;
+    public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
+    public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
+    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBOponentesDicInfo.TabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBOponentesDicInfo.CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBOponentesDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
-    public bool HasPersonSex() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBOponentesDicInfo.CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TemAuditor() => true;
-    public bool TemPessoaSexo() => true;
-    public DBInfoSystem? GetInfoSystemByNameField(string table) => table switch
-    {
-        DBOponentesDicInfo.EMPFuncao => DBOponentesDicInfo.OpoEMPFuncao,
-        DBOponentesDicInfo.CTPSNumero => DBOponentesDicInfo.OpoCTPSNumero,
-        DBOponentesDicInfo.Site => DBOponentesDicInfo.OpoSite,
-        DBOponentesDicInfo.CTPSSerie => DBOponentesDicInfo.OpoCTPSSerie,
-        DBOponentesDicInfo.Nome => DBOponentesDicInfo.OpoNome,
-        DBOponentesDicInfo.Adv => DBOponentesDicInfo.OpoAdv,
-        DBOponentesDicInfo.EMPCliente => DBOponentesDicInfo.OpoEMPCliente,
-        DBOponentesDicInfo.IDRep => DBOponentesDicInfo.OpoIDRep,
-        DBOponentesDicInfo.PIS => DBOponentesDicInfo.OpoPIS,
-        DBOponentesDicInfo.Contato => DBOponentesDicInfo.OpoContato,
-        DBOponentesDicInfo.CNPJ => DBOponentesDicInfo.OpoCNPJ,
-        DBOponentesDicInfo.RG => DBOponentesDicInfo.OpoRG,
-        DBOponentesDicInfo.Juridica => DBOponentesDicInfo.OpoJuridica,
-        DBOponentesDicInfo.Tipo => DBOponentesDicInfo.OpoTipo,
-        DBOponentesDicInfo.Sexo => DBOponentesDicInfo.OpoSexo,
-        DBOponentesDicInfo.CPF => DBOponentesDicInfo.OpoCPF,
-        DBOponentesDicInfo.Endereco => DBOponentesDicInfo.OpoEndereco,
-        DBOponentesDicInfo.Fone => DBOponentesDicInfo.OpoFone,
-        DBOponentesDicInfo.Fax => DBOponentesDicInfo.OpoFax,
-        DBOponentesDicInfo.Cidade => DBOponentesDicInfo.OpoCidade,
-        DBOponentesDicInfo.Bairro => DBOponentesDicInfo.OpoBairro,
-        DBOponentesDicInfo.CEP => DBOponentesDicInfo.OpoCEP,
-        DBOponentesDicInfo.InscEst => DBOponentesDicInfo.OpoInscEst,
-        DBOponentesDicInfo.Observacao => DBOponentesDicInfo.OpoObservacao,
-        DBOponentesDicInfo.EMail => DBOponentesDicInfo.OpoEMail,
-        DBOponentesDicInfo.Class => DBOponentesDicInfo.OpoClass,
-        DBOponentesDicInfo.Top => DBOponentesDicInfo.OpoTop,
-        DBOponentesDicInfo.Etiqueta => DBOponentesDicInfo.OpoEtiqueta,
-        DBOponentesDicInfo.Bold => DBOponentesDicInfo.OpoBold,
-        DBOponentesDicInfo.GUID => DBOponentesDicInfo.OpoGUID,
-        DBOponentesDicInfo.QuemCad => DBOponentesDicInfo.OpoQuemCad,
-        DBOponentesDicInfo.DtCad => DBOponentesDicInfo.OpoDtCad,
-        DBOponentesDicInfo.QuemAtu => DBOponentesDicInfo.OpoQuemAtu,
-        DBOponentesDicInfo.DtAtu => DBOponentesDicInfo.OpoDtAtu,
-        DBOponentesDicInfo.Visto => DBOponentesDicInfo.OpoVisto,
-        _ => null
-    };
+    private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);
     public static string TCampoCodigo => DBOponentesDicInfo.CampoCodigo;
     public static string TCampoNome => DBOponentesDicInfo.CampoNome;
     public static string TTabelaNome => DBOponentesDicInfo.TabelaNome;
     public static string TTablePrefix => DBOponentesDicInfo.TablePrefix;
-    public static List<DBInfoSystem> List => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold, DBOponentesDicInfo.OpoGUID, DBOponentesDicInfo.OpoQuemCad, DBOponentesDicInfo.OpoDtCad, DBOponentesDicInfo.OpoQuemAtu, DBOponentesDicInfo.OpoDtAtu, DBOponentesDicInfo.OpoVisto];
-    public static List<DBInfoSystem> ListWithoutAuditor => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoEtiqueta, DBOponentesDicInfo.OpoBold, DBOponentesDicInfo.OpoGUID, DBOponentesDicInfo.OpoQuemCad, DBOponentesDicInfo.OpoDtCad, DBOponentesDicInfo.OpoQuemAtu, DBOponentesDicInfo.OpoDtAtu, DBOponentesDicInfo.OpoVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOponentesDicInfo.OpoEMPFuncao, DBOponentesDicInfo.OpoCTPSNumero, DBOponentesDicInfo.OpoSite, DBOponentesDicInfo.OpoCTPSSerie, DBOponentesDicInfo.OpoNome, DBOponentesDicInfo.OpoAdv, DBOponentesDicInfo.OpoEMPCliente, DBOponentesDicInfo.OpoIDRep, DBOponentesDicInfo.OpoPIS, DBOponentesDicInfo.OpoContato, DBOponentesDicInfo.OpoCNPJ, DBOponentesDicInfo.OpoRG, DBOponentesDicInfo.OpoJuridica, DBOponentesDicInfo.OpoTipo, DBOponentesDicInfo.OpoSexo, DBOponentesDicInfo.OpoCPF, DBOponentesDicInfo.OpoEndereco, DBOponentesDicInfo.OpoFone, DBOponentesDicInfo.OpoFax, DBOponentesDicInfo.OpoCidade, DBOponentesDicInfo.OpoBairro, DBOponentesDicInfo.OpoCEP, DBOponentesDicInfo.OpoInscEst, DBOponentesDicInfo.OpoObservacao, DBOponentesDicInfo.OpoEMail, DBOponentesDicInfo.OpoClass, DBOponentesDicInfo.OpoTop, DBOponentesDicInfo.OpoGUID];
 
-    public static List<DBInfoSystem> ListPk()
+    public static ImmutableArray<DBInfoSystem> ListPk()
     {
-        string[] campos =
-        {
-            "opoCodigo"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opoCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOponentesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 
-    public static List<DBInfoSystem> ListPkIndices()
+    public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
-        string[] campos =
-        {
-            "opoCodigo",
-            "opoNome"
-        };
+        ImmutableArray<string> campos = ImmutableArray.CreateRange(["opoCodigo", "opoNome"]);
         var result = campos.Where(campo => !campo.Equals(DBOponentesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result ?? [];
+        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
     }
 }
 #endif
