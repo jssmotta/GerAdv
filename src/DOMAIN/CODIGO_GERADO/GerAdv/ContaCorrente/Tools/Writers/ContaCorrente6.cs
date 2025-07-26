@@ -36,8 +36,7 @@ public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : 
         dbRec.FProcesso = contacorrente.Processo;
         dbRec.FParcelaX = contacorrente.ParcelaX;
         dbRec.FValor = contacorrente.Valor;
-        if (contacorrente.Data != null)
-            dbRec.FData = contacorrente.Data.ToString();
+        dbRec.FData = contacorrente.Data;
         dbRec.FCliente = contacorrente.Cliente;
         dbRec.FHistorico = contacorrente.Historico;
         dbRec.FContrato = contacorrente.Contrato;

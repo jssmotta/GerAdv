@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBProcessosObsReportDicInfo
 {
     public const string CampoCodigo = "prrCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "prrData";
     public const string TablePrefix = "prr";
     public const string Data = "prrData"; // LOCALIZACAO 170523
     public const string Processo = "prrProcesso"; // LOCALIZACAO 170523
@@ -36,7 +36,7 @@ public static partial class DBProcessosObsReportDicInfo
 
     public const string PTabelaNome = "ProcessosObsReport";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PrrData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem PrrData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "prr"

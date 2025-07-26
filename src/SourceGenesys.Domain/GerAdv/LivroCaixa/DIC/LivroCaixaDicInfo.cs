@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBLivroCaixaDicInfo
 {
     public const string CampoCodigo = "livCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "livData";
     public const string TablePrefix = "liv";
     public const string IDDes = "livIDDes"; // LOCALIZACAO 170523
     public const string Pessoal = "livPessoal"; // LOCALIZACAO 170523
@@ -80,7 +80,7 @@ public static partial class DBLivroCaixaDicInfo
         IsRequired = true,
         Prefixo = "liv"
     };
-    public static DBInfoSystem LivData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem LivData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "liv"
     };

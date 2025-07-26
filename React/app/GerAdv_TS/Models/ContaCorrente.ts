@@ -20,7 +20,6 @@ export interface ContaCorrente
 	parcelax : number;
 	valor : number;
 	data : string;
-	data_date? : Date;
 	historico : string;
 	contrato : boolean;
 	pago : boolean;

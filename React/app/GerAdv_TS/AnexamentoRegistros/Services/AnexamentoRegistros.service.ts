@@ -25,7 +25,7 @@ export class AnexamentoRegistrosValidator {
 export interface IAnexamentoRegistrosService {
   fetchAnexamentoRegistrosById: (id: number) => Promise<IAnexamentoRegistros>;
   saveAnexamentoRegistros: (anexamentoregistros: IAnexamentoRegistros) => Promise<IAnexamentoRegistros>;  
-  
+  getList: (filtro?: FilterAnexamentoRegistros) => Promise<IAnexamentoRegistros[]>;
   getAll: (filtro?: FilterAnexamentoRegistros) => Promise<IAnexamentoRegistros[]>;
   deleteAnexamentoRegistros: (id: number) => Promise<void>;
   validateAnexamentoRegistros: (anexamentoregistros: IAnexamentoRegistros) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class AnexamentoRegistrosService implements IAnexamentoRegistrosService {
   }
 
   
+    async getList(filtro?: FilterAnexamentoRegistros): Promise<IAnexamentoRegistros[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching AnexamentoRegistros list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

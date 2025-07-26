@@ -33,6 +33,8 @@ public class ProDepositosValidation : IProDepositosValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.Data))
+            throw new SGValidationException("Data é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -40,13 +42,6 @@ public class ProDepositosValidation : IProDepositosValidation
             throw new SGValidationException("Processo é obrigatório.");
         if (reg.Fase == 0)
             throw new SGValidationException("Fase é obrigatório.");
-        if (reg.Data.IsEmpty())
-            throw new SGValidationException("Data é obrigatório.");
-        if (!DateTime.TryParse(reg.Data, out _))
-        {
-            throw new SGValidationException($"Data inválida: {reg.Data}");
-        }
-
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
         if (reg.Valor.IsEmpty())

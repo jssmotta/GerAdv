@@ -13,7 +13,6 @@ export interface LivroCaixa
 	idhonparc : number;
 	idhonsuc : boolean;
 	data : string;
-	data_date? : Date;
 	valor : number;
 	tipo : boolean;
 	historico : string;

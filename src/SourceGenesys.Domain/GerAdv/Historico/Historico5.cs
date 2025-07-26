@@ -9,7 +9,7 @@ public partial class DBHistorico
     public const string PTabelaNome = "Historico";
     public const string CamposSqlX = " Historico.* ";
     public const string CampoCodigo = "hisCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "hisData";
     public const string PTabelaPrefixo = "his";
 #pragma warning disable CA1822 // Mark members as static
 

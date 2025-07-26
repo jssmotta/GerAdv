@@ -10,6 +10,7 @@ export interface DocsRecebidosItens
 	devolvido : boolean;
 	seradevolvido : boolean;
 	observacoes : string;
+	datacontatocrm?: string;
 
 }
 

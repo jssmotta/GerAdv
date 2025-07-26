@@ -14,7 +14,7 @@ import { ReuniaoTestEmpty } from '../GerAdv_TS/Models/Reuniao';
 const mockReuniaoService: jest.Mocked<IReuniaoService> = {
   fetchReuniaoById: jest.fn(),
   saveReuniao: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteReuniao: jest.fn(),
   validateReuniao: jest.fn(),
@@ -50,7 +50,7 @@ describe('useReuniaoForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'pauta',
+        name: 'data',
         value: 'Novo Reunião',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useReuniaoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.pauta).toBe('Novo Reunião');
+    expect(result.current.data.data).toBe('Novo Reunião');
   });
 
    test('deve carregar Reunião por ID', async () => {
-    const mockReuniao = { ...initialReuniao, id: 1, pauta: 'Reunião Teste' };
+    const mockReuniao = { ...initialReuniao, id: 1, data: 'Reunião Teste' };
     mockReuniaoService.fetchReuniaoById.mockResolvedValue(mockReuniao);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useReuniaoForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialReuniao, pauta: 'Teste' });
+      result.current.setData({ ...initialReuniao, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useReuniaoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialReuniao, id: 1, pauta: 'Reunião 1' },
-      { ...initialReuniao, id: 2, pauta: 'Reunião 2' }
+      { ...initialReuniao, id: 1, data: 'Reunião 1' },
+      { ...initialReuniao, id: 2, data: 'Reunião 2' }
     ];
     mockReuniaoService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useReuniaoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialReuniao, id: 1, pauta: 'Reunião Filtrado' }];
-    const filtro = { pauta: 'Reunião' };
+    const mockData = [{ ...initialReuniao, id: 1, data: 'Reunião Filtrado' }];
+    const filtro = { data: 'Reunião' };
     mockReuniaoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsReuniao', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsReuniao());
 
-    const validData = { ...initialReuniao, pauta: 'Reunião Válido' };
+    const validData = { ...initialReuniao, data: 'Reunião Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsReuniao', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsReuniao());
+
+    const invalidData = { ...initialReuniao, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsReuniao());
+
+    const invalidData = { 
+      ...initialReuniao, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsReuniao());
@@ -229,7 +250,7 @@ describe('useValidationsReuniao', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialReuniao, id: 1, pauta: 'Reunião Teste' }];
+    const mockData = [{ ...initialReuniao, id: 1, data: 'Reunião Teste' }];
     mockReuniaoService.getAll.mockResolvedValue(mockData);
     
 

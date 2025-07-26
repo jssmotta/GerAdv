@@ -62,6 +62,7 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -81,12 +82,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            instancia.Data = dbRec.FData;
-            instancia.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
         {
             instancia.ZKeyQuando = dbRec.FZKeyQuando;
@@ -125,6 +120,7 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -144,12 +140,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            instancia.Data = dbRec.FData;
-            instancia.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
         {
             instancia.ZKeyQuando = dbRec.FZKeyQuando;
@@ -177,6 +167,7 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -196,12 +187,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            instancia.Data = dbRec.FData;
-            instancia.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
         {
             instancia.ZKeyQuando = dbRec.FZKeyQuando;
@@ -229,6 +214,7 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -248,12 +234,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            instancia.Data = dbRec.FData;
-            instancia.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
         {
             instancia.ZKeyQuando = dbRec.FZKeyQuando;
@@ -313,6 +293,7 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -332,12 +313,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            instancia.Data = dbRec.FData;
-            instancia.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
         {
             instancia.ZKeyQuando = dbRec.FZKeyQuando;

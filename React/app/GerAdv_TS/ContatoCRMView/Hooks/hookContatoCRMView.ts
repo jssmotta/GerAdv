@@ -168,7 +168,10 @@ export function useValidationsContatoCRMView() {
     
       try {
    
-        if (data.cguid.length > 100) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.cguid.length > 100) { 
                                              return { isValid: false, message: 'O campo CGUID não pode ter mais de 100 caracteres.' };
                                          } 
 if (data.ip.length > 50) { 

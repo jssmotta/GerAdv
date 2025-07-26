@@ -9,7 +9,7 @@ public partial class DBProResumos
     public const string PTabelaNome = "ProResumos";
     public const string CamposSqlX = " ProResumos.* ";
     public const string CampoCodigo = "prsCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "prsData";
     public const string PTabelaPrefixo = "prs";
 #pragma warning disable CA1822 // Mark members as static
 

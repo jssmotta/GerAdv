@@ -46,6 +46,15 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterLivroCaixa? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"LivroCaixa: GetListN called, max {max}, {filtro} uri");
+        var result = await _livrocaixaService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

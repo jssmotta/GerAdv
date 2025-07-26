@@ -54,7 +54,7 @@ if (getParamFromUrl('agenda') > 0) {
     agendaApi
     .getById(getParamFromUrl('agenda'))
     .then((response) => {
-      setNomeAgenda(response.data.campo);
+      setNomeAgenda(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');

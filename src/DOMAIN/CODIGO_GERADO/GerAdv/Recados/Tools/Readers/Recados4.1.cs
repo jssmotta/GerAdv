@@ -15,7 +15,7 @@ public partial class RecadosReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBRecadosDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBRecadosDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,7 +23,7 @@ public partial class RecadosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBHistoricoDicInfo.PTabelaNome}].[{DBHistoricoDicInfo.}],[{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRMDicInfo.}],[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Nome}],[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.}]
+                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBHistoricoDicInfo.PTabelaNome}].[{DBHistoricoDicInfo.Data}],[{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRMDicInfo.Data}],[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Nome}],[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Data}]
                    FROM {DBRecados.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Processo}]
 LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Cliente}]

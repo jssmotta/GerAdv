@@ -23,7 +23,7 @@ public partial class DocsRecebidosItensReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRMDicInfo.}]
+                   {campos}, [{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRMDicInfo.Data}]
                    FROM {DBDocsRecebidosItens.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBContatoCRMDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRM.CampoCodigo}]=[{DBDocsRecebidosItensDicInfo.PTabelaNome}].[{DBDocsRecebidosItensDicInfo.ContatoCRM}]
  

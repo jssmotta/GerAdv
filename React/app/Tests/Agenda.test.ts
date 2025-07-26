@@ -14,7 +14,7 @@ import { AgendaTestEmpty } from '../GerAdv_TS/Models/Agenda';
 const mockAgendaService: jest.Mocked<IAgendaService> = {
   fetchAgendaById: jest.fn(),
   saveAgenda: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteAgenda: jest.fn(),
   validateAgenda: jest.fn(),
@@ -50,7 +50,7 @@ describe('useAgendaForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'compromisso',
+        name: 'data',
         value: 'Novo Compromisso',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useAgendaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.compromisso).toBe('Novo Compromisso');
+    expect(result.current.data.data).toBe('Novo Compromisso');
   });
 
    test('deve carregar Compromisso por ID', async () => {
-    const mockAgenda = { ...initialAgenda, id: 1, compromisso: 'Compromisso Teste' };
+    const mockAgenda = { ...initialAgenda, id: 1, data: 'Compromisso Teste' };
     mockAgendaService.fetchAgendaById.mockResolvedValue(mockAgenda);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useAgendaForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialAgenda, compromisso: 'Teste' });
+      result.current.setData({ ...initialAgenda, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useAgendaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialAgenda, id: 1, compromisso: 'Compromisso 1' },
-      { ...initialAgenda, id: 2, compromisso: 'Compromisso 2' }
+      { ...initialAgenda, id: 1, data: 'Compromisso 1' },
+      { ...initialAgenda, id: 2, data: 'Compromisso 2' }
     ];
     mockAgendaService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useAgendaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialAgenda, id: 1, compromisso: 'Compromisso Filtrado' }];
-    const filtro = { compromisso: 'Compromisso' };
+    const mockData = [{ ...initialAgenda, id: 1, data: 'Compromisso Filtrado' }];
+    const filtro = { data: 'Compromisso' };
     mockAgendaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsAgenda', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsAgenda());
 
-    const validData = { ...initialAgenda, compromisso: 'Compromisso Válido' };
+    const validData = { ...initialAgenda, data: 'Compromisso Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsAgenda', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsAgenda());
+
+    const invalidData = { ...initialAgenda, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsAgenda());
+
+    const invalidData = { 
+      ...initialAgenda, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsAgenda());
@@ -229,7 +250,7 @@ describe('useValidationsAgenda', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialAgenda, id: 1, compromisso: 'Compromisso Teste' }];
+    const mockData = [{ ...initialAgenda, id: 1, data: 'Compromisso Teste' }];
     mockAgendaService.getAll.mockResolvedValue(mockData);
     
 

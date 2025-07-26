@@ -14,7 +14,6 @@ export interface HorasTrab
 	honorario : boolean;
 	idagenda : number;
 	data : string;
-	data_date? : Date;
 	status : number;
 	hrini : string;
 	hrfim : string;

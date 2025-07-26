@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={671}
+  newHeight={648}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedHistorico?.id ?? 0).toString()}

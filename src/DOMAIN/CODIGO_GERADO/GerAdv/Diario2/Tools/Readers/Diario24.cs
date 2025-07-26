@@ -5,7 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Reader
 {
     private readonly IFDiario2Factory _diario2Factory = diario2Factory;
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("diaCodigo, diaNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("diaCodigo, diaData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<Diario2ResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDiario2.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<Diario2ResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -54,18 +54,13 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Models.Diario2
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            diario2.Data = dbRec.FData;
-            diario2.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
         {
             diario2.Hora = dbRec.FHora;
@@ -96,18 +91,13 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2Response
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            diario2.Data = dbRec.FData;
-            diario2.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
         {
             diario2.Hora = dbRec.FHora;
@@ -127,18 +117,13 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2Response
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            diario2.Data = dbRec.FData;
-            diario2.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
         {
             diario2.Hora = dbRec.FHora;
@@ -158,18 +143,13 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2ResponseAll
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            diario2.Data = dbRec.FData;
-            diario2.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
         {
             diario2.Hora = dbRec.FHora;
@@ -205,18 +185,13 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2ResponseAll
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            diario2.Data = dbRec.FData;
-            diario2.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
         {
             diario2.Hora = dbRec.FHora;

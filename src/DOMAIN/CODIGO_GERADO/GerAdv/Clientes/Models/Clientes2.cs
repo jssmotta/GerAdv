@@ -217,9 +217,6 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
-
         /// <summary>
         /// HomePage - cliHomePage - tamanho máximo: 60 
         /// </summary>
@@ -493,9 +490,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
-
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// HomePage - cliHomePage - tamanho máximo: 60 

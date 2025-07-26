@@ -23,7 +23,7 @@ public partial class AgendaStatusReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.}]
+                   {campos}, [{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Data}]
                    FROM {DBAgendaStatus.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBAgendaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAgendaDicInfo.PTabelaNome}].[{DBAgenda.CampoCodigo}]=[{DBAgendaStatusDicInfo.PTabelaNome}].[{DBAgendaStatusDicInfo.Agenda}]
  

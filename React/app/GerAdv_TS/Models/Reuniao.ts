@@ -8,7 +8,6 @@ export interface Reuniao
 	cliente : number;
 	idagenda : number;
 	data : string;
-	data_date? : Date;
 	pauta : string;
 	ata : string;
 	horainicial : string;

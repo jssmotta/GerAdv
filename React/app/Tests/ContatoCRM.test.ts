@@ -14,7 +14,7 @@ import { ContatoCRMTestEmpty } from '../GerAdv_TS/Models/ContatoCRM';
 const mockContatoCRMService: jest.Mocked<IContatoCRMService> = {
   fetchContatoCRMById: jest.fn(),
   saveContatoCRM: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteContatoCRM: jest.fn(),
   validateContatoCRM: jest.fn(),
@@ -50,7 +50,7 @@ describe('useContatoCRMForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'assunto',
+        name: 'data',
         value: 'Novo Contato C R M',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useContatoCRMForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.assunto).toBe('Novo Contato C R M');
+    expect(result.current.data.data).toBe('Novo Contato C R M');
   });
 
    test('deve carregar Contato C R M por ID', async () => {
-    const mockContatoCRM = { ...initialContatoCRM, id: 1, assunto: 'Contato C R M Teste' };
+    const mockContatoCRM = { ...initialContatoCRM, id: 1, data: 'Contato C R M Teste' };
     mockContatoCRMService.fetchContatoCRMById.mockResolvedValue(mockContatoCRM);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useContatoCRMForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialContatoCRM, assunto: 'Teste' });
+      result.current.setData({ ...initialContatoCRM, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useContatoCRMList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialContatoCRM, id: 1, assunto: 'Contato C R M 1' },
-      { ...initialContatoCRM, id: 2, assunto: 'Contato C R M 2' }
+      { ...initialContatoCRM, id: 1, data: 'Contato C R M 1' },
+      { ...initialContatoCRM, id: 2, data: 'Contato C R M 2' }
     ];
     mockContatoCRMService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useContatoCRMList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialContatoCRM, id: 1, assunto: 'Contato C R M Filtrado' }];
-    const filtro = { assunto: 'Contato C R M' };
+    const mockData = [{ ...initialContatoCRM, id: 1, data: 'Contato C R M Filtrado' }];
+    const filtro = { data: 'Contato C R M' };
     mockContatoCRMService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsContatoCRM', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsContatoCRM());
 
-    const validData = { ...initialContatoCRM, assunto: 'Contato C R M Válido' };
+    const validData = { ...initialContatoCRM, data: 'Contato C R M Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsContatoCRM', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsContatoCRM());
+
+    const invalidData = { ...initialContatoCRM, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsContatoCRM());
+
+    const invalidData = { 
+      ...initialContatoCRM, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsContatoCRM());
@@ -229,7 +250,7 @@ describe('useValidationsContatoCRM', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialContatoCRM, id: 1, assunto: 'Contato C R M Teste' }];
+    const mockData = [{ ...initialContatoCRM, id: 1, data: 'Contato C R M Teste' }];
     mockContatoCRMService.getAll.mockResolvedValue(mockData);
     
 

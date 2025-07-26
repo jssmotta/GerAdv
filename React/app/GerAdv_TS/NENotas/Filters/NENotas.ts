@@ -19,7 +19,6 @@
     processo_end?: number;
     palavrachave?: number;
     palavrachave_end?: number;
- data_end?: string;
  data?: string;
  notapublicada?: string;
     codigo_filtro?: number;
@@ -43,7 +42,6 @@ export class FilterNENotasDefaults implements FilterNENotas {
     processo_end?: number = -2147483648;
     palavrachave?: number = -2147483648;
     palavrachave_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     notapublicada?: string = '';
     codigo_filtro?: number = -2147483648;

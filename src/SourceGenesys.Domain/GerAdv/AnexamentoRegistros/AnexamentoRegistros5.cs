@@ -9,7 +9,7 @@ public partial class DBAnexamentoRegistros
     public const string PTabelaNome = "AnexamentoRegistros";
     public const string CamposSqlX = " AnexamentoRegistros.* ";
     public const string CampoCodigo = "axrCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "axrData";
     public const string PTabelaPrefixo = "axr";
 #pragma warning disable CA1822 // Mark members as static
 

@@ -21,7 +21,7 @@ public partial class AgendaSemanaWhere(IFAgendaSemanaFactory agendasemanaFactory
         {
             Id = dbRec.ID,
             ParaNome = dbRec.FParaNome ?? string.Empty,
-            Data = dbRec.FData,
+            Data = dbRec.FData ?? string.Empty,
             Funcionario = dbRec.FFuncionario,
             Advogado = dbRec.FAdvogado,
             Hora = dbRec.FHora,

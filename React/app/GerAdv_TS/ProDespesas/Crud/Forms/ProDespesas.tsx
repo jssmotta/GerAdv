@@ -157,6 +157,18 @@ const addValorCliente = (e: any) => {
             )}
             <div className='grid-container'>
 
+              <InputName
+              type='text'
+              id='data'
+              label='Data'
+              dataForm={prodespesasData}
+              className='inputIncNome'
+              name='data'
+              value={prodespesasData.data}
+              placeholder={`Informe Data`}
+              onChange={onChange}
+              required
+              />
 
               <InputInput
               type='text'
@@ -179,19 +191,6 @@ const addValorCliente = (e: any) => {
               label={'Clientes'}
               />
               <InputCheckbox dataForm={prodespesasData} label='Corrigido' name='corrigido' checked={prodespesasData.corrigido} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={prodespesasData}
-              className='inputIncNome'
-              name='data'
-              value={prodespesasData.data}
-              onChange={onChange}
-              />
-
 
               <InputInput
               type='text'
@@ -239,7 +238,7 @@ const addValorCliente = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'>
+
               <InputInput
               type='text'
               maxLength={2048}
@@ -252,31 +251,31 @@ const addValorCliente = (e: any) => {
               onChange={onChange}
               />
 
-              <InputCheckbox dataForm={prodespesasData} label='Tipo' name='tipo' checked={prodespesasData.tipo} onChange={onChange} />
+            </div><div className='grid-container'><InputCheckbox dataForm={prodespesasData} label='Tipo' name='tipo' checked={prodespesasData.tipo} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='historico'
-              label='Historico'
-              dataForm={prodespesasData}
-              className='inputIncNome'
-              name='historico'
-              value={prodespesasData.historico}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={100}
+            id='historico'
+            label='Historico'
+            dataForm={prodespesasData}
+            className='inputIncNome'
+            name='historico'
+            value={prodespesasData.historico}
+            onChange={onChange}
+            />
 
-              <InputCheckbox dataForm={prodespesasData} label='LivroCaixa' name='livrocaixa' checked={prodespesasData.livrocaixa} onChange={onChange} />
-            </div>
-          </form>
-
-
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProDespesas' data={prodespesasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProDespesasForm-${prodespesasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/prodespesas'} id={prodespesasData.id} closeModel={onClose} dadoApi={dadoApi} />
+            <InputCheckbox dataForm={prodespesasData} label='LivroCaixa' name='livrocaixa' checked={prodespesasData.livrocaixa} onChange={onChange} />
           </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProDespesas' data={prodespesasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProDespesasForm-${prodespesasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/prodespesas'} id={prodespesasData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={824}
+  newHeight={801}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedContatoCRM?.id ?? 0).toString()}

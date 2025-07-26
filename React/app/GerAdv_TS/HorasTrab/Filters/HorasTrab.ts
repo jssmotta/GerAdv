@@ -10,7 +10,6 @@
  honorario?: number;
     idagenda?: number;
     idagenda_end?: number;
- data_end?: string;
  data?: string;
     cliente?: number;
     cliente_end?: number;
@@ -46,7 +45,6 @@ export class FilterHorasTrabDefaults implements FilterHorasTrab {
     honorario?: number= -2147483648;
     idagenda?: number = -2147483648;
     idagenda_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     cliente?: number = -2147483648;
     cliente_end?: number = -2147483648;

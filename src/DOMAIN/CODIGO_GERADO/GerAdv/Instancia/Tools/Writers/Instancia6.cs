@@ -31,8 +31,7 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
         dbRec.FLiminarConcedida = instancia.LiminarConcedida;
         dbRec.FLiminarNegada = instancia.LiminarNegada;
         dbRec.FProcesso = instancia.Processo;
-        if (instancia.Data != null)
-            dbRec.FData = instancia.Data.ToString();
+        dbRec.FData = instancia.Data;
         dbRec.FLiminarParcial = instancia.LiminarParcial;
         dbRec.FLiminarResultado = instancia.LiminarResultado;
         dbRec.FNroProcesso = instancia.NroProcesso;

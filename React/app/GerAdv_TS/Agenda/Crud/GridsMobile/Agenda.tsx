@@ -39,12 +39,13 @@ const { page, handlePageChange } = useGridPagination({
 });
 // Configuração dos filtros iniciais
 const initialFilters = {
-
+  data: '',
 };
 // Lógica de filtro customizada usando useCallback
 const filterLogic = useCallback((data: IAgenda, filters: Record<string, any>) => {
-
-  return true;
+  const dataMatches = applyFilter(data, 'data', filters.data);
+  return dataMatches
+  ;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({

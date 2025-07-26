@@ -160,7 +160,7 @@ public partial class DBContatoCRM
         if (pFldFPessoaContato)
             updateTool.Fields(DBContatoCRMDicInfo.PessoaContato, m_FPessoaContato, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBContatoCRMDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBContatoCRMDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFTempo)
             updateTool.Fields(DBContatoCRMDicInfo.Tempo, m_FTempo, ETiposCampos.FDecimal);
         if (pFldFHoraInicial)

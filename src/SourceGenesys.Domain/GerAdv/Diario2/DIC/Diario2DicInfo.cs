@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBDiario2DicInfo
 {
     public const string CampoCodigo = "diaCodigo";
-    public const string CampoNome = "diaNome";
+    public const string CampoNome = "diaData";
     public const string TablePrefix = "dia";
     public const string Data = "diaData"; // LOCALIZACAO 170523
     public const string Hora = "diaHora"; // LOCALIZACAO 170523
@@ -44,7 +44,7 @@ public static partial class DBDiario2DicInfo
 
     public const string PTabelaNome = "Diario2";
 #region PropriedadesDaTabela
-    public static DBInfoSystem DiaData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem DiaData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "dia"

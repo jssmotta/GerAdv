@@ -46,6 +46,15 @@ public partial class ProcessosObsReportController(IProcessosObsReportService pro
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessosObsReport? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"ProcessosObsReport: GetListN called, max {max}, {filtro} uri");
+        var result = await _processosobsreportService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

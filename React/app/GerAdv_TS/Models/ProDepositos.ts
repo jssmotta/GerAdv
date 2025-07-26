@@ -9,7 +9,6 @@ export interface ProDepositos
 	fase : number;
 	tipoprodesposito : number;
 	data : string;
-	data_date? : Date;
 	valor : number;
 	nropastaprocessos?: string;
 	descricaofase?: string;

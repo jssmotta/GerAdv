@@ -158,7 +158,7 @@ public partial class DBAgendaFinanceiro
         if (pFldFFuncionario)
             updateTool.Fields(DBAgendaFinanceiroDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBAgendaFinanceiroDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBAgendaFinanceiroDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFEventoPrazo)
             updateTool.Fields(DBAgendaFinanceiroDicInfo.EventoPrazo, m_FEventoPrazo, ETiposCampos.FNumber);
         if (pFldFHora)

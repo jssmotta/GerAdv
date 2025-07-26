@@ -150,7 +150,7 @@ public partial class DBNENotas
         if (pFldFPalavraChave)
             updateTool.Fields(DBNENotasDicInfo.PalavraChave, m_FPalavraChave, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBNENotasDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBNENotasDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFNotaPublicada)
             updateTool.Fields(DBNENotasDicInfo.NotaPublicada, m_FNotaPublicada, ETiposCampos.FString);
     }

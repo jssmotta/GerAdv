@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBHistoricoDicInfo
 {
     public const string CampoCodigo = "hisCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "hisData";
     public const string TablePrefix = "his";
     public const string ExtraID = "hisExtraID"; // LOCALIZACAO 170523
     public const string IDNE = "hisIDNE"; // LOCALIZACAO 170523
@@ -109,7 +109,7 @@ public static partial class DBHistoricoDicInfo
     {
         Prefixo = "his"
     }; // DBI 11 
-    public static DBInfoSystem HisData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem HisData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "his"
     };

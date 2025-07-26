@@ -16,16 +16,9 @@ public partial class ProResumosService
             parameters.Add(new($"@{nameof(DBProResumosDicInfo.Processo)}", filtro.Processo));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProResumosDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProResumosDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBProResumosDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (!string.IsNullOrEmpty(filtro.Resumo))
@@ -65,15 +58,7 @@ public partial class ProResumosService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Processo}] = @{nameof(DBProResumosDicInfo.Processo)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBProResumosDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProResumosDicInfo.Data} BETWEEN @{nameof(DBProResumosDicInfo.Data)} AND @{nameof(DBProResumosDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProResumosDicInfo.Data} = @{nameof(DBProResumosDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProResumosDicInfo.Data} <= @{nameof(DBProResumosDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProResumosDicInfo.Data)}");
         cWhere.Append(filtro.Resumo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Resumo}]  {DevourerConsts.MsiCollate} like @{nameof(DBProResumosDicInfo.Resumo)}");
         if (!filtro.TipoResumo.IsEmpty() && filtro.TipoResumo_end.IsEmpty())
         {
@@ -105,6 +90,46 @@ public partial class ProResumosService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProResumos? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ProResumos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBProResumosDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

@@ -13,5 +13,6 @@ public partial interface IContaCorrenteReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ContaCorrenteResponseAll? ReadAll(FContaCorrente dbRec, IDataRecord dr);
     ContaCorrenteResponseAll? ReadAll(SG.GerAdv.DBContaCorrente dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<ContaCorrenteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

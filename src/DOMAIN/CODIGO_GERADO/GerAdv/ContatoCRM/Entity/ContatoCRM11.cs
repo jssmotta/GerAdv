@@ -36,10 +36,10 @@ public partial class FContatoCRMFactory : IFContatoCRMFactory, IDisposable
         return new FContatoCRM();
     }
 
-    public FContatoCRM CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FContatoCRM CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
-        return FContatoCRM.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
+        return FContatoCRM.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
     public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)

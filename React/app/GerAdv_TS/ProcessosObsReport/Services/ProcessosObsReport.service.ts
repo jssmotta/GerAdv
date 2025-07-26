@@ -25,7 +25,7 @@ export class ProcessosObsReportValidator {
 export interface IProcessosObsReportService {
   fetchProcessosObsReportById: (id: number) => Promise<IProcessosObsReport>;
   saveProcessosObsReport: (processosobsreport: IProcessosObsReport) => Promise<IProcessosObsReport>;  
-  
+  getList: (filtro?: FilterProcessosObsReport) => Promise<IProcessosObsReport[]>;
   getAll: (filtro?: FilterProcessosObsReport) => Promise<IProcessosObsReport[]>;
   deleteProcessosObsReport: (id: number) => Promise<void>;
   validateProcessosObsReport: (processosobsreport: IProcessosObsReport) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ProcessosObsReportService implements IProcessosObsReportService {
   }
 
   
+    async getList(filtro?: FilterProcessosObsReport): Promise<IProcessosObsReport[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ProcessosObsReport list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

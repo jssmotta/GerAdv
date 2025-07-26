@@ -7,7 +7,6 @@
     wildcardChar?: string;
     processo?: number;
     processo_end?: number;
- data_end?: string;
  data?: string;
  resumo?: string;
     tiporesumo?: number;
@@ -21,7 +20,6 @@ export class FilterProResumosDefaults implements FilterProResumos {
     wildcardChar?: string = '';
     processo?: number = -2147483648;
     processo_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     resumo?: string = '';
     tiporesumo?: number = -2147483648;

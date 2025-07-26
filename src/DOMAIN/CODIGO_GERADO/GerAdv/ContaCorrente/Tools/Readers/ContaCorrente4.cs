@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteReader
 {
     private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ctoCodigo, ctoData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ContaCorrenteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContaCorrente.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ContaCorrenteResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -64,6 +65,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             Processo = dbRec.FProcesso,
             ParcelaX = dbRec.FParcelaX,
             Valor = dbRec.FValor,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Historico = dbRec.FHistorico ?? string.Empty,
             Contrato = dbRec.FContrato,
@@ -81,12 +83,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             contacorrente.DtOriginal = dbRec.FDtOriginal;
             contacorrente.DtOriginal_date = XDtOriginal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contacorrente.Data = dbRec.FData;
-            contacorrente.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FDataPgto, out DateTime XDataPgto))
@@ -130,6 +126,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             Processo = dbRec.FProcesso,
             ParcelaX = dbRec.FParcelaX,
             Valor = dbRec.FValor,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Historico = dbRec.FHistorico ?? string.Empty,
             Contrato = dbRec.FContrato,
@@ -147,12 +144,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             contacorrente.DtOriginal = dbRec.FDtOriginal;
             contacorrente.DtOriginal_date = XDtOriginal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contacorrente.Data = dbRec.FData;
-            contacorrente.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FDataPgto, out DateTime XDataPgto))
@@ -185,6 +176,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             Processo = dbRec.FProcesso,
             ParcelaX = dbRec.FParcelaX,
             Valor = dbRec.FValor,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Historico = dbRec.FHistorico ?? string.Empty,
             Contrato = dbRec.FContrato,
@@ -202,12 +194,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             contacorrente.DtOriginal = dbRec.FDtOriginal;
             contacorrente.DtOriginal_date = XDtOriginal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contacorrente.Data = dbRec.FData;
-            contacorrente.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FDataPgto, out DateTime XDataPgto))
@@ -240,6 +226,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             Processo = dbRec.FProcesso,
             ParcelaX = dbRec.FParcelaX,
             Valor = dbRec.FValor,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Historico = dbRec.FHistorico ?? string.Empty,
             Contrato = dbRec.FContrato,
@@ -257,12 +244,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             contacorrente.DtOriginal = dbRec.FDtOriginal;
             contacorrente.DtOriginal_date = XDtOriginal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contacorrente.Data = dbRec.FData;
-            contacorrente.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FDataPgto, out DateTime XDataPgto))
@@ -311,6 +292,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             Processo = dbRec.FProcesso,
             ParcelaX = dbRec.FParcelaX,
             Valor = dbRec.FValor,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Historico = dbRec.FHistorico ?? string.Empty,
             Contrato = dbRec.FContrato,
@@ -328,12 +310,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             contacorrente.DtOriginal = dbRec.FDtOriginal;
             contacorrente.DtOriginal_date = XDtOriginal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contacorrente.Data = dbRec.FData;
-            contacorrente.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FDataPgto, out DateTime XDataPgto))

@@ -23,7 +23,7 @@ public partial class ContatoCRMOperadorReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRMDicInfo.}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, [{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRMDicInfo.Data}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBContatoCRMOperador.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBContatoCRMDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBContatoCRMDicInfo.PTabelaNome}].[{DBContatoCRM.CampoCodigo}]=[{DBContatoCRMOperadorDicInfo.PTabelaNome}].[{DBContatoCRMOperadorDicInfo.ContatoCRM}]
 LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBContatoCRMOperadorDicInfo.PTabelaNome}].[{DBContatoCRMOperadorDicInfo.Operador}]

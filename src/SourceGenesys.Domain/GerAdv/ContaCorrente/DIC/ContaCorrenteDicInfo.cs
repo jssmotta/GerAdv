@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBContaCorrenteDicInfo
 {
     public const string CampoCodigo = "ctoCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ctoData";
     public const string TablePrefix = "cto";
     public const string CIAcordo = "ctoCIAcordo"; // LOCALIZACAO 170523
     public const string Quitado = "ctoQuitado"; // LOCALIZACAO 170523
@@ -131,7 +131,7 @@ public static partial class DBContaCorrenteDicInfo
     {
         Prefixo = "cto"
     };
-    public static DBInfoSystem CtoData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem CtoData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "cto"
     };

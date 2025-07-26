@@ -26,8 +26,7 @@ public class ProProcuradoresWriter(IFProProcuradoresFactory proprocuradoresFacto
         dbRec.FAdvogado = proprocuradores.Advogado;
         dbRec.FNome = proprocuradores.Nome;
         dbRec.FProcesso = proprocuradores.Processo;
-        if (proprocuradores.Data != null)
-            dbRec.FData = proprocuradores.Data.ToString();
+        dbRec.FData = proprocuradores.Data;
         dbRec.FSubstabelecimento = proprocuradores.Substabelecimento;
         dbRec.FProcuracao = proprocuradores.Procuracao;
         dbRec.FGUID = proprocuradores.GUID;

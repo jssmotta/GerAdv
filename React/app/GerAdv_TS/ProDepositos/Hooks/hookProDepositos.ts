@@ -168,7 +168,10 @@ export function useValidationsProDepositos() {
     
       try {
    
-        
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+
 
 
         return { isValid: true, message: '' };

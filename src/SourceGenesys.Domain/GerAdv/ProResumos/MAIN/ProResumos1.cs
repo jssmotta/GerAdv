@@ -16,31 +16,43 @@ public partial class DBProResumos : VAuditor, ICadastros, IAuditor
     }
 
 #endregion
-    // REF. 250325
-    public DBProResumos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBProResumos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        // Tracking: 250605-3
+        // Tracking: 250605-0
         if (oCnn is null)
             return;
-        if (string.IsNullOrEmpty(fullSql))
+        if (string.IsNullOrEmpty(fullSql) && !string.IsNullOrEmpty(cNome))
         {
-            if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
+            if (cNome is null)
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
-                if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                return;
             }
-            else
-            {
-                throw new Exception("Erro de parâmetros sqlWhere: ProResumos");
-            }
+
+            sqlWhere = cNome;
         }
-        else
+
+        if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
                 CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
+        else
+        {
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
+            using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
+            if (ds != null)
+                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+        }
+    }
+
+    // ReSharper disable once UnusedParameter.Local
+    public DBProResumos(in string? sqlWhere, MsiSqlConnection? oCnn)
+    {
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        if (ds != null)
+            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_ProResumos
@@ -60,6 +72,12 @@ public partial class DBProResumos : VAuditor, ICadastros, IAuditor
 #if (DEBUG)
 			         }
 #endif
+        if (this.FData.IsEmpty())
+        {
+            // Validação preventiva por que ao chegar aqui já passou por outras fases
+            throw new Exception("Campo 'Data' está vazio!");
+        }
+
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
         {
             IsMachineCode = true
@@ -132,6 +150,7 @@ public partial class DBProResumos : VAuditor, ICadastros, IAuditor
         int GravaNewId()
         {
             ID = insertId;
+            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

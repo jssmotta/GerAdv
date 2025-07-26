@@ -13,5 +13,6 @@ public partial interface IHistoricoReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     HistoricoResponseAll? ReadAll(FHistorico dbRec, IDataRecord dr);
     HistoricoResponseAll? ReadAll(SG.GerAdv.DBHistorico dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<HistoricoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

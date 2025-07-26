@@ -168,7 +168,10 @@ export function useValidationsHorasTrab() {
     
       try {
    
-        if (data.hrini.length > 5) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.hrini.length > 5) { 
                                              return { isValid: false, message: 'O campo HrIni não pode ter mais de 5 caracteres.' };
                                          } 
 if (data.hrfim.length > 5) { 

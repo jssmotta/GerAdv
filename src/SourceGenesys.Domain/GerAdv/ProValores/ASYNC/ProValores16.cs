@@ -140,7 +140,7 @@ public partial class DBProValores
         if (pFldFIgnorar)
             updateTool.Fields(DBProValoresDicInfo.Ignorar, m_FIgnorar, ETiposCampos.FBoolean);
         if (pFldFData)
-            updateTool.Fields(DBProValoresDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProValoresDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFValorOriginal)
             updateTool.Fields(DBProValoresDicInfo.ValorOriginal, m_FValorOriginal, ETiposCampos.FDecimal);
         if (pFldFPercMulta)

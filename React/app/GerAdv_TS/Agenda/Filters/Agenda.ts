@@ -28,7 +28,6 @@
  eventodata?: string;
     funcionario?: number;
     funcionario_end?: number;
- data_end?: string;
  data?: string;
     eventoprazo?: number;
     eventoprazo_end?: number;
@@ -103,7 +102,6 @@ export class FilterAgendaDefaults implements FilterAgenda {
     eventodata?: string = '';
     funcionario?: number = -2147483648;
     funcionario_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     eventoprazo?: number = -2147483648;
     eventoprazo_end?: number = -2147483648;

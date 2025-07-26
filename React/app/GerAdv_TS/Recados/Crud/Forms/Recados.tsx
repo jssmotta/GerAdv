@@ -105,7 +105,7 @@ if (getParamFromUrl('historico') > 0) {
     historicoApi
     .getById(getParamFromUrl('historico'))
     .then((response) => {
-      setNomeHistorico(response.data.campo);
+      setNomeHistorico(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');
@@ -120,7 +120,7 @@ if (getParamFromUrl('contatocrm') > 0) {
     contatocrmApi
     .getById(getParamFromUrl('contatocrm'))
     .then((response) => {
-      setNomeContatoCRM(response.data.campo);
+      setNomeContatoCRM(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');
@@ -150,7 +150,7 @@ if (getParamFromUrl('agenda') > 0) {
     agendaApi
     .getById(getParamFromUrl('agenda'))
     .then((response) => {
-      setNomeAgenda(response.data.campo);
+      setNomeAgenda(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');
@@ -249,6 +249,18 @@ const addValorProcesso = (e: any) => {
                     )}
                     <div className='grid-container'>
 
+                      <InputName
+                      type='text'
+                      id='data'
+                      label='Data'
+                      dataForm={recadosData}
+                      className='inputIncNome'
+                      name='data'
+                      value={recadosData.data}
+                      placeholder={`Informe Data`}
+                      onChange={onChange}
+                      required
+                      />
 
                       <InputInput
                       type='text'
@@ -347,20 +359,6 @@ const addValorProcesso = (e: any) => {
                     onChange={onChange}
                     />
 
-
-                    <InputInput
-                    required
-                    type='text'
-                    maxLength={2048}
-                    id='data'
-                    label='Data'
-                    dataForm={recadosData}
-                    className='inputIncNome'
-                    name='data'
-                    value={recadosData.data}
-                    onChange={onChange}
-                    />
-
                     <InputCheckbox dataForm={recadosData} label='Voltara' name='voltara' checked={recadosData.voltara} onChange={onChange} />
                     <InputCheckbox dataForm={recadosData} label='Pessoal' name='pessoal' checked={recadosData.pessoal} onChange={onChange} />
                     <InputCheckbox dataForm={recadosData} label='Retornar' name='retornar' checked={recadosData.retornar} onChange={onChange} />
@@ -390,7 +388,7 @@ const addValorProcesso = (e: any) => {
                     onChange={onChange}
                     />
 
-                  </div><div className='grid-container'>
+
                     <InputInput
                     type='text'
                     maxLength={2048}
@@ -403,52 +401,52 @@ const addValorProcesso = (e: any) => {
                     onChange={onChange}
                     />
 
-                    <InputCheckbox dataForm={recadosData} label='Uploaded' name='uploaded' checked={recadosData.uploaded} onChange={onChange} />
+                  </div><div className='grid-container'><InputCheckbox dataForm={recadosData} label='Uploaded' name='uploaded' checked={recadosData.uploaded} onChange={onChange} />
 
-                    <InputInput
-                    type='text'
-                    maxLength={2048}
-                    id='natureza'
-                    label='Natureza'
-                    dataForm={recadosData}
-                    className='inputIncNome'
-                    name='natureza'
-                    value={recadosData.natureza}
-                    onChange={onChange}
-                    />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='natureza'
+                  label='Natureza'
+                  dataForm={recadosData}
+                  className='inputIncNome'
+                  name='natureza'
+                  value={recadosData.natureza}
+                  onChange={onChange}
+                  />
 
-                    <InputCheckbox dataForm={recadosData} label='BIU' name='biu' checked={recadosData.biu} onChange={onChange} />
-                    <InputCheckbox dataForm={recadosData} label='AguardarRetorno' name='aguardarretorno' checked={recadosData.aguardarretorno} onChange={onChange} />
+                  <InputCheckbox dataForm={recadosData} label='BIU' name='biu' checked={recadosData.biu} onChange={onChange} />
+                  <InputCheckbox dataForm={recadosData} label='AguardarRetorno' name='aguardarretorno' checked={recadosData.aguardarretorno} onChange={onChange} />
 
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='aguardarretornopara'
-                    label='AguardarRetornoPara'
-                    dataForm={recadosData}
-                    className='inputIncNome'
-                    name='aguardarretornopara'
-                    value={recadosData.aguardarretornopara}
-                    onChange={onChange}
-                    />
+                  <InputInput
+                  type='text'
+                  maxLength={255}
+                  id='aguardarretornopara'
+                  label='AguardarRetornoPara'
+                  dataForm={recadosData}
+                  className='inputIncNome'
+                  name='aguardarretornopara'
+                  value={recadosData.aguardarretornopara}
+                  onChange={onChange}
+                  />
 
-                    <InputCheckbox dataForm={recadosData} label='AguardarRetornoOK' name='aguardarretornook' checked={recadosData.aguardarretornook} onChange={onChange} />
+                  <InputCheckbox dataForm={recadosData} label='AguardarRetornoOK' name='aguardarretornook' checked={recadosData.aguardarretornook} onChange={onChange} />
 
-                    <InputInput
-                    type='text'
-                    maxLength={2048}
-                    id='paraid'
-                    label='ParaID'
-                    dataForm={recadosData}
-                    className='inputIncNome'
-                    name='paraid'
-                    value={recadosData.paraid}
-                    onChange={onChange}
-                    />
+                  <InputInput
+                  type='text'
+                  maxLength={2048}
+                  id='paraid'
+                  label='ParaID'
+                  dataForm={recadosData}
+                  className='inputIncNome'
+                  name='paraid'
+                  value={recadosData.paraid}
+                  onChange={onChange}
+                  />
 
-                    <InputCheckbox dataForm={recadosData} label='NaoPublicavel' name='naopublicavel' checked={recadosData.naopublicavel} onChange={onChange} />
-                  </div><div className='grid-container'><InputCheckbox dataForm={recadosData} label='IsContatoCRM' name='iscontatocrm' checked={recadosData.iscontatocrm} onChange={onChange} />
-
+                  <InputCheckbox dataForm={recadosData} label='NaoPublicavel' name='naopublicavel' checked={recadosData.naopublicavel} onChange={onChange} />
+                  <InputCheckbox dataForm={recadosData} label='IsContatoCRM' name='iscontatocrm' checked={recadosData.iscontatocrm} onChange={onChange} />
+                </div><div className='grid-container'>
                   <InputInput
                   type='text'
                   maxLength={2048}

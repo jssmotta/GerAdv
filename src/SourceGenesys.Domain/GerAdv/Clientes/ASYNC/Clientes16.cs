@@ -192,7 +192,7 @@ public partial class DBClientes
         if (pFldFFone)
             updateTool.Fields(DBClientesDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBClientesDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBClientesDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFHomePage)
             updateTool.Fields(DBClientesDicInfo.HomePage, m_FHomePage, ETiposCampos.FString);
         if (pFldFEMail)

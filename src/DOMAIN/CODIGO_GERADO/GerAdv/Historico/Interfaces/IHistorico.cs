@@ -10,4 +10,5 @@ public partial interface IHistoricoService
     Task<HistoricoResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<HistoricoResponse?> Validation(Models.Historico regHistorico, [FromRoute, Required] string uri = "");
     Task<IEnumerable<HistoricoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterHistorico? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

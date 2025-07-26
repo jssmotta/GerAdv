@@ -15,7 +15,7 @@ public partial class ProResumosReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBProResumosDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBProResumosDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

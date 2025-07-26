@@ -121,6 +121,14 @@ public partial class ContatoCRMOperadorReader(IFContatoCRMOperadorFactory contat
         };
         try
         {
+            contatocrmoperador.DataContatoCRM = dr[DBContatoCRMDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             contatocrmoperador.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -144,6 +152,14 @@ public partial class ContatoCRMOperadorReader(IFContatoCRMOperadorFactory contat
             CargoEsc = dbRec.FCargoEsc,
             Operador = dbRec.FOperador,
         };
+        try
+        {
+            contatocrmoperador.DataContatoCRM = dr[DBContatoCRMDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         try
         {
             contatocrmoperador.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;

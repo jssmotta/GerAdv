@@ -226,6 +226,18 @@ const addValorCliente = (e: any) => {
                   )}
                   <div className='grid-container'>
 
+                    <InputName
+                    type='text'
+                    id='data'
+                    label='Data'
+                    dataForm={horastrabData}
+                    className='inputIncNome'
+                    name='data'
+                    value={horastrabData.data}
+                    placeholder={`Informe Data`}
+                    onChange={onChange}
+                    required
+                    />
 
                     <InputInput
                     type='text'
@@ -250,19 +262,6 @@ const addValorCliente = (e: any) => {
                     className='inputIncNome'
                     name='idagenda'
                     value={horastrabData.idagenda}
-                    onChange={onChange}
-                    />
-
-
-                    <InputInput
-                    type='text'
-                    maxLength={2048}
-                    id='data'
-                    label='Data'
-                    dataForm={horastrabData}
-                    className='inputIncNome'
-                    name='data'
-                    value={horastrabData.data}
                     onChange={onChange}
                     />
 
@@ -303,7 +302,7 @@ const addValorCliente = (e: any) => {
                     setValue={addValorAdvogado}
                     label={'Advogados'}
                     />
-                  </div><div className='grid-container'>
+
                     <FuncionariosComboBox
                     name={'funcionario'}
                     dataForm={horastrabData}
@@ -311,7 +310,7 @@ const addValorCliente = (e: any) => {
                     setValue={addValorFuncionario}
                     label={'Colaborador'}
                     />
-
+                  </div><div className='grid-container'>
                     <InputInput
                     type='text'
                     maxLength={5}
@@ -415,7 +414,7 @@ const addValorCliente = (e: any) => {
                     onChange={onChange}
                     />
 
-                  </div><div className='grid-container'>
+
                     <ServicosComboBox
                     name={'servico'}
                     dataForm={horastrabData}

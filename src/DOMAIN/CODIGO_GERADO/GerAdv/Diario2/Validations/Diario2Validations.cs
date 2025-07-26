@@ -39,18 +39,11 @@ public class Diario2Validation : IDiario2Validation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.Nome))
-            throw new SGValidationException("Nome é obrigatório");
+        if (string.IsNullOrWhiteSpace(reg.Data))
+            throw new SGValidationException("Data é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.Data.IsEmpty())
-            throw new SGValidationException("Data é obrigatório.");
-        if (!DateTime.TryParse(reg.Data, out _))
-        {
-            throw new SGValidationException($"Data inválida: {reg.Data}");
-        }
-
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
         if (reg.Hora.IsEmpty())

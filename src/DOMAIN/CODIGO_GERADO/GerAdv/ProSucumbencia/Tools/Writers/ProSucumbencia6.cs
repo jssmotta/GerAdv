@@ -25,8 +25,7 @@ public class ProSucumbenciaWriter(IFProSucumbenciaFactory prosucumbenciaFactory)
         using var dbRec = await (prosucumbencia.Id.IsEmptyIDNumber() ? _prosucumbenciaFactory.CreateAsync() : _prosucumbenciaFactory.CreateFromIdAsync(prosucumbencia.Id, oCnn));
         dbRec.FProcesso = prosucumbencia.Processo;
         dbRec.FInstancia = prosucumbencia.Instancia;
-        if (prosucumbencia.Data != null)
-            dbRec.FData = prosucumbencia.Data.ToString();
+        dbRec.FData = prosucumbencia.Data;
         dbRec.FNome = prosucumbencia.Nome;
         dbRec.FTipoOrigemSucumbencia = prosucumbencia.TipoOrigemSucumbencia;
         dbRec.FValor = prosucumbencia.Valor;

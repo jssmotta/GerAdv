@@ -152,7 +152,7 @@ public partial class DBHistorico
         if (pFldFFase)
             updateTool.Fields(DBHistoricoDicInfo.Fase, m_FFase, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBHistoricoDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBHistoricoDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFObservacao)
             updateTool.Fields(DBHistoricoDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
         if (pFldFAgendado)

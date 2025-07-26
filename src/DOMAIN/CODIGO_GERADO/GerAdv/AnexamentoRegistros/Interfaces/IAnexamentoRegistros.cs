@@ -10,4 +10,5 @@ public partial interface IAnexamentoRegistrosService
     Task<AnexamentoRegistrosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<AnexamentoRegistrosResponse?> Validation(Models.AnexamentoRegistros regAnexamentoRegistros, [FromRoute, Required] string uri = "");
     Task<IEnumerable<AnexamentoRegistrosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAnexamentoRegistros? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

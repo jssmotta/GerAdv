@@ -15,7 +15,6 @@
  liminarnegada?: number;
     processo?: number;
     processo_end?: number;
- data_end?: string;
  data?: string;
  liminarparcial?: number;
  liminarresultado?: string;
@@ -61,7 +60,6 @@ export class FilterInstanciaDefaults implements FilterInstancia {
     liminarnegada?: number= -2147483648;
     processo?: number = -2147483648;
     processo_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     liminarparcial?: number= -2147483648;
     liminarresultado?: string = '';

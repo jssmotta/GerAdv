@@ -53,8 +53,7 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
             dbRec.FCTPSDtEmissao = funcionarios.CTPSDtEmissao.ToString();
         if (funcionarios.DtNasc != null)
             dbRec.FDtNasc = funcionarios.DtNasc.ToString();
-        if (funcionarios.Data != null)
-            dbRec.FData = funcionarios.Data.ToString();
+        dbRec.FData = funcionarios.Data;
         dbRec.FLiberaAgenda = funcionarios.LiberaAgenda;
         dbRec.FPasta = funcionarios.Pasta;
         dbRec.FClass = funcionarios.Class;

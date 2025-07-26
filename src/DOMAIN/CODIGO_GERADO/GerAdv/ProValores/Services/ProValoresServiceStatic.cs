@@ -31,16 +31,9 @@ public partial class ProValoresService
             parameters.Add(new($"@{nameof(DBProValoresDicInfo.Ignorar)}", filtro.Ignorar));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProValoresDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProValoresDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.ValorOriginal != decimal.MinValue)
@@ -160,15 +153,7 @@ public partial class ProValoresService
         cWhere.Append(filtro.TipoValorProcesso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}] = @{nameof(DBProValoresDicInfo.TipoValorProcesso)}");
         cWhere.Append(filtro.Indice.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Indice}]  {DevourerConsts.MsiCollate} like @{nameof(DBProValoresDicInfo.Indice)}");
         cWhere.Append(filtro.Ignorar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Ignorar}] = @{nameof(DBProValoresDicInfo.Ignorar)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBProValoresDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProValoresDicInfo.Data} BETWEEN @{nameof(DBProValoresDicInfo.Data)} AND @{nameof(DBProValoresDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProValoresDicInfo.Data} = @{nameof(DBProValoresDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProValoresDicInfo.Data} <= @{nameof(DBProValoresDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProValoresDicInfo.Data)}");
         if (!filtro.ValorOriginal.IsEmpty() && filtro.ValorOriginal_end.IsEmpty())
         {
             cWhere.Append(filtro.ValorOriginal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorOriginal}] >= @{nameof(DBProValoresDicInfo.ValorOriginal)}");
@@ -271,6 +256,46 @@ public partial class ProValoresService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProValores? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ProValores-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBProValoresDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

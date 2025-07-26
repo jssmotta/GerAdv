@@ -23,6 +23,7 @@ export interface AgendaRecords
 	dataaviso2_date? : Date;
 	dataaviso3 : string;
 	dataaviso3_date? : Date;
+	dataagenda?: string;
 	nomeclientessocios?: string;
 	nomecolaboradores?: string;
 	nomeforo?: string;

@@ -134,7 +134,7 @@ public partial class DBDocumentos
         if (pFldFProcesso)
             updateTool.Fields(DBDocumentosDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBDocumentosDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBDocumentosDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFObservacao)
             updateTool.Fields(DBDocumentosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
         if (pFldFGUID)

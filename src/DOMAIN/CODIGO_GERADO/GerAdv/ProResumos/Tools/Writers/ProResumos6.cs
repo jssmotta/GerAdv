@@ -24,8 +24,7 @@ public class ProResumosWriter(IFProResumosFactory proresumosFactory) : IProResum
     {
         using var dbRec = await (proresumos.Id.IsEmptyIDNumber() ? _proresumosFactory.CreateAsync() : _proresumosFactory.CreateFromIdAsync(proresumos.Id, oCnn));
         dbRec.FProcesso = proresumos.Processo;
-        if (proresumos.Data != null)
-            dbRec.FData = proresumos.Data.ToString();
+        dbRec.FData = proresumos.Data;
         dbRec.FResumo = proresumos.Resumo;
         dbRec.FTipoResumo = proresumos.TipoResumo;
         dbRec.FGUID = proresumos.GUID;

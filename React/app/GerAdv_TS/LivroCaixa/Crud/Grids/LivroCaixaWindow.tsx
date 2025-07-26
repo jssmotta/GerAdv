@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={585}
+  newHeight={563}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedLivroCaixa?.id ?? 0).toString()}

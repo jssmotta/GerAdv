@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : ILivroCaixaReader
 {
     private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("livCodigo, livData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<LivroCaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBLivroCaixa.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<LivroCaixaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -59,6 +60,7 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -66,12 +68,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            livrocaixa.Data = dbRec.FData;
-            livrocaixa.Data_date = XData;
-        }
-
         return livrocaixa;
     }
 
@@ -102,6 +98,7 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -109,12 +106,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            livrocaixa.Data = dbRec.FData;
-            livrocaixa.Data_date = XData;
-        }
-
         return livrocaixa;
     }
 
@@ -134,6 +125,7 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -141,12 +133,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            livrocaixa.Data = dbRec.FData;
-            livrocaixa.Data_date = XData;
-        }
-
         return livrocaixa;
     }
 
@@ -166,6 +152,7 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -173,12 +160,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            livrocaixa.Data = dbRec.FData;
-            livrocaixa.Data_date = XData;
-        }
-
         try
         {
             livrocaixa.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -206,6 +187,7 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -213,12 +195,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            livrocaixa.Data = dbRec.FData;
-            livrocaixa.Data_date = XData;
-        }
-
         try
         {
             livrocaixa.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

@@ -41,7 +41,7 @@ public static partial class DBAlertasDicInfo
         IsRequired = true,
         Prefixo = "alt"
     };
-    public static DBInfoSystem AltData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem AltData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "alt"

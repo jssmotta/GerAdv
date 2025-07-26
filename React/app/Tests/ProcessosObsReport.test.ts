@@ -14,7 +14,7 @@ import { ProcessosObsReportTestEmpty } from '../GerAdv_TS/Models/ProcessosObsRep
 const mockProcessosObsReportService: jest.Mocked<IProcessosObsReportService> = {
   fetchProcessosObsReportById: jest.fn(),
   saveProcessosObsReport: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteProcessosObsReport: jest.fn(),
   validateProcessosObsReport: jest.fn(),
@@ -50,7 +50,7 @@ describe('useProcessosObsReportForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'observacao',
+        name: 'data',
         value: 'Novo Processos Obs Report',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useProcessosObsReportForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.observacao).toBe('Novo Processos Obs Report');
+    expect(result.current.data.data).toBe('Novo Processos Obs Report');
   });
 
    test('deve carregar Processos Obs Report por ID', async () => {
-    const mockProcessosObsReport = { ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report Teste' };
+    const mockProcessosObsReport = { ...initialProcessosObsReport, id: 1, data: 'Processos Obs Report Teste' };
     mockProcessosObsReportService.fetchProcessosObsReportById.mockResolvedValue(mockProcessosObsReport);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useProcessosObsReportForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialProcessosObsReport, observacao: 'Teste' });
+      result.current.setData({ ...initialProcessosObsReport, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useProcessosObsReportList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report 1' },
-      { ...initialProcessosObsReport, id: 2, observacao: 'Processos Obs Report 2' }
+      { ...initialProcessosObsReport, id: 1, data: 'Processos Obs Report 1' },
+      { ...initialProcessosObsReport, id: 2, data: 'Processos Obs Report 2' }
     ];
     mockProcessosObsReportService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useProcessosObsReportList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report Filtrado' }];
-    const filtro = { observacao: 'Processos Obs Report' };
+    const mockData = [{ ...initialProcessosObsReport, id: 1, data: 'Processos Obs Report Filtrado' }];
+    const filtro = { data: 'Processos Obs Report' };
     mockProcessosObsReportService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsProcessosObsReport', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsProcessosObsReport());
 
-    const validData = { ...initialProcessosObsReport, observacao: 'Processos Obs Report Válido' };
+    const validData = { ...initialProcessosObsReport, data: 'Processos Obs Report Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsProcessosObsReport', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsProcessosObsReport());
+
+    const invalidData = { ...initialProcessosObsReport, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsProcessosObsReport());
+
+    const invalidData = { 
+      ...initialProcessosObsReport, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsProcessosObsReport());
@@ -229,7 +250,7 @@ describe('useValidationsProcessosObsReport', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialProcessosObsReport, id: 1, observacao: 'Processos Obs Report Teste' }];
+    const mockData = [{ ...initialProcessosObsReport, id: 1, data: 'Processos Obs Report Teste' }];
     mockProcessosObsReportService.getAll.mockResolvedValue(mockData);
     
 

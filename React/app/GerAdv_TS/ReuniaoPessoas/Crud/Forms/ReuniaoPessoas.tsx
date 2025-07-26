@@ -57,7 +57,7 @@ if (getParamFromUrl('reuniao') > 0) {
     reuniaoApi
     .getById(getParamFromUrl('reuniao'))
     .then((response) => {
-      setNomeReuniao(response.data.campo);
+      setNomeReuniao(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');

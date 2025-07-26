@@ -23,7 +23,7 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FProValores instance with parameters
         /// </summary>
-        FProValores CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "");
+        FProValores CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FProValores> CreateAsync();
         Task<FProValores> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
         Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);

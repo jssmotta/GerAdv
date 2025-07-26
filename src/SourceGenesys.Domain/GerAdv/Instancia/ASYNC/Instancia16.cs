@@ -148,7 +148,7 @@ public partial class DBInstancia
         if (pFldFProcesso)
             updateTool.Fields(DBInstanciaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBInstanciaDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBInstanciaDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFLiminarParcial)
             updateTool.Fields(DBInstanciaDicInfo.LiminarParcial, m_FLiminarParcial, ETiposCampos.FBoolean);
         if (pFldFLiminarResultado)

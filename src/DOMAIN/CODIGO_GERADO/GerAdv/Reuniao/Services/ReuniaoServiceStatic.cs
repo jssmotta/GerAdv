@@ -26,16 +26,9 @@ public partial class ReuniaoService
             parameters.Add(new($"@{nameof(DBReuniaoDicInfo.IDAgenda)}_end", filtro.IDAgenda_end));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBReuniaoDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBReuniaoDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBReuniaoDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (!string.IsNullOrEmpty(filtro.Pauta))
@@ -125,15 +118,7 @@ public partial class ReuniaoService
             cWhere.Append((filtro.IDAgenda <= 0 && filtro.IDAgenda_end <= 0) ? string.Empty : (!(filtro.IDAgenda <= 0) && !(filtro.IDAgenda_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.IDAgenda} BETWEEN @{nameof(DBReuniaoDicInfo.IDAgenda)} AND @{nameof(DBReuniaoDicInfo.IDAgenda)}_end" : !(filtro.IDAgenda <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.IDAgenda} = @{nameof(DBReuniaoDicInfo.IDAgenda)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.IDAgenda} <= @{nameof(DBReuniaoDicInfo.IDAgenda)}_end");
         }
 
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBReuniaoDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.Data} BETWEEN @{nameof(DBReuniaoDicInfo.Data)} AND @{nameof(DBReuniaoDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.Data} = @{nameof(DBReuniaoDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.Data} <= @{nameof(DBReuniaoDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.Data)}");
         cWhere.Append(filtro.Pauta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Pauta}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.Pauta)}");
         cWhere.Append(filtro.ATA.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.ATA}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.ATA)}");
         if (!filtro.HoraInicial.IsEmpty() && filtro.HoraInicial_end.IsEmpty())
@@ -186,6 +171,46 @@ public partial class ReuniaoService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterReuniao? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Reuniao-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBReuniaoDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

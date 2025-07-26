@@ -10,7 +10,6 @@
     cliente?: number;
     cliente_end?: number;
  corrigido?: number;
- data_end?: string;
  data?: string;
     valororiginal?: number;
     valororiginal_end?: number;
@@ -37,7 +36,6 @@ export class FilterProDespesasDefaults implements FilterProDespesas {
     cliente?: number = -2147483648;
     cliente_end?: number = -2147483648;
     corrigido?: number= -2147483648;
-    data_end?: string = '';
     data?: string = '';
     valororiginal?: number = -79228162514264337593543950335;
     valororiginal_end?: number = -79228162514264337593543950335;

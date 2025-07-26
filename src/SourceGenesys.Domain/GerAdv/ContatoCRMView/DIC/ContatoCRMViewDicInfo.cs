@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBContatoCRMViewDicInfo
 {
     public const string CampoCodigo = "ccwCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ccwData";
     public const string TablePrefix = "ccw";
     public const string CGUID = "ccwCGUID"; // LOCALIZACAO 170523
     public const string Data = "ccwData"; // LOCALIZACAO 170523
@@ -29,7 +29,7 @@ public static partial class DBContatoCRMViewDicInfo
         IsRequired = true,
         Prefixo = "ccw"
     };
-    public static DBInfoSystem CcwData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem CcwData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "ccw"

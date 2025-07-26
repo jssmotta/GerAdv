@@ -73,9 +73,6 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
-
         /// <summary>
         /// NotaPublicada - nepNotaPublicada  
         /// </summary>
@@ -151,9 +148,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
-
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// NotaPublicada - nepNotaPublicada  

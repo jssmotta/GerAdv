@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBProSucumbenciaDicInfo
 {
     public const string CampoCodigo = "scbCodigo";
-    public const string CampoNome = "scbNome";
+    public const string CampoNome = "scbData";
     public const string TablePrefix = "scb";
     public const string Processo = "scbProcesso"; // LOCALIZACAO 170523
     public const string Instancia = "scbInstancia"; // LOCALIZACAO 170523
@@ -53,7 +53,7 @@ public static partial class DBProSucumbenciaDicInfo
     {
         Prefixo = "scb"
     }; // DBI 11 
-    public static DBInfoSystem ScbData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem ScbData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "scb"

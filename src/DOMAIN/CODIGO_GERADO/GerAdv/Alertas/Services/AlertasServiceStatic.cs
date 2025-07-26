@@ -16,16 +16,9 @@ public partial class AlertasService
             parameters.Add(new($"@{nameof(DBAlertasDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAlertasDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAlertasDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBAlertasDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Operador != int.MinValue)
@@ -62,15 +55,7 @@ public partial class AlertasService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAlertasDicInfo.Nome)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBAlertasDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.Data} BETWEEN @{nameof(DBAlertasDicInfo.Data)} AND @{nameof(DBAlertasDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.Data} = @{nameof(DBAlertasDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.Data} <= @{nameof(DBAlertasDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAlertasDicInfo.Data)}");
         cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Operador}] = @{nameof(DBAlertasDicInfo.Operador)}");
         if (!filtro.DataAte.IsEmpty() && filtro.DataAte_end.IsEmpty())
         {

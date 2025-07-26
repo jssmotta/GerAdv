@@ -46,6 +46,15 @@ public partial class HorasTrabController(IHorasTrabService horastrabService) : C
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterHorasTrab? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"HorasTrab: GetListN called, max {max}, {filtro} uri");
+        var result = await _horastrabService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

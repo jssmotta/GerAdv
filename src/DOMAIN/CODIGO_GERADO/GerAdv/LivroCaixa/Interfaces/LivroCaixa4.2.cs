@@ -13,5 +13,6 @@ public partial interface ILivroCaixaReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     LivroCaixaResponseAll? ReadAll(FLivroCaixa dbRec, IDataRecord dr);
     LivroCaixaResponseAll? ReadAll(SG.GerAdv.DBLivroCaixa dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<LivroCaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

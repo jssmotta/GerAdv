@@ -158,7 +158,7 @@ public partial class DBAgenda
         if (pFldFFuncionario)
             updateTool.Fields(DBAgendaDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBAgendaDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBAgendaDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFEventoPrazo)
             updateTool.Fields(DBAgendaDicInfo.EventoPrazo, m_FEventoPrazo, ETiposCampos.FNumber);
         if (pFldFHora)

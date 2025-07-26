@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={633}
+  newHeight={560}
   newWidth={900}
   mobile={isMobile}
   id={(selectedAnexamentoRegistros?.id ?? 0).toString()}

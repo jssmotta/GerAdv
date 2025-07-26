@@ -15,7 +15,7 @@ public partial class AgendaReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBAgendaDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBAgendaDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

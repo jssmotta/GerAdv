@@ -37,18 +37,13 @@ public class ContatoCRMViewValidation : IContatoCRMViewValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.Data))
+            throw new SGValidationException("Data é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.CGUID.IsEmpty())
             throw new SGValidationException("CGUID é obrigatório.");
-        if (reg.Data.IsEmpty())
-            throw new SGValidationException("Data é obrigatório.");
-        if (!DateTime.TryParse(reg.Data, out _))
-        {
-            throw new SGValidationException($"Data inválida: {reg.Data}");
-        }
-
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
         if (reg.IP.IsEmpty())

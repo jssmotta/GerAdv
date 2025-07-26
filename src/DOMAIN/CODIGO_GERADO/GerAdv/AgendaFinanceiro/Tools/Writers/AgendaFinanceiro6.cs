@@ -38,8 +38,7 @@ public class AgendaFinanceiroWriter(IFAgendaFinanceiroFactory agendafinanceiroFa
         if (agendafinanceiro.EventoData != null)
             dbRec.FEventoData = agendafinanceiro.EventoData.ToString();
         dbRec.FFuncionario = agendafinanceiro.Funcionario;
-        if (agendafinanceiro.Data != null)
-            dbRec.FData = agendafinanceiro.Data.ToString();
+        dbRec.FData = agendafinanceiro.Data;
         dbRec.FEventoPrazo = agendafinanceiro.EventoPrazo;
         if (agendafinanceiro.Hora != null)
             dbRec.FHora = agendafinanceiro.Hora.ToString();

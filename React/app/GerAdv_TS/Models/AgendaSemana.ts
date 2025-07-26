@@ -11,7 +11,6 @@ export interface AgendaSemana
 	cliente : number;
 	paranome : string;
 	data : string;
-	data_date? : Date;
 	hora : string;
 	hora_date? : Date;
 	compromisso : string;

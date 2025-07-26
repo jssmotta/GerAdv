@@ -11,10 +11,10 @@
   </PropertyGroup>
 
 <ItemGroup>
-<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.13.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
 </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -76,9 +76,9 @@
 		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />		
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />		
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.0" />		
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NLog" Version="5.4.0" />
+		<PackageReference Include="NLog" Version="6.0.2" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
 	</ItemGroup>
 
@@ -86,6 +86,7 @@
     <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
     <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

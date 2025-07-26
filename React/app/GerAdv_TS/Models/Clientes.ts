@@ -40,7 +40,6 @@ export interface Clientes
 	fax : string;
 	fone : string;
 	data : string;
-	data_date? : Date;
 	homepage : string;
 	email : string;
 	obito : boolean;

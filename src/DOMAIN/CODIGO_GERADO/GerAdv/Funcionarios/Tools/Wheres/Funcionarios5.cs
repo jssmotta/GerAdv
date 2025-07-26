@@ -42,6 +42,7 @@ public partial class FuncionariosWhere(IFFuncionariosFactory funcionariosFactory
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
             PIS = dbRec.FPIS ?? string.Empty,
             Salario = dbRec.FSalario,
+            Data = dbRec.FData ?? string.Empty,
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
@@ -69,12 +70,6 @@ public partial class FuncionariosWhere(IFFuncionariosFactory funcionariosFactory
         {
             funcionarios.DtNasc = dbRec.FDtNasc;
             funcionarios.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            funcionarios.Data = dbRec.FData;
-            funcionarios.Data_date = XData;
         }
 
         return funcionarios;

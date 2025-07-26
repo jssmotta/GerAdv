@@ -218,7 +218,7 @@ public partial class DBProValores
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool HasNameId() => false;
+    public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
 #pragma warning restore CA1822 // Mark members as static

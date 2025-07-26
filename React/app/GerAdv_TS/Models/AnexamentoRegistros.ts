@@ -10,7 +10,6 @@ export interface AnexamentoRegistros
 	codigoreg : number;
 	idreg : number;
 	data : string;
-	data_date? : Date;
 	nomeclientes?: string;
 
 }

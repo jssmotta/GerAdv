@@ -5,7 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbenciaFactory) : IProSucumbenciaReader
 {
     private readonly IFProSucumbenciaFactory _prosucumbenciaFactory = prosucumbenciaFactory;
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("scbCodigo, scbNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("scbCodigo, scbData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProSucumbenciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProSucumbencia.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProSucumbenciaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -56,18 +56,13 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Instancia = dbRec.FInstancia,
+            Data = dbRec.FData ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prosucumbencia.Data = dbRec.FData;
-            prosucumbencia.Data_date = XData;
-        }
-
         return prosucumbencia;
     }
 
@@ -94,18 +89,13 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Instancia = dbRec.FInstancia,
+            Data = dbRec.FData ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prosucumbencia.Data = dbRec.FData;
-            prosucumbencia.Data_date = XData;
-        }
-
         return prosucumbencia;
     }
 
@@ -121,18 +111,13 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Instancia = dbRec.FInstancia,
+            Data = dbRec.FData ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prosucumbencia.Data = dbRec.FData;
-            prosucumbencia.Data_date = XData;
-        }
-
         return prosucumbencia;
     }
 
@@ -148,18 +133,13 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Instancia = dbRec.FInstancia,
+            Data = dbRec.FData ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prosucumbencia.Data = dbRec.FData;
-            prosucumbencia.Data_date = XData;
-        }
-
         try
         {
             prosucumbencia.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -199,18 +179,13 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Instancia = dbRec.FInstancia,
+            Data = dbRec.FData ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prosucumbencia.Data = dbRec.FData;
-            prosucumbencia.Data_date = XData;
-        }
-
         try
         {
             prosucumbencia.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

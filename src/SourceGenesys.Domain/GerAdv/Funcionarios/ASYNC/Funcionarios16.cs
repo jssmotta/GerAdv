@@ -184,7 +184,7 @@ public partial class DBFuncionarios
         if (pFldFDtNasc)
             updateTool.Fields(DBFuncionariosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
         if (pFldFData)
-            updateTool.Fields(DBFuncionariosDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBFuncionariosDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFLiberaAgenda)
             updateTool.Fields(DBFuncionariosDicInfo.LiberaAgenda, m_FLiberaAgenda, ETiposCampos.FBoolean);
         if (pFldFPasta)

@@ -111,20 +111,18 @@ return (
         )}
         <div className='grid-container'>
 
-
-          <InputInput
-          required
+          <InputName
           type='text'
-          maxLength={2048}
           id='data'
           label='Data'
           dataForm={contatocrmviewData}
           className='inputIncNome'
           name='data'
           value={contatocrmviewData.data}
+          placeholder={`Informe Data`}
           onChange={onChange}
+          required
           />
-
 
           <InputInput
           required

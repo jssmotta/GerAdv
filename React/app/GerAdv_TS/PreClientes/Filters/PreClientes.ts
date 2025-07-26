@@ -35,7 +35,6 @@
  cep?: string;
  fax?: string;
  fone?: string;
- data_end?: string;
  data?: string;
  homepage?: string;
  email?: string;
@@ -81,7 +80,6 @@ export class FilterPreClientesDefaults implements FilterPreClientes {
     cep?: string = '';
     fax?: string = '';
     fone?: string = '';
-    data_end?: string = '';
     data?: string = '';
     homepage?: string = '';
     email?: string = '';

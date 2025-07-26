@@ -182,7 +182,7 @@ public partial class DBPreClientes
         if (pFldFFone)
             updateTool.Fields(DBPreClientesDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBPreClientesDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBPreClientesDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFHomePage)
             updateTool.Fields(DBPreClientesDicInfo.HomePage, m_FHomePage, ETiposCampos.FString);
         if (pFldFEMail)

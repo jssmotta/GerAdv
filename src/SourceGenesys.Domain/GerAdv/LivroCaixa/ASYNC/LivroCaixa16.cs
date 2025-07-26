@@ -144,7 +144,7 @@ public partial class DBLivroCaixa
         if (pFldFIDHonSuc)
             updateTool.Fields(DBLivroCaixaDicInfo.IDHonSuc, m_FIDHonSuc, ETiposCampos.FBoolean);
         if (pFldFData)
-            updateTool.Fields(DBLivroCaixaDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBLivroCaixaDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFProcesso)
             updateTool.Fields(DBLivroCaixaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFValor)

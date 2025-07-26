@@ -9,7 +9,6 @@ export interface ProProcuradores
 	processo : number;
 	nome : string;
 	data : string;
-	data_date? : Date;
 	substabelecimento : boolean;
 	procuracao : boolean;
 	nomeadvogados?: string;

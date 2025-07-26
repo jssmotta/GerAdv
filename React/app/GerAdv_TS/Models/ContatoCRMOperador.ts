@@ -8,6 +8,7 @@ export interface ContatoCRMOperador
 	contatocrm : number;
 	operador : number;
 	cargoesc : number;
+	datacontatocrm?: string;
 	nomeoperador?: string;
 
 }

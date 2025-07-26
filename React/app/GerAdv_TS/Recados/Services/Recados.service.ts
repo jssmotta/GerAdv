@@ -25,7 +25,7 @@ export class RecadosValidator {
 export interface IRecadosService {
   fetchRecadosById: (id: number) => Promise<IRecados>;
   saveRecados: (recados: IRecados) => Promise<IRecados>;  
-  
+  getList: (filtro?: FilterRecados) => Promise<IRecados[]>;
   getAll: (filtro?: FilterRecados) => Promise<IRecados[]>;
   deleteRecados: (id: number) => Promise<void>;
   validateRecados: (recados: IRecados) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class RecadosService implements IRecadosService {
   }
 
   
+    async getList(filtro?: FilterRecados): Promise<IRecados[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Recados list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

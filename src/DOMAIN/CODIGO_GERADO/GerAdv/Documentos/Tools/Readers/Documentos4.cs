@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : IDocumentosReader
 {
     private readonly IFDocumentosFactory _documentosFactory = documentosFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("docCodigo, docData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<DocumentosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDocumentos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<DocumentosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -54,15 +55,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            documentos.Data = dbRec.FData;
-            documentos.Data_date = XData;
-        }
-
         return documentos;
     }
 
@@ -88,15 +84,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            documentos.Data = dbRec.FData;
-            documentos.Data_date = XData;
-        }
-
         return documentos;
     }
 
@@ -111,15 +102,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            documentos.Data = dbRec.FData;
-            documentos.Data_date = XData;
-        }
-
         return documentos;
     }
 
@@ -134,15 +120,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            documentos.Data = dbRec.FData;
-            documentos.Data_date = XData;
-        }
-
         try
         {
             documentos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -165,15 +146,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            documentos.Data = dbRec.FData;
-            documentos.Data_date = XData;
-        }
-
         try
         {
             documentos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

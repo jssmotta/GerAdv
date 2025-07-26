@@ -168,7 +168,10 @@ export function useValidationsContatoCRM() {
     
       try {
    
-        if (data.assunto.length > 255) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.assunto.length > 255) { 
                                              return { isValid: false, message: 'O campo Assunto não pode ter mais de 255 caracteres.' };
                                          } 
 if (data.pessoacontato.length > 255) { 

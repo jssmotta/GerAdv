@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHistoricoReader
 {
     private readonly IFHistoricoFactory _historicoFactory = historicoFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("hisCodigo, hisData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<HistoricoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBHistorico.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<HistoricoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -63,6 +64,7 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Apenso = dbRec.FApenso,
             IDInstProcesso = dbRec.FIDInstProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Agendado = dbRec.FAgendado,
             Concluido = dbRec.FConcluido,
@@ -73,12 +75,6 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            historico.Data = dbRec.FData;
-            historico.Data_date = XData;
-        }
-
         return historico;
     }
 
@@ -113,6 +109,7 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Apenso = dbRec.FApenso,
             IDInstProcesso = dbRec.FIDInstProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Agendado = dbRec.FAgendado,
             Concluido = dbRec.FConcluido,
@@ -123,12 +120,6 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            historico.Data = dbRec.FData;
-            historico.Data_date = XData;
-        }
-
         return historico;
     }
 
@@ -152,6 +143,7 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Apenso = dbRec.FApenso,
             IDInstProcesso = dbRec.FIDInstProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Agendado = dbRec.FAgendado,
             Concluido = dbRec.FConcluido,
@@ -162,12 +154,6 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            historico.Data = dbRec.FData;
-            historico.Data_date = XData;
-        }
-
         return historico;
     }
 
@@ -191,6 +177,7 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Apenso = dbRec.FApenso,
             IDInstProcesso = dbRec.FIDInstProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Agendado = dbRec.FAgendado,
             Concluido = dbRec.FConcluido,
@@ -201,12 +188,6 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            historico.Data = dbRec.FData;
-            historico.Data_date = XData;
-        }
-
         try
         {
             historico.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -254,6 +235,7 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Apenso = dbRec.FApenso,
             IDInstProcesso = dbRec.FIDInstProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Agendado = dbRec.FAgendado,
             Concluido = dbRec.FConcluido,
@@ -264,12 +246,6 @@ public partial class HistoricoReader(IFHistoricoFactory historicoFactory) : IHis
             Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            historico.Data = dbRec.FData;
-            historico.Data_date = XData;
-        }
-
         try
         {
             historico.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

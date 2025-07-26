@@ -14,7 +14,7 @@ import { DocumentosTestEmpty } from '../GerAdv_TS/Models/Documentos';
 const mockDocumentosService: jest.Mocked<IDocumentosService> = {
   fetchDocumentosById: jest.fn(),
   saveDocumentos: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteDocumentos: jest.fn(),
   validateDocumentos: jest.fn(),
@@ -50,7 +50,7 @@ describe('useDocumentosForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'observacao',
+        name: 'data',
         value: 'Novo Documentos',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useDocumentosForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.observacao).toBe('Novo Documentos');
+    expect(result.current.data.data).toBe('Novo Documentos');
   });
 
    test('deve carregar Documentos por ID', async () => {
-    const mockDocumentos = { ...initialDocumentos, id: 1, observacao: 'Documentos Teste' };
+    const mockDocumentos = { ...initialDocumentos, id: 1, data: 'Documentos Teste' };
     mockDocumentosService.fetchDocumentosById.mockResolvedValue(mockDocumentos);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useDocumentosForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialDocumentos, observacao: 'Teste' });
+      result.current.setData({ ...initialDocumentos, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useDocumentosList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialDocumentos, id: 1, observacao: 'Documentos 1' },
-      { ...initialDocumentos, id: 2, observacao: 'Documentos 2' }
+      { ...initialDocumentos, id: 1, data: 'Documentos 1' },
+      { ...initialDocumentos, id: 2, data: 'Documentos 2' }
     ];
     mockDocumentosService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useDocumentosList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialDocumentos, id: 1, observacao: 'Documentos Filtrado' }];
-    const filtro = { observacao: 'Documentos' };
+    const mockData = [{ ...initialDocumentos, id: 1, data: 'Documentos Filtrado' }];
+    const filtro = { data: 'Documentos' };
     mockDocumentosService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsDocumentos', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsDocumentos());
 
-    const validData = { ...initialDocumentos, observacao: 'Documentos Válido' };
+    const validData = { ...initialDocumentos, data: 'Documentos Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsDocumentos', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsDocumentos());
+
+    const invalidData = { ...initialDocumentos, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsDocumentos());
+
+    const invalidData = { 
+      ...initialDocumentos, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsDocumentos());
@@ -229,7 +250,7 @@ describe('useValidationsDocumentos', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialDocumentos, id: 1, observacao: 'Documentos Teste' }];
+    const mockData = [{ ...initialDocumentos, id: 1, data: 'Documentos Teste' }];
     mockDocumentosService.getAll.mockResolvedValue(mockData);
     
 

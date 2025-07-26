@@ -176,6 +176,42 @@ export class ContatoCRMViewApi {
             this.handleApiError(error, `Erro ao buscar Contato C R M View com ID ${id}`);
         }
     }
+    
+        public async getListN(max?: number, filtro?: FilterContatoCRMView): Promise<AxiosResponse> {
+        if (max === undefined) max = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS;
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ContatoCRMView_last_listN_data`);
+
+        try {
+            const response = await axios.post(`${this.baseUrl}/GetListN/?max=${max}`, filtro, this.getHeaders());
+            
+                Promise.resolve().then(() => {
+                    try {
+                        const encoded = encodeDataForStorage(response.data);
+                        localStorage.setItem(storageKey, encoded);
+                    } catch (error) {                        
+                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    }
+                });
+        
+            return response;
+        } catch (error: any) {
+            const offlineData = localStorage.getItem(storageKey);
+            if (offlineData) {
+                const decoded = decodeDataFromStorage(offlineData);
+                this.notificationService.notify(
+                    this.createNotificationOffLiveEntity(0, NotifySystemActions.INFO)
+                );
+                return {
+                    data: decoded,
+                    status: 200,
+                    statusText: 'OK (offline)',
+                    headers: {},
+                    config: {},
+                } as AxiosResponse;
+            }
+            this.handleApiError(error, 'Erro ao buscar lista de ContatoCRMView');
+        }
+    }
  public async filterPreload(filtro: FilterContatoCRMView): Promise<AxiosResponse> {
                         const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ContatoCRMView_last_filter_data_${JSON.stringify(filtro)}`);
                         const offlineData = localStorage.getItem(storageKey);        

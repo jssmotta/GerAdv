@@ -38,8 +38,7 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         if (agenda.EventoData != null)
             dbRec.FEventoData = agenda.EventoData.ToString();
         dbRec.FFuncionario = agenda.Funcionario;
-        if (agenda.Data != null)
-            dbRec.FData = agenda.Data.ToString();
+        dbRec.FData = agenda.Data;
         dbRec.FEventoPrazo = agenda.EventoPrazo;
         if (agenda.Hora != null)
             dbRec.FHora = agenda.Hora.ToString();

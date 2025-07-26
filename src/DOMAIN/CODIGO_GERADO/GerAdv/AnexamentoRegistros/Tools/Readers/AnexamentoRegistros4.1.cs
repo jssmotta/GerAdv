@@ -15,7 +15,7 @@ public partial class AnexamentoRegistrosReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBAnexamentoRegistrosDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBAnexamentoRegistrosDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

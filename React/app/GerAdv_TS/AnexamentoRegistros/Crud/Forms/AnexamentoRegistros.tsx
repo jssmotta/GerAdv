@@ -133,6 +133,18 @@ const addValorCliente = (e: any) => {
           )}
           <div className='grid-container'>
 
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={anexamentoregistrosData}
+            className='inputIncNome'
+            name='data'
+            value={anexamentoregistrosData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
 
             <ClientesComboBox
             name={'cliente'}
@@ -177,19 +189,6 @@ const addValorCliente = (e: any) => {
             className='inputIncNome'
             name='idreg'
             value={anexamentoregistrosData.idreg}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='data'
-            label='Data'
-            dataForm={anexamentoregistrosData}
-            className='inputIncNome'
-            name='data'
-            value={anexamentoregistrosData.data}
             onChange={onChange}
             />
 

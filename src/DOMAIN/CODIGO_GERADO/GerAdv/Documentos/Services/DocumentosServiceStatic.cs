@@ -16,16 +16,9 @@ public partial class DocumentosService
             parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Processo)}", filtro.Processo));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (!string.IsNullOrEmpty(filtro.Observacao))
@@ -55,15 +48,7 @@ public partial class DocumentosService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Processo}] = @{nameof(DBDocumentosDicInfo.Processo)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBDocumentosDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDocumentosDicInfo.Data} BETWEEN @{nameof(DBDocumentosDicInfo.Data)} AND @{nameof(DBDocumentosDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDocumentosDicInfo.Data} = @{nameof(DBDocumentosDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDocumentosDicInfo.Data} <= @{nameof(DBDocumentosDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBDocumentosDicInfo.Data)}");
         cWhere.Append(filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBDocumentosDicInfo.Observacao)}");
         cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBDocumentosDicInfo.GUID)}");
         if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
@@ -86,6 +71,46 @@ public partial class DocumentosService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterDocumentos? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Documentos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBDocumentosDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

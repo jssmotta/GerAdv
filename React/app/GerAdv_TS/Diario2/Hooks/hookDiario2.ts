@@ -168,8 +168,8 @@ export function useValidationsDiario2() {
     
       try {
    
-        if (data.nome.length <= 0) { 
-                                             return { isValid: false, message: 'O campo Nome não pode ficar vazio.' };
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
                                          } 
 if (data.nome.length > 150) { 
                                              return { isValid: false, message: 'O campo Nome não pode ter mais de 150 caracteres.' };
@@ -189,78 +189,4 @@ if (data.ocorrencia.length > 2048) {
   }
 
  return { validate, runValidation };
-}export const useDiario2ComboBox = (
-  dataService: IDiario2Service,
-  initialValue?: any
-) => {
-  const [options, setOptions] = useState<any[]>([]);
-  const [filteredOptions, setFilteredOptions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue);
-  const [hasLoaded, setHasLoaded] = useState(false);
-
-  const fetchOptions = useCallback(async () => {
-    if (loading) return; // Evita múltiplas requisições simultâneas
-    
-    setLoading(true);
-    try {
-      const response = await dataService.getList();
-      const mappedOptions = response.map(item => ({
-        id: item.id,
-        nome: item.nome
-      }));
-      setOptions(mappedOptions);
-      setFilteredOptions(mappedOptions);
-      setHasLoaded(true);
-    } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
-    } finally {
-      setLoading(false);
-    }
-  }, [dataService, loading]);
-
-  const handleFilter = useCallback((filterText: string) => {
-    if (!filterText) {
-      setFilteredOptions(options);
-      return;
-    }
-    
-    const filter = filterText.toLowerCase();
-    const filtered = options.filter(option =>
-      option.nome.toLowerCase().includes(filter)
-    );
-    setFilteredOptions(filtered);
-  }, [options]);
-
-  const handleValueChange = useCallback((newValue: any) => {
-    setSelectedValue(newValue);
-  }, []);
-  
-  useEffect(() => {
-    if (!hasLoaded) {
-      fetchOptions();
-    }
-  }, [fetchOptions, hasLoaded]);
-
-  const refreshCallback = useCallback(() => {
-    if (hasLoaded) {
-      fetchOptions();
-    }
-  }, [fetchOptions, hasLoaded]);
-
-  useDiario2Notifications(
-    refreshCallback, // onUpdate
-    refreshCallback, // onDelete
-    refreshCallback  // onAdd
-  );
-
-  return {
-    options: filteredOptions,
-    loading,
-    selectedValue,
-    handleFilter,
-    handleValueChange,
-    refreshOptions: fetchOptions,
-    clearValue: () => setSelectedValue(null)
-  };
-};
+}

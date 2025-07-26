@@ -35,8 +35,7 @@ public class RecadosWriter(IFRecadosFactory recadosFactory) : IRecadosWriter
         dbRec.FImportante = recados.Importante;
         if (recados.Hora != null)
             dbRec.FHora = recados.Hora.ToString();
-        if (recados.Data != null)
-            dbRec.FData = recados.Data.ToString();
+        dbRec.FData = recados.Data;
         dbRec.FVoltara = recados.Voltara;
         dbRec.FPessoal = recados.Pessoal;
         dbRec.FRetornar = recados.Retornar;

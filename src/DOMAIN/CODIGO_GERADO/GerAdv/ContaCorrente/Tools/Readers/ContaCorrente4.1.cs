@@ -15,7 +15,7 @@ public partial class ContaCorrenteReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBContaCorrenteDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBContaCorrenteDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

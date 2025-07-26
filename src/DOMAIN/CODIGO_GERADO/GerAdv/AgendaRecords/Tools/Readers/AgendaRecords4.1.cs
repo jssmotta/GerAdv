@@ -23,7 +23,7 @@ public partial class AgendaRecordsReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.}],[{DBClientesSociosDicInfo.PTabelaNome}].[{DBClientesSociosDicInfo.Nome}],[{DBColaboradoresDicInfo.PTabelaNome}].[{DBColaboradoresDicInfo.Nome}],[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}]
+                   {campos}, [{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Data}],[{DBClientesSociosDicInfo.PTabelaNome}].[{DBClientesSociosDicInfo.Nome}],[{DBColaboradoresDicInfo.PTabelaNome}].[{DBColaboradoresDicInfo.Nome}],[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}]
                    FROM {DBAgendaRecords.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBAgendaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAgendaDicInfo.PTabelaNome}].[{DBAgenda.CampoCodigo}]=[{DBAgendaRecordsDicInfo.PTabelaNome}].[{DBAgendaRecordsDicInfo.Agenda}]
 LEFT JOIN {DBClientesSociosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesSociosDicInfo.PTabelaNome}].[{DBClientesSocios.CampoCodigo}]=[{DBAgendaRecordsDicInfo.PTabelaNome}].[{DBAgendaRecordsDicInfo.ClientesSocios}]

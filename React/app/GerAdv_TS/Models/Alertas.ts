@@ -8,7 +8,6 @@ export interface Alertas
 	operador : number;
 	nome : string;
 	data : string;
-	data_date? : Date;
 	dataate : string;
 	dataate_date? : Date;
 	nomeoperador?: string;

@@ -25,7 +25,7 @@ export class AgendaValidator {
 export interface IAgendaService {
   fetchAgendaById: (id: number) => Promise<IAgenda>;
   saveAgenda: (agenda: IAgenda) => Promise<IAgenda>;  
-  
+  getList: (filtro?: FilterAgenda) => Promise<IAgenda[]>;
   getAll: (filtro?: FilterAgenda) => Promise<IAgenda[]>;
   deleteAgenda: (id: number) => Promise<void>;
   validateAgenda: (agenda: IAgenda) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class AgendaService implements IAgendaService {
   }
 
   
+    async getList(filtro?: FilterAgenda): Promise<IAgenda[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Agenda list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

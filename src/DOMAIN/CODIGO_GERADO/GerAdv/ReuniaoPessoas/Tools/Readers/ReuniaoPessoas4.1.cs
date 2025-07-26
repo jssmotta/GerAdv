@@ -23,7 +23,7 @@ public partial class ReuniaoPessoasReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, [{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Data}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBReuniaoPessoas.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBReuniaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniao.CampoCodigo}]=[{DBReuniaoPessoasDicInfo.PTabelaNome}].[{DBReuniaoPessoasDicInfo.Reuniao}]
 LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBReuniaoPessoasDicInfo.PTabelaNome}].[{DBReuniaoPessoasDicInfo.Operador}]

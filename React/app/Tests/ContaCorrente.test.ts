@@ -14,7 +14,7 @@ import { ContaCorrenteTestEmpty } from '../GerAdv_TS/Models/ContaCorrente';
 const mockContaCorrenteService: jest.Mocked<IContaCorrenteService> = {
   fetchContaCorrenteById: jest.fn(),
   saveContaCorrente: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteContaCorrente: jest.fn(),
   validateContaCorrente: jest.fn(),
@@ -50,7 +50,7 @@ describe('useContaCorrenteForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'historico',
+        name: 'data',
         value: 'Novo Conta Corrente',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useContaCorrenteForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.historico).toBe('Novo Conta Corrente');
+    expect(result.current.data.data).toBe('Novo Conta Corrente');
   });
 
    test('deve carregar Conta Corrente por ID', async () => {
-    const mockContaCorrente = { ...initialContaCorrente, id: 1, historico: 'Conta Corrente Teste' };
+    const mockContaCorrente = { ...initialContaCorrente, id: 1, data: 'Conta Corrente Teste' };
     mockContaCorrenteService.fetchContaCorrenteById.mockResolvedValue(mockContaCorrente);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useContaCorrenteForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialContaCorrente, historico: 'Teste' });
+      result.current.setData({ ...initialContaCorrente, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useContaCorrenteList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialContaCorrente, id: 1, historico: 'Conta Corrente 1' },
-      { ...initialContaCorrente, id: 2, historico: 'Conta Corrente 2' }
+      { ...initialContaCorrente, id: 1, data: 'Conta Corrente 1' },
+      { ...initialContaCorrente, id: 2, data: 'Conta Corrente 2' }
     ];
     mockContaCorrenteService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useContaCorrenteList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialContaCorrente, id: 1, historico: 'Conta Corrente Filtrado' }];
-    const filtro = { historico: 'Conta Corrente' };
+    const mockData = [{ ...initialContaCorrente, id: 1, data: 'Conta Corrente Filtrado' }];
+    const filtro = { data: 'Conta Corrente' };
     mockContaCorrenteService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsContaCorrente', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsContaCorrente());
 
-    const validData = { ...initialContaCorrente, historico: 'Conta Corrente Válido' };
+    const validData = { ...initialContaCorrente, data: 'Conta Corrente Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsContaCorrente', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsContaCorrente());
+
+    const invalidData = { ...initialContaCorrente, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsContaCorrente());
+
+    const invalidData = { 
+      ...initialContaCorrente, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsContaCorrente());
@@ -229,7 +250,7 @@ describe('useValidationsContaCorrente', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialContaCorrente, id: 1, historico: 'Conta Corrente Teste' }];
+    const mockData = [{ ...initialContaCorrente, id: 1, data: 'Conta Corrente Teste' }];
     mockContaCorrenteService.getAll.mockResolvedValue(mockData);
     
 

@@ -15,7 +15,7 @@ public partial class AgendaFinanceiroReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBAgendaFinanceiroDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBAgendaFinanceiroDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

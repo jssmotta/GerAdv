@@ -9,7 +9,7 @@ public partial class DBLivroCaixa
     public const string PTabelaNome = "LivroCaixa";
     public const string CamposSqlX = " LivroCaixa.* ";
     public const string CampoCodigo = "livCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "livData";
     public const string PTabelaPrefixo = "liv";
 #pragma warning disable CA1822 // Mark members as static
 

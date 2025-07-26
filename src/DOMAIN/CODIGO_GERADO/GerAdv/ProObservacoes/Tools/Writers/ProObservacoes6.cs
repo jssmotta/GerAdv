@@ -26,8 +26,7 @@ public class ProObservacoesWriter(IFProObservacoesFactory proobservacoesFactory)
         dbRec.FProcesso = proobservacoes.Processo;
         dbRec.FNome = proobservacoes.Nome;
         dbRec.FObservacoes = proobservacoes.Observacoes;
-        if (proobservacoes.Data != null)
-            dbRec.FData = proobservacoes.Data.ToString();
+        dbRec.FData = proobservacoes.Data;
         dbRec.FGUID = proobservacoes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);

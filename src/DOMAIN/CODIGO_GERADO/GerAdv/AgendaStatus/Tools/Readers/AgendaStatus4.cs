@@ -115,6 +115,14 @@ public partial class AgendaStatusReader(IFAgendaStatusFactory agendastatusFactor
             Agenda = dbRec.FAgenda,
             Completed = dbRec.FCompleted,
         };
+        try
+        {
+            agendastatus.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return agendastatus;
     }
 
@@ -131,6 +139,14 @@ public partial class AgendaStatusReader(IFAgendaStatusFactory agendastatusFactor
             Agenda = dbRec.FAgenda,
             Completed = dbRec.FCompleted,
         };
+        try
+        {
+            agendastatus.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return agendastatus;
     }
 }

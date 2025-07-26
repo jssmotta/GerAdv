@@ -7,7 +7,6 @@ export interface ContatoCRMView
     id: number;
 	cguid : string;
 	data : string;
-	data_date? : Date;
 	ip : string;
 
 }

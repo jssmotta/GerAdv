@@ -38,6 +38,8 @@ public class ReuniaoValidation : IReuniaoValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.Data))
+            throw new SGValidationException("Data é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

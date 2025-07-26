@@ -11,16 +11,9 @@ public partial class ProcessosObsReportService
     private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessosObsReport filtro)
     {
         var parameters = new List<SqlParameter>();
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProcessosObsReportDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProcessosObsReportDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBProcessosObsReportDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Processo != int.MinValue)
@@ -54,15 +47,7 @@ public partial class ProcessosObsReportService
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBProcessosObsReportDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Data} BETWEEN @{nameof(DBProcessosObsReportDicInfo.Data)} AND @{nameof(DBProcessosObsReportDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Data} = @{nameof(DBProcessosObsReportDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Data} <= @{nameof(DBProcessosObsReportDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessosObsReportDicInfo.Data)}");
         cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Processo}] = @{nameof(DBProcessosObsReportDicInfo.Processo)}");
         cWhere.Append(filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessosObsReportDicInfo.Observacao)}");
         cWhere.Append(filtro.Historico <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Historico}] = @{nameof(DBProcessosObsReportDicInfo.Historico)}");
@@ -86,6 +71,46 @@ public partial class ProcessosObsReportService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessosObsReport? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ProcessosObsReport-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBProcessosObsReportDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

@@ -7,6 +7,7 @@ export interface ReuniaoPessoas
     id: number;
 	reuniao : number;
 	operador : number;
+	datareuniao?: string;
 	nomeoperador?: string;
 
 }

@@ -341,6 +341,18 @@ const addValorCidade = (e: any) => {
                             )}
                             <div className='grid-container'>
 
+                              <InputName
+                              type='text'
+                              id='data'
+                              label='Data'
+                              dataForm={agendafinanceiroData}
+                              className='inputIncNome'
+                              name='data'
+                              value={agendafinanceiroData.data}
+                              placeholder={`Informe Data`}
+                              onChange={onChange}
+                              required
+                              />
 
                               <InputInput
                               type='text'
@@ -499,19 +511,6 @@ const addValorCidade = (e: any) => {
                               <InputInput
                               type='text'
                               maxLength={2048}
-                              id='data'
-                              label='Data'
-                              dataForm={agendafinanceiroData}
-                              className='inputIncNome'
-                              name='data'
-                              value={agendafinanceiroData.data}
-                              onChange={onChange}
-                              />
-
-
-                              <InputInput
-                              type='text'
-                              maxLength={2048}
                               id='eventoprazo'
                               label='EventoPrazo'
                               dataForm={agendafinanceiroData}
@@ -547,7 +546,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-                            </div><div className='grid-container'>
+
                               <TipoCompromissoComboBox
                               name={'tipocompromisso'}
                               dataForm={agendafinanceiroData}
@@ -555,7 +554,7 @@ const addValorCidade = (e: any) => {
                               setValue={addValorTipoCompromisso}
                               label={'Tipo Compromisso'}
                               />
-
+                            </div><div className='grid-container'>
                               <ClientesComboBox
                               name={'cliente'}
                               dataForm={agendafinanceiroData}
@@ -608,7 +607,7 @@ const addValorCidade = (e: any) => {
                               setValue={addValorJustica}
                               label={'Justiça'}
                               />
-                            </div><div className='grid-container'>
+
                               <ProcessosComboBox
                               name={'processo'}
                               dataForm={agendafinanceiroData}
@@ -616,7 +615,7 @@ const addValorCidade = (e: any) => {
                               setValue={addValorProcesso}
                               label={'Processos'}
                               />
-
+                            </div><div className='grid-container'>
                               <InputInput
                               type='text'
                               maxLength={2048}
@@ -710,7 +709,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-                            </div><div className='grid-container'>
+
                               <InputInput
                               type='text'
                               maxLength={2147483647}
@@ -723,7 +722,7 @@ const addValorCidade = (e: any) => {
                               onChange={onChange}
                               />
 
-
+                            </div><div className='grid-container'>
                               <InputInput
                               type='text'
                               maxLength={2048}

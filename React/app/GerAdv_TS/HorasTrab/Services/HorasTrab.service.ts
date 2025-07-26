@@ -25,7 +25,7 @@ export class HorasTrabValidator {
 export interface IHorasTrabService {
   fetchHorasTrabById: (id: number) => Promise<IHorasTrab>;
   saveHorasTrab: (horastrab: IHorasTrab) => Promise<IHorasTrab>;  
-  
+  getList: (filtro?: FilterHorasTrab) => Promise<IHorasTrab[]>;
   getAll: (filtro?: FilterHorasTrab) => Promise<IHorasTrab[]>;
   deleteHorasTrab: (id: number) => Promise<void>;
   validateHorasTrab: (horastrab: IHorasTrab) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class HorasTrabService implements IHorasTrabService {
   }
 
   
+    async getList(filtro?: FilterHorasTrab): Promise<IHorasTrab[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching HorasTrab list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

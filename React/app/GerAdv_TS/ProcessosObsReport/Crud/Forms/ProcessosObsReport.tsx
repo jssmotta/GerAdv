@@ -73,7 +73,7 @@ if (getParamFromUrl('historico') > 0) {
     historicoApi
     .getById(getParamFromUrl('historico'))
     .then((response) => {
-      setNomeHistorico(response.data.campo);
+      setNomeHistorico(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');
@@ -156,20 +156,18 @@ const addValorProcesso = (e: any) => {
             )}
             <div className='grid-container'>
 
-
-              <InputInput
-              required
+              <InputName
               type='text'
-              maxLength={2048}
               id='data'
               label='Data'
               dataForm={processosobsreportData}
               className='inputIncNome'
               name='data'
               value={processosobsreportData.data}
+              placeholder={`Informe Data`}
               onChange={onChange}
+              required
               />
-
 
               <ProcessosComboBox
               name={'processo'}

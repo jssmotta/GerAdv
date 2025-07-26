@@ -168,7 +168,10 @@ export function useValidationsLivroCaixa() {
     
       try {
    
-        if (data.historico.length > 255) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.historico.length > 255) { 
                                              return { isValid: false, message: 'O campo Historico não pode ter mais de 255 caracteres.' };
                                          } 
 

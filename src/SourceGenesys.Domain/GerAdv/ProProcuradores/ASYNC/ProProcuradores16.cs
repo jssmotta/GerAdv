@@ -138,7 +138,7 @@ public partial class DBProProcuradores
         if (pFldFProcesso)
             updateTool.Fields(DBProProcuradoresDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProProcuradoresDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProProcuradoresDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFSubstabelecimento)
             updateTool.Fields(DBProProcuradoresDicInfo.Substabelecimento, m_FSubstabelecimento, ETiposCampos.FBoolean);
         if (pFldFProcuracao)

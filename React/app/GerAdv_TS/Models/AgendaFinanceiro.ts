@@ -28,7 +28,6 @@ export interface AgendaFinanceiro
 	eventodata : string;
 	eventodata_date? : Date;
 	data : string;
-	data_date? : Date;
 	eventoprazo : number;
 	hora : string;
 	hora_date? : Date;

@@ -163,7 +163,7 @@ public static partial class DBLigacoesDicInfo
     {
         Prefixo = "lig"
     };
-    public static DBInfoSystem LigData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem LigData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "lig"
     };

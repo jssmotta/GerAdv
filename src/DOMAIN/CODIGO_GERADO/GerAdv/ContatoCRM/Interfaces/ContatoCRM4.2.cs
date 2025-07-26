@@ -13,5 +13,6 @@ public partial interface IContatoCRMReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ContatoCRMResponseAll? ReadAll(FContatoCRM dbRec, IDataRecord dr);
     ContatoCRMResponseAll? ReadAll(SG.GerAdv.DBContatoCRM dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<ContatoCRMResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

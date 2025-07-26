@@ -36,7 +36,6 @@ export interface Funcionarios
 	dtnasc : string;
 	dtnasc_date? : Date;
 	data : string;
-	data_date? : Date;
 	liberaagenda : boolean;
 	pasta : string;
 	class : string;

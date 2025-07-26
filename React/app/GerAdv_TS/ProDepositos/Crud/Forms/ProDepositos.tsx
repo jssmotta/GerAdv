@@ -179,6 +179,18 @@ const addValorProcesso = (e: any) => {
               )}
               <div className='grid-container'>
 
+                <InputName
+                type='text'
+                id='data'
+                label='Data'
+                dataForm={prodepositosData}
+                className='inputIncNome'
+                name='data'
+                value={prodepositosData.data}
+                placeholder={`Informe Data`}
+                onChange={onChange}
+                required
+                />
 
                 <ProcessosComboBox
                 name={'processo'}
@@ -195,20 +207,6 @@ const addValorProcesso = (e: any) => {
                 setValue={addValorFase}
                 label={'Fase'}
                 />
-
-                <InputInput
-                required
-                type='text'
-                maxLength={2048}
-                id='data'
-                label='Data'
-                dataForm={prodepositosData}
-                className='inputIncNome'
-                name='data'
-                value={prodepositosData.data}
-                onChange={onChange}
-                />
-
 
                 <InputInput
                 required

@@ -9,7 +9,7 @@ public partial class DBProcessosObsReport
     public const string PTabelaNome = "ProcessosObsReport";
     public const string CamposSqlX = " ProcessosObsReport.* ";
     public const string CampoCodigo = "prrCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "prrData";
     public const string PTabelaPrefixo = "prr";
 #pragma warning disable CA1822 // Mark members as static
 

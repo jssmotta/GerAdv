@@ -10,4 +10,5 @@ public partial interface IAgendaService
     Task<AgendaResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<AgendaResponse?> Validation(Models.Agenda regAgenda, [FromRoute, Required] string uri = "");
     Task<IEnumerable<AgendaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAgenda? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

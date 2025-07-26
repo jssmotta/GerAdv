@@ -168,7 +168,10 @@ export function useValidationsProcessosObsReport() {
     
       try {
    
-        if (data.observacao.length > 2048) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.observacao.length > 2048) { 
                                              return { isValid: false, message: 'O campo Observacao não pode ter mais de 2048 caracteres.' };
                                          } 
 

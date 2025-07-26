@@ -1,12 +1,10 @@
-﻿using IdentityModel.Client;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 namespace MenphisSI.BaseCommon;
 
-public partial class UserService : IUserService, IDisposable
+public partial class UserService
 {
-
 
     private async Task<string> GenerateJwtToken(OperadorResponse user)
     {
@@ -16,7 +14,7 @@ public partial class UserService : IUserService, IDisposable
         var claims = new[]
         {
             new Claim("id", user.Id.ToString()),
-            new Claim("tipo", user.CadID == 1 ? "Advogado" : "Funcionario"),
+            new Claim("tipo", "Funcionario"),
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -55,24 +53,13 @@ public partial class UserService : IUserService, IDisposable
                 return null;
             }
 
-            var user = await AuthenticateUserAsync(model, oCnn).ConfigureAwait(false);
+            var user = await AuthenticateUserAsync(model, uri, oCnn).ConfigureAwait(false);
             if (user == null) return null;
 
             try
             {
-                var parameters = new List<SqlParameter>
-                {
-                    new SqlParameter("@email", user.EMailNet),                    
-                };
-                var dbMed = new DBAdvogados(
-                                    parameters,
-                                    sqlWhere: DBAdvogadosDicInfo.EMail + " = @email",
-                                    oCnn: oCnn);
 
-                var tipo = dbMed.ID == 0 ? "Funcionario" : "Medico";
-#if (DEBUG)
-                tipo = "Medico";
-#endif
+                var tipo = "Funcionario";
 
                 var token = await GenerateJwtToken(user).ConfigureAwait(false);
                 var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));

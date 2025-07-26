@@ -9,7 +9,7 @@ public partial class DBProSucumbencia
     public const string PTabelaNome = "ProSucumbencia";
     public const string CamposSqlX = " ProSucumbencia.* ";
     public const string CampoCodigo = "scbCodigo";
-    public const string CampoNome = "scbNome";
+    public const string CampoNome = "scbData";
     public const string PTabelaPrefixo = "scb";
 #pragma warning disable CA1822 // Mark members as static
 

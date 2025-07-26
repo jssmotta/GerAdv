@@ -156,7 +156,7 @@ public partial class DBContaCorrente
         if (pFldFValor)
             updateTool.Fields(DBContaCorrenteDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
         if (pFldFData)
-            updateTool.Fields(DBContaCorrenteDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBContaCorrenteDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFCliente)
             updateTool.Fields(DBContaCorrenteDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
         if (pFldFHistorico)

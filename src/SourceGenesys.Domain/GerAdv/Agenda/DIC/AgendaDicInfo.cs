@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBAgendaDicInfo
 {
     public const string CampoCodigo = "ageCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ageData";
     public const string TablePrefix = "age";
     public const string IDCOB = "ageIDCOB"; // LOCALIZACAO 170523
     public const string ClienteAvisado = "ageClienteAvisado"; // LOCALIZACAO 170523
@@ -163,7 +163,7 @@ public static partial class DBAgendaDicInfo
     {
         Prefixo = "age"
     }; // DBI 11 
-    public static DBInfoSystem AgeData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem AgeData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "age"
     };

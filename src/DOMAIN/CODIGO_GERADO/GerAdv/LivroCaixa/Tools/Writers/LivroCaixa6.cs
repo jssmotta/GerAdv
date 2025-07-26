@@ -29,8 +29,7 @@ public class LivroCaixaWriter(IFLivroCaixaFactory livrocaixaFactory) : ILivroCai
         dbRec.FIDHon = livrocaixa.IDHon;
         dbRec.FIDHonParc = livrocaixa.IDHonParc;
         dbRec.FIDHonSuc = livrocaixa.IDHonSuc;
-        if (livrocaixa.Data != null)
-            dbRec.FData = livrocaixa.Data.ToString();
+        dbRec.FData = livrocaixa.Data;
         dbRec.FProcesso = livrocaixa.Processo;
         dbRec.FValor = livrocaixa.Valor;
         dbRec.FTipo = livrocaixa.Tipo;

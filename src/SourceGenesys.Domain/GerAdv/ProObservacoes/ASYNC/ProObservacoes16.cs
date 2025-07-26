@@ -138,7 +138,7 @@ public partial class DBProObservacoes
         if (pFldFObservacoes)
             updateTool.Fields(DBProObservacoesDicInfo.Observacoes, m_FObservacoes, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBProObservacoesDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProObservacoesDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFGUID)
             updateTool.Fields(DBProObservacoesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }

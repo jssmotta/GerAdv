@@ -9,7 +9,6 @@ export interface ProSucumbencia
 	instancia : number;
 	tipoorigemsucumbencia : number;
 	data : string;
-	data_date? : Date;
 	nome : string;
 	valor : number;
 	percentual : string;

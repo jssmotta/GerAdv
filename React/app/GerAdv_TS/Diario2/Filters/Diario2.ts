@@ -5,7 +5,6 @@
 {
     operator?: string;
     wildcardChar?: string;
- data_end?: string;
  data?: string;
  hora_end?: string;
  hora?: string;
@@ -22,7 +21,6 @@
 export class FilterDiario2Defaults implements FilterDiario2 {
     logicalOperator?: string = ' AND ';
     wildcardChar?: string = '';
-    data_end?: string = '';
     data?: string = '';
     hora_end?: string = '';
     hora?: string = '';

@@ -7,7 +7,6 @@ export interface ProResumos
     id: number;
 	processo : number;
 	data : string;
-	data_date? : Date;
 	resumo : string;
 	tiporesumo : number;
 	nropastaprocessos?: string;

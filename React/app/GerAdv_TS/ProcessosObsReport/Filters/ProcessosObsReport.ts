@@ -5,7 +5,6 @@
 {
     operator?: string;
     wildcardChar?: string;
- data_end?: string;
  data?: string;
     processo?: number;
     processo_end?: number;
@@ -19,7 +18,6 @@
 export class FilterProcessosObsReportDefaults implements FilterProcessosObsReport {
     logicalOperator?: string = ' AND ';
     wildcardChar?: string = '';
-    data_end?: string = '';
     data?: string = '';
     processo?: number = -2147483648;
     processo_end?: number = -2147483648;

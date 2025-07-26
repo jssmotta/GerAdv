@@ -17,7 +17,6 @@ export interface Historico
 	naopublicavel : boolean;
 	idinstprocesso : number;
 	data : string;
-	data_date? : Date;
 	observacao : string;
 	agendado : boolean;
 	concluido : boolean;

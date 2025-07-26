@@ -168,7 +168,10 @@ export function useValidationsProDespesas() {
     
       try {
    
-        if (data.historico.length > 100) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.historico.length > 100) { 
                                              return { isValid: false, message: 'O campo Historico não pode ter mais de 100 caracteres.' };
                                          } 
 

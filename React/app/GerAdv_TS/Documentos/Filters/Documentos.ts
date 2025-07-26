@@ -7,7 +7,6 @@
     wildcardChar?: string;
     processo?: number;
     processo_end?: number;
- data_end?: string;
  data?: string;
  observacao?: string;
     codigo_filtro?: number;
@@ -19,7 +18,6 @@ export class FilterDocumentosDefaults implements FilterDocumentos {
     wildcardChar?: string = '';
     processo?: number = -2147483648;
     processo_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     observacao?: string = '';
     codigo_filtro?: number = -2147483648;

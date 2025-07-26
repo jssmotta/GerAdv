@@ -10,7 +10,6 @@ export interface ProDespesas
 	ligacaoid : number;
 	corrigido : boolean;
 	data : string;
-	data_date? : Date;
 	valororiginal : number;
 	quitado : number;
 	datacorrecao : string;

@@ -85,9 +85,6 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
-
         /// <summary>
         /// LiminarParcial - insLiminarParcial  
         /// </summary>
@@ -268,9 +265,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
-
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// LiminarParcial - insLiminarParcial  

@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHorasTrabReader
 {
     private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("htbCodigo, htbData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<HorasTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBHorasTrab.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<HorasTrabResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -56,6 +57,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -72,12 +74,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             Servico = dbRec.FServico,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            horastrab.Data = dbRec.FData;
-            horastrab.Data_date = XData;
-        }
-
         return horastrab;
     }
 
@@ -105,6 +101,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -121,12 +118,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             Servico = dbRec.FServico,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            horastrab.Data = dbRec.FData;
-            horastrab.Data_date = XData;
-        }
-
         return horastrab;
     }
 
@@ -143,6 +134,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -159,12 +151,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             Servico = dbRec.FServico,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            horastrab.Data = dbRec.FData;
-            horastrab.Data_date = XData;
-        }
-
         return horastrab;
     }
 
@@ -181,6 +167,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -197,12 +184,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             Servico = dbRec.FServico,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            horastrab.Data = dbRec.FData;
-            horastrab.Data_date = XData;
-        }
-
         try
         {
             horastrab.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -259,6 +240,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -275,12 +257,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             Servico = dbRec.FServico,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            horastrab.Data = dbRec.FData;
-            horastrab.Data_date = XData;
-        }
-
         try
         {
             horastrab.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;

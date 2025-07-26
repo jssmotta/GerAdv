@@ -45,8 +45,7 @@ public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
         dbRec.FParticular = ligacoes.Particular;
         dbRec.FRealizada = ligacoes.Realizada;
         dbRec.FStatus = ligacoes.Status;
-        if (ligacoes.Data != null)
-            dbRec.FData = ligacoes.Data.ToString();
+        dbRec.FData = ligacoes.Data;
         if (ligacoes.Hora != null)
             dbRec.FHora = ligacoes.Hora.ToString();
         dbRec.FUrgente = ligacoes.Urgente;

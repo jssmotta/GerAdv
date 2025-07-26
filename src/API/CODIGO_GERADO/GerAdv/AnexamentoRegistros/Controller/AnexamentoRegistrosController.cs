@@ -46,6 +46,15 @@ public partial class AnexamentoRegistrosController(IAnexamentoRegistrosService a
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAnexamentoRegistros? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"AnexamentoRegistros: GetListN called, max {max}, {filtro} uri");
+        var result = await _anexamentoregistrosService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

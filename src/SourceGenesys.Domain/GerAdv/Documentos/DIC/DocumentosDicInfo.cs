@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBDocumentosDicInfo
 {
     public const string CampoCodigo = "docCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "docData";
     public const string TablePrefix = "doc";
     public const string Processo = "docProcesso"; // LOCALIZACAO 170523
     public const string Data = "docData"; // LOCALIZACAO 170523
@@ -40,7 +40,7 @@ public static partial class DBDocumentosDicInfo
     {
         Prefixo = "doc"
     }; // DBI 11 
-    public static DBInfoSystem DocData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem DocData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "doc"
     };

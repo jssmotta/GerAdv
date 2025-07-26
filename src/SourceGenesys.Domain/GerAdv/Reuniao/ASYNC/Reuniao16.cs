@@ -136,7 +136,7 @@ public partial class DBReuniao
         if (pFldFIDAgenda)
             updateTool.Fields(DBReuniaoDicInfo.IDAgenda, m_FIDAgenda, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBReuniaoDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBReuniaoDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFPauta)
             updateTool.Fields(DBReuniaoDicInfo.Pauta, m_FPauta, ETiposCampos.FString);
         if (pFldFATA)

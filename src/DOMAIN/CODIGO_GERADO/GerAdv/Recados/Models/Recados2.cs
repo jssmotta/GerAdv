@@ -112,9 +112,6 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
-
         /// <summary>
         /// Voltara - recVoltara  
         /// </summary>
@@ -346,9 +343,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
-
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// Voltara - recVoltara  

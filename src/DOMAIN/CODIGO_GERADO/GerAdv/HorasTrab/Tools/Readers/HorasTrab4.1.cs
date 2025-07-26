@@ -15,7 +15,7 @@ public partial class HorasTrabReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBHorasTrabDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBHorasTrabDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

@@ -23,7 +23,7 @@ public partial class LivroCaixaClientesReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
+                   {campos}, [{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.Data}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBLivroCaixaClientes.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBLivroCaixaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixa.CampoCodigo}]=[{DBLivroCaixaClientesDicInfo.PTabelaNome}].[{DBLivroCaixaClientesDicInfo.LivroCaixa}]
 LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBLivroCaixaClientesDicInfo.PTabelaNome}].[{DBLivroCaixaClientesDicInfo.Cliente}]

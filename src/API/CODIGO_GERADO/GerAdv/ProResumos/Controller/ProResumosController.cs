@@ -46,6 +46,15 @@ public partial class ProResumosController(IProResumosService proresumosService) 
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProResumos? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"ProResumos: GetListN called, max {max}, {filtro} uri");
+        var result = await _proresumosService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

@@ -26,16 +26,9 @@ public partial class ProProcuradoresService
             parameters.Add(new($"@{nameof(DBProProcuradoresDicInfo.Processo)}", filtro.Processo));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProProcuradoresDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProProcuradoresDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBProProcuradoresDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Substabelecimento != int.MinValue)
@@ -72,15 +65,7 @@ public partial class ProProcuradoresService
         cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Advogado}] = @{nameof(DBProProcuradoresDicInfo.Advogado)}");
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProProcuradoresDicInfo.Nome)}");
         cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Processo}] = @{nameof(DBProProcuradoresDicInfo.Processo)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBProProcuradoresDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProProcuradoresDicInfo.Data} BETWEEN @{nameof(DBProProcuradoresDicInfo.Data)} AND @{nameof(DBProProcuradoresDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProProcuradoresDicInfo.Data} = @{nameof(DBProProcuradoresDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProProcuradoresDicInfo.Data} <= @{nameof(DBProProcuradoresDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProProcuradoresDicInfo.Data)}");
         cWhere.Append(filtro.Substabelecimento == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Substabelecimento}] = @{nameof(DBProProcuradoresDicInfo.Substabelecimento)}");
         cWhere.Append(filtro.Procuracao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.Procuracao}] = @{nameof(DBProProcuradoresDicInfo.Procuracao)}");
         cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProProcuradoresDicInfo.PTabelaNome}].[{DBProProcuradoresDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProProcuradoresDicInfo.GUID)}");

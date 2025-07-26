@@ -8,6 +8,7 @@ export interface LivroCaixaClientes
 	livrocaixa : number;
 	cliente : number;
 	lancado : boolean;
+	datalivrocaixa?: string;
 	nomeclientes?: string;
 
 }

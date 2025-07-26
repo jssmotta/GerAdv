@@ -14,7 +14,7 @@ import { ProDespesasTestEmpty } from '../GerAdv_TS/Models/ProDespesas';
 const mockProDespesasService: jest.Mocked<IProDespesasService> = {
   fetchProDespesasById: jest.fn(),
   saveProDespesas: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteProDespesas: jest.fn(),
   validateProDespesas: jest.fn(),
@@ -50,7 +50,7 @@ describe('useProDespesasForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'historico',
+        name: 'data',
         value: 'Novo Pro Despesas',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useProDespesasForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.historico).toBe('Novo Pro Despesas');
+    expect(result.current.data.data).toBe('Novo Pro Despesas');
   });
 
    test('deve carregar Pro Despesas por ID', async () => {
-    const mockProDespesas = { ...initialProDespesas, id: 1, historico: 'Pro Despesas Teste' };
+    const mockProDespesas = { ...initialProDespesas, id: 1, data: 'Pro Despesas Teste' };
     mockProDespesasService.fetchProDespesasById.mockResolvedValue(mockProDespesas);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useProDespesasForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialProDespesas, historico: 'Teste' });
+      result.current.setData({ ...initialProDespesas, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useProDespesasList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialProDespesas, id: 1, historico: 'Pro Despesas 1' },
-      { ...initialProDespesas, id: 2, historico: 'Pro Despesas 2' }
+      { ...initialProDespesas, id: 1, data: 'Pro Despesas 1' },
+      { ...initialProDespesas, id: 2, data: 'Pro Despesas 2' }
     ];
     mockProDespesasService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useProDespesasList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialProDespesas, id: 1, historico: 'Pro Despesas Filtrado' }];
-    const filtro = { historico: 'Pro Despesas' };
+    const mockData = [{ ...initialProDespesas, id: 1, data: 'Pro Despesas Filtrado' }];
+    const filtro = { data: 'Pro Despesas' };
     mockProDespesasService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsProDespesas', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsProDespesas());
 
-    const validData = { ...initialProDespesas, historico: 'Pro Despesas Válido' };
+    const validData = { ...initialProDespesas, data: 'Pro Despesas Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsProDespesas', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsProDespesas());
+
+    const invalidData = { ...initialProDespesas, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsProDespesas());
+
+    const invalidData = { 
+      ...initialProDespesas, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsProDespesas());
@@ -229,7 +250,7 @@ describe('useValidationsProDespesas', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialProDespesas, id: 1, historico: 'Pro Despesas Teste' }];
+    const mockData = [{ ...initialProDespesas, id: 1, data: 'Pro Despesas Teste' }];
     mockProDespesasService.getAll.mockResolvedValue(mockData);
     
 

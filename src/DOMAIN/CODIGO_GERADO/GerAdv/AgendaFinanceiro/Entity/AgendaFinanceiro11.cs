@@ -36,10 +36,10 @@ public partial class FAgendaFinanceiroFactory : IFAgendaFinanceiroFactory, IDisp
         return new FAgendaFinanceiro();
     }
 
-    public FAgendaFinanceiro CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FAgendaFinanceiro CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
-        return FAgendaFinanceiro.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
+        return FAgendaFinanceiro.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
     public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)

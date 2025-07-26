@@ -45,13 +45,6 @@ public class AlertasValidation : IAlertasValidation
             return false;
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
-        if (!DateTime.TryParse(reg.Data, out _))
-        {
-            throw new SGValidationException($"Data inválida: {reg.Data}");
-        }
-
-        if (reg.Data.IsEmpty())
-            throw new SGValidationException("Data é obrigatório.");
         if (reg.Operador == 0)
             throw new SGValidationException("Operador é obrigatório.");
         // Operador

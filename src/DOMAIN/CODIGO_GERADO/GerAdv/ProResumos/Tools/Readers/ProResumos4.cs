@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : IProResumosReader
 {
     private readonly IFProResumosFactory _proresumosFactory = proresumosFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prsCodigo, prsData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProResumosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProResumos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProResumosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -54,16 +55,11 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proresumos.Data = dbRec.FData;
-            proresumos.Data_date = XData;
-        }
-
         return proresumos;
     }
 
@@ -89,16 +85,11 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proresumos.Data = dbRec.FData;
-            proresumos.Data_date = XData;
-        }
-
         return proresumos;
     }
 
@@ -113,16 +104,11 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proresumos.Data = dbRec.FData;
-            proresumos.Data_date = XData;
-        }
-
         return proresumos;
     }
 
@@ -137,16 +123,11 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proresumos.Data = dbRec.FData;
-            proresumos.Data_date = XData;
-        }
-
         try
         {
             proresumos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -169,16 +150,11 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proresumos.Data = dbRec.FData;
-            proresumos.Data_date = XData;
-        }
-
         try
         {
             proresumos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

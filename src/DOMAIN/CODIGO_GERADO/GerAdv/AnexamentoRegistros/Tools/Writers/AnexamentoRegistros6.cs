@@ -27,8 +27,7 @@ public class AnexamentoRegistrosWriter(IFAnexamentoRegistrosFactory anexamentore
         dbRec.FGUIDReg = anexamentoregistros.GUIDReg;
         dbRec.FCodigoReg = anexamentoregistros.CodigoReg;
         dbRec.FIDReg = anexamentoregistros.IDReg;
-        if (anexamentoregistros.Data != null)
-            dbRec.FData = anexamentoregistros.Data.ToString();
+        dbRec.FData = anexamentoregistros.Data;
         dbRec.FGUID = anexamentoregistros.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);

@@ -134,6 +134,18 @@ const addValorCliente = (e: any) => {
           )}
           <div className='grid-container'>
 
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={reuniaoData}
+            className='inputIncNome'
+            name='data'
+            value={reuniaoData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
 
             <ClientesComboBox
             name={'cliente'}
@@ -152,19 +164,6 @@ const addValorCliente = (e: any) => {
             className='inputIncNome'
             name='idagenda'
             value={reuniaoData.idagenda}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='data'
-            label='Data'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='data'
-            value={reuniaoData.data}
             onChange={onChange}
             />
 
@@ -221,7 +220,7 @@ const addValorCliente = (e: any) => {
             />
 
             <InputCheckbox dataForm={reuniaoData} label='Externa' name='externa' checked={reuniaoData.externa} onChange={onChange} />
-          </div><div className='grid-container'>
+
             <InputInput
             type='text'
             maxLength={2048}
@@ -234,7 +233,7 @@ const addValorCliente = (e: any) => {
             onChange={onChange}
             />
 
-
+          </div><div className='grid-container'>
             <InputInput
             type='text'
             maxLength={2048}

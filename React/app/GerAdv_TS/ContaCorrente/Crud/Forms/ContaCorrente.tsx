@@ -157,6 +157,18 @@ const addValorProcesso = (e: any) => {
             )}
             <div className='grid-container'>
 
+              <InputName
+              type='text'
+              id='data'
+              label='Data'
+              dataForm={contacorrenteData}
+              className='inputIncNome'
+              name='data'
+              value={contacorrenteData.data}
+              placeholder={`Informe Data`}
+              onChange={onChange}
+              required
+              />
 
               <InputInput
               type='text'
@@ -273,19 +285,6 @@ const addValorProcesso = (e: any) => {
               />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='data'
-              value={contacorrenteData.data}
-              onChange={onChange}
-              />
-
-
               <ClientesComboBox
               name={'cliente'}
               dataForm={contacorrenteData}
@@ -308,8 +307,8 @@ const addValorProcesso = (e: any) => {
 
               <InputCheckbox dataForm={contacorrenteData} label='Contrato' name='contrato' checked={contacorrenteData.contrato} onChange={onChange} />
               <InputCheckbox dataForm={contacorrenteData} label='Pago' name='pago' checked={contacorrenteData.pago} onChange={onChange} />
-            </div><div className='grid-container'><InputCheckbox dataForm={contacorrenteData} label='Distribuir' name='distribuir' checked={contacorrenteData.distribuir} onChange={onChange} />
-            <InputCheckbox dataForm={contacorrenteData} label='LC' name='lc' checked={contacorrenteData.lc} onChange={onChange} />
+              <InputCheckbox dataForm={contacorrenteData} label='Distribuir' name='distribuir' checked={contacorrenteData.distribuir} onChange={onChange} />
+            </div><div className='grid-container'><InputCheckbox dataForm={contacorrenteData} label='LC' name='lc' checked={contacorrenteData.lc} onChange={onChange} />
 
             <InputInput
             type='text'

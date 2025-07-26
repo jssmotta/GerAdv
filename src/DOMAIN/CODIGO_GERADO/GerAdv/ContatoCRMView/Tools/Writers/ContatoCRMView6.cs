@@ -24,8 +24,7 @@ public class ContatoCRMViewWriter(IFContatoCRMViewFactory contatocrmviewFactory)
     {
         using var dbRec = await (contatocrmview.Id.IsEmptyIDNumber() ? _contatocrmviewFactory.CreateAsync() : _contatocrmviewFactory.CreateFromIdAsync(contatocrmview.Id, oCnn));
         dbRec.FCGUID = contatocrmview.CGUID;
-        if (contatocrmview.Data != null)
-            dbRec.FData = contatocrmview.Data.ToString();
+        dbRec.FData = contatocrmview.Data;
         dbRec.FIP = contatocrmview.IP;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

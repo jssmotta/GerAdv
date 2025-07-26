@@ -132,6 +132,14 @@ public partial class DocsRecebidosItensReader(IFDocsRecebidosItensFactory docsre
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
+        try
+        {
+            docsrecebidositens.DataContatoCRM = dr[DBContatoCRMDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return docsrecebidositens;
     }
 
@@ -152,6 +160,14 @@ public partial class DocsRecebidosItensReader(IFDocsRecebidosItensFactory docsre
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
+        try
+        {
+            docsrecebidositens.DataContatoCRM = dr[DBContatoCRMDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return docsrecebidositens;
     }
 }

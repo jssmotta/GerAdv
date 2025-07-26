@@ -118,16 +118,9 @@ public partial class AgendaFinanceiroService
             parameters.Add(new($"@{nameof(DBAgendaFinanceiroDicInfo.Funcionario)}", filtro.Funcionario));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAgendaFinanceiroDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAgendaFinanceiroDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBAgendaFinanceiroDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.EventoPrazo != int.MinValue)
@@ -444,15 +437,7 @@ public partial class AgendaFinanceiroService
         }
 
         cWhere.Append(filtro.Funcionario <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaFinanceiroDicInfo.PTabelaNome}].[{DBAgendaFinanceiroDicInfo.Funcionario}] = @{nameof(DBAgendaFinanceiroDicInfo.Funcionario)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAgendaFinanceiroDicInfo.PTabelaNome}].[{DBAgendaFinanceiroDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBAgendaFinanceiroDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaFinanceiroDicInfo.Data} BETWEEN @{nameof(DBAgendaFinanceiroDicInfo.Data)} AND @{nameof(DBAgendaFinanceiroDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaFinanceiroDicInfo.Data} = @{nameof(DBAgendaFinanceiroDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaFinanceiroDicInfo.Data} <= @{nameof(DBAgendaFinanceiroDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaFinanceiroDicInfo.PTabelaNome}].[{DBAgendaFinanceiroDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaFinanceiroDicInfo.Data)}");
         if (!filtro.EventoPrazo.IsEmpty() && filtro.EventoPrazo_end.IsEmpty())
         {
             cWhere.Append(filtro.EventoPrazo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaFinanceiroDicInfo.PTabelaNome}].[{DBAgendaFinanceiroDicInfo.EventoPrazo}] >= @{nameof(DBAgendaFinanceiroDicInfo.EventoPrazo)}");
@@ -599,6 +584,46 @@ public partial class AgendaFinanceiroService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAgendaFinanceiro? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-AgendaFinanceiro-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBAgendaFinanceiroDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

@@ -26,7 +26,6 @@
     parcelax_end?: number;
     valor?: number;
     valor_end?: number;
- data_end?: string;
  data?: string;
     cliente?: number;
     cliente_end?: number;
@@ -74,7 +73,6 @@ export class FilterContaCorrenteDefaults implements FilterContaCorrente {
     parcelax_end?: number = -2147483648;
     valor?: number = -79228162514264337593543950335;
     valor_end?: number = -79228162514264337593543950335;
-    data_end?: string = '';
     data?: string = '';
     cliente?: number = -2147483648;
     cliente_end?: number = -2147483648;

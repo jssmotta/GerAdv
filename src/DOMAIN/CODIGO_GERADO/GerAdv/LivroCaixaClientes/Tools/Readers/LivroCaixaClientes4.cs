@@ -121,6 +121,14 @@ public partial class LivroCaixaClientesReader(IFLivroCaixaClientesFactory livroc
         };
         try
         {
+            livrocaixaclientes.DataLivroCaixa = dr[DBLivroCaixaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             livrocaixaclientes.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -144,6 +152,14 @@ public partial class LivroCaixaClientesReader(IFLivroCaixaClientesFactory livroc
             Cliente = dbRec.FCliente,
             Lancado = dbRec.FLancado,
         };
+        try
+        {
+            livrocaixaclientes.DataLivroCaixa = dr[DBLivroCaixaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         try
         {
             livrocaixaclientes.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;

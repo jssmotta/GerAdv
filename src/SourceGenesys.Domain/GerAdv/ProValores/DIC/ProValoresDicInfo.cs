@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBProValoresDicInfo
 {
     public const string CampoCodigo = "prvCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "prvData";
     public const string TablePrefix = "prv";
     public const string Processo = "prvProcesso"; // LOCALIZACAO 170523
     public const string TipoValorProcesso = "prvTipoValorProcesso"; // LOCALIZACAO 170523
@@ -78,7 +78,7 @@ public static partial class DBProValoresDicInfo
         IsRequired = true,
         Prefixo = "prv"
     };
-    public static DBInfoSystem PrvData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem PrvData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "prv"

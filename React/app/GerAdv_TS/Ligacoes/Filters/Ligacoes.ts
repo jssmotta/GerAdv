@@ -34,7 +34,6 @@
  particular?: number;
  realizada?: number;
  status?: string;
- data_end?: string;
  data?: string;
  hora_end?: string;
  hora?: string;
@@ -81,7 +80,6 @@ export class FilterLigacoesDefaults implements FilterLigacoes {
     particular?: number= -2147483648;
     realizada?: number= -2147483648;
     status?: string = '';
-    data_end?: string = '';
     data?: string = '';
     hora_end?: string = '';
     hora?: string = '';

@@ -55,14 +55,9 @@ public partial class AlertasReader(IFAlertasFactory alertasFactory) : IAlertasRe
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            alertas.Data = dbRec.FData;
-            alertas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataAte, out DateTime XDataAte))
         {
             alertas.DataAte = dbRec.FDataAte;
@@ -94,14 +89,9 @@ public partial class AlertasReader(IFAlertasFactory alertasFactory) : IAlertasRe
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            alertas.Data = dbRec.FData;
-            alertas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataAte, out DateTime XDataAte))
         {
             alertas.DataAte = dbRec.FDataAte;
@@ -122,14 +112,9 @@ public partial class AlertasReader(IFAlertasFactory alertasFactory) : IAlertasRe
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            alertas.Data = dbRec.FData;
-            alertas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataAte, out DateTime XDataAte))
         {
             alertas.DataAte = dbRec.FDataAte;
@@ -150,14 +135,9 @@ public partial class AlertasReader(IFAlertasFactory alertasFactory) : IAlertasRe
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            alertas.Data = dbRec.FData;
-            alertas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataAte, out DateTime XDataAte))
         {
             alertas.DataAte = dbRec.FDataAte;
@@ -186,14 +166,9 @@ public partial class AlertasReader(IFAlertasFactory alertasFactory) : IAlertasRe
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Operador = dbRec.FOperador,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            alertas.Data = dbRec.FData;
-            alertas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataAte, out DateTime XDataAte))
         {
             alertas.DataAte = dbRec.FDataAte;

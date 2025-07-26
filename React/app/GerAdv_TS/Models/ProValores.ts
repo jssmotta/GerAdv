@@ -10,7 +10,6 @@ export interface ProValores
 	indice : string;
 	ignorar : boolean;
 	data : string;
-	data_date? : Date;
 	valororiginal : number;
 	percmulta : number;
 	valormulta : number;

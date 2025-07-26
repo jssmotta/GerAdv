@@ -13,5 +13,6 @@ public partial interface IAgendaFinanceiroReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     AgendaFinanceiroResponseAll? ReadAll(FAgendaFinanceiro dbRec, IDataRecord dr);
     AgendaFinanceiroResponseAll? ReadAll(SG.GerAdv.DBAgendaFinanceiro dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<AgendaFinanceiroResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

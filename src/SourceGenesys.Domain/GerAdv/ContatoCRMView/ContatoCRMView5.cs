@@ -9,7 +9,7 @@ public partial class DBContatoCRMView
     public const string PTabelaNome = "ContatoCRMView";
     public const string CamposSqlX = " ContatoCRMView.* ";
     public const string CampoCodigo = "ccwCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ccwData";
     public const string PTabelaPrefixo = "ccw";
 #pragma warning disable CA1822 // Mark members as static
 

@@ -7,6 +7,7 @@ export interface AgendaStatus
     id: number;
 	agenda : number;
 	completed : number;
+	dataagenda?: string;
 
 }
 

@@ -9,7 +9,7 @@ public partial class DBHorasTrab
     public const string PTabelaNome = "HorasTrab";
     public const string CamposSqlX = " HorasTrab.* ";
     public const string CampoCodigo = "htbCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "htbData";
     public const string PTabelaPrefixo = "htb";
 #pragma warning disable CA1822 // Mark members as static
 

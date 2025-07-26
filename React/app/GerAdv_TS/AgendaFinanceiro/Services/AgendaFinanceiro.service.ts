@@ -25,7 +25,7 @@ export class AgendaFinanceiroValidator {
 export interface IAgendaFinanceiroService {
   fetchAgendaFinanceiroById: (id: number) => Promise<IAgendaFinanceiro>;
   saveAgendaFinanceiro: (agendafinanceiro: IAgendaFinanceiro) => Promise<IAgendaFinanceiro>;  
-  
+  getList: (filtro?: FilterAgendaFinanceiro) => Promise<IAgendaFinanceiro[]>;
   getAll: (filtro?: FilterAgendaFinanceiro) => Promise<IAgendaFinanceiro[]>;
   deleteAgendaFinanceiro: (id: number) => Promise<void>;
   validateAgendaFinanceiro: (agendafinanceiro: IAgendaFinanceiro) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class AgendaFinanceiroService implements IAgendaFinanceiroService {
   }
 
   
+    async getList(filtro?: FilterAgendaFinanceiro): Promise<IAgendaFinanceiro[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching AgendaFinanceiro list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

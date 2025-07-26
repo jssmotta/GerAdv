@@ -46,6 +46,15 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDespesas? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"ProDespesas: GetListN called, max {max}, {filtro} uri");
+        var result = await _prodespesasService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

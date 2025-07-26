@@ -134,7 +134,7 @@ public partial class DBProResumos
         if (pFldFProcesso)
             updateTool.Fields(DBProResumosDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProResumosDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProResumosDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFResumo)
             updateTool.Fields(DBProResumosDicInfo.Resumo, m_FResumo, ETiposCampos.FString);
         if (pFldFTipoResumo)

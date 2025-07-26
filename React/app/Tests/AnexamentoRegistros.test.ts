@@ -14,7 +14,7 @@ import { AnexamentoRegistrosTestEmpty } from '../GerAdv_TS/Models/AnexamentoRegi
 const mockAnexamentoRegistrosService: jest.Mocked<IAnexamentoRegistrosService> = {
   fetchAnexamentoRegistrosById: jest.fn(),
   saveAnexamentoRegistros: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteAnexamentoRegistros: jest.fn(),
   validateAnexamentoRegistros: jest.fn(),
@@ -50,7 +50,7 @@ describe('useAnexamentoRegistrosForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'guidreg',
+        name: 'data',
         value: 'Novo Anexamento Registros',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useAnexamentoRegistrosForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.guidreg).toBe('Novo Anexamento Registros');
+    expect(result.current.data.data).toBe('Novo Anexamento Registros');
   });
 
    test('deve carregar Anexamento Registros por ID', async () => {
-    const mockAnexamentoRegistros = { ...initialAnexamentoRegistros, id: 1, guidreg: 'Anexamento Registros Teste' };
+    const mockAnexamentoRegistros = { ...initialAnexamentoRegistros, id: 1, data: 'Anexamento Registros Teste' };
     mockAnexamentoRegistrosService.fetchAnexamentoRegistrosById.mockResolvedValue(mockAnexamentoRegistros);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useAnexamentoRegistrosForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialAnexamentoRegistros, guidreg: 'Teste' });
+      result.current.setData({ ...initialAnexamentoRegistros, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useAnexamentoRegistrosList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialAnexamentoRegistros, id: 1, guidreg: 'Anexamento Registros 1' },
-      { ...initialAnexamentoRegistros, id: 2, guidreg: 'Anexamento Registros 2' }
+      { ...initialAnexamentoRegistros, id: 1, data: 'Anexamento Registros 1' },
+      { ...initialAnexamentoRegistros, id: 2, data: 'Anexamento Registros 2' }
     ];
     mockAnexamentoRegistrosService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useAnexamentoRegistrosList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialAnexamentoRegistros, id: 1, guidreg: 'Anexamento Registros Filtrado' }];
-    const filtro = { guidreg: 'Anexamento Registros' };
+    const mockData = [{ ...initialAnexamentoRegistros, id: 1, data: 'Anexamento Registros Filtrado' }];
+    const filtro = { data: 'Anexamento Registros' };
     mockAnexamentoRegistrosService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsAnexamentoRegistros', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsAnexamentoRegistros());
 
-    const validData = { ...initialAnexamentoRegistros, guidreg: 'Anexamento Registros Válido' };
+    const validData = { ...initialAnexamentoRegistros, data: 'Anexamento Registros Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsAnexamentoRegistros', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsAnexamentoRegistros());
+
+    const invalidData = { ...initialAnexamentoRegistros, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsAnexamentoRegistros());
+
+    const invalidData = { 
+      ...initialAnexamentoRegistros, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsAnexamentoRegistros());
@@ -229,7 +250,7 @@ describe('useValidationsAnexamentoRegistros', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialAnexamentoRegistros, id: 1, guidreg: 'Anexamento Registros Teste' }];
+    const mockData = [{ ...initialAnexamentoRegistros, id: 1, data: 'Anexamento Registros Teste' }];
     mockAnexamentoRegistrosService.getAll.mockResolvedValue(mockData);
     
 

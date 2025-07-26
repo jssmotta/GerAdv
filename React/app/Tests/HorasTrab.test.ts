@@ -14,7 +14,7 @@ import { HorasTrabTestEmpty } from '../GerAdv_TS/Models/HorasTrab';
 const mockHorasTrabService: jest.Mocked<IHorasTrabService> = {
   fetchHorasTrabById: jest.fn(),
   saveHorasTrab: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteHorasTrab: jest.fn(),
   validateHorasTrab: jest.fn(),
@@ -50,7 +50,7 @@ describe('useHorasTrabForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'hrini',
+        name: 'data',
         value: 'Novo Horas Trab',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useHorasTrabForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.hrini).toBe('Novo Horas Trab');
+    expect(result.current.data.data).toBe('Novo Horas Trab');
   });
 
    test('deve carregar Horas Trab por ID', async () => {
-    const mockHorasTrab = { ...initialHorasTrab, id: 1, hrini: 'Horas Trab Teste' };
+    const mockHorasTrab = { ...initialHorasTrab, id: 1, data: 'Horas Trab Teste' };
     mockHorasTrabService.fetchHorasTrabById.mockResolvedValue(mockHorasTrab);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useHorasTrabForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialHorasTrab, hrini: 'Teste' });
+      result.current.setData({ ...initialHorasTrab, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useHorasTrabList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialHorasTrab, id: 1, hrini: 'Horas Trab 1' },
-      { ...initialHorasTrab, id: 2, hrini: 'Horas Trab 2' }
+      { ...initialHorasTrab, id: 1, data: 'Horas Trab 1' },
+      { ...initialHorasTrab, id: 2, data: 'Horas Trab 2' }
     ];
     mockHorasTrabService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useHorasTrabList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialHorasTrab, id: 1, hrini: 'Horas Trab Filtrado' }];
-    const filtro = { hrini: 'Horas Trab' };
+    const mockData = [{ ...initialHorasTrab, id: 1, data: 'Horas Trab Filtrado' }];
+    const filtro = { data: 'Horas Trab' };
     mockHorasTrabService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsHorasTrab', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsHorasTrab());
 
-    const validData = { ...initialHorasTrab, hrini: 'Horas Trab Válido' };
+    const validData = { ...initialHorasTrab, data: 'Horas Trab Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsHorasTrab', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsHorasTrab());
+
+    const invalidData = { ...initialHorasTrab, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsHorasTrab());
+
+    const invalidData = { 
+      ...initialHorasTrab, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsHorasTrab());
@@ -229,7 +250,7 @@ describe('useValidationsHorasTrab', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialHorasTrab, id: 1, hrini: 'Horas Trab Teste' }];
+    const mockData = [{ ...initialHorasTrab, id: 1, data: 'Horas Trab Teste' }];
     mockHorasTrabService.getAll.mockResolvedValue(mockData);
     
 

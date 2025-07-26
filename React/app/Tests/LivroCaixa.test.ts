@@ -14,7 +14,7 @@ import { LivroCaixaTestEmpty } from '../GerAdv_TS/Models/LivroCaixa';
 const mockLivroCaixaService: jest.Mocked<ILivroCaixaService> = {
   fetchLivroCaixaById: jest.fn(),
   saveLivroCaixa: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteLivroCaixa: jest.fn(),
   validateLivroCaixa: jest.fn(),
@@ -50,7 +50,7 @@ describe('useLivroCaixaForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'historico',
+        name: 'data',
         value: 'Novo Livro Caixa',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useLivroCaixaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.historico).toBe('Novo Livro Caixa');
+    expect(result.current.data.data).toBe('Novo Livro Caixa');
   });
 
    test('deve carregar Livro Caixa por ID', async () => {
-    const mockLivroCaixa = { ...initialLivroCaixa, id: 1, historico: 'Livro Caixa Teste' };
+    const mockLivroCaixa = { ...initialLivroCaixa, id: 1, data: 'Livro Caixa Teste' };
     mockLivroCaixaService.fetchLivroCaixaById.mockResolvedValue(mockLivroCaixa);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useLivroCaixaForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialLivroCaixa, historico: 'Teste' });
+      result.current.setData({ ...initialLivroCaixa, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useLivroCaixaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialLivroCaixa, id: 1, historico: 'Livro Caixa 1' },
-      { ...initialLivroCaixa, id: 2, historico: 'Livro Caixa 2' }
+      { ...initialLivroCaixa, id: 1, data: 'Livro Caixa 1' },
+      { ...initialLivroCaixa, id: 2, data: 'Livro Caixa 2' }
     ];
     mockLivroCaixaService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useLivroCaixaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialLivroCaixa, id: 1, historico: 'Livro Caixa Filtrado' }];
-    const filtro = { historico: 'Livro Caixa' };
+    const mockData = [{ ...initialLivroCaixa, id: 1, data: 'Livro Caixa Filtrado' }];
+    const filtro = { data: 'Livro Caixa' };
     mockLivroCaixaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsLivroCaixa', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsLivroCaixa());
 
-    const validData = { ...initialLivroCaixa, historico: 'Livro Caixa Válido' };
+    const validData = { ...initialLivroCaixa, data: 'Livro Caixa Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsLivroCaixa', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsLivroCaixa());
+
+    const invalidData = { ...initialLivroCaixa, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsLivroCaixa());
+
+    const invalidData = { 
+      ...initialLivroCaixa, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsLivroCaixa());
@@ -229,7 +250,7 @@ describe('useValidationsLivroCaixa', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialLivroCaixa, id: 1, historico: 'Livro Caixa Teste' }];
+    const mockData = [{ ...initialLivroCaixa, id: 1, data: 'Livro Caixa Teste' }];
     mockLivroCaixaService.getAll.mockResolvedValue(mockData);
     
 

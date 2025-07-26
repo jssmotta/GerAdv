@@ -15,7 +15,6 @@ export interface NENotas
 	revisada : boolean;
 	palavrachave : number;
 	data : string;
-	data_date? : Date;
 	notapublicada : string;
 	nroprocessoinstancia?: string;
 	nropastaprocessos?: string;

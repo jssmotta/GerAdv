@@ -11,16 +11,9 @@ public partial class Diario2Service
     private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterDiario2 filtro)
     {
         var parameters = new List<SqlParameter>();
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBDiario2DicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBDiario2DicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBDiario2DicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Operador != int.MinValue)
@@ -64,15 +57,7 @@ public partial class Diario2Service
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBDiario2DicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDiario2DicInfo.Data} BETWEEN @{nameof(DBDiario2DicInfo.Data)} AND @{nameof(DBDiario2DicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDiario2DicInfo.Data} = @{nameof(DBDiario2DicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDiario2DicInfo.Data} <= @{nameof(DBDiario2DicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Data)}");
         cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Operador}] = @{nameof(DBDiario2DicInfo.Operador)}");
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Nome)}");
         cWhere.Append(filtro.Ocorrencia.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Ocorrencia}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Ocorrencia)}");

@@ -25,8 +25,7 @@ public class ProDepositosWriter(IFProDepositosFactory prodepositosFactory) : IPr
         using var dbRec = await (prodepositos.Id.IsEmptyIDNumber() ? _prodepositosFactory.CreateAsync() : _prodepositosFactory.CreateFromIdAsync(prodepositos.Id, oCnn));
         dbRec.FProcesso = prodepositos.Processo;
         dbRec.FFase = prodepositos.Fase;
-        if (prodepositos.Data != null)
-            dbRec.FData = prodepositos.Data.ToString();
+        dbRec.FData = prodepositos.Data;
         dbRec.FValor = prodepositos.Valor;
         dbRec.FTipoProDesposito = prodepositos.TipoProDesposito;
         dbRec.AuditorQuem = auditorQuem;

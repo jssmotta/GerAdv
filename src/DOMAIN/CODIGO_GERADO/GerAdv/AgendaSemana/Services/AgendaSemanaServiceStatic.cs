@@ -16,16 +16,9 @@ public partial class AgendaSemanaService
             parameters.Add(new($"@{nameof(DBAgendaSemanaDicInfo.ParaNome)}", ApplyWildCard(filtro.WildcardChar, filtro.ParaNome)));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAgendaSemanaDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAgendaSemanaDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBAgendaSemanaDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Funcionario != int.MinValue)
@@ -100,15 +93,7 @@ public partial class AgendaSemanaService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.ParaNome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.ParaNome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaSemanaDicInfo.ParaNome)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBAgendaSemanaDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaSemanaDicInfo.Data} BETWEEN @{nameof(DBAgendaSemanaDicInfo.Data)} AND @{nameof(DBAgendaSemanaDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaSemanaDicInfo.Data} = @{nameof(DBAgendaSemanaDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaSemanaDicInfo.Data} <= @{nameof(DBAgendaSemanaDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaSemanaDicInfo.Data)}");
         cWhere.Append(filtro.Funcionario <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Funcionario}] = @{nameof(DBAgendaSemanaDicInfo.Funcionario)}");
         cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Advogado}] = @{nameof(DBAgendaSemanaDicInfo.Advogado)}");
         cWhere.Append(filtro.TipoCompromisso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.TipoCompromisso}] = @{nameof(DBAgendaSemanaDicInfo.TipoCompromisso)}");

@@ -134,7 +134,7 @@ public partial class DBAlertas
         if (pFldFNome)
             updateTool.Fields(DBAlertasDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBAlertasDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBAlertasDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFOperador)
             updateTool.Fields(DBAlertasDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
         if (pFldFDataAte)

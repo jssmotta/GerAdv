@@ -168,7 +168,10 @@ export function useValidationsRecados() {
     
       try {
    
-        if (data.clientenome.length > 255) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.clientenome.length > 255) { 
                                              return { isValid: false, message: 'O campo ClienteNome não pode ter mais de 255 caracteres.' };
                                          } 
 if (data.de.length > 50) { 

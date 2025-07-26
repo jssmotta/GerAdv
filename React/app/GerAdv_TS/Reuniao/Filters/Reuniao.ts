@@ -9,7 +9,6 @@
     cliente_end?: number;
     idagenda?: number;
     idagenda_end?: number;
- data_end?: string;
  data?: string;
  pauta?: string;
  ata?: string;
@@ -34,7 +33,6 @@ export class FilterReuniaoDefaults implements FilterReuniao {
     cliente_end?: number = -2147483648;
     idagenda?: number = -2147483648;
     idagenda_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     pauta?: string = '';
     ata?: string = '';

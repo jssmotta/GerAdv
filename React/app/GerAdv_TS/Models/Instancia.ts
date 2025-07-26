@@ -17,7 +17,6 @@ export interface Instancia
 	liminarconcedida : boolean;
 	liminarnegada : boolean;
 	data : string;
-	data_date? : Date;
 	liminarparcial : boolean;
 	liminarresultado : string;
 	nroprocesso : string;

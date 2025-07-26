@@ -10,4 +10,5 @@ public partial interface IAgendaFinanceiroService
     Task<AgendaFinanceiroResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<AgendaFinanceiroResponse?> Validation(Models.AgendaFinanceiro regAgendaFinanceiro, [FromRoute, Required] string uri = "");
     Task<IEnumerable<AgendaFinanceiroResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAgendaFinanceiro? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

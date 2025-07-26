@@ -25,7 +25,7 @@ export class ContatoCRMValidator {
 export interface IContatoCRMService {
   fetchContatoCRMById: (id: number) => Promise<IContatoCRM>;
   saveContatoCRM: (contatocrm: IContatoCRM) => Promise<IContatoCRM>;  
-  
+  getList: (filtro?: FilterContatoCRM) => Promise<IContatoCRM[]>;
   getAll: (filtro?: FilterContatoCRM) => Promise<IContatoCRM[]>;
   deleteContatoCRM: (id: number) => Promise<void>;
   validateContatoCRM: (contatocrm: IContatoCRM) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ContatoCRMService implements IContatoCRMService {
   }
 
   
+    async getList(filtro?: FilterContatoCRM): Promise<IContatoCRM[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ContatoCRM list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

@@ -9,7 +9,7 @@ public partial class DBContatoCRM
     public const string PTabelaNome = "ContatoCRM";
     public const string CamposSqlX = " ContatoCRM.* ";
     public const string CampoCodigo = "ctcCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ctcData";
     public const string PTabelaPrefixo = "ctc";
 #pragma warning disable CA1822 // Mark members as static
 

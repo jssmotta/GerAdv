@@ -203,6 +203,18 @@ const addValorOperador = (e: any) => {
                 )}
                 <div className='grid-container'>
 
+                  <InputName
+                  type='text'
+                  id='data'
+                  label='Data'
+                  dataForm={contatocrmData}
+                  className='inputIncNome'
+                  name='data'
+                  value={contatocrmData.data}
+                  placeholder={`Informe Data`}
+                  onChange={onChange}
+                  required
+                  />
 
                   <InputInput
                   type='text'
@@ -331,19 +343,6 @@ const addValorOperador = (e: any) => {
                   <InputInput
                   type='text'
                   maxLength={2048}
-                  id='data'
-                  label='Data'
-                  dataForm={contatocrmData}
-                  className='inputIncNome'
-                  name='data'
-                  value={contatocrmData.data}
-                  onChange={onChange}
-                  />
-
-
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
                   id='tempo'
                   label='Tempo'
                   dataForm={contatocrmData}
@@ -366,7 +365,7 @@ const addValorOperador = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'>
+
                   <InputInput
                   type='text'
                   maxLength={2048}
@@ -379,7 +378,7 @@ const addValorOperador = (e: any) => {
                   onChange={onChange}
                   />
 
-
+                </div><div className='grid-container'>
                   <ProcessosComboBox
                   name={'processo'}
                   dataForm={contatocrmData}
@@ -425,17 +424,17 @@ const addValorOperador = (e: any) => {
                   onChange={onChange}
                   />
 
-                </div><div className='grid-container'><InputCheckbox dataForm={contatocrmData} label='Continuar' name='continuar' checked={contatocrmData.continuar} onChange={onChange} />
+                  <InputCheckbox dataForm={contatocrmData} label='Continuar' name='continuar' checked={contatocrmData.continuar} onChange={onChange} />
+                </div>
+              </form>
+
+
+              {isMobile && (
+                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ContatoCRM' data={contatocrmData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContatoCRMForm-${contatocrmData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                )}
+                <DeleteButton page={'/pages/contatocrm'} id={contatocrmData.id} closeModel={onClose} dadoApi={dadoApi} />
               </div>
-            </form>
-
-
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ContatoCRM' data={contatocrmData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContatoCRMForm-${contatocrmData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/contatocrm'} id={contatocrmData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+              <div className='form-spacer'></div>
+              </>
+            );
+          };

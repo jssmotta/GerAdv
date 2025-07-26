@@ -25,7 +25,7 @@ export class ProValoresValidator {
 export interface IProValoresService {
   fetchProValoresById: (id: number) => Promise<IProValores>;
   saveProValores: (provalores: IProValores) => Promise<IProValores>;  
-  
+  getList: (filtro?: FilterProValores) => Promise<IProValores[]>;
   getAll: (filtro?: FilterProValores) => Promise<IProValores[]>;
   deleteProValores: (id: number) => Promise<void>;
   validateProValores: (provalores: IProValores) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ProValoresService implements IProValoresService {
   }
 
   
+    async getList(filtro?: FilterProValores): Promise<IProValores[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ProValores list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

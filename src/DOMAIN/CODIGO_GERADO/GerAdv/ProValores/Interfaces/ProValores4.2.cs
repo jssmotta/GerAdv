@@ -13,5 +13,6 @@ public partial interface IProValoresReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ProValoresResponseAll? ReadAll(FProValores dbRec, IDataRecord dr);
     ProValoresResponseAll? ReadAll(SG.GerAdv.DBProValores dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<ProValoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

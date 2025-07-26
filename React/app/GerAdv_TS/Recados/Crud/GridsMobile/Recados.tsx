@@ -39,12 +39,13 @@ const { page, handlePageChange } = useGridPagination({
 });
 // Configuração dos filtros iniciais
 const initialFilters = {
-
+  data: '',
 };
 // Lógica de filtro customizada usando useCallback
 const filterLogic = useCallback((data: IRecados, filters: Record<string, any>) => {
-
-  return true;
+  const dataMatches = applyFilter(data, 'data', filters.data);
+  return dataMatches
+  ;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({
@@ -74,7 +75,7 @@ const SearchFromCellAlarmSMS = (props: any) => {
 };
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn field='' title='' />,
+  <GridColumn field='data' title='Data' />,
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />, <GridColumn
   field='id_edit_AlarmSMS'
   filterable={false}

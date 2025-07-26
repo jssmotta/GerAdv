@@ -32,8 +32,7 @@ public class NENotasWriter(IFNENotasFactory nenotasFactory) : INENotasWriter
         dbRec.FRevisada = nenotas.Revisada;
         dbRec.FProcesso = nenotas.Processo;
         dbRec.FPalavraChave = nenotas.PalavraChave;
-        if (nenotas.Data != null)
-            dbRec.FData = nenotas.Data.ToString();
+        dbRec.FData = nenotas.Data;
         dbRec.FNotaPublicada = nenotas.NotaPublicada;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);

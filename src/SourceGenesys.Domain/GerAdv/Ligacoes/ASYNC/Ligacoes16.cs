@@ -170,7 +170,7 @@ public partial class DBLigacoes
         if (pFldFStatus)
             updateTool.Fields(DBLigacoesDicInfo.Status, m_FStatus, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBLigacoesDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBLigacoesDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFHora)
             updateTool.Fields(DBLigacoesDicInfo.Hora, m_FHora, ETiposCampos.FDate);
         if (pFldFUrgente)

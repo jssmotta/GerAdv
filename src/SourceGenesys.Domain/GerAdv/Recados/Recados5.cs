@@ -9,7 +9,7 @@ public partial class DBRecados
     public const string PTabelaNome = "Recados";
     public const string CamposSqlX = " Recados.* ";
     public const string CampoCodigo = "recCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "recData";
     public const string PTabelaPrefixo = "rec";
 #pragma warning disable CA1822 // Mark members as static
 

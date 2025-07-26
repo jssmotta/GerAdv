@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={663}
+  newHeight={641}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedProValores?.id ?? 0).toString()}

@@ -9,7 +9,7 @@ public partial class DBProDepositos
     public const string PTabelaNome = "ProDepositos";
     public const string CamposSqlX = " ProDepositos.* ";
     public const string CampoCodigo = "pdsCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "pdsData";
     public const string PTabelaPrefixo = "pds";
 #pragma warning disable CA1822 // Mark members as static
 

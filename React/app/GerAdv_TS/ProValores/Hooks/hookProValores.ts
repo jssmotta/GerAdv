@@ -168,7 +168,10 @@ export function useValidationsProValores() {
     
       try {
    
-        if (data.indice.length > 20) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.indice.length > 20) { 
                                              return { isValid: false, message: 'O campo Indice não pode ter mais de 20 caracteres.' };
                                          } 
 

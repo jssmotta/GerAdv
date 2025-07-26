@@ -72,10 +72,10 @@ public partial class DBProSucumbencia : VAuditor, ICadastros, IAuditor
 #if (DEBUG)
 			         }
 #endif
-        if (this.FNome.IsEmpty())
+        if (this.FData.IsEmpty())
         {
             // Validação preventiva por que ao chegar aqui já passou por outras fases
-            throw new Exception("Campo 'Nome' está vazio!");
+            throw new Exception("Campo 'Data' está vazio!");
         }
 
         var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)

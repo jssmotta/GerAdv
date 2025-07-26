@@ -50,7 +50,7 @@ public static partial class DBProObservacoesDicInfo
     {
         Prefixo = "pob"
     };
-    public static DBInfoSystem PobData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem PobData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "pob"
     };

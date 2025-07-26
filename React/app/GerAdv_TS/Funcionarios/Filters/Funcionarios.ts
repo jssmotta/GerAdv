@@ -39,7 +39,6 @@
  ctpsdtemissao?: string;
  dtnasc_end?: string;
  dtnasc?: string;
- data_end?: string;
  data?: string;
  liberaagenda?: number;
  pasta?: string;
@@ -85,7 +84,6 @@ export class FilterFuncionariosDefaults implements FilterFuncionarios {
     ctpsdtemissao?: string = '';
     dtnasc_end?: string = '';
     dtnasc?: string = '';
-    data_end?: string = '';
     data?: string = '';
     liberaagenda?: number= -2147483648;
     pasta?: string = '';

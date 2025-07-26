@@ -168,7 +168,10 @@ export function useValidationsHistorico() {
     
       try {
    
-        if (data.extraguid.length > 100) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.extraguid.length > 100) { 
                                              return { isValid: false, message: 'O campo ExtraGUID não pode ter mais de 100 caracteres.' };
                                          } 
 if (data.observacao.length > 2147483647) { 

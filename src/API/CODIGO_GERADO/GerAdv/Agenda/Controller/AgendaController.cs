@@ -46,6 +46,15 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAgenda? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"Agenda: GetListN called, max {max}, {filtro} uri");
+        var result = await _agendaService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

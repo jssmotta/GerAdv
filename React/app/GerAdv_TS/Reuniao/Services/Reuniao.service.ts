@@ -25,7 +25,7 @@ export class ReuniaoValidator {
 export interface IReuniaoService {
   fetchReuniaoById: (id: number) => Promise<IReuniao>;
   saveReuniao: (reuniao: IReuniao) => Promise<IReuniao>;  
-  
+  getList: (filtro?: FilterReuniao) => Promise<IReuniao[]>;
   getAll: (filtro?: FilterReuniao) => Promise<IReuniao[]>;
   deleteReuniao: (id: number) => Promise<void>;
   validateReuniao: (reuniao: IReuniao) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ReuniaoService implements IReuniaoService {
   }
 
   
+    async getList(filtro?: FilterReuniao): Promise<IReuniao[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Reuniao list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

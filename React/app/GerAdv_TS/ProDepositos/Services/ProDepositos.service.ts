@@ -25,7 +25,7 @@ export class ProDepositosValidator {
 export interface IProDepositosService {
   fetchProDepositosById: (id: number) => Promise<IProDepositos>;
   saveProDepositos: (prodepositos: IProDepositos) => Promise<IProDepositos>;  
-  
+  getList: (filtro?: FilterProDepositos) => Promise<IProDepositos[]>;
   getAll: (filtro?: FilterProDepositos) => Promise<IProDepositos[]>;
   deleteProDepositos: (id: number) => Promise<void>;
   validateProDepositos: (prodepositos: IProDepositos) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ProDepositosService implements IProDepositosService {
   }
 
   
+    async getList(filtro?: FilterProDepositos): Promise<IProDepositos[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ProDepositos list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

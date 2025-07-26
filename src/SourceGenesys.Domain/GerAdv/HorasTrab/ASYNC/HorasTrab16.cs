@@ -138,7 +138,7 @@ public partial class DBHorasTrab
         if (pFldFIDAgenda)
             updateTool.Fields(DBHorasTrabDicInfo.IDAgenda, m_FIDAgenda, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBHorasTrabDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBHorasTrabDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFCliente)
             updateTool.Fields(DBHorasTrabDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
         if (pFldFStatus)

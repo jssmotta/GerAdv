@@ -13,5 +13,6 @@ public partial interface IDocumentosReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     DocumentosResponseAll? ReadAll(FDocumentos dbRec, IDataRecord dr);
     DocumentosResponseAll? ReadAll(SG.GerAdv.DBDocumentos dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<DocumentosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

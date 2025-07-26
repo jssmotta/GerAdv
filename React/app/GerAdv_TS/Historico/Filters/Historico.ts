@@ -23,7 +23,6 @@
     idinstprocesso_end?: number;
     fase?: number;
     fase_end?: number;
- data_end?: string;
  data?: string;
  observacao?: string;
  agendado?: number;
@@ -60,7 +59,6 @@ export class FilterHistoricoDefaults implements FilterHistorico {
     idinstprocesso_end?: number = -2147483648;
     fase?: number = -2147483648;
     fase_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     observacao?: string = '';
     agendado?: number= -2147483648;

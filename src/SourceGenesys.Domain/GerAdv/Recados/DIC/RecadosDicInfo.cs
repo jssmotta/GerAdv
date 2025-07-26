@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBRecadosDicInfo
 {
     public const string CampoCodigo = "recCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "recData";
     public const string TablePrefix = "rec";
     public const string ClienteNome = "recClienteNome"; // LOCALIZACAO 170523
     public const string De = "recDe"; // LOCALIZACAO 170523
@@ -148,7 +148,7 @@ public static partial class DBRecadosDicInfo
         IsRequired = true,
         Prefixo = "rec"
     };
-    public static DBInfoSystem RecData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem RecData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "rec"

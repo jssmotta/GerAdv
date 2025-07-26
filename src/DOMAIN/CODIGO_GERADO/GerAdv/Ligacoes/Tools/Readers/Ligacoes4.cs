@@ -70,6 +70,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Particular = dbRec.FParticular,
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Urgente = dbRec.FUrgente,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
@@ -93,12 +94,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.HoraFinal = dbRec.FHoraFinal;
             ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            ligacoes.Data = dbRec.FData;
-            ligacoes.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -147,6 +142,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Particular = dbRec.FParticular,
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Urgente = dbRec.FUrgente,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
@@ -170,12 +166,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.HoraFinal = dbRec.FHoraFinal;
             ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            ligacoes.Data = dbRec.FData;
-            ligacoes.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -213,6 +203,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Particular = dbRec.FParticular,
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Urgente = dbRec.FUrgente,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
@@ -236,12 +227,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.HoraFinal = dbRec.FHoraFinal;
             ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            ligacoes.Data = dbRec.FData;
-            ligacoes.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -279,6 +264,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Particular = dbRec.FParticular,
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Urgente = dbRec.FUrgente,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
@@ -302,12 +288,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.HoraFinal = dbRec.FHoraFinal;
             ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            ligacoes.Data = dbRec.FData;
-            ligacoes.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -369,6 +349,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Particular = dbRec.FParticular,
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Urgente = dbRec.FUrgente,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
@@ -392,12 +373,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.HoraFinal = dbRec.FHoraFinal;
             ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            ligacoes.Data = dbRec.FData;
-            ligacoes.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))

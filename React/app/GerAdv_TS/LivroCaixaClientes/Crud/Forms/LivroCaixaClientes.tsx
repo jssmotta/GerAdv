@@ -58,7 +58,7 @@ if (getParamFromUrl('livrocaixa') > 0) {
     livrocaixaApi
     .getById(getParamFromUrl('livrocaixa'))
     .then((response) => {
-      setNomeLivroCaixa(response.data.campo);
+      setNomeLivroCaixa(response.data.data);
     })
     .catch((error) => {
       console.log('Error unexpected');

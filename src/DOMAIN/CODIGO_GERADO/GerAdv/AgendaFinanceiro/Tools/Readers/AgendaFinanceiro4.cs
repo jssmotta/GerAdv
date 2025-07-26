@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafinanceiroFactory) : IAgendaFinanceiroReader
 {
     private readonly IFAgendaFinanceiroFactory _agendafinanceiroFactory = agendafinanceiroFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ageCodigo, ageData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<AgendaFinanceiroResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAgendaFinanceiro.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AgendaFinanceiroResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -64,6 +65,7 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
+            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
@@ -103,12 +105,6 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
         {
             agendafinanceiro.EventoData = dbRec.FEventoData;
             agendafinanceiro.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            agendafinanceiro.Data = dbRec.FData;
-            agendafinanceiro.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -164,6 +160,7 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
+            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
@@ -203,12 +200,6 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
         {
             agendafinanceiro.EventoData = dbRec.FEventoData;
             agendafinanceiro.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            agendafinanceiro.Data = dbRec.FData;
-            agendafinanceiro.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -253,6 +244,7 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
+            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
@@ -292,12 +284,6 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
         {
             agendafinanceiro.EventoData = dbRec.FEventoData;
             agendafinanceiro.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            agendafinanceiro.Data = dbRec.FData;
-            agendafinanceiro.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -342,6 +328,7 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
+            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
@@ -381,12 +368,6 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
         {
             agendafinanceiro.EventoData = dbRec.FEventoData;
             agendafinanceiro.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            agendafinanceiro.Data = dbRec.FData;
-            agendafinanceiro.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
@@ -511,6 +492,7 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
+            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
@@ -550,12 +532,6 @@ public partial class AgendaFinanceiroReader(IFAgendaFinanceiroFactory agendafina
         {
             agendafinanceiro.EventoData = dbRec.FEventoData;
             agendafinanceiro.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            agendafinanceiro.Data = dbRec.FData;
-            agendafinanceiro.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))

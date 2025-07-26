@@ -154,26 +154,15 @@ export const useRecadosFilter = ({ handleFetchWithFilter }: UseRecadosFilterProp
   label='Importante'
   className='inputSearch inputSearchCheckbox'
   />
-  <InputDate
+  <InputInput
   type='text'
   id='data'
-  label='Data (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
   name='data'
   value={handlers.windowFilter?.data ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('data', value)}
-  />
-  <InputDate
-  type='text'
-  id='data_end'
-  label='Data (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='data_end'
-  value={handlers.windowFilter?.data_end ?? ''}
-  disabled={handlers.windowFilter?.data ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('data_end', value)}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Data'
+  label='Data'
+  className='inputIncNome inputSearch'
   />
   <InputComboFilterYesNo
   type='text'

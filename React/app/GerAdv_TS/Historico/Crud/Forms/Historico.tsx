@@ -226,6 +226,18 @@ const addValorProcesso = (e: any) => {
                   )}
                   <div className='grid-container'>
 
+                    <InputName
+                    type='text'
+                    id='data'
+                    label='Data'
+                    dataForm={historicoData}
+                    className='inputIncNome'
+                    name='data'
+                    value={historicoData.data}
+                    placeholder={`Informe Data`}
+                    onChange={onChange}
+                    required
+                    />
 
                     <InputInput
                     type='text'
@@ -314,19 +326,6 @@ const addValorProcesso = (e: any) => {
 
                     <InputInput
                     type='text'
-                    maxLength={2048}
-                    id='data'
-                    label='Data'
-                    dataForm={historicoData}
-                    className='inputIncNome'
-                    name='data'
-                    value={historicoData.data}
-                    onChange={onChange}
-                    />
-
-
-                    <InputInput
-                    type='text'
                     maxLength={2147483647}
                     id='observacao'
                     label='Observacao'
@@ -362,17 +361,17 @@ const addValorProcesso = (e: any) => {
                     setValue={addValorStatusAndamento}
                     label={'Status Andamento'}
                     />
-                  </div><div className='grid-container'><InputCheckbox dataForm={historicoData} label='Top' name='top' checked={historicoData.top} onChange={onChange} />
+                    <InputCheckbox dataForm={historicoData} label='Top' name='top' checked={historicoData.top} onChange={onChange} />
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Historico' data={historicoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HistoricoForm-${historicoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/historico'} id={historicoData.id} closeModel={onClose} dadoApi={dadoApi} />
                 </div>
-              </form>
-
-
-              {isMobile && (
-                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Historico' data={historicoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HistoricoForm-${historicoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <DeleteButton page={'/pages/historico'} id={historicoData.id} closeModel={onClose} dadoApi={dadoApi} />
-              </div>
-              <div className='form-spacer'></div>
-              </>
-            );
-          };
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

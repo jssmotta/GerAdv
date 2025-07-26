@@ -9,7 +9,7 @@ public partial class DBAgendaFinanceiro
     public const string PTabelaNome = "AgendaFinanceiro";
     public const string CamposSqlX = " AgendaFinanceiro.* ";
     public const string CampoCodigo = "ageCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ageData";
     public const string PTabelaPrefixo = "age";
 #pragma warning disable CA1822 // Mark members as static
 

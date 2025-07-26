@@ -36,21 +36,28 @@ public partial class FDocumentos : MenphisSI.SG.GerAdv.DBDocumentos, IDBDocument
         return fDocumentos;
     }
 
-    private FDocumentos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
+    private FDocumentos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FDocumentos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FDocumentos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
-        return new FDocumentos(parameters, oCnn, fullSql, sqlWhere, join);
+        return new FDocumentos(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;
+        if (string.IsNullOrEmpty(fullSql) && !string.IsNullOrEmpty(cNome))
+        {
+            if (cNome is null)
+                return;
+            sqlWhere = cNome;
+        }
+
         if (!string.IsNullOrEmpty(sqlWhere) || !string.IsNullOrEmpty(fullSql))
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
@@ -60,6 +67,7 @@ public partial class FDocumentos : MenphisSI.SG.GerAdv.DBDocumentos, IDBDocument
         else
         {
             using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}] COLLATE SQL_Latin1_General_CP1_CI_AI like @CampoNome", oCnn?.InnerConnection);
+            cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
                 CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);

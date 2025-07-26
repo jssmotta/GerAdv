@@ -117,6 +117,14 @@ public partial class ReuniaoPessoasReader(IFReuniaoPessoasFactory reuniaopessoas
         };
         try
         {
+            reuniaopessoas.DataReuniao = dr[DBReuniaoDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             reuniaopessoas.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -139,6 +147,14 @@ public partial class ReuniaoPessoasReader(IFReuniaoPessoasFactory reuniaopessoas
             Reuniao = dbRec.FReuniao,
             Operador = dbRec.FOperador,
         };
+        try
+        {
+            reuniaopessoas.DataReuniao = dr[DBReuniaoDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         try
         {
             reuniaopessoas.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;

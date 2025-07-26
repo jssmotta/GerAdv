@@ -244,6 +244,22 @@ public partial class AlarmSMSReader(IFAlarmSMSFactory alarmsmsFactory) : IAlarmS
         {
         }
 
+        try
+        {
+            alarmsms.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            alarmsms.DataRecados = dr[DBRecadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return alarmsms;
     }
 
@@ -293,6 +309,22 @@ public partial class AlarmSMSReader(IFAlarmSMSFactory alarmsmsFactory) : IAlarmS
         try
         {
             alarmsms.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            alarmsms.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            alarmsms.DataRecados = dr[DBRecadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

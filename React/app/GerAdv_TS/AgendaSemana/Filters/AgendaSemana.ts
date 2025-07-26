@@ -6,7 +6,6 @@
     operator?: string;
     wildcardChar?: string;
  paranome?: string;
- data_end?: string;
  data?: string;
     funcionario?: number;
     funcionario_end?: number;
@@ -35,7 +34,6 @@ export class FilterAgendaSemanaDefaults implements FilterAgendaSemana {
     logicalOperator?: string = ' AND ';
     wildcardChar?: string = '';
     paranome?: string = '';
-    data_end?: string = '';
     data?: string = '';
     funcionario?: number = -2147483648;
     funcionario_end?: number = -2147483648;

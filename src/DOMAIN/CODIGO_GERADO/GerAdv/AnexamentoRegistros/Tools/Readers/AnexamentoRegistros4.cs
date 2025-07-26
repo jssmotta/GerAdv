@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AnexamentoRegistrosReader(IFAnexamentoRegistrosFactory anexamentoregistrosFactory) : IAnexamentoRegistrosReader
 {
     private readonly IFAnexamentoRegistrosFactory _anexamentoregistrosFactory = anexamentoregistrosFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("axrCodigo, axrData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<AnexamentoRegistrosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAnexamentoRegistros.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AnexamentoRegistrosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -57,14 +58,9 @@ public partial class AnexamentoRegistrosReader(IFAnexamentoRegistrosFactory anex
             GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            anexamentoregistros.Data = dbRec.FData;
-            anexamentoregistros.Data_date = XData;
-        }
-
         return anexamentoregistros;
     }
 
@@ -93,14 +89,9 @@ public partial class AnexamentoRegistrosReader(IFAnexamentoRegistrosFactory anex
             GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            anexamentoregistros.Data = dbRec.FData;
-            anexamentoregistros.Data_date = XData;
-        }
-
         return anexamentoregistros;
     }
 
@@ -118,14 +109,9 @@ public partial class AnexamentoRegistrosReader(IFAnexamentoRegistrosFactory anex
             GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            anexamentoregistros.Data = dbRec.FData;
-            anexamentoregistros.Data_date = XData;
-        }
-
         return anexamentoregistros;
     }
 
@@ -143,14 +129,9 @@ public partial class AnexamentoRegistrosReader(IFAnexamentoRegistrosFactory anex
             GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            anexamentoregistros.Data = dbRec.FData;
-            anexamentoregistros.Data_date = XData;
-        }
-
         try
         {
             anexamentoregistros.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -176,14 +157,9 @@ public partial class AnexamentoRegistrosReader(IFAnexamentoRegistrosFactory anex
             GUIDReg = dbRec.FGUIDReg ?? string.Empty,
             CodigoReg = dbRec.FCodigoReg,
             IDReg = dbRec.FIDReg,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            anexamentoregistros.Data = dbRec.FData;
-            anexamentoregistros.Data_date = XData;
-        }
-
         try
         {
             anexamentoregistros.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;

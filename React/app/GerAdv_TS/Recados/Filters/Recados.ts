@@ -19,7 +19,6 @@
  importante?: number;
  hora_end?: string;
  hora?: string;
- data_end?: string;
  data?: string;
  voltara?: number;
  pessoal?: number;
@@ -76,7 +75,6 @@ export class FilterRecadosDefaults implements FilterRecados {
     importante?: number= -2147483648;
     hora_end?: string = '';
     hora?: string = '';
-    data_end?: string = '';
     data?: string = '';
     voltara?: number= -2147483648;
     pessoal?: number= -2147483648;

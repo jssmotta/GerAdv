@@ -15,7 +15,7 @@ public partial class DocumentosReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBDocumentosDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBDocumentosDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

@@ -15,7 +15,7 @@ public partial class ContatoCRMViewReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBContatoCRMViewDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBContatoCRMViewDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

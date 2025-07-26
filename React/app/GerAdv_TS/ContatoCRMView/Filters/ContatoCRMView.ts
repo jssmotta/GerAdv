@@ -6,7 +6,6 @@
     operator?: string;
     wildcardChar?: string;
  cguid?: string;
- data_end?: string;
  data?: string;
  ip?: string;
     codigo_filtro?: number;
@@ -17,7 +16,6 @@ export class FilterContatoCRMViewDefaults implements FilterContatoCRMView {
     logicalOperator?: string = ' AND ';
     wildcardChar?: string = '';
     cguid?: string = '';
-    data_end?: string = '';
     data?: string = '';
     ip?: string = '';
     codigo_filtro?: number = -2147483648;

@@ -57,14 +57,9 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proobservacoes.Data = dbRec.FData;
-            proobservacoes.Data_date = XData;
-        }
-
         return proobservacoes;
     }
 
@@ -92,14 +87,9 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proobservacoes.Data = dbRec.FData;
-            proobservacoes.Data_date = XData;
-        }
-
         return proobservacoes;
     }
 
@@ -116,14 +106,9 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proobservacoes.Data = dbRec.FData;
-            proobservacoes.Data_date = XData;
-        }
-
         return proobservacoes;
     }
 
@@ -140,14 +125,9 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proobservacoes.Data = dbRec.FData;
-            proobservacoes.Data_date = XData;
-        }
-
         try
         {
             proobservacoes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -172,14 +152,9 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proobservacoes.Data = dbRec.FData;
-            proobservacoes.Data_date = XData;
-        }
-
         try
         {
             proobservacoes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

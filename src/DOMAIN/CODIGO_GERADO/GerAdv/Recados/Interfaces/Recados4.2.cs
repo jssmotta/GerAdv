@@ -13,5 +13,6 @@ public partial interface IRecadosReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     RecadosResponseAll? ReadAll(FRecados dbRec, IDataRecord dr);
     RecadosResponseAll? ReadAll(SG.GerAdv.DBRecados dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<RecadosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

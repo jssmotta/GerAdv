@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={596}
+  newHeight={573}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedReuniao?.id ?? 0).toString()}

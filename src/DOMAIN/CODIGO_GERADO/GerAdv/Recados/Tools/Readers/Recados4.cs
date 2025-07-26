@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosReader
 {
     private readonly IFRecadosFactory _recadosFactory = recadosFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("recCodigo, recData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<RecadosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBRecados.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<RecadosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -63,6 +64,7 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             Recado = dbRec.FRecado ?? string.Empty,
             Urgente = dbRec.FUrgente,
             Importante = dbRec.FImportante,
+            Data = dbRec.FData ?? string.Empty,
             Voltara = dbRec.FVoltara,
             Pessoal = dbRec.FPessoal,
             Retornar = dbRec.FRetornar,
@@ -91,12 +93,6 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
         {
             recados.Hora = dbRec.FHora;
             recados.Hora_date = XHora;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            recados.Data = dbRec.FData;
-            recados.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FRetornoData, out DateTime XRetornoData))
@@ -139,6 +135,7 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             Recado = dbRec.FRecado ?? string.Empty,
             Urgente = dbRec.FUrgente,
             Importante = dbRec.FImportante,
+            Data = dbRec.FData ?? string.Empty,
             Voltara = dbRec.FVoltara,
             Pessoal = dbRec.FPessoal,
             Retornar = dbRec.FRetornar,
@@ -167,12 +164,6 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
         {
             recados.Hora = dbRec.FHora;
             recados.Hora_date = XHora;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            recados.Data = dbRec.FData;
-            recados.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FRetornoData, out DateTime XRetornoData))
@@ -204,6 +195,7 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             Recado = dbRec.FRecado ?? string.Empty,
             Urgente = dbRec.FUrgente,
             Importante = dbRec.FImportante,
+            Data = dbRec.FData ?? string.Empty,
             Voltara = dbRec.FVoltara,
             Pessoal = dbRec.FPessoal,
             Retornar = dbRec.FRetornar,
@@ -232,12 +224,6 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
         {
             recados.Hora = dbRec.FHora;
             recados.Hora_date = XHora;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            recados.Data = dbRec.FData;
-            recados.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FRetornoData, out DateTime XRetornoData))
@@ -269,6 +255,7 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             Recado = dbRec.FRecado ?? string.Empty,
             Urgente = dbRec.FUrgente,
             Importante = dbRec.FImportante,
+            Data = dbRec.FData ?? string.Empty,
             Voltara = dbRec.FVoltara,
             Pessoal = dbRec.FPessoal,
             Retornar = dbRec.FRetornar,
@@ -299,12 +286,6 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             recados.Hora_date = XHora;
         }
 
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            recados.Data = dbRec.FData;
-            recados.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FRetornoData, out DateTime XRetornoData))
         {
             recados.RetornoData = dbRec.FRetornoData;
@@ -329,7 +310,31 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
 
         try
         {
+            recados.DataHistorico = dr[DBHistoricoDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            recados.DataContatoCRM = dr[DBContatoCRMDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             recados.NomeLigacoes = dr[DBLigacoesDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            recados.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {
@@ -358,6 +363,7 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             Recado = dbRec.FRecado ?? string.Empty,
             Urgente = dbRec.FUrgente,
             Importante = dbRec.FImportante,
+            Data = dbRec.FData ?? string.Empty,
             Voltara = dbRec.FVoltara,
             Pessoal = dbRec.FPessoal,
             Retornar = dbRec.FRetornar,
@@ -388,12 +394,6 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
             recados.Hora_date = XHora;
         }
 
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            recados.Data = dbRec.FData;
-            recados.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FRetornoData, out DateTime XRetornoData))
         {
             recados.RetornoData = dbRec.FRetornoData;
@@ -418,7 +418,31 @@ public partial class RecadosReader(IFRecadosFactory recadosFactory) : IRecadosRe
 
         try
         {
+            recados.DataHistorico = dr[DBHistoricoDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            recados.DataContatoCRM = dr[DBContatoCRMDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             recados.NomeLigacoes = dr[DBLigacoesDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            recados.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

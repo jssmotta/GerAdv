@@ -24,7 +24,6 @@ export interface ContatoCRM
 	objetonotificou : number;
 	pessoacontato : string;
 	data : string;
-	data_date? : Date;
 	tempo : number;
 	horainicial : string;
 	horainicial_date? : Date;

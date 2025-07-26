@@ -29,6 +29,8 @@ export interface AlarmSMS
 	guidexo : string;
 	emocao : number;
 	nomeoperador?: string;
+	dataagenda?: string;
+	datarecados?: string;
 
 }
 

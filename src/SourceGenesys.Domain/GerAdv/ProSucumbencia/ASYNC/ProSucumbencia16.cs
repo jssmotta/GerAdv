@@ -136,7 +136,7 @@ public partial class DBProSucumbencia
         if (pFldFInstancia)
             updateTool.Fields(DBProSucumbenciaDicInfo.Instancia, m_FInstancia, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFNome)
             updateTool.Fields(DBProSucumbenciaDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFTipoOrigemSucumbencia)

@@ -23,8 +23,7 @@ public class ProcessosObsReportWriter(IFProcessosObsReportFactory processosobsre
     public async Task<FProcessosObsReport> WriteAsync(Models.ProcessosObsReport processosobsreport, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (processosobsreport.Id.IsEmptyIDNumber() ? _processosobsreportFactory.CreateAsync() : _processosobsreportFactory.CreateFromIdAsync(processosobsreport.Id, oCnn));
-        if (processosobsreport.Data != null)
-            dbRec.FData = processosobsreport.Data.ToString();
+        dbRec.FData = processosobsreport.Data;
         dbRec.FProcesso = processosobsreport.Processo;
         dbRec.FObservacao = processosobsreport.Observacao;
         dbRec.FHistorico = processosobsreport.Historico;

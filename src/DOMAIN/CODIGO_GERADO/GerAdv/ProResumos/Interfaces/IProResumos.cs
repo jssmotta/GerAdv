@@ -10,4 +10,5 @@ public partial interface IProResumosService
     Task<ProResumosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<ProResumosResponse?> Validation(Models.ProResumos regProResumos, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ProResumosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProResumos? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

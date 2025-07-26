@@ -46,6 +46,15 @@ public partial class AgendaFinanceiroController(IAgendaFinanceiroService agendaf
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAgendaFinanceiro? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"AgendaFinanceiro: GetListN called, max {max}, {filtro} uri");
+        var result = await _agendafinanceiroService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

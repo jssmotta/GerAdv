@@ -55,8 +55,7 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FCEP = clientes.CEP.ClearInputCep();
         dbRec.FFax = clientes.Fax;
         dbRec.FFone = clientes.Fone;
-        if (clientes.Data != null)
-            dbRec.FData = clientes.Data.ToString();
+        dbRec.FData = clientes.Data;
         dbRec.FHomePage = clientes.HomePage;
         dbRec.FEMail = clientes.EMail;
         dbRec.FObito = clientes.Obito;

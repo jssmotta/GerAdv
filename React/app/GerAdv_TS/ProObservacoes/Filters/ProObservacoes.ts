@@ -9,7 +9,6 @@
     processo_end?: number;
  nome?: string;
  observacoes?: string;
- data_end?: string;
  data?: string;
     codigo_filtro?: number;
     codigo_filtro_end?: number;
@@ -22,7 +21,6 @@ export class FilterProObservacoesDefaults implements FilterProObservacoes {
     processo_end?: number = -2147483648;
     nome?: string = '';
     observacoes?: string = '';
-    data_end?: string = '';
     data?: string = '';
     codigo_filtro?: number = -2147483648;
     codigo_filtro_end?: number = -2147483648;

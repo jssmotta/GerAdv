@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBProDepositosDicInfo
 {
     public const string CampoCodigo = "pdsCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "pdsData";
     public const string TablePrefix = "pds";
     public const string Processo = "pdsProcesso"; // LOCALIZACAO 170523
     public const string Fase = "pdsFase"; // LOCALIZACAO 170523
@@ -48,7 +48,7 @@ public static partial class DBProDepositosDicInfo
         IsRequired = true,
         Prefixo = "pds"
     }; // DBI 11 
-    public static DBInfoSystem PdsData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem PdsData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         IsRequired = true,
         Prefixo = "pds"

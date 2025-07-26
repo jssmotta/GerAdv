@@ -134,7 +134,7 @@ public partial class DBContatoCRMView
         if (pFldFCGUID)
             updateTool.Fields(DBContatoCRMViewDicInfo.CGUID, m_FCGUID, ETiposCampos.FString);
         if (pFldFData)
-            updateTool.Fields(DBContatoCRMViewDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBContatoCRMViewDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFIP)
             updateTool.Fields(DBContatoCRMViewDicInfo.IP, m_FIP, ETiposCampos.FString);
     }

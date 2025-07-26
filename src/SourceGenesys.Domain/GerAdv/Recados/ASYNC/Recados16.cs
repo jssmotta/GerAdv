@@ -154,7 +154,7 @@ public partial class DBRecados
         if (pFldFHora)
             updateTool.Fields(DBRecadosDicInfo.Hora, m_FHora, ETiposCampos.FDate);
         if (pFldFData)
-            updateTool.Fields(DBRecadosDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBRecadosDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFVoltara)
             updateTool.Fields(DBRecadosDicInfo.Voltara, m_FVoltara, ETiposCampos.FBoolean);
         if (pFldFPessoal)

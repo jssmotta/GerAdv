@@ -14,7 +14,7 @@ import { ProValoresTestEmpty } from '../GerAdv_TS/Models/ProValores';
 const mockProValoresService: jest.Mocked<IProValoresService> = {
   fetchProValoresById: jest.fn(),
   saveProValores: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteProValores: jest.fn(),
   validateProValores: jest.fn(),
@@ -50,7 +50,7 @@ describe('useProValoresForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'indice',
+        name: 'data',
         value: 'Novo Pro Valores',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useProValoresForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.indice).toBe('Novo Pro Valores');
+    expect(result.current.data.data).toBe('Novo Pro Valores');
   });
 
    test('deve carregar Pro Valores por ID', async () => {
-    const mockProValores = { ...initialProValores, id: 1, indice: 'Pro Valores Teste' };
+    const mockProValores = { ...initialProValores, id: 1, data: 'Pro Valores Teste' };
     mockProValoresService.fetchProValoresById.mockResolvedValue(mockProValores);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useProValoresForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialProValores, indice: 'Teste' });
+      result.current.setData({ ...initialProValores, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useProValoresList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialProValores, id: 1, indice: 'Pro Valores 1' },
-      { ...initialProValores, id: 2, indice: 'Pro Valores 2' }
+      { ...initialProValores, id: 1, data: 'Pro Valores 1' },
+      { ...initialProValores, id: 2, data: 'Pro Valores 2' }
     ];
     mockProValoresService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useProValoresList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialProValores, id: 1, indice: 'Pro Valores Filtrado' }];
-    const filtro = { indice: 'Pro Valores' };
+    const mockData = [{ ...initialProValores, id: 1, data: 'Pro Valores Filtrado' }];
+    const filtro = { data: 'Pro Valores' };
     mockProValoresService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsProValores', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsProValores());
 
-    const validData = { ...initialProValores, indice: 'Pro Valores Válido' };
+    const validData = { ...initialProValores, data: 'Pro Valores Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsProValores', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsProValores());
+
+    const invalidData = { ...initialProValores, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsProValores());
+
+    const invalidData = { 
+      ...initialProValores, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsProValores());
@@ -229,7 +250,7 @@ describe('useValidationsProValores', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialProValores, id: 1, indice: 'Pro Valores Teste' }];
+    const mockData = [{ ...initialProValores, id: 1, data: 'Pro Valores Teste' }];
     mockProValoresService.getAll.mockResolvedValue(mockData);
     
 

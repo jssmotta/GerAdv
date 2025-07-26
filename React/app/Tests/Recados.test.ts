@@ -14,7 +14,7 @@ import { RecadosTestEmpty } from '../GerAdv_TS/Models/Recados';
 const mockRecadosService: jest.Mocked<IRecadosService> = {
   fetchRecadosById: jest.fn(),
   saveRecados: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteRecados: jest.fn(),
   validateRecados: jest.fn(),
@@ -50,7 +50,7 @@ describe('useRecadosForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'clientenome',
+        name: 'data',
         value: 'Novo Recados',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useRecadosForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.clientenome).toBe('Novo Recados');
+    expect(result.current.data.data).toBe('Novo Recados');
   });
 
    test('deve carregar Recados por ID', async () => {
-    const mockRecados = { ...initialRecados, id: 1, clientenome: 'Recados Teste' };
+    const mockRecados = { ...initialRecados, id: 1, data: 'Recados Teste' };
     mockRecadosService.fetchRecadosById.mockResolvedValue(mockRecados);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useRecadosForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialRecados, clientenome: 'Teste' });
+      result.current.setData({ ...initialRecados, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useRecadosList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialRecados, id: 1, clientenome: 'Recados 1' },
-      { ...initialRecados, id: 2, clientenome: 'Recados 2' }
+      { ...initialRecados, id: 1, data: 'Recados 1' },
+      { ...initialRecados, id: 2, data: 'Recados 2' }
     ];
     mockRecadosService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useRecadosList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialRecados, id: 1, clientenome: 'Recados Filtrado' }];
-    const filtro = { clientenome: 'Recados' };
+    const mockData = [{ ...initialRecados, id: 1, data: 'Recados Filtrado' }];
+    const filtro = { data: 'Recados' };
     mockRecadosService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsRecados', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsRecados());
 
-    const validData = { ...initialRecados, clientenome: 'Recados Válido' };
+    const validData = { ...initialRecados, data: 'Recados Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsRecados', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsRecados());
+
+    const invalidData = { ...initialRecados, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsRecados());
+
+    const invalidData = { 
+      ...initialRecados, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsRecados());
@@ -229,7 +250,7 @@ describe('useValidationsRecados', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialRecados, id: 1, clientenome: 'Recados Teste' }];
+    const mockData = [{ ...initialRecados, id: 1, data: 'Recados Teste' }];
     mockRecadosService.getAll.mockResolvedValue(mockData);
     
 

@@ -136,7 +136,7 @@ public partial class DBProDepositos
         if (pFldFFase)
             updateTool.Fields(DBProDepositosDicInfo.Fase, m_FFase, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProDepositosDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProDepositosDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFValor)
             updateTool.Fields(DBProDepositosDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
         if (pFldFTipoProDesposito)

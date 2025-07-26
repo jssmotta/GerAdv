@@ -26,8 +26,7 @@ public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWr
         dbRec.FIDContatoCRM = horastrab.IDContatoCRM;
         dbRec.FHonorario = horastrab.Honorario;
         dbRec.FIDAgenda = horastrab.IDAgenda;
-        if (horastrab.Data != null)
-            dbRec.FData = horastrab.Data.ToString();
+        dbRec.FData = horastrab.Data;
         dbRec.FCliente = horastrab.Cliente;
         dbRec.FStatus = horastrab.Status;
         dbRec.FProcesso = horastrab.Processo;

@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) : IProDespesasReader
 {
     private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("desCodigo, desData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProDespesasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProDespesas.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProDespesasResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -56,6 +57,7 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
+            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -65,12 +67,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LivroCaixa = dbRec.FLivroCaixa,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodespesas.Data = dbRec.FData;
-            prodespesas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
         {
             prodespesas.DataCorrecao = dbRec.FDataCorrecao;
@@ -104,6 +100,7 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
+            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -113,12 +110,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LivroCaixa = dbRec.FLivroCaixa,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodespesas.Data = dbRec.FData;
-            prodespesas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
         {
             prodespesas.DataCorrecao = dbRec.FDataCorrecao;
@@ -141,6 +132,7 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
+            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -150,12 +142,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LivroCaixa = dbRec.FLivroCaixa,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodespesas.Data = dbRec.FData;
-            prodespesas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
         {
             prodespesas.DataCorrecao = dbRec.FDataCorrecao;
@@ -178,6 +164,7 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
+            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -187,12 +174,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LivroCaixa = dbRec.FLivroCaixa,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodespesas.Data = dbRec.FData;
-            prodespesas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
         {
             prodespesas.DataCorrecao = dbRec.FDataCorrecao;
@@ -231,6 +212,7 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
+            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -240,12 +222,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             LivroCaixa = dbRec.FLivroCaixa,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodespesas.Data = dbRec.FData;
-            prodespesas.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
         {
             prodespesas.DataCorrecao = dbRec.FDataCorrecao;

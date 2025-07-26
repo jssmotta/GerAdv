@@ -132,7 +132,7 @@ public partial class DBProcessosObsReport
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFData)
-            updateTool.Fields(DBProcessosObsReportDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProcessosObsReportDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFProcesso)
             updateTool.Fields(DBProcessosObsReportDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFObservacao)

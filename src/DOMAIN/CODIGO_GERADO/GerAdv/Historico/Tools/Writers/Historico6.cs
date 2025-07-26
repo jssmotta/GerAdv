@@ -33,8 +33,7 @@ public class HistoricoWriter(IFHistoricoFactory historicoFactory) : IHistoricoWr
         dbRec.FApenso = historico.Apenso;
         dbRec.FIDInstProcesso = historico.IDInstProcesso;
         dbRec.FFase = historico.Fase;
-        if (historico.Data != null)
-            dbRec.FData = historico.Data.ToString();
+        dbRec.FData = historico.Data;
         dbRec.FObservacao = historico.Observacao;
         dbRec.FAgendado = historico.Agendado;
         dbRec.FConcluido = historico.Concluido;

@@ -61,16 +61,9 @@ public partial class RecadosService
             parameters.Add(new($"@{nameof(DBRecadosDicInfo.Importante)}", filtro.Importante));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBRecadosDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBRecadosDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBRecadosDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Voltara != int.MinValue)
@@ -256,15 +249,7 @@ public partial class RecadosService
         cWhere.Append(filtro.Recado.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Recado}]  {DevourerConsts.MsiCollate} like @{nameof(DBRecadosDicInfo.Recado)}");
         cWhere.Append(filtro.Urgente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Urgente}] = @{nameof(DBRecadosDicInfo.Urgente)}");
         cWhere.Append(filtro.Importante == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Importante}] = @{nameof(DBRecadosDicInfo.Importante)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBRecadosDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBRecadosDicInfo.Data} BETWEEN @{nameof(DBRecadosDicInfo.Data)} AND @{nameof(DBRecadosDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBRecadosDicInfo.Data} = @{nameof(DBRecadosDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBRecadosDicInfo.Data} <= @{nameof(DBRecadosDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBRecadosDicInfo.Data)}");
         cWhere.Append(filtro.Voltara == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Voltara}] = @{nameof(DBRecadosDicInfo.Voltara)}");
         cWhere.Append(filtro.Pessoal == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Pessoal}] = @{nameof(DBRecadosDicInfo.Pessoal)}");
         cWhere.Append(filtro.Retornar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Retornar}] = @{nameof(DBRecadosDicInfo.Retornar)}");
@@ -365,6 +350,46 @@ public partial class RecadosService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterRecados? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Recados-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBRecadosDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

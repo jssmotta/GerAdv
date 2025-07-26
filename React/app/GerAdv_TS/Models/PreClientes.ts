@@ -32,7 +32,6 @@ export interface PreClientes
 	fax : string;
 	fone : string;
 	data : string;
-	data_date? : Date;
 	homepage : string;
 	email : string;
 	assistido : string;

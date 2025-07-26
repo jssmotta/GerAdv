@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : IContatoCRMReader
 {
     private readonly IFContatoCRMFactory _contatocrmFactory = contatocrmFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ctcCodigo, ctcData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ContatoCRMResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContatoCRM.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ContatoCRMResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -65,6 +66,7 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
             Cliente = dbRec.FCliente,
             ObjetoNotificou = dbRec.FObjetoNotificou,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Tempo = dbRec.FTempo,
             Processo = dbRec.FProcesso,
             Importante = dbRec.FImportante,
@@ -87,12 +89,6 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
         {
             contatocrm.HoraNotificou = dbRec.FHoraNotificou;
             contatocrm.HoraNotificou_date = XHoraNotificou;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contatocrm.Data = dbRec.FData;
-            contatocrm.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
@@ -143,6 +139,7 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
             Cliente = dbRec.FCliente,
             ObjetoNotificou = dbRec.FObjetoNotificou,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Tempo = dbRec.FTempo,
             Processo = dbRec.FProcesso,
             Importante = dbRec.FImportante,
@@ -165,12 +162,6 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
         {
             contatocrm.HoraNotificou = dbRec.FHoraNotificou;
             contatocrm.HoraNotificou_date = XHoraNotificou;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contatocrm.Data = dbRec.FData;
-            contatocrm.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
@@ -210,6 +201,7 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
             Cliente = dbRec.FCliente,
             ObjetoNotificou = dbRec.FObjetoNotificou,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Tempo = dbRec.FTempo,
             Processo = dbRec.FProcesso,
             Importante = dbRec.FImportante,
@@ -232,12 +224,6 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
         {
             contatocrm.HoraNotificou = dbRec.FHoraNotificou;
             contatocrm.HoraNotificou_date = XHoraNotificou;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contatocrm.Data = dbRec.FData;
-            contatocrm.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
@@ -277,6 +263,7 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
             Cliente = dbRec.FCliente,
             ObjetoNotificou = dbRec.FObjetoNotificou,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Tempo = dbRec.FTempo,
             Processo = dbRec.FProcesso,
             Importante = dbRec.FImportante,
@@ -299,12 +286,6 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
         {
             contatocrm.HoraNotificou = dbRec.FHoraNotificou;
             contatocrm.HoraNotificou_date = XHoraNotificou;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contatocrm.Data = dbRec.FData;
-            contatocrm.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
@@ -376,6 +357,7 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
             Cliente = dbRec.FCliente,
             ObjetoNotificou = dbRec.FObjetoNotificou,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             Tempo = dbRec.FTempo,
             Processo = dbRec.FProcesso,
             Importante = dbRec.FImportante,
@@ -398,12 +380,6 @@ public partial class ContatoCRMReader(IFContatoCRMFactory contatocrmFactory) : I
         {
             contatocrm.HoraNotificou = dbRec.FHoraNotificou;
             contatocrm.HoraNotificou_date = XHoraNotificou;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            contatocrm.Data = dbRec.FData;
-            contatocrm.Data_date = XData;
         }
 
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))

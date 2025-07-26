@@ -168,7 +168,10 @@ export function useValidationsAgenda() {
     
       try {
    
-        if (data.compromisso.length > 2147483647) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.compromisso.length > 2147483647) { 
                                              return { isValid: false, message: 'O campo Compromisso não pode ter mais de 2147483647 caracteres.' };
                                          } 
 if (data.status.length > 2147483647) { 

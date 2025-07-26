@@ -24,8 +24,7 @@ public class AlertasWriter(IFAlertasFactory alertasFactory) : IAlertasWriter
     {
         using var dbRec = await (alertas.Id.IsEmptyIDNumber() ? _alertasFactory.CreateAsync() : _alertasFactory.CreateFromIdAsync(alertas.Id, oCnn));
         dbRec.FNome = alertas.Nome;
-        if (alertas.Data != null)
-            dbRec.FData = alertas.Data.ToString();
+        dbRec.FData = alertas.Data;
         dbRec.FOperador = alertas.Operador;
         if (alertas.DataAte != null)
             dbRec.FDataAte = alertas.DataAte.ToString();

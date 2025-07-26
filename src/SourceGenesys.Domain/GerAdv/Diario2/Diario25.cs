@@ -9,7 +9,7 @@ public partial class DBDiario2
     public const string PTabelaNome = "Diario2";
     public const string CamposSqlX = " Diario2.* ";
     public const string CampoCodigo = "diaCodigo";
-    public const string CampoNome = "diaNome";
+    public const string CampoNome = "diaData";
     public const string PTabelaPrefixo = "dia";
 #pragma warning disable CA1822 // Mark members as static
 

@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactory) : IProDepositosReader
 {
     private readonly IFProDepositosFactory _prodepositosFactory = prodepositosFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("pdsCodigo, pdsData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProDepositosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProDepositos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProDepositosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -55,15 +56,10 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Valor = dbRec.FValor,
             TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodepositos.Data = dbRec.FData;
-            prodepositos.Data_date = XData;
-        }
-
         return prodepositos;
     }
 
@@ -90,15 +86,10 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Valor = dbRec.FValor,
             TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodepositos.Data = dbRec.FData;
-            prodepositos.Data_date = XData;
-        }
-
         return prodepositos;
     }
 
@@ -114,15 +105,10 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Valor = dbRec.FValor,
             TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodepositos.Data = dbRec.FData;
-            prodepositos.Data_date = XData;
-        }
-
         return prodepositos;
     }
 
@@ -138,15 +124,10 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Valor = dbRec.FValor,
             TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodepositos.Data = dbRec.FData;
-            prodepositos.Data_date = XData;
-        }
-
         try
         {
             prodepositos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -186,15 +167,10 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Fase = dbRec.FFase,
+            Data = dbRec.FData ?? string.Empty,
             Valor = dbRec.FValor,
             TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prodepositos.Data = dbRec.FData;
-            prodepositos.Data_date = XData;
-        }
-
         try
         {
             prodepositos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;

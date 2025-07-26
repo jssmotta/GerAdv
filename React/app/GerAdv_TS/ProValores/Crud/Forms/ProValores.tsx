@@ -157,6 +157,18 @@ const addValorProcesso = (e: any) => {
             )}
             <div className='grid-container'>
 
+              <InputName
+              type='text'
+              id='data'
+              label='Data'
+              dataForm={provaloresData}
+              className='inputIncNome'
+              name='data'
+              value={provaloresData.data}
+              placeholder={`Informe Data`}
+              onChange={onChange}
+              required
+              />
 
               <ProcessosComboBox
               name={'processo'}
@@ -188,20 +200,6 @@ const addValorProcesso = (e: any) => {
               />
 
               <InputCheckbox dataForm={provaloresData} label='Ignorar' name='ignorar' checked={provaloresData.ignorar} onChange={onChange} />
-
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='data'
-              value={provaloresData.data}
-              onChange={onChange}
-              />
-
 
               <InputInput
               required
@@ -242,7 +240,7 @@ const addValorProcesso = (e: any) => {
               onChange={onChange}
               />
 
-            </div><div className='grid-container'>
+
               <InputInput
               type='text'
               maxLength={2048}
@@ -255,7 +253,7 @@ const addValorProcesso = (e: any) => {
               onChange={onChange}
               />
 
-
+            </div><div className='grid-container'>
               <InputInput
               type='text'
               maxLength={2048}

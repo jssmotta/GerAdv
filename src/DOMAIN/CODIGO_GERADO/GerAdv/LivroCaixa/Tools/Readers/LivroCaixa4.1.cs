@@ -15,7 +15,7 @@ public partial class LivroCaixaReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBLivroCaixaDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBLivroCaixaDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

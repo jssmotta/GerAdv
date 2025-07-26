@@ -229,6 +229,14 @@ public partial class AgendaRecordsReader(IFAgendaRecordsFactory agendarecordsFac
 
         try
         {
+            agendarecords.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             agendarecords.NomeClientesSocios = dr[DBClientesSociosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -293,6 +301,14 @@ public partial class AgendaRecordsReader(IFAgendaRecordsFactory agendarecordsFac
         {
             agendarecords.DataAviso3 = dbRec.FDataAviso3;
             agendarecords.DataAviso3_date = XDataAviso3;
+        }
+
+        try
+        {
+            agendarecords.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
         }
 
         try

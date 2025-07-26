@@ -78,6 +78,7 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
@@ -90,12 +91,6 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
         {
             preclientes.DtNasc = dbRec.FDtNasc;
             preclientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            preclientes.Data = dbRec.FData;
-            preclientes.Data_date = XData;
         }
 
         return preclientes;
@@ -146,6 +141,7 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
@@ -158,12 +154,6 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
         {
             preclientes.DtNasc = dbRec.FDtNasc;
             preclientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            preclientes.Data = dbRec.FData;
-            preclientes.Data_date = XData;
         }
 
         return preclientes;
@@ -203,6 +193,7 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
@@ -215,12 +206,6 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
         {
             preclientes.DtNasc = dbRec.FDtNasc;
             preclientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            preclientes.Data = dbRec.FData;
-            preclientes.Data_date = XData;
         }
 
         return preclientes;
@@ -260,6 +245,7 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
@@ -272,12 +258,6 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
         {
             preclientes.DtNasc = dbRec.FDtNasc;
             preclientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            preclientes.Data = dbRec.FData;
-            preclientes.Data_date = XData;
         }
 
         try
@@ -333,6 +313,7 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
@@ -345,12 +326,6 @@ public partial class PreClientesReader(IFPreClientesFactory preclientesFactory) 
         {
             preclientes.DtNasc = dbRec.FDtNasc;
             preclientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            preclientes.Data = dbRec.FData;
-            preclientes.Data_date = XData;
         }
 
         try

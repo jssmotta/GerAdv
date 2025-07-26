@@ -22,18 +22,13 @@ public partial class ProSucumbenciaWhere(IFProSucumbenciaFactory prosucumbenciaF
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
             Instancia = dbRec.FInstancia,
+            Data = dbRec.FData ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             TipoOrigemSucumbencia = dbRec.FTipoOrigemSucumbencia,
             Valor = dbRec.FValor,
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            prosucumbencia.Data = dbRec.FData;
-            prosucumbencia.Data_date = XData;
-        }
-
         return prosucumbencia;
     }
 }

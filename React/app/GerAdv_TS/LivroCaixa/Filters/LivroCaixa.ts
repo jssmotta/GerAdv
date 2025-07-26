@@ -15,7 +15,6 @@
     idhonparc?: number;
     idhonparc_end?: number;
  idhonsuc?: number;
- data_end?: string;
  data?: string;
     processo?: number;
     processo_end?: number;
@@ -43,7 +42,6 @@ export class FilterLivroCaixaDefaults implements FilterLivroCaixa {
     idhonparc?: number = -2147483648;
     idhonparc_end?: number = -2147483648;
     idhonsuc?: number= -2147483648;
-    data_end?: string = '';
     data?: string = '';
     processo?: number = -2147483648;
     processo_end?: number = -2147483648;

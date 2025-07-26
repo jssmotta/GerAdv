@@ -168,7 +168,10 @@ export function useValidationsReuniao() {
     
       try {
    
-        if (data.pauta.length > 2147483647) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.pauta.length > 2147483647) { 
                                              return { isValid: false, message: 'O campo Pauta não pode ter mais de 2147483647 caracteres.' };
                                          } 
 if (data.ata.length > 2147483647) { 

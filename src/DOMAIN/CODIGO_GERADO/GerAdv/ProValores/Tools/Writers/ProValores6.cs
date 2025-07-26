@@ -27,8 +27,7 @@ public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValor
         dbRec.FTipoValorProcesso = provalores.TipoValorProcesso;
         dbRec.FIndice = provalores.Indice;
         dbRec.FIgnorar = provalores.Ignorar;
-        if (provalores.Data != null)
-            dbRec.FData = provalores.Data.ToString();
+        dbRec.FData = provalores.Data;
         dbRec.FValorOriginal = provalores.ValorOriginal;
         dbRec.FPercMulta = provalores.PercMulta;
         dbRec.FValorMulta = provalores.ValorMulta;

@@ -61,9 +61,6 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
-
         /// <summary>
         /// Valor - livValor  
         /// </summary>
@@ -83,7 +80,7 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Historico { get; set; } = "";
 
         /// <summary>
-        /// livPrevisto - livPrevisto  
+        /// Previsto - livPrevisto  
         /// </summary>
         [JsonPropertyName("previsto")]
         public bool Previsto { get; set; }
@@ -152,9 +149,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
-
         /// <summary>
         /// Valor - livValor  
         /// </summary>
@@ -174,7 +168,7 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Historico { get; set; } = "";
 
         /// <summary>
-        /// livPrevisto - livPrevisto  
+        /// Previsto - livPrevisto  
         /// </summary>
         [JsonPropertyName("previsto")]
         public bool Previsto { get; set; }

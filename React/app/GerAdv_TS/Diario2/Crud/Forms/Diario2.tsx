@@ -158,30 +158,16 @@ const addValorOperador = (e: any) => {
 
               <InputName
               type='text'
-              id='nome'
-              label='Nome'
-              dataForm={diario2Data}
-              className='inputIncNome'
-              name='nome'
-              value={diario2Data.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
-
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
               id='data'
               label='Data'
               dataForm={diario2Data}
               className='inputIncNome'
               name='data'
               value={diario2Data.data}
+              placeholder={`Informe Data`}
               onChange={onChange}
+              required
               />
-
 
               <InputInput
               required
@@ -204,6 +190,20 @@ const addValorOperador = (e: any) => {
               setValue={addValorOperador}
               label={'Operador'}
               />
+
+              <InputInput
+              required
+              type='text'
+              maxLength={150}
+              id='nome'
+              label='Nome'
+              dataForm={diario2Data}
+              className='inputIncNome'
+              name='nome'
+              value={diario2Data.nome}
+              onChange={onChange}
+              />
+
 
               <InputInput
               required

@@ -12,7 +12,6 @@
     codigoreg_end?: number;
     idreg?: number;
     idreg_end?: number;
- data_end?: string;
  data?: string;
     codigo_filtro?: number;
     codigo_filtro_end?: number;
@@ -28,7 +27,6 @@ export class FilterAnexamentoRegistrosDefaults implements FilterAnexamentoRegist
     codigoreg_end?: number = -2147483648;
     idreg?: number = -2147483648;
     idreg_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     codigo_filtro?: number = -2147483648;
     codigo_filtro_end?: number = -2147483648;

@@ -168,7 +168,10 @@ export function useValidationsProResumos() {
     
       try {
    
-        if (data.resumo.length > 2147483647) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.resumo.length > 2147483647) { 
                                              return { isValid: false, message: 'O campo Resumo não pode ter mais de 2147483647 caracteres.' };
                                          } 
 

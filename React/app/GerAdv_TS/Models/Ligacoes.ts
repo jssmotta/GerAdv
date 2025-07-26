@@ -29,7 +29,6 @@ export interface Ligacoes
 	realizada : boolean;
 	status : string;
 	data : string;
-	data_date? : Date;
 	hora : string;
 	hora_date? : Date;
 	urgente : boolean;

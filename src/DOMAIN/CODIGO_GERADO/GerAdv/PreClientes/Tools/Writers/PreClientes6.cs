@@ -49,8 +49,7 @@ public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreCl
         dbRec.FCEP = preclientes.CEP.ClearInputCep();
         dbRec.FFax = preclientes.Fax;
         dbRec.FFone = preclientes.Fone;
-        if (preclientes.Data != null)
-            dbRec.FData = preclientes.Data.ToString();
+        dbRec.FData = preclientes.Data;
         dbRec.FHomePage = preclientes.HomePage;
         dbRec.FEMail = preclientes.EMail;
         dbRec.FAssistido = preclientes.Assistido;

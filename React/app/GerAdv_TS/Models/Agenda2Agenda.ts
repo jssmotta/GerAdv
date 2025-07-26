@@ -7,6 +7,7 @@ export interface Agenda2Agenda
     id: number;
 	agenda : number;
 	master : number;
+	dataagenda?: string;
 
 }
 

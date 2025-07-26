@@ -14,7 +14,7 @@ import { HistoricoTestEmpty } from '../GerAdv_TS/Models/Historico';
 const mockHistoricoService: jest.Mocked<IHistoricoService> = {
   fetchHistoricoById: jest.fn(),
   saveHistorico: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteHistorico: jest.fn(),
   validateHistorico: jest.fn(),
@@ -50,7 +50,7 @@ describe('useHistoricoForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'extraguid',
+        name: 'data',
         value: 'Novo Historico',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useHistoricoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.extraguid).toBe('Novo Historico');
+    expect(result.current.data.data).toBe('Novo Historico');
   });
 
    test('deve carregar Historico por ID', async () => {
-    const mockHistorico = { ...initialHistorico, id: 1, extraguid: 'Historico Teste' };
+    const mockHistorico = { ...initialHistorico, id: 1, data: 'Historico Teste' };
     mockHistoricoService.fetchHistoricoById.mockResolvedValue(mockHistorico);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useHistoricoForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialHistorico, extraguid: 'Teste' });
+      result.current.setData({ ...initialHistorico, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useHistoricoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialHistorico, id: 1, extraguid: 'Historico 1' },
-      { ...initialHistorico, id: 2, extraguid: 'Historico 2' }
+      { ...initialHistorico, id: 1, data: 'Historico 1' },
+      { ...initialHistorico, id: 2, data: 'Historico 2' }
     ];
     mockHistoricoService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useHistoricoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialHistorico, id: 1, extraguid: 'Historico Filtrado' }];
-    const filtro = { extraguid: 'Historico' };
+    const mockData = [{ ...initialHistorico, id: 1, data: 'Historico Filtrado' }];
+    const filtro = { data: 'Historico' };
     mockHistoricoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsHistorico', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsHistorico());
 
-    const validData = { ...initialHistorico, extraguid: 'Historico Válido' };
+    const validData = { ...initialHistorico, data: 'Historico Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsHistorico', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsHistorico());
+
+    const invalidData = { ...initialHistorico, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsHistorico());
+
+    const invalidData = { 
+      ...initialHistorico, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsHistorico());
@@ -229,7 +250,7 @@ describe('useValidationsHistorico', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialHistorico, id: 1, extraguid: 'Historico Teste' }];
+    const mockData = [{ ...initialHistorico, id: 1, data: 'Historico Teste' }];
     mockHistoricoService.getAll.mockResolvedValue(mockData);
     
 

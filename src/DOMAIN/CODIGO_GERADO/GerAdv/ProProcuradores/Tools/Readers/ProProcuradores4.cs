@@ -57,16 +57,11 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
             Advogado = dbRec.FAdvogado,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proprocuradores.Data = dbRec.FData;
-            proprocuradores.Data_date = XData;
-        }
-
         return proprocuradores;
     }
 
@@ -94,16 +89,11 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
             Advogado = dbRec.FAdvogado,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proprocuradores.Data = dbRec.FData;
-            proprocuradores.Data_date = XData;
-        }
-
         return proprocuradores;
     }
 
@@ -120,16 +110,11 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
             Advogado = dbRec.FAdvogado,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proprocuradores.Data = dbRec.FData;
-            proprocuradores.Data_date = XData;
-        }
-
         return proprocuradores;
     }
 
@@ -146,16 +131,11 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
             Advogado = dbRec.FAdvogado,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proprocuradores.Data = dbRec.FData;
-            proprocuradores.Data_date = XData;
-        }
-
         try
         {
             proprocuradores.NomeAdvogados = dr[DBAdvogadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -188,16 +168,11 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
             Advogado = dbRec.FAdvogado,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Data = dbRec.FData ?? string.Empty,
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proprocuradores.Data = dbRec.FData;
-            proprocuradores.Data_date = XData;
-        }
-
         try
         {
             proprocuradores.NomeAdvogados = dr[DBAdvogadosDicInfo.CampoNome]?.ToString() ?? string.Empty;

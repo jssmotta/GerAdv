@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBProDespesasDicInfo
 {
     public const string CampoCodigo = "desCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "desData";
     public const string TablePrefix = "des";
     public const string LigacaoID = "desLigacaoID"; // LOCALIZACAO 170523
     public const string Cliente = "desCliente"; // LOCALIZACAO 170523
@@ -67,7 +67,7 @@ public static partial class DBProDespesasDicInfo
         IsRequired = true,
         Prefixo = "des"
     };
-    public static DBInfoSystem DesData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem DesData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "des"
     };

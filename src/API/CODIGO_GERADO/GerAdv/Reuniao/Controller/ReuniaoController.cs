@@ -46,6 +46,15 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterReuniao? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"Reuniao: GetListN called, max {max}, {filtro} uri");
+        var result = await _reuniaoService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

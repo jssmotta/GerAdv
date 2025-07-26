@@ -46,6 +46,15 @@ public partial class ContaCorrenteController(IContaCorrenteService contacorrente
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterContaCorrente? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"ContaCorrente: GetListN called, max {max}, {filtro} uri");
+        var result = await _contacorrenteService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

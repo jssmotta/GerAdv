@@ -15,7 +15,7 @@ public partial class ProDespesasReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBProDespesasDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBProDespesasDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

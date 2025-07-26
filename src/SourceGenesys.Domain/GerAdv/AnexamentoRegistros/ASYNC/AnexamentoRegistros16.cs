@@ -140,7 +140,7 @@ public partial class DBAnexamentoRegistros
         if (pFldFIDReg)
             updateTool.Fields(DBAnexamentoRegistrosDicInfo.IDReg, m_FIDReg, ETiposCampos.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBAnexamentoRegistrosDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBAnexamentoRegistrosDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFGUID)
             updateTool.Fields(DBAnexamentoRegistrosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }

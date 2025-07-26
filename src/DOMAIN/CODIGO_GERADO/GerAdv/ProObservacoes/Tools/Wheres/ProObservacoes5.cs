@@ -23,14 +23,9 @@ public partial class ProObservacoesWhere(IFProObservacoesFactory proobservacoesF
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            proobservacoes.Data = dbRec.FData;
-            proobservacoes.Data_date = XData;
-        }
-
         return proobservacoes;
     }
 }

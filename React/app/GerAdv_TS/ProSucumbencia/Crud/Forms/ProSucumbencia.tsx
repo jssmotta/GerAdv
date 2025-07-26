@@ -181,13 +181,13 @@ const addValorProcesso = (e: any) => {
 
                 <InputName
                 type='text'
-                id='nome'
-                label='Nome'
+                id='data'
+                label='Data'
                 dataForm={prosucumbenciaData}
                 className='inputIncNome'
-                name='nome'
-                value={prosucumbenciaData.nome}
-                placeholder={`Informe Nome`}
+                name='data'
+                value={prosucumbenciaData.data}
+                placeholder={`Informe Data`}
                 onChange={onChange}
                 required
                 />
@@ -212,12 +212,12 @@ const addValorProcesso = (e: any) => {
                 required
                 type='text'
                 maxLength={2048}
-                id='data'
-                label='Data'
+                id='nome'
+                label='Nome'
                 dataForm={prosucumbenciaData}
                 className='inputIncNome'
-                name='data'
-                value={prosucumbenciaData.data}
+                name='nome'
+                value={prosucumbenciaData.nome}
                 onChange={onChange}
                 />
 

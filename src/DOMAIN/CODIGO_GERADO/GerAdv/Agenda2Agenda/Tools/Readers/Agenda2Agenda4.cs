@@ -115,6 +115,14 @@ public partial class Agenda2AgendaReader(IFAgenda2AgendaFactory agenda2agendaFac
             Master = dbRec.FMaster,
             Agenda = dbRec.FAgenda,
         };
+        try
+        {
+            agenda2agenda.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return agenda2agenda;
     }
 
@@ -131,6 +139,14 @@ public partial class Agenda2AgendaReader(IFAgenda2AgendaFactory agenda2agendaFac
             Master = dbRec.FMaster,
             Agenda = dbRec.FAgenda,
         };
+        try
+        {
+            agenda2agenda.DataAgenda = dr[DBAgendaDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
         return agenda2agenda;
     }
 }

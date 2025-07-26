@@ -25,7 +25,7 @@ export class ProResumosValidator {
 export interface IProResumosService {
   fetchProResumosById: (id: number) => Promise<IProResumos>;
   saveProResumos: (proresumos: IProResumos) => Promise<IProResumos>;  
-  
+  getList: (filtro?: FilterProResumos) => Promise<IProResumos[]>;
   getAll: (filtro?: FilterProResumos) => Promise<IProResumos[]>;
   deleteProResumos: (id: number) => Promise<void>;
   validateProResumos: (proresumos: IProResumos) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ProResumosService implements IProResumosService {
   }
 
   
+    async getList(filtro?: FilterProResumos): Promise<IProResumos[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ProResumos list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

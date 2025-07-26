@@ -15,7 +15,7 @@ public partial class ReuniaoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBReuniaoDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBReuniaoDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

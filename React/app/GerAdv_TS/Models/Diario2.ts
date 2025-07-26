@@ -8,7 +8,6 @@ export interface Diario2
 	operador : number;
 	cliente : number;
 	data : string;
-	data_date? : Date;
 	hora : string;
 	hora_date? : Date;
 	nome : string;

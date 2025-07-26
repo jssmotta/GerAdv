@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={753}
+  newHeight={731}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedHorasTrab?.id ?? 0).toString()}

@@ -10,4 +10,5 @@ public partial interface IProDespesasService
     Task<ProDespesasResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<ProDespesasResponse?> Validation(Models.ProDespesas regProDespesas, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ProDespesasResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDespesas? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

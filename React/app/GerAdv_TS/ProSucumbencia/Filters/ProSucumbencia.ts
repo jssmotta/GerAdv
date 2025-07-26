@@ -9,7 +9,6 @@
     processo_end?: number;
     instancia?: number;
     instancia_end?: number;
- data_end?: string;
  data?: string;
  nome?: string;
     tipoorigemsucumbencia?: number;
@@ -28,7 +27,6 @@ export class FilterProSucumbenciaDefaults implements FilterProSucumbencia {
     processo_end?: number = -2147483648;
     instancia?: number = -2147483648;
     instancia_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     nome?: string = '';
     tipoorigemsucumbencia?: number = -2147483648;

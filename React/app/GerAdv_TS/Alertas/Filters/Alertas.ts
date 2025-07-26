@@ -6,7 +6,6 @@
     operator?: string;
     wildcardChar?: string;
  nome?: string;
- data_end?: string;
  data?: string;
     operador?: number;
     operador_end?: number;
@@ -20,7 +19,6 @@ export class FilterAlertasDefaults implements FilterAlertas {
     logicalOperator?: string = ' AND ';
     wildcardChar?: string = '';
     nome?: string = '';
-    data_end?: string = '';
     data?: string = '';
     operador?: number = -2147483648;
     operador_end?: number = -2147483648;

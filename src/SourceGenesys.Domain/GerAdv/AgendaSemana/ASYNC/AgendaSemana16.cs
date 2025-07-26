@@ -161,7 +161,7 @@ public partial class DBAgendaSemana
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFParaNome) updateTool.Fields(DBAgendaSemanaDicInfo.ParaNome, m_FParaNome, ETiposCampos.FString);
-if (pFldFData) updateTool.Fields(DBAgendaSemanaDicInfo.Data, m_FData, ETiposCampos.FDate);
+if (pFldFData) updateTool.Fields(DBAgendaSemanaDicInfo.Data, m_FData, ETiposCampos.FString);
 if (pFldFFuncionario) updateTool.Fields(DBAgendaSemanaDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumber);
 if (pFldFAdvogado) updateTool.Fields(DBAgendaSemanaDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumber);
 if (pFldFHora) updateTool.Fields(DBAgendaSemanaDicInfo.Hora, m_FHora, ETiposCampos.FDate);

@@ -26,8 +26,7 @@ public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDe
         dbRec.FLigacaoID = prodespesas.LigacaoID;
         dbRec.FCliente = prodespesas.Cliente;
         dbRec.FCorrigido = prodespesas.Corrigido;
-        if (prodespesas.Data != null)
-            dbRec.FData = prodespesas.Data.ToString();
+        dbRec.FData = prodespesas.Data;
         dbRec.FValorOriginal = prodespesas.ValorOriginal;
         dbRec.FProcesso = prodespesas.Processo;
         dbRec.FQuitado = prodespesas.Quitado;

@@ -46,6 +46,15 @@ public partial class ContatoCRMController(IContatoCRMService contatocrmService) 
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterContatoCRM? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"ContatoCRM: GetListN called, max {max}, {filtro} uri");
+        var result = await _contatocrmService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

@@ -25,8 +25,7 @@ public class ReuniaoWriter(IFReuniaoFactory reuniaoFactory) : IReuniaoWriter
         using var dbRec = await (reuniao.Id.IsEmptyIDNumber() ? _reuniaoFactory.CreateAsync() : _reuniaoFactory.CreateFromIdAsync(reuniao.Id, oCnn));
         dbRec.FCliente = reuniao.Cliente;
         dbRec.FIDAgenda = reuniao.IDAgenda;
-        if (reuniao.Data != null)
-            dbRec.FData = reuniao.Data.ToString();
+        dbRec.FData = reuniao.Data;
         dbRec.FPauta = reuniao.Pauta;
         dbRec.FATA = reuniao.ATA;
         if (reuniao.HoraInicial != null)

@@ -39,8 +39,7 @@ public class ContatoCRMWriter(IFContatoCRMFactory contatocrmFactory) : IContatoC
             dbRec.FHoraNotificou = contatocrm.HoraNotificou.ToString();
         dbRec.FObjetoNotificou = contatocrm.ObjetoNotificou;
         dbRec.FPessoaContato = contatocrm.PessoaContato;
-        if (contatocrm.Data != null)
-            dbRec.FData = contatocrm.Data.ToString();
+        dbRec.FData = contatocrm.Data;
         dbRec.FTempo = contatocrm.Tempo;
         if (contatocrm.HoraInicial != null)
             dbRec.FHoraInicial = contatocrm.HoraInicial.ToString();

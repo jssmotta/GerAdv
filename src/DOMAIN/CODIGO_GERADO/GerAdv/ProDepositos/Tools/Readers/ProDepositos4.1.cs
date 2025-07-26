@@ -15,7 +15,7 @@ public partial class ProDepositosReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBProDepositosDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBProDepositosDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

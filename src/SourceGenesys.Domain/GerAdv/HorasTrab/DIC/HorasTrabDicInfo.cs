@@ -8,7 +8,7 @@ namespace MenphisSI.SG.GerAdv;
 public static partial class DBHorasTrabDicInfo
 {
     public const string CampoCodigo = "htbCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "htbData";
     public const string TablePrefix = "htb";
     public const string IDContatoCRM = "htbIDContatoCRM"; // LOCALIZACAO 170523
     public const string Honorario = "htbHonorario"; // LOCALIZACAO 170523
@@ -79,7 +79,7 @@ public static partial class DBHorasTrabDicInfo
     {
         Prefixo = "htb"
     };
-    public static DBInfoSystem HtbData => new(0, PTabelaNome, CampoCodigo, Data, "Data", "Data", ETipoDadosSysteminfo.SysteminfoDatetime)
+    public static DBInfoSystem HtbData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
     {
         Prefixo = "htb"
     };

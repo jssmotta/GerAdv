@@ -24,8 +24,7 @@ public class DocumentosWriter(IFDocumentosFactory documentosFactory) : IDocument
     {
         using var dbRec = await (documentos.Id.IsEmptyIDNumber() ? _documentosFactory.CreateAsync() : _documentosFactory.CreateFromIdAsync(documentos.Id, oCnn));
         dbRec.FProcesso = documentos.Processo;
-        if (documentos.Data != null)
-            dbRec.FData = documentos.Data.ToString();
+        dbRec.FData = documentos.Data;
         dbRec.FObservacao = documentos.Observacao;
         dbRec.FGUID = documentos.GUID;
         dbRec.AuditorQuem = auditorQuem;

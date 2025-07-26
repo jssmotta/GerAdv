@@ -132,7 +132,7 @@ public partial class DBDiario2
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFData)
-            updateTool.Fields(DBDiario2DicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBDiario2DicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFHora)
             updateTool.Fields(DBDiario2DicInfo.Hora, m_FHora, ETiposCampos.FDate);
         if (pFldFOperador)

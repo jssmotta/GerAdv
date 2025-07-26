@@ -25,7 +25,7 @@ export class LivroCaixaValidator {
 export interface ILivroCaixaService {
   fetchLivroCaixaById: (id: number) => Promise<ILivroCaixa>;
   saveLivroCaixa: (livrocaixa: ILivroCaixa) => Promise<ILivroCaixa>;  
-  
+  getList: (filtro?: FilterLivroCaixa) => Promise<ILivroCaixa[]>;
   getAll: (filtro?: FilterLivroCaixa) => Promise<ILivroCaixa[]>;
   deleteLivroCaixa: (id: number) => Promise<void>;
   validateLivroCaixa: (livrocaixa: ILivroCaixa) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class LivroCaixaService implements ILivroCaixaService {
   }
 
   
+    async getList(filtro?: FilterLivroCaixa): Promise<ILivroCaixa[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching LivroCaixa list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

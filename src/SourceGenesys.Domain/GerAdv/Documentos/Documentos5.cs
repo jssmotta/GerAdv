@@ -9,7 +9,7 @@ public partial class DBDocumentos
     public const string PTabelaNome = "Documentos";
     public const string CamposSqlX = " Documentos.* ";
     public const string CampoCodigo = "docCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "docData";
     public const string PTabelaPrefixo = "doc";
 #pragma warning disable CA1822 // Mark members as static
 

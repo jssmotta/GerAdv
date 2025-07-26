@@ -22,7 +22,6 @@ export interface Recados
 	hora : string;
 	hora_date? : Date;
 	data : string;
-	data_date? : Date;
 	voltara : boolean;
 	pessoal : boolean;
 	retornar : boolean;
@@ -45,7 +44,10 @@ export interface Recados
 	assuntorecado : number;
 	nropastaprocessos?: string;
 	nomeclientes?: string;
+	datahistorico?: string;
+	datacontatocrm?: string;
 	nomeligacoes?: string;
+	dataagenda?: string;
 
 }
 

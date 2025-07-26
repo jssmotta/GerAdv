@@ -7,7 +7,6 @@ export interface Documentos
     id: number;
 	processo : number;
 	data : string;
-	data_date? : Date;
 	observacao : string;
 	nropastaprocessos?: string;
 

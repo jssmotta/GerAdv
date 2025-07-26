@@ -8,7 +8,7 @@ import { useProSucumbenciaForm, useProSucumbenciaList, useValidationsProSucumben
 import { IProSucumbencia } from '../GerAdv_TS/ProSucumbencia/Interfaces/interface.ProSucumbencia';
 import { IProSucumbenciaService } from '../GerAdv_TS/ProSucumbencia/Services/ProSucumbencia.service';
 import { ProSucumbenciaTestEmpty } from '../GerAdv_TS/Models/ProSucumbencia';
-import { useProSucumbenciaComboBox } from '../GerAdv_TS/ProSucumbencia/Hooks/hookProSucumbencia';
+
 
 // Mock do serviço
 const mockProSucumbenciaService: jest.Mocked<IProSucumbenciaService> = {
@@ -50,7 +50,7 @@ describe('useProSucumbenciaForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'nome',
+        name: 'data',
         value: 'Novo Pro Sucumbencia',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useProSucumbenciaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.nome).toBe('Novo Pro Sucumbencia');
+    expect(result.current.data.data).toBe('Novo Pro Sucumbencia');
   });
 
    test('deve carregar Pro Sucumbencia por ID', async () => {
-    const mockProSucumbencia = { ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia Teste' };
+    const mockProSucumbencia = { ...initialProSucumbencia, id: 1, data: 'Pro Sucumbencia Teste' };
     mockProSucumbenciaService.fetchProSucumbenciaById.mockResolvedValue(mockProSucumbencia);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useProSucumbenciaForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialProSucumbencia, nome: 'Teste' });
+      result.current.setData({ ...initialProSucumbencia, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useProSucumbenciaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia 1' },
-      { ...initialProSucumbencia, id: 2, nome: 'Pro Sucumbencia 2' }
+      { ...initialProSucumbencia, id: 1, data: 'Pro Sucumbencia 1' },
+      { ...initialProSucumbencia, id: 2, data: 'Pro Sucumbencia 2' }
     ];
     mockProSucumbenciaService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useProSucumbenciaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia Filtrado' }];
-    const filtro = { nome: 'Pro Sucumbencia' };
+    const mockData = [{ ...initialProSucumbencia, id: 1, data: 'Pro Sucumbencia Filtrado' }];
+    const filtro = { data: 'Pro Sucumbencia' };
     mockProSucumbenciaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsProSucumbencia', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsProSucumbencia());
 
-    const validData = { ...initialProSucumbencia, nome: 'Pro Sucumbencia Válido' };
+    const validData = { ...initialProSucumbencia, data: 'Pro Sucumbencia Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,28 +211,28 @@ describe('useValidationsProSucumbencia', () => {
   });
 
 
-    test('deve invalidar nome vazio', () => {
+    test('deve invalidar data vazio', () => {
     const { result } = renderHook(() => useValidationsProSucumbencia());
 
-    const invalidData = { ...initialProSucumbencia, nome: '' };
+    const invalidData = { ...initialProSucumbencia, data: '' };
     const validation = result.current.validate(invalidData);
 
     expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
   });
 
   
-  test('deve invalidar nome muito longo', () => {
+  test('deve invalidar data muito longo', () => {
     const { result } = renderHook(() => useValidationsProSucumbencia());
 
     const invalidData = { 
       ...initialProSucumbencia, 
-      nome: 'a'.repeat(2048+1)
+      data: 'a'.repeat(-1+1)
     };
     const validation = result.current.validate(invalidData);
 
     expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo Nome não pode ter mais de 2048 caracteres.');
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
   });
 
 
@@ -250,18 +250,16 @@ describe('useValidationsProSucumbencia', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialProSucumbencia, id: 1, nome: 'Pro Sucumbencia Teste' }];
+    const mockData = [{ ...initialProSucumbencia, id: 1, data: 'Pro Sucumbencia Teste' }];
     mockProSucumbenciaService.getAll.mockResolvedValue(mockData);
-    mockProSucumbenciaService.getList.mockResolvedValue(mockData);
+    
 
     // Usa múltiplos hooks
     const { result: listResult } = renderHook(() => 
       useProSucumbenciaList(mockProSucumbenciaService)
     );
     
-     const { result: comboResult } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService)
-    );   
+       
 
     const { result: validationResult } = renderHook(() => 
       useValidationsProSucumbencia()
@@ -272,10 +270,6 @@ describe('Integração de hooks', () => {
       await listResult.current.fetchData();
     });
 
-     
-    // Aguarda carregar opções no combo
-    
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro Sucumbencia Teste' }]);
     
    
 
@@ -283,160 +277,8 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Pro Sucumbencia Teste' }]);
+    
   
     expect(validation.isValid).toBe(true);
   });
-}); 
-test('deve carregar opções na inicialização', async () => {
-    const mockOptions = [
-      { id: 1, nome: 'Pro Sucumbencia 1' },
-      { id: 2, nome: 'Pro Sucumbencia 2' }
-    ];
-    mockProSucumbenciaService.getList.mockResolvedValue(mockOptions as IProSucumbencia[]);
-
-
-    const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService)
-    );
-
-    await waitFor(() => {
-      // Aguarda carregar as opções antes de verificar
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Pro Sucumbencia 1' },
-        { id: 2, nome: 'Pro Sucumbencia 2' }
-      ]);
-    });
-
-
-    expect(mockProSucumbenciaService.getList).toHaveBeenCalled();
-  });
-
-  test('deve filtrar opções', async () => {
-    const mockOptions = [
-      { id: 1, nome: 'Pro Sucumbencia ABC' },
-      { id: 2, nome: 'Pro Sucumbencia XYZ' }
-    ];
-    mockProSucumbenciaService.getList.mockResolvedValue(mockOptions as IProSucumbencia[]);   
-
-
- const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService)
-    );
-    // Aguarda carregar as opções
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Pro Sucumbencia ABC' },
-        { id: 2, nome: 'Pro Sucumbencia XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Pro Sucumbencia ABC' }]);
-  });
-
-
-  test('deve limpar filtro quando texto vazio', async () => {
-    const mockOptions = [
-      { id: 1, nome: 'Pro Sucumbencia ABC' },
-      { id: 2, nome: 'Pro Sucumbencia XYZ' }
-    ];
-    mockProSucumbenciaService.getList.mockResolvedValue(mockOptions as IProSucumbencia[]);
-  
-
-
-    const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService)
-    );
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Pro Sucumbencia ABC' },
-        { id: 2, nome: 'Pro Sucumbencia XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    // Remove filtro
-    act(() => {
-      result.current.handleFilter('');
-    });
- 
-
-     expect(result.current.options).toEqual([
-          {id: 1, nome: 'Pro Sucumbencia ABC' },
-          {id: 2, nome: 'Pro Sucumbencia XYZ' }
-        ]);
-
-  });
-
-
-
- test('deve alterar valor selecionado', () => {
-    const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService)
-    );
-
-    const newValue = { id: 1, nome: 'Pro Sucumbencia Selecionado' };
-
-    act(() => {
-      result.current.handleValueChange(newValue);
-    });
-
-    expect(result.current.selectedValue).toEqual(newValue);
-  });
-
-  test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, nome: 'Pro Sucumbencia Inicial' };
-    
-    const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService, initialValue)
-    );
-
-    act(() => {
-      result.current.clearValue();
-    });
-
-    expect(result.current.selectedValue).toBe(null);
-  });
-
-
-describe('useProSucumbenciaComboBox', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('deve inicializar com estado correto', () => {
-    const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService)
-    );
-
-    expect(result.current.options).toEqual([]);
-    expect(result.current.loading).toBe(true);
-    expect(result.current.selectedValue).toBeUndefined();
-  });
-
- 
-  test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, nome: 'Pro Sucumbencia Inicial' };
-    
-    const { result } = renderHook(() => 
-      useProSucumbenciaComboBox(mockProSucumbenciaService, initialValue)
-    );
-
-    expect(result.current.selectedValue).toEqual(initialValue);
-  });
 });
-
-
-
-
-
-

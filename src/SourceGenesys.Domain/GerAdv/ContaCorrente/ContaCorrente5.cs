@@ -9,7 +9,7 @@ public partial class DBContaCorrente
     public const string PTabelaNome = "ContaCorrente";
     public const string CamposSqlX = " ContaCorrente.* ";
     public const string CampoCodigo = "ctoCodigo";
-    public const string CampoNome = "";
+    public const string CampoNome = "ctoData";
     public const string PTabelaPrefixo = "cto";
 #pragma warning disable CA1822 // Mark members as static
 

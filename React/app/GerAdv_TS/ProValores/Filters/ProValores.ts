@@ -11,7 +11,6 @@
     tipovalorprocesso_end?: number;
  indice?: string;
  ignorar?: number;
- data_end?: string;
  data?: string;
     valororiginal?: number;
     valororiginal_end?: number;
@@ -44,7 +43,6 @@ export class FilterProValoresDefaults implements FilterProValores {
     tipovalorprocesso_end?: number = -2147483648;
     indice?: string = '';
     ignorar?: number= -2147483648;
-    data_end?: string = '';
     data?: string = '';
     valororiginal?: number = -79228162514264337593543950335;
     valororiginal_end?: number = -79228162514264337593543950335;

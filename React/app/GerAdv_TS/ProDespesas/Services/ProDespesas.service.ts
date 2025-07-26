@@ -25,7 +25,7 @@ export class ProDespesasValidator {
 export interface IProDespesasService {
   fetchProDespesasById: (id: number) => Promise<IProDespesas>;
   saveProDespesas: (prodespesas: IProDespesas) => Promise<IProDespesas>;  
-  
+  getList: (filtro?: FilterProDespesas) => Promise<IProDespesas[]>;
   getAll: (filtro?: FilterProDespesas) => Promise<IProDespesas[]>;
   deleteProDespesas: (id: number) => Promise<void>;
   validateProDespesas: (prodespesas: IProDespesas) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ProDespesasService implements IProDespesasService {
   }
 
   
+    async getList(filtro?: FilterProDespesas): Promise<IProDespesas[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ProDespesas list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

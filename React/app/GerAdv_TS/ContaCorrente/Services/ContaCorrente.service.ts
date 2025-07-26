@@ -25,7 +25,7 @@ export class ContaCorrenteValidator {
 export interface IContaCorrenteService {
   fetchContaCorrenteById: (id: number) => Promise<IContaCorrente>;
   saveContaCorrente: (contacorrente: IContaCorrente) => Promise<IContaCorrente>;  
-  
+  getList: (filtro?: FilterContaCorrente) => Promise<IContaCorrente[]>;
   getAll: (filtro?: FilterContaCorrente) => Promise<IContaCorrente[]>;
   deleteContaCorrente: (id: number) => Promise<void>;
   validateContaCorrente: (contacorrente: IContaCorrente) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ContaCorrenteService implements IContaCorrenteService {
   }
 
   
+    async getList(filtro?: FilterContaCorrente): Promise<IContaCorrente[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ContaCorrente list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

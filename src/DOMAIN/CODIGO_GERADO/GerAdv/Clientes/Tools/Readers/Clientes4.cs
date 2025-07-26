@@ -82,6 +82,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -105,12 +106,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
             clientes.DtNasc = dbRec.FDtNasc;
             clientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            clientes.Data = dbRec.FData;
-            clientes.Data_date = XData;
         }
 
         return clientes;
@@ -165,6 +160,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -188,12 +184,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
             clientes.DtNasc = dbRec.FDtNasc;
             clientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            clientes.Data = dbRec.FData;
-            clientes.Data_date = XData;
         }
 
         return clientes;
@@ -237,6 +227,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -260,12 +251,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
             clientes.DtNasc = dbRec.FDtNasc;
             clientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            clientes.Data = dbRec.FData;
-            clientes.Data_date = XData;
         }
 
         return clientes;
@@ -309,6 +294,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -332,12 +318,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
             clientes.DtNasc = dbRec.FDtNasc;
             clientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            clientes.Data = dbRec.FData;
-            clientes.Data_date = XData;
         }
 
         try
@@ -405,6 +385,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -428,12 +409,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         {
             clientes.DtNasc = dbRec.FDtNasc;
             clientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            clientes.Data = dbRec.FData;
-            clientes.Data_date = XData;
         }
 
         try

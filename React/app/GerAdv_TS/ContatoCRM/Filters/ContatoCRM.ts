@@ -27,7 +27,6 @@
     objetonotificou?: number;
     objetonotificou_end?: number;
  pessoacontato?: string;
- data_end?: string;
  data?: string;
     tempo?: number;
     tempo_end?: number;
@@ -76,7 +75,6 @@ export class FilterContatoCRMDefaults implements FilterContatoCRM {
     objetonotificou?: number = -2147483648;
     objetonotificou_end?: number = -2147483648;
     pessoacontato?: string = '';
-    data_end?: string = '';
     data?: string = '';
     tempo?: number = -79228162514264337593543950335;
     tempo_end?: number = -79228162514264337593543950335;

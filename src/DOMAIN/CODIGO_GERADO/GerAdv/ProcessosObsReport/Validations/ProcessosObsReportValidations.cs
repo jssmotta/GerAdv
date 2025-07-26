@@ -35,16 +35,13 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.Data))
+            throw new SGValidationException("Data é obrigatório");
+        if (await IsDuplicado(reg, service, uri))
+            throw new SGValidationException($"Processos Obs Report '{reg.Data}'  - Processo");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.Data.IsEmpty())
-            throw new SGValidationException("Data é obrigatório.");
-        if (!DateTime.TryParse(reg.Data, out _))
-        {
-            throw new SGValidationException($"Data inválida: {reg.Data}");
-        }
-
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
         if (reg.Processo == 0)
@@ -69,5 +66,11 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
         }
 
         return true;
+    }
+
+    private async Task<bool> IsDuplicado(Models.ProcessosObsReport reg, IProcessosObsReportService service, string uri)
+    {
+        var existingProcessosObsReport = (await service.Filter(new Filters.FilterProcessosObsReport { Processo = reg.Processo }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingProcessosObsReport != null && existingProcessosObsReport.Id > 0 && existingProcessosObsReport.Id != reg.Id;
     }
 }

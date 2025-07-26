@@ -25,7 +25,7 @@ export class HistoricoValidator {
 export interface IHistoricoService {
   fetchHistoricoById: (id: number) => Promise<IHistorico>;
   saveHistorico: (historico: IHistorico) => Promise<IHistorico>;  
-  
+  getList: (filtro?: FilterHistorico) => Promise<IHistorico[]>;
   getAll: (filtro?: FilterHistorico) => Promise<IHistorico[]>;
   deleteHistorico: (id: number) => Promise<void>;
   validateHistorico: (historico: IHistorico) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class HistoricoService implements IHistoricoService {
   }
 
   
+    async getList(filtro?: FilterHistorico): Promise<IHistorico[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Historico list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

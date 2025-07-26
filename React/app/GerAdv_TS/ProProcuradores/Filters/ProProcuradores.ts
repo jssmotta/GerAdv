@@ -10,7 +10,6 @@
  nome?: string;
     processo?: number;
     processo_end?: number;
- data_end?: string;
  data?: string;
  substabelecimento?: number;
  procuracao?: number;
@@ -26,7 +25,6 @@ export class FilterProProcuradoresDefaults implements FilterProProcuradores {
     nome?: string = '';
     processo?: number = -2147483648;
     processo_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     substabelecimento?: number= -2147483648;
     procuracao?: number= -2147483648;

@@ -23,7 +23,7 @@ public partial class AlarmSMSReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.}],[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.}]
+                   {campos}, [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Data}],[{DBRecadosDicInfo.PTabelaNome}].[{DBRecadosDicInfo.Data}]
                    FROM {DBAlarmSMS.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBAlarmSMSDicInfo.PTabelaNome}].[{DBAlarmSMSDicInfo.Operador}]
 LEFT JOIN {DBAgendaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAgendaDicInfo.PTabelaNome}].[{DBAgenda.CampoCodigo}]=[{DBAlarmSMSDicInfo.PTabelaNome}].[{DBAlarmSMSDicInfo.Agenda}]

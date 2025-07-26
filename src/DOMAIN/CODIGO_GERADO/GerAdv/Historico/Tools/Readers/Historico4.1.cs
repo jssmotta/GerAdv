@@ -15,7 +15,7 @@ public partial class HistoricoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBHistoricoDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBHistoricoDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

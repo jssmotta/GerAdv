@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProcessosObsReportReader(IFProcessosObsReportFactory processosobsreportFactory) : IProcessosObsReportReader
 {
     private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prrCodigo, prrData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProcessosObsReportResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProcessosObsReport.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProcessosObsReportResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -53,16 +54,11 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         var processosobsreport = new Models.ProcessosObsReport
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            processosobsreport.Data = dbRec.FData;
-            processosobsreport.Data_date = XData;
-        }
-
         return processosobsreport;
     }
 
@@ -87,16 +83,11 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         var processosobsreport = new ProcessosObsReportResponse
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            processosobsreport.Data = dbRec.FData;
-            processosobsreport.Data_date = XData;
-        }
-
         return processosobsreport;
     }
 
@@ -110,16 +101,11 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         var processosobsreport = new ProcessosObsReportResponse
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            processosobsreport.Data = dbRec.FData;
-            processosobsreport.Data_date = XData;
-        }
-
         return processosobsreport;
     }
 
@@ -133,19 +119,22 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         var processosobsreport = new ProcessosObsReportResponseAll
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
+        try
         {
-            processosobsreport.Data = dbRec.FData;
-            processosobsreport.Data_date = XData;
+            processosobsreport.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
         }
 
         try
         {
-            processosobsreport.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
+            processosobsreport.DataHistorico = dr[DBHistoricoDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {
@@ -164,19 +153,22 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         var processosobsreport = new ProcessosObsReportResponseAll
         {
             Id = dbRec.ID,
+            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
+        try
         {
-            processosobsreport.Data = dbRec.FData;
-            processosobsreport.Data_date = XData;
+            processosobsreport.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
+        }
+        catch
+        {
         }
 
         try
         {
-            processosobsreport.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
+            processosobsreport.DataHistorico = dr[DBHistoricoDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

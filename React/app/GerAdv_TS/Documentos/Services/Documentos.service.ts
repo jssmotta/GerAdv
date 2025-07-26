@@ -25,7 +25,7 @@ export class DocumentosValidator {
 export interface IDocumentosService {
   fetchDocumentosById: (id: number) => Promise<IDocumentos>;
   saveDocumentos: (documentos: IDocumentos) => Promise<IDocumentos>;  
-  
+  getList: (filtro?: FilterDocumentos) => Promise<IDocumentos[]>;
   getAll: (filtro?: FilterDocumentos) => Promise<IDocumentos[]>;
   deleteDocumentos: (id: number) => Promise<void>;
   validateDocumentos: (documentos: IDocumentos) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class DocumentosService implements IDocumentosService {
   }
 
   
+    async getList(filtro?: FilterDocumentos): Promise<IDocumentos[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Documentos list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

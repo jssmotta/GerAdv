@@ -14,7 +14,7 @@ import { ContatoCRMViewTestEmpty } from '../GerAdv_TS/Models/ContatoCRMView';
 const mockContatoCRMViewService: jest.Mocked<IContatoCRMViewService> = {
   fetchContatoCRMViewById: jest.fn(),
   saveContatoCRMView: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteContatoCRMView: jest.fn(),
   validateContatoCRMView: jest.fn(),
@@ -50,7 +50,7 @@ describe('useContatoCRMViewForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'cguid',
+        name: 'data',
         value: 'Novo Contato C R M View',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useContatoCRMViewForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.cguid).toBe('Novo Contato C R M View');
+    expect(result.current.data.data).toBe('Novo Contato C R M View');
   });
 
    test('deve carregar Contato C R M View por ID', async () => {
-    const mockContatoCRMView = { ...initialContatoCRMView, id: 1, cguid: 'Contato C R M View Teste' };
+    const mockContatoCRMView = { ...initialContatoCRMView, id: 1, data: 'Contato C R M View Teste' };
     mockContatoCRMViewService.fetchContatoCRMViewById.mockResolvedValue(mockContatoCRMView);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useContatoCRMViewForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialContatoCRMView, cguid: 'Teste' });
+      result.current.setData({ ...initialContatoCRMView, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useContatoCRMViewList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialContatoCRMView, id: 1, cguid: 'Contato C R M View 1' },
-      { ...initialContatoCRMView, id: 2, cguid: 'Contato C R M View 2' }
+      { ...initialContatoCRMView, id: 1, data: 'Contato C R M View 1' },
+      { ...initialContatoCRMView, id: 2, data: 'Contato C R M View 2' }
     ];
     mockContatoCRMViewService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useContatoCRMViewList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialContatoCRMView, id: 1, cguid: 'Contato C R M View Filtrado' }];
-    const filtro = { cguid: 'Contato C R M View' };
+    const mockData = [{ ...initialContatoCRMView, id: 1, data: 'Contato C R M View Filtrado' }];
+    const filtro = { data: 'Contato C R M View' };
     mockContatoCRMViewService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsContatoCRMView', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsContatoCRMView());
 
-    const validData = { ...initialContatoCRMView, cguid: 'Contato C R M View Válido' };
+    const validData = { ...initialContatoCRMView, data: 'Contato C R M View Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsContatoCRMView', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsContatoCRMView());
+
+    const invalidData = { ...initialContatoCRMView, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsContatoCRMView());
+
+    const invalidData = { 
+      ...initialContatoCRMView, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsContatoCRMView());
@@ -229,7 +250,7 @@ describe('useValidationsContatoCRMView', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialContatoCRMView, id: 1, cguid: 'Contato C R M View Teste' }];
+    const mockData = [{ ...initialContatoCRMView, id: 1, data: 'Contato C R M View Teste' }];
     mockContatoCRMViewService.getAll.mockResolvedValue(mockData);
     
 

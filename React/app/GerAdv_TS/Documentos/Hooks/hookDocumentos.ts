@@ -168,7 +168,10 @@ export function useValidationsDocumentos() {
     
       try {
    
-        if (data.observacao.length > 2147483647) { 
+        if (data.data.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
+                                         } 
+if (data.observacao.length > 2147483647) { 
                                              return { isValid: false, message: 'O campo Observacao não pode ter mais de 2147483647 caracteres.' };
                                          } 
 

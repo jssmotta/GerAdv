@@ -48,12 +48,12 @@ const { page, handlePageChange } = useGridPagination({
 });
 // Configuração dos filtros iniciais
 const initialFilters = {
-  nome: '',
+  data: '',
 };
 // Lógica de filtro customizada usando useCallback
 const filterLogic = useCallback((data: IProSucumbencia, filters: Record<string, any>) => {
-  const nomeMatches = applyFilter(data, 'nome', filters.nome);
-  return nomeMatches
+  const dataMatches = applyFilter(data, 'data', filters.data);
+  return dataMatches
   ;
 }, []);
 // Hook para filtros
@@ -91,7 +91,7 @@ const EditRow = (e: any) => {
 const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn field='nome' title='Nome' sortable={true} filterable={true} />, /* Track G.02 */
+  <GridColumn field='data' title='Data' sortable={true} filterable={true} />, /* Track G.02 */
   <GridColumn field='nropastaprocessos' title='Processos' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nroprocessoinstancia' title='Instancia' sortable={false} filterable={false} />, /* Track G.01 */

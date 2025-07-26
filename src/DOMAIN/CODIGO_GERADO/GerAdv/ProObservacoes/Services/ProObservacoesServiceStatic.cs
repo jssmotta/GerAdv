@@ -26,16 +26,9 @@ public partial class ProObservacoesService
             parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Observacoes)}", ApplyWildCard(filtro.WildcardChar, filtro.Observacoes)));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (!string.IsNullOrEmpty(filtro.GUID))
@@ -62,15 +55,7 @@ public partial class ProObservacoesService
         cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Processo}] = @{nameof(DBProObservacoesDicInfo.Processo)}");
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Nome)}");
         cWhere.Append(filtro.Observacoes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Observacoes)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBProObservacoesDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.Data} BETWEEN @{nameof(DBProObservacoesDicInfo.Data)} AND @{nameof(DBProObservacoesDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.Data} = @{nameof(DBProObservacoesDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.Data} <= @{nameof(DBProObservacoesDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Data)}");
         cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.GUID)}");
         if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
         {

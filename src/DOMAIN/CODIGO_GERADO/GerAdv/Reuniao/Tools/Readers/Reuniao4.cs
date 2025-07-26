@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoReader
 {
     private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("renCodigo, renData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ReuniaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBReuniao.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ReuniaoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -55,18 +56,13 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            reuniao.Data = dbRec.FData;
-            reuniao.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
         {
             reuniao.HoraInicial = dbRec.FHoraInicial;
@@ -117,18 +113,13 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            reuniao.Data = dbRec.FData;
-            reuniao.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
         {
             reuniao.HoraInicial = dbRec.FHoraInicial;
@@ -168,18 +159,13 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            reuniao.Data = dbRec.FData;
-            reuniao.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
         {
             reuniao.HoraInicial = dbRec.FHoraInicial;
@@ -219,18 +205,13 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            reuniao.Data = dbRec.FData;
-            reuniao.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
         {
             reuniao.HoraInicial = dbRec.FHoraInicial;
@@ -278,18 +259,13 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
+            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            reuniao.Data = dbRec.FData;
-            reuniao.Data_date = XData;
-        }
-
         if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
         {
             reuniao.HoraInicial = dbRec.FHoraInicial;

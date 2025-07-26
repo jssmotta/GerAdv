@@ -15,7 +15,7 @@ public partial class ProcessosObsReportReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBProcessosObsReportDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBProcessosObsReportDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,7 +23,7 @@ public partial class ProcessosObsReportReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBHistoricoDicInfo.PTabelaNome}].[{DBHistoricoDicInfo.}]
+                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBHistoricoDicInfo.PTabelaNome}].[{DBHistoricoDicInfo.Data}]
                    FROM {DBProcessosObsReport.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Processo}]
 LEFT JOIN {DBHistoricoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBHistoricoDicInfo.PTabelaNome}].[{DBHistorico.CampoCodigo}]=[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Historico}]

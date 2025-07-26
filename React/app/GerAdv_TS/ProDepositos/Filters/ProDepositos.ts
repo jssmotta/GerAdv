@@ -9,7 +9,6 @@
     processo_end?: number;
     fase?: number;
     fase_end?: number;
- data_end?: string;
  data?: string;
     valor?: number;
     valor_end?: number;
@@ -26,7 +25,6 @@ export class FilterProDepositosDefaults implements FilterProDepositos {
     processo_end?: number = -2147483648;
     fase?: number = -2147483648;
     fase_end?: number = -2147483648;
-    data_end?: string = '';
     data?: string = '';
     valor?: number = -79228162514264337593543950335;
     valor_end?: number = -79228162514264337593543950335;

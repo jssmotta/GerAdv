@@ -134,6 +134,18 @@ const addValorProcesso = (e: any) => {
           )}
           <div className='grid-container'>
 
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='data'
+            value={livrocaixaData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
 
             <InputInput
             type='text'
@@ -189,19 +201,6 @@ const addValorProcesso = (e: any) => {
 
             <InputCheckbox dataForm={livrocaixaData} label='IDHonSuc' name='idhonsuc' checked={livrocaixaData.idhonsuc} onChange={onChange} />
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='data'
-            label='Data'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='data'
-            value={livrocaixaData.data}
-            onChange={onChange}
-            />
-
-
             <ProcessosComboBox
             name={'processo'}
             dataForm={livrocaixaData}
@@ -209,7 +208,7 @@ const addValorProcesso = (e: any) => {
             setValue={addValorProcesso}
             label={'Processos'}
             />
-          </div><div className='grid-container'>
+
             <InputInput
             type='text'
             maxLength={2048}
@@ -222,43 +221,43 @@ const addValorProcesso = (e: any) => {
             onChange={onChange}
             />
 
-            <InputCheckbox dataForm={livrocaixaData} label='Tipo' name='tipo' checked={livrocaixaData.tipo} onChange={onChange} />
+          </div><div className='grid-container'><InputCheckbox dataForm={livrocaixaData} label='Tipo' name='tipo' checked={livrocaixaData.tipo} onChange={onChange} />
 
-            <InputInput
-            type='text'
-            maxLength={255}
-            id='historico'
-            label='Historico'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='historico'
-            value={livrocaixaData.historico}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='grupo'
-            label='Grupo'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='grupo'
-            value={livrocaixaData.grupo}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+          <InputInput
+          type='text'
+          maxLength={255}
+          id='historico'
+          label='Historico'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='historico'
+          value={livrocaixaData.historico}
+          onChange={onChange}
+          />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/livrocaixa'} id={livrocaixaData.id} closeModel={onClose} dadoApi={dadoApi} />
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='grupo'
+          label='Grupo'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='grupo'
+          value={livrocaixaData.grupo}
+          onChange={onChange}
+          />
+
         </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/livrocaixa'} id={livrocaixaData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

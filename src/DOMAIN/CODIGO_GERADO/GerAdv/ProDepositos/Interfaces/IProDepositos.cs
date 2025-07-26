@@ -10,4 +10,5 @@ public partial interface IProDepositosService
     Task<ProDepositosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<ProDepositosResponse?> Validation(Models.ProDepositos regProDepositos, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ProDepositosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDepositos? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

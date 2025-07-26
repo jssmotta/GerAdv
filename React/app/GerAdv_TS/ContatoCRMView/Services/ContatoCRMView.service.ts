@@ -25,7 +25,7 @@ export class ContatoCRMViewValidator {
 export interface IContatoCRMViewService {
   fetchContatoCRMViewById: (id: number) => Promise<IContatoCRMView>;
   saveContatoCRMView: (contatocrmview: IContatoCRMView) => Promise<IContatoCRMView>;  
-  
+  getList: (filtro?: FilterContatoCRMView) => Promise<IContatoCRMView[]>;
   getAll: (filtro?: FilterContatoCRMView) => Promise<IContatoCRMView[]>;
   deleteContatoCRMView: (id: number) => Promise<void>;
   validateContatoCRMView: (contatocrmview: IContatoCRMView) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ContatoCRMViewService implements IContatoCRMViewService {
   }
 
   
+    async getList(filtro?: FilterContatoCRMView): Promise<IContatoCRMView[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ContatoCRMView list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

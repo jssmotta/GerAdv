@@ -10,4 +10,5 @@ public partial interface IContatoCRMViewService
     Task<ContatoCRMViewResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<ContatoCRMViewResponse?> Validation(Models.ContatoCRMView regContatoCRMView, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ContatoCRMViewResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterContatoCRMView? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

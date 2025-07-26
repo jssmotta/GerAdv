@@ -138,7 +138,7 @@ public partial class DBProDespesas
         if (pFldFCorrigido)
             updateTool.Fields(DBProDespesasDicInfo.Corrigido, m_FCorrigido, ETiposCampos.FBoolean);
         if (pFldFData)
-            updateTool.Fields(DBProDespesasDicInfo.Data, m_FData, ETiposCampos.FDate);
+            updateTool.Fields(DBProDespesasDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFValorOriginal)
             updateTool.Fields(DBProDespesasDicInfo.ValorOriginal, m_FValorOriginal, ETiposCampos.FDecimal);
         if (pFldFProcesso)

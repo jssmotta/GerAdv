@@ -8,7 +8,7 @@ import { useDiario2Form, useDiario2List, useValidationsDiario2 } from '../GerAdv
 import { IDiario2 } from '../GerAdv_TS/Diario2/Interfaces/interface.Diario2';
 import { IDiario2Service } from '../GerAdv_TS/Diario2/Services/Diario2.service';
 import { Diario2TestEmpty } from '../GerAdv_TS/Models/Diario2';
-import { useDiario2ComboBox } from '../GerAdv_TS/Diario2/Hooks/hookDiario2';
+
 
 // Mock do serviço
 const mockDiario2Service: jest.Mocked<IDiario2Service> = {
@@ -50,7 +50,7 @@ describe('useDiario2Form', () => {
 
     const mockEvent = {
       target: {
-        name: 'nome',
+        name: 'data',
         value: 'Novo Diário',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useDiario2Form', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.nome).toBe('Novo Diário');
+    expect(result.current.data.data).toBe('Novo Diário');
   });
 
    test('deve carregar Diário por ID', async () => {
-    const mockDiario2 = { ...initialDiario2, id: 1, nome: 'Diário Teste' };
+    const mockDiario2 = { ...initialDiario2, id: 1, data: 'Diário Teste' };
     mockDiario2Service.fetchDiario2ById.mockResolvedValue(mockDiario2);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useDiario2Form', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialDiario2, nome: 'Teste' });
+      result.current.setData({ ...initialDiario2, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useDiario2List', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialDiario2, id: 1, nome: 'Diário 1' },
-      { ...initialDiario2, id: 2, nome: 'Diário 2' }
+      { ...initialDiario2, id: 1, data: 'Diário 1' },
+      { ...initialDiario2, id: 2, data: 'Diário 2' }
     ];
     mockDiario2Service.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useDiario2List', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialDiario2, id: 1, nome: 'Diário Filtrado' }];
-    const filtro = { nome: 'Diário' };
+    const mockData = [{ ...initialDiario2, id: 1, data: 'Diário Filtrado' }];
+    const filtro = { data: 'Diário' };
     mockDiario2Service.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsDiario2', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsDiario2());
 
-    const validData = { ...initialDiario2, nome: 'Diário Válido' };
+    const validData = { ...initialDiario2, data: 'Diário Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,28 +211,28 @@ describe('useValidationsDiario2', () => {
   });
 
 
-    test('deve invalidar nome vazio', () => {
+    test('deve invalidar data vazio', () => {
     const { result } = renderHook(() => useValidationsDiario2());
 
-    const invalidData = { ...initialDiario2, nome: '' };
+    const invalidData = { ...initialDiario2, data: '' };
     const validation = result.current.validate(invalidData);
 
     expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo Nome não pode ficar vazio.');
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
   });
 
   
-  test('deve invalidar nome muito longo', () => {
+  test('deve invalidar data muito longo', () => {
     const { result } = renderHook(() => useValidationsDiario2());
 
     const invalidData = { 
       ...initialDiario2, 
-      nome: 'a'.repeat(150+1)
+      data: 'a'.repeat(-1+1)
     };
     const validation = result.current.validate(invalidData);
 
     expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo Nome não pode ter mais de 150 caracteres.');
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
   });
 
 
@@ -250,18 +250,16 @@ describe('useValidationsDiario2', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialDiario2, id: 1, nome: 'Diário Teste' }];
+    const mockData = [{ ...initialDiario2, id: 1, data: 'Diário Teste' }];
     mockDiario2Service.getAll.mockResolvedValue(mockData);
-    mockDiario2Service.getList.mockResolvedValue(mockData);
+    
 
     // Usa múltiplos hooks
     const { result: listResult } = renderHook(() => 
       useDiario2List(mockDiario2Service)
     );
     
-     const { result: comboResult } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service)
-    );   
+       
 
     const { result: validationResult } = renderHook(() => 
       useValidationsDiario2()
@@ -272,10 +270,6 @@ describe('Integração de hooks', () => {
       await listResult.current.fetchData();
     });
 
-     
-    // Aguarda carregar opções no combo
-    
-      expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Diário Teste' }]);
     
    
 
@@ -283,160 +277,8 @@ describe('Integração de hooks', () => {
     const validation = validationResult.current.validate(mockData[0]);
 
     expect(listResult.current.data).toEqual(mockData);
-     expect(comboResult.current.options).toEqual([{ id: 1, nome: 'Diário Teste' }]);
+    
   
     expect(validation.isValid).toBe(true);
   });
-}); 
-test('deve carregar opções na inicialização', async () => {
-    const mockOptions = [
-      { id: 1, nome: 'Diário 1' },
-      { id: 2, nome: 'Diário 2' }
-    ];
-    mockDiario2Service.getList.mockResolvedValue(mockOptions as IDiario2[]);
-
-
-    const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service)
-    );
-
-    await waitFor(() => {
-      // Aguarda carregar as opções antes de verificar
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Diário 1' },
-        { id: 2, nome: 'Diário 2' }
-      ]);
-    });
-
-
-    expect(mockDiario2Service.getList).toHaveBeenCalled();
-  });
-
-  test('deve filtrar opções', async () => {
-    const mockOptions = [
-      { id: 1, nome: 'Diário ABC' },
-      { id: 2, nome: 'Diário XYZ' }
-    ];
-    mockDiario2Service.getList.mockResolvedValue(mockOptions as IDiario2[]);   
-
-
- const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service)
-    );
-    // Aguarda carregar as opções
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Diário ABC' },
-        { id: 2, nome: 'Diário XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    expect(result.current.options).toEqual([{ id: 1, nome: 'Diário ABC' }]);
-  });
-
-
-  test('deve limpar filtro quando texto vazio', async () => {
-    const mockOptions = [
-      { id: 1, nome: 'Diário ABC' },
-      { id: 2, nome: 'Diário XYZ' }
-    ];
-    mockDiario2Service.getList.mockResolvedValue(mockOptions as IDiario2[]);
-  
-
-
-    const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service)
-    );
-    await waitFor(() => {
-      expect(result.current.options).toEqual([
-        { id: 1, nome: 'Diário ABC' },
-        { id: 2, nome: 'Diário XYZ' }
-      ]);
-    });
-
-    // Aplica filtro
-    act(() => {
-      result.current.handleFilter('ABC');
-    });
-
-    // Remove filtro
-    act(() => {
-      result.current.handleFilter('');
-    });
- 
-
-     expect(result.current.options).toEqual([
-          {id: 1, nome: 'Diário ABC' },
-          {id: 2, nome: 'Diário XYZ' }
-        ]);
-
-  });
-
-
-
- test('deve alterar valor selecionado', () => {
-    const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service)
-    );
-
-    const newValue = { id: 1, nome: 'Diário Selecionado' };
-
-    act(() => {
-      result.current.handleValueChange(newValue);
-    });
-
-    expect(result.current.selectedValue).toEqual(newValue);
-  });
-
-  test('deve limpar valor selecionado', () => {
-    const initialValue = { id: 1, nome: 'Diário Inicial' };
-    
-    const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service, initialValue)
-    );
-
-    act(() => {
-      result.current.clearValue();
-    });
-
-    expect(result.current.selectedValue).toBe(null);
-  });
-
-
-describe('useDiario2ComboBox', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('deve inicializar com estado correto', () => {
-    const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service)
-    );
-
-    expect(result.current.options).toEqual([]);
-    expect(result.current.loading).toBe(true);
-    expect(result.current.selectedValue).toBeUndefined();
-  });
-
- 
-  test('deve inicializar com valor inicial', () => {
-    const initialValue = { id: 1, nome: 'Diário Inicial' };
-    
-    const { result } = renderHook(() => 
-      useDiario2ComboBox(mockDiario2Service, initialValue)
-    );
-
-    expect(result.current.selectedValue).toEqual(initialValue);
-  });
 });
-
-
-
-
-
-

@@ -14,7 +14,7 @@ import { AgendaFinanceiroTestEmpty } from '../GerAdv_TS/Models/AgendaFinanceiro'
 const mockAgendaFinanceiroService: jest.Mocked<IAgendaFinanceiroService> = {
   fetchAgendaFinanceiroById: jest.fn(),
   saveAgendaFinanceiro: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteAgendaFinanceiro: jest.fn(),
   validateAgendaFinanceiro: jest.fn(),
@@ -50,7 +50,7 @@ describe('useAgendaFinanceiroForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'compromisso',
+        name: 'data',
         value: 'Novo Agenda Financeiro',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useAgendaFinanceiroForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.compromisso).toBe('Novo Agenda Financeiro');
+    expect(result.current.data.data).toBe('Novo Agenda Financeiro');
   });
 
    test('deve carregar Agenda Financeiro por ID', async () => {
-    const mockAgendaFinanceiro = { ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro Teste' };
+    const mockAgendaFinanceiro = { ...initialAgendaFinanceiro, id: 1, data: 'Agenda Financeiro Teste' };
     mockAgendaFinanceiroService.fetchAgendaFinanceiroById.mockResolvedValue(mockAgendaFinanceiro);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useAgendaFinanceiroForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialAgendaFinanceiro, compromisso: 'Teste' });
+      result.current.setData({ ...initialAgendaFinanceiro, data: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useAgendaFinanceiroList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro 1' },
-      { ...initialAgendaFinanceiro, id: 2, compromisso: 'Agenda Financeiro 2' }
+      { ...initialAgendaFinanceiro, id: 1, data: 'Agenda Financeiro 1' },
+      { ...initialAgendaFinanceiro, id: 2, data: 'Agenda Financeiro 2' }
     ];
     mockAgendaFinanceiroService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useAgendaFinanceiroList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro Filtrado' }];
-    const filtro = { compromisso: 'Agenda Financeiro' };
+    const mockData = [{ ...initialAgendaFinanceiro, id: 1, data: 'Agenda Financeiro Filtrado' }];
+    const filtro = { data: 'Agenda Financeiro' };
     mockAgendaFinanceiroService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsAgendaFinanceiro', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsAgendaFinanceiro());
 
-    const validData = { ...initialAgendaFinanceiro, compromisso: 'Agenda Financeiro Válido' };
+    const validData = { ...initialAgendaFinanceiro, data: 'Agenda Financeiro Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsAgendaFinanceiro', () => {
   });
 
 
-  
+    test('deve invalidar data vazio', () => {
+    const { result } = renderHook(() => useValidationsAgendaFinanceiro());
+
+    const invalidData = { ...initialAgendaFinanceiro, data: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar data muito longo', () => {
+    const { result } = renderHook(() => useValidationsAgendaFinanceiro());
+
+    const invalidData = { 
+      ...initialAgendaFinanceiro, 
+      data: 'a'.repeat(-1+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Data não pode ter mais de -1 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsAgendaFinanceiro());
@@ -229,7 +250,7 @@ describe('useValidationsAgendaFinanceiro', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialAgendaFinanceiro, id: 1, compromisso: 'Agenda Financeiro Teste' }];
+    const mockData = [{ ...initialAgendaFinanceiro, id: 1, data: 'Agenda Financeiro Teste' }];
     mockAgendaFinanceiroService.getAll.mockResolvedValue(mockData);
     
 

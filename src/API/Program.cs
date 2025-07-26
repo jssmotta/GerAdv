@@ -52,7 +52,9 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
     builder.Services.AddHttpContextAccessor();
-    builder.Services.AddScoped<IUserService, UserService>();    
+    builder.Services.AddScoped<IUserService, UserService>();
+
+
 
     //builder.Services.AddSingleton<MenphisSI.DB.ITokenService, TokenService>();
 
@@ -68,6 +70,7 @@ try
     MenphisSI.GerAdv.Validations.AddServices.Add(builder);
     MenphisSI.GerAdv.Readers.AddServices.Add(builder);
     MenphisSI.GerAdv.Writers.AddServices.Add(builder);
+    MenphisSI.GerAdv.Entity.AddServices.Add(builder);
 
     // AppSettingsMediator.AddMediatorConfig(builder);
 

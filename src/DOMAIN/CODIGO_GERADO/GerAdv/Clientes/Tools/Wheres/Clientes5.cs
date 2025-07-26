@@ -48,6 +48,7 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
             CEP = dbRec.FCEP ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
+            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -71,12 +72,6 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
         {
             clientes.DtNasc = dbRec.FDtNasc;
             clientes.DtNasc_date = XDtNasc;
-        }
-
-        if (DateTime.TryParse(dbRec.FData, out DateTime XData))
-        {
-            clientes.Data = dbRec.FData;
-            clientes.Data_date = XData;
         }
 
         return clientes;

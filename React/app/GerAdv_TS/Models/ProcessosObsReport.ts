@@ -8,9 +8,9 @@ export interface ProcessosObsReport
 	processo : number;
 	historico : number;
 	data : string;
-	data_date? : Date;
 	observacao : string;
 	nropastaprocessos?: string;
+	datahistorico?: string;
 
 }
 

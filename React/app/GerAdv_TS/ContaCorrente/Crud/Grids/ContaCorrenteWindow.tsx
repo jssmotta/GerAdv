@@ -39,7 +39,7 @@ if (!isOpen)
   isOpen={isOpen}
   onClose={onClose}
   dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={795}
+  newHeight={773}
   newWidth={1250}
   mobile={isMobile}
   id={(selectedContaCorrente?.id ?? 0).toString()}

@@ -140,16 +140,9 @@ public partial class LigacoesService
             parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Status)}", ApplyWildCard(filtro.WildcardChar, filtro.Status)));
         }
 
-        if (!filtro.Data.IsEmpty())
+        if (!string.IsNullOrEmpty(filtro.Data))
         {
-            if (DateTime.TryParse(filtro.Data, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Data)}", dataParam));
-        }
-
-        if (!filtro.Data_end.IsEmpty())
-        {
-            if (DateTime.TryParse(filtro.Data_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Data)}_end", dataParam));
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.Urgente != int.MinValue)
@@ -277,15 +270,7 @@ public partial class LigacoesService
         cWhere.Append(filtro.Particular == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Particular}] = @{nameof(DBLigacoesDicInfo.Particular)}");
         cWhere.Append(filtro.Realizada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Realizada}] = @{nameof(DBLigacoesDicInfo.Realizada)}");
         cWhere.Append(filtro.Status.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Status}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Status)}");
-        if (!filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Data}], 103) >= CONVERT(DATE, @{nameof(DBLigacoesDicInfo.Data)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.Data.IsEmpty() && filtro.Data_end.IsEmpty()) ? string.Empty : (!(filtro.Data.IsEmpty()) && !(filtro.Data_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLigacoesDicInfo.Data} BETWEEN @{nameof(DBLigacoesDicInfo.Data)} AND @{nameof(DBLigacoesDicInfo.Data)}_end" : !(filtro.Data.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLigacoesDicInfo.Data} = @{nameof(DBLigacoesDicInfo.Data)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLigacoesDicInfo.Data} <= @{nameof(DBLigacoesDicInfo.Data)}_end");
-        }
-
+        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Data)}");
         cWhere.Append(filtro.Urgente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Urgente}] = @{nameof(DBLigacoesDicInfo.Urgente)}");
         cWhere.Append(filtro.LigarPara.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.LigarPara}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.LigarPara)}");
         cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Processo}] = @{nameof(DBLigacoesDicInfo.Processo)}");
