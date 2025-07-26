@@ -1,7 +1,0 @@
-// ReSharper disable once CheckNamespace
-namespace MenphisSI.GerAdv;
-public partial class DBAgendaFinanceiro
-{
-    [XmlIgnore]
-    public string MValorStr { get => m_FValor.ToString("0.00"); set => FValor = DevourerOne.ConvertString2Decimal(value); }
-}
