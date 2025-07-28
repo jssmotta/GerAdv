@@ -1,11 +1,8 @@
 ﻿global using Asp.Versioning;
-global using MenphisSI;
 global using MenphisSI.BaseCommon;
-global using System.ComponentModel.DataAnnotations;
-global using MenphisSI.WebApi.BaseCommon.Helpers;
-global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using NLog;
-global using System;
+global using System.ComponentModel.DataAnnotations;
 global using System.Text;
-global using System.Text.Json.Serialization;
+global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.AspNetCore.RateLimiting;

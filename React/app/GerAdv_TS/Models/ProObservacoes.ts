@@ -9,7 +9,6 @@ export interface ProObservacoes
 	nome : string;
 	observacoes : string;
 	data : string;
-	nropastaprocessos?: string;
 
 }
 

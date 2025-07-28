@@ -46,6 +46,15 @@ public partial class EnderecoSistemaController(IEnderecoSistemaService enderecos
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecoSistema? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"EnderecoSistema: GetListN called, max {max}, {filtro} uri");
+        var result = await _enderecosistemaService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

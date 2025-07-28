@@ -63,6 +63,9 @@ public partial record FilterContaCorrente
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("parcelax")]
     public int ParcelaX { get; set; } = int.MinValue;
 

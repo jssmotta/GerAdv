@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProPartesService(IOptions<AppSettings> appSettings, IFProPartesFactory propartesFactory, IProPartesReader reader, IProPartesValidation validation, IProPartesWriter writer, IProcessosReader processosReader, HybridCache cache, IMemoryCache memory) : IProPartesService, IDisposable
+public partial class ProPartesService(IOptions<AppSettings> appSettings, IFProPartesFactory propartesFactory, IProPartesReader reader, IProPartesValidation validation, IProPartesWriter writer, HybridCache cache, IMemoryCache memory) : IProPartesService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
@@ -16,7 +16,6 @@ public partial class ProPartesService(IOptions<AppSettings> appSettings, IFProPa
     private readonly IProPartesReader reader = reader;
     private readonly IProPartesValidation validation = validation;
     private readonly IProPartesWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<ProPartesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -105,7 +104,7 @@ public partial class ProPartesService(IOptions<AppSettings> appSettings, IFProPa
 
         try
         {
-            var validade = await validation.ValidateReg(regProPartes, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProPartes, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -145,7 +144,7 @@ public partial class ProPartesService(IOptions<AppSettings> appSettings, IFProPa
 
         try
         {
-            var validade = await validation.ValidateReg(regProPartes, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProPartes, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

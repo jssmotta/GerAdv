@@ -128,14 +128,6 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            proobservacoes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return proobservacoes;
     }
 
@@ -155,14 +147,6 @@ public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoes
             Data = dbRec.FData ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            proobservacoes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return proobservacoes;
     }
 }

@@ -124,14 +124,6 @@ public partial class ProCDAReader(IFProCDAFactory procdaFactory) : IProCDAReader
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            procda.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return procda;
     }
 
@@ -150,14 +142,6 @@ public partial class ProCDAReader(IFProCDAFactory procdaFactory) : IProCDAReader
             NroInterno = dbRec.FNroInterno ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            procda.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return procda;
     }
 }

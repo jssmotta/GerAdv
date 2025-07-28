@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProcessosObsReportService(IOptions<AppSettings> appSettings, IFProcessosObsReportFactory processosobsreportFactory, IProcessosObsReportReader reader, IProcessosObsReportValidation validation, IProcessosObsReportWriter writer, IProcessosReader processosReader, IHistoricoReader historicoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProcessosObsReportService, IDisposable
+public partial class ProcessosObsReportService(IOptions<AppSettings> appSettings, IFProcessosObsReportFactory processosobsreportFactory, IProcessosObsReportReader reader, IProcessosObsReportValidation validation, IProcessosObsReportWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProcessosObsReportService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,8 +17,6 @@ public partial class ProcessosObsReportService(IOptions<AppSettings> appSettings
     private readonly IProcessosObsReportReader reader = reader;
     private readonly IProcessosObsReportValidation validation = validation;
     private readonly IProcessosObsReportWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
-    private readonly IHistoricoReader historicoReader = historicoReader;
     public async Task<IEnumerable<ProcessosObsReportResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -111,7 +109,7 @@ public partial class ProcessosObsReportService(IOptions<AppSettings> appSettings
 
         try
         {
-            var validade = await validation.ValidateReg(regProcessosObsReport, this, processosReader, historicoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessosObsReport, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +150,7 @@ public partial class ProcessosObsReportService(IOptions<AppSettings> appSettings
 
         try
         {
-            var validade = await validation.ValidateReg(regProcessosObsReport, this, processosReader, historicoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessosObsReport, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

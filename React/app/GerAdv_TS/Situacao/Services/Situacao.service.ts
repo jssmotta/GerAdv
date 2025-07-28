@@ -25,7 +25,7 @@ export class SituacaoValidator {
 export interface ISituacaoService {
   fetchSituacaoById: (id: number) => Promise<ISituacao>;
   saveSituacao: (situacao: ISituacao) => Promise<ISituacao>;  
-  
+  getList: (filtro?: FilterSituacao) => Promise<ISituacao[]>;
   getAll: (filtro?: FilterSituacao) => Promise<ISituacao[]>;
   deleteSituacao: (id: number) => Promise<void>;
   validateSituacao: (situacao: ISituacao) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class SituacaoService implements ISituacaoService {
   }
 
   
+    async getList(filtro?: FilterSituacao): Promise<ISituacao[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Situacao list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

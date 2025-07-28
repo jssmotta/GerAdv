@@ -24,6 +24,9 @@ public partial record FilterProPartes
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 

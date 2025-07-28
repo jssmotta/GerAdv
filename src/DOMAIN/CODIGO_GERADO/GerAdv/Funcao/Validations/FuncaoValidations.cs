@@ -32,7 +32,7 @@ public class FuncaoValidation : IFuncaoValidation
 
     private bool ValidSizes(Models.Funcao reg)
     {
-        if (reg.Descricao.Length > 40)
+        if (reg.Descricao != null && reg.Descricao.Length > 40)
             throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
         return true;
     }

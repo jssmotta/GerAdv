@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IParteClienteOutrasValidation
 {
-    Task<bool> ValidateReg(Models.ParteClienteOutras reg, IParteClienteOutrasService service, IOutrasPartesClienteReader outraspartesclienteReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ParteClienteOutras reg, IParteClienteOutrasService service, IOutrasPartesClienteReader outraspartesclienteReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IParteClienteOutrasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -29,7 +29,7 @@ public class ParteClienteOutrasValidation : IParteClienteOutrasValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ParteClienteOutras reg, IParteClienteOutrasService service, IOutrasPartesClienteReader outraspartesclienteReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ParteClienteOutras reg, IParteClienteOutrasService service, IOutrasPartesClienteReader outraspartesclienteReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -43,16 +43,6 @@ public class ParteClienteOutrasValidation : IParteClienteOutrasValidation
             if (regOutrasPartesCliente == null || regOutrasPartesCliente.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Outras Partes Cliente não encontrado ({regOutrasPartesCliente?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

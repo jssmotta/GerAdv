@@ -18,6 +18,9 @@ public partial record FilterProSucumbencia
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("instancia")]
     public int Instancia { get; set; } = int.MinValue;
 

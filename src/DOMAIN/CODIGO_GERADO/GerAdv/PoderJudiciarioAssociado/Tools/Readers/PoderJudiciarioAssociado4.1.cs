@@ -15,7 +15,7 @@ public partial class PoderJudiciarioAssociadoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBPoderJudiciarioAssociadoDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBPoderJudiciarioAssociadoDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,13 +23,18 @@ public partial class PoderJudiciarioAssociadoReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],[{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}],[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Nome}],[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}],[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
+                   {campos}, 
+[{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],
+[{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}],
+[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Nome}],
+[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}],
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
                    FROM {DBPoderJudiciarioAssociado.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJustica.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Justica}]
-LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAreaDicInfo.PTabelaNome}].[{DBArea.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Area}]
-LEFT JOIN {DBTribunalDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTribunalDicInfo.PTabelaNome}].[{DBTribunal.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Tribunal}]
-LEFT JOIN {DBForoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBForoDicInfo.PTabelaNome}].[{DBForo.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Foro}]
-LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Cidade}]
+                   LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Justica}]
+LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Area}]
+LEFT JOIN {DBTribunalDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Tribunal}]
+LEFT JOIN {DBForoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Foro}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBPoderJudiciarioAssociadoDicInfo.PTabelaNome}].[{DBPoderJudiciarioAssociadoDicInfo.Cidade}]
  
                    {cWhere}
                    {orderQuery}

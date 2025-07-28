@@ -15,7 +15,7 @@ public partial class GUTAtividadesMatrizReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBGUTAtividadesMatrizDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBGUTAtividadesMatrizDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,10 +23,12 @@ public partial class GUTAtividadesMatrizReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBGUTMatrizDicInfo.PTabelaNome}].[{DBGUTMatrizDicInfo.Descricao}],[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Nome}]
+                   {campos}, 
+[{DBGUTMatrizDicInfo.PTabelaNome}].[{DBGUTMatrizDicInfo.Descricao}],
+[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Nome}]
                    FROM {DBGUTAtividadesMatriz.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBGUTMatrizDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTMatrizDicInfo.PTabelaNome}].[{DBGUTMatriz.CampoCodigo}]=[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTMatriz}]
-LEFT JOIN {DBGUTAtividadesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividades.CampoCodigo}]=[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTAtividade}]
+                   LEFT JOIN {DBGUTMatrizDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTMatrizDicInfo.PTabelaNome}].[{DBGUTMatrizDicInfo.CampoCodigo}]=[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTMatriz}]
+LEFT JOIN {DBGUTAtividadesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.CampoCodigo}]=[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTAtividade}]
  
                    {cWhere}
                    {orderQuery}

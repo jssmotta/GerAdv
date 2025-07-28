@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperadorFactory operadorFactory, IOperadorReader reader, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAlarmSMSService alarmsmsService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IContatoCRMService contatocrmService, IContatoCRMOperadorService contatocrmoperadorService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, IReuniaoPessoasService reuniaopessoasService, ISMSAliceService smsaliceService, IStatusBiuService statusbiuService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOperadorService, IDisposable
+public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperadorFactory operadorFactory, IOperadorReader reader, IOperadorValidation validation, IOperadorWriter writer, IStatusBiuReader statusbiuReader, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, IStatusBiuService statusbiuService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOperadorService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,23 +19,17 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
     private readonly IOperadorWriter writer = writer;
     private readonly IStatusBiuReader statusbiuReader = statusbiuReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
-    private readonly IAlarmSMSService alarmsmsService = alarmsmsService;
     private readonly IAlertasService alertasService = alertasService;
     private readonly IAlertasEnviadosService alertasenviadosService = alertasenviadosService;
-    private readonly IContatoCRMService contatocrmService = contatocrmService;
-    private readonly IContatoCRMOperadorService contatocrmoperadorService = contatocrmoperadorService;
     private readonly IDiario2Service diario2Service = diario2Service;
     private readonly IGUTAtividadesService gutatividadesService = gutatividadesService;
     private readonly IOperadorEMailPopupService operadoremailpopupService = operadoremailpopupService;
     private readonly IOperadorGrupoService operadorgrupoService = operadorgrupoService;
     private readonly IOperadorGruposAgendaService operadorgruposagendaService = operadorgruposagendaService;
-    private readonly IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService = operadorgruposagendaoperadoresService;
     private readonly IPontoVirtualService pontovirtualService = pontovirtualService;
     private readonly IPontoVirtualAcessosService pontovirtualacessosService = pontovirtualacessosService;
     private readonly IProcessosParadosService processosparadosService = processosparadosService;
     private readonly IProcessOutputRequestService processoutputrequestService = processoutputrequestService;
-    private readonly IReuniaoPessoasService reuniaopessoasService = reuniaopessoasService;
     private readonly ISMSAliceService smsaliceService = smsaliceService;
     private readonly IStatusBiuService statusbiuService = statusbiuService;
     public async Task<IEnumerable<OperadorResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -227,7 +221,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, alarmsmsService, alertasService, alertasenviadosService, contatocrmService, contatocrmoperadorService, diario2Service, gutatividadesService, operadoremailpopupService, operadorgrupoService, operadorgruposagendaService, operadorgruposagendaoperadoresService, pontovirtualService, pontovirtualacessosService, processosparadosService, processoutputrequestService, reuniaopessoasService, smsaliceService, statusbiuService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, alertasService, alertasenviadosService, diario2Service, gutatividadesService, operadoremailpopupService, operadorgrupoService, operadorgruposagendaService, pontovirtualService, pontovirtualacessosService, processosparadosService, processoutputrequestService, smsaliceService, statusbiuService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

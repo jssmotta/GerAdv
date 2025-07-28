@@ -26,7 +26,7 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
 
     private bool ValidSizes(Models.GUTAtividadesMatriz reg)
     {
-        if (reg.GUID.Length > 50)
+        if (reg.GUID != null && reg.GUID.Length > 50)
             throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
         return true;
     }
@@ -35,6 +35,10 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
+        if (await IsDuplicado(reg, service, uri))
+            throw new SGValidationException($"G U T Atividades Matriz '{reg.GUID}' GUTAtividade e/ou GUTMatriz");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -63,5 +67,11 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
         }
 
         return true;
+    }
+
+    private async Task<bool> IsDuplicado(Models.GUTAtividadesMatriz reg, IGUTAtividadesMatrizService service, string uri)
+    {
+        var existingGUTAtividadesMatriz = (await service.Filter(new Filters.FilterGUTAtividadesMatriz { GUTAtividade = reg.GUTAtividade, GUTMatriz = reg.GUTMatriz }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingGUTAtividadesMatriz != null && existingGUTAtividadesMatriz.Id > 0 && existingGUTAtividadesMatriz.Id != reg.Id;
     }
 }

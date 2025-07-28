@@ -4,7 +4,6 @@
                     export enum FieldsLigacoes
 {	cliente = `Cliente`,
 	ramal = `Ramal`,
-	processo = `Processo`,
 	assunto = `Assunto`,
 	ageclienteavisado = `AgeClienteAvisado`,
 	celular = `Celular`,
@@ -26,6 +25,7 @@
 	hora = `Hora`,
 	urgente = `Urgente`,
 	ligarpara = `LigarPara`,
+	processo = `Processo`,
 	startscreen = `StartScreen`,
 	emotion = `Emotion`,
 	guid = `GUID`,

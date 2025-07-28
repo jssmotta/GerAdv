@@ -26,9 +26,9 @@ public class GraphValidation : IGraphValidation
 
     private bool ValidSizes(Models.Graph reg)
     {
-        if (reg.Tabela.Length > 80)
+        if (reg.Tabela != null && reg.Tabela.Length > 80)
             throw new SGValidationException($"Tabela deve ter no máximo 80 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }
@@ -37,6 +37,10 @@ public class GraphValidation : IGraphValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
+        if (await IsDuplicado(reg, service, uri))
+            throw new SGValidationException($"Graph '{reg.GUID}' Tabela e/ou TabelaId");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -44,11 +48,16 @@ public class GraphValidation : IGraphValidation
             throw new SGValidationException("Tabela é obrigatório.");
         if (reg.TabelaId == 0)
             throw new SGValidationException("TabelaId é obrigatório.");
-        if (reg.Imagem.IsEmpty())
+        if (reg.Imagem.Length == 0)
             throw new SGValidationException("Imagem é obrigatório.");
         if (reg.GUID.IsEmpty())
             throw new SGValidationException("GUID é obrigatório.");
-        await Task.Delay(0);
         return true;
+    }
+
+    private async Task<bool> IsDuplicado(Models.Graph reg, IGraphService service, string uri)
+    {
+        var existingGraph = (await service.Filter(new Filters.FilterGraph { Tabela = reg.Tabela, TabelaId = reg.TabelaId }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingGraph != null && existingGraph.Id > 0 && existingGraph.Id != reg.Id;
     }
 }

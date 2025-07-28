@@ -23,9 +23,10 @@ public partial class ReuniaoReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
+                   {campos}, 
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBReuniao.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Cliente}]
+                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Cliente}]
  
                    {cWhere}
                    {orderQuery}

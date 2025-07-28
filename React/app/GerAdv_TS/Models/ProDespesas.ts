@@ -6,11 +6,11 @@ export interface ProDespesas
 {
     id: number;
 	cliente : number;
-	processo : number;
 	ligacaoid : number;
 	corrigido : boolean;
 	data : string;
 	valororiginal : number;
+	processo : number;
 	quitado : number;
 	datacorrecao : string;
 	datacorrecao_date? : Date;
@@ -19,7 +19,6 @@ export interface ProDespesas
 	historico : string;
 	livrocaixa : boolean;
 	nomeclientes?: string;
-	nropastaprocessos?: string;
 
 }
 
@@ -30,11 +29,11 @@ export function ProDespesasEmpty(): IProDespesas {
     return {
         id: 0,
 		cliente: 0,
-		processo: 0,
 		ligacaoid: 0,
 		corrigido: false,
 		data: '',
 		valororiginal: 0,
+		processo: 0,
 		quitado: 0,
 		datacorrecao: '',
 		valor: 0,
@@ -50,11 +49,11 @@ export function ProDespesasTestEmpty(): IProDespesas {
     return {
         id: 1,
 		cliente: 1,
-		processo: 1,
 		ligacaoid: 1,
 		corrigido: true,
 		data: 'X',
 		valororiginal: 1,
+		processo: 1,
 		quitado: 1,
 		datacorrecao: 'X',
 		valor: 1,

@@ -168,7 +168,10 @@ export function useValidationsParceriaProc() {
     
       try {
    
-        
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+
 
 
         return { isValid: true, message: '' };

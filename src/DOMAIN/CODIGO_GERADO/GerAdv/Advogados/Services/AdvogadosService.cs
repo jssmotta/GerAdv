@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvogadosFactory advogadosFactory, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IAgendaRepetirService agendarepetirService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProcessosService processosService, IProProcuradoresService proprocuradoresService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAdvogadosService, IDisposable
+public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvogadosFactory advogadosFactory, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaQuemService agendaquemService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAdvogadosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,13 +21,10 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
     private readonly IEscritoriosReader escritoriosReader = escritoriosReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
     private readonly IAgendaQuemService agendaquemService = agendaquemService;
-    private readonly IAgendaRepetirService agendarepetirService = agendarepetirService;
     private readonly IContratosService contratosService = contratosService;
     private readonly IHorasTrabService horastrabService = horastrabService;
     private readonly IParceriaProcService parceriaprocService = parceriaprocService;
-    private readonly IProcessosService processosService = processosService;
     private readonly IProProcuradoresService proprocuradoresService = proprocuradoresService;
     public async Task<IEnumerable<AdvogadosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -207,7 +204,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, agendaquemService, agendarepetirService, contratosService, horastrabService, parceriaprocService, processosService, proprocuradoresService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendaquemService, contratosService, horastrabService, parceriaprocService, proprocuradoresService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

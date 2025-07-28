@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class LigacoesService(IOptions<AppSettings> appSettings, IFLigacoesFactory ligacoesFactory, ILigacoesReader reader, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, IRecadosService recadosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ILigacoesService, IDisposable
+public partial class LigacoesService(IOptions<AppSettings> appSettings, IFLigacoesFactory ligacoesFactory, ILigacoesReader reader, ILigacoesValidation validation, ILigacoesWriter writer, IClientesReader clientesReader, IRamalReader ramalReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ILigacoesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,8 +19,6 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, IFLigaco
     private readonly ILigacoesWriter writer = writer;
     private readonly IClientesReader clientesReader = clientesReader;
     private readonly IRamalReader ramalReader = ramalReader;
-    private readonly IProcessosReader processosReader = processosReader;
-    private readonly IRecadosService recadosService = recadosService;
     public async Task<IEnumerable<LigacoesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -113,7 +111,7 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, IFLigaco
 
         try
         {
-            var validade = await validation.ValidateReg(regLigacoes, this, clientesReader, ramalReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regLigacoes, this, clientesReader, ramalReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -154,7 +152,7 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, IFLigaco
 
         try
         {
-            var validade = await validation.ValidateReg(regLigacoes, this, clientesReader, ramalReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regLigacoes, this, clientesReader, ramalReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -199,7 +197,7 @@ public partial class LigacoesService(IOptions<AppSettings> appSettings, IFLigaco
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, recadosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

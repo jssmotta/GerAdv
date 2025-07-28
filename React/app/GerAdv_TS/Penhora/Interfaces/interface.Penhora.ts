@@ -7,8 +7,8 @@ export interface IPenhora {
 // 202501251
     id: number;
  
-	processo: number,
 	penhorastatus: number,
+	processo: number,
 	nome: string,
 	descricao: string,
 	datapenhora: string,

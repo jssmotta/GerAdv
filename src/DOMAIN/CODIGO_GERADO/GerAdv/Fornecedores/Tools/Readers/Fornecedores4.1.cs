@@ -23,9 +23,10 @@ public partial class FornecedoresReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
+                   {campos}, 
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
                    FROM {DBFornecedores.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBFornecedoresDicInfo.PTabelaNome}].[{DBFornecedoresDicInfo.Cidade}]
+                   LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBFornecedoresDicInfo.PTabelaNome}].[{DBFornecedoresDicInfo.Cidade}]
  
                    {cWhere}
                    {orderQuery}

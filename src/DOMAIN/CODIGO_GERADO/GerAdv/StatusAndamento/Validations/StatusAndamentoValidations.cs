@@ -9,29 +9,26 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IStatusAndamentoValidation
 {
     Task<bool> ValidateReg(Models.StatusAndamento reg, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IStatusAndamentoService service, IHistoricoService historicoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class StatusAndamentoValidation : IStatusAndamentoValidation
 {
-    public async Task<bool> CanDelete(int id, IStatusAndamentoService service, IHistoricoService historicoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var historicoExists0 = await historicoService.Filter(new Filters.FilterHistorico { StatusAndamento = id }, uri);
-        if (historicoExists0 != null && historicoExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.StatusAndamento reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

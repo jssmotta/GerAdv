@@ -5,18 +5,18 @@
 {
     operator?: string;
     wildcardChar?: string;
- data_end?: string;
- data?: string;
-    processo?: number;
-    processo_end?: number;
- paranome?: string;
- parapessoas?: string;
- boxaudiencia?: string;
- boxaudienciamobile?: string;
- nomeadvogado?: string;
- nomeforo?: string;
- nomejustica?: string;
- nomearea?: string;
+ vqadata_end?: string;
+ vqadata?: string;
+    vqaprocesso?: number;
+    vqaprocesso_end?: number;
+ xxxparanome?: string;
+ xxxparapessoas?: string;
+ xxxboxaudiencia?: string;
+ xxxboxaudienciamobile?: string;
+ xxxnomeadvogado?: string;
+ xxxnomeforo?: string;
+ xxxnomejustica?: string;
+ xxxnomearea?: string;
     codigo_filtro?: number;
     codigo_filtro_end?: number;
 }
@@ -24,18 +24,18 @@
 export class FilterAgendaRelatorioDefaults implements FilterAgendaRelatorio {
     logicalOperator?: string = ' AND ';
     wildcardChar?: string = '';
-    data_end?: string = '';
-    data?: string = '';
-    processo?: number = -2147483648;
-    processo_end?: number = -2147483648;
-    paranome?: string = '';
-    parapessoas?: string = '';
-    boxaudiencia?: string = '';
-    boxaudienciamobile?: string = '';
-    nomeadvogado?: string = '';
-    nomeforo?: string = '';
-    nomejustica?: string = '';
-    nomearea?: string = '';
+    vqadata_end?: string = '';
+    vqadata?: string = '';
+    vqaprocesso?: number = -2147483648;
+    vqaprocesso_end?: number = -2147483648;
+    xxxparanome?: string = '';
+    xxxparapessoas?: string = '';
+    xxxboxaudiencia?: string = '';
+    xxxboxaudienciamobile?: string = '';
+    xxxnomeadvogado?: string = '';
+    xxxnomeforo?: string = '';
+    xxxnomejustica?: string = '';
+    xxxnomearea?: string = '';
     codigo_filtro?: number = -2147483648;
     codigo_filtro_end?: number = -2147483648;
 }

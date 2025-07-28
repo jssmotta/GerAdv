@@ -6,10 +6,10 @@ export interface HonorariosDadosContrato
 {
     id: number;
 	cliente : number;
-	processo : number;
 	fixo : boolean;
 	variavel : boolean;
 	percsucesso : number;
+	processo : number;
 	arquivocontrato : string;
 	textocontrato : string;
 	valorfixo : number;
@@ -17,7 +17,6 @@ export interface HonorariosDadosContrato
 	datacontrato : string;
 	datacontrato_date? : Date;
 	nomeclientes?: string;
-	nropastaprocessos?: string;
 
 }
 
@@ -28,10 +27,10 @@ export function HonorariosDadosContratoEmpty(): IHonorariosDadosContrato {
     return {
         id: 0,
 		cliente: 0,
-		processo: 0,
 		fixo: false,
 		variavel: false,
 		percsucesso: 0,
+		processo: 0,
 		arquivocontrato: '',
 		textocontrato: '',
 		valorfixo: 0,
@@ -46,10 +45,10 @@ export function HonorariosDadosContratoTestEmpty(): IHonorariosDadosContrato {
     return {
         id: 1,
 		cliente: 1,
-		processo: 1,
 		fixo: true,
 		variavel: true,
 		percsucesso: 1,
+		processo: 1,
 		arquivocontrato: 'X',
 		textocontrato: 'X',
 		valorfixo: 1,

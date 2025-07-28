@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocumentosFactory documentosFactory, IDocumentosReader reader, IDocumentosValidation validation, IDocumentosWriter writer, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IDocumentosService, IDisposable
+public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocumentosFactory documentosFactory, IDocumentosReader reader, IDocumentosValidation validation, IDocumentosWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IDocumentosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
     private readonly IDocumentosReader reader = reader;
     private readonly IDocumentosValidation validation = validation;
     private readonly IDocumentosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<DocumentosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -110,7 +109,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
 
         try
         {
-            var validade = await validation.ValidateReg(regDocumentos, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regDocumentos, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -151,7 +150,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
 
         try
         {
-            var validade = await validation.ValidateReg(regDocumentos, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regDocumentos, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

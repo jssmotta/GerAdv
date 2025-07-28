@@ -9,7 +9,6 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterProResumos } from '@/app/GerAdv_TS/ProResumos/Filters/ProResumos';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 interface UseProResumosFilterProps {
   handleFetchWithFilter: (filtro?: FilterProResumos | undefined | null) => Promise<void>;
 }
@@ -56,13 +55,26 @@ export const useProResumosFilter = ({ handleFetchWithFilter }: UseProResumosFilt
   // Função para renderizar os campos de filtro
   const renderInputFilters = (handlers: FilterHandlers<FilterProResumos>) => (
   <>
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

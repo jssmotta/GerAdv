@@ -5,9 +5,9 @@
 export interface Terceiros
 {
     id: number;
-	processo : number;
 	situacao : number;
 	cidade : number;
+	processo : number;
 	nome : string;
 	endereco : string;
 	bairro : string;
@@ -19,7 +19,6 @@ export interface Terceiros
 	class : string;
 	varaforocomarca : string;
 	sexo : boolean;
-	nropastaprocessos?: string;
 	descricaoposicaooutraspartes?: string;
 	nomecidade?: string;
 
@@ -31,9 +30,9 @@ export function TerceirosEmpty(): ITerceiros {
     
     return {
         id: 0,
-		processo: 0,
 		situacao: 0,
 		cidade: 0,
+		processo: 0,
 		nome: '',
 		endereco: '',
 		bairro: '',
@@ -53,9 +52,9 @@ export function TerceirosTestEmpty(): ITerceiros {
     
     return {
         id: 1,
-		processo: 1,
 		situacao: 1,
 		cidade: 1,
+		processo: 1,
 		nome: 'X',
 		endereco: 'X',
 		bairro: 'X',

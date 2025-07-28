@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProDepositosService(IOptions<AppSettings> appSettings, IFProDepositosFactory prodepositosFactory, IProDepositosReader reader, IProDepositosValidation validation, IProDepositosWriter writer, IProcessosReader processosReader, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProDepositosService, IDisposable
+public partial class ProDepositosService(IOptions<AppSettings> appSettings, IFProDepositosFactory prodepositosFactory, IProDepositosReader reader, IProDepositosValidation validation, IProDepositosWriter writer, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProDepositosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ProDepositosService(IOptions<AppSettings> appSettings, IFPr
     private readonly IProDepositosReader reader = reader;
     private readonly IProDepositosValidation validation = validation;
     private readonly IProDepositosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IFaseReader faseReader = faseReader;
     private readonly ITipoProDespositoReader tipoprodespositoReader = tipoprodespositoReader;
     public async Task<IEnumerable<ProDepositosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -112,7 +111,7 @@ public partial class ProDepositosService(IOptions<AppSettings> appSettings, IFPr
 
         try
         {
-            var validade = await validation.ValidateReg(regProDepositos, this, processosReader, faseReader, tipoprodespositoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProDepositos, this, faseReader, tipoprodespositoReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -153,7 +152,7 @@ public partial class ProDepositosService(IOptions<AppSettings> appSettings, IFPr
 
         try
         {
-            var validade = await validation.ValidateReg(regProDepositos, this, processosReader, faseReader, tipoprodespositoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProDepositos, this, faseReader, tipoprodespositoReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

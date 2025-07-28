@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettings, IFProcessOutputRequestFactory processoutputrequestFactory, IProcessOutputRequestReader reader, IProcessOutputRequestValidation validation, IProcessOutputRequestWriter writer, IProcessOutputEngineReader processoutputengineReader, IOperadorReader operadorReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProcessOutputRequestService, IDisposable
+public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettings, IFProcessOutputRequestFactory processoutputrequestFactory, IProcessOutputRequestReader reader, IProcessOutputRequestValidation validation, IProcessOutputRequestWriter writer, IProcessOutputEngineReader processoutputengineReader, IOperadorReader operadorReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProcessOutputRequestService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
     private readonly IProcessOutputRequestWriter writer = writer;
     private readonly IProcessOutputEngineReader processoutputengineReader = processoutputengineReader;
     private readonly IOperadorReader operadorReader = operadorReader;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<ProcessOutputRequestResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -112,7 +111,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
 
         try
         {
-            var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -153,7 +152,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
 
         try
         {
-            var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ContratosService(IOptions<AppSettings> appSettings, IFContratosFactory contratosFactory, IContratosReader reader, IContratosValidation validation, IContratosWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IContratosService, IDisposable
+public partial class ContratosService(IOptions<AppSettings> appSettings, IFContratosFactory contratosFactory, IContratosReader reader, IContratosValidation validation, IContratosWriter writer, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IContratosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
     private readonly IContratosReader reader = reader;
     private readonly IContratosValidation validation = validation;
     private readonly IContratosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IClientesReader clientesReader = clientesReader;
     private readonly IAdvogadosReader advogadosReader = advogadosReader;
     public async Task<IEnumerable<ContratosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -112,7 +111,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
 
         try
         {
-            var validade = await validation.ValidateReg(regContratos, this, processosReader, clientesReader, advogadosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regContratos, this, clientesReader, advogadosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -153,7 +152,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
 
         try
         {
-            var validade = await validation.ValidateReg(regContratos, this, processosReader, clientesReader, advogadosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regContratos, this, clientesReader, advogadosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

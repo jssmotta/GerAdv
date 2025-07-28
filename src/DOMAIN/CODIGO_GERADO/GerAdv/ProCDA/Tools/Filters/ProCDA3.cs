@@ -18,6 +18,9 @@ public partial record FilterProCDA
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("nome")]
     public string Nome { get; set; } = string.Empty;
 

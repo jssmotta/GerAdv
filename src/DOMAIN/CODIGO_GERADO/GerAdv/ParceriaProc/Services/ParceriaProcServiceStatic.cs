@@ -21,6 +21,11 @@ public partial class ParceriaProcService
             parameters.Add(new($"@{nameof(DBParceriaProcDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBParceriaProcDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.GUID))
         {
             parameters.Add(new($"@{nameof(DBParceriaProcDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
@@ -43,7 +48,15 @@ public partial class ParceriaProcService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.Advogado}] = @{nameof(DBParceriaProcDicInfo.Advogado)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.Processo}] = @{nameof(DBParceriaProcDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.Processo}] >= @{nameof(DBParceriaProcDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBParceriaProcDicInfo.Processo} BETWEEN @{nameof(DBParceriaProcDicInfo.Processo)} AND @{nameof(DBParceriaProcDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBParceriaProcDicInfo.Processo} = @{nameof(DBParceriaProcDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBParceriaProcDicInfo.Processo} <= @{nameof(DBParceriaProcDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBParceriaProcDicInfo.GUID)}");
         if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
         {
@@ -65,6 +78,46 @@ public partial class ParceriaProcService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterParceriaProc? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ParceriaProc-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBParceriaProcDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

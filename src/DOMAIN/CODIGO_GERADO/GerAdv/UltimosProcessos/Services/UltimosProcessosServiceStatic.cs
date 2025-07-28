@@ -16,6 +16,11 @@ public partial class UltimosProcessosService
             parameters.Add(new($"@{nameof(DBUltimosProcessosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBUltimosProcessosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!filtro.Quando.IsEmpty())
         {
             if (DateTime.TryParse(filtro.Quando, out var dataParam))
@@ -54,7 +59,15 @@ public partial class UltimosProcessosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUltimosProcessosDicInfo.PTabelaNome}].[{DBUltimosProcessosDicInfo.Processo}] = @{nameof(DBUltimosProcessosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUltimosProcessosDicInfo.PTabelaNome}].[{DBUltimosProcessosDicInfo.Processo}] >= @{nameof(DBUltimosProcessosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBUltimosProcessosDicInfo.Processo} BETWEEN @{nameof(DBUltimosProcessosDicInfo.Processo)} AND @{nameof(DBUltimosProcessosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBUltimosProcessosDicInfo.Processo} = @{nameof(DBUltimosProcessosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBUltimosProcessosDicInfo.Processo} <= @{nameof(DBUltimosProcessosDicInfo.Processo)}_end");
+        }
+
         if (!filtro.Quando.IsEmpty() && filtro.Quando_end.IsEmpty())
         {
             cWhere.Append(filtro.Quando.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBUltimosProcessosDicInfo.PTabelaNome}].[{DBUltimosProcessosDicInfo.Quando}], 103) >= CONVERT(DATE, @{nameof(DBUltimosProcessosDicInfo.Quando)}, 103)");

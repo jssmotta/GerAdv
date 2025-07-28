@@ -14,28 +14,28 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - prrProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
-        /// Historico - prrHistorico  
-        /// </summary>
-        [JsonPropertyName("historico")]
-        public int Historico { get; set; }
-
-        /// <summary>
         /// Data - prrData  
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
         /// <summary>
+        /// Processo - prrProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
+
+        /// <summary>
         /// Observacao - prrObservacao - tamanho máximo: 2048 
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
+
+        /// <summary>
+        /// Historico - prrHistorico  
+        /// </summary>
+        [JsonPropertyName("historico")]
+        public int Historico { get; set; }
     }
 }
 
@@ -48,22 +48,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - prrProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
-        /// Historico - prrHistorico  
-        /// </summary>
-        [JsonPropertyName("historico")]
-        public int Historico { get; set; }
-
-        /// <summary>
         /// Data - prrData  
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
+
+        /// <summary>
+        /// Processo - prrProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Observacao - prrObservacao - tamanho máximo: 2048 
@@ -71,7 +65,10 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
 
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
+        /// <summary>
+        /// Historico - prrHistorico  
+        /// </summary>
+        [JsonPropertyName("historico")]
+        public int Historico { get; set; }
     }
 }

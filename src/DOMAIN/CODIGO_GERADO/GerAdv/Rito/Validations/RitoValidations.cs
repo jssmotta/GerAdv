@@ -9,29 +9,26 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IRitoValidation
 {
     Task<bool> ValidateReg(Models.Rito reg, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IRitoService service, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class RitoValidation : IRitoValidation
 {
-    public async Task<bool> CanDelete(int id, IRitoService service, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var processosExists0 = await processosService.Filter(new Filters.FilterProcessos { Rito = id }, uri);
-        if (processosExists0 != null && processosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Rito reg)
     {
-        if (reg.Descricao.Length > 20)
+        if (reg.Descricao != null && reg.Descricao.Length > 20)
             throw new SGValidationException($"Descricao deve ter no máximo 20 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

@@ -15,7 +15,7 @@ public partial class GUTPeriodicidadeStatusReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBGUTPeriodicidadeStatusDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBGUTPeriodicidadeStatusDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,9 +23,10 @@ public partial class GUTPeriodicidadeStatusReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Nome}]
+                   {campos}, 
+[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Nome}]
                    FROM {DBGUTPeriodicidadeStatus.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBGUTAtividadesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividades.CampoCodigo}]=[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.GUTAtividade}]
+                   LEFT JOIN {DBGUTAtividadesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.CampoCodigo}]=[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.GUTAtividade}]
  
                    {cWhere}
                    {orderQuery}

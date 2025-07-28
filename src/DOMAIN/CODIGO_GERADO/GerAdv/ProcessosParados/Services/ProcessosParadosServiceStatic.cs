@@ -16,6 +16,11 @@ public partial class ProcessosParadosService
             parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Semana != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.Semana)}", filtro.Semana));
@@ -93,7 +98,15 @@ public partial class ProcessosParadosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Processo}] = @{nameof(DBProcessosParadosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Processo}] >= @{nameof(DBProcessosParadosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Processo} BETWEEN @{nameof(DBProcessosParadosDicInfo.Processo)} AND @{nameof(DBProcessosParadosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Processo} = @{nameof(DBProcessosParadosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Processo} <= @{nameof(DBProcessosParadosDicInfo.Processo)}_end");
+        }
+
         if (!filtro.Semana.IsEmpty() && filtro.Semana_end.IsEmpty())
         {
             cWhere.Append(filtro.Semana <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Semana}] >= @{nameof(DBProcessosParadosDicInfo.Semana)}");

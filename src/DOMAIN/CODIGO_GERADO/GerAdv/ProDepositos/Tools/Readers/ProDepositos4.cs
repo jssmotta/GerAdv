@@ -130,14 +130,6 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
         };
         try
         {
-            prodepositos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             prodepositos.DescricaoFase = dr[DBFaseDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -171,14 +163,6 @@ public partial class ProDepositosReader(IFProDepositosFactory prodepositosFactor
             Valor = dbRec.FValor,
             TipoProDesposito = dbRec.FTipoProDesposito,
         };
-        try
-        {
-            prodepositos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         try
         {
             prodepositos.DescricaoFase = dr[DBFaseDicInfo.CampoNome]?.ToString() ?? string.Empty;

@@ -23,11 +23,9 @@ public partial class ProcessosObsReportReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBHistoricoDicInfo.PTabelaNome}].[{DBHistoricoDicInfo.Data}]
+                   {campos}
                    FROM {DBProcessosObsReport.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Processo}]
-LEFT JOIN {DBHistoricoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBHistoricoDicInfo.PTabelaNome}].[{DBHistorico.CampoCodigo}]=[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Historico}]
- 
+                    
                    {cWhere}
                    {orderQuery}
                    OPTION (OPTIMIZE FOR UNKNOWN)";

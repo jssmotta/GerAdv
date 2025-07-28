@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactory foroFactory, IForoReader reader, IForoValidation validation, IForoWriter writer, ICidadeReader cidadeReader, IAgendaRecordsService agendarecordsService, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IForoService, IDisposable
+public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactory foroFactory, IForoReader reader, IForoValidation validation, IForoWriter writer, ICidadeReader cidadeReader, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IForoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
     private readonly IForoValidation validation = validation;
     private readonly IForoWriter writer = writer;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    private readonly IAgendaRecordsService agendarecordsService = agendarecordsService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly IInstanciaService instanciaService = instanciaService;
     private readonly IPoderJudiciarioAssociadoService poderjudiciarioassociadoService = poderjudiciarioassociadoService;
@@ -200,7 +199,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendarecordsService, divisaotribunalService, instanciaService, poderjudiciarioassociadoService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, instanciaService, poderjudiciarioassociadoService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -8,8 +8,8 @@ export interface IProProcuradores {
     id: number;
  
 	advogado: number,
-	processo: number,
 	nome: string,
+	processo: number,
 	data: string,
 	substabelecimento: boolean,
 	procuracao: boolean,

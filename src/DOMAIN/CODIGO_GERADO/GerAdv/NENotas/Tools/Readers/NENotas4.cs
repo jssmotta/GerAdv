@@ -160,14 +160,6 @@ public partial class NENotasReader(IFNENotasFactory nenotasFactory) : INENotasRe
         {
         }
 
-        try
-        {
-            nenotas.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return nenotas;
     }
 
@@ -196,14 +188,6 @@ public partial class NENotasReader(IFNENotasFactory nenotasFactory) : INENotasRe
         try
         {
             nenotas.NroProcessoInstancia = dr[DBInstanciaDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            nenotas.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

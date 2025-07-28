@@ -2,6 +2,6 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProPartes
-{	processo = `Processo`,
-	parte = `Parte`,
+{	parte = `Parte`,
+	processo = `Processo`,
 }

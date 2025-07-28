@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IFTipoContatoCRMFactory tipocontatocrmFactory, ITipoContatoCRMReader reader, ITipoContatoCRMValidation validation, ITipoContatoCRMWriter writer, IContatoCRMService contatocrmService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoContatoCRMService, IDisposable
+public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IFTipoContatoCRMFactory tipocontatocrmFactory, ITipoContatoCRMReader reader, ITipoContatoCRMValidation validation, ITipoContatoCRMWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoContatoCRMService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IF
     private readonly ITipoContatoCRMReader reader = reader;
     private readonly ITipoContatoCRMValidation validation = validation;
     private readonly ITipoContatoCRMWriter writer = writer;
-    private readonly IContatoCRMService contatocrmService = contatocrmService;
     public async Task<IEnumerable<TipoContatoCRMResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -196,7 +195,7 @@ public partial class TipoContatoCRMService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, contatocrmService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

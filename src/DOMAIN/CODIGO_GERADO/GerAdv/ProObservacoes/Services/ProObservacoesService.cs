@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IFProObservacoesFactory proobservacoesFactory, IProObservacoesReader reader, IProObservacoesValidation validation, IProObservacoesWriter writer, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProObservacoesService, IDisposable
+public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IFProObservacoesFactory proobservacoesFactory, IProObservacoesReader reader, IProObservacoesValidation validation, IProObservacoesWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProObservacoesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IF
     private readonly IProObservacoesReader reader = reader;
     private readonly IProObservacoesValidation validation = validation;
     private readonly IProObservacoesWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<ProObservacoesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -110,7 +109,7 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var validade = await validation.ValidateReg(regProObservacoes, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProObservacoes, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -151,7 +150,7 @@ public partial class ProObservacoesService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var validade = await validation.ValidateReg(regProObservacoes, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProObservacoes, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -14,16 +14,16 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - pprProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Operador - pprOperador  
         /// </summary>
         [JsonPropertyName("operador")]
         public int Operador { get; set; }
+
+        /// <summary>
+        /// Processo - pprProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Semana - pprSemana  
@@ -75,16 +75,16 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - pprProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Operador - pprOperador  
         /// </summary>
         [JsonPropertyName("operador")]
         public int Operador { get; set; }
+
+        /// <summary>
+        /// Processo - pprProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Semana - pprSemana  
@@ -124,9 +124,6 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("datanenotas_date")]
         public DateTime? DataNENotas_date { get; set; }
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

@@ -20,16 +20,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Advogado { get; set; }
 
         /// <summary>
-        /// Processo - papProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Nome - papNome - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// Processo - papProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - papData  
@@ -72,16 +72,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Advogado { get; set; }
 
         /// <summary>
-        /// Processo - papProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Nome - papNome - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// Processo - papProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - papData  
@@ -109,8 +109,5 @@ namespace MenphisSI.GerAdv.Models.Response.All
 
         [JsonPropertyName("nomeadvogados")]
         public string NomeAdvogados { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

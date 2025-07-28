@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ContratosReader(IFContratosFactory contratosFactory) : IContratosReader
 {
     private readonly IFContratosFactory _contratosFactory = contratosFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cttCodigo, cttGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ContratosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContratos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ContratosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -265,14 +266,6 @@ public partial class ContratosReader(IFContratosFactory contratosFactory) : ICon
 
         try
         {
-            contratos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             contratos.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -338,14 +331,6 @@ public partial class ContratosReader(IFContratosFactory contratosFactory) : ICon
         {
             contratos.DataTermino = dbRec.FDataTermino;
             contratos.DataTermino_date = XDataTermino;
-        }
-
-        try
-        {
-            contratos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         try

@@ -16,6 +16,11 @@ public partial class ContratosService
             parameters.Add(new($"@{nameof(DBContratosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContratosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Cliente != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBContratosDicInfo.Cliente)}", filtro.Cliente));
@@ -226,7 +231,15 @@ public partial class ContratosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContratosDicInfo.PTabelaNome}].[{DBContratosDicInfo.Processo}] = @{nameof(DBContratosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContratosDicInfo.PTabelaNome}].[{DBContratosDicInfo.Processo}] >= @{nameof(DBContratosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContratosDicInfo.Processo} BETWEEN @{nameof(DBContratosDicInfo.Processo)} AND @{nameof(DBContratosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContratosDicInfo.Processo} = @{nameof(DBContratosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContratosDicInfo.Processo} <= @{nameof(DBContratosDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContratosDicInfo.PTabelaNome}].[{DBContratosDicInfo.Cliente}] = @{nameof(DBContratosDicInfo.Cliente)}");
         cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContratosDicInfo.PTabelaNome}].[{DBContratosDicInfo.Advogado}] = @{nameof(DBContratosDicInfo.Advogado)}");
         if (!filtro.Dia.IsEmpty() && filtro.Dia_end.IsEmpty())
@@ -355,6 +368,46 @@ public partial class ContratosService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterContratos? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Contratos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBContratosDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

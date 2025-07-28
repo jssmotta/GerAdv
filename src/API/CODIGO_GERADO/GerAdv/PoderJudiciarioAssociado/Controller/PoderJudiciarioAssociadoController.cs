@@ -46,6 +46,15 @@ public partial class PoderJudiciarioAssociadoController(IPoderJudiciarioAssociad
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPoderJudiciarioAssociado? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"PoderJudiciarioAssociado: GetListN called, max {max}, {filtro} uri");
+        var result = await _poderjudiciarioassociadoService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

@@ -23,9 +23,10 @@ public partial class OperadorReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.Nome}]
+                   {campos}, 
+[{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.Nome}]
                    FROM {DBOperador.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBStatusBiuDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiu.CampoCodigo}]=[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.StatusId}]
+                   LEFT JOIN {DBStatusBiuDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.CampoCodigo}]=[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.StatusId}]
  
                    {cWhere}
                    {orderQuery}

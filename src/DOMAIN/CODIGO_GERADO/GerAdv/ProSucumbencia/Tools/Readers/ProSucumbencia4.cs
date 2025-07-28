@@ -142,14 +142,6 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
         };
         try
         {
-            prosucumbencia.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             prosucumbencia.NroProcessoInstancia = dr[DBInstanciaDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -186,14 +178,6 @@ public partial class ProSucumbenciaReader(IFProSucumbenciaFactory prosucumbencia
             Percentual = dbRec.FPercentual ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            prosucumbencia.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         try
         {
             prosucumbencia.NroProcessoInstancia = dr[DBInstanciaDicInfo.CampoNome]?.ToString() ?? string.Empty;

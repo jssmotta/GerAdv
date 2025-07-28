@@ -61,8 +61,5 @@ namespace MenphisSI.GerAdv.Models.Response.All
 
         [JsonPropertyName("nomeadvogados")]
         public string NomeAdvogados { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

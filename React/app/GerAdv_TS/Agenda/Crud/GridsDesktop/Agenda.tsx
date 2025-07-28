@@ -73,66 +73,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellAgenda2Agenda = (id: number) => {
-  router.push(`/pages/agenda2agenda/?agenda=${id}`);
-};
-const SearchFromCellAgenda2Agenda = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgenda2Agenda(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda2 Agenda'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAgendaRecords = (id: number) => {
-  router.push(`/pages/agendarecords/?agenda=${id}`);
-};
-const SearchFromCellAgendaRecords = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaRecords(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Records'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAgendaStatus = (id: number) => {
-  router.push(`/pages/agendastatus/?agenda=${id}`);
-};
-const SearchFromCellAgendaStatus = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaStatus(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Status'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAlarmSMS = (id: number) => {
-  router.push(`/pages/alarmsms/?agenda=${id}`);
-};
-const SearchFromCellAlarmSMS = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAlarmSMS(props.dataItem.id)}><span title='Pesquisar relacionados em Alarm S M S'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellRecados = (id: number) => {
-  router.push(`/pages/recados/?agenda=${id}`);
-};
-const SearchFromCellRecados = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellRecados(props.dataItem.id)}><span title='Pesquisar relacionados em Recados'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 
 const DeleteRow = (e: any) => {
   return (
@@ -152,46 +92,6 @@ const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
   <GridColumn field='data' title='Data' sortable={true} filterable={true} />, /* Track G.02 */
-  <GridColumn
-  field='id_edit_Agenda2Agenda'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda2 Agenda'
-  cells={{ data: SearchFromCellAgenda2Agenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaRecords'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Records'
-  cells={{ data: SearchFromCellAgendaRecords }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaStatus'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Status'
-  cells={{ data: SearchFromCellAgendaStatus }}
-  />, 
-  <GridColumn
-  field='id_edit_AlarmSMS'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Alarm S M S'
-  cells={{ data: SearchFromCellAlarmSMS }}
-  />, 
-  <GridColumn
-  field='id_edit_Recados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Recados'
-  cells={{ data: SearchFromCellRecados }}
-  />, 
   <GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nomeadvogados' title='Advogados' sortable={false} filterable={false} />, /* Track G.01 */

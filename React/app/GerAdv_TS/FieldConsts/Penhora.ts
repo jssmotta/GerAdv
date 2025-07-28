@@ -2,8 +2,8 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsPenhora
-{	processo = `Processo`,
-	penhorastatus = `PenhoraStatus`,
+{	penhorastatus = `PenhoraStatus`,
+	processo = `Processo`,
 	nome = `Nome`,
 	descricao = `Descricao`,
 	datapenhora = `DataPenhora`,

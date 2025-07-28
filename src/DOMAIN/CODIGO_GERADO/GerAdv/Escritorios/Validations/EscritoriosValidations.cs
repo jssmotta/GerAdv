@@ -29,27 +29,27 @@ public class EscritoriosValidation : IEscritoriosValidation
 
     private bool ValidSizes(Models.Escritorios reg)
     {
-        if (reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.OAB.Length > 15)
+        if (reg.OAB != null && reg.OAB.Length > 15)
             throw new SGValidationException($"OAB deve ter no máximo 15 caracteres.");
-        if (reg.Endereco.Length > 50)
+        if (reg.Endereco != null && reg.Endereco.Length > 50)
             throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
-        if (reg.Bairro.Length > 30)
+        if (reg.Bairro != null && reg.Bairro.Length > 30)
             throw new SGValidationException($"Bairro deve ter no máximo 30 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Site.Length > 200)
+        if (reg.Site != null && reg.Site.Length > 200)
             throw new SGValidationException($"Site deve ter no máximo 200 caracteres.");
-        if (reg.AdvResponsavel.Length > 80)
+        if (reg.AdvResponsavel != null && reg.AdvResponsavel.Length > 80)
             throw new SGValidationException($"AdvResponsavel deve ter no máximo 80 caracteres.");
-        if (reg.Secretaria.Length > 80)
+        if (reg.Secretaria != null && reg.Secretaria.Length > 80)
             throw new SGValidationException($"Secretaria deve ter no máximo 80 caracteres.");
-        if (reg.InscEst.Length > 15)
+        if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

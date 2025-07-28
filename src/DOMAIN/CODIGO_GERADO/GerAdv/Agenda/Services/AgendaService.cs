@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFactory agendaFactory, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IAgenda2AgendaService agenda2agendaService, IAgendaRecordsService agendarecordsService, IAgendaStatusService agendastatusService, IAlarmSMSService alarmsmsService, IRecadosService recadosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAgendaService, IDisposable
+public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFactory agendaFactory, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAgendaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -24,14 +24,8 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
     private readonly IClientesReader clientesReader = clientesReader;
     private readonly IAreaReader areaReader = areaReader;
     private readonly IJusticaReader justicaReader = justicaReader;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IOperadorReader operadorReader = operadorReader;
     private readonly IPrepostosReader prepostosReader = prepostosReader;
-    private readonly IAgenda2AgendaService agenda2agendaService = agenda2agendaService;
-    private readonly IAgendaRecordsService agendarecordsService = agendarecordsService;
-    private readonly IAgendaStatusService agendastatusService = agendastatusService;
-    private readonly IAlarmSMSService alarmsmsService = alarmsmsService;
-    private readonly IRecadosService recadosService = recadosService;
     public async Task<IEnumerable<AgendaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -124,7 +118,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
         try
         {
-            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, prepostosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -165,7 +159,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
         try
         {
-            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, processosReader, operadorReader, prepostosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, prepostosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -210,7 +204,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agenda2agendaService, agendarecordsService, agendastatusService, alarmsmsService, recadosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

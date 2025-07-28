@@ -85,30 +85,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?clientes=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAgendaRepetir = (id: number) => {
-  router.push(`/pages/agendarepetir/?clientes=${id}`);
-};
-const SearchFromCellAgendaRepetir = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaRepetir(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Repetir'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellAnexamentoRegistros = (id: number) => {
   router.push(`/pages/anexamentoregistros/?clientes=${id}`);
 };
@@ -153,18 +129,6 @@ const SearchFromCellContaCorrente = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellContaCorrente(props.dataItem.id)}><span title='Pesquisar relacionados em Conta Corrente'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellContatoCRM = (id: number) => {
-  router.push(`/pages/contatocrm/?clientes=${id}`);
-};
-const SearchFromCellContatoCRM = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellContatoCRM(props.dataItem.id)}><span title='Pesquisar relacionados em Contato C R M'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -265,18 +229,6 @@ const SearchFromCellLigacoes = (props: any) => {
 </>
 );
 };
-const openSearchCellLivroCaixaClientes = (id: number) => {
-  router.push(`/pages/livrocaixaclientes/?clientes=${id}`);
-};
-const SearchFromCellLivroCaixaClientes = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellLivroCaixaClientes(props.dataItem.id)}><span title='Pesquisar relacionados em Livro Caixa Clientes'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellOperadores = (id: number) => {
   router.push(`/pages/operadores/?clientes=${id}`);
 };
@@ -301,18 +253,6 @@ const SearchFromCellPreClientes = (props: any) => {
 </>
 );
 };
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?clientes=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellProDespesas = (id: number) => {
   router.push(`/pages/prodespesas/?clientes=${id}`);
 };
@@ -321,18 +261,6 @@ const SearchFromCellProDespesas = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellProDespesas(props.dataItem.id)}><span title='Pesquisar relacionados em Pro Despesas'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellRecados = (id: number) => {
-  router.push(`/pages/recados/?clientes=${id}`);
-};
-const SearchFromCellRecados = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellRecados(props.dataItem.id)}><span title='Pesquisar relacionados em Recados'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -377,22 +305,6 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaRepetir'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Repetir'
-  cells={{ data: SearchFromCellAgendaRepetir }}
-  />, 
-  <GridColumn
   field='id_edit_AnexamentoRegistros'
   filterable={false}
   sortable={false}
@@ -423,14 +335,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Conta Corrente'
   cells={{ data: SearchFromCellContaCorrente }}
-  />, 
-  <GridColumn
-  field='id_edit_ContatoCRM'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Contato C R M'
-  cells={{ data: SearchFromCellContatoCRM }}
   />, 
   <GridColumn
   field='id_edit_Contratos'
@@ -497,14 +401,6 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellLigacoes }}
   />, 
   <GridColumn
-  field='id_edit_LivroCaixaClientes'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Livro Caixa Clientes'
-  cells={{ data: SearchFromCellLivroCaixaClientes }}
-  />, 
-  <GridColumn
   field='id_edit_Operadores'
   filterable={false}
   sortable={false}
@@ -521,28 +417,12 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellPreClientes }}
   />, 
   <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
-  />, 
-  <GridColumn
   field='id_edit_ProDespesas'
   filterable={false}
   sortable={false}
   width={'65px'}
   title='Pro Despesas'
   cells={{ data: SearchFromCellProDespesas }}
-  />, 
-  <GridColumn
-  field='id_edit_Recados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Recados'
-  cells={{ data: SearchFromCellRecados }}
   />, 
   <GridColumn
   field='id_edit_Reuniao'

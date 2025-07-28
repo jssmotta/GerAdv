@@ -23,10 +23,12 @@ public partial class SMSAliceReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],[{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.Nome}]
+                   {campos}, 
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],
+[{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.Nome}]
                    FROM {DBSMSAlice.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.Operador}]
-LEFT JOIN {DBTipoEMailDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMail.CampoCodigo}]=[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.TipoEMail}]
+                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.Operador}]
+LEFT JOIN {DBTipoEMailDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.CampoCodigo}]=[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.TipoEMail}]
  
                    {cWhere}
                    {orderQuery}

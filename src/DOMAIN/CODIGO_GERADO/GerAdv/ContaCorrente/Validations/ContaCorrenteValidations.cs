@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IContaCorrenteValidation
 {
-    Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IProcessosReader processosReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IContaCorrenteService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,12 +26,12 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
 
     private bool ValidSizes(Models.ContaCorrente reg)
     {
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IProcessosReader processosReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -40,16 +40,6 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, IFProcessosParadosFactory processosparadosFactory, IProcessosParadosReader reader, IProcessosParadosValidation validation, IProcessosParadosWriter writer, IProcessosReader processosReader, IOperadorReader operadorReader, HybridCache cache, IMemoryCache memory) : IProcessosParadosService, IDisposable
+public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, IFProcessosParadosFactory processosparadosFactory, IProcessosParadosReader reader, IProcessosParadosValidation validation, IProcessosParadosWriter writer, IOperadorReader operadorReader, HybridCache cache, IMemoryCache memory) : IProcessosParadosService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
@@ -16,7 +16,6 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
     private readonly IProcessosParadosReader reader = reader;
     private readonly IProcessosParadosValidation validation = validation;
     private readonly IProcessosParadosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IOperadorReader operadorReader = operadorReader;
     public async Task<IEnumerable<ProcessosParadosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -106,7 +105,7 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            var validade = await validation.ValidateReg(regProcessosParados, this, processosReader, operadorReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessosParados, this, operadorReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -146,7 +145,7 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            var validade = await validation.ValidateReg(regProcessosParados, this, processosReader, operadorReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProcessosParados, this, operadorReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

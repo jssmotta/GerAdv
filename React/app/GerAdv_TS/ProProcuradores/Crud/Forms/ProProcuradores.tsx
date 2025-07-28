@@ -17,9 +17,7 @@ import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { ProProcuradoresApi } from '../../Apis/ApiProProcuradores';
 import { useValidationsProProcuradores } from '../../Hooks/hookProProcuradores';
 import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
 import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
@@ -51,8 +49,6 @@ const initialized = useRef(false);
 const validationForm = useValidationsProProcuradores();
 const [nomeAdvogados, setNomeAdvogados] = useState('');
 const advogadosApi = new AdvogadosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
 if (getParamFromUrl('advogados') > 0) {
   if (proprocuradoresData.id === 0 && proprocuradoresData.advogado == 0) {
@@ -68,148 +64,134 @@ if (getParamFromUrl('advogados') > 0) {
     proprocuradoresData.advogado = getParamFromUrl('advogados');
   }
 }
-
-if (getParamFromUrl('processos') > 0) {
-  if (proprocuradoresData.id === 0 && proprocuradoresData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    proprocuradoresData.processo = getParamFromUrl('processos');
-  }
-}
 const addValorAdvogado = (e: any) => {
   if (e?.id>0)
     onChange({ target: { name: 'advogado', value: e.id } });
   };
-  const addValorProcesso = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'processo', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
-
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ProProcuradores:');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
-
-    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ProProcuradoresForm-${proprocuradoresData.id}`)
-          } as unknown as React.FormEvent;
-
-          onSubmit(syntheticEvent);
+          onSubmit(e);
         } catch (error) {
-        console.log('Erro ao salvar ProProcuradores diretamente');
+        console.log('Erro ao submeter formulário de ProProcuradores:');
         setIsSubmitting(false);
         if (onError) onError();
         }
       }
     };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = proprocuradoresData?.id == 0 ? 'Editar ProProcuradores' : 'Adicionar Pro Procuradores';
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`ProProcuradoresForm-${proprocuradoresData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.log('Erro ao salvar ProProcuradores diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
       }
-    }, [proprocuradoresData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = proprocuradoresData?.id == 0 ? 'Editar ProProcuradores' : 'Adicionar Pro Procuradores';
+    }
+  }, [proprocuradoresData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
       }
-      `}</style> : null}
+    }
+    `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ProProcuradores' : 'form-container5 form-container-ProProcuradores'}>
+    <div className={isMobile ? 'form-container form-container-ProProcuradores' : 'form-container5 form-container-ProProcuradores'}>
 
-        <form className='formInputCadInc' id={`ProProcuradoresForm-${proprocuradoresData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProProcuradores' data={proprocuradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProProcuradoresForm-${proprocuradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+      <form className='formInputCadInc' id={`ProProcuradoresForm-${proprocuradoresData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProProcuradores' data={proprocuradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProProcuradoresForm-${proprocuradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={proprocuradoresData}
-              className='inputIncNome'
-              name='nome'
-              value={proprocuradoresData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={proprocuradoresData}
+            className='inputIncNome'
+            name='nome'
+            value={proprocuradoresData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
 
-              <AdvogadosComboBox
-              name={'advogado'}
-              dataForm={proprocuradoresData}
-              value={proprocuradoresData.advogado}
-              setValue={addValorAdvogado}
-              label={'Advogados'}
-              />
+            <AdvogadosComboBox
+            name={'advogado'}
+            dataForm={proprocuradoresData}
+            value={proprocuradoresData.advogado}
+            setValue={addValorAdvogado}
+            label={'Advogados'}
+            />
 
-              <ProcessosComboBox
-              name={'processo'}
-              dataForm={proprocuradoresData}
-              value={proprocuradoresData.processo}
-              setValue={addValorProcesso}
-              label={'Processos'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={proprocuradoresData}
-              className='inputIncNome'
-              name='data'
-              value={proprocuradoresData.data}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={proprocuradoresData} label='Substabelecimento' name='substabelecimento' checked={proprocuradoresData.substabelecimento} onChange={onChange} />
-              <InputCheckbox dataForm={proprocuradoresData} label='Procuracao' name='procuracao' checked={proprocuradoresData.procuracao} onChange={onChange} />
-            </div>
-          </form>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={proprocuradoresData}
+            className='inputIncNome'
+            name='processo'
+            value={proprocuradoresData.processo}
+            onChange={onChange}
+            />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProProcuradores' data={proprocuradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProProcuradoresForm-${proprocuradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/proprocuradores'} id={proprocuradoresData.id} closeModel={onClose} dadoApi={dadoApi} />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='data'
+            label='Data'
+            dataForm={proprocuradoresData}
+            className='inputIncNome'
+            name='data'
+            value={proprocuradoresData.data}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={proprocuradoresData} label='Substabelecimento' name='substabelecimento' checked={proprocuradoresData.substabelecimento} onChange={onChange} />
+            <InputCheckbox dataForm={proprocuradoresData} label='Procuracao' name='procuracao' checked={proprocuradoresData.procuracao} onChange={onChange} />
           </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProProcuradores' data={proprocuradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProProcuradoresForm-${proprocuradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/proprocuradores'} id={proprocuradoresData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

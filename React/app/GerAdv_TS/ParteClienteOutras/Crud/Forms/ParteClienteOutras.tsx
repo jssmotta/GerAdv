@@ -17,10 +17,9 @@ import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { ParteClienteOutrasApi } from '../../Apis/ApiParteClienteOutras';
 import { useValidationsParteClienteOutras } from '../../Hooks/hookParteClienteOutras';
 import OutrasPartesClienteComboBox from '@/app/GerAdv_TS/OutrasPartesCliente/ComboBox/OutrasPartesCliente';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import { OutrasPartesClienteApi } from '@/app/GerAdv_TS/OutrasPartesCliente/Apis/ApiOutrasPartesCliente';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
+import InputInput from '@/app/components/Inputs/InputInput'
 import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 interface ParteClienteOutrasFormProps {
   parteclienteoutrasData: IParteClienteOutras;
@@ -50,8 +49,6 @@ const initialized = useRef(false);
 const validationForm = useValidationsParteClienteOutras();
 const [nomeOutrasPartesCliente, setNomeOutrasPartesCliente] = useState('');
 const outraspartesclienteApi = new OutrasPartesClienteApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
 if (getParamFromUrl('outraspartescliente') > 0) {
   if (parteclienteoutrasData.id === 0 && parteclienteoutrasData.cliente == 0) {
@@ -67,122 +64,108 @@ if (getParamFromUrl('outraspartescliente') > 0) {
     parteclienteoutrasData.cliente = getParamFromUrl('outraspartescliente');
   }
 }
-
-if (getParamFromUrl('processos') > 0) {
-  if (parteclienteoutrasData.id === 0 && parteclienteoutrasData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    parteclienteoutrasData.processo = getParamFromUrl('processos');
-  }
-}
 const addValorCliente = (e: any) => {
   if (e?.id>0)
     onChange({ target: { name: 'cliente', value: e.id } });
   };
-  const addValorProcesso = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'processo', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
-
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ParteClienteOutras:');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
-
-    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ParteClienteOutrasForm-${parteclienteoutrasData.id}`)
-          } as unknown as React.FormEvent;
-
-          onSubmit(syntheticEvent);
+          onSubmit(e);
         } catch (error) {
-        console.log('Erro ao salvar ParteClienteOutras diretamente');
+        console.log('Erro ao submeter formulário de ParteClienteOutras:');
         setIsSubmitting(false);
         if (onError) onError();
         }
       }
     };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = parteclienteoutrasData?.id == 0 ? 'Editar ParteClienteOutras' : 'Adicionar Parte Cliente Outras';
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`ParteClienteOutrasForm-${parteclienteoutrasData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.log('Erro ao salvar ParteClienteOutras diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
       }
-    }, [parteclienteoutrasData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = parteclienteoutrasData?.id == 0 ? 'Editar ParteClienteOutras' : 'Adicionar Parte Cliente Outras';
+    }
+  }, [parteclienteoutrasData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
       }
-      `}</style> : null}
+    }
+    `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ParteClienteOutras' : 'form-container5 form-container-ParteClienteOutras'}>
+    <div className={isMobile ? 'form-container form-container-ParteClienteOutras' : 'form-container5 form-container-ParteClienteOutras'}>
 
-        <form className='formInputCadInc' id={`ParteClienteOutrasForm-${parteclienteoutrasData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ParteClienteOutras' data={parteclienteoutrasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ParteClienteOutrasForm-${parteclienteoutrasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
-
-
-              <OutrasPartesClienteComboBox
-              name={'cliente'}
-              dataForm={parteclienteoutrasData}
-              value={parteclienteoutrasData.cliente}
-              setValue={addValorCliente}
-              label={'Outras Partes Cliente'}
-              />
-
-              <ProcessosComboBox
-              name={'processo'}
-              dataForm={parteclienteoutrasData}
-              value={parteclienteoutrasData.processo}
-              setValue={addValorProcesso}
-              label={'Processos'}
-              />
-              <InputCheckbox dataForm={parteclienteoutrasData} label='PrimeiraReclamada' name='primeirareclamada' checked={parteclienteoutrasData.primeirareclamada} onChange={onChange} />
-            </div>
-          </form>
+      <form className='formInputCadInc' id={`ParteClienteOutrasForm-${parteclienteoutrasData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ParteClienteOutras' data={parteclienteoutrasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ParteClienteOutrasForm-${parteclienteoutrasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ParteClienteOutras' data={parteclienteoutrasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ParteClienteOutrasForm-${parteclienteoutrasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/parteclienteoutras'} id={parteclienteoutrasData.id} closeModel={onClose} dadoApi={dadoApi} />
+            <OutrasPartesClienteComboBox
+            name={'cliente'}
+            dataForm={parteclienteoutrasData}
+            value={parteclienteoutrasData.cliente}
+            setValue={addValorCliente}
+            label={'Outras Partes Cliente'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={parteclienteoutrasData}
+            className='inputIncNome'
+            name='processo'
+            value={parteclienteoutrasData.processo}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={parteclienteoutrasData} label='PrimeiraReclamada' name='primeirareclamada' checked={parteclienteoutrasData.primeirareclamada} onChange={onChange} />
           </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ParteClienteOutras' data={parteclienteoutrasData} isSubmitting={isSubmitting} onClose={onClose} formId={`ParteClienteOutrasForm-${parteclienteoutrasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/parteclienteoutras'} id={parteclienteoutrasData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

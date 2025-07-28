@@ -23,10 +23,12 @@ public partial class GUTAtividadesReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBGUTPeriodicidadeDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeDicInfo.Nome}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, 
+[{DBGUTPeriodicidadeDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeDicInfo.Nome}],
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBGUTAtividades.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBGUTPeriodicidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTPeriodicidadeDicInfo.PTabelaNome}].[{DBGUTPeriodicidade.CampoCodigo}]=[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUTPeriodicidade}]
-LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Operador}]
+                   LEFT JOIN {DBGUTPeriodicidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTPeriodicidadeDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeDicInfo.CampoCodigo}]=[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUTPeriodicidade}]
+LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Operador}]
  
                    {cWhere}
                    {orderQuery}

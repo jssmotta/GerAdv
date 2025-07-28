@@ -7,14 +7,14 @@ export interface INENotas {
 // 202501251
     id: number;
  
+	instancia: number,
 	apenso: number,
 	precatoria: number,
-	instancia: number,
-	processo: number,
 	movpro: boolean,
 	nome: string,
 	notaexpedida: boolean,
 	revisada: boolean,
+	processo: number,
 	palavrachave: number,
 	data: string,
 	notapublicada: string,

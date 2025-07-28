@@ -8,7 +8,6 @@ export interface IHorasTrab {
     id: number;
  
 	cliente: number,
-	processo: number,
 	advogado: number,
 	funcionario: number,
 	servico: number,
@@ -17,6 +16,7 @@ export interface IHorasTrab {
 	idagenda: number,
 	data: string,
 	status: number,
+	processo: number,
 	hrini: string,
 	hrfim: string,
 	tempo: number,

@@ -23,10 +23,12 @@ public partial class TribEnderecosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Nome}],[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
+                   {campos}, 
+[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Nome}],
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
                    FROM {DBTribEnderecos.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBTribunalDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTribunalDicInfo.PTabelaNome}].[{DBTribunal.CampoCodigo}]=[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Tribunal}]
-LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Cidade}]
+                   LEFT JOIN {DBTribunalDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.CampoCodigo}]=[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Tribunal}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Cidade}]
  
                    {cWhere}
                    {orderQuery}

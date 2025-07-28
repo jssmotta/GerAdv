@@ -25,7 +25,7 @@ export class DadosProcuracaoValidator {
 export interface IDadosProcuracaoService {
   fetchDadosProcuracaoById: (id: number) => Promise<IDadosProcuracao>;
   saveDadosProcuracao: (dadosprocuracao: IDadosProcuracao) => Promise<IDadosProcuracao>;  
-  
+  getList: (filtro?: FilterDadosProcuracao) => Promise<IDadosProcuracao[]>;
   getAll: (filtro?: FilterDadosProcuracao) => Promise<IDadosProcuracao[]>;
   deleteDadosProcuracao: (id: number) => Promise<void>;
   validateDadosProcuracao: (dadosprocuracao: IDadosProcuracao) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class DadosProcuracaoService implements IDadosProcuracaoService {
   }
 
   
+    async getList(filtro?: FilterDadosProcuracao): Promise<IDadosProcuracao[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching DadosProcuracao list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

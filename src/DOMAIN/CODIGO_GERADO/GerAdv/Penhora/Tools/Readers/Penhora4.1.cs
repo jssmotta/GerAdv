@@ -23,10 +23,10 @@ public partial class PenhoraReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBPenhoraStatusDicInfo.PTabelaNome}].[{DBPenhoraStatusDicInfo.Nome}]
+                   {campos}, 
+[{DBPenhoraStatusDicInfo.PTabelaNome}].[{DBPenhoraStatusDicInfo.Nome}]
                    FROM {DBPenhora.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Processo}]
-LEFT JOIN {DBPenhoraStatusDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPenhoraStatusDicInfo.PTabelaNome}].[{DBPenhoraStatus.CampoCodigo}]=[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.PenhoraStatus}]
+                   LEFT JOIN {DBPenhoraStatusDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPenhoraStatusDicInfo.PTabelaNome}].[{DBPenhoraStatusDicInfo.CampoCodigo}]=[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.PenhoraStatus}]
  
                    {cWhere}
                    {orderQuery}

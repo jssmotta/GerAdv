@@ -48,12 +48,13 @@ const { page, handlePageChange } = useGridPagination({
 });
 // Configuração dos filtros iniciais
 const initialFilters = {
-
+  parte_int: '',
 };
 // Lógica de filtro customizada usando useCallback
 const filterLogic = useCallback((data: ISituacao, filters: Record<string, any>) => {
-
-  return true;
+  const parte_intMatches = applyFilter(data, 'parte_int', filters.parte_int);
+  return parte_intMatches
+  ;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({
@@ -72,18 +73,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?situacao=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 
 const DeleteRow = (e: any) => {
   return (
@@ -102,14 +91,7 @@ const EditRow = (e: any) => {
 const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
-  />, 
+  <GridColumn field='parte_int' title='Parte_Int' sortable={true} filterable={true} />, /* Track G.02 */
 
   <GridColumn
   field='id_edit_row'

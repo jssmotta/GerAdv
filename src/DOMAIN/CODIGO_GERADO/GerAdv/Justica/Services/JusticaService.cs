@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class JusticaService(IOptions<AppSettings> appSettings, IFJusticaFactory justicaFactory, IJusticaReader reader, IJusticaValidation validation, IJusticaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IProcessosService processosService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IJusticaService, IDisposable
+public partial class JusticaService(IOptions<AppSettings> appSettings, IFJusticaFactory justicaFactory, IJusticaReader reader, IJusticaValidation validation, IJusticaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IJusticaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,13 +19,11 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
     private readonly IJusticaWriter writer = writer;
     private readonly IAcaoService acaoService = acaoService;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
     private readonly IAreasJusticaService areasjusticaService = areasjusticaService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly IFaseService faseService = faseService;
     private readonly IObjetosService objetosService = objetosService;
     private readonly IPoderJudiciarioAssociadoService poderjudiciarioassociadoService = poderjudiciarioassociadoService;
-    private readonly IProcessosService processosService = processosService;
     private readonly ITipoRecursoService tiporecursoService = tiporecursoService;
     private readonly ITribunalService tribunalService = tribunalService;
     public async Task<IEnumerable<JusticaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -206,7 +204,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, agendafinanceiroService, areasjusticaService, divisaotribunalService, faseService, objetosService, poderjudiciarioassociadoService, processosService, tiporecursoService, tribunalService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, areasjusticaService, divisaotribunalService, faseService, objetosService, poderjudiciarioassociadoService, tiporecursoService, tribunalService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

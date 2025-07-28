@@ -7,9 +7,9 @@ export interface IProSucumbencia {
 // 202501251
     id: number;
  
-	processo: number,
 	instancia: number,
 	tipoorigemsucumbencia: number,
+	processo: number,
 	data: string,
 	nome: string,
 	valor: number,

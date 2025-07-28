@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivroCaixaFactory livrocaixaFactory, ILivroCaixaReader reader, ILivroCaixaValidation validation, ILivroCaixaWriter writer, IProcessosReader processosReader, ILivroCaixaClientesService livrocaixaclientesService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ILivroCaixaService, IDisposable
+public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivroCaixaFactory livrocaixaFactory, ILivroCaixaReader reader, ILivroCaixaValidation validation, ILivroCaixaWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ILivroCaixaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,8 +17,6 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
     private readonly ILivroCaixaReader reader = reader;
     private readonly ILivroCaixaValidation validation = validation;
     private readonly ILivroCaixaWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
-    private readonly ILivroCaixaClientesService livrocaixaclientesService = livrocaixaclientesService;
     public async Task<IEnumerable<LivroCaixaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -111,7 +109,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
 
         try
         {
-            var validade = await validation.ValidateReg(regLivroCaixa, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regLivroCaixa, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +150,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
 
         try
         {
-            var validade = await validation.ValidateReg(regLivroCaixa, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regLivroCaixa, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -197,7 +195,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, livrocaixaclientesService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

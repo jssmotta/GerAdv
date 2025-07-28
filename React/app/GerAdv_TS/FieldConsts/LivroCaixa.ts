@@ -2,14 +2,14 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsLivroCaixa
-{	processo = `Processo`,
-	iddes = `IDDes`,
+{	iddes = `IDDes`,
 	pessoal = `Pessoal`,
 	ajuste = `Ajuste`,
 	idhon = `IDHon`,
 	idhonparc = `IDHonParc`,
 	idhonsuc = `IDHonSuc`,
 	data = `Data`,
+	processo = `Processo`,
 	valor = `Valor`,
 	tipo = `Tipo`,
 	historico = `Historico`,

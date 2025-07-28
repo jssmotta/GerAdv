@@ -23,9 +23,10 @@ public partial class PontoVirtualAcessosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, 
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBPontoVirtualAcessos.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Operador}]
+                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Operador}]
  
                    {cWhere}
                    {orderQuery}

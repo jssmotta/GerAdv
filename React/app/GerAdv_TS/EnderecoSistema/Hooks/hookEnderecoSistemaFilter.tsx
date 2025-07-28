@@ -10,7 +10,6 @@ import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterEnderecoSistema } from '@/app/GerAdv_TS/EnderecoSistema/Filters/EnderecoSistema';
 import TipoEnderecoSistemaComboBox from '@/app/GerAdv_TS/TipoEnderecoSistema/ComboBox/TipoEnderecoSistema';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import CidadeComboBox from '@/app/GerAdv_TS/Cidade/ComboBox/Cidade';
 interface UseEnderecoSistemaFilterProps {
   handleFetchWithFilter: (filtro?: FilterEnderecoSistema | undefined | null) => Promise<void>;
@@ -108,13 +107,26 @@ export const useEnderecoSistemaFilter = ({ handleFetchWithFilter }: UseEnderecoS
   className='inputSearch inputSearchComboboxTab'
   label='Tipo Endereco Sistema'
   />
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

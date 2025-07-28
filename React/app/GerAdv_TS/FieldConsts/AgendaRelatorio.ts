@@ -2,14 +2,14 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsAgendaRelatorio
-{	processo = `Processo`,
-	data = `Data`,
-	paranome = `ParaNome`,
-	parapessoas = `ParaPessoas`,
-	boxaudiencia = `BoxAudiencia`,
-	boxaudienciamobile = `BoxAudienciaMobile`,
-	nomeadvogado = `NomeAdvogado`,
-	nomeforo = `NomeForo`,
-	nomejustica = `NomeJustica`,
-	nomearea = `NomeArea`,
+{	vqadata = `vqaData`,
+	vqaprocesso = `vqaProcesso`,
+	xxxparanome = `xxxParaNome`,
+	xxxparapessoas = `xxxParaPessoas`,
+	xxxboxaudiencia = `xxxBoxAudiencia`,
+	xxxboxaudienciamobile = `xxxBoxAudienciaMobile`,
+	xxxnomeadvogado = `xxxNomeAdvogado`,
+	xxxnomeforo = `xxxNomeForo`,
+	xxxnomejustica = `xxxNomeJustica`,
+	xxxnomearea = `xxxNomeArea`,
 }

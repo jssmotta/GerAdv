@@ -2,9 +2,9 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsTerceiros
-{	processo = `Processo`,
-	situacao = `Situacao`,
+{	situacao = `Situacao`,
 	cidade = `Cidade`,
+	processo = `Processo`,
 	nome = `Nome`,
 	endereco = `Endereco`,
 	bairro = `Bairro`,

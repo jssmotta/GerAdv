@@ -35,15 +35,15 @@ public class TribunalValidation : ITribunalValidation
 
     private bool ValidSizes(Models.Tribunal reg)
     {
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Descricao.Length > 50)
+        if (reg.Descricao != null && reg.Descricao.Length > 50)
             throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.Sigla.Length > 20)
+        if (reg.Sigla != null && reg.Sigla.Length > 20)
             throw new SGValidationException($"Sigla deve ter no máximo 20 caracteres.");
-        if (reg.Web.Length > 255)
+        if (reg.Web != null && reg.Web.Length > 255)
             throw new SGValidationException($"Web deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

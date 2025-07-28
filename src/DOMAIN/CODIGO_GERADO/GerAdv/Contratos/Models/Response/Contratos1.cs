@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - cttProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Cliente - cttCliente  
         /// </summary>
         [JsonPropertyName("cliente")]
@@ -30,6 +24,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("advogado")]
         public int Advogado { get; set; }
+
+        /// <summary>
+        /// Processo - cttProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Dia - cttDia  
@@ -204,12 +204,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - cttProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Cliente - cttCliente  
         /// </summary>
         [JsonPropertyName("cliente")]
@@ -220,6 +214,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("advogado")]
         public int Advogado { get; set; }
+
+        /// <summary>
+        /// Processo - cttProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Dia - cttDia  
@@ -382,9 +382,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

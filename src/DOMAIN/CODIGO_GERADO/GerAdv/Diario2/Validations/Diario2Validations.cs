@@ -26,11 +26,11 @@ public class Diario2Validation : IDiario2Validation
 
     private bool ValidSizes(Models.Diario2 reg)
     {
-        if (reg.Nome.Length > 150)
+        if (reg.Nome != null && reg.Nome.Length > 150)
             throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
-        if (reg.Ocorrencia.Length > 2048)
+        if (reg.Ocorrencia != null && reg.Ocorrencia.Length > 2048)
             throw new SGValidationException($"Ocorrencia deve ter no máximo 2048 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }

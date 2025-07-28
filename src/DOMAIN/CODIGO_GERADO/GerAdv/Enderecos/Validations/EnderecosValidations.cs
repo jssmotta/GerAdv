@@ -26,23 +26,23 @@ public class EnderecosValidation : IEnderecosValidation
 
     private bool ValidSizes(Models.Enderecos reg)
     {
-        if (reg.Descricao.Length > 50)
+        if (reg.Descricao != null && reg.Descricao.Length > 50)
             throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.Endereco.Length > 50)
+        if (reg.Endereco != null && reg.Endereco.Length > 50)
             throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
-        if (reg.Bairro.Length > 30)
+        if (reg.Bairro != null && reg.Bairro.Length > 30)
             throw new SGValidationException($"Bairro deve ter no máximo 30 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.OAB.Length > 20)
+        if (reg.OAB != null && reg.OAB.Length > 20)
             throw new SGValidationException($"OAB deve ter no máximo 20 caracteres.");
-        if (reg.Tratamento.Length > 20)
+        if (reg.Tratamento != null && reg.Tratamento.Length > 20)
             throw new SGValidationException($"Tratamento deve ter no máximo 20 caracteres.");
-        if (reg.Site.Length > 200)
+        if (reg.Site != null && reg.Site.Length > 200)
             throw new SGValidationException($"Site deve ter no máximo 200 caracteres.");
-        if (reg.QuemIndicou.Length > 150)
+        if (reg.QuemIndicou != null && reg.QuemIndicou.Length > 150)
             throw new SGValidationException($"QuemIndicou deve ter no máximo 150 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

@@ -16,6 +16,11 @@ public partial class TerceirosService
             parameters.Add(new($"@{nameof(DBTerceirosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBTerceirosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.Nome))
         {
             parameters.Add(new($"@{nameof(DBTerceirosDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
@@ -102,7 +107,15 @@ public partial class TerceirosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTerceirosDicInfo.PTabelaNome}].[{DBTerceirosDicInfo.Processo}] = @{nameof(DBTerceirosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTerceirosDicInfo.PTabelaNome}].[{DBTerceirosDicInfo.Processo}] >= @{nameof(DBTerceirosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTerceirosDicInfo.Processo} BETWEEN @{nameof(DBTerceirosDicInfo.Processo)} AND @{nameof(DBTerceirosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTerceirosDicInfo.Processo} = @{nameof(DBTerceirosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTerceirosDicInfo.Processo} <= @{nameof(DBTerceirosDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTerceirosDicInfo.PTabelaNome}].[{DBTerceirosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBTerceirosDicInfo.Nome)}");
         cWhere.Append(filtro.Situacao <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTerceirosDicInfo.PTabelaNome}].[{DBTerceirosDicInfo.Situacao}] = @{nameof(DBTerceirosDicInfo.Situacao)}");
         cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTerceirosDicInfo.PTabelaNome}].[{DBTerceirosDicInfo.Cidade}] = @{nameof(DBTerceirosDicInfo.Cidade)}");

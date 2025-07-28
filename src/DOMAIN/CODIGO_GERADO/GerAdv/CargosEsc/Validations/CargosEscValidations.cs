@@ -26,9 +26,9 @@ public class CargosEscValidation : ICargosEscValidation
 
     private bool ValidSizes(Models.CargosEsc reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

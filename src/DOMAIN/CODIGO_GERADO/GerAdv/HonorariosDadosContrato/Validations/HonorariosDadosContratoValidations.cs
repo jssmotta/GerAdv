@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IHonorariosDadosContratoValidation
 {
-    Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,19 +26,21 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
 
     private bool ValidSizes(Models.HonorariosDadosContrato reg)
     {
-        if (reg.ArquivoContrato.Length > 2048)
+        if (reg.ArquivoContrato != null && reg.ArquivoContrato.Length > 2048)
             throw new SGValidationException($"ArquivoContrato deve ter no máximo 2048 caracteres.");
-        if (reg.Observacao.Length > 2048)
+        if (reg.Observacao != null && reg.Observacao.Length > 2048)
             throw new SGValidationException($"Observacao deve ter no máximo 2048 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -59,16 +61,6 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

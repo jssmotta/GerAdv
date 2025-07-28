@@ -93,6 +93,11 @@ public partial class ContaCorrenteService
             parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.ParcelaX != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBContaCorrenteDicInfo.ParcelaX)}", filtro.ParcelaX));
@@ -283,7 +288,15 @@ public partial class ContaCorrenteService
             cWhere.Append((filtro.DtOriginal.IsEmpty() && filtro.DtOriginal_end.IsEmpty()) ? string.Empty : (!(filtro.DtOriginal.IsEmpty()) && !(filtro.DtOriginal_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContaCorrenteDicInfo.DtOriginal} BETWEEN @{nameof(DBContaCorrenteDicInfo.DtOriginal)} AND @{nameof(DBContaCorrenteDicInfo.DtOriginal)}_end" : !(filtro.DtOriginal.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContaCorrenteDicInfo.DtOriginal} = @{nameof(DBContaCorrenteDicInfo.DtOriginal)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContaCorrenteDicInfo.DtOriginal} <= @{nameof(DBContaCorrenteDicInfo.DtOriginal)}_end");
         }
 
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContaCorrenteDicInfo.PTabelaNome}].[{DBContaCorrenteDicInfo.Processo}] = @{nameof(DBContaCorrenteDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContaCorrenteDicInfo.PTabelaNome}].[{DBContaCorrenteDicInfo.Processo}] >= @{nameof(DBContaCorrenteDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContaCorrenteDicInfo.Processo} BETWEEN @{nameof(DBContaCorrenteDicInfo.Processo)} AND @{nameof(DBContaCorrenteDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContaCorrenteDicInfo.Processo} = @{nameof(DBContaCorrenteDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBContaCorrenteDicInfo.Processo} <= @{nameof(DBContaCorrenteDicInfo.Processo)}_end");
+        }
+
         if (!filtro.ParcelaX.IsEmpty() && filtro.ParcelaX_end.IsEmpty())
         {
             cWhere.Append(filtro.ParcelaX <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContaCorrenteDicInfo.PTabelaNome}].[{DBContaCorrenteDicInfo.ParcelaX}] >= @{nameof(DBContaCorrenteDicInfo.ParcelaX)}");

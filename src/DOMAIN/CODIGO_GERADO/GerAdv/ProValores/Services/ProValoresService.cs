@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProValoresFactory provaloresFactory, IProValoresReader reader, IProValoresValidation validation, IProValoresWriter writer, IProcessosReader processosReader, ITipoValorProcessoReader tipovalorprocessoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProValoresService, IDisposable
+public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProValoresFactory provaloresFactory, IProValoresReader reader, IProValoresValidation validation, IProValoresWriter writer, ITipoValorProcessoReader tipovalorprocessoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProValoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
     private readonly IProValoresReader reader = reader;
     private readonly IProValoresValidation validation = validation;
     private readonly IProValoresWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly ITipoValorProcessoReader tipovalorprocessoReader = tipovalorprocessoReader;
     public async Task<IEnumerable<ProValoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -111,7 +110,7 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
 
         try
         {
-            var validade = await validation.ValidateReg(regProValores, this, processosReader, tipovalorprocessoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProValores, this, tipovalorprocessoReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +151,7 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
 
         try
         {
-            var validade = await validation.ValidateReg(regProValores, this, processosReader, tipovalorprocessoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProValores, this, tipovalorprocessoReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

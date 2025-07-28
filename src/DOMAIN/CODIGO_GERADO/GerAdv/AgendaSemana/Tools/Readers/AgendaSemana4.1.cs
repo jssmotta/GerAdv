@@ -23,12 +23,16 @@ public partial class AgendaSemanaReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
+                   {campos}, 
+[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],
+[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],
+[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}],
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBAgendaSemana.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionarios.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Funcionario}]
-LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogados.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Advogado}]
-LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromisso.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.TipoCompromisso}]
-LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Cliente}]
+                   LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Funcionario}]
+LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Advogado}]
+LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.TipoCompromisso}]
+LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Cliente}]
  
                    {cWhere}
                    {orderQuery}

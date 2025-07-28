@@ -18,6 +18,9 @@ public partial record FilterProcessosParados
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("semana")]
     public int Semana { get; set; } = int.MinValue;
 

@@ -8,7 +8,6 @@ export interface Documentos
 	processo : number;
 	data : string;
 	observacao : string;
-	nropastaprocessos?: string;
 
 }
 

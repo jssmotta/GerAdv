@@ -26,7 +26,7 @@ public class OperadorGruposValidation : IOperadorGruposValidation
 
     private bool ValidSizes(Models.OperadorGrupos reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
         return true;
     }

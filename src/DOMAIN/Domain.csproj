@@ -87,6 +87,7 @@
     <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
+    <ProjectReference Include="..\SourgeGenesys.Shared\SourgeGenesys.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

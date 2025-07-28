@@ -75,9 +75,9 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
 
         // Envia as notificações
         var notificationService = new EnvioNotificacoesAniversariantes();
-        int sentCount = notificationService.EnviarEmailsParaAdvogados(uri, oCnn);
+        int sentCount = await notificationService.EnviarEmailsParaAdvogados(uri, oCnn);
 #if (!DEBUG)
-        sentCount += notificationService.EnviarEmailsParaFuncionarios(uri, oCnn);
+        sentCount += await notificationService.EnviarEmailsParaFuncionarios(uri, oCnn);
 #endif
         var data = new Dictionary<string, object>
     {

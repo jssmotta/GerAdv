@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - pdsProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Fase - pdsFase  
         /// </summary>
         [JsonPropertyName("fase")]
@@ -30,6 +24,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("tipoprodesposito")]
         public int TipoProDesposito { get; set; }
+
+        /// <summary>
+        /// Processo - pdsProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - pdsData  
@@ -54,12 +54,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - pdsProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Fase - pdsFase  
         /// </summary>
         [JsonPropertyName("fase")]
@@ -72,6 +66,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int TipoProDesposito { get; set; }
 
         /// <summary>
+        /// Processo - pdsProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
+
+        /// <summary>
         /// Data - pdsData  
         /// </summary>
         [JsonPropertyName("data")]
@@ -82,9 +82,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("valor")]
         public decimal Valor { get; set; }
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("descricaofase")]
         public string DescricaoFase { get; set; } = string.Empty;

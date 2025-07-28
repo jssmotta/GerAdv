@@ -14,16 +14,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - amdProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Nome - amdNome - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// Processo - amdProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Andamento - amdAndamento  
@@ -60,16 +60,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - amdProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Nome - amdNome - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// Processo - amdProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Andamento - amdAndamento  
@@ -94,8 +94,5 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

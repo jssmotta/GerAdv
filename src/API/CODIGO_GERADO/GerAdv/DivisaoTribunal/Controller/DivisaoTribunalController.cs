@@ -46,6 +46,15 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"DivisaoTribunal: GetListN called, max {max}, {filtro} uri");
+        var result = await _divisaotribunalService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

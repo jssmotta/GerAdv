@@ -8,7 +8,6 @@ export interface ProCDA
 	processo : number;
 	nome : string;
 	nrointerno : string;
-	nropastaprocessos?: string;
 
 }
 

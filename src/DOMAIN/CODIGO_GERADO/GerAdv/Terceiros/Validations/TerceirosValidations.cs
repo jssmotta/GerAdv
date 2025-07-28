@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITerceirosValidation
 {
-    Task<bool> ValidateReg(Models.Terceiros reg, ITerceirosService service, IProcessosReader processosReader, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Terceiros reg, ITerceirosService service, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, ITerceirosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,24 +26,24 @@ public class TerceirosValidation : ITerceirosValidation
 
     private bool ValidSizes(Models.Terceiros reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Class.Length > 1)
+        if (reg.Class != null && reg.Class.Length > 1)
             throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.VaraForoComarca.Length > 255)
+        if (reg.VaraForoComarca != null && reg.VaraForoComarca.Length > 255)
             throw new SGValidationException($"VaraForoComarca deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Terceiros reg, ITerceirosService service, IProcessosReader processosReader, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Terceiros reg, ITerceirosService service, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -54,16 +54,6 @@ public class TerceirosValidation : ITerceirosValidation
             return false;
         if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // PosicaoOutrasPartes
         if (!reg.Situacao.IsEmptyIDNumber())
         {

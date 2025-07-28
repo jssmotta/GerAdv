@@ -25,7 +25,7 @@ export class GUTPeriodicidadeStatusValidator {
 export interface IGUTPeriodicidadeStatusService {
   fetchGUTPeriodicidadeStatusById: (id: number) => Promise<IGUTPeriodicidadeStatus>;
   saveGUTPeriodicidadeStatus: (gutperiodicidadestatus: IGUTPeriodicidadeStatus) => Promise<IGUTPeriodicidadeStatus>;  
-  
+  getList: (filtro?: FilterGUTPeriodicidadeStatus) => Promise<IGUTPeriodicidadeStatus[]>;
   getAll: (filtro?: FilterGUTPeriodicidadeStatus) => Promise<IGUTPeriodicidadeStatus[]>;
   deleteGUTPeriodicidadeStatus: (id: number) => Promise<void>;
   validateGUTPeriodicidadeStatus: (gutperiodicidadestatus: IGUTPeriodicidadeStatus) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class GUTPeriodicidadeStatusService implements IGUTPeriodicidadeStatusSer
   }
 
   
+    async getList(filtro?: FilterGUTPeriodicidadeStatus): Promise<IGUTPeriodicidadeStatus[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching GUTPeriodicidadeStatus list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

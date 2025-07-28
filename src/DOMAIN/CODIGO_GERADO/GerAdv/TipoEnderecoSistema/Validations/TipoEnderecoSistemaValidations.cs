@@ -29,9 +29,9 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
 
     private bool ValidSizes(Models.TipoEnderecoSistema reg)
     {
-        if (reg.Nome.Length > 150)
+        if (reg.Nome != null && reg.Nome.Length > 150)
             throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }

@@ -133,6 +133,18 @@ const addValorGUTAtividade = (e: any) => {
           )}
           <div className='grid-container'>
 
+            <InputName
+            type='text'
+            id='guid'
+            label='GUID'
+            dataForm={gutperiodicidadestatusData}
+            className='inputIncNome'
+            name='guid'
+            value={gutperiodicidadestatusData.guid}
+            placeholder={`Informe GUID`}
+            onChange={onChange}
+            required
+            />
 
             <GUTAtividadesComboBox
             name={'gutatividade'}

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInstanciaFactory instanciaFactory, IInstanciaReader reader, IInstanciaValidation validation, IInstanciaWriter writer, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IInstanciaService, IDisposable
+public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInstanciaFactory instanciaFactory, IInstanciaReader reader, IInstanciaValidation validation, IInstanciaWriter writer, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IInstanciaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
     private readonly IInstanciaReader reader = reader;
     private readonly IInstanciaValidation validation = validation;
     private readonly IInstanciaWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IAcaoReader acaoReader = acaoReader;
     private readonly IForoReader foroReader = foroReader;
     private readonly ITipoRecursoReader tiporecursoReader = tiporecursoReader;
@@ -116,7 +115,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
 
         try
         {
-            var validade = await validation.ValidateReg(regInstancia, this, processosReader, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -157,7 +156,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
 
         try
         {
-            var validade = await validation.ValidateReg(regInstancia, this, processosReader, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -13,5 +13,6 @@ public partial interface IDadosProcuracaoReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     DadosProcuracaoResponseAll? ReadAll(FDadosProcuracao dbRec, IDataRecord dr);
     DadosProcuracaoResponseAll? ReadAll(SG.GerAdv.DBDadosProcuracao dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<DadosProcuracaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

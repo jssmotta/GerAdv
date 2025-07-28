@@ -18,6 +18,9 @@ public partial record FilterProValores
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("tipovalorprocesso")]
     public int TipoValorProcesso { get; set; } = int.MinValue;
 

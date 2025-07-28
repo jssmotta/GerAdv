@@ -2,8 +2,8 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProValores
-{	processo = `Processo`,
-	tipovalorprocesso = `TipoValorProcesso`,
+{	tipovalorprocesso = `TipoValorProcesso`,
+	processo = `Processo`,
 	indice = `Indice`,
 	ignorar = `Ignorar`,
 	data = `Data`,

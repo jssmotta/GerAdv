@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class HorasTrabService(IOptions<AppSettings> appSettings, IFHorasTrabFactory horastrabFactory, IHorasTrabReader reader, IHorasTrabValidation validation, IHorasTrabWriter writer, IClientesReader clientesReader, IProcessosReader processosReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IHorasTrabService, IDisposable
+public partial class HorasTrabService(IOptions<AppSettings> appSettings, IFHorasTrabFactory horastrabFactory, IHorasTrabReader reader, IHorasTrabValidation validation, IHorasTrabWriter writer, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IHorasTrabService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class HorasTrabService(IOptions<AppSettings> appSettings, IFHoras
     private readonly IHorasTrabValidation validation = validation;
     private readonly IHorasTrabWriter writer = writer;
     private readonly IClientesReader clientesReader = clientesReader;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IAdvogadosReader advogadosReader = advogadosReader;
     private readonly IFuncionariosReader funcionariosReader = funcionariosReader;
     private readonly IServicosReader servicosReader = servicosReader;
@@ -114,7 +113,7 @@ public partial class HorasTrabService(IOptions<AppSettings> appSettings, IFHoras
 
         try
         {
-            var validade = await validation.ValidateReg(regHorasTrab, this, clientesReader, processosReader, advogadosReader, funcionariosReader, servicosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regHorasTrab, this, clientesReader, advogadosReader, funcionariosReader, servicosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -155,7 +154,7 @@ public partial class HorasTrabService(IOptions<AppSettings> appSettings, IFHoras
 
         try
         {
-            var validade = await validation.ValidateReg(regHorasTrab, this, clientesReader, processosReader, advogadosReader, funcionariosReader, servicosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regHorasTrab, this, clientesReader, advogadosReader, funcionariosReader, servicosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -132,14 +132,6 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
             UNC = dbRec.FUNC ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            andamentosmd.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return andamentosmd;
     }
 
@@ -160,14 +152,6 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
             UNC = dbRec.FUNC ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            andamentosmd.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return andamentosmd;
     }
 }

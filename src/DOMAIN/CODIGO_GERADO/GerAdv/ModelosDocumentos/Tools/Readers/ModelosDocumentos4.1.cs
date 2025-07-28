@@ -23,9 +23,10 @@ public partial class ModelosDocumentosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.Nome}]
+                   {campos}, 
+[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.Nome}]
                    FROM {DBModelosDocumentos.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBTipoModeloDocumentoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumento.CampoCodigo}]=[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.TipoModeloDocumento}]
+                   LEFT JOIN {DBTipoModeloDocumentoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.CampoCodigo}]=[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.TipoModeloDocumento}]
  
                    {cWhere}
                    {orderQuery}

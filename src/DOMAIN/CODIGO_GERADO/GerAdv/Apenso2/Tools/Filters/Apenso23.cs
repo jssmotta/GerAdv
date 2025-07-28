@@ -18,6 +18,9 @@ public partial record FilterApenso2
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("apensado")]
     public int Apensado { get; set; } = int.MinValue;
 

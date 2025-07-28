@@ -9,31 +9,28 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ISituacaoValidation
 {
     Task<bool> ValidateReg(Models.Situacao reg, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ISituacaoService service, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class SituacaoValidation : ISituacaoValidation
 {
-    public async Task<bool> CanDelete(int id, ISituacaoService service, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var processosExists0 = await processosService.Filter(new Filters.FilterProcessos { Situacao = id }, uri);
-        if (processosExists0 != null && processosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Situacao reg)
     {
-        if (reg.Parte_Int.Length > 30)
+        if (reg.Parte_Int != null && reg.Parte_Int.Length > 30)
             throw new SGValidationException($"Parte_Int deve ter no máximo 30 caracteres.");
-        if (reg.Parte_Opo.Length > 30)
+        if (reg.Parte_Opo != null && reg.Parte_Opo.Length > 30)
             throw new SGValidationException($"Parte_Opo deve ter no máximo 30 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
@@ -42,6 +39,8 @@ public class SituacaoValidation : ISituacaoValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.Parte_Int))
+            throw new SGValidationException("Parte_Int é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

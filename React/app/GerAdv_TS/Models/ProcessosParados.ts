@@ -5,8 +5,8 @@
 export interface ProcessosParados
 {
     id: number;
-	processo : number;
 	operador : number;
+	processo : number;
 	semana : number;
 	ano : number;
 	datahora : string;
@@ -15,7 +15,6 @@ export interface ProcessosParados
 	datahistorico_date? : Date;
 	datanenotas : string;
 	datanenotas_date? : Date;
-	nropastaprocessos?: string;
 	nomeoperador?: string;
 
 }
@@ -26,8 +25,8 @@ export function ProcessosParadosEmpty(): IProcessosParados {
     
     return {
         id: 0,
-		processo: 0,
 		operador: 0,
+		processo: 0,
 		semana: 0,
 		ano: 0,
 		datahora: '',
@@ -41,8 +40,8 @@ export function ProcessosParadosTestEmpty(): IProcessosParados {
     
     return {
         id: 1,
-		processo: 1,
 		operador: 1,
+		processo: 1,
 		semana: 1,
 		ano: 1,
 		datahora: 'X',

@@ -16,8 +16,6 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { LivroCaixaApi } from '../../Apis/ApiLivroCaixa';
 import { useValidationsLivroCaixa } from '../../Hooks/hookLivroCaixa';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
 import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
@@ -47,191 +45,95 @@ const dadoApi = new LivroCaixaApi(systemContext?.Uri ?? '', systemContext?.Token
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsLivroCaixa();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
-if (getParamFromUrl('processos') > 0) {
-  if (livrocaixaData.id === 0 && livrocaixaData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
 
-    livrocaixaData.processo = getParamFromUrl('processos');
-  }
-}
-const addValorProcesso = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-
-      if (!isSubmitting) {
-        setIsSubmitting(true);
-
-        try {
-          onSubmit(e);
-        } catch (error) {
-        console.log('Erro ao submeter formulário de LivroCaixa:');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
-
-  const handleDirectSave = () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
 
       try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`LivroCaixaForm-${livrocaixaData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
+        onSubmit(e);
       } catch (error) {
-      console.log('Erro ao salvar LivroCaixa diretamente');
+      console.log('Erro ao submeter formulário de LivroCaixa:');
       setIsSubmitting(false);
       if (onError) onError();
       }
     }
   };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = livrocaixaData?.id == 0 ? 'Editar LivroCaixa' : 'Adicionar Livro Caixa';
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`LivroCaixaForm-${livrocaixaData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.log('Erro ao salvar LivroCaixa diretamente');
+    setIsSubmitting(false);
+    if (onError) onError();
     }
-  }, [livrocaixaData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = livrocaixaData?.id == 0 ? 'Editar LivroCaixa' : 'Adicionar Livro Caixa';
+  }
+}, [livrocaixaData.id]);
+return (
+<>
+{!isMobile ? <style jsx global>{`
+  @media (max-width: 1366px) {
+    html {
+      zoom: 0.8 !important;
     }
-    `}</style> : null}
+  }
+  `}</style> : null}
 
-    <div className={isMobile ? 'form-container form-container-LivroCaixa' : 'form-container form-container-LivroCaixa'}>
+  <div className={isMobile ? 'form-container form-container-LivroCaixa' : 'form-container form-container-LivroCaixa'}>
 
-      <form className='formInputCadInc' id={`LivroCaixaForm-${livrocaixaData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+    <form className='formInputCadInc' id={`LivroCaixaForm-${livrocaixaData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
 
-            <InputName
-            type='text'
-            id='data'
-            label='Data'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='data'
-            value={livrocaixaData.data}
-            placeholder={`Informe Data`}
-            onChange={onChange}
-            required
-            />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='iddes'
-            label='IDDes'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='iddes'
-            value={livrocaixaData.iddes}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='pessoal'
-            label='Pessoal'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='pessoal'
-            value={livrocaixaData.pessoal}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={livrocaixaData} label='Ajuste' name='ajuste' checked={livrocaixaData.ajuste} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='idhon'
-            label='IDHon'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='idhon'
-            value={livrocaixaData.idhon}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='idhonparc'
-            label='IDHonParc'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='idhonparc'
-            value={livrocaixaData.idhonparc}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={livrocaixaData} label='IDHonSuc' name='idhonsuc' checked={livrocaixaData.idhonsuc} onChange={onChange} />
-
-            <ProcessosComboBox
-            name={'processo'}
-            dataForm={livrocaixaData}
-            value={livrocaixaData.processo}
-            setValue={addValorProcesso}
-            label={'Processos'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='valor'
-            label='Valor'
-            dataForm={livrocaixaData}
-            className='inputIncNome'
-            name='valor'
-            value={livrocaixaData.valor}
-            onChange={onChange}
-            />
-
-          </div><div className='grid-container'><InputCheckbox dataForm={livrocaixaData} label='Tipo' name='tipo' checked={livrocaixaData.tipo} onChange={onChange} />
+          <InputName
+          type='text'
+          id='data'
+          label='Data'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='data'
+          value={livrocaixaData.data}
+          placeholder={`Informe Data`}
+          onChange={onChange}
+          required
+          />
 
           <InputInput
           type='text'
-          maxLength={255}
-          id='historico'
-          label='Historico'
+          maxLength={2048}
+          id='iddes'
+          label='IDDes'
           dataForm={livrocaixaData}
           className='inputIncNome'
-          name='historico'
-          value={livrocaixaData.historico}
+          name='iddes'
+          value={livrocaixaData.iddes}
           onChange={onChange}
           />
 
@@ -239,25 +141,106 @@ const addValorProcesso = (e: any) => {
           <InputInput
           type='text'
           maxLength={2048}
-          id='grupo'
-          label='Grupo'
+          id='pessoal'
+          label='Pessoal'
           dataForm={livrocaixaData}
           className='inputIncNome'
-          name='grupo'
-          value={livrocaixaData.grupo}
+          name='pessoal'
+          value={livrocaixaData.pessoal}
           onChange={onChange}
           />
 
-        </div>
-      </form>
+          <InputCheckbox dataForm={livrocaixaData} label='Ajuste' name='ajuste' checked={livrocaixaData.ajuste} onChange={onChange} />
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='idhon'
+          label='IDHon'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='idhon'
+          value={livrocaixaData.idhon}
+          onChange={onChange}
+          />
 
 
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/livrocaixa'} id={livrocaixaData.id} closeModel={onClose} dadoApi={dadoApi} />
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='idhonparc'
+          label='IDHonParc'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='idhonparc'
+          value={livrocaixaData.idhonparc}
+          onChange={onChange}
+          />
+
+          <InputCheckbox dataForm={livrocaixaData} label='IDHonSuc' name='idhonsuc' checked={livrocaixaData.idhonsuc} onChange={onChange} />
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='processo'
+          label='Processo'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='processo'
+          value={livrocaixaData.processo}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='valor'
+          label='Valor'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='valor'
+          value={livrocaixaData.valor}
+          onChange={onChange}
+          />
+
+        </div><div className='grid-container'><InputCheckbox dataForm={livrocaixaData} label='Tipo' name='tipo' checked={livrocaixaData.tipo} onChange={onChange} />
+
+        <InputInput
+        type='text'
+        maxLength={255}
+        id='historico'
+        label='Historico'
+        dataForm={livrocaixaData}
+        className='inputIncNome'
+        name='historico'
+        value={livrocaixaData.historico}
+        onChange={onChange}
+        />
+
+
+        <InputInput
+        type='text'
+        maxLength={2048}
+        id='grupo'
+        label='Grupo'
+        dataForm={livrocaixaData}
+        className='inputIncNome'
+        name='grupo'
+        value={livrocaixaData.grupo}
+        onChange={onChange}
+        />
+
       </div>
-      <div className='form-spacer'></div>
-      </>
-    );
-  };
+    </form>
+
+
+    {isMobile && (
+      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+      )}
+      <DeleteButton page={'/pages/livrocaixa'} id={livrocaixaData.id} closeModel={onClose} dadoApi={dadoApi} />
+    </div>
+    <div className='form-spacer'></div>
+    </>
+  );
+};

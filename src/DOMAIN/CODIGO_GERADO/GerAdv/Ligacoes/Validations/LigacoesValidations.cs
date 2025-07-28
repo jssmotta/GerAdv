@@ -8,43 +8,40 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ILigacoesValidation
 {
-    Task<bool> ValidateReg(Models.Ligacoes reg, ILigacoesService service, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ILigacoesService service, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Ligacoes reg, ILigacoesService service, IClientesReader clientesReader, IRamalReader ramalReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, ILigacoesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class LigacoesValidation : ILigacoesValidation
 {
-    public async Task<bool> CanDelete(int id, ILigacoesService service, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, ILigacoesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var recadosExists0 = await recadosService.Filter(new Filters.FilterRecados { Ligacoes = id }, uri);
-        if (recadosExists0 != null && recadosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Ligacoes reg)
     {
-        if (reg.Assunto.Length > 200)
+        if (reg.Assunto != null && reg.Assunto.Length > 200)
             throw new SGValidationException($"Assunto deve ter no máximo 200 caracteres.");
-        if (reg.Contato.Length > 200)
+        if (reg.Contato != null && reg.Contato.Length > 200)
             throw new SGValidationException($"Contato deve ter no máximo 200 caracteres.");
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Para.Length > 100)
+        if (reg.Para != null && reg.Para.Length > 100)
             throw new SGValidationException($"Para deve ter no máximo 100 caracteres.");
-        if (reg.LigarPara.Length > 255)
+        if (reg.LigarPara != null && reg.LigarPara.Length > 255)
             throw new SGValidationException($"LigarPara deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Ligacoes reg, ILigacoesService service, IClientesReader clientesReader, IRamalReader ramalReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Ligacoes reg, ILigacoesService service, IClientesReader clientesReader, IRamalReader ramalReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -70,16 +67,6 @@ public class LigacoesValidation : ILigacoesValidation
             if (regRamal == null || regRamal.Id != reg.Ramal)
             {
                 throw new SGValidationException($"Ramal não encontrado ({regRamal?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

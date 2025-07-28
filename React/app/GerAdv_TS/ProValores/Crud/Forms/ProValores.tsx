@@ -16,9 +16,7 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { ProValoresApi } from '../../Apis/ApiProValores';
 import { useValidationsProValores } from '../../Hooks/hookProValores';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import TipoValorProcessoComboBox from '@/app/GerAdv_TS/TipoValorProcesso/ComboBox/TipoValorProcesso';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { TipoValorProcessoApi } from '@/app/GerAdv_TS/TipoValorProcesso/Apis/ApiTipoValorProcesso';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
@@ -49,25 +47,8 @@ const dadoApi = new ProValoresApi(systemContext?.Uri ?? '', systemContext?.Token
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsProValores();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [nomeTipoValorProcesso, setNomeTipoValorProcesso] = useState('');
 const tipovalorprocessoApi = new TipoValorProcessoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-
-if (getParamFromUrl('processos') > 0) {
-  if (provaloresData.id === 0 && provaloresData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    provaloresData.processo = getParamFromUrl('processos');
-  }
-}
 
 if (getParamFromUrl('tipovalorprocesso') > 0) {
   if (provaloresData.id === 0 && provaloresData.tipovalorprocesso == 0) {
@@ -83,251 +64,253 @@ if (getParamFromUrl('tipovalorprocesso') > 0) {
     provaloresData.tipovalorprocesso = getParamFromUrl('tipovalorprocesso');
   }
 }
-const addValorProcesso = (e: any) => {
+const addValorTipoValorProcesso = (e: any) => {
   if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
+    onChange({ target: { name: 'tipovalorprocesso', value: e.id } });
   };
-  const addValorTipoValorProcesso = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'tipovalorprocesso', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
-
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ProValores:');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
-
-    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ProValoresForm-${provaloresData.id}`)
-          } as unknown as React.FormEvent;
-
-          onSubmit(syntheticEvent);
+          onSubmit(e);
         } catch (error) {
-        console.log('Erro ao salvar ProValores diretamente');
+        console.log('Erro ao submeter formulário de ProValores:');
         setIsSubmitting(false);
         if (onError) onError();
         }
       }
     };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = provaloresData?.id == 0 ? 'Editar ProValores' : 'Adicionar Pro Valores';
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`ProValoresForm-${provaloresData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.log('Erro ao salvar ProValores diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
       }
-    }, [provaloresData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = provaloresData?.id == 0 ? 'Editar ProValores' : 'Adicionar Pro Valores';
+    }
+  }, [provaloresData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
       }
-      `}</style> : null}
+    }
+    `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ProValores' : 'form-container form-container-ProValores'}>
+    <div className={isMobile ? 'form-container form-container-ProValores' : 'form-container form-container-ProValores'}>
 
-        <form className='formInputCadInc' id={`ProValoresForm-${provaloresData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+      <form className='formInputCadInc' id={`ProValoresForm-${provaloresData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='data'
-              label='Data'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='data'
-              value={provaloresData.data}
-              placeholder={`Informe Data`}
-              onChange={onChange}
-              required
-              />
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='data'
+            value={provaloresData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
 
-              <ProcessosComboBox
-              name={'processo'}
-              dataForm={provaloresData}
-              value={provaloresData.processo}
-              setValue={addValorProcesso}
-              label={'Processos'}
-              />
-
-              <TipoValorProcessoComboBox
-              name={'tipovalorprocesso'}
-              dataForm={provaloresData}
-              value={provaloresData.tipovalorprocesso}
-              setValue={addValorTipoValorProcesso}
-              label={'Tipo Valor Processo'}
-              />
-
-              <InputInput
-              required
-              type='text'
-              maxLength={20}
-              id='indice'
-              label='Indice'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='indice'
-              value={provaloresData.indice}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={provaloresData} label='Ignorar' name='ignorar' checked={provaloresData.ignorar} onChange={onChange} />
-
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='valororiginal'
-              label='ValorOriginal'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='valororiginal'
-              value={provaloresData.valororiginal}
-              onChange={onChange}
-              />
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='processo'
+            value={provaloresData.processo}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='percmulta'
-              label='PercMulta'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='percmulta'
-              value={provaloresData.percmulta}
-              onChange={onChange}
-              />
+            <TipoValorProcessoComboBox
+            name={'tipovalorprocesso'}
+            dataForm={provaloresData}
+            value={provaloresData.tipovalorprocesso}
+            setValue={addValorTipoValorProcesso}
+            label={'Tipo Valor Processo'}
+            />
+
+            <InputInput
+            required
+            type='text'
+            maxLength={20}
+            id='indice'
+            label='Indice'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='indice'
+            value={provaloresData.indice}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={provaloresData} label='Ignorar' name='ignorar' checked={provaloresData.ignorar} onChange={onChange} />
+
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='valororiginal'
+            label='ValorOriginal'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='valororiginal'
+            value={provaloresData.valororiginal}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valormulta'
-              label='ValorMulta'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='valormulta'
-              value={provaloresData.valormulta}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='percmulta'
+            label='PercMulta'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='percmulta'
+            value={provaloresData.percmulta}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='percjuros'
-              label='PercJuros'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='percjuros'
-              value={provaloresData.percjuros}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valororiginalcorrigidoindice'
-              label='ValorOriginalCorrigidoIndice'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='valororiginalcorrigidoindice'
-              value={provaloresData.valororiginalcorrigidoindice}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valormulta'
+            label='ValorMulta'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='valormulta'
+            value={provaloresData.valormulta}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valormultacorrigido'
-              label='ValorMultaCorrigido'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='valormultacorrigido'
-              value={provaloresData.valormultacorrigido}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='percjuros'
+            label='PercJuros'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='percjuros'
+            value={provaloresData.percjuros}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valororiginalcorrigidoindice'
+            label='ValorOriginalCorrigidoIndice'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='valororiginalcorrigidoindice'
+            value={provaloresData.valororiginalcorrigidoindice}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valorjuroscorrigido'
-              label='ValorJurosCorrigido'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='valorjuroscorrigido'
-              value={provaloresData.valorjuroscorrigido}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valormultacorrigido'
+            label='ValorMultaCorrigido'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='valormultacorrigido'
+            value={provaloresData.valormultacorrigido}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valorfinal'
-              label='ValorFinal'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='valorfinal'
-              value={provaloresData.valorfinal}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valorjuroscorrigido'
+            label='ValorJurosCorrigido'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='valorjuroscorrigido'
+            value={provaloresData.valorjuroscorrigido}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dataultimacorrecao'
-              label='DataUltimaCorrecao'
-              dataForm={provaloresData}
-              className='inputIncNome'
-              name='dataultimacorrecao'
-              value={provaloresData.dataultimacorrecao}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valorfinal'
+            label='ValorFinal'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='valorfinal'
+            value={provaloresData.valorfinal}
+            onChange={onChange}
+            />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/provalores'} id={provaloresData.id} closeModel={onClose} dadoApi={dadoApi} />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='dataultimacorrecao'
+            label='DataUltimaCorrecao'
+            dataForm={provaloresData}
+            className='inputIncNome'
+            name='dataultimacorrecao'
+            value={provaloresData.dataultimacorrecao}
+            onChange={onChange}
+            />
+
           </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/provalores'} id={provaloresData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

@@ -46,6 +46,15 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidadeStatus? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"GUTPeriodicidadeStatus: GetListN called, max {max}, {filtro} uri");
+        var result = await _gutperiodicidadestatusService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

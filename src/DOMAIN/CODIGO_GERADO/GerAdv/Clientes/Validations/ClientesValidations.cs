@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IClientesValidation
 {
     Task<bool> ValidateReg(Models.Clientes reg, IClientesService service, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IClientesService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaRepetirService agendarepetirService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContatoCRMService contatocrmService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, ILivroCaixaClientesService livrocaixaclientesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProcessosService processosService, IProDespesasService prodespesasService, IRecadosService recadosService, IReuniaoService reuniaoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IClientesService service, IAgendaService agendaService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ClientesValidation : IClientesValidation
 {
-    public async Task<bool> CanDelete(int id, IClientesService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaRepetirService agendarepetirService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContatoCRMService contatocrmService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, ILivroCaixaClientesService livrocaixaclientesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProcessosService processosService, IProDespesasService prodespesasService, IRecadosService recadosService, IReuniaoService reuniaoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IClientesService service, IAgendaService agendaService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
@@ -24,116 +24,98 @@ public class ClientesValidation : IClientesValidation
         var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Cliente = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Cliente = id }, uri);
-        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.");
-        var agendarepetirExists2 = await agendarepetirService.Filter(new Filters.FilterAgendaRepetir { Cliente = id }, uri);
-        if (agendarepetirExists2 != null && agendarepetirExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Repetir associados a ele.");
-        var anexamentoregistrosExists3 = await anexamentoregistrosService.Filter(new Filters.FilterAnexamentoRegistros { Cliente = id }, uri);
-        if (anexamentoregistrosExists3 != null && anexamentoregistrosExists3.Any())
+        var anexamentoregistrosExists1 = await anexamentoregistrosService.Filter(new Filters.FilterAnexamentoRegistros { Cliente = id }, uri);
+        if (anexamentoregistrosExists1 != null && anexamentoregistrosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Anexamento Registros associados a ele.");
-        var clientessociosExists4 = await clientessociosService.Filter(new Filters.FilterClientesSocios { Cliente = id }, uri);
-        if (clientessociosExists4 != null && clientessociosExists4.Any())
+        var clientessociosExists2 = await clientessociosService.Filter(new Filters.FilterClientesSocios { Cliente = id }, uri);
+        if (clientessociosExists2 != null && clientessociosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Clientes Socios associados a ele.");
-        var colaboradoresExists5 = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cliente = id }, uri);
-        if (colaboradoresExists5 != null && colaboradoresExists5.Any())
+        var colaboradoresExists3 = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cliente = id }, uri);
+        if (colaboradoresExists3 != null && colaboradoresExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.");
-        var contacorrenteExists6 = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Cliente = id }, uri);
-        if (contacorrenteExists6 != null && contacorrenteExists6.Any())
+        var contacorrenteExists4 = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Cliente = id }, uri);
+        if (contacorrenteExists4 != null && contacorrenteExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Conta Corrente associados a ele.");
-        var contatocrmExists7 = await contatocrmService.Filter(new Filters.FilterContatoCRM { Cliente = id }, uri);
-        if (contatocrmExists7 != null && contatocrmExists7.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contato C R M associados a ele.");
-        var contratosExists8 = await contratosService.Filter(new Filters.FilterContratos { Cliente = id }, uri);
-        if (contratosExists8 != null && contratosExists8.Any())
+        var contratosExists5 = await contratosService.Filter(new Filters.FilterContratos { Cliente = id }, uri);
+        if (contratosExists5 != null && contratosExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.");
-        var dadosprocuracaoExists9 = await dadosprocuracaoService.Filter(new Filters.FilterDadosProcuracao { Cliente = id }, uri);
-        if (dadosprocuracaoExists9 != null && dadosprocuracaoExists9.Any())
+        var dadosprocuracaoExists6 = await dadosprocuracaoService.Filter(new Filters.FilterDadosProcuracao { Cliente = id }, uri);
+        if (dadosprocuracaoExists6 != null && dadosprocuracaoExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Dados Procuracao associados a ele.");
-        var diario2Exists10 = await diario2Service.Filter(new Filters.FilterDiario2 { Cliente = id }, uri);
-        if (diario2Exists10 != null && diario2Exists10.Any())
+        var diario2Exists7 = await diario2Service.Filter(new Filters.FilterDiario2 { Cliente = id }, uri);
+        if (diario2Exists7 != null && diario2Exists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Diario2 associados a ele.");
-        var gruposempresasExists11 = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Cliente = id }, uri);
-        if (gruposempresasExists11 != null && gruposempresasExists11.Any())
+        var gruposempresasExists8 = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Cliente = id }, uri);
+        if (gruposempresasExists8 != null && gruposempresasExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.");
-        var gruposempresascliExists12 = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Cliente = id }, uri);
-        if (gruposempresascliExists12 != null && gruposempresascliExists12.Any())
+        var gruposempresascliExists9 = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Cliente = id }, uri);
+        if (gruposempresascliExists9 != null && gruposempresascliExists9.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas Cli associados a ele.");
-        var honorariosdadoscontratoExists13 = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Cliente = id }, uri);
-        if (honorariosdadoscontratoExists13 != null && honorariosdadoscontratoExists13.Any())
+        var honorariosdadoscontratoExists10 = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Cliente = id }, uri);
+        if (honorariosdadoscontratoExists10 != null && honorariosdadoscontratoExists10.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Honorarios Dados Contrato associados a ele.");
-        var horastrabExists14 = await horastrabService.Filter(new Filters.FilterHorasTrab { Cliente = id }, uri);
-        if (horastrabExists14 != null && horastrabExists14.Any())
+        var horastrabExists11 = await horastrabService.Filter(new Filters.FilterHorasTrab { Cliente = id }, uri);
+        if (horastrabExists11 != null && horastrabExists11.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
-        var ligacoesExists15 = await ligacoesService.Filter(new Filters.FilterLigacoes { Cliente = id }, uri);
-        if (ligacoesExists15 != null && ligacoesExists15.Any())
+        var ligacoesExists12 = await ligacoesService.Filter(new Filters.FilterLigacoes { Cliente = id }, uri);
+        if (ligacoesExists12 != null && ligacoesExists12.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.");
-        var livrocaixaclientesExists16 = await livrocaixaclientesService.Filter(new Filters.FilterLivroCaixaClientes { Cliente = id }, uri);
-        if (livrocaixaclientesExists16 != null && livrocaixaclientesExists16.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Livro Caixa Clientes associados a ele.");
-        var operadoresExists17 = await operadoresService.Filter(new Filters.FilterOperadores { Cliente = id }, uri);
-        if (operadoresExists17 != null && operadoresExists17.Any())
+        var operadoresExists13 = await operadoresService.Filter(new Filters.FilterOperadores { Cliente = id }, uri);
+        if (operadoresExists13 != null && operadoresExists13.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operadores associados a ele.");
-        var preclientesExists18 = await preclientesService.Filter(new Filters.FilterPreClientes { IDRep = id }, uri);
-        if (preclientesExists18 != null && preclientesExists18.Any())
+        var preclientesExists14 = await preclientesService.Filter(new Filters.FilterPreClientes { IDRep = id }, uri);
+        if (preclientesExists14 != null && preclientesExists14.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pre Clientes associados a ele.");
-        var processosExists19 = await processosService.Filter(new Filters.FilterProcessos { Cliente = id }, uri);
-        if (processosExists19 != null && processosExists19.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.");
-        var prodespesasExists20 = await prodespesasService.Filter(new Filters.FilterProDespesas { Cliente = id }, uri);
-        if (prodespesasExists20 != null && prodespesasExists20.Any())
+        var prodespesasExists15 = await prodespesasService.Filter(new Filters.FilterProDespesas { Cliente = id }, uri);
+        if (prodespesasExists15 != null && prodespesasExists15.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Despesas associados a ele.");
-        var recadosExists21 = await recadosService.Filter(new Filters.FilterRecados { Cliente = id }, uri);
-        if (recadosExists21 != null && recadosExists21.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.");
-        var reuniaoExists22 = await reuniaoService.Filter(new Filters.FilterReuniao { Cliente = id }, uri);
-        if (reuniaoExists22 != null && reuniaoExists22.Any())
+        var reuniaoExists16 = await reuniaoService.Filter(new Filters.FilterReuniao { Cliente = id }, uri);
+        if (reuniaoExists16 != null && reuniaoExists16.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Reunião associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Clientes reg)
     {
-        if (reg.Icone.Length > 255)
+        if (reg.Icone != null && reg.Icone.Length > 255)
             throw new SGValidationException($"Icone deve ter no máximo 255 caracteres.");
-        if (reg.NomeMae.Length > 80)
+        if (reg.NomeMae != null && reg.NomeMae.Length > 80)
             throw new SGValidationException($"NomeMae deve ter no máximo 80 caracteres.");
-        if (reg.QuemIndicou.Length > 80)
+        if (reg.QuemIndicou != null && reg.QuemIndicou.Length > 80)
             throw new SGValidationException($"QuemIndicou deve ter no máximo 80 caracteres.");
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.NomeFantasia.Length > 80)
+        if (reg.NomeFantasia != null && reg.NomeFantasia.Length > 80)
             throw new SGValidationException($"NomeFantasia deve ter no máximo 80 caracteres.");
-        if (reg.Class.Length > 1)
+        if (reg.Class != null && reg.Class.Length > 1)
             throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.InscEst.Length > 15)
+        if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.Qualificacao.Length > 100)
+        if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG.Length > 50)
+        if (reg.RG != null && reg.RG.Length > 50)
             throw new SGValidationException($"RG deve ter no máximo 50 caracteres.");
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.HomePage.Length > 60)
+        if (reg.HomePage != null && reg.HomePage.Length > 60)
             throw new SGValidationException($"HomePage deve ter no máximo 60 caracteres.");
-        if (reg.NomePai.Length > 80)
+        if (reg.NomePai != null && reg.NomePai.Length > 80)
             throw new SGValidationException($"NomePai deve ter no máximo 80 caracteres.");
-        if (reg.RGOExpeditor.Length > 30)
+        if (reg.RGOExpeditor != null && reg.RGOExpeditor.Length > 30)
             throw new SGValidationException($"RGOExpeditor deve ter no máximo 30 caracteres.");
-        if (reg.CNH.Length > 100)
+        if (reg.CNH != null && reg.CNH.Length > 100)
             throw new SGValidationException($"CNH deve ter no máximo 100 caracteres.");
-        if (reg.PessoaContato.Length > 120)
+        if (reg.PessoaContato != null && reg.PessoaContato.Length > 120)
             throw new SGValidationException($"PessoaContato deve ter no máximo 120 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }

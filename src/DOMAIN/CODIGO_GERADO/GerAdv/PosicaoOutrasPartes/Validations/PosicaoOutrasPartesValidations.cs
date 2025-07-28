@@ -29,9 +29,9 @@ public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
 
     private bool ValidSizes(Models.PosicaoOutrasPartes reg)
     {
-        if (reg.Descricao.Length > 30)
+        if (reg.Descricao != null && reg.Descricao.Length > 30)
             throw new SGValidationException($"Descricao deve ter no máximo 30 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

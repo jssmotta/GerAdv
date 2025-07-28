@@ -168,7 +168,10 @@ export function useValidationsContratos() {
     
       try {
    
-        if (data.protestar.length > 50) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.protestar.length > 50) { 
                                              return { isValid: false, message: 'O campo Protestar não pode ter mais de 50 caracteres.' };
                                          } 
 if (data.juros.length > 5) { 

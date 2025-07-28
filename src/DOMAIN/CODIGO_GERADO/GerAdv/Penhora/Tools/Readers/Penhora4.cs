@@ -158,14 +158,6 @@ public partial class PenhoraReader(IFPenhoraFactory penhoraFactory) : IPenhoraRe
 
         try
         {
-            penhora.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             penhora.NomePenhoraStatus = dr[DBPenhoraStatusDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -196,14 +188,6 @@ public partial class PenhoraReader(IFPenhoraFactory penhoraFactory) : IPenhoraRe
         {
             penhora.DataPenhora = dbRec.FDataPenhora;
             penhora.DataPenhora_date = XDataPenhora;
-        }
-
-        try
-        {
-            penhora.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         try

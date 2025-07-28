@@ -23,10 +23,12 @@ public partial class GruposEmpresasCliReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBGruposEmpresasDicInfo.PTabelaNome}].[{DBGruposEmpresasDicInfo.Descricao}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
+                   {campos}, 
+[{DBGruposEmpresasDicInfo.PTabelaNome}].[{DBGruposEmpresasDicInfo.Descricao}],
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBGruposEmpresasCli.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBGruposEmpresasDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGruposEmpresasDicInfo.PTabelaNome}].[{DBGruposEmpresas.CampoCodigo}]=[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Grupo}]
-LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Cliente}]
+                   LEFT JOIN {DBGruposEmpresasDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGruposEmpresasDicInfo.PTabelaNome}].[{DBGruposEmpresasDicInfo.CampoCodigo}]=[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Grupo}]
+LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Cliente}]
  
                    {cWhere}
                    {orderQuery}

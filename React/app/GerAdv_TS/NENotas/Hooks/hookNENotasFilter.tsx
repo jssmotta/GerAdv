@@ -9,10 +9,7 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterNENotas } from '@/app/GerAdv_TS/NENotas/Filters/NENotas';
-import ApensoComboBox from '@/app/GerAdv_TS/Apenso/ComboBox/Apenso';
-import PrecatoriaComboBox from '@/app/GerAdv_TS/Precatoria/ComboBox/Precatoria';
 import InstanciaComboBox from '@/app/GerAdv_TS/Instancia/ComboBox/Instancia';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 interface UseNENotasFilterProps {
   handleFetchWithFilter: (filtro?: FilterNENotas | undefined | null) => Promise<void>;
 }
@@ -59,21 +56,47 @@ export const useNENotasFilter = ({ handleFetchWithFilter }: UseNENotasFilterProp
   // Função para renderizar os campos de filtro
   const renderInputFilters = (handlers: FilterHandlers<FilterNENotas>) => (
   <>
-  <ApensoComboBox
+  <InputInput
+  type='text'
+  id='apenso'
   name='apenso'
-  dataForm={null}
-  value={handlers.windowFilter?.apenso}
-  setValue={(e:any) => handlers.handleComboChange(e, 'apenso')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Apenso'
+  value={handlers.windowFilter?.apenso ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Apenso'
+  label='Apenso (igual ou inicial)'
+  className='inputIncNome inputSearch'
   />
-  <PrecatoriaComboBox
+  <InputInput
+  type='text'
+  id='apenso_end'
+  name='apenso_end'
+  value={handlers.windowFilter?.apenso_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Apenso final'
+  label='Apenso final'
+  disabled={handlers.windowFilter?.apenso ? false: true}
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='precatoria'
   name='precatoria'
-  dataForm={null}
-  value={handlers.windowFilter?.precatoria}
-  setValue={(e:any) => handlers.handleComboChange(e, 'precatoria')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Precatoria'
+  value={handlers.windowFilter?.precatoria ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Precatoria'
+  label='Precatoria (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='precatoria_end'
+  name='precatoria_end'
+  value={handlers.windowFilter?.precatoria_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Precatoria final'
+  label='Precatoria final'
+  disabled={handlers.windowFilter?.precatoria ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InstanciaComboBox
   name='instancia'
@@ -120,13 +143,26 @@ export const useNENotasFilter = ({ handleFetchWithFilter }: UseNENotasFilterProp
   label='Revisada'
   className='inputSearch inputSearchCheckbox'
   />
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

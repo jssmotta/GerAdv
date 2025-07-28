@@ -56,12 +56,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Justica { get; set; }
 
         /// <summary>
-        /// Processo - ageProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Usuario - ageUsuario  
         /// </summary>
         [JsonPropertyName("usuario")]
@@ -183,6 +177,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("concluido")]
         public bool Concluido { get; set; }
+
+        /// <summary>
+        /// Processo - ageProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// IDHistorico - ageIDHistorico  
@@ -318,12 +318,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Justica { get; set; }
 
         /// <summary>
-        /// Processo - ageProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Usuario - ageUsuario  
         /// </summary>
         [JsonPropertyName("usuario")]
@@ -447,6 +441,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public bool Concluido { get; set; }
 
         /// <summary>
+        /// Processo - ageProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
+
+        /// <summary>
         /// IDHistorico - ageIDHistorico  
         /// </summary>
         [JsonPropertyName("idhistorico")]
@@ -547,9 +547,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

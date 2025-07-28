@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, IFStatusAndamentoFactory statusandamentoFactory, IStatusAndamentoReader reader, IStatusAndamentoValidation validation, IStatusAndamentoWriter writer, IHistoricoService historicoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IStatusAndamentoService, IDisposable
+public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, IFStatusAndamentoFactory statusandamentoFactory, IStatusAndamentoReader reader, IStatusAndamentoValidation validation, IStatusAndamentoWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IStatusAndamentoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
     private readonly IStatusAndamentoReader reader = reader;
     private readonly IStatusAndamentoValidation validation = validation;
     private readonly IStatusAndamentoWriter writer = writer;
-    private readonly IHistoricoService historicoService = historicoService;
     public async Task<IEnumerable<StatusAndamentoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -196,7 +195,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, historicoService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IContratosValidation
 {
-    Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IProcessosReader processosReader, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,31 +26,33 @@ public class ContratosValidation : IContratosValidation
 
     private bool ValidSizes(Models.Contratos reg)
     {
-        if (reg.Protestar.Length > 50)
+        if (reg.Protestar != null && reg.Protestar.Length > 50)
             throw new SGValidationException($"Protestar deve ter no máximo 50 caracteres.");
-        if (reg.Juros.Length > 5)
+        if (reg.Juros != null && reg.Juros.Length > 5)
             throw new SGValidationException($"Juros deve ter no máximo 5 caracteres.");
-        if (reg.DOCUMENTO.Length > 15)
+        if (reg.DOCUMENTO != null && reg.DOCUMENTO.Length > 15)
             throw new SGValidationException($"DOCUMENTO deve ter no máximo 15 caracteres.");
-        if (reg.Pessoa1.Length > 100)
+        if (reg.Pessoa1 != null && reg.Pessoa1.Length > 100)
             throw new SGValidationException($"Pessoa1 deve ter no máximo 100 caracteres.");
-        if (reg.Pessoa2.Length > 100)
+        if (reg.Pessoa2 != null && reg.Pessoa2.Length > 100)
             throw new SGValidationException($"Pessoa2 deve ter no máximo 100 caracteres.");
-        if (reg.Pessoa3.Length > 100)
+        if (reg.Pessoa3 != null && reg.Pessoa3.Length > 100)
             throw new SGValidationException($"Pessoa3 deve ter no máximo 100 caracteres.");
-        if (reg.ChaveContrato.Length > 50)
+        if (reg.ChaveContrato != null && reg.ChaveContrato.Length > 50)
             throw new SGValidationException($"ChaveContrato deve ter no máximo 50 caracteres.");
-        if (reg.Multa.Length > 10)
+        if (reg.Multa != null && reg.Multa.Length > 10)
             throw new SGValidationException($"Multa deve ter no máximo 10 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IProcessosReader processosReader, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -60,16 +62,6 @@ public class ContratosValidation : IContratosValidation
             throw new SGValidationException($"EMail2 em formato inválido.");
         if (reg.EMail3.Length > 0 && !reg.EMail3.IsValidEmail())
             throw new SGValidationException($"EMail3 em formato inválido.");
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {

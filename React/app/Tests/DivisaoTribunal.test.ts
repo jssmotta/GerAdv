@@ -14,7 +14,7 @@ import { DivisaoTribunalTestEmpty } from '../GerAdv_TS/Models/DivisaoTribunal';
 const mockDivisaoTribunalService: jest.Mocked<IDivisaoTribunalService> = {
   fetchDivisaoTribunalById: jest.fn(),
   saveDivisaoTribunal: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteDivisaoTribunal: jest.fn(),
   validateDivisaoTribunal: jest.fn(),
@@ -50,7 +50,7 @@ describe('useDivisaoTribunalForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'nomeespecial',
+        name: 'guid',
         value: 'Novo Divisao Tribunal',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useDivisaoTribunalForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.nomeespecial).toBe('Novo Divisao Tribunal');
+    expect(result.current.data.guid).toBe('Novo Divisao Tribunal');
   });
 
    test('deve carregar Divisao Tribunal por ID', async () => {
-    const mockDivisaoTribunal = { ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal Teste' };
+    const mockDivisaoTribunal = { ...initialDivisaoTribunal, id: 1, guid: 'Divisao Tribunal Teste' };
     mockDivisaoTribunalService.fetchDivisaoTribunalById.mockResolvedValue(mockDivisaoTribunal);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useDivisaoTribunalForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialDivisaoTribunal, nomeespecial: 'Teste' });
+      result.current.setData({ ...initialDivisaoTribunal, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useDivisaoTribunalList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal 1' },
-      { ...initialDivisaoTribunal, id: 2, nomeespecial: 'Divisao Tribunal 2' }
+      { ...initialDivisaoTribunal, id: 1, guid: 'Divisao Tribunal 1' },
+      { ...initialDivisaoTribunal, id: 2, guid: 'Divisao Tribunal 2' }
     ];
     mockDivisaoTribunalService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useDivisaoTribunalList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal Filtrado' }];
-    const filtro = { nomeespecial: 'Divisao Tribunal' };
+    const mockData = [{ ...initialDivisaoTribunal, id: 1, guid: 'Divisao Tribunal Filtrado' }];
+    const filtro = { guid: 'Divisao Tribunal' };
     mockDivisaoTribunalService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsDivisaoTribunal', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsDivisaoTribunal());
 
-    const validData = { ...initialDivisaoTribunal, nomeespecial: 'Divisao Tribunal Válido' };
+    const validData = { ...initialDivisaoTribunal, guid: 'Divisao Tribunal Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsDivisaoTribunal', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsDivisaoTribunal());
+
+    const invalidData = { ...initialDivisaoTribunal, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsDivisaoTribunal());
+
+    const invalidData = { 
+      ...initialDivisaoTribunal, 
+      guid: 'a'.repeat(100+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsDivisaoTribunal());
@@ -229,7 +250,7 @@ describe('useValidationsDivisaoTribunal', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialDivisaoTribunal, id: 1, nomeespecial: 'Divisao Tribunal Teste' }];
+    const mockData = [{ ...initialDivisaoTribunal, id: 1, guid: 'Divisao Tribunal Teste' }];
     mockDivisaoTribunalService.getAll.mockResolvedValue(mockData);
     
 

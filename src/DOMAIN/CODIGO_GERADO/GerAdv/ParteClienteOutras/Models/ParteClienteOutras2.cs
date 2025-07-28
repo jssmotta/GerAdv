@@ -61,8 +61,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomeoutraspartescliente")]
         public string NomeOutrasPartesCliente { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

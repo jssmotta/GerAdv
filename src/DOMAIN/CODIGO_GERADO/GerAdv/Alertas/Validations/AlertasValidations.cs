@@ -29,7 +29,7 @@ public class AlertasValidation : IAlertasValidation
 
     private bool ValidSizes(Models.Alertas reg)
     {
-        if (reg.Nome.Length > 2048)
+        if (reg.Nome != null && reg.Nome.Length > 2048)
             throw new SGValidationException($"Nome deve ter no máximo 2048 caracteres.");
         return true;
     }

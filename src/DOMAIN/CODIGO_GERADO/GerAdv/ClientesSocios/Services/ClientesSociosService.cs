@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ClientesSociosService(IOptions<AppSettings> appSettings, IFClientesSociosFactory clientessociosFactory, IClientesSociosReader reader, IClientesSociosValidation validation, IClientesSociosWriter writer, IClientesReader clientesReader, ICidadeReader cidadeReader, IAgendaRecordsService agendarecordsService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesSociosService, IDisposable
+public partial class ClientesSociosService(IOptions<AppSettings> appSettings, IFClientesSociosFactory clientessociosFactory, IClientesSociosReader reader, IClientesSociosValidation validation, IClientesSociosWriter writer, IClientesReader clientesReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesSociosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class ClientesSociosService(IOptions<AppSettings> appSettings, IF
     private readonly IClientesSociosWriter writer = writer;
     private readonly IClientesReader clientesReader = clientesReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    private readonly IAgendaRecordsService agendarecordsService = agendarecordsService;
     public async Task<IEnumerable<ClientesSociosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -198,7 +197,7 @@ public partial class ClientesSociosService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendarecordsService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

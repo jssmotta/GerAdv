@@ -16,9 +16,7 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { PenhoraApi } from '../../Apis/ApiPenhora';
 import { useValidationsPenhora } from '../../Hooks/hookPenhora';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import PenhoraStatusComboBox from '@/app/GerAdv_TS/PenhoraStatus/ComboBox/PenhoraStatus';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { PenhoraStatusApi } from '@/app/GerAdv_TS/PenhoraStatus/Apis/ApiPenhoraStatus';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
@@ -48,25 +46,8 @@ const dadoApi = new PenhoraApi(systemContext?.Uri ?? '', systemContext?.Token ??
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsPenhora();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [nomePenhoraStatus, setNomePenhoraStatus] = useState('');
 const penhorastatusApi = new PenhoraStatusApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-
-if (getParamFromUrl('processos') > 0) {
-  if (penhoraData.id === 0 && penhoraData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    penhoraData.processo = getParamFromUrl('processos');
-  }
-}
 
 if (getParamFromUrl('penhorastatus') > 0) {
   if (penhoraData.id === 0 && penhoraData.penhorastatus == 0) {
@@ -82,157 +63,158 @@ if (getParamFromUrl('penhorastatus') > 0) {
     penhoraData.penhorastatus = getParamFromUrl('penhorastatus');
   }
 }
-const addValorProcesso = (e: any) => {
+const addValorPenhoraStatus = (e: any) => {
   if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
+    onChange({ target: { name: 'penhorastatus', value: e.id } });
   };
-  const addValorPenhoraStatus = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'penhorastatus', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
-
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Penhora:');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
-
-    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`PenhoraForm-${penhoraData.id}`)
-          } as unknown as React.FormEvent;
-
-          onSubmit(syntheticEvent);
+          onSubmit(e);
         } catch (error) {
-        console.log('Erro ao salvar Penhora diretamente');
+        console.log('Erro ao submeter formulário de Penhora:');
         setIsSubmitting(false);
         if (onError) onError();
         }
       }
     };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = penhoraData?.id == 0 ? 'Editar Penhora' : 'Adicionar Penhora';
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`PenhoraForm-${penhoraData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.log('Erro ao salvar Penhora diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
       }
-    }, [penhoraData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = penhoraData?.id == 0 ? 'Editar Penhora' : 'Adicionar Penhora';
+    }
+  }, [penhoraData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
       }
-      `}</style> : null}
+    }
+    `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-Penhora' : 'form-container5 form-container-Penhora'}>
+    <div className={isMobile ? 'form-container form-container-Penhora' : 'form-container5 form-container-Penhora'}>
 
-        <form className='formInputCadInc' id={`PenhoraForm-${penhoraData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Penhora' data={penhoraData} isSubmitting={isSubmitting} onClose={onClose} formId={`PenhoraForm-${penhoraData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+      <form className='formInputCadInc' id={`PenhoraForm-${penhoraData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Penhora' data={penhoraData} isSubmitting={isSubmitting} onClose={onClose} formId={`PenhoraForm-${penhoraData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={penhoraData}
-              className='inputIncNome'
-              name='nome'
-              value={penhoraData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={penhoraData}
+            className='inputIncNome'
+            name='nome'
+            value={penhoraData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
 
-              <ProcessosComboBox
-              name={'processo'}
-              dataForm={penhoraData}
-              value={penhoraData.processo}
-              setValue={addValorProcesso}
-              label={'Processos'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='descricao'
-              label='Descricao'
-              dataForm={penhoraData}
-              className='inputIncNome'
-              name='descricao'
-              value={penhoraData.descricao}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={penhoraData}
+            className='inputIncNome'
+            name='processo'
+            value={penhoraData.processo}
+            onChange={onChange}
+            />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='datapenhora'
-              label='DataPenhora'
-              dataForm={penhoraData}
-              className='inputIncNome'
-              name='datapenhora'
-              value={penhoraData.datapenhora}
-              onChange={onChange}
-              />
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='descricao'
+            label='Descricao'
+            dataForm={penhoraData}
+            className='inputIncNome'
+            name='descricao'
+            value={penhoraData.descricao}
+            onChange={onChange}
+            />
 
 
-              <PenhoraStatusComboBox
-              name={'penhorastatus'}
-              dataForm={penhoraData}
-              value={penhoraData.penhorastatus}
-              setValue={addValorPenhoraStatus}
-              label={'Penhora Status'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='master'
-              label='Master'
-              dataForm={penhoraData}
-              className='inputIncNome'
-              name='master'
-              value={penhoraData.master}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='datapenhora'
+            label='DataPenhora'
+            dataForm={penhoraData}
+            className='inputIncNome'
+            name='datapenhora'
+            value={penhoraData.datapenhora}
+            onChange={onChange}
+            />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Penhora' data={penhoraData} isSubmitting={isSubmitting} onClose={onClose} formId={`PenhoraForm-${penhoraData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/penhora'} id={penhoraData.id} closeModel={onClose} dadoApi={dadoApi} />
+            <PenhoraStatusComboBox
+            name={'penhorastatus'}
+            dataForm={penhoraData}
+            value={penhoraData.penhorastatus}
+            setValue={addValorPenhoraStatus}
+            label={'Penhora Status'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='master'
+            label='Master'
+            dataForm={penhoraData}
+            className='inputIncNome'
+            name='master'
+            value={penhoraData.master}
+            onChange={onChange}
+            />
+
           </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Penhora' data={penhoraData} isSubmitting={isSubmitting} onClose={onClose} formId={`PenhoraForm-${penhoraData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/penhora'} id={penhoraData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

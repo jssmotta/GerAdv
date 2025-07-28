@@ -16,6 +16,11 @@ public partial class Apenso2Service
             parameters.Add(new($"@{nameof(DBApenso2DicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBApenso2DicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Apensado != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBApenso2DicInfo.Apensado)}", filtro.Apensado));
@@ -42,7 +47,15 @@ public partial class Apenso2Service
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Processo}] = @{nameof(DBApenso2DicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Processo}] >= @{nameof(DBApenso2DicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Processo} BETWEEN @{nameof(DBApenso2DicInfo.Processo)} AND @{nameof(DBApenso2DicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Processo} = @{nameof(DBApenso2DicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Processo} <= @{nameof(DBApenso2DicInfo.Processo)}_end");
+        }
+
         if (!filtro.Apensado.IsEmpty() && filtro.Apensado_end.IsEmpty())
         {
             cWhere.Append(filtro.Apensado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Apensado}] >= @{nameof(DBApenso2DicInfo.Apensado)}");

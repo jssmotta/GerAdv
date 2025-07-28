@@ -188,14 +188,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         {
         }
 
-        try
-        {
-            prodespesas.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return prodespesas;
     }
 
@@ -231,14 +223,6 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         try
         {
             prodespesas.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            prodespesas.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

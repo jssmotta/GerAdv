@@ -18,8 +18,14 @@ public partial record FilterNENotas
     [JsonPropertyName("apenso")]
     public int Apenso { get; set; } = int.MinValue;
 
+    [JsonPropertyName("apenso_end")]
+    public int Apenso_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("precatoria")]
     public int Precatoria { get; set; } = int.MinValue;
+
+    [JsonPropertyName("precatoria_end")]
+    public int Precatoria_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("instancia")]
     public int Instancia { get; set; } = int.MinValue;
@@ -41,6 +47,9 @@ public partial record FilterNENotas
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
+
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("palavrachave")]
     public int PalavraChave { get; set; } = int.MinValue;

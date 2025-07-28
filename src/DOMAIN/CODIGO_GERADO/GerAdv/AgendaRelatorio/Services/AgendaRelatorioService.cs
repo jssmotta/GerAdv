@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, IFAgendaRelatorioFactory agendarelatorioFactory, IAgendaRelatorioReader reader, IAgendaRelatorioValidation validation, IProcessosReader processosReader, HybridCache cache, IMemoryCache memory) : IAgendaRelatorioService, IDisposable
+public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, IFAgendaRelatorioFactory agendarelatorioFactory, IAgendaRelatorioReader reader, IAgendaRelatorioValidation validation, HybridCache cache, IMemoryCache memory) : IAgendaRelatorioService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
@@ -15,7 +15,6 @@ public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, I
     private readonly IFAgendaRelatorioFactory agendarelatorioFactory = agendarelatorioFactory;
     private readonly IAgendaRelatorioReader reader = reader;
     private readonly IAgendaRelatorioValidation validation = validation;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<AgendaRelatorioResponseAll>> Filter(Filters.FilterAgendaRelatorio filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();

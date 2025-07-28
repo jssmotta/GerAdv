@@ -85,18 +85,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?tipocompromisso=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellNECompromissos = (id: number) => {
   router.push(`/pages/necompromissos/?tipocompromisso=${id}`);
 };
@@ -135,14 +123,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
   />, 
   <GridColumn
   field='id_edit_NECompromissos'

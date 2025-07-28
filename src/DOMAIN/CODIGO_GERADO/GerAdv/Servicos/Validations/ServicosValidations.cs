@@ -29,9 +29,9 @@ public class ServicosValidation : IServicosValidation
 
     private bool ValidSizes(Models.Servicos reg)
     {
-        if (reg.Descricao.Length > 200)
+        if (reg.Descricao != null && reg.Descricao.Length > 200)
             throw new SGValidationException($"Descricao deve ter no máximo 200 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

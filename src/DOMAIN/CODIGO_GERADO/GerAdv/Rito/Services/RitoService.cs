@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactory ritoFactory, IRitoReader reader, IRitoValidation validation, IRitoWriter writer, IProcessosService processosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IRitoService, IDisposable
+public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactory ritoFactory, IRitoReader reader, IRitoValidation validation, IRitoWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IRitoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
     private readonly IRitoReader reader = reader;
     private readonly IRitoValidation validation = validation;
     private readonly IRitoWriter writer = writer;
-    private readonly IProcessosService processosService = processosService;
     public async Task<IEnumerable<RitoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -196,7 +195,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, processosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

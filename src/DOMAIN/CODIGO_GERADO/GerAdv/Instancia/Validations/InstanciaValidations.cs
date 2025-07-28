@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IInstanciaValidation
 {
-    Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -35,24 +35,24 @@ public class InstanciaValidation : IInstanciaValidation
 
     private bool ValidSizes(Models.Instancia reg)
     {
-        if (reg.Objeto.Length > 255)
+        if (reg.Objeto != null && reg.Objeto.Length > 255)
             throw new SGValidationException($"Objeto deve ter no máximo 255 caracteres.");
-        if (reg.NroProcesso.Length > 25)
+        if (reg.NroProcesso != null && reg.NroProcesso.Length > 25)
             throw new SGValidationException($"NroProcesso deve ter no máximo 25 caracteres.");
-        if (reg.ZKey.Length > 25)
+        if (reg.ZKey != null && reg.ZKey.Length > 25)
             throw new SGValidationException($"ZKey deve ter no máximo 25 caracteres.");
-        if (reg.NroAntigo.Length > 25)
+        if (reg.NroAntigo != null && reg.NroAntigo.Length > 25)
             throw new SGValidationException($"NroAntigo deve ter no máximo 25 caracteres.");
-        if (reg.AccessCode.Length > 100)
+        if (reg.AccessCode != null && reg.AccessCode.Length > 100)
             throw new SGValidationException($"AccessCode deve ter no máximo 100 caracteres.");
-        if (reg.ZKeyIA.Length > 25)
+        if (reg.ZKeyIA != null && reg.ZKeyIA.Length > 25)
             throw new SGValidationException($"ZKeyIA deve ter no máximo 25 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IProcessosReader processosReader, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -61,16 +61,6 @@ public class InstanciaValidation : IInstanciaValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // Acao
         if (!reg.Acao.IsEmptyIDNumber())
         {

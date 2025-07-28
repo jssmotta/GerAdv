@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, IFProProcuradoresFactory proprocuradoresFactory, IProProcuradoresReader reader, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProProcuradoresService, IDisposable
+public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, IFProProcuradoresFactory proprocuradoresFactory, IProProcuradoresReader reader, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProProcuradoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
     private readonly IProProcuradoresValidation validation = validation;
     private readonly IProProcuradoresWriter writer = writer;
     private readonly IAdvogadosReader advogadosReader = advogadosReader;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<ProProcuradoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -111,7 +110,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +151,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

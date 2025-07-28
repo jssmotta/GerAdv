@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactory faseFactory, IFaseReader reader, IFaseValidation validation, IFaseWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IHistoricoService historicoService, IProDepositosService prodepositosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFaseService, IDisposable
+public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactory faseFactory, IFaseReader reader, IFaseValidation validation, IFaseWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IProDepositosService prodepositosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFaseService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
     private readonly IFaseWriter writer = writer;
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IAreaReader areaReader = areaReader;
-    private readonly IHistoricoService historicoService = historicoService;
     private readonly IProDepositosService prodepositosService = prodepositosService;
     public async Task<IEnumerable<FaseResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -199,7 +198,7 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, historicoService, prodepositosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, prodepositosService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -8,47 +8,32 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAgendaValidation
 {
-    Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAgendaService service, IAgenda2AgendaService agenda2agendaService, IAgendaRecordsService agendarecordsService, IAgendaStatusService agendastatusService, IAlarmSMSService alarmsmsService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AgendaValidation : IAgendaValidation
 {
-    public async Task<bool> CanDelete(int id, IAgendaService service, IAgenda2AgendaService agenda2agendaService, IAgendaRecordsService agendarecordsService, IAgendaStatusService agendastatusService, IAlarmSMSService alarmsmsService, IRecadosService recadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agenda2agendaExists0 = await agenda2agendaService.Filter(new Filters.FilterAgenda2Agenda { Agenda = id }, uri);
-        if (agenda2agendaExists0 != null && agenda2agendaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda2 Agenda associados a ele.");
-        var agendarecordsExists1 = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { Agenda = id }, uri);
-        if (agendarecordsExists1 != null && agendarecordsExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Records associados a ele.");
-        var agendastatusExists2 = await agendastatusService.Filter(new Filters.FilterAgendaStatus { Agenda = id }, uri);
-        if (agendastatusExists2 != null && agendastatusExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Status associados a ele.");
-        var alarmsmsExists3 = await alarmsmsService.Filter(new Filters.FilterAlarmSMS { Agenda = id }, uri);
-        if (alarmsmsExists3 != null && alarmsmsExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Alarm S M S associados a ele.");
-        var recadosExists4 = await recadosService.Filter(new Filters.FilterRecados { Agenda = id }, uri);
-        if (recadosExists4 != null && recadosExists4.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Recados associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Agenda reg)
     {
-        if (reg.Decisao.Length > 2048)
+        if (reg.Decisao != null && reg.Decisao.Length > 2048)
             throw new SGValidationException($"Decisao deve ter no máximo 2048 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IProcessosReader processosReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Agenda reg, IAgendaService service, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -124,16 +109,6 @@ public class AgendaValidation : IAgendaValidation
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

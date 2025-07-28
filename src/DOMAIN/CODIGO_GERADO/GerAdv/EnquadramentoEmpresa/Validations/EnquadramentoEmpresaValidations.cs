@@ -29,9 +29,9 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
 
     private bool ValidSizes(Models.EnquadramentoEmpresa reg)
     {
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

@@ -61,8 +61,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomeoperadorgruposagenda")]
         public string NomeOperadorGruposAgenda { get; set; } = string.Empty;
-
-        [JsonPropertyName("nomeoperador")]
-        public string NomeOperador { get; set; } = string.Empty;
     }
 }

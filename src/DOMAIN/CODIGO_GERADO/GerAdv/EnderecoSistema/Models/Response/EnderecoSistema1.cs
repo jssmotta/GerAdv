@@ -20,12 +20,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int TipoEnderecoSistema { get; set; }
 
         /// <summary>
-        /// Processo - estProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Cidade - estCidade  
         /// </summary>
         [JsonPropertyName("cidade")]
@@ -42,6 +36,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("cadastroexcod")]
         public int CadastroExCod { get; set; }
+
+        /// <summary>
+        /// Processo - estProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Motivo - estMotivo - tamanho máximo: 200 
@@ -114,12 +114,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int TipoEnderecoSistema { get; set; }
 
         /// <summary>
-        /// Processo - estProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Cidade - estCidade  
         /// </summary>
         [JsonPropertyName("cidade")]
@@ -136,6 +130,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("cadastroexcod")]
         public int CadastroExCod { get; set; }
+
+        /// <summary>
+        /// Processo - estProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Motivo - estMotivo - tamanho máximo: 200 
@@ -193,9 +193,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
 
         [JsonPropertyName("nometipoenderecosistema")]
         public string NomeTipoEnderecoSistema { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

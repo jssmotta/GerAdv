@@ -25,7 +25,7 @@ export class HonorariosDadosContratoValidator {
 export interface IHonorariosDadosContratoService {
   fetchHonorariosDadosContratoById: (id: number) => Promise<IHonorariosDadosContrato>;
   saveHonorariosDadosContrato: (honorariosdadoscontrato: IHonorariosDadosContrato) => Promise<IHonorariosDadosContrato>;  
-  
+  getList: (filtro?: FilterHonorariosDadosContrato) => Promise<IHonorariosDadosContrato[]>;
   getAll: (filtro?: FilterHonorariosDadosContrato) => Promise<IHonorariosDadosContrato[]>;
   deleteHonorariosDadosContrato: (id: number) => Promise<void>;
   validateHonorariosDadosContrato: (honorariosdadoscontrato: IHonorariosDadosContrato) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class HonorariosDadosContratoService implements IHonorariosDadosContratoS
   }
 
   
+    async getList(filtro?: FilterHonorariosDadosContrato): Promise<IHonorariosDadosContrato[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching HonorariosDadosContrato list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

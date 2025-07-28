@@ -10,4 +10,5 @@ public partial interface IEnderecoSistemaService
     Task<EnderecoSistemaResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<EnderecoSistemaResponse?> Validation(Models.EnderecoSistema regEnderecoSistema, [FromRoute, Required] string uri = "");
     Task<IEnumerable<EnderecoSistemaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecoSistema? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

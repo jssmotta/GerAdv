@@ -5,14 +5,13 @@
 export interface Penhora
 {
     id: number;
-	processo : number;
 	penhorastatus : number;
+	processo : number;
 	nome : string;
 	descricao : string;
 	datapenhora : string;
 	datapenhora_date? : Date;
 	master : number;
-	nropastaprocessos?: string;
 	nomepenhorastatus?: string;
 
 }
@@ -23,8 +22,8 @@ export function PenhoraEmpty(): IPenhora {
     
     return {
         id: 0,
-		processo: 0,
 		penhorastatus: 0,
+		processo: 0,
 		nome: '',
 		descricao: '',
 		datapenhora: '',
@@ -37,8 +36,8 @@ export function PenhoraTestEmpty(): IPenhora {
     
     return {
         id: 1,
-		processo: 1,
 		penhorastatus: 1,
+		processo: 1,
 		nome: 'X',
 		descricao: 'X',
 		datapenhora: 'X',

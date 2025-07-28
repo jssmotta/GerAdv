@@ -14,7 +14,7 @@ import { DadosProcuracaoTestEmpty } from '../GerAdv_TS/Models/DadosProcuracao';
 const mockDadosProcuracaoService: jest.Mocked<IDadosProcuracaoService> = {
   fetchDadosProcuracaoById: jest.fn(),
   saveDadosProcuracao: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteDadosProcuracao: jest.fn(),
   validateDadosProcuracao: jest.fn(),
@@ -50,7 +50,7 @@ describe('useDadosProcuracaoForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'estadocivil',
+        name: 'guid',
         value: 'Novo Dados Procuracao',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useDadosProcuracaoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.estadocivil).toBe('Novo Dados Procuracao');
+    expect(result.current.data.guid).toBe('Novo Dados Procuracao');
   });
 
    test('deve carregar Dados Procuracao por ID', async () => {
-    const mockDadosProcuracao = { ...initialDadosProcuracao, id: 1, estadocivil: 'Dados Procuracao Teste' };
+    const mockDadosProcuracao = { ...initialDadosProcuracao, id: 1, guid: 'Dados Procuracao Teste' };
     mockDadosProcuracaoService.fetchDadosProcuracaoById.mockResolvedValue(mockDadosProcuracao);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useDadosProcuracaoForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialDadosProcuracao, estadocivil: 'Teste' });
+      result.current.setData({ ...initialDadosProcuracao, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useDadosProcuracaoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialDadosProcuracao, id: 1, estadocivil: 'Dados Procuracao 1' },
-      { ...initialDadosProcuracao, id: 2, estadocivil: 'Dados Procuracao 2' }
+      { ...initialDadosProcuracao, id: 1, guid: 'Dados Procuracao 1' },
+      { ...initialDadosProcuracao, id: 2, guid: 'Dados Procuracao 2' }
     ];
     mockDadosProcuracaoService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useDadosProcuracaoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialDadosProcuracao, id: 1, estadocivil: 'Dados Procuracao Filtrado' }];
-    const filtro = { estadocivil: 'Dados Procuracao' };
+    const mockData = [{ ...initialDadosProcuracao, id: 1, guid: 'Dados Procuracao Filtrado' }];
+    const filtro = { guid: 'Dados Procuracao' };
     mockDadosProcuracaoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsDadosProcuracao', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsDadosProcuracao());
 
-    const validData = { ...initialDadosProcuracao, estadocivil: 'Dados Procuracao Válido' };
+    const validData = { ...initialDadosProcuracao, guid: 'Dados Procuracao Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsDadosProcuracao', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsDadosProcuracao());
+
+    const invalidData = { ...initialDadosProcuracao, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsDadosProcuracao());
+
+    const invalidData = { 
+      ...initialDadosProcuracao, 
+      guid: 'a'.repeat(100+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsDadosProcuracao());
@@ -229,7 +250,7 @@ describe('useValidationsDadosProcuracao', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialDadosProcuracao, id: 1, estadocivil: 'Dados Procuracao Teste' }];
+    const mockData = [{ ...initialDadosProcuracao, id: 1, guid: 'Dados Procuracao Teste' }];
     mockDadosProcuracaoService.getAll.mockResolvedValue(mockData);
     
 

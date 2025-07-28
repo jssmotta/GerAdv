@@ -254,14 +254,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
 
         try
         {
-            contacorrente.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             contacorrente.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -316,14 +308,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             contacorrente.DataPgto = dbRec.FDataPgto;
             contacorrente.DataPgto_date = XDataPgto;
-        }
-
-        try
-        {
-            contacorrente.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         try

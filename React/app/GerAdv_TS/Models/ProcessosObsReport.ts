@@ -5,12 +5,10 @@
 export interface ProcessosObsReport
 {
     id: number;
-	processo : number;
-	historico : number;
 	data : string;
+	processo : number;
 	observacao : string;
-	nropastaprocessos?: string;
-	datahistorico?: string;
+	historico : number;
 
 }
 
@@ -20,10 +18,10 @@ export function ProcessosObsReportEmpty(): IProcessosObsReport {
     
     return {
         id: 0,
-		processo: 0,
-		historico: 0,
 		data: '',
+		processo: 0,
 		observacao: '',
+		historico: 0,
     };
 }
 
@@ -32,10 +30,10 @@ export function ProcessosObsReportTestEmpty(): IProcessosObsReport {
     
     return {
         id: 1,
-		processo: 1,
-		historico: 1,
 		data: 'X',
+		processo: 1,
 		observacao: 'X',
+		historico: 1,
     };
 }
 

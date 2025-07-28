@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IFAndamentosMDFactory andamentosmdFactory, IAndamentosMDReader reader, IAndamentosMDValidation validation, IAndamentosMDWriter writer, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAndamentosMDService, IDisposable
+public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IFAndamentosMDFactory andamentosmdFactory, IAndamentosMDReader reader, IAndamentosMDValidation validation, IAndamentosMDWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAndamentosMDService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IFAn
     private readonly IAndamentosMDReader reader = reader;
     private readonly IAndamentosMDValidation validation = validation;
     private readonly IAndamentosMDWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<AndamentosMDResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -110,7 +109,7 @@ public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IFAn
 
         try
         {
-            var validade = await validation.ValidateReg(regAndamentosMD, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAndamentosMD, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -151,7 +150,7 @@ public partial class AndamentosMDService(IOptions<AppSettings> appSettings, IFAn
 
         try
         {
-            var validade = await validation.ValidateReg(regAndamentosMD, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regAndamentosMD, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

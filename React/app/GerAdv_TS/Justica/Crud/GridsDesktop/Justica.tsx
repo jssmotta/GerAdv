@@ -97,18 +97,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?justica=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellAreasJustica = (id: number) => {
   router.push(`/pages/areasjustica/?justica=${id}`);
 };
@@ -165,18 +153,6 @@ const SearchFromCellPoderJudiciarioAssociado = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellPoderJudiciarioAssociado(props.dataItem.id)}><span title='Pesquisar relacionados em Poder Judiciario Associado'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?justica=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -241,14 +217,6 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
-  />, 
-  <GridColumn
   field='id_edit_AreasJustica'
   filterable={false}
   sortable={false}
@@ -287,14 +255,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Poder Judiciario Associado'
   cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />, 
-  <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
   />, 
   <GridColumn
   field='id_edit_TipoRecurso'

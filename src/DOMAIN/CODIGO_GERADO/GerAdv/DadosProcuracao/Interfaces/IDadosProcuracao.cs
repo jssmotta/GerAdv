@@ -10,4 +10,5 @@ public partial interface IDadosProcuracaoService
     Task<DadosProcuracaoResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<DadosProcuracaoResponse?> Validation(Models.DadosProcuracao regDadosProcuracao, [FromRoute, Required] string uri = "");
     Task<IEnumerable<DadosProcuracaoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterDadosProcuracao? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

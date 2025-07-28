@@ -9,27 +9,24 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IReuniaoValidation
 {
     Task<bool> ValidateReg(Models.Reuniao reg, IReuniaoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IReuniaoService service, IReuniaoPessoasService reuniaopessoasService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IReuniaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ReuniaoValidation : IReuniaoValidation
 {
-    public async Task<bool> CanDelete(int id, IReuniaoService service, IReuniaoPessoasService reuniaopessoasService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IReuniaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var reuniaopessoasExists0 = await reuniaopessoasService.Filter(new Filters.FilterReuniaoPessoas { Reuniao = id }, uri);
-        if (reuniaopessoasExists0 != null && reuniaopessoasExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Reuniao Pessoas associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Reuniao reg)
     {
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

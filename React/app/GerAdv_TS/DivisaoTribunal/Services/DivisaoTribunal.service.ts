@@ -25,7 +25,7 @@ export class DivisaoTribunalValidator {
 export interface IDivisaoTribunalService {
   fetchDivisaoTribunalById: (id: number) => Promise<IDivisaoTribunal>;
   saveDivisaoTribunal: (divisaotribunal: IDivisaoTribunal) => Promise<IDivisaoTribunal>;  
-  
+  getList: (filtro?: FilterDivisaoTribunal) => Promise<IDivisaoTribunal[]>;
   getAll: (filtro?: FilterDivisaoTribunal) => Promise<IDivisaoTribunal[]>;
   deleteDivisaoTribunal: (id: number) => Promise<void>;
   validateDivisaoTribunal: (divisaotribunal: IDivisaoTribunal) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class DivisaoTribunalService implements IDivisaoTribunalService {
   }
 
   
+    async getList(filtro?: FilterDivisaoTribunal): Promise<IDivisaoTribunal[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching DivisaoTribunal list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

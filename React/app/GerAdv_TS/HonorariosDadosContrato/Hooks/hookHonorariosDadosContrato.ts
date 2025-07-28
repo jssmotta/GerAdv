@@ -168,7 +168,10 @@ export function useValidationsHonorariosDadosContrato() {
     
       try {
    
-        if (data.arquivocontrato.length > 2048) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.arquivocontrato.length > 2048) { 
                                              return { isValid: false, message: 'O campo ArquivoContrato não pode ter mais de 2048 caracteres.' };
                                          } 
 if (data.textocontrato.length > 2147483647) { 

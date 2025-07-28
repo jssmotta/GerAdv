@@ -23,10 +23,12 @@ public partial class StatusBiuReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBTipoStatusBiuDicInfo.PTabelaNome}].[{DBTipoStatusBiuDicInfo.Nome}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, 
+[{DBTipoStatusBiuDicInfo.PTabelaNome}].[{DBTipoStatusBiuDicInfo.Nome}],
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBStatusBiu.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBTipoStatusBiuDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoStatusBiuDicInfo.PTabelaNome}].[{DBTipoStatusBiu.CampoCodigo}]=[{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.TipoStatusBiu}]
-LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.Operador}]
+                   LEFT JOIN {DBTipoStatusBiuDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoStatusBiuDicInfo.PTabelaNome}].[{DBTipoStatusBiuDicInfo.CampoCodigo}]=[{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.TipoStatusBiu}]
+LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBStatusBiuDicInfo.PTabelaNome}].[{DBStatusBiuDicInfo.Operador}]
  
                    {cWhere}
                    {orderQuery}

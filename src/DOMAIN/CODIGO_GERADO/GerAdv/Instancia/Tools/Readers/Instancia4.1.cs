@@ -23,12 +23,14 @@ public partial class InstanciaReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Descricao}],[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}],[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Descricao}]
+                   {campos}, 
+[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Descricao}],
+[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}],
+[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Descricao}]
                    FROM {DBInstancia.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Processo}]
-LEFT JOIN {DBAcaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAcaoDicInfo.PTabelaNome}].[{DBAcao.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Acao}]
-LEFT JOIN {DBForoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBForoDicInfo.PTabelaNome}].[{DBForo.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Foro}]
-LEFT JOIN {DBTipoRecursoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecurso.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.TipoRecurso}]
+                   LEFT JOIN {DBAcaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Acao}]
+LEFT JOIN {DBForoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Foro}]
+LEFT JOIN {DBTipoRecursoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.CampoCodigo}]=[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.TipoRecurso}]
  
                    {cWhere}
                    {orderQuery}

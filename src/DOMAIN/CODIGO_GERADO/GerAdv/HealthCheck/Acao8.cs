@@ -35,11 +35,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
                 {
                     isHealthy = false;
                     _logger.Warn("Uri is empty");
-#pragma warning disable CA2208 // Instantiate argument exceptions correctly
-
                     throw new ArgumentNullException(nameof(Uri), "Uri is empty");
-#pragma warning restore CA2208 // Instantiate argument exceptions correctly
-
                 }
 
                 MsiSqlConnection? connection = null;

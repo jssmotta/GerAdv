@@ -5,7 +5,6 @@
 export interface LivroCaixa
 {
     id: number;
-	processo : number;
 	iddes : number;
 	pessoal : number;
 	ajuste : boolean;
@@ -13,12 +12,12 @@ export interface LivroCaixa
 	idhonparc : number;
 	idhonsuc : boolean;
 	data : string;
+	processo : number;
 	valor : number;
 	tipo : boolean;
 	historico : string;
 	previsto : boolean;
 	grupo : number;
-	nropastaprocessos?: string;
 
 }
 
@@ -28,7 +27,6 @@ export function LivroCaixaEmpty(): ILivroCaixa {
     
     return {
         id: 0,
-		processo: 0,
 		iddes: 0,
 		pessoal: 0,
 		ajuste: false,
@@ -36,6 +34,7 @@ export function LivroCaixaEmpty(): ILivroCaixa {
 		idhonparc: 0,
 		idhonsuc: false,
 		data: '',
+		processo: 0,
 		valor: 0,
 		tipo: false,
 		historico: '',
@@ -49,7 +48,6 @@ export function LivroCaixaTestEmpty(): ILivroCaixa {
     
     return {
         id: 1,
-		processo: 1,
 		iddes: 1,
 		pessoal: 1,
 		ajuste: true,
@@ -57,6 +55,7 @@ export function LivroCaixaTestEmpty(): ILivroCaixa {
 		idhonparc: 1,
 		idhonsuc: true,
 		data: 'X',
+		processo: 1,
 		valor: 1,
 		tipo: true,
 		historico: 'X',

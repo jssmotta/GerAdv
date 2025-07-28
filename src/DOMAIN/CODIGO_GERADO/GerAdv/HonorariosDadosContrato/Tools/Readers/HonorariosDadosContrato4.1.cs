@@ -15,7 +15,7 @@ public partial class HonorariosDadosContratoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBHonorariosDadosContratoDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBHonorariosDadosContratoDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,10 +23,10 @@ public partial class HonorariosDadosContratoReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}, 
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBHonorariosDadosContrato.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.Cliente}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.Processo}]
+                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.Cliente}]
  
                    {cWhere}
                    {orderQuery}

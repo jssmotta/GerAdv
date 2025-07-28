@@ -2,8 +2,12 @@ namespace MenphisSI.DB;
  
 [Serializable]
 public class DBInfoSystem : IDBInfoSystem
-{   
-    public string NomeSemPrefixo() => Prefixo.Length>0 && FNome.StartsWith(Prefixo) ? FNome.Substring(Prefixo.Length) : FNome;
+{
+    public string NomeSemPrefixo()
+    {
+        var result = Prefixo.Length > 0 && FNome.StartsWith(Prefixo) ? FNome.Substring(Prefixo.Length) : FNome;
+        return result.Equals("") ? "CampoCodigo" : result;
+    }
 
     public string GetForeingTabela() => FForeingKeyTable ?? string.Empty;
    

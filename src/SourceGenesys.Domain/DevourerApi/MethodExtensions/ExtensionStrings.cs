@@ -17,7 +17,12 @@ public static partial class ExtensionMethodStrings
     //public static string DecodeBase64(this string base64) =>
     //    Encoding.UTF8.GetString(Convert.FromBase64String(base64));
     public static string replace(this string text, string oldValue, string newValue)
-        => $"{text}".Replace($"{oldValue}", $"{newValue}");
+    {
+        if (string.IsNullOrEmpty(oldValue))
+            return text; // or throw, or handle as you wish
+        return text.Replace(oldValue, newValue ?? "");
+    }
+      
 
     public static int Length(this string? text) => string.IsNullOrEmpty(text) ? 0 : text.trim().Length;
 

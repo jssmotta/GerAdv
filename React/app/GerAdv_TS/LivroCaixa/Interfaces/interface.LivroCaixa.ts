@@ -7,7 +7,6 @@ export interface ILivroCaixa {
 // 202501251
     id: number;
  
-	processo: number,
 	iddes: number,
 	pessoal: number,
 	ajuste: boolean,
@@ -15,6 +14,7 @@ export interface ILivroCaixa {
 	idhonparc: number,
 	idhonsuc: boolean,
 	data: string,
+	processo: number,
 	valor: number,
 	tipo: boolean,
 	historico: string,

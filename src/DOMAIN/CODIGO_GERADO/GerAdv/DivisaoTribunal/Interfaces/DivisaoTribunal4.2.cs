@@ -13,5 +13,6 @@ public partial interface IDivisaoTribunalReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     DivisaoTribunalResponseAll? ReadAll(FDivisaoTribunal dbRec, IDataRecord dr);
     DivisaoTribunalResponseAll? ReadAll(SG.GerAdv.DBDivisaoTribunal dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<DivisaoTribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

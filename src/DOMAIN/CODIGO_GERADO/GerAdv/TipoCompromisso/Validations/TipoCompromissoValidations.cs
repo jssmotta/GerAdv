@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoCompromissoValidation
 {
     Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoCompromissoValidation : ITipoCompromissoValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
@@ -24,20 +24,17 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
         var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { TipoCompromisso = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { TipoCompromisso = id }, uri);
-        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.");
-        var necompromissosExists2 = await necompromissosService.Filter(new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
-        if (necompromissosExists2 != null && necompromissosExists2.Any())
+        var necompromissosExists1 = await necompromissosService.Filter(new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
+        if (necompromissosExists1 != null && necompromissosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Compromissos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.TipoCompromisso reg)
     {
-        if (reg.Descricao.Length > 100)
+        if (reg.Descricao != null && reg.Descricao.Length > 100)
             throw new SGValidationException($"Descricao deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

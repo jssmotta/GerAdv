@@ -62,7 +62,7 @@ const handleRowClick = (e: any) => {
 
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn field='nome' title='advNome' />,
+  <GridColumn field='advnome' title='advNome' />,
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   ], []);
   const DeleteRow = (e: any) => {

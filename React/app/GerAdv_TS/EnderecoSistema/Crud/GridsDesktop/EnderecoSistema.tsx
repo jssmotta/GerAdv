@@ -48,12 +48,13 @@ const { page, handlePageChange } = useGridPagination({
 });
 // Configuração dos filtros iniciais
 const initialFilters = {
-
+  guid: '',
 };
 // Lógica de filtro customizada usando useCallback
 const filterLogic = useCallback((data: IEnderecoSistema, filters: Record<string, any>) => {
-
-  return true;
+  const guidMatches = applyFilter(data, 'guid', filters.guid);
+  return guidMatches
+  ;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({
@@ -90,6 +91,7 @@ const EditRow = (e: any) => {
 const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
+  <GridColumn field='guid' title='GUID' sortable={true} filterable={true} />, /* Track G.02 */
   <GridColumn field='nometipoenderecosistema' title='Tipo Endereco Sistema' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nropastaprocessos' title='Processos' sortable={false} filterable={false} />, /* Track G.01 */

@@ -24,6 +24,9 @@ public partial record FilterAndamentosMD
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("andamento")]
     public int Andamento { get; set; } = int.MinValue;
 

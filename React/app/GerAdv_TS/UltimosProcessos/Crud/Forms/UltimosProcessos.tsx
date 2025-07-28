@@ -16,8 +16,6 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { UltimosProcessosApi } from '../../Apis/ApiUltimosProcessos';
 import { useValidationsUltimosProcessos } from '../../Hooks/hookUltimosProcessos';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
 interface UltimosProcessosFormProps {
@@ -46,137 +44,122 @@ const dadoApi = new UltimosProcessosApi(systemContext?.Uri ?? '', systemContext?
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsUltimosProcessos();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
-if (getParamFromUrl('processos') > 0) {
-  if (ultimosprocessosData.id === 0 && ultimosprocessosData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
 
-    ultimosprocessosData.processo = getParamFromUrl('processos');
-  }
-}
-const addValorProcesso = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-
-      if (!isSubmitting) {
-        setIsSubmitting(true);
-
-        try {
-          onSubmit(e);
-        } catch (error) {
-        console.log('Erro ao submeter formulário de UltimosProcessos:');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
-
-  const handleDirectSave = () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
 
       try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`UltimosProcessosForm-${ultimosprocessosData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
+        onSubmit(e);
       } catch (error) {
-      console.log('Erro ao salvar UltimosProcessos diretamente');
+      console.log('Erro ao submeter formulário de UltimosProcessos:');
       setIsSubmitting(false);
       if (onError) onError();
       }
     }
   };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = ultimosprocessosData?.id == 0 ? 'Editar UltimosProcessos' : 'Adicionar Ultimos Processos';
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`UltimosProcessosForm-${ultimosprocessosData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.log('Erro ao salvar UltimosProcessos diretamente');
+    setIsSubmitting(false);
+    if (onError) onError();
     }
-  }, [ultimosprocessosData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = ultimosprocessosData?.id == 0 ? 'Editar UltimosProcessos' : 'Adicionar Ultimos Processos';
+  }
+}, [ultimosprocessosData.id]);
+return (
+<>
+{!isMobile ? <style jsx global>{`
+  @media (max-width: 1366px) {
+    html {
+      zoom: 0.8 !important;
     }
-    `}</style> : null}
+  }
+  `}</style> : null}
 
-    <div className={isMobile ? 'form-container form-container-UltimosProcessos' : 'form-container5 form-container-UltimosProcessos'}>
+  <div className={isMobile ? 'form-container form-container-UltimosProcessos' : 'form-container5 form-container-UltimosProcessos'}>
 
-      <form className='formInputCadInc' id={`UltimosProcessosForm-${ultimosprocessosData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='UltimosProcessos' data={ultimosprocessosData} isSubmitting={isSubmitting} onClose={onClose} formId={`UltimosProcessosForm-${ultimosprocessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-
-            <ProcessosComboBox
-            name={'processo'}
-            dataForm={ultimosprocessosData}
-            value={ultimosprocessosData.processo}
-            setValue={addValorProcesso}
-            label={'Processos'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='quando'
-            label='Quando'
-            dataForm={ultimosprocessosData}
-            className='inputIncNome'
-            name='quando'
-            value={ultimosprocessosData.quando}
-            onChange={onChange}
-            />
+    <form className='formInputCadInc' id={`UltimosProcessosForm-${ultimosprocessosData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='UltimosProcessos' data={ultimosprocessosData} isSubmitting={isSubmitting} onClose={onClose} formId={`UltimosProcessosForm-${ultimosprocessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='quem'
-            label='Quem'
-            dataForm={ultimosprocessosData}
-            className='inputIncNome'
-            name='quem'
-            value={ultimosprocessosData.quem}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='processo'
+          label='Processo'
+          dataForm={ultimosprocessosData}
+          className='inputIncNome'
+          name='processo'
+          value={ultimosprocessosData.processo}
+          onChange={onChange}
+          />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='UltimosProcessos' data={ultimosprocessosData} isSubmitting={isSubmitting} onClose={onClose} formId={`UltimosProcessosForm-${ultimosprocessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/ultimosprocessos'} id={ultimosprocessosData.id} closeModel={onClose} dadoApi={dadoApi} />
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='quando'
+          label='Quando'
+          dataForm={ultimosprocessosData}
+          className='inputIncNome'
+          name='quando'
+          value={ultimosprocessosData.quando}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='quem'
+          label='Quem'
+          dataForm={ultimosprocessosData}
+          className='inputIncNome'
+          name='quem'
+          value={ultimosprocessosData.quem}
+          onChange={onChange}
+          />
+
         </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='UltimosProcessos' data={ultimosprocessosData} isSubmitting={isSubmitting} onClose={onClose} formId={`UltimosProcessosForm-${ultimosprocessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/ultimosprocessos'} id={ultimosprocessosData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

@@ -25,7 +25,7 @@ export class EnderecoSistemaValidator {
 export interface IEnderecoSistemaService {
   fetchEnderecoSistemaById: (id: number) => Promise<IEnderecoSistema>;
   saveEnderecoSistema: (enderecosistema: IEnderecoSistema) => Promise<IEnderecoSistema>;  
-  
+  getList: (filtro?: FilterEnderecoSistema) => Promise<IEnderecoSistema[]>;
   getAll: (filtro?: FilterEnderecoSistema) => Promise<IEnderecoSistema[]>;
   deleteEnderecoSistema: (id: number) => Promise<void>;
   validateEnderecoSistema: (enderecosistema: IEnderecoSistema) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class EnderecoSistemaService implements IEnderecoSistemaService {
   }
 
   
+    async getList(filtro?: FilterEnderecoSistema): Promise<IEnderecoSistema[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching EnderecoSistema list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

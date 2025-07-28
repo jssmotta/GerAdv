@@ -23,11 +23,14 @@ public partial class BensMateriaisReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.Nome}],[{DBFornecedoresDicInfo.PTabelaNome}].[{DBFornecedoresDicInfo.Nome}],[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
+                   {campos}, 
+[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.Nome}],
+[{DBFornecedoresDicInfo.PTabelaNome}].[{DBFornecedoresDicInfo.Nome}],
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
                    FROM {DBBensMateriais.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBBensClassificacaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacao.CampoCodigo}]=[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.BensClassificacao}]
-LEFT JOIN {DBFornecedoresDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFornecedoresDicInfo.PTabelaNome}].[{DBFornecedores.CampoCodigo}]=[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Fornecedor}]
-LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Cidade}]
+                   LEFT JOIN {DBBensClassificacaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.CampoCodigo}]=[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.BensClassificacao}]
+LEFT JOIN {DBFornecedoresDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFornecedoresDicInfo.PTabelaNome}].[{DBFornecedoresDicInfo.CampoCodigo}]=[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Fornecedor}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Cidade}]
  
                    {cWhere}
                    {orderQuery}

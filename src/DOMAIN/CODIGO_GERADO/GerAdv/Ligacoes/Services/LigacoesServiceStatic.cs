@@ -160,6 +160,11 @@ public partial class LigacoesService
             parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.StartScreen != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBLigacoesDicInfo.StartScreen)}", filtro.StartScreen));
@@ -273,7 +278,15 @@ public partial class LigacoesService
         cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Data)}");
         cWhere.Append(filtro.Urgente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Urgente}] = @{nameof(DBLigacoesDicInfo.Urgente)}");
         cWhere.Append(filtro.LigarPara.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.LigarPara}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.LigarPara)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Processo}] = @{nameof(DBLigacoesDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Processo}] >= @{nameof(DBLigacoesDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLigacoesDicInfo.Processo} BETWEEN @{nameof(DBLigacoesDicInfo.Processo)} AND @{nameof(DBLigacoesDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLigacoesDicInfo.Processo} = @{nameof(DBLigacoesDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLigacoesDicInfo.Processo} <= @{nameof(DBLigacoesDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.StartScreen == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.StartScreen}] = @{nameof(DBLigacoesDicInfo.StartScreen)}");
         if (!filtro.Emotion.IsEmpty() && filtro.Emotion_end.IsEmpty())
         {

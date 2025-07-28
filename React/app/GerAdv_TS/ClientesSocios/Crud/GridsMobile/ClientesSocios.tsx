@@ -61,29 +61,10 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellAgendaRecords = (id: number) => {
-  router.push(`/pages/agendarecords/?clientessocios=${id}`);
-};
-const SearchFromCellAgendaRecords = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaRecords(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Records'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn field='nome' title='Nome' />,
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />, <GridColumn
-  field='id_edit_AgendaRecords'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Records'
-  cells={{ data: SearchFromCellAgendaRecords }}
-  />, 
+  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   ], []);
   const DeleteRow = (e: any) => {
     return (

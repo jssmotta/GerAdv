@@ -16,6 +16,11 @@ public partial class ProValoresService
             parameters.Add(new($"@{nameof(DBProValoresDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.TipoValorProcesso != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBProValoresDicInfo.TipoValorProcesso)}", filtro.TipoValorProcesso));
@@ -149,7 +154,15 @@ public partial class ProValoresService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Processo}] = @{nameof(DBProValoresDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Processo}] >= @{nameof(DBProValoresDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProValoresDicInfo.Processo} BETWEEN @{nameof(DBProValoresDicInfo.Processo)} AND @{nameof(DBProValoresDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProValoresDicInfo.Processo} = @{nameof(DBProValoresDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProValoresDicInfo.Processo} <= @{nameof(DBProValoresDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.TipoValorProcesso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}] = @{nameof(DBProValoresDicInfo.TipoValorProcesso)}");
         cWhere.Append(filtro.Indice.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Indice}]  {DevourerConsts.MsiCollate} like @{nameof(DBProValoresDicInfo.Indice)}");
         cWhere.Append(filtro.Ignorar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Ignorar}] = @{nameof(DBProValoresDicInfo.Ignorar)}");

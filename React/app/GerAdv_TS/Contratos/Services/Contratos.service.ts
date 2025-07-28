@@ -25,7 +25,7 @@ export class ContratosValidator {
 export interface IContratosService {
   fetchContratosById: (id: number) => Promise<IContratos>;
   saveContratos: (contratos: IContratos) => Promise<IContratos>;  
-  
+  getList: (filtro?: FilterContratos) => Promise<IContratos[]>;
   getAll: (filtro?: FilterContratos) => Promise<IContratos[]>;
   deleteContratos: (id: number) => Promise<void>;
   validateContratos: (contratos: IContratos) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ContratosService implements IContratosService {
   }
 
   
+    async getList(filtro?: FilterContratos): Promise<IContratos[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Contratos list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

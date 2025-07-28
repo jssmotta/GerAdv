@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class OponentesService(IOptions<AppSettings> appSettings, IFOponentesFactory oponentesFactory, IOponentesReader reader, IOponentesValidation validation, IOponentesWriter writer, ICidadeReader cidadeReader, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IProcessosService processosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOponentesService, IDisposable
+public partial class OponentesService(IOptions<AppSettings> appSettings, IFOponentesFactory oponentesFactory, IOponentesReader reader, IOponentesValidation validation, IOponentesWriter writer, ICidadeReader cidadeReader, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOponentesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,7 +20,6 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IGruposEmpresasService gruposempresasService = gruposempresasService;
     private readonly IOponentesRepLegalService oponentesreplegalService = oponentesreplegalService;
-    private readonly IProcessosService processosService = processosService;
     public async Task<IEnumerable<OponentesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -199,7 +198,7 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, gruposempresasService, oponentesreplegalService, processosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, gruposempresasService, oponentesreplegalService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

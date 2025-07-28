@@ -26,9 +26,9 @@ public class ContatoCRMViewValidation : IContatoCRMViewValidation
 
     private bool ValidSizes(Models.ContatoCRMView reg)
     {
-        if (reg.CGUID.Length > 100)
+        if (reg.CGUID != null && reg.CGUID.Length > 100)
             throw new SGValidationException($"CGUID deve ter no máximo 100 caracteres.");
-        if (reg.IP.Length > 50)
+        if (reg.IP != null && reg.IP.Length > 50)
             throw new SGValidationException($"IP deve ter no máximo 50 caracteres.");
         return true;
     }

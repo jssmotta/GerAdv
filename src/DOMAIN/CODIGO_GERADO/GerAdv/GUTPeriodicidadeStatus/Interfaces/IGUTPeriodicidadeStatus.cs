@@ -10,4 +10,5 @@ public partial interface IGUTPeriodicidadeStatusService
     Task<GUTPeriodicidadeStatusResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeStatusResponse?> Validation(Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri = "");
     Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidadeStatus? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

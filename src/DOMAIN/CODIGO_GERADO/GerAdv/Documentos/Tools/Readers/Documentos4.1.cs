@@ -23,10 +23,9 @@ public partial class DocumentosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}
                    FROM {DBDocumentos.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Processo}]
- 
+                    
                    {cWhere}
                    {orderQuery}
                    OPTION (OPTIMIZE FOR UNKNOWN)";

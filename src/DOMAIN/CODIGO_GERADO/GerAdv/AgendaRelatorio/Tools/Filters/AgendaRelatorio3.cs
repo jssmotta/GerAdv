@@ -15,62 +15,65 @@ public partial record FilterAgendaRelatorio
     [JsonPropertyName("wildcardChar")]
     public char WildcardChar { get; set; } = '\0';
 
-    [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    [JsonPropertyName("vqadata")]
+    public string vqaData { get; set; } = string.Empty;
 
-    [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    [JsonPropertyName("vqadata_end")]
+    public string vqaData_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("processo")]
-    public int Processo { get; set; } = int.MinValue;
+    [JsonPropertyName("vqaprocesso")]
+    public int vqaProcesso { get; set; } = int.MinValue;
 
-    [JsonPropertyName("paranome")]
-    public string ParaNome { get; set; } = string.Empty;
+    [JsonPropertyName("vqaprocesso_end")]
+    public int vqaProcesso_end { get; set; } = int.MinValue;
 
-    [JsonPropertyName("paranome_end")]
-    public string ParaNome_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxparanome")]
+    public string xxxParaNome { get; set; } = string.Empty;
 
-    [JsonPropertyName("parapessoas")]
-    public string ParaPessoas { get; set; } = string.Empty;
+    [JsonPropertyName("xxxparanome_end")]
+    public string xxxParaNome_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("parapessoas_end")]
-    public string ParaPessoas_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxparapessoas")]
+    public string xxxParaPessoas { get; set; } = string.Empty;
 
-    [JsonPropertyName("boxaudiencia")]
-    public string BoxAudiencia { get; set; } = string.Empty;
+    [JsonPropertyName("xxxparapessoas_end")]
+    public string xxxParaPessoas_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("boxaudiencia_end")]
-    public string BoxAudiencia_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxboxaudiencia")]
+    public string xxxBoxAudiencia { get; set; } = string.Empty;
 
-    [JsonPropertyName("boxaudienciamobile")]
-    public string BoxAudienciaMobile { get; set; } = string.Empty;
+    [JsonPropertyName("xxxboxaudiencia_end")]
+    public string xxxBoxAudiencia_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("boxaudienciamobile_end")]
-    public string BoxAudienciaMobile_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxboxaudienciamobile")]
+    public string xxxBoxAudienciaMobile { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomeadvogado")]
-    public string NomeAdvogado { get; set; } = string.Empty;
+    [JsonPropertyName("xxxboxaudienciamobile_end")]
+    public string xxxBoxAudienciaMobile_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomeadvogado_end")]
-    public string NomeAdvogado_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomeadvogado")]
+    public string xxxNomeAdvogado { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomeforo")]
-    public string NomeForo { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomeadvogado_end")]
+    public string xxxNomeAdvogado_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomeforo_end")]
-    public string NomeForo_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomeforo")]
+    public string xxxNomeForo { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomejustica")]
-    public string NomeJustica { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomeforo_end")]
+    public string xxxNomeForo_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomejustica_end")]
-    public string NomeJustica_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomejustica")]
+    public string xxxNomeJustica { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomearea")]
-    public string NomeArea { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomejustica_end")]
+    public string xxxNomeJustica_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomearea_end")]
-    public string NomeArea_end { get; set; } = string.Empty;
+    [JsonPropertyName("xxxnomearea")]
+    public string xxxNomeArea { get; set; } = string.Empty;
+
+    [JsonPropertyName("xxxnomearea_end")]
+    public string xxxNomeArea_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

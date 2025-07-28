@@ -14,7 +14,7 @@ import { GraphTestEmpty } from '../GerAdv_TS/Models/Graph';
 const mockGraphService: jest.Mocked<IGraphService> = {
   fetchGraphById: jest.fn(),
   saveGraph: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteGraph: jest.fn(),
   validateGraph: jest.fn(),
@@ -50,7 +50,7 @@ describe('useGraphForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'tabela',
+        name: 'guid',
         value: 'Novo Graph',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useGraphForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.tabela).toBe('Novo Graph');
+    expect(result.current.data.guid).toBe('Novo Graph');
   });
 
    test('deve carregar Graph por ID', async () => {
-    const mockGraph = { ...initialGraph, id: 1, tabela: 'Graph Teste' };
+    const mockGraph = { ...initialGraph, id: 1, guid: 'Graph Teste' };
     mockGraphService.fetchGraphById.mockResolvedValue(mockGraph);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useGraphForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialGraph, tabela: 'Teste' });
+      result.current.setData({ ...initialGraph, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useGraphList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialGraph, id: 1, tabela: 'Graph 1' },
-      { ...initialGraph, id: 2, tabela: 'Graph 2' }
+      { ...initialGraph, id: 1, guid: 'Graph 1' },
+      { ...initialGraph, id: 2, guid: 'Graph 2' }
     ];
     mockGraphService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useGraphList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialGraph, id: 1, tabela: 'Graph Filtrado' }];
-    const filtro = { tabela: 'Graph' };
+    const mockData = [{ ...initialGraph, id: 1, guid: 'Graph Filtrado' }];
+    const filtro = { guid: 'Graph' };
     mockGraphService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsGraph', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsGraph());
 
-    const validData = { ...initialGraph, tabela: 'Graph Válido' };
+    const validData = { ...initialGraph, guid: 'Graph Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsGraph', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsGraph());
+
+    const invalidData = { ...initialGraph, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsGraph());
+
+    const invalidData = { 
+      ...initialGraph, 
+      guid: 'a'.repeat(150+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 150 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsGraph());
@@ -229,7 +250,7 @@ describe('useValidationsGraph', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialGraph, id: 1, tabela: 'Graph Teste' }];
+    const mockData = [{ ...initialGraph, id: 1, guid: 'Graph Teste' }];
     mockGraphService.getAll.mockResolvedValue(mockData);
     
 

@@ -168,7 +168,10 @@ export function useValidationsGraph() {
     
       try {
    
-        if (data.tabela.length > 80) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.tabela.length > 80) { 
                                              return { isValid: false, message: 'O campo Tabela não pode ter mais de 80 caracteres.' };
                                          } 
 

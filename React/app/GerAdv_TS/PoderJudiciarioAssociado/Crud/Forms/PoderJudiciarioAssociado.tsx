@@ -225,6 +225,18 @@ const addValorJustica = (e: any) => {
                   )}
                   <div className='grid-container'>
 
+                    <InputName
+                    type='text'
+                    id='guid'
+                    label='GUID'
+                    dataForm={poderjudiciarioassociadoData}
+                    className='inputIncNome'
+                    name='guid'
+                    value={poderjudiciarioassociadoData.guid}
+                    placeholder={`Informe GUID`}
+                    onChange={onChange}
+                    required
+                    />
 
                     <JusticaComboBox
                     name={'justica'}

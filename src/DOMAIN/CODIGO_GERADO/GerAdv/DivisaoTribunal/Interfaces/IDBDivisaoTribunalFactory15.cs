@@ -23,7 +23,7 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FDivisaoTribunal instance with parameters
         /// </summary>
-        FDivisaoTribunal CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "");
+        FDivisaoTribunal CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FDivisaoTribunal> CreateAsync();
         Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
         Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);

@@ -36,10 +36,10 @@ public partial class FSituacaoFactory : IFSituacaoFactory, IDisposable
         return new FSituacao();
     }
 
-    public FSituacao CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FSituacao CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
-        return FSituacao.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
+        return FSituacao.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
     public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)

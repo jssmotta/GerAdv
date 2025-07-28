@@ -128,14 +128,6 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            proresumos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return proresumos;
     }
 
@@ -155,14 +147,6 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            proresumos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return proresumos;
     }
 }

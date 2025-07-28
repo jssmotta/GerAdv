@@ -14,16 +14,16 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - oppProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Parte - oppParte  
         /// </summary>
         [JsonPropertyName("parte")]
         public int Parte { get; set; }
+
+        /// <summary>
+        /// Processo - oppProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
     }
 }
 
@@ -36,18 +36,15 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - oppProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Parte - oppParte  
         /// </summary>
         [JsonPropertyName("parte")]
         public int Parte { get; set; }
 
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
+        /// <summary>
+        /// Processo - oppProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
     }
 }

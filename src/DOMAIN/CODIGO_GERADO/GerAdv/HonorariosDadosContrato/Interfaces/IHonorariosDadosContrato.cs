@@ -10,4 +10,5 @@ public partial interface IHonorariosDadosContratoService
     Task<HonorariosDadosContratoResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<HonorariosDadosContratoResponse?> Validation(Models.HonorariosDadosContrato regHonorariosDadosContrato, [FromRoute, Required] string uri = "");
     Task<IEnumerable<HonorariosDadosContratoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterHonorariosDadosContrato? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

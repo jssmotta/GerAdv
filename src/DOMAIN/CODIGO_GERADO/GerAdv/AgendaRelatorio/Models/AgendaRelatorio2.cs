@@ -14,67 +14,67 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - vqaProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Data - vqaData  
         /// </summary>
-        [JsonPropertyName("data")]
-        public string Data { get; set; } = "";
+        [JsonPropertyName("vqadata")]
+        public string vqaData { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
+        [JsonPropertyName("vqadata_date")]
+        public DateTime? vqaData_date { get; set; }
+
+        /// <summary>
+        /// Processo - vqaProcesso  
+        /// </summary>
+        [JsonPropertyName("vqaprocesso")]
+        public int vqaProcesso { get; set; }
 
         /// <summary>
         /// ParaNome - xxxParaNome - tamanho máximo: 60 
         /// </summary>
-        [JsonPropertyName("paranome")]
-        public string ParaNome { get; set; } = "";
+        [JsonPropertyName("xxxparanome")]
+        public string xxxParaNome { get; set; } = "";
 
         /// <summary>
         /// ParaPessoas - xxxParaPessoas  
         /// </summary>
-        [JsonPropertyName("parapessoas")]
-        public string ParaPessoas { get; set; } = "";
+        [JsonPropertyName("xxxparapessoas")]
+        public string xxxParaPessoas { get; set; } = "";
 
         /// <summary>
         /// BoxAudiencia - xxxBoxAudiencia  
         /// </summary>
-        [JsonPropertyName("boxaudiencia")]
-        public string BoxAudiencia { get; set; } = "";
+        [JsonPropertyName("xxxboxaudiencia")]
+        public string xxxBoxAudiencia { get; set; } = "";
 
         /// <summary>
         /// BoxAudienciaMobile - xxxBoxAudienciaMobile  
         /// </summary>
-        [JsonPropertyName("boxaudienciamobile")]
-        public string BoxAudienciaMobile { get; set; } = "";
+        [JsonPropertyName("xxxboxaudienciamobile")]
+        public string xxxBoxAudienciaMobile { get; set; } = "";
 
         /// <summary>
         /// NomeAdvogado - xxxNomeAdvogado - tamanho máximo: 50 
         /// </summary>
-        [JsonPropertyName("nomeadvogado")]
-        public string NomeAdvogado { get; set; } = "";
+        [JsonPropertyName("xxxnomeadvogado")]
+        public string xxxNomeAdvogado { get; set; } = "";
 
         /// <summary>
         /// NomeForo - xxxNomeForo - tamanho máximo: 40 
         /// </summary>
-        [JsonPropertyName("nomeforo")]
-        public string NomeForo { get; set; } = "";
+        [JsonPropertyName("xxxnomeforo")]
+        public string xxxNomeForo { get; set; } = "";
 
         /// <summary>
         /// NomeJustica - xxxNomeJustica - tamanho máximo: 50 
         /// </summary>
-        [JsonPropertyName("nomejustica")]
-        public string NomeJustica { get; set; } = "";
+        [JsonPropertyName("xxxnomejustica")]
+        public string xxxNomeJustica { get; set; } = "";
 
         /// <summary>
         /// NomeArea - xxxNomeArea - tamanho máximo: 40 
         /// </summary>
-        [JsonPropertyName("nomearea")]
-        public string NomeArea { get; set; } = "";
+        [JsonPropertyName("xxxnomearea")]
+        public string xxxNomeArea { get; set; } = "";
     }
 }
 
@@ -87,69 +87,66 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - vqaProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Data - vqaData  
         /// </summary>
-        [JsonPropertyName("data")]
-        public string Data { get; set; } = "";
+        [JsonPropertyName("vqadata")]
+        public string vqaData { get; set; } = "";
 
-        [JsonPropertyName("data_date")]
-        public DateTime? Data_date { get; set; }
+        [JsonPropertyName("vqadata_date")]
+        public DateTime? vqaData_date { get; set; }
+
+        /// <summary>
+        /// Processo - vqaProcesso  
+        /// </summary>
+        [JsonPropertyName("vqaprocesso")]
+        public int vqaProcesso { get; set; }
 
         /// <summary>
         /// ParaNome - xxxParaNome - tamanho máximo: 60 
         /// </summary>
-        [JsonPropertyName("paranome")]
-        public string ParaNome { get; set; } = "";
+        [JsonPropertyName("xxxparanome")]
+        public string xxxParaNome { get; set; } = "";
 
         /// <summary>
         /// ParaPessoas - xxxParaPessoas  
         /// </summary>
-        [JsonPropertyName("parapessoas")]
-        public string ParaPessoas { get; set; } = "";
+        [JsonPropertyName("xxxparapessoas")]
+        public string xxxParaPessoas { get; set; } = "";
 
         /// <summary>
         /// BoxAudiencia - xxxBoxAudiencia  
         /// </summary>
-        [JsonPropertyName("boxaudiencia")]
-        public string BoxAudiencia { get; set; } = "";
+        [JsonPropertyName("xxxboxaudiencia")]
+        public string xxxBoxAudiencia { get; set; } = "";
 
         /// <summary>
         /// BoxAudienciaMobile - xxxBoxAudienciaMobile  
         /// </summary>
-        [JsonPropertyName("boxaudienciamobile")]
-        public string BoxAudienciaMobile { get; set; } = "";
+        [JsonPropertyName("xxxboxaudienciamobile")]
+        public string xxxBoxAudienciaMobile { get; set; } = "";
 
         /// <summary>
         /// NomeAdvogado - xxxNomeAdvogado - tamanho máximo: 50 
         /// </summary>
-        [JsonPropertyName("nomeadvogado")]
-        public string NomeAdvogado { get; set; } = "";
+        [JsonPropertyName("xxxnomeadvogado")]
+        public string xxxNomeAdvogado { get; set; } = "";
 
         /// <summary>
         /// NomeForo - xxxNomeForo - tamanho máximo: 40 
         /// </summary>
-        [JsonPropertyName("nomeforo")]
-        public string NomeForo { get; set; } = "";
+        [JsonPropertyName("xxxnomeforo")]
+        public string xxxNomeForo { get; set; } = "";
 
         /// <summary>
         /// NomeJustica - xxxNomeJustica - tamanho máximo: 50 
         /// </summary>
-        [JsonPropertyName("nomejustica")]
-        public string NomeJustica { get; set; } = "";
+        [JsonPropertyName("xxxnomejustica")]
+        public string xxxNomeJustica { get; set; } = "";
 
         /// <summary>
         /// NomeArea - xxxNomeArea - tamanho máximo: 40 
         /// </summary>
-        [JsonPropertyName("nomearea")]
-        public string NomeArea { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
+        [JsonPropertyName("xxxnomearea")]
+        public string xxxNomeArea { get; set; } = "";
     }
 }

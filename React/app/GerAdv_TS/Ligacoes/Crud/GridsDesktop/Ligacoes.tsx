@@ -73,18 +73,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellRecados = (id: number) => {
-  router.push(`/pages/recados/?ligacoes=${id}`);
-};
-const SearchFromCellRecados = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellRecados(props.dataItem.id)}><span title='Pesquisar relacionados em Recados'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const MaskligDataRealizadaCell = (props: any) => {
   const valor = props.dataItem[props.field];
   const formattedValue = valor ? formatCurrency(valor) : 'R$ 0,00';
@@ -115,14 +103,6 @@ const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
   <GridColumn field='nome' title='Nome' sortable={true} filterable={true} />, /* Track G.02 */
-  <GridColumn
-  field='id_edit_Recados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Recados'
-  cells={{ data: SearchFromCellRecados }}
-  />, 
   <GridColumn field='nomeclientes' title='Clientes' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn field='nomeramal' title='Ramal' sortable={false} filterable={false} />, /* Track G.01 */

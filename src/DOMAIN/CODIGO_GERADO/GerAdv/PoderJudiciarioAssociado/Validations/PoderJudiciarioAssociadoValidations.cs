@@ -26,19 +26,19 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
 
     private bool ValidSizes(Models.PoderJudiciarioAssociado reg)
     {
-        if (reg.JusticaNome.Length > 255)
+        if (reg.JusticaNome != null && reg.JusticaNome.Length > 255)
             throw new SGValidationException($"JusticaNome deve ter no máximo 255 caracteres.");
-        if (reg.AreaNome.Length > 255)
+        if (reg.AreaNome != null && reg.AreaNome.Length > 255)
             throw new SGValidationException($"AreaNome deve ter no máximo 255 caracteres.");
-        if (reg.TribunalNome.Length > 255)
+        if (reg.TribunalNome != null && reg.TribunalNome.Length > 255)
             throw new SGValidationException($"TribunalNome deve ter no máximo 255 caracteres.");
-        if (reg.ForoNome.Length > 255)
+        if (reg.ForoNome != null && reg.ForoNome.Length > 255)
             throw new SGValidationException($"ForoNome deve ter no máximo 255 caracteres.");
-        if (reg.SubDivisaoNome.Length > 255)
+        if (reg.SubDivisaoNome != null && reg.SubDivisaoNome.Length > 255)
             throw new SGValidationException($"SubDivisaoNome deve ter no máximo 255 caracteres.");
-        if (reg.CidadeNome.Length > 255)
+        if (reg.CidadeNome != null && reg.CidadeNome.Length > 255)
             throw new SGValidationException($"CidadeNome deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
@@ -47,6 +47,8 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

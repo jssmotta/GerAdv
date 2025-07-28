@@ -124,22 +124,6 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        try
-        {
-            processosobsreport.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            processosobsreport.DataHistorico = dr[DBHistoricoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return processosobsreport;
     }
 
@@ -158,22 +142,6 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
-        try
-        {
-            processosobsreport.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            processosobsreport.DataHistorico = dr[DBHistoricoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return processosobsreport;
     }
 }

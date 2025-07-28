@@ -9,29 +9,26 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOperadorGruposAgendaValidation
 {
     Task<bool> ValidateReg(Models.OperadorGruposAgenda reg, IOperadorGruposAgendaService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOperadorGruposAgendaService service, IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IOperadorGruposAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
 {
-    public async Task<bool> CanDelete(int id, IOperadorGruposAgendaService service, IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IOperadorGruposAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var operadorgruposagendaoperadoresExists0 = await operadorgruposagendaoperadoresService.Filter(new Filters.FilterOperadorGruposAgendaOperadores { OperadorGruposAgenda = id }, uri);
-        if (operadorgruposagendaoperadoresExists0 != null && operadorgruposagendaoperadoresExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda Operadores associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.OperadorGruposAgenda reg)
     {
-        if (reg.Nome.Length > 100)
+        if (reg.Nome != null && reg.Nome.Length > 100)
             throw new SGValidationException($"Nome deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

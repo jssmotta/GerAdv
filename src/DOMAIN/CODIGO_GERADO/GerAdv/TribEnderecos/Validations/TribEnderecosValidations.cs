@@ -26,9 +26,9 @@ public class TribEnderecosValidation : ITribEnderecosValidation
 
     private bool ValidSizes(Models.TribEnderecos reg)
     {
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         return true;
     }

@@ -9,7 +9,6 @@ export interface ILigacoes {
  
 	cliente: number,
 	ramal: number,
-	processo: number,
 	assunto: string,
 	ageclienteavisado: number,
 	celular: boolean,
@@ -31,6 +30,7 @@ export interface ILigacoes {
 	hora: string,
 	urgente: boolean,
 	ligarpara: string,
+	processo: number,
 	startscreen: boolean,
 	emotion: number,
 }

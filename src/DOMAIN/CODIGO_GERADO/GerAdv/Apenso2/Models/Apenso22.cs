@@ -46,8 +46,5 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("apensado")]
         public int Apensado { get; set; }
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

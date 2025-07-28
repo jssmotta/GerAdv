@@ -23,11 +23,12 @@ public partial class ProSucumbenciaReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.NroProcesso}],[{DBTipoOrigemSucumbenciaDicInfo.PTabelaNome}].[{DBTipoOrigemSucumbenciaDicInfo.Nome}]
+                   {campos}, 
+[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.NroProcesso}],
+[{DBTipoOrigemSucumbenciaDicInfo.PTabelaNome}].[{DBTipoOrigemSucumbenciaDicInfo.Nome}]
                    FROM {DBProSucumbencia.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProSucumbenciaDicInfo.PTabelaNome}].[{DBProSucumbenciaDicInfo.Processo}]
-LEFT JOIN {DBInstanciaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBInstanciaDicInfo.PTabelaNome}].[{DBInstancia.CampoCodigo}]=[{DBProSucumbenciaDicInfo.PTabelaNome}].[{DBProSucumbenciaDicInfo.Instancia}]
-LEFT JOIN {DBTipoOrigemSucumbenciaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoOrigemSucumbenciaDicInfo.PTabelaNome}].[{DBTipoOrigemSucumbencia.CampoCodigo}]=[{DBProSucumbenciaDicInfo.PTabelaNome}].[{DBProSucumbenciaDicInfo.TipoOrigemSucumbencia}]
+                   LEFT JOIN {DBInstanciaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.CampoCodigo}]=[{DBProSucumbenciaDicInfo.PTabelaNome}].[{DBProSucumbenciaDicInfo.Instancia}]
+LEFT JOIN {DBTipoOrigemSucumbenciaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoOrigemSucumbenciaDicInfo.PTabelaNome}].[{DBTipoOrigemSucumbenciaDicInfo.CampoCodigo}]=[{DBProSucumbenciaDicInfo.PTabelaNome}].[{DBProSucumbenciaDicInfo.TipoOrigemSucumbencia}]
  
                    {cWhere}
                    {orderQuery}

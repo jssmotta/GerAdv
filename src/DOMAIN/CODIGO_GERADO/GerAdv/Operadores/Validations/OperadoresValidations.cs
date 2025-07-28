@@ -26,13 +26,13 @@ public class OperadoresValidation : IOperadoresValidation
 
     private bool ValidSizes(Models.Operadores reg)
     {
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Senha.Length > 10)
+        if (reg.Senha != null && reg.Senha.Length > 10)
             throw new SGValidationException($"Senha deve ter no máximo 10 caracteres.");
-        if (reg.Senha256.Length > 4000)
+        if (reg.Senha256 != null && reg.Senha256.Length > 4000)
             throw new SGValidationException($"Senha256 deve ter no máximo 4000 caracteres.");
-        if (reg.SuporteSenha256.Length > 4000)
+        if (reg.SuporteSenha256 != null && reg.SuporteSenha256.Length > 4000)
             throw new SGValidationException($"SuporteSenha256 deve ter no máximo 4000 caracteres.");
         return true;
     }

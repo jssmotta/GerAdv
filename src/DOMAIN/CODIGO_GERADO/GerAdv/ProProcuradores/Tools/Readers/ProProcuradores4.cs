@@ -144,14 +144,6 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
         {
         }
 
-        try
-        {
-            proprocuradores.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return proprocuradores;
     }
 
@@ -176,14 +168,6 @@ public partial class ProProcuradoresReader(IFProProcuradoresFactory proprocurado
         try
         {
             proprocuradores.NomeAdvogados = dr[DBAdvogadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            proprocuradores.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

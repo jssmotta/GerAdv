@@ -168,7 +168,10 @@ export function useValidationsPoderJudiciarioAssociado() {
     
       try {
    
-        if (data.justicanome.length > 255) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.justicanome.length > 255) { 
                                              return { isValid: false, message: 'O campo JusticaNome não pode ter mais de 255 caracteres.' };
                                          } 
 if (data.areanome.length > 255) { 

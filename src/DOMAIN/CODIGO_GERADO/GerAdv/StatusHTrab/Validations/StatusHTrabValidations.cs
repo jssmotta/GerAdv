@@ -26,7 +26,7 @@ public class StatusHTrabValidation : IStatusHTrabValidation
 
     private bool ValidSizes(Models.StatusHTrab reg)
     {
-        if (reg.Descricao.Length > 50)
+        if (reg.Descricao != null && reg.Descricao.Length > 50)
             throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
         return true;
     }

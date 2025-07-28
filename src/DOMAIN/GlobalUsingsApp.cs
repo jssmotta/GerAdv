@@ -7,4 +7,4 @@ global using MenphisSI.GerAdv.Models.Response.All;
 global using MenphisSI.GerAdv.Validations;
 global using MenphisSI.GerAdv.Writers;
 global using MenphisSI.GerAdv.Factory;
-
+global using MenphisSI.GerAdv.Services;

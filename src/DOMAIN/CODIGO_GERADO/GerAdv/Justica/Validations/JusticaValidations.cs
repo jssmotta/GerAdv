@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IJusticaValidation
 {
     Task<bool> ValidateReg(Models.Justica reg, IJusticaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IJusticaService service, IAcaoService acaoService, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IProcessosService processosService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IJusticaService service, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class JusticaValidation : IJusticaValidation
 {
-    public async Task<bool> CanDelete(int id, IJusticaService service, IAcaoService acaoService, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IProcessosService processosService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IJusticaService service, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
@@ -27,41 +27,35 @@ public class JusticaValidation : IJusticaValidation
         var agendaExists1 = await agendaService.Filter(new Filters.FilterAgenda { Justica = id }, uri);
         if (agendaExists1 != null && agendaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendafinanceiroExists2 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Justica = id }, uri);
-        if (agendafinanceiroExists2 != null && agendafinanceiroExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.");
-        var areasjusticaExists3 = await areasjusticaService.Filter(new Filters.FilterAreasJustica { Justica = id }, uri);
-        if (areasjusticaExists3 != null && areasjusticaExists3.Any())
+        var areasjusticaExists2 = await areasjusticaService.Filter(new Filters.FilterAreasJustica { Justica = id }, uri);
+        if (areasjusticaExists2 != null && areasjusticaExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Areas Justica associados a ele.");
-        var divisaotribunalExists4 = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Justica = id }, uri);
-        if (divisaotribunalExists4 != null && divisaotribunalExists4.Any())
+        var divisaotribunalExists3 = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Justica = id }, uri);
+        if (divisaotribunalExists3 != null && divisaotribunalExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
-        var faseExists5 = await faseService.Filter(new Filters.FilterFase { Justica = id }, uri);
-        if (faseExists5 != null && faseExists5.Any())
+        var faseExists4 = await faseService.Filter(new Filters.FilterFase { Justica = id }, uri);
+        if (faseExists4 != null && faseExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Fase associados a ele.");
-        var objetosExists6 = await objetosService.Filter(new Filters.FilterObjetos { Justica = id }, uri);
-        if (objetosExists6 != null && objetosExists6.Any())
+        var objetosExists5 = await objetosService.Filter(new Filters.FilterObjetos { Justica = id }, uri);
+        if (objetosExists5 != null && objetosExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Objetos associados a ele.");
-        var poderjudiciarioassociadoExists7 = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Justica = id }, uri);
-        if (poderjudiciarioassociadoExists7 != null && poderjudiciarioassociadoExists7.Any())
+        var poderjudiciarioassociadoExists6 = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Justica = id }, uri);
+        if (poderjudiciarioassociadoExists6 != null && poderjudiciarioassociadoExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var processosExists8 = await processosService.Filter(new Filters.FilterProcessos { Justica = id }, uri);
-        if (processosExists8 != null && processosExists8.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.");
-        var tiporecursoExists9 = await tiporecursoService.Filter(new Filters.FilterTipoRecurso { Justica = id }, uri);
-        if (tiporecursoExists9 != null && tiporecursoExists9.Any())
+        var tiporecursoExists7 = await tiporecursoService.Filter(new Filters.FilterTipoRecurso { Justica = id }, uri);
+        if (tiporecursoExists7 != null && tiporecursoExists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tipo Recurso associados a ele.");
-        var tribunalExists10 = await tribunalService.Filter(new Filters.FilterTribunal { Justica = id }, uri);
-        if (tribunalExists10 != null && tribunalExists10.Any())
+        var tribunalExists8 = await tribunalService.Filter(new Filters.FilterTribunal { Justica = id }, uri);
+        if (tribunalExists8 != null && tribunalExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Justica reg)
     {
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

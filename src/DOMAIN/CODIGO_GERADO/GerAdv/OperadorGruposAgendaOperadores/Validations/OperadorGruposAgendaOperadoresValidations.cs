@@ -26,7 +26,7 @@ public class OperadorGruposAgendaOperadoresValidation : IOperadorGruposAgendaOpe
 
     private bool ValidSizes(Models.OperadorGruposAgendaOperadores reg)
     {
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
@@ -35,6 +35,10 @@ public class OperadorGruposAgendaOperadoresValidation : IOperadorGruposAgendaOpe
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
+        if (await IsDuplicado(reg, service, uri))
+            throw new SGValidationException($"Operador Grupos Agenda Operadores '{reg.GUID}' Operador e/ou OperadorGruposAgenda");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -63,5 +67,11 @@ public class OperadorGruposAgendaOperadoresValidation : IOperadorGruposAgendaOpe
         }
 
         return true;
+    }
+
+    private async Task<bool> IsDuplicado(Models.OperadorGruposAgendaOperadores reg, IOperadorGruposAgendaOperadoresService service, string uri)
+    {
+        var existingOperadorGruposAgendaOperadores = (await service.Filter(new Filters.FilterOperadorGruposAgendaOperadores { Operador = reg.Operador, OperadorGruposAgenda = reg.OperadorGruposAgenda }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingOperadorGruposAgendaOperadores != null && existingOperadorGruposAgendaOperadores.Id > 0 && existingOperadorGruposAgendaOperadores.Id != reg.Id;
     }
 }

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IFProSucumbenciaFactory prosucumbenciaFactory, IProSucumbenciaReader reader, IProSucumbenciaValidation validation, IProSucumbenciaWriter writer, IProcessosReader processosReader, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProSucumbenciaService, IDisposable
+public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IFProSucumbenciaFactory prosucumbenciaFactory, IProSucumbenciaReader reader, IProSucumbenciaValidation validation, IProSucumbenciaWriter writer, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProSucumbenciaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IF
     private readonly IProSucumbenciaReader reader = reader;
     private readonly IProSucumbenciaValidation validation = validation;
     private readonly IProSucumbenciaWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IInstanciaReader instanciaReader = instanciaReader;
     private readonly ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader = tipoorigemsucumbenciaReader;
     public async Task<IEnumerable<ProSucumbenciaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -112,7 +111,7 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var validade = await validation.ValidateReg(regProSucumbencia, this, processosReader, instanciaReader, tipoorigemsucumbenciaReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProSucumbencia, this, instanciaReader, tipoorigemsucumbenciaReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -153,7 +152,7 @@ public partial class ProSucumbenciaService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var validade = await validation.ValidateReg(regProSucumbencia, this, processosReader, instanciaReader, tipoorigemsucumbenciaReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProSucumbencia, this, instanciaReader, tipoorigemsucumbenciaReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

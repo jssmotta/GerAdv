@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFuncionariosFactory funcionariosFactory, IFuncionariosReader reader, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IAgendaRepetirService agendarepetirService, IHorasTrabService horastrabService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFuncionariosService, IDisposable
+public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFuncionariosFactory funcionariosFactory, IFuncionariosReader reader, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaQuemService agendaquemService, IHorasTrabService horastrabService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFuncionariosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,9 +21,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
     private readonly IFuncaoReader funcaoReader = funcaoReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
     private readonly IAgendaQuemService agendaquemService = agendaquemService;
-    private readonly IAgendaRepetirService agendarepetirService = agendarepetirService;
     private readonly IHorasTrabService horastrabService = horastrabService;
     public async Task<IEnumerable<FuncionariosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -203,7 +201,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, agendaquemService, agendarepetirService, horastrabService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendaquemService, horastrabService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -29,17 +29,17 @@ public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
 
     private bool ValidSizes(Models.ProcessOutputEngine reg)
     {
-        if (reg.Nome.Length > 255)
+        if (reg.Nome != null && reg.Nome.Length > 255)
             throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.Database.Length > 255)
+        if (reg.Database != null && reg.Database.Length > 255)
             throw new SGValidationException($"Database deve ter no máximo 255 caracteres.");
-        if (reg.Tabela.Length > 255)
+        if (reg.Tabela != null && reg.Tabela.Length > 255)
             throw new SGValidationException($"Tabela deve ter no máximo 255 caracteres.");
-        if (reg.Campo.Length > 255)
+        if (reg.Campo != null && reg.Campo.Length > 255)
             throw new SGValidationException($"Campo deve ter no máximo 255 caracteres.");
-        if (reg.Valor.Length > 255)
+        if (reg.Valor != null && reg.Valor.Length > 255)
             throw new SGValidationException($"Valor deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

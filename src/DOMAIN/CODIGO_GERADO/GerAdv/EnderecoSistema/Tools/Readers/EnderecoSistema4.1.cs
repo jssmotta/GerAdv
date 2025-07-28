@@ -15,7 +15,7 @@ public partial class EnderecoSistemaReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBEnderecoSistemaDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBEnderecoSistemaDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,11 +23,12 @@ public partial class EnderecoSistemaReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBTipoEnderecoSistemaDicInfo.PTabelaNome}].[{DBTipoEnderecoSistemaDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
+                   {campos}, 
+[{DBTipoEnderecoSistemaDicInfo.PTabelaNome}].[{DBTipoEnderecoSistemaDicInfo.Nome}],
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
                    FROM {DBEnderecoSistema.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBTipoEnderecoSistemaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoEnderecoSistemaDicInfo.PTabelaNome}].[{DBTipoEnderecoSistema.CampoCodigo}]=[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.TipoEnderecoSistema}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Processo}]
-LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cidade}]
+                   LEFT JOIN {DBTipoEnderecoSistemaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoEnderecoSistemaDicInfo.PTabelaNome}].[{DBTipoEnderecoSistemaDicInfo.CampoCodigo}]=[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.TipoEnderecoSistema}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cidade}]
  
                    {cWhere}
                    {orderQuery}

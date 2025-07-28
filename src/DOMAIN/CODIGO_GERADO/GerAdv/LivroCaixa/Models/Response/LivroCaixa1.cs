@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - livProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// IDDes - livIDDes  
         /// </summary>
         [JsonPropertyName("iddes")]
@@ -60,6 +54,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
+
+        /// <summary>
+        /// Processo - livProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Valor - livValor  
@@ -102,12 +102,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - livProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// IDDes - livIDDes  
         /// </summary>
         [JsonPropertyName("iddes")]
@@ -150,6 +144,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Data { get; set; } = "";
 
         /// <summary>
+        /// Processo - livProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
+
+        /// <summary>
         /// Valor - livValor  
         /// </summary>
         [JsonPropertyName("valor")]
@@ -178,8 +178,5 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("grupo")]
         public int Grupo { get; set; }
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

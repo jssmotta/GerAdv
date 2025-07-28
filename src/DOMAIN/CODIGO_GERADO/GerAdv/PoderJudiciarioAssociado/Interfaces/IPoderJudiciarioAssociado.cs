@@ -10,4 +10,5 @@ public partial interface IPoderJudiciarioAssociadoService
     Task<PoderJudiciarioAssociadoResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<PoderJudiciarioAssociadoResponse?> Validation(Models.PoderJudiciarioAssociado regPoderJudiciarioAssociado, [FromRoute, Required] string uri = "");
     Task<IEnumerable<PoderJudiciarioAssociadoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterPoderJudiciarioAssociado? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

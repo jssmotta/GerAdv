@@ -13,5 +13,6 @@ public partial interface IOperadorGruposAgendaOperadoresReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     OperadorGruposAgendaOperadoresResponseAll? ReadAll(FOperadorGruposAgendaOperadores dbRec, IDataRecord dr);
     OperadorGruposAgendaOperadoresResponseAll? ReadAll(SG.GerAdv.DBOperadorGruposAgendaOperadores dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<OperadorGruposAgendaOperadoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

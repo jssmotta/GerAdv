@@ -2,9 +2,9 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProDepositos
-{	processo = `Processo`,
-	fase = `Fase`,
+{	fase = `Fase`,
 	tipoprodesposito = `TipoProDesposito`,
+	processo = `Processo`,
 	data = `Data`,
 	valor = `Valor`,
 }

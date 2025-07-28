@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniaoFactory reuniaoFactory, IReuniaoReader reader, IReuniaoValidation validation, IReuniaoWriter writer, IClientesReader clientesReader, IReuniaoPessoasService reuniaopessoasService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IReuniaoService, IDisposable
+public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniaoFactory reuniaoFactory, IReuniaoReader reader, IReuniaoValidation validation, IReuniaoWriter writer, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IReuniaoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
     private readonly IReuniaoValidation validation = validation;
     private readonly IReuniaoWriter writer = writer;
     private readonly IClientesReader clientesReader = clientesReader;
-    private readonly IReuniaoPessoasService reuniaopessoasService = reuniaopessoasService;
     public async Task<IEnumerable<ReuniaoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -197,7 +196,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, reuniaopessoasService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

@@ -16,9 +16,7 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { ContaCorrenteApi } from '../../Apis/ApiContaCorrente';
 import { useValidationsContaCorrente } from '../../Hooks/hookContaCorrente';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import { ClientesApi } from '@/app/GerAdv_TS/Clientes/Apis/ApiClientes';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
@@ -49,25 +47,8 @@ const dadoApi = new ContaCorrenteApi(systemContext?.Uri ?? '', systemContext?.To
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsContaCorrente();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [nomeClientes, setNomeClientes] = useState('');
 const clientesApi = new ClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-
-if (getParamFromUrl('processos') > 0) {
-  if (contacorrenteData.id === 0 && contacorrenteData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    contacorrenteData.processo = getParamFromUrl('processos');
-  }
-}
 
 if (getParamFromUrl('clientes') > 0) {
   if (contacorrenteData.id === 0 && contacorrenteData.cliente == 0) {
@@ -83,308 +64,309 @@ if (getParamFromUrl('clientes') > 0) {
     contacorrenteData.cliente = getParamFromUrl('clientes');
   }
 }
-const addValorProcesso = (e: any) => {
+const addValorCliente = (e: any) => {
   if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
+    onChange({ target: { name: 'cliente', value: e.id } });
   };
-  const addValorCliente = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cliente', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
-
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ContaCorrente:');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
-
-    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ContaCorrenteForm-${contacorrenteData.id}`)
-          } as unknown as React.FormEvent;
-
-          onSubmit(syntheticEvent);
+          onSubmit(e);
         } catch (error) {
-        console.log('Erro ao salvar ContaCorrente diretamente');
+        console.log('Erro ao submeter formulário de ContaCorrente:');
         setIsSubmitting(false);
         if (onError) onError();
         }
       }
     };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = contacorrenteData?.id == 0 ? 'Editar ContaCorrente' : 'Adicionar Conta Corrente';
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
+
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`ContaCorrenteForm-${contacorrenteData.id}`)
+        } as unknown as React.FormEvent;
+
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.log('Erro ao salvar ContaCorrente diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
       }
-    }, [contacorrenteData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = contacorrenteData?.id == 0 ? 'Editar ContaCorrente' : 'Adicionar Conta Corrente';
+    }
+  }, [contacorrenteData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
       }
-      `}</style> : null}
+    }
+    `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ContaCorrente' : 'form-container form-container-ContaCorrente'}>
+    <div className={isMobile ? 'form-container form-container-ContaCorrente' : 'form-container form-container-ContaCorrente'}>
 
-        <form className='formInputCadInc' id={`ContaCorrenteForm-${contacorrenteData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ContaCorrente' data={contacorrenteData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContaCorrenteForm-${contacorrenteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
-
-              <InputName
-              type='text'
-              id='data'
-              label='Data'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='data'
-              value={contacorrenteData.data}
-              placeholder={`Informe Data`}
-              onChange={onChange}
-              required
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='ciacordo'
-              label='CIAcordo'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='ciacordo'
-              value={contacorrenteData.ciacordo}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={contacorrenteData} label='Quitado' name='quitado' checked={contacorrenteData.quitado} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='idcontrato'
-              label='IDContrato'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='idcontrato'
-              value={contacorrenteData.idcontrato}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='quitadoid'
-              label='QuitadoID'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='quitadoid'
-              value={contacorrenteData.quitadoid}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='debitoid'
-              label='DebitoID'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='debitoid'
-              value={contacorrenteData.debitoid}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='livrocaixaid'
-              label='LivroCaixaID'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='livrocaixaid'
-              value={contacorrenteData.livrocaixaid}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={contacorrenteData} label='Sucumbencia' name='sucumbencia' checked={contacorrenteData.sucumbencia} onChange={onChange} />
-              <InputCheckbox dataForm={contacorrenteData} label='DistRegra' name='distregra' checked={contacorrenteData.distregra} onChange={onChange} />
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dtoriginal'
-              label='DtOriginal'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='dtoriginal'
-              value={contacorrenteData.dtoriginal}
-              onChange={onChange}
-              />
-
-
-              <ProcessosComboBox
-              name={'processo'}
-              dataForm={contacorrenteData}
-              value={contacorrenteData.processo}
-              setValue={addValorProcesso}
-              label={'Processos'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='parcelax'
-              label='ParcelaX'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='parcelax'
-              value={contacorrenteData.parcelax}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valor'
-              label='Valor'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='valor'
-              value={contacorrenteData.valor}
-              onChange={onChange}
-              />
-
-
-              <ClientesComboBox
-              name={'cliente'}
-              dataForm={contacorrenteData}
-              value={contacorrenteData.cliente}
-              setValue={addValorCliente}
-              label={'Clientes'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='historico'
-              label='Historico'
-              dataForm={contacorrenteData}
-              className='inputIncNome'
-              name='historico'
-              value={contacorrenteData.historico}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={contacorrenteData} label='Contrato' name='contrato' checked={contacorrenteData.contrato} onChange={onChange} />
-              <InputCheckbox dataForm={contacorrenteData} label='Pago' name='pago' checked={contacorrenteData.pago} onChange={onChange} />
-              <InputCheckbox dataForm={contacorrenteData} label='Distribuir' name='distribuir' checked={contacorrenteData.distribuir} onChange={onChange} />
-            </div><div className='grid-container'><InputCheckbox dataForm={contacorrenteData} label='LC' name='lc' checked={contacorrenteData.lc} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='idhtrab'
-            label='IDHTrab'
-            dataForm={contacorrenteData}
-            className='inputIncNome'
-            name='idhtrab'
-            value={contacorrenteData.idhtrab}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='nroparcelas'
-            label='NroParcelas'
-            dataForm={contacorrenteData}
-            className='inputIncNome'
-            name='nroparcelas'
-            value={contacorrenteData.nroparcelas}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='valorprincipal'
-            label='ValorPrincipal'
-            dataForm={contacorrenteData}
-            className='inputIncNome'
-            name='valorprincipal'
-            value={contacorrenteData.valorprincipal}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='parcelaprincipalid'
-            label='ParcelaPrincipalID'
-            dataForm={contacorrenteData}
-            className='inputIncNome'
-            name='parcelaprincipalid'
-            value={contacorrenteData.parcelaprincipalid}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={contacorrenteData} label='Hide' name='hide' checked={contacorrenteData.hide} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='datapgto'
-            label='DataPgto'
-            dataForm={contacorrenteData}
-            className='inputIncNome'
-            name='datapgto'
-            value={contacorrenteData.datapgto}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
-
-
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ContaCorrente' data={contacorrenteData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContaCorrenteForm-${contacorrenteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+      <form className='formInputCadInc' id={`ContaCorrenteForm-${contacorrenteData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ContaCorrente' data={contacorrenteData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContaCorrenteForm-${contacorrenteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
           )}
-          <DeleteButton page={'/pages/contacorrente'} id={contacorrenteData.id} closeModel={onClose} dadoApi={dadoApi} />
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='data'
+            value={contacorrenteData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='ciacordo'
+            label='CIAcordo'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='ciacordo'
+            value={contacorrenteData.ciacordo}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={contacorrenteData} label='Quitado' name='quitado' checked={contacorrenteData.quitado} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='idcontrato'
+            label='IDContrato'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='idcontrato'
+            value={contacorrenteData.idcontrato}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='quitadoid'
+            label='QuitadoID'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='quitadoid'
+            value={contacorrenteData.quitadoid}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='debitoid'
+            label='DebitoID'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='debitoid'
+            value={contacorrenteData.debitoid}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='livrocaixaid'
+            label='LivroCaixaID'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='livrocaixaid'
+            value={contacorrenteData.livrocaixaid}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={contacorrenteData} label='Sucumbencia' name='sucumbencia' checked={contacorrenteData.sucumbencia} onChange={onChange} />
+            <InputCheckbox dataForm={contacorrenteData} label='DistRegra' name='distregra' checked={contacorrenteData.distregra} onChange={onChange} />
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='dtoriginal'
+            label='DtOriginal'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='dtoriginal'
+            value={contacorrenteData.dtoriginal}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='processo'
+            value={contacorrenteData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='parcelax'
+            label='ParcelaX'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='parcelax'
+            value={contacorrenteData.parcelax}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valor'
+            label='Valor'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='valor'
+            value={contacorrenteData.valor}
+            onChange={onChange}
+            />
+
+
+            <ClientesComboBox
+            name={'cliente'}
+            dataForm={contacorrenteData}
+            value={contacorrenteData.cliente}
+            setValue={addValorCliente}
+            label={'Clientes'}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='historico'
+            label='Historico'
+            dataForm={contacorrenteData}
+            className='inputIncNome'
+            name='historico'
+            value={contacorrenteData.historico}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={contacorrenteData} label='Contrato' name='contrato' checked={contacorrenteData.contrato} onChange={onChange} />
+            <InputCheckbox dataForm={contacorrenteData} label='Pago' name='pago' checked={contacorrenteData.pago} onChange={onChange} />
+            <InputCheckbox dataForm={contacorrenteData} label='Distribuir' name='distribuir' checked={contacorrenteData.distribuir} onChange={onChange} />
+          </div><div className='grid-container'><InputCheckbox dataForm={contacorrenteData} label='LC' name='lc' checked={contacorrenteData.lc} onChange={onChange} />
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='idhtrab'
+          label='IDHTrab'
+          dataForm={contacorrenteData}
+          className='inputIncNome'
+          name='idhtrab'
+          value={contacorrenteData.idhtrab}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='nroparcelas'
+          label='NroParcelas'
+          dataForm={contacorrenteData}
+          className='inputIncNome'
+          name='nroparcelas'
+          value={contacorrenteData.nroparcelas}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='valorprincipal'
+          label='ValorPrincipal'
+          dataForm={contacorrenteData}
+          className='inputIncNome'
+          name='valorprincipal'
+          value={contacorrenteData.valorprincipal}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='parcelaprincipalid'
+          label='ParcelaPrincipalID'
+          dataForm={contacorrenteData}
+          className='inputIncNome'
+          name='parcelaprincipalid'
+          value={contacorrenteData.parcelaprincipalid}
+          onChange={onChange}
+          />
+
+          <InputCheckbox dataForm={contacorrenteData} label='Hide' name='hide' checked={contacorrenteData.hide} onChange={onChange} />
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='datapgto'
+          label='DataPgto'
+          dataForm={contacorrenteData}
+          className='inputIncNome'
+          name='datapgto'
+          value={contacorrenteData.datapgto}
+          onChange={onChange}
+          />
+
         </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ContaCorrente' data={contacorrenteData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContaCorrenteForm-${contacorrenteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/contacorrente'} id={contacorrenteData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

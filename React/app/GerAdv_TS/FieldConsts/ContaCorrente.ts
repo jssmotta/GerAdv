@@ -2,8 +2,7 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsContaCorrente
-{	processo = `Processo`,
-	cliente = `Cliente`,
+{	cliente = `Cliente`,
 	ciacordo = `CIAcordo`,
 	quitado = `Quitado`,
 	idcontrato = `IDContrato`,
@@ -13,6 +12,7 @@
 	sucumbencia = `Sucumbencia`,
 	distregra = `DistRegra`,
 	dtoriginal = `DtOriginal`,
+	processo = `Processo`,
 	parcelax = `ParcelaX`,
 	valor = `Valor`,
 	data = `Data`,

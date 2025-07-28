@@ -7,9 +7,9 @@ export interface IContratos {
 // 202501251
     id: number;
  
-	processo: number,
 	cliente: number,
 	advogado: number,
+	processo: number,
 	dia: number,
 	valor: number,
 	datainicio: string,

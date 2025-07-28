@@ -20,12 +20,6 @@ namespace MenphisSI.GerAdv.Models
         public int Cliente { get; set; }
 
         /// <summary>
-        /// Processo - hdcProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Fixo - hdcFixo  
         /// </summary>
         [JsonPropertyName("fixo")]
@@ -42,6 +36,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("percsucesso")]
         public decimal PercSucesso { get; set; }
+
+        /// <summary>
+        /// Processo - hdcProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// ArquivoContrato - hdcArquivoContrato - tamanho máximo: 2048 
@@ -99,12 +99,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Cliente { get; set; }
 
         /// <summary>
-        /// Processo - hdcProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Fixo - hdcFixo  
         /// </summary>
         [JsonPropertyName("fixo")]
@@ -121,6 +115,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("percsucesso")]
         public decimal PercSucesso { get; set; }
+
+        /// <summary>
+        /// Processo - hdcProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// ArquivoContrato - hdcArquivoContrato - tamanho máximo: 2048 
@@ -163,8 +163,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

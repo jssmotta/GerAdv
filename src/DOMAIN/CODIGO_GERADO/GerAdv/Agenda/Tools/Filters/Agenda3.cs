@@ -123,6 +123,9 @@ public partial record FilterAgenda
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("idhistorico")]
     public int IDHistorico { get; set; } = int.MinValue;
 

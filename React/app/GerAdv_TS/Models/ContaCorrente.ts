@@ -5,7 +5,6 @@
 export interface ContaCorrente
 {
     id: number;
-	processo : number;
 	cliente : number;
 	ciacordo : number;
 	quitado : boolean;
@@ -17,6 +16,7 @@ export interface ContaCorrente
 	distregra : boolean;
 	dtoriginal : string;
 	dtoriginal_date? : Date;
+	processo : number;
 	parcelax : number;
 	valor : number;
 	data : string;
@@ -32,7 +32,6 @@ export interface ContaCorrente
 	hide : boolean;
 	datapgto : string;
 	datapgto_date? : Date;
-	nropastaprocessos?: string;
 	nomeclientes?: string;
 
 }
@@ -43,7 +42,6 @@ export function ContaCorrenteEmpty(): IContaCorrente {
     
     return {
         id: 0,
-		processo: 0,
 		cliente: 0,
 		ciacordo: 0,
 		quitado: false,
@@ -54,6 +52,7 @@ export function ContaCorrenteEmpty(): IContaCorrente {
 		sucumbencia: false,
 		distregra: false,
 		dtoriginal: '',
+		processo: 0,
 		parcelax: 0,
 		valor: 0,
 		data: '',
@@ -76,7 +75,6 @@ export function ContaCorrenteTestEmpty(): IContaCorrente {
     
     return {
         id: 1,
-		processo: 1,
 		cliente: 1,
 		ciacordo: 1,
 		quitado: true,
@@ -87,6 +85,7 @@ export function ContaCorrenteTestEmpty(): IContaCorrente {
 		sucumbencia: true,
 		distregra: true,
 		dtoriginal: 'X',
+		processo: 1,
 		parcelax: 1,
 		valor: 1,
 		data: 'X',

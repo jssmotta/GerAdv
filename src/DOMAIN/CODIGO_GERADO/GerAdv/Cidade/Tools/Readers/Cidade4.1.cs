@@ -23,9 +23,10 @@ public partial class CidadeReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.ID}]
+                   {campos}, 
+[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.ID}]
                    FROM {DBCidade.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBUFDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBUFDicInfo.PTabelaNome}].[{DBUF.CampoCodigo}]=[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.UF}]
+                   LEFT JOIN {DBUFDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}]=[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.UF}]
  
                    {cWhere}
                    {orderQuery}

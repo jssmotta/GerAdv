@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProResumosFactory proresumosFactory, IProResumosReader reader, IProResumosValidation validation, IProResumosWriter writer, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProResumosService, IDisposable
+public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProResumosFactory proresumosFactory, IProResumosReader reader, IProResumosValidation validation, IProResumosWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProResumosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
     private readonly IProResumosReader reader = reader;
     private readonly IProResumosValidation validation = validation;
     private readonly IProResumosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<ProResumosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -110,7 +109,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
 
         try
         {
-            var validade = await validation.ValidateReg(regProResumos, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProResumos, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -151,7 +150,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
 
         try
         {
-            var validade = await validation.ValidateReg(regProResumos, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProResumos, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

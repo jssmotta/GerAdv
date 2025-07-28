@@ -25,7 +25,7 @@ export class ParceriaProcValidator {
 export interface IParceriaProcService {
   fetchParceriaProcById: (id: number) => Promise<IParceriaProc>;
   saveParceriaProc: (parceriaproc: IParceriaProc) => Promise<IParceriaProc>;  
-  
+  getList: (filtro?: FilterParceriaProc) => Promise<IParceriaProc[]>;
   getAll: (filtro?: FilterParceriaProc) => Promise<IParceriaProc[]>;
   deleteParceriaProc: (id: number) => Promise<void>;
   validateParceriaProc: (parceriaproc: IParceriaProc) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ParceriaProcService implements IParceriaProcService {
   }
 
   
+    async getList(filtro?: FilterParceriaProc): Promise<IParceriaProc[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ParceriaProc list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

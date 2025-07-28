@@ -8,7 +8,6 @@ export interface ParceriaProc
 	advogado : number;
 	processo : number;
 	nomeadvogados?: string;
-	nropastaprocessos?: string;
 
 }
 

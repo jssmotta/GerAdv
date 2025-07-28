@@ -23,13 +23,16 @@ public partial class HorasTrabReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],[{DBServicosDicInfo.PTabelaNome}].[{DBServicosDicInfo.Descricao}]
+                   {campos}, 
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],
+[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],
+[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],
+[{DBServicosDicInfo.PTabelaNome}].[{DBServicosDicInfo.Descricao}]
                    FROM {DBHorasTrab.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Cliente}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Processo}]
-LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogados.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Advogado}]
-LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionarios.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Funcionario}]
-LEFT JOIN {DBServicosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBServicosDicInfo.PTabelaNome}].[{DBServicos.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Servico}]
+                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Cliente}]
+LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Advogado}]
+LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Funcionario}]
+LEFT JOIN {DBServicosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBServicosDicInfo.PTabelaNome}].[{DBServicosDicInfo.CampoCodigo}]=[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Servico}]
  
                    {cWhere}
                    {orderQuery}

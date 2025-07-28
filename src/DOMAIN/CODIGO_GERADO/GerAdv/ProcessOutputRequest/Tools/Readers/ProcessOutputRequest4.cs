@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProcessOutputRequestReader(IFProcessOutputRequestFactory processoutputrequestFactory) : IProcessOutputRequestReader
 {
     private readonly IFProcessOutputRequestFactory _processoutputrequestFactory = processoutputrequestFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("porCodigo, porGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProcessOutputRequestResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProcessOutputRequest.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProcessOutputRequestResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -143,14 +144,6 @@ public partial class ProcessOutputRequestReader(IFProcessOutputRequestFactory pr
         {
         }
 
-        try
-        {
-            processoutputrequest.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return processoutputrequest;
     }
 
@@ -181,14 +174,6 @@ public partial class ProcessOutputRequestReader(IFProcessOutputRequestFactory pr
         try
         {
             processoutputrequest.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            processoutputrequest.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

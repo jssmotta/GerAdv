@@ -61,29 +61,10 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?rito=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn field='descricao' title='Descricao' />,
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />, <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
-  />, 
+  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   ], []);
   const DeleteRow = (e: any) => {
     return (

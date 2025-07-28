@@ -3,10 +3,10 @@
                      // This file is part of the Source Genesys project                     
                     export enum FieldsHonorariosDadosContrato
 {	cliente = `Cliente`,
-	processo = `Processo`,
 	fixo = `Fixo`,
 	variavel = `Variavel`,
 	percsucesso = `PercSucesso`,
+	processo = `Processo`,
 	arquivocontrato = `ArquivoContrato`,
 	textocontrato = `TextoContrato`,
 	valorfixo = `ValorFixo`,

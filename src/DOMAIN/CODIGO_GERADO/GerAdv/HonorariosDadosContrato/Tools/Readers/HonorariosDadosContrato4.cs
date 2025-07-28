@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class HonorariosDadosContratoReader(IFHonorariosDadosContratoFactory honorariosdadoscontratoFactory) : IHonorariosDadosContratoReader
 {
     private readonly IFHonorariosDadosContratoFactory _honorariosdadoscontratoFactory = honorariosdadoscontratoFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("hdcCodigo, hdcGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<HonorariosDadosContratoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBHonorariosDadosContrato.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<HonorariosDadosContratoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -179,14 +180,6 @@ public partial class HonorariosDadosContratoReader(IFHonorariosDadosContratoFact
         {
         }
 
-        try
-        {
-            honorariosdadoscontrato.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return honorariosdadoscontrato;
     }
 
@@ -220,14 +213,6 @@ public partial class HonorariosDadosContratoReader(IFHonorariosDadosContratoFact
         try
         {
             honorariosdadoscontrato.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            honorariosdadoscontrato.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

@@ -23,11 +23,14 @@ public partial class AdvogadosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBCargosDicInfo.PTabelaNome}].[{DBCargosDicInfo.Nome}],[{DBEscritoriosDicInfo.PTabelaNome}].[{DBEscritoriosDicInfo.Nome}],[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
+                   {campos}, 
+[{DBCargosDicInfo.PTabelaNome}].[{DBCargosDicInfo.Nome}],
+[{DBEscritoriosDicInfo.PTabelaNome}].[{DBEscritoriosDicInfo.Nome}],
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}]
                    FROM {DBAdvogados.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBCargosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCargosDicInfo.PTabelaNome}].[{DBCargos.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cargo}]
-LEFT JOIN {DBEscritoriosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEscritoriosDicInfo.PTabelaNome}].[{DBEscritorios.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Escritorio}]
-LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cidade}]
+                   LEFT JOIN {DBCargosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCargosDicInfo.PTabelaNome}].[{DBCargosDicInfo.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cargo}]
+LEFT JOIN {DBEscritoriosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEscritoriosDicInfo.PTabelaNome}].[{DBEscritoriosDicInfo.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Escritorio}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cidade}]
  
                    {cWhere}
                    {orderQuery}

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProDespesasValidation
 {
-    Task<bool> ValidateReg(Models.ProDespesas reg, IProDespesasService service, IClientesReader clientesReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProDespesas reg, IProDespesasService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IProDespesasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,14 +26,14 @@ public class ProDespesasValidation : IProDespesasValidation
 
     private bool ValidSizes(Models.ProDespesas reg)
     {
-        if (reg.Historico.Length > 100)
+        if (reg.Historico != null && reg.Historico.Length > 100)
             throw new SGValidationException($"Historico deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProDespesas reg, IProDespesasService service, IClientesReader clientesReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProDespesas reg, IProDespesasService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -49,16 +49,6 @@ public class ProDespesasValidation : IProDespesasValidation
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

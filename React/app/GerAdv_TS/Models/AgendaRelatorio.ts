@@ -5,18 +5,17 @@
 export interface AgendaRelatorio
 {
     id: number;
-	processo : number;
-	data : string;
-	data_date? : Date;
-	paranome : string;
-	parapessoas : string;
-	boxaudiencia : string;
-	boxaudienciamobile : string;
-	nomeadvogado : string;
-	nomeforo : string;
-	nomejustica : string;
-	nomearea : string;
-	nropastaprocessos?: string;
+	vqadata : string;
+	vqadata_date? : Date;
+	vqaprocesso : number;
+	xxxparanome : string;
+	xxxparapessoas : string;
+	xxxboxaudiencia : string;
+	xxxboxaudienciamobile : string;
+	xxxnomeadvogado : string;
+	xxxnomeforo : string;
+	xxxnomejustica : string;
+	xxxnomearea : string;
 
 }
 
@@ -26,16 +25,16 @@ export function AgendaRelatorioEmpty(): IAgendaRelatorio {
     
     return {
         id: 0,
-		processo: 0,
-		data: '',
-		paranome: '',
-		parapessoas: '',
-		boxaudiencia: '',
-		boxaudienciamobile: '',
-		nomeadvogado: '',
-		nomeforo: '',
-		nomejustica: '',
-		nomearea: '',
+		vqadata: '',
+		vqaprocesso: 0,
+		xxxparanome: '',
+		xxxparapessoas: '',
+		xxxboxaudiencia: '',
+		xxxboxaudienciamobile: '',
+		xxxnomeadvogado: '',
+		xxxnomeforo: '',
+		xxxnomejustica: '',
+		xxxnomearea: '',
     };
 }
 
@@ -44,16 +43,16 @@ export function AgendaRelatorioTestEmpty(): IAgendaRelatorio {
     
     return {
         id: 1,
-		processo: 1,
-		data: 'X',
-		paranome: 'X',
-		parapessoas: 'X',
-		boxaudiencia: 'X',
-		boxaudienciamobile: 'X',
-		nomeadvogado: 'X',
-		nomeforo: 'X',
-		nomejustica: 'X',
-		nomearea: 'X',
+		vqadata: 'X',
+		vqaprocesso: 1,
+		xxxparanome: 'X',
+		xxxparapessoas: 'X',
+		xxxboxaudiencia: 'X',
+		xxxboxaudienciamobile: 'X',
+		xxxnomeadvogado: 'X',
+		xxxnomeforo: 'X',
+		xxxnomejustica: 'X',
+		xxxnomearea: 'X',
     };
 }
 

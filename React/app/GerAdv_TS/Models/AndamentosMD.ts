@@ -5,12 +5,11 @@
 export interface AndamentosMD
 {
     id: number;
-	processo : number;
 	nome : string;
+	processo : number;
 	andamento : number;
 	pathfull : string;
 	unc : string;
-	nropastaprocessos?: string;
 
 }
 
@@ -20,8 +19,8 @@ export function AndamentosMDEmpty(): IAndamentosMD {
     
     return {
         id: 0,
-		processo: 0,
 		nome: '',
+		processo: 0,
 		andamento: 0,
 		pathfull: '',
 		unc: '',
@@ -33,8 +32,8 @@ export function AndamentosMDTestEmpty(): IAndamentosMD {
     
     return {
         id: 1,
-		processo: 1,
 		nome: 'X',
+		processo: 1,
 		andamento: 1,
 		pathfull: 'X',
 		unc: 'X',

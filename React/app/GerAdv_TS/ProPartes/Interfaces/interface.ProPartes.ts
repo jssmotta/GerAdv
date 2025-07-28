@@ -7,8 +7,8 @@ export interface IProPartes {
 // 202501251
     id: number;
  
-	processo: number,
 	parte: number,
+	processo: number,
 }
 
 export interface IProPartesFormProps {

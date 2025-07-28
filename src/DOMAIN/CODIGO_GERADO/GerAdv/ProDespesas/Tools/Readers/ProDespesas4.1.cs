@@ -23,10 +23,10 @@ public partial class ProDespesasReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}, 
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBProDespesas.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Cliente}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Processo}]
+                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Cliente}]
  
                    {cWhere}
                    {orderQuery}

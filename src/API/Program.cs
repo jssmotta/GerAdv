@@ -1,6 +1,4 @@
 using MenphisSI.GerAdv.HealthCheck;
-using MenphisSI.GerAdv.Services;
-using MenphisSI.GerAdv.Setup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -40,11 +38,11 @@ try
 
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
-    var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
-    if (uris.IsEmpty())
-    {
-        throw new Exception("AppSettings:ValidUris não configurado");
-    }
+    //var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
+    //if (uris.IsEmpty())
+    //{
+    //    throw new Exception("AppSettings:ValidUris não configurado");
+    //}
 
     builder.Host.UseNLog();
 

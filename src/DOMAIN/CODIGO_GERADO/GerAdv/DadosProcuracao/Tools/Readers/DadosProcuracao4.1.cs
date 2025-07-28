@@ -15,7 +15,7 @@ public partial class DadosProcuracaoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBDadosProcuracaoDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBDadosProcuracaoDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,9 +23,10 @@ public partial class DadosProcuracaoReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
+                   {campos}, 
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBDadosProcuracao.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Cliente}]
+                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Cliente}]
  
                    {cWhere}
                    {orderQuery}

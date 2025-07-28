@@ -8,10 +8,10 @@ export interface IEnderecoSistema {
     id: number;
  
 	tipoenderecosistema: number,
-	processo: number,
 	cidade: number,
 	cadastro: number,
 	cadastroexcod: number,
+	processo: number,
 	motivo: string,
 	contatonolocal: string,
 	endereco: string,

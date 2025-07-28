@@ -23,7 +23,7 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FSituacao instance with parameters
         /// </summary>
-        FSituacao CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "");
+        FSituacao CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FSituacao> CreateAsync();
         Task<FSituacao> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
         Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);

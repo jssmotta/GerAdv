@@ -23,11 +23,14 @@ public partial class AgendaQuemReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],[{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.Nome}]
+                   {campos}, 
+[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],
+[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],
+[{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.Nome}]
                    FROM {DBAgendaQuem.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogados.CampoCodigo}]=[{DBAgendaQuemDicInfo.PTabelaNome}].[{DBAgendaQuemDicInfo.Advogado}]
-LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionarios.CampoCodigo}]=[{DBAgendaQuemDicInfo.PTabelaNome}].[{DBAgendaQuemDicInfo.Funcionario}]
-LEFT JOIN {DBPrepostosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostos.CampoCodigo}]=[{DBAgendaQuemDicInfo.PTabelaNome}].[{DBAgendaQuemDicInfo.Preposto}]
+                   LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}]=[{DBAgendaQuemDicInfo.PTabelaNome}].[{DBAgendaQuemDicInfo.Advogado}]
+LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.CampoCodigo}]=[{DBAgendaQuemDicInfo.PTabelaNome}].[{DBAgendaQuemDicInfo.Funcionario}]
+LEFT JOIN {DBPrepostosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.CampoCodigo}]=[{DBAgendaQuemDicInfo.PTabelaNome}].[{DBAgendaQuemDicInfo.Preposto}]
  
                    {cWhere}
                    {orderQuery}

@@ -21,6 +21,9 @@ public partial record FilterParceriaProc
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("guid")]
     public string GUID { get; set; } = string.Empty;
 

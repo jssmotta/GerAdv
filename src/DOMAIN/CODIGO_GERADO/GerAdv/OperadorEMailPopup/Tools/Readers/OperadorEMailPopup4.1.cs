@@ -23,9 +23,10 @@ public partial class OperadorEMailPopupReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, 
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBOperadorEMailPopup.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Operador}]
+                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Operador}]
  
                    {cWhere}
                    {orderQuery}

@@ -24,6 +24,9 @@ public partial record FilterProcessosObsReport
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("observacao")]
     public string Observacao { get; set; } = string.Empty;
 
@@ -32,6 +35,9 @@ public partial record FilterProcessosObsReport
 
     [JsonPropertyName("historico")]
     public int Historico { get; set; } = int.MinValue;
+
+    [JsonPropertyName("historico_end")]
+    public int Historico_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, IFEnderecoSistemaFactory enderecosistemaFactory, IEnderecoSistemaReader reader, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IEnderecoSistemaService, IDisposable
+public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, IFEnderecoSistemaFactory enderecosistemaFactory, IEnderecoSistemaReader reader, IEnderecoSistemaValidation validation, IEnderecoSistemaWriter writer, ITipoEnderecoSistemaReader tipoenderecosistemaReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IEnderecoSistemaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
     private readonly IEnderecoSistemaValidation validation = validation;
     private readonly IEnderecoSistemaWriter writer = writer;
     private readonly ITipoEnderecoSistemaReader tipoenderecosistemaReader = tipoenderecosistemaReader;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     public async Task<IEnumerable<EnderecoSistemaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -112,7 +111,7 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, processosReader, cidadeReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -153,7 +152,7 @@ public partial class EnderecoSistemaService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, processosReader, cidadeReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regEnderecoSistema, this, tipoenderecosistemaReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

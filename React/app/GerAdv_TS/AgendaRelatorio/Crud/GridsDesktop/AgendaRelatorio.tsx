@@ -90,8 +90,8 @@ const EditRow = (e: any) => {
 const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn field='nome' title='' sortable={true} filterable={true} />, /* Track G.02 */
-  <GridColumn field='nropastaprocessos' title='Processos' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='advnome' title='' sortable={true} filterable={true} />, /* Track G.02 */
+  <GridColumn field='pronropastaprocessos' title='Processos' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn
   field='id_edit_row'

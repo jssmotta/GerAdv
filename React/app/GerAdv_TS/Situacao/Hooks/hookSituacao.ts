@@ -168,7 +168,10 @@ export function useValidationsSituacao() {
     
       try {
    
-        if (data.parte_int.length > 30) { 
+        if (data.parte_int.length <= 0) { 
+                                             return { isValid: false, message: 'O campo Parte_Int não pode ficar vazio.' };
+                                         } 
+if (data.parte_int.length > 30) { 
                                              return { isValid: false, message: 'O campo Parte_Int não pode ter mais de 30 caracteres.' };
                                          } 
 if (data.parte_opo.length > 30) { 

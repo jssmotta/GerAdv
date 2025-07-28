@@ -8,10 +8,10 @@ export interface IHonorariosDadosContrato {
     id: number;
  
 	cliente: number,
-	processo: number,
 	fixo: boolean,
 	variavel: boolean,
 	percsucesso: number,
+	processo: number,
 	arquivocontrato: string,
 	textocontrato: string,
 	valorfixo: number,

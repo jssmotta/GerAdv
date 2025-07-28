@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerceirosFactory terceirosFactory, ITerceirosReader reader, ITerceirosValidation validation, ITerceirosWriter writer, IProcessosReader processosReader, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITerceirosService, IDisposable
+public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerceirosFactory terceirosFactory, ITerceirosReader reader, ITerceirosValidation validation, ITerceirosWriter writer, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITerceirosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
     private readonly ITerceirosReader reader = reader;
     private readonly ITerceirosValidation validation = validation;
     private readonly ITerceirosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IPosicaoOutrasPartesReader posicaooutraspartesReader = posicaooutraspartesReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     public async Task<IEnumerable<TerceirosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -112,7 +111,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
 
         try
         {
-            var validade = await validation.ValidateReg(regTerceiros, this, processosReader, posicaooutraspartesReader, cidadeReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regTerceiros, this, posicaooutraspartesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -153,7 +152,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
 
         try
         {
-            var validade = await validation.ValidateReg(regTerceiros, this, processosReader, posicaooutraspartesReader, cidadeReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regTerceiros, this, posicaooutraspartesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

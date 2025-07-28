@@ -15,7 +15,7 @@ public partial class ParceriaProcReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBParceriaProcDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBParceriaProcDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,10 +23,10 @@ public partial class ParceriaProcReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}, 
+[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}]
                    FROM {DBParceriaProc.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogados.CampoCodigo}]=[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.Advogado}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.Processo}]
+                   LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}]=[{DBParceriaProcDicInfo.PTabelaNome}].[{DBParceriaProcDicInfo.Advogado}]
  
                    {cWhere}
                    {orderQuery}

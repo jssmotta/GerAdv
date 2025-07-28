@@ -9,7 +9,6 @@ export interface ParteClienteOutras
 	processo : number;
 	primeirareclamada : boolean;
 	nomeoutraspartescliente?: string;
-	nropastaprocessos?: string;
 
 }
 

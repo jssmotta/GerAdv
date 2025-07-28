@@ -51,16 +51,16 @@ public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelato
         var agendarelatorio = new AgendaRelatorioResponse
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Processo = dbRec.FProcesso,
-            ParaNome = dbRec.FParaNome ?? string.Empty,
-            ParaPessoas = dbRec.FParaPessoas ?? string.Empty,
-            BoxAudiencia = dbRec.FBoxAudiencia ?? string.Empty,
-            BoxAudienciaMobile = dbRec.FBoxAudienciaMobile ?? string.Empty,
-            NomeAdvogado = dbRec.FNomeAdvogado ?? string.Empty,
-            NomeForo = dbRec.FNomeForo ?? string.Empty,
-            NomeJustica = dbRec.FNomeJustica ?? string.Empty,
-            NomeArea = dbRec.FNomeArea ?? string.Empty,
+            vqaData = dbRec.FvqaData ?? string.Empty,
+            vqaProcesso = dbRec.FvqaProcesso,
+            xxxParaNome = dbRec.FxxxParaNome ?? string.Empty,
+            xxxParaPessoas = dbRec.FxxxParaPessoas ?? string.Empty,
+            xxxBoxAudiencia = dbRec.FxxxBoxAudiencia ?? string.Empty,
+            xxxBoxAudienciaMobile = dbRec.FxxxBoxAudienciaMobile ?? string.Empty,
+            xxxNomeAdvogado = dbRec.FxxxNomeAdvogado ?? string.Empty,
+            xxxNomeForo = dbRec.FxxxNomeForo ?? string.Empty,
+            xxxNomeJustica = dbRec.FxxxNomeJustica ?? string.Empty,
+            xxxNomeArea = dbRec.FxxxNomeArea ?? string.Empty,
         };
         return agendarelatorio;
     }
@@ -75,25 +75,17 @@ public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelato
         var agendarelatorio = new AgendaRelatorioResponseAll
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Processo = dbRec.FProcesso,
-            ParaNome = dbRec.FParaNome ?? string.Empty,
-            ParaPessoas = dbRec.FParaPessoas ?? string.Empty,
-            BoxAudiencia = dbRec.FBoxAudiencia ?? string.Empty,
-            BoxAudienciaMobile = dbRec.FBoxAudienciaMobile ?? string.Empty,
-            NomeAdvogado = dbRec.FNomeAdvogado ?? string.Empty,
-            NomeForo = dbRec.FNomeForo ?? string.Empty,
-            NomeJustica = dbRec.FNomeJustica ?? string.Empty,
-            NomeArea = dbRec.FNomeArea ?? string.Empty,
+            vqaData = dbRec.FvqaData ?? string.Empty,
+            vqaProcesso = dbRec.FvqaProcesso,
+            xxxParaNome = dbRec.FxxxParaNome ?? string.Empty,
+            xxxParaPessoas = dbRec.FxxxParaPessoas ?? string.Empty,
+            xxxBoxAudiencia = dbRec.FxxxBoxAudiencia ?? string.Empty,
+            xxxBoxAudienciaMobile = dbRec.FxxxBoxAudienciaMobile ?? string.Empty,
+            xxxNomeAdvogado = dbRec.FxxxNomeAdvogado ?? string.Empty,
+            xxxNomeForo = dbRec.FxxxNomeForo ?? string.Empty,
+            xxxNomeJustica = dbRec.FxxxNomeJustica ?? string.Empty,
+            xxxNomeArea = dbRec.FxxxNomeArea ?? string.Empty,
         };
-        try
-        {
-            agendarelatorio.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return agendarelatorio;
     }
 }

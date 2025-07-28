@@ -16,6 +16,11 @@ public partial class PenhoraService
             parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.Nome))
         {
             parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
@@ -74,7 +79,15 @@ public partial class PenhoraService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Processo}] = @{nameof(DBPenhoraDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Processo}] >= @{nameof(DBPenhoraDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPenhoraDicInfo.Processo} BETWEEN @{nameof(DBPenhoraDicInfo.Processo)} AND @{nameof(DBPenhoraDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPenhoraDicInfo.Processo} = @{nameof(DBPenhoraDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPenhoraDicInfo.Processo} <= @{nameof(DBPenhoraDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBPenhoraDicInfo.Nome)}");
         cWhere.Append(filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBPenhoraDicInfo.Descricao)}");
         if (!filtro.DataPenhora.IsEmpty() && filtro.DataPenhora_end.IsEmpty())

@@ -15,7 +15,7 @@ public partial class SituacaoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBSituacaoDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBSituacaoDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

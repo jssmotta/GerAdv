@@ -14,16 +14,16 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - phrProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// PenhoraStatus - phrPenhoraStatus  
         /// </summary>
         [JsonPropertyName("penhorastatus")]
         public int PenhoraStatus { get; set; }
+
+        /// <summary>
+        /// Processo - phrProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Nome - phrNome - tamanho máximo: 255 
@@ -69,16 +69,16 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - phrProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// PenhoraStatus - phrPenhoraStatus  
         /// </summary>
         [JsonPropertyName("penhorastatus")]
         public int PenhoraStatus { get; set; }
+
+        /// <summary>
+        /// Processo - phrProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Nome - phrNome - tamanho máximo: 255 
@@ -112,9 +112,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nomepenhorastatus")]
         public string NomePenhoraStatus { get; set; } = string.Empty;

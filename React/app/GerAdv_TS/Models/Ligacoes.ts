@@ -7,7 +7,6 @@ export interface Ligacoes
     id: number;
 	cliente : number;
 	ramal : number;
-	processo : number;
 	assunto : string;
 	ageclienteavisado : number;
 	celular : boolean;
@@ -33,11 +32,11 @@ export interface Ligacoes
 	hora_date? : Date;
 	urgente : boolean;
 	ligarpara : string;
+	processo : number;
 	startscreen : boolean;
 	emotion : number;
 	nomeclientes?: string;
 	nomeramal?: string;
-	nropastaprocessos?: string;
 
 }
 
@@ -49,7 +48,6 @@ export function LigacoesEmpty(): ILigacoes {
         id: 0,
 		cliente: 0,
 		ramal: 0,
-		processo: 0,
 		assunto: '',
 		ageclienteavisado: 0,
 		celular: false,
@@ -71,6 +69,7 @@ export function LigacoesEmpty(): ILigacoes {
 		hora: '',
 		urgente: false,
 		ligarpara: '',
+		processo: 0,
 		startscreen: false,
 		emotion: 0,
     };
@@ -83,7 +82,6 @@ export function LigacoesTestEmpty(): ILigacoes {
         id: 1,
 		cliente: 1,
 		ramal: 1,
-		processo: 1,
 		assunto: 'X',
 		ageclienteavisado: 1,
 		celular: true,
@@ -105,6 +103,7 @@ export function LigacoesTestEmpty(): ILigacoes {
 		hora: 'X',
 		urgente: true,
 		ligarpara: 'X',
+		processo: 1,
 		startscreen: true,
 		emotion: 1,
     };

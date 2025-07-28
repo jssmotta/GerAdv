@@ -139,14 +139,6 @@ public partial class UltimosProcessosReader(IFUltimosProcessosFactory ultimospro
             ultimosprocessos.Quando_date = XQuando;
         }
 
-        try
-        {
-            ultimosprocessos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return ultimosprocessos;
     }
 
@@ -167,14 +159,6 @@ public partial class UltimosProcessosReader(IFUltimosProcessosFactory ultimospro
         {
             ultimosprocessos.Quando = dbRec.FQuando;
             ultimosprocessos.Quando_date = XQuando;
-        }
-
-        try
-        {
-            ultimosprocessos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         return ultimosprocessos;

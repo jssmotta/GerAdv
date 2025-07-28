@@ -8,11 +8,11 @@ export interface IProDespesas {
     id: number;
  
 	cliente: number,
-	processo: number,
 	ligacaoid: number,
 	corrigido: boolean,
 	data: string,
 	valororiginal: number,
+	processo: number,
 	quitado: number,
 	datacorrecao: string,
 	valor: number,

@@ -7,10 +7,10 @@ export interface IProcessosObsReport {
 // 202501251
     id: number;
  
-	processo: number,
-	historico: number,
 	data: string,
+	processo: number,
 	observacao: string,
+	historico: number,
 }
 
 export interface IProcessosObsReportFormProps {

@@ -85,30 +85,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?operador=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAlarmSMS = (id: number) => {
-  router.push(`/pages/alarmsms/?operador=${id}`);
-};
-const SearchFromCellAlarmSMS = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAlarmSMS(props.dataItem.id)}><span title='Pesquisar relacionados em Alarm S M S'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellAlertas = (id: number) => {
   router.push(`/pages/alertas/?operador=${id}`);
 };
@@ -129,30 +105,6 @@ const SearchFromCellAlertasEnviados = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellAlertasEnviados(props.dataItem.id)}><span title='Pesquisar relacionados em Alertas Enviados'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellContatoCRM = (id: number) => {
-  router.push(`/pages/contatocrm/?operador=${id}`);
-};
-const SearchFromCellContatoCRM = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellContatoCRM(props.dataItem.id)}><span title='Pesquisar relacionados em Contato C R M'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellContatoCRMOperador = (id: number) => {
-  router.push(`/pages/contatocrmoperador/?operador=${id}`);
-};
-const SearchFromCellContatoCRMOperador = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellContatoCRMOperador(props.dataItem.id)}><span title='Pesquisar relacionados em Contato C R M Operador'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -217,18 +169,6 @@ const SearchFromCellOperadorGruposAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellOperadorGruposAgendaOperadores = (id: number) => {
-  router.push(`/pages/operadorgruposagendaoperadores/?operador=${id}`);
-};
-const SearchFromCellOperadorGruposAgendaOperadores = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellOperadorGruposAgendaOperadores(props.dataItem.id)}><span title='Pesquisar relacionados em Operador Grupos Agenda Operadores'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellPontoVirtual = (id: number) => {
   router.push(`/pages/pontovirtual/?operador=${id}`);
 };
@@ -273,18 +213,6 @@ const SearchFromCellProcessOutputRequest = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellProcessOutputRequest(props.dataItem.id)}><span title='Pesquisar relacionados em Process Output Request'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellReuniaoPessoas = (id: number) => {
-  router.push(`/pages/reuniaopessoas/?operador=${id}`);
-};
-const SearchFromCellReuniaoPessoas = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellReuniaoPessoas(props.dataItem.id)}><span title='Pesquisar relacionados em Reuniao Pessoas'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -341,22 +269,6 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
-  />, 
-  <GridColumn
-  field='id_edit_AlarmSMS'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Alarm S M S'
-  cells={{ data: SearchFromCellAlarmSMS }}
-  />, 
-  <GridColumn
   field='id_edit_Alertas'
   filterable={false}
   sortable={false}
@@ -371,22 +283,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Alertas Enviados'
   cells={{ data: SearchFromCellAlertasEnviados }}
-  />, 
-  <GridColumn
-  field='id_edit_ContatoCRM'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Contato C R M'
-  cells={{ data: SearchFromCellContatoCRM }}
-  />, 
-  <GridColumn
-  field='id_edit_ContatoCRMOperador'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Contato C R M Operador'
-  cells={{ data: SearchFromCellContatoCRMOperador }}
   />, 
   <GridColumn
   field='id_edit_Diario2'
@@ -429,14 +325,6 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellOperadorGruposAgenda }}
   />, 
   <GridColumn
-  field='id_edit_OperadorGruposAgendaOperadores'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Operador Grupos Agenda Operadores'
-  cells={{ data: SearchFromCellOperadorGruposAgendaOperadores }}
-  />, 
-  <GridColumn
   field='id_edit_PontoVirtual'
   filterable={false}
   sortable={false}
@@ -467,14 +355,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Process Output Request'
   cells={{ data: SearchFromCellProcessOutputRequest }}
-  />, 
-  <GridColumn
-  field='id_edit_ReuniaoPessoas'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Reuniao Pessoas'
-  cells={{ data: SearchFromCellReuniaoPessoas }}
   />, 
   <GridColumn
   field='id_edit_SMSAlice'

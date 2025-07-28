@@ -16,9 +16,9 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
 
-#if (DEBUG)
-        return CreateHealthyResult("Notificador operacional");
-#endif
+//#if (DEBUG)
+//        return CreateHealthyResult("Notificador operacional");
+//#endif
         try
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
@@ -84,7 +84,7 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
 
         // Envia as notificações
         var notificationService = new EnvioNotificacoes();
-        int sentCount = notificationService.EnviarEmailsParaAdvogados(tipo, uri, oCnn);
+        int sentCount = await notificationService.EnviarEmailsParaAdvogados(tipo, uri, oCnn);
 
         var data = new Dictionary<string, object>
     {

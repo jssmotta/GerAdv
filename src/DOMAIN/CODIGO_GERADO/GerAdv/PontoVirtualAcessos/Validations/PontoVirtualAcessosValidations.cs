@@ -26,7 +26,7 @@ public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
 
     private bool ValidSizes(Models.PontoVirtualAcessos reg)
     {
-        if (reg.Origem.Length > 150)
+        if (reg.Origem != null && reg.Origem.Length > 150)
             throw new SGValidationException($"Origem deve ter no máximo 150 caracteres.");
         return true;
     }

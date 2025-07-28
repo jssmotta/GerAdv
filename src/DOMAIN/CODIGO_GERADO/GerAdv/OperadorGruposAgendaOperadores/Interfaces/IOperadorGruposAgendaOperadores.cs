@@ -10,4 +10,5 @@ public partial interface IOperadorGruposAgendaOperadoresService
     Task<OperadorGruposAgendaOperadoresResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<OperadorGruposAgendaOperadoresResponse?> Validation(Models.OperadorGruposAgendaOperadores regOperadorGruposAgendaOperadores, [FromRoute, Required] string uri = "");
     Task<IEnumerable<OperadorGruposAgendaOperadoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadorGruposAgendaOperadores? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

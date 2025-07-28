@@ -14,7 +14,7 @@ import { PoderJudiciarioAssociadoTestEmpty } from '../GerAdv_TS/Models/PoderJudi
 const mockPoderJudiciarioAssociadoService: jest.Mocked<IPoderJudiciarioAssociadoService> = {
   fetchPoderJudiciarioAssociadoById: jest.fn(),
   savePoderJudiciarioAssociado: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deletePoderJudiciarioAssociado: jest.fn(),
   validatePoderJudiciarioAssociado: jest.fn(),
@@ -50,7 +50,7 @@ describe('usePoderJudiciarioAssociadoForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'justicanome',
+        name: 'guid',
         value: 'Novo Poder Judiciario Associado',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('usePoderJudiciarioAssociadoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.justicanome).toBe('Novo Poder Judiciario Associado');
+    expect(result.current.data.guid).toBe('Novo Poder Judiciario Associado');
   });
 
    test('deve carregar Poder Judiciario Associado por ID', async () => {
-    const mockPoderJudiciarioAssociado = { ...initialPoderJudiciarioAssociado, id: 1, justicanome: 'Poder Judiciario Associado Teste' };
+    const mockPoderJudiciarioAssociado = { ...initialPoderJudiciarioAssociado, id: 1, guid: 'Poder Judiciario Associado Teste' };
     mockPoderJudiciarioAssociadoService.fetchPoderJudiciarioAssociadoById.mockResolvedValue(mockPoderJudiciarioAssociado);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('usePoderJudiciarioAssociadoForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialPoderJudiciarioAssociado, justicanome: 'Teste' });
+      result.current.setData({ ...initialPoderJudiciarioAssociado, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('usePoderJudiciarioAssociadoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialPoderJudiciarioAssociado, id: 1, justicanome: 'Poder Judiciario Associado 1' },
-      { ...initialPoderJudiciarioAssociado, id: 2, justicanome: 'Poder Judiciario Associado 2' }
+      { ...initialPoderJudiciarioAssociado, id: 1, guid: 'Poder Judiciario Associado 1' },
+      { ...initialPoderJudiciarioAssociado, id: 2, guid: 'Poder Judiciario Associado 2' }
     ];
     mockPoderJudiciarioAssociadoService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('usePoderJudiciarioAssociadoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialPoderJudiciarioAssociado, id: 1, justicanome: 'Poder Judiciario Associado Filtrado' }];
-    const filtro = { justicanome: 'Poder Judiciario Associado' };
+    const mockData = [{ ...initialPoderJudiciarioAssociado, id: 1, guid: 'Poder Judiciario Associado Filtrado' }];
+    const filtro = { guid: 'Poder Judiciario Associado' };
     mockPoderJudiciarioAssociadoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsPoderJudiciarioAssociado', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsPoderJudiciarioAssociado());
 
-    const validData = { ...initialPoderJudiciarioAssociado, justicanome: 'Poder Judiciario Associado Válido' };
+    const validData = { ...initialPoderJudiciarioAssociado, guid: 'Poder Judiciario Associado Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsPoderJudiciarioAssociado', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsPoderJudiciarioAssociado());
+
+    const invalidData = { ...initialPoderJudiciarioAssociado, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsPoderJudiciarioAssociado());
+
+    const invalidData = { 
+      ...initialPoderJudiciarioAssociado, 
+      guid: 'a'.repeat(100+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsPoderJudiciarioAssociado());
@@ -229,7 +250,7 @@ describe('useValidationsPoderJudiciarioAssociado', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialPoderJudiciarioAssociado, id: 1, justicanome: 'Poder Judiciario Associado Teste' }];
+    const mockData = [{ ...initialPoderJudiciarioAssociado, id: 1, guid: 'Poder Judiciario Associado Teste' }];
     mockPoderJudiciarioAssociadoService.getAll.mockResolvedValue(mockData);
     
 

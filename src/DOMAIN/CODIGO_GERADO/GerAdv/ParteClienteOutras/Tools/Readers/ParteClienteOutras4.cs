@@ -127,14 +127,6 @@ public partial class ParteClienteOutrasReader(IFParteClienteOutrasFactory partec
         {
         }
 
-        try
-        {
-            parteclienteoutras.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return parteclienteoutras;
     }
 
@@ -155,14 +147,6 @@ public partial class ParteClienteOutrasReader(IFParteClienteOutrasFactory partec
         try
         {
             parteclienteoutras.NomeOutrasPartesCliente = dr[DBOutrasPartesClienteDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            parteclienteoutras.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

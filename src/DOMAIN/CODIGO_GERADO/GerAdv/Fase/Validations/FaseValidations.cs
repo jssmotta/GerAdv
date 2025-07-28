@@ -9,32 +9,29 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IFaseValidation
 {
     Task<bool> ValidateReg(Models.Fase reg, IFaseService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IFaseService service, IHistoricoService historicoService, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IFaseService service, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FaseValidation : IFaseValidation
 {
-    public async Task<bool> CanDelete(int id, IFaseService service, IHistoricoService historicoService, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IFaseService service, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var historicoExists0 = await historicoService.Filter(new Filters.FilterHistorico { Fase = id }, uri);
-        if (historicoExists0 != null && historicoExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Historico associados a ele.");
-        var prodepositosExists1 = await prodepositosService.Filter(new Filters.FilterProDepositos { Fase = id }, uri);
-        if (prodepositosExists1 != null && prodepositosExists1.Any())
+        var prodepositosExists0 = await prodepositosService.Filter(new Filters.FilterProDepositos { Fase = id }, uri);
+        if (prodepositosExists0 != null && prodepositosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Fase reg)
     {
-        if (reg.Descricao.Length > 50)
+        if (reg.Descricao != null && reg.Descricao.Length > 50)
             throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

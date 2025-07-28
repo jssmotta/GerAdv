@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepostosFactory prepostosFactory, IPrepostosReader reader, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IProcessosService processosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPrepostosService, IDisposable
+public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepostosFactory prepostosFactory, IPrepostosReader reader, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaQuemService agendaquemService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPrepostosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,9 +21,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
     private readonly ISetorReader setorReader = setorReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
     private readonly IAgendaQuemService agendaquemService = agendaquemService;
-    private readonly IProcessosService processosService = processosService;
     public async Task<IEnumerable<PrepostosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -202,7 +200,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, agendaquemService, processosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendaquemService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

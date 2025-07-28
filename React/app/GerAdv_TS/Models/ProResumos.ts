@@ -9,7 +9,6 @@ export interface ProResumos
 	data : string;
 	resumo : string;
 	tiporesumo : number;
-	nropastaprocessos?: string;
 
 }
 

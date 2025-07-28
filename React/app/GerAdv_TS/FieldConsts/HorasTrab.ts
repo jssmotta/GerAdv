@@ -3,7 +3,6 @@
                      // This file is part of the Source Genesys project                     
                     export enum FieldsHorasTrab
 {	cliente = `Cliente`,
-	processo = `Processo`,
 	advogado = `Advogado`,
 	funcionario = `Funcionario`,
 	servico = `Servico`,
@@ -12,6 +11,7 @@
 	idagenda = `IDAgenda`,
 	data = `Data`,
 	status = `Status`,
+	processo = `Processo`,
 	hrini = `HrIni`,
 	hrfim = `HrFim`,
 	tempo = `Tempo`,

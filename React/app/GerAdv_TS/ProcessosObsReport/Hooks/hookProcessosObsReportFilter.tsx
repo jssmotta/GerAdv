@@ -9,8 +9,6 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterProcessosObsReport } from '@/app/GerAdv_TS/ProcessosObsReport/Filters/ProcessosObsReport';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
-import HistoricoComboBox from '@/app/GerAdv_TS/Historico/ComboBox/Historico';
 interface UseProcessosObsReportFilterProps {
   handleFetchWithFilter: (filtro?: FilterProcessosObsReport | undefined | null) => Promise<void>;
 }
@@ -67,13 +65,26 @@ export const useProcessosObsReportFilter = ({ handleFetchWithFilter }: UseProces
   label='Data'
   className='inputIncNome inputSearch'
   />
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'
@@ -85,13 +96,26 @@ export const useProcessosObsReportFilter = ({ handleFetchWithFilter }: UseProces
   label='Observacao'
   className='inputIncNome inputSearch'
   />
-  <HistoricoComboBox
+  <InputInput
+  type='text'
+  id='historico'
   name='historico'
-  dataForm={null}
-  value={handlers.windowFilter?.historico}
-  setValue={(e:any) => handlers.handleComboChange(e, 'historico')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Historico'
+  value={handlers.windowFilter?.historico ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Historico'
+  label='Historico (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='historico_end'
+  name='historico_end'
+  value={handlers.windowFilter?.historico_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Historico final'
+  label='Historico final'
+  disabled={handlers.windowFilter?.historico ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

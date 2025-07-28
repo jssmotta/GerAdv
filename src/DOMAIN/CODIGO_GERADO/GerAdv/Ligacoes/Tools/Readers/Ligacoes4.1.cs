@@ -23,11 +23,12 @@ public partial class LigacoesReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBRamalDicInfo.PTabelaNome}].[{DBRamalDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}, 
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],
+[{DBRamalDicInfo.PTabelaNome}].[{DBRamalDicInfo.Nome}]
                    FROM {DBLigacoes.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Cliente}]
-LEFT JOIN {DBRamalDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBRamalDicInfo.PTabelaNome}].[{DBRamal.CampoCodigo}]=[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Ramal}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Processo}]
+                   LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Cliente}]
+LEFT JOIN {DBRamalDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBRamalDicInfo.PTabelaNome}].[{DBRamalDicInfo.CampoCodigo}]=[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Ramal}]
  
                    {cWhere}
                    {orderQuery}

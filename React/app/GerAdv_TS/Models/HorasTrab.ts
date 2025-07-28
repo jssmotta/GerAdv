@@ -6,7 +6,6 @@ export interface HorasTrab
 {
     id: number;
 	cliente : number;
-	processo : number;
 	advogado : number;
 	funcionario : number;
 	servico : number;
@@ -15,6 +14,7 @@ export interface HorasTrab
 	idagenda : number;
 	data : string;
 	status : number;
+	processo : number;
 	hrini : string;
 	hrfim : string;
 	tempo : number;
@@ -24,7 +24,6 @@ export interface HorasTrab
 	anexocomp : string;
 	anexounc : string;
 	nomeclientes?: string;
-	nropastaprocessos?: string;
 	nomeadvogados?: string;
 	nomefuncionarios?: string;
 	descricaoservicos?: string;
@@ -38,7 +37,6 @@ export function HorasTrabEmpty(): IHorasTrab {
     return {
         id: 0,
 		cliente: 0,
-		processo: 0,
 		advogado: 0,
 		funcionario: 0,
 		servico: 0,
@@ -47,6 +45,7 @@ export function HorasTrabEmpty(): IHorasTrab {
 		idagenda: 0,
 		data: '',
 		status: 0,
+		processo: 0,
 		hrini: '',
 		hrfim: '',
 		tempo: 0,
@@ -64,7 +63,6 @@ export function HorasTrabTestEmpty(): IHorasTrab {
     return {
         id: 1,
 		cliente: 1,
-		processo: 1,
 		advogado: 1,
 		funcionario: 1,
 		servico: 1,
@@ -73,6 +71,7 @@ export function HorasTrabTestEmpty(): IHorasTrab {
 		idagenda: 1,
 		data: 'X',
 		status: 1,
+		processo: 1,
 		hrini: 'X',
 		hrfim: 'X',
 		tempo: 1,

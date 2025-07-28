@@ -2,8 +2,7 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsInstancia
-{	processo = `Processo`,
-	acao = `Acao`,
+{	acao = `Acao`,
 	foro = `Foro`,
 	tiporecurso = `TipoRecurso`,
 	liminarpedida = `LiminarPedida`,
@@ -13,6 +12,7 @@
 	interpusemosrecurso = `InterpusemosRecurso`,
 	liminarconcedida = `LiminarConcedida`,
 	liminarnegada = `LiminarNegada`,
+	processo = `Processo`,
 	data = `Data`,
 	liminarparcial = `LiminarParcial`,
 	liminarresultado = `LiminarResultado`,

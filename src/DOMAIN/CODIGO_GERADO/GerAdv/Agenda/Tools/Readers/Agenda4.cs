@@ -406,14 +406,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
 
         try
         {
-            agenda.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             agenda.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -553,14 +545,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
         try
         {
             agenda.NomeJustica = dr[DBJusticaDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            agenda.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

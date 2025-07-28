@@ -23,9 +23,10 @@ public partial class GUTMatrizReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Nome}]
+                   {campos}, 
+[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Nome}]
                    FROM {DBGUTMatriz.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBGUTTipoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipo.CampoCodigo}]=[{DBGUTMatrizDicInfo.PTabelaNome}].[{DBGUTMatrizDicInfo.GUTTipo}]
+                   LEFT JOIN {DBGUTTipoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.CampoCodigo}]=[{DBGUTMatrizDicInfo.PTabelaNome}].[{DBGUTMatrizDicInfo.GUTTipo}]
  
                    {cWhere}
                    {orderQuery}

@@ -190,14 +190,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
 
         try
         {
-            provalores.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             provalores.DescricaoTipoValorProcesso = dr[DBTipoValorProcessoDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -236,14 +228,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
         {
             provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
             provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
-        }
-
-        try
-        {
-            provalores.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         try

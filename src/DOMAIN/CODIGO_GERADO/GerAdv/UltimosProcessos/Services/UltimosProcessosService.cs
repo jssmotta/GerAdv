@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, IFUltimosProcessosFactory ultimosprocessosFactory, IUltimosProcessosReader reader, IUltimosProcessosValidation validation, IUltimosProcessosWriter writer, IProcessosReader processosReader, HybridCache cache, IMemoryCache memory) : IUltimosProcessosService, IDisposable
+public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, IFUltimosProcessosFactory ultimosprocessosFactory, IUltimosProcessosReader reader, IUltimosProcessosValidation validation, IUltimosProcessosWriter writer, HybridCache cache, IMemoryCache memory) : IUltimosProcessosService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
@@ -16,7 +16,6 @@ public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, 
     private readonly IUltimosProcessosReader reader = reader;
     private readonly IUltimosProcessosValidation validation = validation;
     private readonly IUltimosProcessosWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<UltimosProcessosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -105,7 +104,7 @@ public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            var validade = await validation.ValidateReg(regUltimosProcessos, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regUltimosProcessos, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -145,7 +144,7 @@ public partial class UltimosProcessosService(IOptions<AppSettings> appSettings, 
 
         try
         {
-            var validade = await validation.ValidateReg(regUltimosProcessos, this, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regUltimosProcessos, this, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

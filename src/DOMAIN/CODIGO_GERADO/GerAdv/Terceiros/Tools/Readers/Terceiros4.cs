@@ -170,14 +170,6 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
         };
         try
         {
-            terceiros.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             terceiros.DescricaoPosicaoOutrasPartes = dr[DBPosicaoOutrasPartesDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -221,14 +213,6 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Sexo = dbRec.FSexo,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            terceiros.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         try
         {
             terceiros.DescricaoPosicaoOutrasPartes = dr[DBPosicaoOutrasPartesDicInfo.CampoNome]?.ToString() ?? string.Empty;

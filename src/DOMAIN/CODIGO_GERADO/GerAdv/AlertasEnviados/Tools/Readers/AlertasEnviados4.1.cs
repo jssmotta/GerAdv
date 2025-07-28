@@ -23,10 +23,12 @@ public partial class AlertasEnviadosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Nome}]
+                   {campos}, 
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],
+[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Nome}]
                    FROM {DBAlertasEnviados.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Operador}]
-LEFT JOIN {DBAlertasDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAlertasDicInfo.PTabelaNome}].[{DBAlertas.CampoCodigo}]=[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Alerta}]
+                   LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Operador}]
+LEFT JOIN {DBAlertasDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.CampoCodigo}]=[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Alerta}]
  
                    {cWhere}
                    {orderQuery}

@@ -15,7 +15,7 @@ public partial class GraphReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBGraphDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBGraphDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

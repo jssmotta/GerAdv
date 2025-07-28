@@ -7,9 +7,9 @@ export interface IProDepositos {
 // 202501251
     id: number;
  
-	processo: number,
 	fase: number,
 	tipoprodesposito: number,
+	processo: number,
 	data: string,
 	valor: number,
 }

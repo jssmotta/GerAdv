@@ -48,6 +48,9 @@ public partial record FilterHorasTrab
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("advogado")]
     public int Advogado { get; set; } = int.MinValue;
 

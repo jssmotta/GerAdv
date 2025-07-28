@@ -5,9 +5,8 @@
 export interface ProPartes
 {
     id: number;
-	processo : number;
 	parte : number;
-	nropastaprocessos?: string;
+	processo : number;
 
 }
 
@@ -17,8 +16,8 @@ export function ProPartesEmpty(): IProPartes {
     
     return {
         id: 0,
-		processo: 0,
 		parte: 0,
+		processo: 0,
     };
 }
 
@@ -27,8 +26,8 @@ export function ProPartesTestEmpty(): IProPartes {
     
     return {
         id: 1,
-		processo: 1,
 		parte: 1,
+		processo: 1,
     };
 }
 

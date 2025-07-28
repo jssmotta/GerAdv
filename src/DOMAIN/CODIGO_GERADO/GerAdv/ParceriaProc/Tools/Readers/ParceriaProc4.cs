@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactory) : IParceriaProcReader
 {
     private readonly IFParceriaProcFactory _parceriaprocFactory = parceriaprocFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("parCodigo, parGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ParceriaProcResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBParceriaProc.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ParceriaProcResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -127,14 +128,6 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         {
         }
 
-        try
-        {
-            parceriaproc.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return parceriaproc;
     }
 
@@ -155,14 +148,6 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         try
         {
             parceriaproc.NomeAdvogados = dr[DBAdvogadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            parceriaproc.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

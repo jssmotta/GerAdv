@@ -5,9 +5,9 @@
 export interface Contratos
 {
     id: number;
-	processo : number;
 	cliente : number;
 	advogado : number;
+	processo : number;
 	dia : number;
 	valor : number;
 	datainicio : string;
@@ -35,7 +35,6 @@ export interface Contratos
 	avulso : boolean;
 	suspenso : boolean;
 	multa : string;
-	nropastaprocessos?: string;
 	nomeclientes?: string;
 	nomeadvogados?: string;
 
@@ -47,9 +46,9 @@ export function ContratosEmpty(): IContratos {
     
     return {
         id: 0,
-		processo: 0,
 		cliente: 0,
 		advogado: 0,
+		processo: 0,
 		dia: 0,
 		valor: 0,
 		datainicio: '',
@@ -83,9 +82,9 @@ export function ContratosTestEmpty(): IContratos {
     
     return {
         id: 1,
-		processo: 1,
 		cliente: 1,
 		advogado: 1,
+		processo: 1,
 		dia: 1,
 		valor: 1,
 		datainicio: 'X',

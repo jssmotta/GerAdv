@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - scbProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Instancia - scbInstancia  
         /// </summary>
         [JsonPropertyName("instancia")]
@@ -30,6 +24,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("tipoorigemsucumbencia")]
         public int TipoOrigemSucumbencia { get; set; }
+
+        /// <summary>
+        /// Processo - scbProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - scbData  
@@ -72,12 +72,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - scbProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Instancia - scbInstancia  
         /// </summary>
         [JsonPropertyName("instancia")]
@@ -88,6 +82,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("tipoorigemsucumbencia")]
         public int TipoOrigemSucumbencia { get; set; }
+
+        /// <summary>
+        /// Processo - scbProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - scbData  
@@ -118,9 +118,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nroprocessoinstancia")]
         public string NroProcessoInstancia { get; set; } = string.Empty;

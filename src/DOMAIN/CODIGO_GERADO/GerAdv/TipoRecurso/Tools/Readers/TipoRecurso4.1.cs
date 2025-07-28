@@ -23,10 +23,12 @@ public partial class TipoRecursoReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],[{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}]
+                   {campos}, 
+[{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],
+[{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}]
                    FROM {DBTipoRecurso.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJustica.CampoCodigo}]=[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Justica}]
-LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAreaDicInfo.PTabelaNome}].[{DBArea.CampoCodigo}]=[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Area}]
+                   LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.CampoCodigo}]=[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Justica}]
+LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.CampoCodigo}]=[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Area}]
  
                    {cWhere}
                    {orderQuery}

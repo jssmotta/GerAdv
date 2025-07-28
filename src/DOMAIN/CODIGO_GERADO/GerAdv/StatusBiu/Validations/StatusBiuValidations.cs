@@ -29,7 +29,7 @@ public class StatusBiuValidation : IStatusBiuValidation
 
     private bool ValidSizes(Models.StatusBiu reg)
     {
-        if (reg.Nome.Length > 1024)
+        if (reg.Nome != null && reg.Nome.Length > 1024)
             throw new SGValidationException($"Nome deve ter no máximo 1024 caracteres.");
         return true;
     }

@@ -29,7 +29,7 @@ public class GUTMatrizValidation : IGUTMatrizValidation
 
     private bool ValidSizes(Models.GUTMatriz reg)
     {
-        if (reg.Descricao.Length > 150)
+        if (reg.Descricao != null && reg.Descricao.Length > 150)
             throw new SGValidationException($"Descricao deve ter no máximo 150 caracteres.");
         return true;
     }

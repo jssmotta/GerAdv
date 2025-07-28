@@ -1,8 +1,9 @@
-﻿using MenphisSI.GerEntityTools.Entity;
+﻿using MenphisSI.GerAdv.Readers;
+using MenphisSI.GerEntityTools.Entity;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using DBAdvogados = MenphisSI.GerAdv.DBAdvogados;
-using DBFuncionarios = MenphisSI.GerAdv.DBFuncionarios;
-using DBOperador = MenphisSI.GerAdv.DBOperador;
+using DBAdvogados = MenphisSI.SG.GerAdv.DBAdvogados;
+using DBFuncionarios = MenphisSI.SG.GerAdv.DBFuncionarios;
+using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 
@@ -161,14 +162,15 @@ ORDER BY vqaData;";
     }
 
     
-    public int EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaAdvogados(E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
     {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim;        
+        string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true);
 
-        var reader = new MenphisSI.GerAdv.Readers.Operador();
-        var readerAdv = new MenphisSI.GerAdv.Readers.Advogados();
-        var readerFunc = new MenphisSI.GerAdv.Readers.Funcionarios();
-        var operadores = reader.Listar(100, uri, filtroOperadores, [], "operNome");
+        var reader = new OperadorReader(new FOperadorFactory());
+        var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
+        var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
+        var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+      
         var servicoEmail = new SendEmailApi();
         var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
         var count = 0;
@@ -181,8 +183,8 @@ ORDER BY vqaData;";
             }
 
             var cNome = operador.CadID == 1 ?
-                      readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? "";
+                     (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 

@@ -56,6 +56,11 @@ public partial class InstanciaService
             parameters.Add(new($"@{nameof(DBInstanciaDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBInstanciaDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.Data))
         {
             parameters.Add(new($"@{nameof(DBInstanciaDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
@@ -219,7 +224,15 @@ public partial class InstanciaService
         cWhere.Append(filtro.InterpusemosRecurso == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.InterpusemosRecurso}] = @{nameof(DBInstanciaDicInfo.InterpusemosRecurso)}");
         cWhere.Append(filtro.LiminarConcedida == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.LiminarConcedida}] = @{nameof(DBInstanciaDicInfo.LiminarConcedida)}");
         cWhere.Append(filtro.LiminarNegada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.LiminarNegada}] = @{nameof(DBInstanciaDicInfo.LiminarNegada)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Processo}] = @{nameof(DBInstanciaDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Processo}] >= @{nameof(DBInstanciaDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBInstanciaDicInfo.Processo} BETWEEN @{nameof(DBInstanciaDicInfo.Processo)} AND @{nameof(DBInstanciaDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBInstanciaDicInfo.Processo} = @{nameof(DBInstanciaDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBInstanciaDicInfo.Processo} <= @{nameof(DBInstanciaDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBInstanciaDicInfo.Data)}");
         cWhere.Append(filtro.LiminarParcial == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.LiminarParcial}] = @{nameof(DBInstanciaDicInfo.LiminarParcial)}");
         cWhere.Append(filtro.LiminarResultado.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.LiminarResultado}]  {DevourerConsts.MsiCollate} like @{nameof(DBInstanciaDicInfo.LiminarResultado)}");

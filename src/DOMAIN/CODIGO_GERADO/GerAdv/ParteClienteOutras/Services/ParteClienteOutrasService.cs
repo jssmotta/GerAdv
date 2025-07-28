@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ParteClienteOutrasService(IOptions<AppSettings> appSettings, IFParteClienteOutrasFactory parteclienteoutrasFactory, IParteClienteOutrasReader reader, IParteClienteOutrasValidation validation, IParteClienteOutrasWriter writer, IOutrasPartesClienteReader outraspartesclienteReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IParteClienteOutrasService, IDisposable
+public partial class ParteClienteOutrasService(IOptions<AppSettings> appSettings, IFParteClienteOutrasFactory parteclienteoutrasFactory, IParteClienteOutrasReader reader, IParteClienteOutrasValidation validation, IParteClienteOutrasWriter writer, IOutrasPartesClienteReader outraspartesclienteReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IParteClienteOutrasService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class ParteClienteOutrasService(IOptions<AppSettings> appSettings
     private readonly IParteClienteOutrasValidation validation = validation;
     private readonly IParteClienteOutrasWriter writer = writer;
     private readonly IOutrasPartesClienteReader outraspartesclienteReader = outraspartesclienteReader;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<ParteClienteOutrasResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -111,7 +110,7 @@ public partial class ParteClienteOutrasService(IOptions<AppSettings> appSettings
 
         try
         {
-            var validade = await validation.ValidateReg(regParteClienteOutras, this, outraspartesclienteReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regParteClienteOutras, this, outraspartesclienteReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +151,7 @@ public partial class ParteClienteOutrasService(IOptions<AppSettings> appSettings
 
         try
         {
-            var validade = await validation.ValidateReg(regParteClienteOutras, this, outraspartesclienteReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regParteClienteOutras, this, outraspartesclienteReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

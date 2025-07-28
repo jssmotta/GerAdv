@@ -78,7 +78,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
-    <ProjectReference Include="..\..\..\GerEntity\src\MenphisSI.GerEntityToolsDev\MenphisSI.GerEntityToolsDev.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 

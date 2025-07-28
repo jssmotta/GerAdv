@@ -16,6 +16,11 @@ public partial class ProDepositosService
             parameters.Add(new($"@{nameof(DBProDepositosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProDepositosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Fase != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBProDepositosDicInfo.Fase)}", filtro.Fase));
@@ -57,7 +62,15 @@ public partial class ProDepositosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Processo}] = @{nameof(DBProDepositosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Processo}] >= @{nameof(DBProDepositosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Processo} BETWEEN @{nameof(DBProDepositosDicInfo.Processo)} AND @{nameof(DBProDepositosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Processo} = @{nameof(DBProDepositosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Processo} <= @{nameof(DBProDepositosDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Fase <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Fase}] = @{nameof(DBProDepositosDicInfo.Fase)}");
         cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDepositosDicInfo.Data)}");
         if (!filtro.Valor.IsEmpty() && filtro.Valor_end.IsEmpty())

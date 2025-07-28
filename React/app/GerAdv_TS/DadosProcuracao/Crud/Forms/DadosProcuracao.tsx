@@ -133,6 +133,18 @@ const addValorCliente = (e: any) => {
           )}
           <div className='grid-container'>
 
+            <InputName
+            type='text'
+            id='guid'
+            label='GUID'
+            dataForm={dadosprocuracaoData}
+            className='inputIncNome'
+            name='guid'
+            value={dadosprocuracaoData.guid}
+            placeholder={`Informe GUID`}
+            onChange={onChange}
+            required
+            />
 
             <ClientesComboBox
             name={'cliente'}

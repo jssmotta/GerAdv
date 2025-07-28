@@ -23,18 +23,26 @@ public partial class AgendaReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}],[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}],[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],[{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}],[{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],[{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.Nome}]
+                   {campos}, 
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}],
+[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}],
+[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Nome}],
+[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}],
+[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}],
+[{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.Descricao}],
+[{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.Nome}],
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],
+[{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.Nome}]
                    FROM {DBAgenda.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cidade}]
-LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogados.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Advogado}]
-LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionarios.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Funcionario}]
-LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromisso.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.TipoCompromisso}]
-LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientes.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cliente}]
-LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAreaDicInfo.PTabelaNome}].[{DBArea.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Area}]
-LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJustica.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Justica}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Processo}]
-LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Usuario}]
-LEFT JOIN {DBPrepostosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostos.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Preposto}]
+                   LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cidade}]
+LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Advogado}]
+LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Funcionario}]
+LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.TipoCompromisso}]
+LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cliente}]
+LEFT JOIN {DBAreaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAreaDicInfo.PTabelaNome}].[{DBAreaDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Area}]
+LEFT JOIN {DBJusticaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBJusticaDicInfo.PTabelaNome}].[{DBJusticaDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Justica}]
+LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Usuario}]
+LEFT JOIN {DBPrepostosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPrepostosDicInfo.PTabelaNome}].[{DBPrepostosDicInfo.CampoCodigo}]=[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Preposto}]
  
                    {cWhere}
                    {orderQuery}

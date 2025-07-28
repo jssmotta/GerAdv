@@ -14,7 +14,7 @@ import { ContratosTestEmpty } from '../GerAdv_TS/Models/Contratos';
 const mockContratosService: jest.Mocked<IContratosService> = {
   fetchContratosById: jest.fn(),
   saveContratos: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteContratos: jest.fn(),
   validateContratos: jest.fn(),
@@ -50,7 +50,7 @@ describe('useContratosForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'protestar',
+        name: 'guid',
         value: 'Novo Contratos',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useContratosForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.protestar).toBe('Novo Contratos');
+    expect(result.current.data.guid).toBe('Novo Contratos');
   });
 
    test('deve carregar Contratos por ID', async () => {
-    const mockContratos = { ...initialContratos, id: 1, protestar: 'Contratos Teste' };
+    const mockContratos = { ...initialContratos, id: 1, guid: 'Contratos Teste' };
     mockContratosService.fetchContratosById.mockResolvedValue(mockContratos);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useContratosForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialContratos, protestar: 'Teste' });
+      result.current.setData({ ...initialContratos, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useContratosList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialContratos, id: 1, protestar: 'Contratos 1' },
-      { ...initialContratos, id: 2, protestar: 'Contratos 2' }
+      { ...initialContratos, id: 1, guid: 'Contratos 1' },
+      { ...initialContratos, id: 2, guid: 'Contratos 2' }
     ];
     mockContratosService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useContratosList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialContratos, id: 1, protestar: 'Contratos Filtrado' }];
-    const filtro = { protestar: 'Contratos' };
+    const mockData = [{ ...initialContratos, id: 1, guid: 'Contratos Filtrado' }];
+    const filtro = { guid: 'Contratos' };
     mockContratosService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsContratos', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsContratos());
 
-    const validData = { ...initialContratos, protestar: 'Contratos Válido' };
+    const validData = { ...initialContratos, guid: 'Contratos Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsContratos', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsContratos());
+
+    const invalidData = { ...initialContratos, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsContratos());
+
+    const invalidData = { 
+      ...initialContratos, 
+      guid: 'a'.repeat(100+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsContratos());
@@ -229,7 +250,7 @@ describe('useValidationsContratos', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialContratos, id: 1, protestar: 'Contratos Teste' }];
+    const mockData = [{ ...initialContratos, id: 1, guid: 'Contratos Teste' }];
     mockContratosService.getAll.mockResolvedValue(mockData);
     
 

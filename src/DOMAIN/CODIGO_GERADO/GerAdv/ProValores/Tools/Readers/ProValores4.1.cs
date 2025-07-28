@@ -23,10 +23,10 @@ public partial class ProValoresReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBTipoValorProcessoDicInfo.PTabelaNome}].[{DBTipoValorProcessoDicInfo.Descricao}]
+                   {campos}, 
+[{DBTipoValorProcessoDicInfo.PTabelaNome}].[{DBTipoValorProcessoDicInfo.Descricao}]
                    FROM {DBProValores.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Processo}]
-LEFT JOIN {DBTipoValorProcessoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoValorProcessoDicInfo.PTabelaNome}].[{DBTipoValorProcesso.CampoCodigo}]=[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}]
+                   LEFT JOIN {DBTipoValorProcessoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoValorProcessoDicInfo.PTabelaNome}].[{DBTipoValorProcessoDicInfo.CampoCodigo}]=[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}]
  
                    {cWhere}
                    {orderQuery}

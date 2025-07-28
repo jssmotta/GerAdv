@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPrepostosValidation
 {
     Task<bool> ValidateReg(Models.Prepostos reg, IPrepostosService service, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPrepostosService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IPrepostosService service, IAgendaService agendaService, IAgendaQuemService agendaquemService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PrepostosValidation : IPrepostosValidation
 {
-    public async Task<bool> CanDelete(int id, IPrepostosService service, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaQuemService agendaquemService, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IPrepostosService service, IAgendaService agendaService, IAgendaQuemService agendaquemService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
@@ -24,49 +24,43 @@ public class PrepostosValidation : IPrepostosValidation
         var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Preposto = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendafinanceiroExists1 = await agendafinanceiroService.Filter(new Filters.FilterAgendaFinanceiro { Preposto = id }, uri);
-        if (agendafinanceiroExists1 != null && agendafinanceiroExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Financeiro associados a ele.");
-        var agendaquemExists2 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Preposto = id }, uri);
-        if (agendaquemExists2 != null && agendaquemExists2.Any())
+        var agendaquemExists1 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Preposto = id }, uri);
+        if (agendaquemExists1 != null && agendaquemExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.");
-        var processosExists3 = await processosService.Filter(new Filters.FilterProcessos { Preposto = id }, uri);
-        if (processosExists3 != null && processosExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Prepostos reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.Qualificacao.Length > 100)
+        if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG.Length > 30)
+        if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.Registro.Length > 30)
+        if (reg.Registro != null && reg.Registro.Length > 30)
             throw new SGValidationException($"Registro deve ter no máximo 30 caracteres.");
-        if (reg.CTPSNumero.Length > 15)
+        if (reg.CTPSNumero != null && reg.CTPSNumero.Length > 15)
             throw new SGValidationException($"CTPSNumero deve ter no máximo 15 caracteres.");
-        if (reg.CTPSSerie.Length > 10)
+        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > 10)
             throw new SGValidationException($"CTPSSerie deve ter no máximo 10 caracteres.");
-        if (reg.PIS.Length > 20)
+        if (reg.PIS != null && reg.PIS.Length > 20)
             throw new SGValidationException($"PIS deve ter no máximo 20 caracteres.");
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Pai.Length > 50)
+        if (reg.Pai != null && reg.Pai.Length > 50)
             throw new SGValidationException($"Pai deve ter no máximo 50 caracteres.");
-        if (reg.Mae.Length > 50)
+        if (reg.Mae != null && reg.Mae.Length > 50)
             throw new SGValidationException($"Mae deve ter no máximo 50 caracteres.");
-        if (reg.Class.Length > 1)
+        if (reg.Class != null && reg.Class.Length > 1)
             throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }

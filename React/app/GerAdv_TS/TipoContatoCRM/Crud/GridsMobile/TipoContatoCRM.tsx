@@ -61,29 +61,10 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellContatoCRM = (id: number) => {
-  router.push(`/pages/contatocrm/?tipocontatocrm=${id}`);
-};
-const SearchFromCellContatoCRM = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellContatoCRM(props.dataItem.id)}><span title='Pesquisar relacionados em Contato C R M'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn field='nome' title='Nome' />,
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />, <GridColumn
-  field='id_edit_ContatoCRM'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Contato C R M'
-  cells={{ data: SearchFromCellContatoCRM }}
-  />, 
+  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   ], []);
   const DeleteRow = (e: any) => {
     return (

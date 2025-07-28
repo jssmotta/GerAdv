@@ -15,7 +15,7 @@ public partial class OperadorGruposAgendaOperadoresReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBOperadorGruposAgendaOperadoresDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBOperadorGruposAgendaOperadoresDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,10 +23,12 @@ public partial class OperadorGruposAgendaOperadoresReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.Nome}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
+                   {campos}, 
+[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.Nome}],
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBOperadorGruposAgendaOperadores.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBOperadorGruposAgendaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgenda.CampoCodigo}]=[{DBOperadorGruposAgendaOperadoresDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaOperadoresDicInfo.OperadorGruposAgenda}]
-LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBOperadorGruposAgendaOperadoresDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaOperadoresDicInfo.Operador}]
+                   LEFT JOIN {DBOperadorGruposAgendaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.CampoCodigo}]=[{DBOperadorGruposAgendaOperadoresDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaOperadoresDicInfo.OperadorGruposAgenda}]
+LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBOperadorGruposAgendaOperadoresDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaOperadoresDicInfo.Operador}]
  
                    {cWhere}
                    {orderQuery}

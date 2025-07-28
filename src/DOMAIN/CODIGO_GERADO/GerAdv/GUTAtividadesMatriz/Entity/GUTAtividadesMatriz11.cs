@@ -36,10 +36,10 @@ public partial class FGUTAtividadesMatrizFactory : IFGUTAtividadesMatrizFactory,
         return new FGUTAtividadesMatriz();
     }
 
-    public FGUTAtividadesMatriz CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FGUTAtividadesMatriz CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
-        return FGUTAtividadesMatriz.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
+        return FGUTAtividadesMatriz.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
     public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)

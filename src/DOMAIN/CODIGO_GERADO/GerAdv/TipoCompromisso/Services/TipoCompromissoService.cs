@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, IFTipoCompromissoFactory tipocompromissoFactory, ITipoCompromissoReader reader, ITipoCompromissoValidation validation, ITipoCompromissoWriter writer, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, INECompromissosService necompromissosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoCompromissoService, IDisposable
+public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, IFTipoCompromissoFactory tipocompromissoFactory, ITipoCompromissoReader reader, ITipoCompromissoValidation validation, ITipoCompromissoWriter writer, IAgendaService agendaService, INECompromissosService necompromissosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoCompromissoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
     private readonly ITipoCompromissoValidation validation = validation;
     private readonly ITipoCompromissoWriter writer = writer;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
     private readonly INECompromissosService necompromissosService = necompromissosService;
     public async Task<IEnumerable<TipoCompromissoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -198,7 +197,7 @@ public partial class TipoCompromissoService(IOptions<AppSettings> appSettings, I
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, necompromissosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, necompromissosService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

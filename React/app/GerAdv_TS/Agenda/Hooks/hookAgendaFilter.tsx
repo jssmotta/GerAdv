@@ -16,7 +16,6 @@ import TipoCompromissoComboBox from '@/app/GerAdv_TS/TipoCompromisso/ComboBox/Ti
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import AreaComboBox from '@/app/GerAdv_TS/Area/ComboBox/Area';
 import JusticaComboBox from '@/app/GerAdv_TS/Justica/ComboBox/Justica';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
 import PrepostosComboBox from '@/app/GerAdv_TS/Prepostos/ComboBox/Prepostos';
 interface UseAgendaFilterProps {
@@ -342,13 +341,26 @@ export const useAgendaFilter = ({ handleFetchWithFilter }: UseAgendaFilterProps)
   className='inputSearch inputSearchComboboxTab'
   label='Justiça'
   />
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

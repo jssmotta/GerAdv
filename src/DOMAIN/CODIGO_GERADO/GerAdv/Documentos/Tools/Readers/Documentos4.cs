@@ -124,14 +124,6 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            documentos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return documentos;
     }
 
@@ -150,14 +142,6 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
             Observacao = dbRec.FObservacao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
         };
-        try
-        {
-            documentos.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return documentos;
     }
 }

@@ -25,7 +25,7 @@ export class GraphValidator {
 export interface IGraphService {
   fetchGraphById: (id: number) => Promise<IGraph>;
   saveGraph: (graph: IGraph) => Promise<IGraph>;  
-  
+  getList: (filtro?: FilterGraph) => Promise<IGraph[]>;
   getAll: (filtro?: FilterGraph) => Promise<IGraph[]>;
   deleteGraph: (id: number) => Promise<void>;
   validateGraph: (graph: IGraph) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class GraphService implements IGraphService {
   }
 
   
+    async getList(filtro?: FilterGraph): Promise<IGraph[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching Graph list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

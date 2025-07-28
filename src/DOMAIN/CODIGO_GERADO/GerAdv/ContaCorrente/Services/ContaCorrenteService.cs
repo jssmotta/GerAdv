@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IFContaCorrenteFactory contacorrenteFactory, IContaCorrenteReader reader, IContaCorrenteValidation validation, IContaCorrenteWriter writer, IProcessosReader processosReader, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IContaCorrenteService, IDisposable
+public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IFContaCorrenteFactory contacorrenteFactory, IContaCorrenteReader reader, IContaCorrenteValidation validation, IContaCorrenteWriter writer, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IContaCorrenteService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IFC
     private readonly IContaCorrenteReader reader = reader;
     private readonly IContaCorrenteValidation validation = validation;
     private readonly IContaCorrenteWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IClientesReader clientesReader = clientesReader;
     public async Task<IEnumerable<ContaCorrenteResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -111,7 +110,7 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IFC
 
         try
         {
-            var validade = await validation.ValidateReg(regContaCorrente, this, processosReader, clientesReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regContaCorrente, this, clientesReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +151,7 @@ public partial class ContaCorrenteService(IOptions<AppSettings> appSettings, IFC
 
         try
         {
-            var validade = await validation.ValidateReg(regContaCorrente, this, processosReader, clientesReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regContaCorrente, this, clientesReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

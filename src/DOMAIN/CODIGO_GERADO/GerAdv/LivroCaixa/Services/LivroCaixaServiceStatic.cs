@@ -71,6 +71,11 @@ public partial class LivroCaixaService
             parameters.Add(new($"@{nameof(DBLivroCaixaDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBLivroCaixaDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Valor != decimal.MinValue)
         {
             parameters.Add(new($"@{nameof(DBLivroCaixaDicInfo.Valor)}", filtro.Valor));
@@ -161,7 +166,15 @@ public partial class LivroCaixaService
 
         cWhere.Append(filtro.IDHonSuc == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.IDHonSuc}] = @{nameof(DBLivroCaixaDicInfo.IDHonSuc)}");
         cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBLivroCaixaDicInfo.Data)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.Processo}] = @{nameof(DBLivroCaixaDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.Processo}] >= @{nameof(DBLivroCaixaDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLivroCaixaDicInfo.Processo} BETWEEN @{nameof(DBLivroCaixaDicInfo.Processo)} AND @{nameof(DBLivroCaixaDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLivroCaixaDicInfo.Processo} = @{nameof(DBLivroCaixaDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBLivroCaixaDicInfo.Processo} <= @{nameof(DBLivroCaixaDicInfo.Processo)}_end");
+        }
+
         if (!filtro.Valor.IsEmpty() && filtro.Valor_end.IsEmpty())
         {
             cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLivroCaixaDicInfo.PTabelaNome}].[{DBLivroCaixaDicInfo.Valor}] >= @{nameof(DBLivroCaixaDicInfo.Valor)}");

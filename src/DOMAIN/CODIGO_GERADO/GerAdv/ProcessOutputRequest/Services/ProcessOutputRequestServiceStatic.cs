@@ -26,6 +26,11 @@ public partial class ProcessOutputRequestService
             parameters.Add(new($"@{nameof(DBProcessOutputRequestDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProcessOutputRequestDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.UltimoIdTabelaExo != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBProcessOutputRequestDicInfo.UltimoIdTabelaExo)}", filtro.UltimoIdTabelaExo));
@@ -59,7 +64,15 @@ public partial class ProcessOutputRequestService
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.ProcessOutputEngine <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.ProcessOutputEngine}] = @{nameof(DBProcessOutputRequestDicInfo.ProcessOutputEngine)}");
         cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.Operador}] = @{nameof(DBProcessOutputRequestDicInfo.Operador)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.Processo}] = @{nameof(DBProcessOutputRequestDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.Processo}] >= @{nameof(DBProcessOutputRequestDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessOutputRequestDicInfo.Processo} BETWEEN @{nameof(DBProcessOutputRequestDicInfo.Processo)} AND @{nameof(DBProcessOutputRequestDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessOutputRequestDicInfo.Processo} = @{nameof(DBProcessOutputRequestDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessOutputRequestDicInfo.Processo} <= @{nameof(DBProcessOutputRequestDicInfo.Processo)}_end");
+        }
+
         if (!filtro.UltimoIdTabelaExo.IsEmpty() && filtro.UltimoIdTabelaExo_end.IsEmpty())
         {
             cWhere.Append(filtro.UltimoIdTabelaExo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.UltimoIdTabelaExo}] >= @{nameof(DBProcessOutputRequestDicInfo.UltimoIdTabelaExo)}");
@@ -90,6 +103,46 @@ public partial class ProcessOutputRequestService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessOutputRequest? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-ProcessOutputRequest-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBProcessOutputRequestDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

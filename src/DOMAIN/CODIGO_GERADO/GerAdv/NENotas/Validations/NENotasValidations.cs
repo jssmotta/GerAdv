@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface INENotasValidation
 {
-    Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IApensoReader apensoReader, IPrecatoriaReader precatoriaReader, IInstanciaReader instanciaReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, INENotasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,12 +26,12 @@ public class NENotasValidation : INENotasValidation
 
     private bool ValidSizes(Models.NENotas reg)
     {
-        if (reg.Nome.Length > 20)
+        if (reg.Nome != null && reg.Nome.Length > 20)
             throw new SGValidationException($"Nome deve ter no máximo 20 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IApensoReader apensoReader, IPrecatoriaReader precatoriaReader, IInstanciaReader instanciaReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -40,26 +40,6 @@ public class NENotasValidation : INENotasValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        // Apenso
-        if (!reg.Apenso.IsEmptyIDNumber())
-        {
-            var regApenso = await apensoReader.Read(reg.Apenso, oCnn);
-            if (regApenso == null || regApenso.Id != reg.Apenso)
-            {
-                throw new SGValidationException($"Apenso não encontrado ({regApenso?.Id}).");
-            }
-        }
-
-        // Precatoria
-        if (!reg.Precatoria.IsEmptyIDNumber())
-        {
-            var regPrecatoria = await precatoriaReader.Read(reg.Precatoria, oCnn);
-            if (regPrecatoria == null || regPrecatoria.Id != reg.Precatoria)
-            {
-                throw new SGValidationException($"Precatoria não encontrado ({regPrecatoria?.Id}).");
-            }
-        }
-
         // Instancia
         if (!reg.Instancia.IsEmptyIDNumber())
         {
@@ -67,16 +47,6 @@ public class NENotasValidation : INENotasValidation
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
             {
                 throw new SGValidationException($"Instancia não encontrado ({regInstancia?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

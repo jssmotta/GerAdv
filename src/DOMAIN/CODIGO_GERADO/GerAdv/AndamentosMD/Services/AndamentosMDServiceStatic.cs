@@ -21,6 +21,11 @@ public partial class AndamentosMDService
             parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Andamento != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Andamento)}", filtro.Andamento));
@@ -63,7 +68,15 @@ public partial class AndamentosMDService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAndamentosMDDicInfo.Nome)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Processo}] = @{nameof(DBAndamentosMDDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Processo}] >= @{nameof(DBAndamentosMDDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAndamentosMDDicInfo.Processo} BETWEEN @{nameof(DBAndamentosMDDicInfo.Processo)} AND @{nameof(DBAndamentosMDDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAndamentosMDDicInfo.Processo} = @{nameof(DBAndamentosMDDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAndamentosMDDicInfo.Processo} <= @{nameof(DBAndamentosMDDicInfo.Processo)}_end");
+        }
+
         if (!filtro.Andamento.IsEmpty() && filtro.Andamento_end.IsEmpty())
         {
             cWhere.Append(filtro.Andamento <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Andamento}] >= @{nameof(DBAndamentosMDDicInfo.Andamento)}");

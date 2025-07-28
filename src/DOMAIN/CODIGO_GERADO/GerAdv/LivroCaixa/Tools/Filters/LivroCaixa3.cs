@@ -54,6 +54,9 @@ public partial record FilterLivroCaixa
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("valor")]
     public decimal Valor { get; set; } = decimal.MinValue;
 

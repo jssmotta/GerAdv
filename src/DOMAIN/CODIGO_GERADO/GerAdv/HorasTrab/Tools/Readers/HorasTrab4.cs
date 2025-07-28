@@ -194,14 +194,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
 
         try
         {
-            horastrab.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             horastrab.NomeAdvogados = dr[DBAdvogadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -260,14 +252,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         try
         {
             horastrab.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            horastrab.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

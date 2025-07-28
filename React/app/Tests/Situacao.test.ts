@@ -14,7 +14,7 @@ import { SituacaoTestEmpty } from '../GerAdv_TS/Models/Situacao';
 const mockSituacaoService: jest.Mocked<ISituacaoService> = {
   fetchSituacaoById: jest.fn(),
   saveSituacao: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteSituacao: jest.fn(),
   validateSituacao: jest.fn(),
@@ -211,9 +211,30 @@ describe('useValidationsSituacao', () => {
   });
 
 
-  
+    test('deve invalidar parte_int vazio', () => {
+    const { result } = renderHook(() => useValidationsSituacao());
+
+    const invalidData = { ...initialSituacao, parte_int: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Parte_Int não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar parte_int muito longo', () => {
+    const { result } = renderHook(() => useValidationsSituacao());
+
+    const invalidData = { 
+      ...initialSituacao, 
+      parte_int: 'a'.repeat(30+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo Parte_Int não pode ter mais de 30 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsSituacao());

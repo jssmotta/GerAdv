@@ -5,7 +5,6 @@
 export interface Instancia
 {
     id: number;
-	processo : number;
 	acao : number;
 	foro : number;
 	tiporecurso : number;
@@ -16,6 +15,7 @@ export interface Instancia
 	interpusemosrecurso : boolean;
 	liminarconcedida : boolean;
 	liminarnegada : boolean;
+	processo : number;
 	data : string;
 	liminarparcial : boolean;
 	liminarresultado : string;
@@ -33,7 +33,6 @@ export interface Instancia
 	accesscode : string;
 	julgador : number;
 	zkeyia : string;
-	nropastaprocessos?: string;
 	descricaoacao?: string;
 	nomeforo?: string;
 	descricaotiporecurso?: string;
@@ -46,7 +45,6 @@ export function InstanciaEmpty(): IInstancia {
     
     return {
         id: 0,
-		processo: 0,
 		acao: 0,
 		foro: 0,
 		tiporecurso: 0,
@@ -57,6 +55,7 @@ export function InstanciaEmpty(): IInstancia {
 		interpusemosrecurso: false,
 		liminarconcedida: false,
 		liminarnegada: false,
+		processo: 0,
 		data: '',
 		liminarparcial: false,
 		liminarresultado: '',
@@ -81,7 +80,6 @@ export function InstanciaTestEmpty(): IInstancia {
     
     return {
         id: 1,
-		processo: 1,
 		acao: 1,
 		foro: 1,
 		tiporecurso: 1,
@@ -92,6 +90,7 @@ export function InstanciaTestEmpty(): IInstancia {
 		interpusemosrecurso: true,
 		liminarconcedida: true,
 		liminarnegada: true,
+		processo: 1,
 		data: 'X',
 		liminarparcial: true,
 		liminarresultado: 'X',

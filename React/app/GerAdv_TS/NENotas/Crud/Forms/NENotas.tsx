@@ -16,17 +16,11 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { NENotasApi } from '../../Apis/ApiNENotas';
 import { useValidationsNENotas } from '../../Hooks/hookNENotas';
-import ApensoComboBox from '@/app/GerAdv_TS/Apenso/ComboBox/Apenso';
-import PrecatoriaComboBox from '@/app/GerAdv_TS/Precatoria/ComboBox/Precatoria';
 import InstanciaComboBox from '@/app/GerAdv_TS/Instancia/ComboBox/Instancia';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
-import { ApensoApi } from '@/app/GerAdv_TS/Apenso/Apis/ApiApenso';
-import { PrecatoriaApi } from '@/app/GerAdv_TS/Precatoria/Apis/ApiPrecatoria';
 import { InstanciaApi } from '@/app/GerAdv_TS/Instancia/Apis/ApiInstancia';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
-import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 import InputInput from '@/app/components/Inputs/InputInput'
+import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
 interface NENotasFormProps {
   nenotasData: INENotas;
   onChange: (e: any) => void;
@@ -53,44 +47,8 @@ const dadoApi = new NENotasApi(systemContext?.Uri ?? '', systemContext?.Token ??
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsNENotas();
-const [nomeApenso, setNomeApenso] = useState('');
-const apensoApi = new ApensoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-const [nomePrecatoria, setNomePrecatoria] = useState('');
-const precatoriaApi = new PrecatoriaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 const [nomeInstancia, setNomeInstancia] = useState('');
 const instanciaApi = new InstanciaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
-
-if (getParamFromUrl('apenso') > 0) {
-  if (nenotasData.id === 0 && nenotasData.apenso == 0) {
-    apensoApi
-    .getById(getParamFromUrl('apenso'))
-    .then((response) => {
-      setNomeApenso(response.data.campo);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    nenotasData.apenso = getParamFromUrl('apenso');
-  }
-}
-
-if (getParamFromUrl('precatoria') > 0) {
-  if (nenotasData.id === 0 && nenotasData.precatoria == 0) {
-    precatoriaApi
-    .getById(getParamFromUrl('precatoria'))
-    .then((response) => {
-      setNomePrecatoria(response.data.campo);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    nenotasData.precatoria = getParamFromUrl('precatoria');
-  }
-}
 
 if (getParamFromUrl('instancia') > 0) {
   if (nenotasData.id === 0 && nenotasData.instancia == 0) {
@@ -106,199 +64,187 @@ if (getParamFromUrl('instancia') > 0) {
     nenotasData.instancia = getParamFromUrl('instancia');
   }
 }
-
-if (getParamFromUrl('processos') > 0) {
-  if (nenotasData.id === 0 && nenotasData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
-
-    nenotasData.processo = getParamFromUrl('processos');
-  }
-}
-const addValorApenso = (e: any) => {
+const addValorInstancia = (e: any) => {
   if (e?.id>0)
-    onChange({ target: { name: 'apenso', value: e.id } });
+    onChange({ target: { name: 'instancia', value: e.id } });
   };
-  const addValorPrecatoria = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'precatoria', value: e.id } });
+  const onConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+
+        try {
+          onSubmit(e);
+        } catch (error) {
+        console.log('Erro ao submeter formulário de NENotas:');
+        setIsSubmitting(false);
+        if (onError) onError();
+        }
+      }
     };
-    const addValorInstancia = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'instancia', value: e.id } });
-      };
-      const addValorProcesso = (e: any) => {
-        if (e?.id>0)
-          onChange({ target: { name: 'processo', value: e.id } });
-        };
-        const onConfirm = (e: React.FormEvent) => {
-          e.preventDefault();
-          if (e.stopPropagation) e.stopPropagation();
+    const handleCancel = () => {
+      if (onReload) {
+        onReload(); // Recarrega os dados originais
+      } else {
+      onClose(); // Comportamento padrão se não há callback de recarga
+    }
+  };
 
-            if (!isSubmitting) {
-              setIsSubmitting(true);
+  const handleDirectSave = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
 
-              try {
-                onSubmit(e);
-              } catch (error) {
-              console.log('Erro ao submeter formulário de NENotas:');
-              setIsSubmitting(false);
-              if (onError) onError();
-              }
-            }
-          };
-          const handleCancel = () => {
-            if (onReload) {
-              onReload(); // Recarrega os dados originais
-            } else {
-            onClose(); // Comportamento padrão se não há callback de recarga
-          }
-        };
+      try {
+        const syntheticEvent = {
+          preventDefault: () => { }, 
+          target: document.getElementById(`NENotasForm-${nenotasData.id}`)
+        } as unknown as React.FormEvent;
 
-        const handleDirectSave = () => {
-          if (!isSubmitting) {
-            setIsSubmitting(true);
+        onSubmit(syntheticEvent);
+      } catch (error) {
+      console.log('Erro ao salvar NENotas diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = nenotasData?.id == 0 ? 'Editar NENotas' : 'Adicionar N E Notas';
+    }
+  }, [nenotasData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
 
-            try {
-              const syntheticEvent = {
-                preventDefault: () => { }, 
-                target: document.getElementById(`NENotasForm-${nenotasData.id}`)
-              } as unknown as React.FormEvent;
+    <div className={isMobile ? 'form-container form-container-NENotas' : 'form-container form-container-NENotas'}>
 
-              onSubmit(syntheticEvent);
-            } catch (error) {
-            console.log('Erro ao salvar NENotas diretamente');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
-        };
-        useEffect(() => {
-          const el = document.querySelector('.nameFormMobile');
-          if (el) {
-            el.textContent = nenotasData?.id == 0 ? 'Editar NENotas' : 'Adicionar N E Notas';
-          }
-        }, [nenotasData.id]);
-        return (
-        <>
-        {!isMobile ? <style jsx global>{`
-          @media (max-width: 1366px) {
-            html {
-              zoom: 0.8 !important;
-            }
-          }
-          `}</style> : null}
+      <form className='formInputCadInc' id={`NENotasForm-${nenotasData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='NENotas' data={nenotasData} isSubmitting={isSubmitting} onClose={onClose} formId={`NENotasForm-${nenotasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
 
-          <div className={isMobile ? 'form-container form-container-NENotas' : 'form-container form-container-NENotas'}>
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='nome'
+            value={nenotasData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
 
-            <form className='formInputCadInc' id={`NENotasForm-${nenotasData.id}`} onSubmit={onConfirm}>
-              {!isMobile && (
-                <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='NENotas' data={nenotasData} isSubmitting={isSubmitting} onClose={onClose} formId={`NENotasForm-${nenotasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <div className='grid-container'>
-
-                  <InputName
-                  type='text'
-                  id='nome'
-                  label='Nome'
-                  dataForm={nenotasData}
-                  className='inputIncNome'
-                  name='nome'
-                  value={nenotasData.nome}
-                  placeholder={`Informe Nome`}
-                  onChange={onChange}
-                  required
-                  />
-
-                  <ApensoComboBox
-                  name={'apenso'}
-                  dataForm={nenotasData}
-                  value={nenotasData.apenso}
-                  setValue={addValorApenso}
-                  label={'Apenso'}
-                  />
-
-                  <PrecatoriaComboBox
-                  name={'precatoria'}
-                  dataForm={nenotasData}
-                  value={nenotasData.precatoria}
-                  setValue={addValorPrecatoria}
-                  label={'Precatoria'}
-                  />
-
-                  <InstanciaComboBox
-                  name={'instancia'}
-                  dataForm={nenotasData}
-                  value={nenotasData.instancia}
-                  setValue={addValorInstancia}
-                  label={'Instancia'}
-                  />
-                  <InputCheckbox dataForm={nenotasData} label='MovPro' name='movpro' checked={nenotasData.movpro} onChange={onChange} />
-                  <InputCheckbox dataForm={nenotasData} label='NotaExpedida' name='notaexpedida' checked={nenotasData.notaexpedida} onChange={onChange} />
-                  <InputCheckbox dataForm={nenotasData} label='Revisada' name='revisada' checked={nenotasData.revisada} onChange={onChange} />
-
-                  <ProcessosComboBox
-                  name={'processo'}
-                  dataForm={nenotasData}
-                  value={nenotasData.processo}
-                  setValue={addValorProcesso}
-                  label={'Processos'}
-                  />
-
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='palavrachave'
-                  label='PalavraChave'
-                  dataForm={nenotasData}
-                  className='inputIncNome'
-                  name='palavrachave'
-                  value={nenotasData.palavrachave}
-                  onChange={onChange}
-                  />
-
-                </div><div className='grid-container'>
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='data'
-                  label='Data'
-                  dataForm={nenotasData}
-                  className='inputIncNome'
-                  name='data'
-                  value={nenotasData.data}
-                  onChange={onChange}
-                  />
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='apenso'
+            label='Apenso'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='apenso'
+            value={nenotasData.apenso}
+            onChange={onChange}
+            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2147483647}
-                  id='notapublicada'
-                  label='NotaPublicada'
-                  dataForm={nenotasData}
-                  className='inputIncNome'
-                  name='notapublicada'
-                  value={nenotasData.notapublicada}
-                  onChange={onChange}
-                  />
-
-                </div>
-              </form>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='precatoria'
+            label='Precatoria'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='precatoria'
+            value={nenotasData.precatoria}
+            onChange={onChange}
+            />
 
 
-              {isMobile && (
-                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='NENotas' data={nenotasData} isSubmitting={isSubmitting} onClose={onClose} formId={`NENotasForm-${nenotasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <DeleteButton page={'/pages/nenotas'} id={nenotasData.id} closeModel={onClose} dadoApi={dadoApi} />
-              </div>
-              <div className='form-spacer'></div>
-              </>
-            );
-          };
+            <InstanciaComboBox
+            name={'instancia'}
+            dataForm={nenotasData}
+            value={nenotasData.instancia}
+            setValue={addValorInstancia}
+            label={'Instancia'}
+            />
+            <InputCheckbox dataForm={nenotasData} label='MovPro' name='movpro' checked={nenotasData.movpro} onChange={onChange} />
+            <InputCheckbox dataForm={nenotasData} label='NotaExpedida' name='notaexpedida' checked={nenotasData.notaexpedida} onChange={onChange} />
+            <InputCheckbox dataForm={nenotasData} label='Revisada' name='revisada' checked={nenotasData.revisada} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='processo'
+            value={nenotasData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='palavrachave'
+            label='PalavraChave'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='palavrachave'
+            value={nenotasData.palavrachave}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='data'
+            label='Data'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='data'
+            value={nenotasData.data}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='notapublicada'
+            label='NotaPublicada'
+            dataForm={nenotasData}
+            className='inputIncNome'
+            name='notapublicada'
+            value={nenotasData.notapublicada}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='NENotas' data={nenotasData} isSubmitting={isSubmitting} onClose={onClose} formId={`NENotasForm-${nenotasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/nenotas'} id={nenotasData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

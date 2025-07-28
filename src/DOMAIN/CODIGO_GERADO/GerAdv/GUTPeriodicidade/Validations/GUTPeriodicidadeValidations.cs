@@ -29,9 +29,9 @@ public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
 
     private bool ValidSizes(Models.GUTPeriodicidade reg)
     {
-        if (reg.Nome.Length > 20)
+        if (reg.Nome != null && reg.Nome.Length > 20)
             throw new SGValidationException($"Nome deve ter no máximo 20 caracteres.");
-        if (reg.GUID.Length > 50)
+        if (reg.GUID != null && reg.GUID.Length > 50)
             throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
         return true;
     }

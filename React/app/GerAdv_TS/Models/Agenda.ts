@@ -12,7 +12,6 @@ export interface Agenda
 	cliente : number;
 	area : number;
 	justica : number;
-	processo : number;
 	usuario : number;
 	preposto : number;
 	idcob : number;
@@ -35,6 +34,7 @@ export interface Agenda
 	liberado : boolean;
 	importante : boolean;
 	concluido : boolean;
+	processo : number;
 	idhistorico : number;
 	idinsprocesso : number;
 	quemid : number;
@@ -55,7 +55,6 @@ export interface Agenda
 	nomeclientes?: string;
 	descricaoarea?: string;
 	nomejustica?: string;
-	nropastaprocessos?: string;
 	nomeoperador?: string;
 	nomeprepostos?: string;
 
@@ -74,7 +73,6 @@ export function AgendaEmpty(): IAgenda {
 		cliente: 0,
 		area: 0,
 		justica: 0,
-		processo: 0,
 		usuario: 0,
 		preposto: 0,
 		idcob: 0,
@@ -94,6 +92,7 @@ export function AgendaEmpty(): IAgenda {
 		liberado: false,
 		importante: false,
 		concluido: false,
+		processo: 0,
 		idhistorico: 0,
 		idinsprocesso: 0,
 		quemid: 0,
@@ -121,7 +120,6 @@ export function AgendaTestEmpty(): IAgenda {
 		cliente: 1,
 		area: 1,
 		justica: 1,
-		processo: 1,
 		usuario: 1,
 		preposto: 1,
 		idcob: 1,
@@ -141,6 +139,7 @@ export function AgendaTestEmpty(): IAgenda {
 		liberado: true,
 		importante: true,
 		concluido: true,
+		processo: 1,
 		idhistorico: 1,
 		idinsprocesso: 1,
 		quemid: 1,

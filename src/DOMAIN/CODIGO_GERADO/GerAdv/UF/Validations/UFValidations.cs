@@ -29,13 +29,13 @@ public class UFValidation : IUFValidation
 
     private bool ValidSizes(Models.UF reg)
     {
-        if (reg.DDD.Length > 10)
+        if (reg.DDD != null && reg.DDD.Length > 10)
             throw new SGValidationException($"DDD deve ter no máximo 10 caracteres.");
-        if (reg.IdUF.Length > 4)
+        if (reg.IdUF != null && reg.IdUF.Length > 4)
             throw new SGValidationException($"ID deve ter no máximo 4 caracteres.");
-        if (reg.Descricao.Length > 40)
+        if (reg.Descricao != null && reg.Descricao.Length > 40)
             throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class OperadorGruposAgendaOperadoresReader(IFOperadorGruposAgendaOperadoresFactory operadorgruposagendaoperadoresFactory) : IOperadorGruposAgendaOperadoresReader
 {
     private readonly IFOperadorGruposAgendaOperadoresFactory _operadorgruposagendaoperadoresFactory = operadorgruposagendaoperadoresFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ogpCodigo, ogpGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<OperadorGruposAgendaOperadoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperadorGruposAgendaOperadores.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<OperadorGruposAgendaOperadoresResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -129,7 +130,7 @@ public partial class OperadorGruposAgendaOperadoresReader(IFOperadorGruposAgenda
 
         try
         {
-            operadorgruposagendaoperadores.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
+            //operadorgruposagendaoperadores.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {
@@ -162,7 +163,7 @@ public partial class OperadorGruposAgendaOperadoresReader(IFOperadorGruposAgenda
 
         try
         {
-            operadorgruposagendaoperadores.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
+            //operadorgruposagendaoperadores.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

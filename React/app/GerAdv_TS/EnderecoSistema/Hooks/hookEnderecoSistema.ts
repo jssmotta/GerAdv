@@ -168,7 +168,10 @@ export function useValidationsEnderecoSistema() {
     
       try {
    
-        if (data.motivo.length > 200) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.motivo.length > 200) { 
                                              return { isValid: false, message: 'O campo Motivo não pode ter mais de 200 caracteres.' };
                                          } 
 if (data.contatonolocal.length > 50) { 

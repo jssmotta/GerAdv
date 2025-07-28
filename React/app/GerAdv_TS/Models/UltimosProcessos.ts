@@ -9,7 +9,6 @@ export interface UltimosProcessos
 	quando : string;
 	quando_date? : Date;
 	quem : number;
-	nropastaprocessos?: string;
 
 }
 

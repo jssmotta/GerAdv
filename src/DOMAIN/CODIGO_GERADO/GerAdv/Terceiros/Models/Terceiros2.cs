@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - terProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Situacao - terSituacao  
         /// </summary>
         [JsonPropertyName("situacao")]
@@ -30,6 +24,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("cidade")]
         public int Cidade { get; set; }
+
+        /// <summary>
+        /// Processo - terProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Nome - terNome - tamanho máximo: 80 
@@ -114,12 +114,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - terProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Situacao - terSituacao  
         /// </summary>
         [JsonPropertyName("situacao")]
@@ -130,6 +124,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("cidade")]
         public int Cidade { get; set; }
+
+        /// <summary>
+        /// Processo - terProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Nome - terNome - tamanho máximo: 80 
@@ -202,9 +202,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("descricaoposicaooutraspartes")]
         public string DescricaoPosicaoOutrasPartes { get; set; } = string.Empty;

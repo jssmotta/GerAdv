@@ -7,7 +7,6 @@ export interface IContaCorrente {
 // 202501251
     id: number;
  
-	processo: number,
 	cliente: number,
 	ciacordo: number,
 	quitado: boolean,
@@ -18,6 +17,7 @@ export interface IContaCorrente {
 	sucumbencia: boolean,
 	distregra: boolean,
 	dtoriginal: string,
+	processo: number,
 	parcelax: number,
 	valor: number,
 	data: string,

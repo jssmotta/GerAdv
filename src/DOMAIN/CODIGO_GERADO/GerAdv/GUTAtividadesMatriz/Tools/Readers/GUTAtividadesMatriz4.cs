@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory gutatividadesmatrizFactory) : IGUTAtividadesMatrizReader
 {
     private readonly IFGUTAtividadesMatrizFactory _gutatividadesmatrizFactory = gutatividadesmatrizFactory;
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("amgCodigo, amgGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGUTAtividadesMatriz.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {

@@ -16,6 +16,11 @@ public partial class ProResumosService
             parameters.Add(new($"@{nameof(DBProResumosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProResumosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.Data))
         {
             parameters.Add(new($"@{nameof(DBProResumosDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
@@ -57,7 +62,15 @@ public partial class ProResumosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Processo}] = @{nameof(DBProResumosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Processo}] >= @{nameof(DBProResumosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProResumosDicInfo.Processo} BETWEEN @{nameof(DBProResumosDicInfo.Processo)} AND @{nameof(DBProResumosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProResumosDicInfo.Processo} = @{nameof(DBProResumosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProResumosDicInfo.Processo} <= @{nameof(DBProResumosDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProResumosDicInfo.Data)}");
         cWhere.Append(filtro.Resumo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProResumosDicInfo.PTabelaNome}].[{DBProResumosDicInfo.Resumo}]  {DevourerConsts.MsiCollate} like @{nameof(DBProResumosDicInfo.Resumo)}");
         if (!filtro.TipoResumo.IsEmpty() && filtro.TipoResumo_end.IsEmpty())

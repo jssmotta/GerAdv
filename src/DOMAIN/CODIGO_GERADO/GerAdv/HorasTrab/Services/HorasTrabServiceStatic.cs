@@ -61,6 +61,11 @@ public partial class HorasTrabService
             parameters.Add(new($"@{nameof(DBHorasTrabDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBHorasTrabDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Advogado != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBHorasTrabDicInfo.Advogado)}", filtro.Advogado));
@@ -177,7 +182,15 @@ public partial class HorasTrabService
             cWhere.Append((filtro.Status <= 0 && filtro.Status_end <= 0) ? string.Empty : (!(filtro.Status <= 0) && !(filtro.Status_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Status} BETWEEN @{nameof(DBHorasTrabDicInfo.Status)} AND @{nameof(DBHorasTrabDicInfo.Status)}_end" : !(filtro.Status <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Status} = @{nameof(DBHorasTrabDicInfo.Status)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Status} <= @{nameof(DBHorasTrabDicInfo.Status)}_end");
         }
 
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Processo}] = @{nameof(DBHorasTrabDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Processo}] >= @{nameof(DBHorasTrabDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Processo} BETWEEN @{nameof(DBHorasTrabDicInfo.Processo)} AND @{nameof(DBHorasTrabDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Processo} = @{nameof(DBHorasTrabDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Processo} <= @{nameof(DBHorasTrabDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Advogado}] = @{nameof(DBHorasTrabDicInfo.Advogado)}");
         cWhere.Append(filtro.Funcionario <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Funcionario}] = @{nameof(DBHorasTrabDicInfo.Funcionario)}");
         cWhere.Append(filtro.HrIni.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.HrIni}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.HrIni)}");

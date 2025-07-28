@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProSucumbenciaValidation
 {
-    Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IProcessosReader processosReader, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,16 +26,16 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
 
     private bool ValidSizes(Models.ProSucumbencia reg)
     {
-        if (reg.Nome.Length > 2048)
+        if (reg.Nome != null && reg.Nome.Length > 2048)
             throw new SGValidationException($"Nome deve ter no máximo 2048 caracteres.");
-        if (reg.Percentual.Length > 5)
+        if (reg.Percentual != null && reg.Percentual.Length > 5)
             throw new SGValidationException($"Percentual deve ter no máximo 5 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IProcessosReader processosReader, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -52,15 +52,6 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
             throw new SGValidationException("TipoOrigemSucumbencia é obrigatório.");
         if (reg.GUID.IsEmpty())
             throw new SGValidationException("GUID é obrigatório.");
-        // Processos
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // Instancia
         if (!reg.Instancia.IsEmptyIDNumber())
         {

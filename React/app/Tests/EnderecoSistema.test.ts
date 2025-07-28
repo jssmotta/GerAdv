@@ -14,7 +14,7 @@ import { EnderecoSistemaTestEmpty } from '../GerAdv_TS/Models/EnderecoSistema';
 const mockEnderecoSistemaService: jest.Mocked<IEnderecoSistemaService> = {
   fetchEnderecoSistemaById: jest.fn(),
   saveEnderecoSistema: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteEnderecoSistema: jest.fn(),
   validateEnderecoSistema: jest.fn(),
@@ -50,7 +50,7 @@ describe('useEnderecoSistemaForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'motivo',
+        name: 'guid',
         value: 'Novo Endereco Sistema',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useEnderecoSistemaForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.motivo).toBe('Novo Endereco Sistema');
+    expect(result.current.data.guid).toBe('Novo Endereco Sistema');
   });
 
    test('deve carregar Endereco Sistema por ID', async () => {
-    const mockEnderecoSistema = { ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema Teste' };
+    const mockEnderecoSistema = { ...initialEnderecoSistema, id: 1, guid: 'Endereco Sistema Teste' };
     mockEnderecoSistemaService.fetchEnderecoSistemaById.mockResolvedValue(mockEnderecoSistema);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useEnderecoSistemaForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialEnderecoSistema, motivo: 'Teste' });
+      result.current.setData({ ...initialEnderecoSistema, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useEnderecoSistemaList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema 1' },
-      { ...initialEnderecoSistema, id: 2, motivo: 'Endereco Sistema 2' }
+      { ...initialEnderecoSistema, id: 1, guid: 'Endereco Sistema 1' },
+      { ...initialEnderecoSistema, id: 2, guid: 'Endereco Sistema 2' }
     ];
     mockEnderecoSistemaService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useEnderecoSistemaList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema Filtrado' }];
-    const filtro = { motivo: 'Endereco Sistema' };
+    const mockData = [{ ...initialEnderecoSistema, id: 1, guid: 'Endereco Sistema Filtrado' }];
+    const filtro = { guid: 'Endereco Sistema' };
     mockEnderecoSistemaService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsEnderecoSistema', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsEnderecoSistema());
 
-    const validData = { ...initialEnderecoSistema, motivo: 'Endereco Sistema Válido' };
+    const validData = { ...initialEnderecoSistema, guid: 'Endereco Sistema Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsEnderecoSistema', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsEnderecoSistema());
+
+    const invalidData = { ...initialEnderecoSistema, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsEnderecoSistema());
+
+    const invalidData = { 
+      ...initialEnderecoSistema, 
+      guid: 'a'.repeat(150+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 150 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsEnderecoSistema());
@@ -229,7 +250,7 @@ describe('useValidationsEnderecoSistema', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialEnderecoSistema, id: 1, motivo: 'Endereco Sistema Teste' }];
+    const mockData = [{ ...initialEnderecoSistema, id: 1, guid: 'Endereco Sistema Teste' }];
     mockEnderecoSistemaService.getAll.mockResolvedValue(mockData);
     
 

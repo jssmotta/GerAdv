@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProDepositosValidation
 {
-    Task<bool> ValidateReg(Models.ProDepositos reg, IProDepositosService service, IProcessosReader processosReader, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProDepositos reg, IProDepositosService service, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IProDepositosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -29,7 +29,7 @@ public class ProDepositosValidation : IProDepositosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProDepositos reg, IProDepositosService service, IProcessosReader processosReader, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProDepositos reg, IProDepositosService service, IFaseReader faseReader, ITipoProDespositoReader tipoprodespositoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -48,15 +48,6 @@ public class ProDepositosValidation : IProDepositosValidation
             throw new SGValidationException("Valor é obrigatório.");
         if (reg.TipoProDesposito == 0)
             throw new SGValidationException("TipoProDesposito é obrigatório.");
-        // Processos
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // Fase
         {
             var regFase = await faseReader.Read(reg.Fase, oCnn);

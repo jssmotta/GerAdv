@@ -9,7 +9,6 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterPenhora } from '@/app/GerAdv_TS/Penhora/Filters/Penhora';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 import PenhoraStatusComboBox from '@/app/GerAdv_TS/PenhoraStatus/ComboBox/PenhoraStatus';
 interface UsePenhoraFilterProps {
   handleFetchWithFilter: (filtro?: FilterPenhora | undefined | null) => Promise<void>;
@@ -57,13 +56,26 @@ export const usePenhoraFilter = ({ handleFetchWithFilter }: UsePenhoraFilterProp
   // Função para renderizar os campos de filtro
   const renderInputFilters = (handlers: FilterHandlers<FilterPenhora>) => (
   <>
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

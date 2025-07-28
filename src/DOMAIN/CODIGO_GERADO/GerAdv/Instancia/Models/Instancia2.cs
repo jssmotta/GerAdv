@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - insProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Acao - insAcao  
         /// </summary>
         [JsonPropertyName("acao")]
@@ -78,6 +72,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("liminarnegada")]
         public bool LiminarNegada { get; set; }
+
+        /// <summary>
+        /// Processo - insProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - insData  
@@ -195,12 +195,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Processo - insProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Acao - insAcao  
         /// </summary>
         [JsonPropertyName("acao")]
@@ -259,6 +253,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("liminarnegada")]
         public bool LiminarNegada { get; set; }
+
+        /// <summary>
+        /// Processo - insProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Data - insData  
@@ -364,9 +364,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("descricaoacao")]
         public string DescricaoAcao { get; set; } = string.Empty;

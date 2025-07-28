@@ -3,11 +3,11 @@
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProDespesas
 {	cliente = `Cliente`,
-	processo = `Processo`,
 	ligacaoid = `LigacaoID`,
 	corrigido = `Corrigido`,
 	data = `Data`,
 	valororiginal = `ValorOriginal`,
+	processo = `Processo`,
 	quitado = `Quitado`,
 	datacorrecao = `DataCorrecao`,
 	valor = `Valor`,

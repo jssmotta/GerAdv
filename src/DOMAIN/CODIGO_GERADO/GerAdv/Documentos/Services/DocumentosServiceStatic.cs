@@ -16,6 +16,11 @@ public partial class DocumentosService
             parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.Data))
         {
             parameters.Add(new($"@{nameof(DBDocumentosDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
@@ -47,7 +52,15 @@ public partial class DocumentosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Processo}] = @{nameof(DBDocumentosDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Processo}] >= @{nameof(DBDocumentosDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDocumentosDicInfo.Processo} BETWEEN @{nameof(DBDocumentosDicInfo.Processo)} AND @{nameof(DBDocumentosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDocumentosDicInfo.Processo} = @{nameof(DBDocumentosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDocumentosDicInfo.Processo} <= @{nameof(DBDocumentosDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBDocumentosDicInfo.Data)}");
         cWhere.Append(filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBDocumentosDicInfo.Observacao)}");
         cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDocumentosDicInfo.PTabelaNome}].[{DBDocumentosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBDocumentosDicInfo.GUID)}");

@@ -312,14 +312,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
         }
 
-        try
-        {
-            ligacoes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return ligacoes;
     }
 
@@ -392,14 +384,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         try
         {
             ligacoes.NomeRamal = dr[DBRamalDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            ligacoes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
         {

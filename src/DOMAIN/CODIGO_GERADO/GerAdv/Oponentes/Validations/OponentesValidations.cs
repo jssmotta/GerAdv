@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOponentesValidation
 {
     Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OponentesValidation : IOponentesValidation
 {
-    public async Task<bool> CanDelete(int id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IProcessosService processosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
@@ -27,41 +27,38 @@ public class OponentesValidation : IOponentesValidation
         var oponentesreplegalExists1 = await oponentesreplegalService.Filter(new Filters.FilterOponentesRepLegal { Oponente = id }, uri);
         if (oponentesreplegalExists1 != null && oponentesreplegalExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Oponentes Rep Legal associados a ele.");
-        var processosExists2 = await processosService.Filter(new Filters.FilterProcessos { Oponente = id }, uri);
-        if (processosExists2 != null && processosExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Oponentes reg)
     {
-        if (reg.CTPSNumero.Length > 15)
+        if (reg.CTPSNumero != null && reg.CTPSNumero.Length > 15)
             throw new SGValidationException($"CTPSNumero deve ter no máximo 15 caracteres.");
-        if (reg.Site.Length > 150)
+        if (reg.Site != null && reg.Site.Length > 150)
             throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.CTPSSerie.Length > 10)
+        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > 10)
             throw new SGValidationException($"CTPSSerie deve ter no máximo 10 caracteres.");
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.PIS.Length > 20)
+        if (reg.PIS != null && reg.PIS.Length > 20)
             throw new SGValidationException($"PIS deve ter no máximo 20 caracteres.");
-        if (reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.RG.Length > 12)
+        if (reg.RG != null && reg.RG.Length > 12)
             throw new SGValidationException($"RG deve ter no máximo 12 caracteres.");
-        if (reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.InscEst.Length > 15)
+        if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.Class.Length > 1)
+        if (reg.Class != null && reg.Class.Length > 1)
             throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class SituacaoService(IOptions<AppSettings> appSettings, IFSituacaoFactory situacaoFactory, ISituacaoReader reader, ISituacaoValidation validation, ISituacaoWriter writer, IProcessosService processosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ISituacaoService, IDisposable
+public partial class SituacaoService(IOptions<AppSettings> appSettings, IFSituacaoFactory situacaoFactory, ISituacaoReader reader, ISituacaoValidation validation, ISituacaoWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ISituacaoService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class SituacaoService(IOptions<AppSettings> appSettings, IFSituac
     private readonly ISituacaoReader reader = reader;
     private readonly ISituacaoValidation validation = validation;
     private readonly ISituacaoWriter writer = writer;
-    private readonly IProcessosService processosService = processosService;
     public async Task<IEnumerable<SituacaoResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -196,7 +195,7 @@ public partial class SituacaoService(IOptions<AppSettings> appSettings, IFSituac
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, processosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

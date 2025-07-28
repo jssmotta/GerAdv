@@ -26,17 +26,17 @@ public class BensMateriaisValidation : IBensMateriaisValidation
 
     private bool ValidSizes(Models.BensMateriais reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.NFNRO.Length > 255)
+        if (reg.NFNRO != null && reg.NFNRO.Length > 255)
             throw new SGValidationException($"NFNRO deve ter no máximo 255 caracteres.");
-        if (reg.NroSerieProduto.Length > 100)
+        if (reg.NroSerieProduto != null && reg.NroSerieProduto.Length > 100)
             throw new SGValidationException($"NroSerieProduto deve ter no máximo 100 caracteres.");
-        if (reg.Comprador.Length > 100)
+        if (reg.Comprador != null && reg.Comprador.Length > 100)
             throw new SGValidationException($"Comprador deve ter no máximo 100 caracteres.");
-        if (reg.NomeVendedor.Length > 255)
+        if (reg.NomeVendedor != null && reg.NomeVendedor.Length > 255)
             throw new SGValidationException($"NomeVendedor deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

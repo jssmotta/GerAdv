@@ -7,9 +7,9 @@ export interface ITerceiros {
 // 202501251
     id: number;
  
-	processo: number,
 	situacao: number,
 	cidade: number,
+	processo: number,
 	nome: string,
 	endereco: string,
 	bairro: string,

@@ -16,8 +16,6 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { AndamentosMDApi } from '../../Apis/ApiAndamentosMD';
 import { useValidationsAndamentosMD } from '../../Hooks/hookAndamentosMD';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
 interface AndamentosMDFormProps {
@@ -46,162 +44,147 @@ const dadoApi = new AndamentosMDApi(systemContext?.Uri ?? '', systemContext?.Tok
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsAndamentosMD();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
-if (getParamFromUrl('processos') > 0) {
-  if (andamentosmdData.id === 0 && andamentosmdData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
 
-    andamentosmdData.processo = getParamFromUrl('processos');
-  }
-}
-const addValorProcesso = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-
-      if (!isSubmitting) {
-        setIsSubmitting(true);
-
-        try {
-          onSubmit(e);
-        } catch (error) {
-        console.log('Erro ao submeter formulário de AndamentosMD:');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
-
-  const handleDirectSave = () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
 
       try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`AndamentosMDForm-${andamentosmdData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
+        onSubmit(e);
       } catch (error) {
-      console.log('Erro ao salvar AndamentosMD diretamente');
+      console.log('Erro ao submeter formulário de AndamentosMD:');
       setIsSubmitting(false);
       if (onError) onError();
       }
     }
   };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = andamentosmdData?.id == 0 ? 'Editar AndamentosMD' : 'Adicionar Andamentos M D';
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`AndamentosMDForm-${andamentosmdData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.log('Erro ao salvar AndamentosMD diretamente');
+    setIsSubmitting(false);
+    if (onError) onError();
     }
-  }, [andamentosmdData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = andamentosmdData?.id == 0 ? 'Editar AndamentosMD' : 'Adicionar Andamentos M D';
+  }
+}, [andamentosmdData.id]);
+return (
+<>
+{!isMobile ? <style jsx global>{`
+  @media (max-width: 1366px) {
+    html {
+      zoom: 0.8 !important;
     }
-    `}</style> : null}
+  }
+  `}</style> : null}
 
-    <div className={isMobile ? 'form-container form-container-AndamentosMD' : 'form-container5 form-container-AndamentosMD'}>
+  <div className={isMobile ? 'form-container form-container-AndamentosMD' : 'form-container5 form-container-AndamentosMD'}>
 
-      <form className='formInputCadInc' id={`AndamentosMDForm-${andamentosmdData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AndamentosMD' data={andamentosmdData} isSubmitting={isSubmitting} onClose={onClose} formId={`AndamentosMDForm-${andamentosmdData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+    <form className='formInputCadInc' id={`AndamentosMDForm-${andamentosmdData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AndamentosMD' data={andamentosmdData} isSubmitting={isSubmitting} onClose={onClose} formId={`AndamentosMDForm-${andamentosmdData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
 
-            <InputName
-            type='text'
-            id='nome'
-            label='Nome'
-            dataForm={andamentosmdData}
-            className='inputIncNome'
-            name='nome'
-            value={andamentosmdData.nome}
-            placeholder={`Informe Nome`}
-            onChange={onChange}
-            required
-            />
+          <InputName
+          type='text'
+          id='nome'
+          label='Nome'
+          dataForm={andamentosmdData}
+          className='inputIncNome'
+          name='nome'
+          value={andamentosmdData.nome}
+          placeholder={`Informe Nome`}
+          onChange={onChange}
+          required
+          />
 
-            <ProcessosComboBox
-            name={'processo'}
-            dataForm={andamentosmdData}
-            value={andamentosmdData.processo}
-            setValue={addValorProcesso}
-            label={'Processos'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='andamento'
-            label='Andamento'
-            dataForm={andamentosmdData}
-            className='inputIncNome'
-            name='andamento'
-            value={andamentosmdData.andamento}
-            onChange={onChange}
-            />
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='processo'
+          label='Processo'
+          dataForm={andamentosmdData}
+          className='inputIncNome'
+          name='processo'
+          value={andamentosmdData.processo}
+          onChange={onChange}
+          />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='pathfull'
-            label='PathFull'
-            dataForm={andamentosmdData}
-            className='inputIncNome'
-            name='pathfull'
-            value={andamentosmdData.pathfull}
-            onChange={onChange}
-            />
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='andamento'
+          label='Andamento'
+          dataForm={andamentosmdData}
+          className='inputIncNome'
+          name='andamento'
+          value={andamentosmdData.andamento}
+          onChange={onChange}
+          />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='unc'
-            label='UNC'
-            dataForm={andamentosmdData}
-            className='inputIncNome'
-            name='unc'
-            value={andamentosmdData.unc}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+          <InputInput
+          type='text'
+          maxLength={2147483647}
+          id='pathfull'
+          label='PathFull'
+          dataForm={andamentosmdData}
+          className='inputIncNome'
+          name='pathfull'
+          value={andamentosmdData.pathfull}
+          onChange={onChange}
+          />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AndamentosMD' data={andamentosmdData} isSubmitting={isSubmitting} onClose={onClose} formId={`AndamentosMDForm-${andamentosmdData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/andamentosmd'} id={andamentosmdData.id} closeModel={onClose} dadoApi={dadoApi} />
+          <InputInput
+          type='text'
+          maxLength={2147483647}
+          id='unc'
+          label='UNC'
+          dataForm={andamentosmdData}
+          className='inputIncNome'
+          name='unc'
+          value={andamentosmdData.unc}
+          onChange={onChange}
+          />
+
         </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AndamentosMD' data={andamentosmdData} isSubmitting={isSubmitting} onClose={onClose} formId={`AndamentosMDForm-${andamentosmdData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/andamentosmd'} id={andamentosmdData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

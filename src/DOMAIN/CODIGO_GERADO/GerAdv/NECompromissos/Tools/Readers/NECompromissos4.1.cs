@@ -23,9 +23,10 @@ public partial class NECompromissosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}]
+                   {campos}, 
+[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}]
                    FROM {DBNECompromissos.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromisso.CampoCodigo}]=[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.TipoCompromisso}]
+                   LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}]=[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.TipoCompromisso}]
  
                    {cWhere}
                    {orderQuery}

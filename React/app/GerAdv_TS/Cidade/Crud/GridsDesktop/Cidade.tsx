@@ -97,18 +97,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?cidade=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellBensMateriais = (id: number) => {
   router.push(`/pages/bensmateriais/?cidade=${id}`);
 };
@@ -313,18 +301,6 @@ const SearchFromCellPrepostos = (props: any) => {
 </>
 );
 };
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?cidade=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellTerceiros = (id: number) => {
   router.push(`/pages/terceiros/?cidade=${id}`);
 };
@@ -383,14 +359,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
   />, 
   <GridColumn
   field='id_edit_BensMateriais'
@@ -527,14 +495,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Prepostos'
   cells={{ data: SearchFromCellPrepostos }}
-  />, 
-  <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
   />, 
   <GridColumn
   field='id_edit_Terceiros'

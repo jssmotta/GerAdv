@@ -160,14 +160,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        try
-        {
-            livrocaixa.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return livrocaixa;
     }
 
@@ -195,14 +187,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
-        try
-        {
-            livrocaixa.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return livrocaixa;
     }
 }

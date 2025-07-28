@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IApenso2Validation
 {
-    Task<bool> ValidateReg(Models.Apenso2 reg, IApenso2Service service, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Apenso2 reg, IApenso2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IApenso2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -29,23 +29,14 @@ public class Apenso2Validation : IApenso2Validation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Apenso2 reg, IApenso2Service service, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Apenso2 reg, IApenso2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
+        await Task.Delay(0);
         return true;
     }
 }

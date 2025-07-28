@@ -23,11 +23,12 @@ public partial class ProDepositosReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}],[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Descricao}],[{DBTipoProDespositoDicInfo.PTabelaNome}].[{DBTipoProDespositoDicInfo.Nome}]
+                   {campos}, 
+[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Descricao}],
+[{DBTipoProDespositoDicInfo.PTabelaNome}].[{DBTipoProDespositoDicInfo.Nome}]
                    FROM {DBProDepositos.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Processo}]
-LEFT JOIN {DBFaseDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFaseDicInfo.PTabelaNome}].[{DBFase.CampoCodigo}]=[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Fase}]
-LEFT JOIN {DBTipoProDespositoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoProDespositoDicInfo.PTabelaNome}].[{DBTipoProDesposito.CampoCodigo}]=[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.TipoProDesposito}]
+                   LEFT JOIN {DBFaseDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.CampoCodigo}]=[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Fase}]
+LEFT JOIN {DBTipoProDespositoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoProDespositoDicInfo.PTabelaNome}].[{DBTipoProDespositoDicInfo.CampoCodigo}]=[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.TipoProDesposito}]
  
                    {cWhere}
                    {orderQuery}

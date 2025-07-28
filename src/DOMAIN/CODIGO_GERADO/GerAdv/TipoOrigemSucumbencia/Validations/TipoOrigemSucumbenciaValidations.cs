@@ -29,7 +29,7 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
 
     private bool ValidSizes(Models.TipoOrigemSucumbencia reg)
     {
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
         return true;
     }

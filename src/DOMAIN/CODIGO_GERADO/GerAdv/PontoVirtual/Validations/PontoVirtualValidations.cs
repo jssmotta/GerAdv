@@ -26,7 +26,7 @@ public class PontoVirtualValidation : IPontoVirtualValidation
 
     private bool ValidSizes(Models.PontoVirtual reg)
     {
-        if (reg.Key.Length > 23)
+        if (reg.Key != null && reg.Key.Length > 23)
             throw new SGValidationException($"Key deve ter no máximo 23 caracteres.");
         return true;
     }

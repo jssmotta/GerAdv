@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFColaboradoresFactory colaboradoresFactory, IColaboradoresReader reader, IColaboradoresValidation validation, IColaboradoresWriter writer, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, IAgendaRecordsService agendarecordsService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IColaboradoresService, IDisposable
+public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFColaboradoresFactory colaboradoresFactory, IColaboradoresReader reader, IColaboradoresValidation validation, IColaboradoresWriter writer, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IColaboradoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -20,7 +20,6 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
     private readonly ICargosReader cargosReader = cargosReader;
     private readonly IClientesReader clientesReader = clientesReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    private readonly IAgendaRecordsService agendarecordsService = agendarecordsService;
     public async Task<IEnumerable<ColaboradoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -199,7 +198,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendarecordsService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

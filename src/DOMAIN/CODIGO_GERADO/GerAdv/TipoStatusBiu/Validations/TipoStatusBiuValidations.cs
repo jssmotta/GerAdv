@@ -29,7 +29,7 @@ public class TipoStatusBiuValidation : ITipoStatusBiuValidation
 
     private bool ValidSizes(Models.TipoStatusBiu reg)
     {
-        if (reg.Nome.Length > 150)
+        if (reg.Nome != null && reg.Nome.Length > 150)
             throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
         return true;
     }

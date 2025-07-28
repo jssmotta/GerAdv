@@ -226,6 +226,18 @@ const addValorJustica = (e: any) => {
                   )}
                   <div className='grid-container'>
 
+                    <InputName
+                    type='text'
+                    id='guid'
+                    label='GUID'
+                    dataForm={divisaotribunalData}
+                    className='inputIncNome'
+                    name='guid'
+                    value={divisaotribunalData.guid}
+                    placeholder={`Informe GUID`}
+                    onChange={onChange}
+                    required
+                    />
 
                     <InputInput
                     type='text'

@@ -20,12 +20,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Cliente { get; set; }
 
         /// <summary>
-        /// Processo - htbProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Advogado - htbAdvogado  
         /// </summary>
         [JsonPropertyName("advogado")]
@@ -72,6 +66,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("status")]
         public int Status { get; set; }
+
+        /// <summary>
+        /// Processo - htbProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// HrIni - htbHrIni - tamanho máximo: 5 
@@ -144,12 +144,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Cliente { get; set; }
 
         /// <summary>
-        /// Processo - htbProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Advogado - htbAdvogado  
         /// </summary>
         [JsonPropertyName("advogado")]
@@ -196,6 +190,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("status")]
         public int Status { get; set; }
+
+        /// <summary>
+        /// Processo - htbProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// HrIni - htbHrIni - tamanho máximo: 5 
@@ -253,9 +253,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
 
         [JsonPropertyName("nomeadvogados")]
         public string NomeAdvogados { get; set; } = string.Empty;

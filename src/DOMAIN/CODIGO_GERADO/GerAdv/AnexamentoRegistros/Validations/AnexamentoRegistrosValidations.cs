@@ -26,9 +26,9 @@ public class AnexamentoRegistrosValidation : IAnexamentoRegistrosValidation
 
     private bool ValidSizes(Models.AnexamentoRegistros reg)
     {
-        if (reg.GUIDReg.Length > 100)
+        if (reg.GUIDReg != null && reg.GUIDReg.Length > 100)
             throw new SGValidationException($"GUIDReg deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

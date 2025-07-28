@@ -25,7 +25,7 @@ export class ProcessOutputRequestValidator {
 export interface IProcessOutputRequestService {
   fetchProcessOutputRequestById: (id: number) => Promise<IProcessOutputRequest>;
   saveProcessOutputRequest: (processoutputrequest: IProcessOutputRequest) => Promise<IProcessOutputRequest>;  
-  
+  getList: (filtro?: FilterProcessOutputRequest) => Promise<IProcessOutputRequest[]>;
   getAll: (filtro?: FilterProcessOutputRequest) => Promise<IProcessOutputRequest[]>;
   deleteProcessOutputRequest: (id: number) => Promise<void>;
   validateProcessOutputRequest: (processoutputrequest: IProcessOutputRequest) => { isValid: boolean; errors: string[] };
@@ -74,6 +74,17 @@ export class ProcessOutputRequestService implements IProcessOutputRequestService
   }
 
   
+    async getList(filtro?: FilterProcessOutputRequest): Promise<IProcessOutputRequest[]> {
+    try {
+      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
+      return response.data || [];
+    } catch (error) {
+      console.log('Error fetching ProcessOutputRequest list');
+      return [];
+    }
+  }
+
+ 
   
 
    async getAll(

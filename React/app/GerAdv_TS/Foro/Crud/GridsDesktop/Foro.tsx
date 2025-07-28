@@ -73,18 +73,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellAgendaRecords = (id: number) => {
-  router.push(`/pages/agendarecords/?foro=${id}`);
-};
-const SearchFromCellAgendaRecords = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaRecords(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Records'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellDivisaoTribunal = (id: number) => {
   router.push(`/pages/divisaotribunal/?foro=${id}`);
 };
@@ -140,14 +128,6 @@ const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
   <GridColumn field='nome' title='Nome' sortable={true} filterable={true} />, /* Track G.02 */
-  <GridColumn
-  field='id_edit_AgendaRecords'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Records'
-  cells={{ data: SearchFromCellAgendaRecords }}
-  />, 
   <GridColumn
   field='id_edit_DivisaoTribunal'
   filterable={false}

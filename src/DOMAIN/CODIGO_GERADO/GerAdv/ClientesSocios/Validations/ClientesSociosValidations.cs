@@ -9,67 +9,64 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IClientesSociosValidation
 {
     Task<bool> ValidateReg(Models.ClientesSocios reg, IClientesSociosService service, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IClientesSociosService service, IAgendaRecordsService agendarecordsService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ClientesSociosValidation : IClientesSociosValidation
 {
-    public async Task<bool> CanDelete(int id, IClientesSociosService service, IAgendaRecordsService agendarecordsService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendarecordsExists0 = await agendarecordsService.Filter(new Filters.FilterAgendaRecords { ClientesSocios = id }, uri);
-        if (agendarecordsExists0 != null && agendarecordsExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Records associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.ClientesSocios reg)
     {
-        if (reg.Qualificacao.Length > 100)
+        if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.Nome.Length > 50)
+        if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Site.Length > 150)
+        if (reg.Site != null && reg.Site.Length > 150)
             throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.RepresentanteLegal.Length > 50)
+        if (reg.RepresentanteLegal != null && reg.RepresentanteLegal.Length > 50)
             throw new SGValidationException($"RepresentanteLegal deve ter no máximo 50 caracteres.");
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.RG.Length > 30)
+        if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.Participacao.Length > 10)
+        if (reg.Participacao != null && reg.Participacao.Length > 10)
             throw new SGValidationException($"Participacao deve ter no máximo 10 caracteres.");
-        if (reg.Cargo.Length > 50)
+        if (reg.Cargo != null && reg.Cargo.Length > 50)
             throw new SGValidationException($"Cargo deve ter no máximo 50 caracteres.");
-        if (reg.CNH.Length > 100)
+        if (reg.CNH != null && reg.CNH.Length > 100)
             throw new SGValidationException($"CNH deve ter no máximo 100 caracteres.");
-        if (reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.InscEst.Length > 15)
+        if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.SocioEmpresaAdminNome.Length > 80)
+        if (reg.SocioEmpresaAdminNome != null && reg.SocioEmpresaAdminNome.Length > 80)
             throw new SGValidationException($"SocioEmpresaAdminNome deve ter no máximo 80 caracteres.");
-        if (reg.EnderecoSocio.Length > 80)
+        if (reg.EnderecoSocio != null && reg.EnderecoSocio.Length > 80)
             throw new SGValidationException($"EnderecoSocio deve ter no máximo 80 caracteres.");
-        if (reg.BairroSocio.Length > 50)
+        if (reg.BairroSocio != null && reg.BairroSocio.Length > 50)
             throw new SGValidationException($"BairroSocio deve ter no máximo 50 caracteres.");
-        if (reg.CEPSocio.Length > 10)
+        if (reg.CEPSocio != null && reg.CEPSocio.Length > 10)
             throw new SGValidationException($"CEPSocio deve ter no máximo 10 caracteres.");
-        if (reg.Fax.Length > 2048)
+        if (reg.Fax != null && reg.Fax.Length > 2048)
             throw new SGValidationException($"Fax deve ter no máximo 2048 caracteres.");
-        if (reg.Class.Length > 1)
+        if (reg.Class != null && reg.Class.Length > 1)
             throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }

@@ -111,6 +111,18 @@ return (
         )}
         <div className='grid-container'>
 
+          <InputName
+          type='text'
+          id='guid'
+          label='GUID'
+          dataForm={graphData}
+          className='inputIncNome'
+          name='guid'
+          value={graphData.guid}
+          placeholder={`Informe GUID`}
+          onChange={onChange}
+          required
+          />
 
           <InputInput
           required

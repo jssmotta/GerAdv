@@ -14,7 +14,7 @@ import { HonorariosDadosContratoTestEmpty } from '../GerAdv_TS/Models/Honorarios
 const mockHonorariosDadosContratoService: jest.Mocked<IHonorariosDadosContratoService> = {
   fetchHonorariosDadosContratoById: jest.fn(),
   saveHonorariosDadosContrato: jest.fn(),
-  
+  getList: jest.fn(),
   getAll: jest.fn(),
   deleteHonorariosDadosContrato: jest.fn(),
   validateHonorariosDadosContrato: jest.fn(),
@@ -50,7 +50,7 @@ describe('useHonorariosDadosContratoForm', () => {
 
     const mockEvent = {
       target: {
-        name: 'arquivocontrato',
+        name: 'guid',
         value: 'Novo Honorarios Dados Contrato',
         type: 'text',
         checked: false
@@ -61,11 +61,11 @@ describe('useHonorariosDadosContratoForm', () => {
       result.current.handleChange(mockEvent);
     });
 
-    expect(result.current.data.arquivocontrato).toBe('Novo Honorarios Dados Contrato');
+    expect(result.current.data.guid).toBe('Novo Honorarios Dados Contrato');
   });
 
    test('deve carregar Honorarios Dados Contrato por ID', async () => {
-    const mockHonorariosDadosContrato = { ...initialHonorariosDadosContrato, id: 1, arquivocontrato: 'Honorarios Dados Contrato Teste' };
+    const mockHonorariosDadosContrato = { ...initialHonorariosDadosContrato, id: 1, guid: 'Honorarios Dados Contrato Teste' };
     mockHonorariosDadosContratoService.fetchHonorariosDadosContratoById.mockResolvedValue(mockHonorariosDadosContrato);
 
     const { result } = renderHook(() => 
@@ -104,7 +104,7 @@ describe('useHonorariosDadosContratoForm', () => {
 
     // Primeiro, modifica os dados
     act(() => {
-      result.current.setData({ ...initialHonorariosDadosContrato, arquivocontrato: 'Teste' });
+      result.current.setData({ ...initialHonorariosDadosContrato, guid: 'Teste' });
     });
 
     // Depois reseta
@@ -147,8 +147,8 @@ describe('useHonorariosDadosContratoList', () => {
 
   test('deve buscar dados com fetchData', async () => {
     const mockData = [
-      { ...initialHonorariosDadosContrato, id: 1, arquivocontrato: 'Honorarios Dados Contrato 1' },
-      { ...initialHonorariosDadosContrato, id: 2, arquivocontrato: 'Honorarios Dados Contrato 2' }
+      { ...initialHonorariosDadosContrato, id: 1, guid: 'Honorarios Dados Contrato 1' },
+      { ...initialHonorariosDadosContrato, id: 2, guid: 'Honorarios Dados Contrato 2' }
     ];
     mockHonorariosDadosContratoService.getAll.mockResolvedValue(mockData);
 
@@ -182,8 +182,8 @@ describe('useHonorariosDadosContratoList', () => {
   });
 
   test('deve buscar dados com filtro', async () => {
-    const mockData = [{ ...initialHonorariosDadosContrato, id: 1, arquivocontrato: 'Honorarios Dados Contrato Filtrado' }];
-    const filtro = { arquivocontrato: 'Honorarios Dados Contrato' };
+    const mockData = [{ ...initialHonorariosDadosContrato, id: 1, guid: 'Honorarios Dados Contrato Filtrado' }];
+    const filtro = { guid: 'Honorarios Dados Contrato' };
     mockHonorariosDadosContratoService.getAll.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => 
@@ -203,7 +203,7 @@ describe('useValidationsHonorariosDadosContrato', () => {
   test('deve validar dados corretos', () => {
     const { result } = renderHook(() => useValidationsHonorariosDadosContrato());
 
-    const validData = { ...initialHonorariosDadosContrato, arquivocontrato: 'Honorarios Dados Contrato Válido' };
+    const validData = { ...initialHonorariosDadosContrato, guid: 'Honorarios Dados Contrato Válido' };
     const validation = result.current.validate(validData);
 
     expect(validation.isValid).toBe(true);
@@ -211,9 +211,30 @@ describe('useValidationsHonorariosDadosContrato', () => {
   });
 
 
-  
+    test('deve invalidar guid vazio', () => {
+    const { result } = renderHook(() => useValidationsHonorariosDadosContrato());
+
+    const invalidData = { ...initialHonorariosDadosContrato, guid: '' };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
+  });
 
   
+  test('deve invalidar guid muito longo', () => {
+    const { result } = renderHook(() => useValidationsHonorariosDadosContrato());
+
+    const invalidData = { 
+      ...initialHonorariosDadosContrato, 
+      guid: 'a'.repeat(150+1)
+    };
+    const validation = result.current.validate(invalidData);
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.message).toBe('O campo GUID não pode ter mais de 150 caracteres.');
+  });
+
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsHonorariosDadosContrato());
@@ -229,7 +250,7 @@ describe('useValidationsHonorariosDadosContrato', () => {
 // Teste de integração para múltiplos hooks
 describe('Integração de hooks', () => {
   test('deve funcionar em conjunto', async () => {
-    const mockData = [{ ...initialHonorariosDadosContrato, id: 1, arquivocontrato: 'Honorarios Dados Contrato Teste' }];
+    const mockData = [{ ...initialHonorariosDadosContrato, id: 1, guid: 'Honorarios Dados Contrato Teste' }];
     mockHonorariosDadosContratoService.getAll.mockResolvedValue(mockData);
     
 

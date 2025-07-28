@@ -21,7 +21,7 @@ public class DBToolWTable32Async : DBToolWTable32
         using var oTrans = oCnn.BeginTransaction();
         try
         {
-            var cSql = BuildSqlCommand(oCnn, insertConvertedId);
+            var cSql = BuildSqlCommand(oCnn, oTrans, insertConvertedId);
             var result = await ExecuteCommandAsync(oCnn, oTrans, cSql, cancellationToken, timeoutSeconds);
             return result;
         }

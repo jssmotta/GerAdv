@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProcessosParadosValidation
 {
-    Task<bool> ValidateReg(Models.ProcessosParados reg, IProcessosParadosService service, IProcessosReader processosReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProcessosParados reg, IProcessosParadosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IProcessosParadosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -29,7 +29,7 @@ public class ProcessosParadosValidation : IProcessosParadosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProcessosParados reg, IProcessosParadosService service, IProcessosReader processosReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProcessosParados reg, IProcessosParadosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -42,15 +42,6 @@ public class ProcessosParadosValidation : IProcessosParadosValidation
             throw new SGValidationException("Semana é obrigatório.");
         if (reg.Ano == 0)
             throw new SGValidationException("Ano é obrigatório.");
-        // Processos
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
         // Operador
         if (!reg.Operador.IsEmptyIDNumber())
         {

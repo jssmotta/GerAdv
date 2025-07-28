@@ -61,18 +61,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellHistorico = (id: number) => {
-  router.push(`/pages/historico/?fase=${id}`);
-};
-const SearchFromCellHistorico = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellHistorico(props.dataItem.id)}><span title='Pesquisar relacionados em Historico'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellProDepositos = (id: number) => {
   router.push(`/pages/prodepositos/?fase=${id}`);
 };
@@ -89,14 +77,6 @@ const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn field='descricao' title='Descricao' />,
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />, <GridColumn
-  field='id_edit_Historico'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Historico'
-  cells={{ data: SearchFromCellHistorico }}
-  />, 
-  <GridColumn
   field='id_edit_ProDepositos'
   filterable={false}
   sortable={false}

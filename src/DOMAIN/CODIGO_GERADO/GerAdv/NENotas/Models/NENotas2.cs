@@ -14,6 +14,12 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
+        /// Instancia - nepInstancia  
+        /// </summary>
+        [JsonPropertyName("instancia")]
+        public int Instancia { get; set; }
+
+        /// <summary>
         /// Apenso - nepApenso  
         /// </summary>
         [JsonPropertyName("apenso")]
@@ -24,18 +30,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("precatoria")]
         public int Precatoria { get; set; }
-
-        /// <summary>
-        /// Instancia - nepInstancia  
-        /// </summary>
-        [JsonPropertyName("instancia")]
-        public int Instancia { get; set; }
-
-        /// <summary>
-        /// Processo - nepProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
 
         /// <summary>
         /// MovPro - nepMovPro  
@@ -60,6 +54,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("revisada")]
         public bool Revisada { get; set; }
+
+        /// <summary>
+        /// Processo - nepProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// PalavraChave - nepPalavraChave  
@@ -90,6 +90,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
+        /// Instancia - nepInstancia  
+        /// </summary>
+        [JsonPropertyName("instancia")]
+        public int Instancia { get; set; }
+
+        /// <summary>
         /// Apenso - nepApenso  
         /// </summary>
         [JsonPropertyName("apenso")]
@@ -100,18 +106,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("precatoria")]
         public int Precatoria { get; set; }
-
-        /// <summary>
-        /// Instancia - nepInstancia  
-        /// </summary>
-        [JsonPropertyName("instancia")]
-        public int Instancia { get; set; }
-
-        /// <summary>
-        /// Processo - nepProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
 
         /// <summary>
         /// MovPro - nepMovPro  
@@ -138,6 +132,12 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Revisada { get; set; }
 
         /// <summary>
+        /// Processo - nepProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
+
+        /// <summary>
         /// PalavraChave - nepPalavraChave  
         /// </summary>
         [JsonPropertyName("palavrachave")]
@@ -157,8 +157,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nroprocessoinstancia")]
         public string NroProcessoInstancia { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

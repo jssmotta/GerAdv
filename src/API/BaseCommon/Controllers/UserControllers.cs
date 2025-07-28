@@ -42,7 +42,7 @@ public partial class UsersController(IUserService userService) : ControllerBase
         {
             return BadRequest(new { message = "Error setting password, operator" });
         }
-        if (DevourerOne.IsSenhaFraca(model.Password.DecodeBase64(), dbOper!.Nome))
+        if (SGHelpers.IsSenhaFraca(model.Password.DecodeBase64(), dbOper!.Nome))
         {
             return BadRequest(new { message = "Weak passord" });
         }

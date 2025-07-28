@@ -23,12 +23,10 @@ public partial class NENotasReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBApensoDicInfo.PTabelaNome}].[{DBApensoDicInfo.}],[{DBPrecatoriaDicInfo.PTabelaNome}].[{DBPrecatoriaDicInfo.}],[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.NroProcesso}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}, 
+[{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.NroProcesso}]
                    FROM {DBNENotas.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBApensoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBApensoDicInfo.PTabelaNome}].[{DBApenso.CampoCodigo}]=[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Apenso}]
-LEFT JOIN {DBPrecatoriaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPrecatoriaDicInfo.PTabelaNome}].[{DBPrecatoria.CampoCodigo}]=[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Precatoria}]
-LEFT JOIN {DBInstanciaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBInstanciaDicInfo.PTabelaNome}].[{DBInstancia.CampoCodigo}]=[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Instancia}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Processo}]
+                   LEFT JOIN {DBInstanciaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBInstanciaDicInfo.PTabelaNome}].[{DBInstanciaDicInfo.CampoCodigo}]=[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Instancia}]
  
                    {cWhere}
                    {orderQuery}

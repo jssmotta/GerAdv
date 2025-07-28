@@ -11,7 +11,6 @@ import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterLigacoes } from '@/app/GerAdv_TS/Ligacoes/Filters/Ligacoes';
 import ClientesComboBox from '@/app/GerAdv_TS/Clientes/ComboBox/Clientes';
 import RamalComboBox from '@/app/GerAdv_TS/Ramal/ComboBox/Ramal';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 interface UseLigacoesFilterProps {
   handleFetchWithFilter: (filtro?: FilterLigacoes | undefined | null) => Promise<void>;
 }
@@ -337,13 +336,26 @@ export const useLigacoesFilter = ({ handleFetchWithFilter }: UseLigacoesFilterPr
   label='LigarPara'
   className='inputIncNome inputSearch'
   />
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputComboFilterYesNo
   type='text'

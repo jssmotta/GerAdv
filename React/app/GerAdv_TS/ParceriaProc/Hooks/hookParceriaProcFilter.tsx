@@ -10,7 +10,6 @@ import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterParceriaProc } from '@/app/GerAdv_TS/ParceriaProc/Filters/ParceriaProc';
 import AdvogadosComboBox from '@/app/GerAdv_TS/Advogados/ComboBox/Advogados';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 interface UseParceriaProcFilterProps {
   handleFetchWithFilter: (filtro?: FilterParceriaProc | undefined | null) => Promise<void>;
 }
@@ -65,13 +64,26 @@ export const useParceriaProcFilter = ({ handleFetchWithFilter }: UseParceriaProc
   className='inputSearch inputSearchComboboxTab'
   label='Advogados'
   />
-  <ProcessosComboBox
+  <InputInput
+  type='text'
+  id='processo'
   name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  value={handlers.windowFilter?.processo ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='processo_end'
+  name='processo_end'
+  value={handlers.windowFilter?.processo_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.processo ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

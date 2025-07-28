@@ -5,14 +5,14 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBAgendaRelatorio
 {
     public int ID { get; set; }
-    public string? FData { get; set; }
-    public int FProcesso { get; set; }
-    public string? FParaNome { get; set; }
-    public string? FParaPessoas { get; set; }
-    public string? FBoxAudiencia { get; set; }
-    public string? FBoxAudienciaMobile { get; set; }
-    public string? FNomeAdvogado { get; set; }
-    public string? FNomeForo { get; set; }
-    public string? FNomeJustica { get; set; }
-    public string? FNomeArea { get; set; }
+    public string? FvqaData { get; set; }
+    public int FvqaProcesso { get; set; }
+    public string? FxxxParaNome { get; set; }
+    public string? FxxxParaPessoas { get; set; }
+    public string? FxxxBoxAudiencia { get; set; }
+    public string? FxxxBoxAudienciaMobile { get; set; }
+    public string? FxxxNomeAdvogado { get; set; }
+    public string? FxxxNomeForo { get; set; }
+    public string? FxxxNomeJustica { get; set; }
+    public string? FxxxNomeArea { get; set; }
 }

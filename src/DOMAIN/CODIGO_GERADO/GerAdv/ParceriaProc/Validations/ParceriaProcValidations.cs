@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IParceriaProcValidation
 {
-    Task<bool> ValidateReg(Models.ParceriaProc reg, IParceriaProcService service, IAdvogadosReader advogadosReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ParceriaProc reg, IParceriaProcService service, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IParceriaProcService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,15 +26,17 @@ public class ParceriaProcValidation : IParceriaProcValidation
 
     private bool ValidSizes(Models.ParceriaProc reg)
     {
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ParceriaProc reg, IParceriaProcService service, IAdvogadosReader advogadosReader, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ParceriaProc reg, IParceriaProcService service, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -45,16 +47,6 @@ public class ParceriaProcValidation : IParceriaProcValidation
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

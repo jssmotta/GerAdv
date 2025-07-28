@@ -26,17 +26,17 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
 
     private bool ValidSizes(Models.DadosProcuracao reg)
     {
-        if (reg.EstadoCivil.Length > 100)
+        if (reg.EstadoCivil != null && reg.EstadoCivil.Length > 100)
             throw new SGValidationException($"EstadoCivil deve ter no máximo 100 caracteres.");
-        if (reg.Nacionalidade.Length > 100)
+        if (reg.Nacionalidade != null && reg.Nacionalidade.Length > 100)
             throw new SGValidationException($"Nacionalidade deve ter no máximo 100 caracteres.");
-        if (reg.Profissao.Length > 100)
+        if (reg.Profissao != null && reg.Profissao.Length > 100)
             throw new SGValidationException($"Profissao deve ter no máximo 100 caracteres.");
-        if (reg.CTPS.Length > 100)
+        if (reg.CTPS != null && reg.CTPS.Length > 100)
             throw new SGValidationException($"CTPS deve ter no máximo 100 caracteres.");
-        if (reg.PisPasep.Length > 100)
+        if (reg.PisPasep != null && reg.PisPasep.Length > 100)
             throw new SGValidationException($"PisPasep deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
@@ -45,6 +45,10 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
+        if (await IsDuplicado(reg, service, uri))
+            throw new SGValidationException($"Dados Procuracao '{reg.GUID}'  - Cliente");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -62,5 +66,11 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
         }
 
         return true;
+    }
+
+    private async Task<bool> IsDuplicado(Models.DadosProcuracao reg, IDadosProcuracaoService service, string uri)
+    {
+        var existingDadosProcuracao = (await service.Filter(new Filters.FilterDadosProcuracao { Cliente = reg.Cliente }, uri)).FirstOrDefault(); // TRACK 10042025
+        return existingDadosProcuracao != null && existingDadosProcuracao.Id > 0 && existingDadosProcuracao.Id != reg.Id;
     }
 }

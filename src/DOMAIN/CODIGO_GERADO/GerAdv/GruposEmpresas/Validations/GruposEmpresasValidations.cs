@@ -29,11 +29,11 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
 
     private bool ValidSizes(Models.GruposEmpresas reg)
     {
-        if (reg.Descricao.Length > 50)
+        if (reg.Descricao != null && reg.Descricao.Length > 50)
             throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.Icone.Length > 255)
+        if (reg.Icone != null && reg.Icone.Length > 255)
             throw new SGValidationException($"Icone deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

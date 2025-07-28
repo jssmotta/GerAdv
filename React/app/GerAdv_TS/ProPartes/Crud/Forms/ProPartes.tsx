@@ -16,8 +16,6 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { ProPartesApi } from '../../Apis/ApiProPartes';
 import { useValidationsProPartes } from '../../Hooks/hookProPartes';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
-import { ProcessosApi } from '@/app/GerAdv_TS/Processos/Apis/ApiProcessos';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
 interface ProPartesFormProps {
@@ -46,124 +44,109 @@ const dadoApi = new ProPartesApi(systemContext?.Uri ?? '', systemContext?.Token 
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsProPartes();
-const [nomeProcessos, setNomeProcessos] = useState('');
-const processosApi = new ProcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
-if (getParamFromUrl('processos') > 0) {
-  if (propartesData.id === 0 && propartesData.processo == 0) {
-    processosApi
-    .getById(getParamFromUrl('processos'))
-    .then((response) => {
-      setNomeProcessos(response.data.nropasta);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
 
-    propartesData.processo = getParamFromUrl('processos');
-  }
-}
-const addValorProcesso = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'processo', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-
-      if (!isSubmitting) {
-        setIsSubmitting(true);
-
-        try {
-          onSubmit(e);
-        } catch (error) {
-        console.log('Erro ao submeter formulário de ProPartes:');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
-
-  const handleDirectSave = () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
 
       try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`ProPartesForm-${propartesData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
+        onSubmit(e);
       } catch (error) {
-      console.log('Erro ao salvar ProPartes diretamente');
+      console.log('Erro ao submeter formulário de ProPartes:');
       setIsSubmitting(false);
       if (onError) onError();
       }
     }
   };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = propartesData?.id == 0 ? 'Editar ProPartes' : 'Adicionar Pro Partes';
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`ProPartesForm-${propartesData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    console.log('Erro ao salvar ProPartes diretamente');
+    setIsSubmitting(false);
+    if (onError) onError();
     }
-  }, [propartesData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
+  }
+};
+useEffect(() => {
+  const el = document.querySelector('.nameFormMobile');
+  if (el) {
+    el.textContent = propartesData?.id == 0 ? 'Editar ProPartes' : 'Adicionar Pro Partes';
+  }
+}, [propartesData.id]);
+return (
+<>
+{!isMobile ? <style jsx global>{`
+  @media (max-width: 1366px) {
+    html {
+      zoom: 0.8 !important;
     }
-    `}</style> : null}
+  }
+  `}</style> : null}
 
-    <div className={isMobile ? 'form-container form-container-ProPartes' : 'form-container5 form-container-ProPartes'}>
+  <div className={isMobile ? 'form-container form-container-ProPartes' : 'form-container5 form-container-ProPartes'}>
 
-      <form className='formInputCadInc' id={`ProPartesForm-${propartesData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProPartes' data={propartesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProPartesForm-${propartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='parte'
-            label='Parte'
-            dataForm={propartesData}
-            className='inputIncNome'
-            name='parte'
-            value={propartesData.parte}
-            onChange={onChange}
-            />
+    <form className='formInputCadInc' id={`ProPartesForm-${propartesData.id}`} onSubmit={onConfirm}>
+      {!isMobile && (
+        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProPartes' data={propartesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProPartesForm-${propartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <div className='grid-container'>
 
 
-            <ProcessosComboBox
-            name={'processo'}
-            dataForm={propartesData}
-            value={propartesData.processo}
-            setValue={addValorProcesso}
-            label={'Processos'}
-            />
-          </div>
-        </form>
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='parte'
+          label='Parte'
+          dataForm={propartesData}
+          className='inputIncNome'
+          name='parte'
+          value={propartesData.parte}
+          onChange={onChange}
+          />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProPartes' data={propartesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProPartesForm-${propartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/propartes'} id={propartesData.id} closeModel={onClose} dadoApi={dadoApi} />
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='processo'
+          label='Processo'
+          dataForm={propartesData}
+          className='inputIncNome'
+          name='processo'
+          value={propartesData.processo}
+          onChange={onChange}
+          />
+
         </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProPartes' data={propartesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProPartesForm-${propartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+        )}
+        <DeleteButton page={'/pages/propartes'} id={propartesData.id} closeModel={onClose} dadoApi={dadoApi} />
+      </div>
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

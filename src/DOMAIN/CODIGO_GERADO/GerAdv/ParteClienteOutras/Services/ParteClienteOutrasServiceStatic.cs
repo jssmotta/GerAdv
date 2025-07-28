@@ -21,6 +21,11 @@ public partial class ParteClienteOutrasService
             parameters.Add(new($"@{nameof(DBParteClienteOutrasDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBParteClienteOutrasDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.PrimeiraReclamada != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBParteClienteOutrasDicInfo.PrimeiraReclamada)}", filtro.PrimeiraReclamada));
@@ -43,7 +48,15 @@ public partial class ParteClienteOutrasService
 
         var cWhere = new StringBuilder();
         cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParteClienteOutrasDicInfo.PTabelaNome}].[{DBParteClienteOutrasDicInfo.Cliente}] = @{nameof(DBParteClienteOutrasDicInfo.Cliente)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParteClienteOutrasDicInfo.PTabelaNome}].[{DBParteClienteOutrasDicInfo.Processo}] = @{nameof(DBParteClienteOutrasDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParteClienteOutrasDicInfo.PTabelaNome}].[{DBParteClienteOutrasDicInfo.Processo}] >= @{nameof(DBParteClienteOutrasDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBParteClienteOutrasDicInfo.Processo} BETWEEN @{nameof(DBParteClienteOutrasDicInfo.Processo)} AND @{nameof(DBParteClienteOutrasDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBParteClienteOutrasDicInfo.Processo} = @{nameof(DBParteClienteOutrasDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBParteClienteOutrasDicInfo.Processo} <= @{nameof(DBParteClienteOutrasDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.PrimeiraReclamada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBParteClienteOutrasDicInfo.PTabelaNome}].[{DBParteClienteOutrasDicInfo.PrimeiraReclamada}] = @{nameof(DBParteClienteOutrasDicInfo.PrimeiraReclamada)}");
         if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
         {

@@ -29,9 +29,9 @@ public class SetorValidation : ISetorValidation
 
     private bool ValidSizes(Models.Setor reg)
     {
-        if (reg.Descricao.Length > 40)
+        if (reg.Descricao != null && reg.Descricao.Length > 40)
             throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

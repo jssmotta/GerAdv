@@ -7,8 +7,8 @@ export interface IProcessosParados {
 // 202501251
     id: number;
  
-	processo: number,
 	operador: number,
+	processo: number,
 	semana: number,
 	ano: number,
 	datahora: string,

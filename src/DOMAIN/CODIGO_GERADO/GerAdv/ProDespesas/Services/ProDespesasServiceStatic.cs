@@ -51,6 +51,11 @@ public partial class ProDespesasService
             parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.Quitado != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Quitado)}", filtro.Quitado));
@@ -140,7 +145,15 @@ public partial class ProDespesasService
             cWhere.Append((filtro.ValorOriginal == decimal.MinValue && filtro.ValorOriginal_end == decimal.MinValue) ? string.Empty : (!(filtro.ValorOriginal == decimal.MinValue) && !(filtro.ValorOriginal_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.ValorOriginal} BETWEEN @{nameof(DBProDespesasDicInfo.ValorOriginal)} AND @{nameof(DBProDespesasDicInfo.ValorOriginal)}_end" : !(filtro.ValorOriginal == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.ValorOriginal} = @{nameof(DBProDespesasDicInfo.ValorOriginal)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.ValorOriginal} <= @{nameof(DBProDespesasDicInfo.ValorOriginal)}_end");
         }
 
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Processo}] = @{nameof(DBProDespesasDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Processo}] >= @{nameof(DBProDespesasDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Processo} BETWEEN @{nameof(DBProDespesasDicInfo.Processo)} AND @{nameof(DBProDespesasDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Processo} = @{nameof(DBProDespesasDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Processo} <= @{nameof(DBProDespesasDicInfo.Processo)}_end");
+        }
+
         if (!filtro.Quitado.IsEmpty() && filtro.Quitado_end.IsEmpty())
         {
             cWhere.Append(filtro.Quitado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Quitado}] >= @{nameof(DBProDespesasDicInfo.Quitado)}");

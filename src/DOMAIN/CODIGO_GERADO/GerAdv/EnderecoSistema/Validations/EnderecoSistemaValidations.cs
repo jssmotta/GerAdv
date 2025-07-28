@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IEnderecoSistemaValidation
 {
-    Task<bool> ValidateReg(Models.EnderecoSistema reg, IEnderecoSistemaService service, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.EnderecoSistema reg, IEnderecoSistemaService service, ITipoEnderecoSistemaReader tipoenderecosistemaReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,25 +26,27 @@ public class EnderecoSistemaValidation : IEnderecoSistemaValidation
 
     private bool ValidSizes(Models.EnderecoSistema reg)
     {
-        if (reg.Motivo.Length > 200)
+        if (reg.Motivo != null && reg.Motivo.Length > 200)
             throw new SGValidationException($"Motivo deve ter no máximo 200 caracteres.");
-        if (reg.ContatoNoLocal.Length > 50)
+        if (reg.ContatoNoLocal != null && reg.ContatoNoLocal.Length > 50)
             throw new SGValidationException($"ContatoNoLocal deve ter no máximo 50 caracteres.");
-        if (reg.Endereco.Length > 150)
+        if (reg.Endereco != null && reg.Endereco.Length > 150)
             throw new SGValidationException($"Endereco deve ter no máximo 150 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.GUID.Length > 150)
+        if (reg.GUID != null && reg.GUID.Length > 150)
             throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.EnderecoSistema reg, IEnderecoSistemaService service, ITipoEnderecoSistemaReader tipoenderecosistemaReader, IProcessosReader processosReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.EnderecoSistema reg, IEnderecoSistemaService service, ITipoEnderecoSistemaReader tipoenderecosistemaReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -62,16 +64,6 @@ public class EnderecoSistemaValidation : IEnderecoSistemaValidation
             if (regTipoEnderecoSistema == null || regTipoEnderecoSistema.Id != reg.TipoEnderecoSistema)
             {
                 throw new SGValidationException($"Tipo Endereco Sistema não encontrado ({regTipoEnderecoSistema?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

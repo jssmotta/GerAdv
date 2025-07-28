@@ -41,6 +41,11 @@ public partial class EnderecoSistemaService
             parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.Motivo))
         {
             parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.Motivo)}", ApplyWildCard(filtro.WildcardChar, filtro.Motivo)));
@@ -126,7 +131,15 @@ public partial class EnderecoSistemaService
         }
 
         cWhere.Append(filtro.TipoEnderecoSistema <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.TipoEnderecoSistema}] = @{nameof(DBEnderecoSistemaDicInfo.TipoEnderecoSistema)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Processo}] = @{nameof(DBEnderecoSistemaDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Processo}] >= @{nameof(DBEnderecoSistemaDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Processo} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.Processo)} AND @{nameof(DBEnderecoSistemaDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Processo} = @{nameof(DBEnderecoSistemaDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Processo} <= @{nameof(DBEnderecoSistemaDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.Motivo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Motivo}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Motivo)}");
         cWhere.Append(filtro.ContatoNoLocal.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.ContatoNoLocal}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.ContatoNoLocal)}");
         cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cidade}] = @{nameof(DBEnderecoSistemaDicInfo.Cidade)}");
@@ -157,6 +170,46 @@ public partial class EnderecoSistemaService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecoSistema? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-EnderecoSistema-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBEnderecoSistemaDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

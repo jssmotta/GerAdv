@@ -155,6 +155,18 @@ const addValorGUTMatriz = (e: any) => {
             )}
             <div className='grid-container'>
 
+              <InputName
+              type='text'
+              id='guid'
+              label='GUID'
+              dataForm={gutatividadesmatrizData}
+              className='inputIncNome'
+              name='guid'
+              value={gutatividadesmatrizData.guid}
+              placeholder={`Informe GUID`}
+              onChange={onChange}
+              required
+              />
 
               <GUTMatrizComboBox
               name={'gutmatriz'}

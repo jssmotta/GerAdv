@@ -73,18 +73,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?prepostos=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellAgendaQuem = (id: number) => {
   router.push(`/pages/agendaquem/?prepostos=${id}`);
 };
@@ -93,18 +81,6 @@ const SearchFromCellAgendaQuem = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellAgendaQuem(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Quem'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?prepostos=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -121,28 +97,12 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
-  />, 
-  <GridColumn
   field='id_edit_AgendaQuem'
   filterable={false}
   sortable={false}
   width={'65px'}
   title='Agenda Quem'
   cells={{ data: SearchFromCellAgendaQuem }}
-  />, 
-  <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
   />, 
   ], []);
   const DeleteRow = (e: any) => {

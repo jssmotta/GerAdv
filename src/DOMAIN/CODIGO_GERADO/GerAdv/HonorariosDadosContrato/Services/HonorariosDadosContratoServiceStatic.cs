@@ -41,6 +41,11 @@ public partial class HonorariosDadosContratoService
             parameters.Add(new($"@{nameof(DBHonorariosDadosContratoDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBHonorariosDadosContratoDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (!string.IsNullOrEmpty(filtro.ArquivoContrato))
         {
             parameters.Add(new($"@{nameof(DBHonorariosDadosContratoDicInfo.ArquivoContrato)}", ApplyWildCard(filtro.WildcardChar, filtro.ArquivoContrato)));
@@ -111,7 +116,15 @@ public partial class HonorariosDadosContratoService
             cWhere.Append((filtro.PercSucesso == decimal.MinValue && filtro.PercSucesso_end == decimal.MinValue) ? string.Empty : (!(filtro.PercSucesso == decimal.MinValue) && !(filtro.PercSucesso_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHonorariosDadosContratoDicInfo.PercSucesso} BETWEEN @{nameof(DBHonorariosDadosContratoDicInfo.PercSucesso)} AND @{nameof(DBHonorariosDadosContratoDicInfo.PercSucesso)}_end" : !(filtro.PercSucesso == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHonorariosDadosContratoDicInfo.PercSucesso} = @{nameof(DBHonorariosDadosContratoDicInfo.PercSucesso)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHonorariosDadosContratoDicInfo.PercSucesso} <= @{nameof(DBHonorariosDadosContratoDicInfo.PercSucesso)}_end");
         }
 
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.Processo}] = @{nameof(DBHonorariosDadosContratoDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.Processo}] >= @{nameof(DBHonorariosDadosContratoDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHonorariosDadosContratoDicInfo.Processo} BETWEEN @{nameof(DBHonorariosDadosContratoDicInfo.Processo)} AND @{nameof(DBHonorariosDadosContratoDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHonorariosDadosContratoDicInfo.Processo} = @{nameof(DBHonorariosDadosContratoDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHonorariosDadosContratoDicInfo.Processo} <= @{nameof(DBHonorariosDadosContratoDicInfo.Processo)}_end");
+        }
+
         cWhere.Append(filtro.ArquivoContrato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.ArquivoContrato}]  {DevourerConsts.MsiCollate} like @{nameof(DBHonorariosDadosContratoDicInfo.ArquivoContrato)}");
         cWhere.Append(filtro.TextoContrato.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.TextoContrato}]  {DevourerConsts.MsiCollate} like @{nameof(DBHonorariosDadosContratoDicInfo.TextoContrato)}");
         if (!filtro.ValorFixo.IsEmpty() && filtro.ValorFixo_end.IsEmpty())
@@ -154,6 +167,46 @@ public partial class HonorariosDadosContratoService
         }
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
+        return result;
+    }
+
+    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterHonorariosDadosContrato? filtro, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        // Tracking: 20250606-0
+        ThrowIfDisposed();
+        var filtroResult = filtro == null ? null : WFiltro(filtro!);
+        string where = filtroResult?.where ?? string.Empty;
+        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
+        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var cacheKey = $"{uri}-HonorariosDadosContrato-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
+        var entryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
+            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
+        };
+        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
+    }
+
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    {
+        var result = new List<NomeID>(max);
+        var lista = await reader.ListarN(max, uri, where, parameters, DBHonorariosDadosContratoDicInfo.CampoNome);
+        foreach (var item in lista)
+        {
+            if (token.IsCancellationRequested)
+                break;
+            if (item?.FNome != null)
+            {
+                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
+            }
+        }
+
         return result;
     }
 

@@ -2,8 +2,8 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProcessosParados
-{	processo = `Processo`,
-	operador = `Operador`,
+{	operador = `Operador`,
+	processo = `Processo`,
 	semana = `Semana`,
 	ano = `Ano`,
 	datahora = `DataHora`,

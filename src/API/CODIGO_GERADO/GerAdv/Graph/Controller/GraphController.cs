@@ -46,6 +46,15 @@ public partial class GraphController(IGraphService graphService) : ControllerBas
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGraph? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"Graph: GetListN called, max {max}, {filtro} uri");
+        var result = await _graphService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

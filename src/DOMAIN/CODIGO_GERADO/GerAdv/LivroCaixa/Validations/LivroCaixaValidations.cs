@@ -8,33 +8,30 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ILivroCaixaValidation
 {
-    Task<bool> ValidateReg(Models.LivroCaixa reg, ILivroCaixaService service, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ILivroCaixaService service, ILivroCaixaClientesService livrocaixaclientesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.LivroCaixa reg, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class LivroCaixaValidation : ILivroCaixaValidation
 {
-    public async Task<bool> CanDelete(int id, ILivroCaixaService service, ILivroCaixaClientesService livrocaixaclientesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var livrocaixaclientesExists0 = await livrocaixaclientesService.Filter(new Filters.FilterLivroCaixaClientes { LivroCaixa = id }, uri);
-        if (livrocaixaclientesExists0 != null && livrocaixaclientesExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Livro Caixa Clientes associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.LivroCaixa reg)
     {
-        if (reg.Historico.Length > 255)
+        if (reg.Historico != null && reg.Historico.Length > 255)
             throw new SGValidationException($"Historico deve ter no máximo 255 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.LivroCaixa reg, ILivroCaixaService service, IProcessosReader processosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.LivroCaixa reg, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -43,16 +40,7 @@ public class LivroCaixaValidation : ILivroCaixaValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
+        await Task.Delay(0);
         return true;
     }
 }

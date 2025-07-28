@@ -26,7 +26,7 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
 
     private bool ValidSizes(Models.GUTPeriodicidadeStatus reg)
     {
-        if (reg.GUID.Length > 50)
+        if (reg.GUID != null && reg.GUID.Length > 50)
             throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
         return true;
     }
@@ -35,6 +35,8 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

@@ -13,5 +13,6 @@ public partial interface ISituacaoReader
     Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     SituacaoResponseAll? ReadAll(FSituacao dbRec, IDataRecord dr);
     SituacaoResponseAll? ReadAll(SG.GerAdv.DBSituacao dbRec, DataRow dr);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<SituacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

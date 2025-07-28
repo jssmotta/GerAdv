@@ -39,12 +39,13 @@ const { page, handlePageChange } = useGridPagination({
 });
 // Configuração dos filtros iniciais
 const initialFilters = {
-
+  guid: '',
 };
 // Lógica de filtro customizada usando useCallback
 const filterLogic = useCallback((data: IPoderJudiciarioAssociado, filters: Record<string, any>) => {
-
-  return true;
+  const guidMatches = applyFilter(data, 'guid', filters.guid);
+  return guidMatches
+  ;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({
@@ -62,7 +63,7 @@ const handleRowClick = (e: any) => {
 
 const gridColumns = useMemo(() => [
   <GridColumn field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn field='' title='' />,
+  <GridColumn field='guid' title='GUID' />,
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   ], []);
   const DeleteRow = (e: any) => {

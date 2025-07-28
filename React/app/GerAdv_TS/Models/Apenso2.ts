@@ -7,7 +7,6 @@ export interface Apenso2
     id: number;
 	processo : number;
 	apensado : number;
-	nropastaprocessos?: string;
 
 }
 

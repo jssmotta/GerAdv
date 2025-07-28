@@ -26,17 +26,17 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 
     private bool ValidSizes(Models.DivisaoTribunal reg)
     {
-        if (reg.NomeEspecial.Length > 255)
+        if (reg.NomeEspecial != null && reg.NomeEspecial.Length > 255)
             throw new SGValidationException($"NomeEspecial deve ter no máximo 255 caracteres.");
-        if (reg.CodigoDiv.Length > 5)
+        if (reg.CodigoDiv != null && reg.CodigoDiv.Length > 5)
             throw new SGValidationException($"CodigoDiv deve ter no máximo 5 caracteres.");
-        if (reg.Endereco.Length > 40)
+        if (reg.Endereco != null && reg.Endereco.Length > 40)
             throw new SGValidationException($"Endereco deve ter no máximo 40 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Andar.Length > 12)
+        if (reg.Andar != null && reg.Andar.Length > 12)
             throw new SGValidationException($"Andar deve ter no máximo 12 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
@@ -45,6 +45,8 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
+        if (string.IsNullOrWhiteSpace(reg.GUID))
+            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

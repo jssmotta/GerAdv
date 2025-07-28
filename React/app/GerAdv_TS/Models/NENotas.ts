@@ -5,19 +5,18 @@
 export interface NENotas
 {
     id: number;
+	instancia : number;
 	apenso : number;
 	precatoria : number;
-	instancia : number;
-	processo : number;
 	movpro : boolean;
 	nome : string;
 	notaexpedida : boolean;
 	revisada : boolean;
+	processo : number;
 	palavrachave : number;
 	data : string;
 	notapublicada : string;
 	nroprocessoinstancia?: string;
-	nropastaprocessos?: string;
 
 }
 
@@ -27,14 +26,14 @@ export function NENotasEmpty(): INENotas {
     
     return {
         id: 0,
+		instancia: 0,
 		apenso: 0,
 		precatoria: 0,
-		instancia: 0,
-		processo: 0,
 		movpro: false,
 		nome: '',
 		notaexpedida: false,
 		revisada: false,
+		processo: 0,
 		palavrachave: 0,
 		data: '',
 		notapublicada: '',
@@ -46,14 +45,14 @@ export function NENotasTestEmpty(): INENotas {
     
     return {
         id: 1,
+		instancia: 1,
 		apenso: 1,
 		precatoria: 1,
-		instancia: 1,
-		processo: 1,
 		movpro: true,
 		nome: 'X',
 		notaexpedida: true,
 		revisada: true,
+		processo: 1,
 		palavrachave: 1,
 		data: 'X',
 		notapublicada: 'X',

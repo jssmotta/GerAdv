@@ -26,9 +26,9 @@ public class Auditor4KValidation : IAuditor4KValidation
 
     private bool ValidSizes(Models.Auditor4K reg)
     {
-        if (reg.Nome.Length > 100)
+        if (reg.Nome != null && reg.Nome.Length > 100)
             throw new SGValidationException($"Nome deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

@@ -29,9 +29,9 @@ public class TipoValorProcessoValidation : ITipoValorProcessoValidation
 
     private bool ValidSizes(Models.TipoValorProcesso reg)
     {
-        if (reg.Descricao.Length > 100)
+        if (reg.Descricao != null && reg.Descricao.Length > 100)
             throw new SGValidationException($"Descricao deve ter no máximo 100 caracteres.");
-        if (reg.GUID.Length > 50)
+        if (reg.GUID != null && reg.GUID.Length > 50)
             throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
         return true;
     }

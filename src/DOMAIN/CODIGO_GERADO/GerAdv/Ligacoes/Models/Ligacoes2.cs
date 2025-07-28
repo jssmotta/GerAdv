@@ -26,12 +26,6 @@ namespace MenphisSI.GerAdv.Models
         public int Ramal { get; set; }
 
         /// <summary>
-        /// Processo - ligProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Assunto - ligAssunto - tamanho máximo: 200 
         /// </summary>
         [JsonPropertyName("assunto")]
@@ -168,6 +162,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("ligarpara")]
         public string LigarPara { get; set; } = "";
+
+        /// <summary>
+        /// Processo - ligProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// StartScreen - ligStartScreen  
@@ -210,12 +210,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Ramal { get; set; }
 
         /// <summary>
-        /// Processo - ligProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// Assunto - ligAssunto - tamanho máximo: 200 
         /// </summary>
         [JsonPropertyName("assunto")]
@@ -354,6 +348,12 @@ namespace MenphisSI.GerAdv.Models.All
         public string LigarPara { get; set; } = "";
 
         /// <summary>
+        /// Processo - ligProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
+
+        /// <summary>
         /// StartScreen - ligStartScreen  
         /// </summary>
         [JsonPropertyName("startscreen")]
@@ -376,8 +376,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomeramal")]
         public string NomeRamal { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

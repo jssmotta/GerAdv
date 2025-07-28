@@ -2,14 +2,14 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsNENotas
-{	apenso = `Apenso`,
+{	instancia = `Instancia`,
+	apenso = `Apenso`,
 	precatoria = `Precatoria`,
-	instancia = `Instancia`,
-	processo = `Processo`,
 	movpro = `MovPro`,
 	nome = `Nome`,
 	notaexpedida = `NotaExpedida`,
 	revisada = `Revisada`,
+	processo = `Processo`,
 	palavrachave = `PalavraChave`,
 	data = `Data`,
 	notapublicada = `NotaPublicada`,

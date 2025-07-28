@@ -20,12 +20,6 @@ namespace MenphisSI.GerAdv.Models
         public int Cliente { get; set; }
 
         /// <summary>
-        /// Processo - desProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// LigacaoID - desLigacaoID  
         /// </summary>
         [JsonPropertyName("ligacaoid")]
@@ -48,6 +42,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("valororiginal")]
         public decimal ValorOriginal { get; set; }
+
+        /// <summary>
+        /// Processo - desProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Quitado - desQuitado  
@@ -111,12 +111,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int Cliente { get; set; }
 
         /// <summary>
-        /// Processo - desProcesso  
-        /// </summary>
-        [JsonPropertyName("processo")]
-        public int Processo { get; set; }
-
-        /// <summary>
         /// LigacaoID - desLigacaoID  
         /// </summary>
         [JsonPropertyName("ligacaoid")]
@@ -139,6 +133,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("valororiginal")]
         public decimal ValorOriginal { get; set; }
+
+        /// <summary>
+        /// Processo - desProcesso  
+        /// </summary>
+        [JsonPropertyName("processo")]
+        public int Processo { get; set; }
 
         /// <summary>
         /// Quitado - desQuitado  
@@ -187,8 +187,5 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;
-
-        [JsonPropertyName("nropastaprocessos")]
-        public string NroPastaProcessos { get; set; } = string.Empty;
     }
 }

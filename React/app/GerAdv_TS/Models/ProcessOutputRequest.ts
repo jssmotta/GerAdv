@@ -11,7 +11,6 @@ export interface ProcessOutputRequest
 	ultimoidtabelaexo : number;
 	nomeprocessoutputengine?: string;
 	nomeoperador?: string;
-	nropastaprocessos?: string;
 
 }
 

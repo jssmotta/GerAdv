@@ -60,7 +60,12 @@ public static class SGHelpers
     public static string Sql(this string columnName, string value)
     {
         if (string.IsNullOrEmpty(value)) return $" {columnName} IS NULL ";
-        return $" [{columnName}] = '{value.Replace("'", "''")}' ";
+        return $" [{columnName}] = @{columnName} ";
     }
 
+    public static string Sql(this string columnName, bool value)
+    {
+        
+        return $" [{columnName}] = {(value?"1":"0")} ";
+    }
 }

@@ -197,14 +197,6 @@ public partial class ProcessosParadosReader(IFProcessosParadosFactory processosp
 
         try
         {
-            processosparados.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             processosparados.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -245,14 +237,6 @@ public partial class ProcessosParadosReader(IFProcessosParadosFactory processosp
         {
             processosparados.DataNENotas = dbRec.FDataNENotas;
             processosparados.DataNENotas_date = XDataNENotas;
-        }
-
-        try
-        {
-            processosparados.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         try

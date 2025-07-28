@@ -9,29 +9,26 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoContatoCRMValidation
 {
     Task<bool> ValidateReg(Models.TipoContatoCRM reg, ITipoContatoCRMService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoContatoCRMService service, IContatoCRMService contatocrmService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, ITipoContatoCRMService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoContatoCRMValidation : ITipoContatoCRMValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoContatoCRMService service, IContatoCRMService contatocrmService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, ITipoContatoCRMService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var contatocrmExists0 = await contatocrmService.Filter(new Filters.FilterContatoCRM { TipoContatoCRM = id }, uri);
-        if (contatocrmExists0 != null && contatocrmExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contato C R M associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.TipoContatoCRM reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

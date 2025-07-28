@@ -163,6 +163,11 @@ public partial class AgendaService
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.Processo)}", filtro.Processo));
         }
 
+        if (filtro.Processo_end != int.MinValue)
+        {
+            parameters.Add(new($"@{nameof(DBAgendaDicInfo.Processo)}_end", filtro.Processo_end));
+        }
+
         if (filtro.IDHistorico != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.IDHistorico)}", filtro.IDHistorico));
@@ -379,7 +384,15 @@ public partial class AgendaService
         cWhere.Append(filtro.Concluido == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Concluido}] = @{nameof(DBAgendaDicInfo.Concluido)}");
         cWhere.Append(filtro.Area <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Area}] = @{nameof(DBAgendaDicInfo.Area)}");
         cWhere.Append(filtro.Justica <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Justica}] = @{nameof(DBAgendaDicInfo.Justica)}");
-        cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Processo}] = @{nameof(DBAgendaDicInfo.Processo)}");
+        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        {
+            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Processo}] >= @{nameof(DBAgendaDicInfo.Processo)}");
+        }
+        else
+        {
+            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Processo} BETWEEN @{nameof(DBAgendaDicInfo.Processo)} AND @{nameof(DBAgendaDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Processo} = @{nameof(DBAgendaDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Processo} <= @{nameof(DBAgendaDicInfo.Processo)}_end");
+        }
+
         if (!filtro.IDHistorico.IsEmpty() && filtro.IDHistorico_end.IsEmpty())
         {
             cWhere.Append(filtro.IDHistorico <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDHistorico}] >= @{nameof(DBAgendaDicInfo.IDHistorico)}");

@@ -18,6 +18,9 @@ public partial record FilterProResumos
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("data")]
     public string Data { get; set; } = string.Empty;
 

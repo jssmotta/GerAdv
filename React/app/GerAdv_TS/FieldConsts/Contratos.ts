@@ -2,9 +2,9 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsContratos
-{	processo = `Processo`,
-	cliente = `Cliente`,
+{	cliente = `Cliente`,
 	advogado = `Advogado`,
+	processo = `Processo`,
 	dia = `Dia`,
 	valor = `Valor`,
 	datainicio = `DataInicio`,

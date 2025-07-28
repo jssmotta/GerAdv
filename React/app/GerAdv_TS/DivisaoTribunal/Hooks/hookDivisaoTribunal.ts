@@ -168,7 +168,10 @@ export function useValidationsDivisaoTribunal() {
     
       try {
    
-        if (data.nomeespecial.length > 255) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.nomeespecial.length > 255) { 
                                              return { isValid: false, message: 'O campo NomeEspecial não pode ter mais de 255 caracteres.' };
                                          } 
 if (data.codigodiv.length > 5) { 

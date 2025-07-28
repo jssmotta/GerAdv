@@ -242,14 +242,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
 
         try
         {
-            instancia.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
             instancia.DescricaoAcao = dr[DBAcaoDicInfo.CampoNome]?.ToString() ?? string.Empty;
         }
         catch
@@ -317,14 +309,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
         {
             instancia.ZKeyQuando = dbRec.FZKeyQuando;
             instancia.ZKeyQuando_date = XZKeyQuando;
-        }
-
-        try
-        {
-            instancia.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         try

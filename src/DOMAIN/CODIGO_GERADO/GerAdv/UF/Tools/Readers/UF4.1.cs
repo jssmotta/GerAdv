@@ -23,9 +23,10 @@ public partial class UFReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBPaisesDicInfo.PTabelaNome}].[{DBPaisesDicInfo.Nome}]
+                   {campos}, 
+[{DBPaisesDicInfo.PTabelaNome}].[{DBPaisesDicInfo.Nome}]
                    FROM {DBUF.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBPaisesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPaisesDicInfo.PTabelaNome}].[{DBPaises.CampoCodigo}]=[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}]
+                   LEFT JOIN {DBPaisesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPaisesDicInfo.PTabelaNome}].[{DBPaisesDicInfo.CampoCodigo}]=[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}]
  
                    {cWhere}
                    {orderQuery}

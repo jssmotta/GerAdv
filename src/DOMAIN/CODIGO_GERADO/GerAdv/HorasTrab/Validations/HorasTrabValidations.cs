@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IHorasTrabValidation
 {
-    Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IProcessosReader processosReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IHorasTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,22 +26,22 @@ public class HorasTrabValidation : IHorasTrabValidation
 
     private bool ValidSizes(Models.HorasTrab reg)
     {
-        if (reg.HrIni.Length > 5)
+        if (reg.HrIni != null && reg.HrIni.Length > 5)
             throw new SGValidationException($"HrIni deve ter no máximo 5 caracteres.");
-        if (reg.HrFim.Length > 5)
+        if (reg.HrFim != null && reg.HrFim.Length > 5)
             throw new SGValidationException($"HrFim deve ter no máximo 5 caracteres.");
-        if (reg.Anexo.Length > 255)
+        if (reg.Anexo != null && reg.Anexo.Length > 255)
             throw new SGValidationException($"Anexo deve ter no máximo 255 caracteres.");
-        if (reg.AnexoComp.Length > 50)
+        if (reg.AnexoComp != null && reg.AnexoComp.Length > 50)
             throw new SGValidationException($"AnexoComp deve ter no máximo 50 caracteres.");
-        if (reg.AnexoUNC.Length > 255)
+        if (reg.AnexoUNC != null && reg.AnexoUNC.Length > 255)
             throw new SGValidationException($"AnexoUNC deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IProcessosReader processosReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -57,16 +57,6 @@ public class HorasTrabValidation : IHorasTrabValidation
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
-            }
-        }
-
-        // Processos
-        if (!reg.Processo.IsEmptyIDNumber())
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
             }
         }
 

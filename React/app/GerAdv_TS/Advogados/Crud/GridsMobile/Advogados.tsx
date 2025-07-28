@@ -73,18 +73,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaFinanceiro = (id: number) => {
-  router.push(`/pages/agendafinanceiro/?advogados=${id}`);
-};
-const SearchFromCellAgendaFinanceiro = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaFinanceiro(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Financeiro'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellAgendaQuem = (id: number) => {
   router.push(`/pages/agendaquem/?advogados=${id}`);
 };
@@ -93,18 +81,6 @@ const SearchFromCellAgendaQuem = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellAgendaQuem(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Quem'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAgendaRepetir = (id: number) => {
-  router.push(`/pages/agendarepetir/?advogados=${id}`);
-};
-const SearchFromCellAgendaRepetir = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaRepetir(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Repetir'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -145,18 +121,6 @@ const SearchFromCellParceriaProc = (props: any) => {
 </>
 );
 };
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?advogados=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellProProcuradores = (id: number) => {
   router.push(`/pages/proprocuradores/?advogados=${id}`);
 };
@@ -181,28 +145,12 @@ const gridColumns = useMemo(() => [
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_AgendaFinanceiro'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Financeiro'
-  cells={{ data: SearchFromCellAgendaFinanceiro }}
-  />, 
-  <GridColumn
   field='id_edit_AgendaQuem'
   filterable={false}
   sortable={false}
   width={'65px'}
   title='Agenda Quem'
   cells={{ data: SearchFromCellAgendaQuem }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaRepetir'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Repetir'
-  cells={{ data: SearchFromCellAgendaRepetir }}
   />, 
   <GridColumn
   field='id_edit_Contratos'
@@ -227,14 +175,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Parceria Proc'
   cells={{ data: SearchFromCellParceriaProc }}
-  />, 
-  <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
   />, 
   <GridColumn
   field='id_edit_ProProcuradores'

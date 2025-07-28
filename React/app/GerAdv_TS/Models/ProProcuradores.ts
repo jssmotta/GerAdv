@@ -6,13 +6,12 @@ export interface ProProcuradores
 {
     id: number;
 	advogado : number;
-	processo : number;
 	nome : string;
+	processo : number;
 	data : string;
 	substabelecimento : boolean;
 	procuracao : boolean;
 	nomeadvogados?: string;
-	nropastaprocessos?: string;
 
 }
 
@@ -23,8 +22,8 @@ export function ProProcuradoresEmpty(): IProProcuradores {
     return {
         id: 0,
 		advogado: 0,
-		processo: 0,
 		nome: '',
+		processo: 0,
 		data: '',
 		substabelecimento: false,
 		procuracao: false,
@@ -37,8 +36,8 @@ export function ProProcuradoresTestEmpty(): IProProcuradores {
     return {
         id: 1,
 		advogado: 1,
-		processo: 1,
 		nome: 'X',
+		processo: 1,
 		data: 'X',
 		substabelecimento: true,
 		procuracao: true,

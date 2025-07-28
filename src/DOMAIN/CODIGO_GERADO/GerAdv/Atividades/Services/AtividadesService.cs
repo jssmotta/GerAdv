@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AtividadesService(IOptions<AppSettings> appSettings, IFAtividadesFactory atividadesFactory, IAtividadesReader reader, IAtividadesValidation validation, IAtividadesWriter writer, IProcessosService processosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAtividadesService, IDisposable
+public partial class AtividadesService(IOptions<AppSettings> appSettings, IFAtividadesFactory atividadesFactory, IAtividadesReader reader, IAtividadesValidation validation, IAtividadesWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAtividadesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class AtividadesService(IOptions<AppSettings> appSettings, IFAtiv
     private readonly IAtividadesReader reader = reader;
     private readonly IAtividadesValidation validation = validation;
     private readonly IAtividadesWriter writer = writer;
-    private readonly IProcessosService processosService = processosService;
     public async Task<IEnumerable<AtividadesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -196,7 +195,7 @@ public partial class AtividadesService(IOptions<AppSettings> appSettings, IFAtiv
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, processosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

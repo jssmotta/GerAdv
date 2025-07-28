@@ -97,18 +97,6 @@ const SearchFromCellOponentesRepLegal = (props: any) => {
 </>
 );
 };
-const openSearchCellProcessos = (id: number) => {
-  router.push(`/pages/processos/?oponentes=${id}`);
-};
-const SearchFromCellProcessos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Processos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 
 const DeleteRow = (e: any) => {
   return (
@@ -143,14 +131,6 @@ const gridColumns = useMemo(() => [
   width={'65px'}
   title='Oponentes Rep Legal'
   cells={{ data: SearchFromCellOponentesRepLegal }}
-  />, 
-  <GridColumn
-  field='id_edit_Processos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos'
-  cells={{ data: SearchFromCellProcessos }}
   />, 
   <GridColumn field='nomecidade' title='Cidade' sortable={false} filterable={false} />, /* Track G.01 */
 

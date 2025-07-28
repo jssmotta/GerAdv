@@ -73,18 +73,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellOperadorGruposAgendaOperadores = (id: number) => {
-  router.push(`/pages/operadorgruposagendaoperadores/?operadorgruposagenda=${id}`);
-};
-const SearchFromCellOperadorGruposAgendaOperadores = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellOperadorGruposAgendaOperadores(props.dataItem.id)}><span title='Pesquisar relacionados em Operador Grupos Agenda Operadores'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 
 const DeleteRow = (e: any) => {
   return (
@@ -104,14 +92,6 @@ const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
   <GridColumn field='nome' title='Nome' sortable={true} filterable={true} />, /* Track G.02 */
-  <GridColumn
-  field='id_edit_OperadorGruposAgendaOperadores'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Operador Grupos Agenda Operadores'
-  cells={{ data: SearchFromCellOperadorGruposAgendaOperadores }}
-  />, 
   <GridColumn field='rnomeoperador' title='Operador' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn

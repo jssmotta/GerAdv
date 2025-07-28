@@ -3,8 +3,8 @@
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProProcuradores
 {	advogado = `Advogado`,
-	processo = `Processo`,
 	nome = `Nome`,
+	processo = `Processo`,
 	data = `Data`,
 	substabelecimento = `Substabelecimento`,
 	procuracao = `Procuracao`,

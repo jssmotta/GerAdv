@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class NENotasService(IOptions<AppSettings> appSettings, IFNENotasFactory nenotasFactory, INENotasReader reader, INENotasValidation validation, INENotasWriter writer, IApensoReader apensoReader, IPrecatoriaReader precatoriaReader, IInstanciaReader instanciaReader, IProcessosReader processosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : INENotasService, IDisposable
+public partial class NENotasService(IOptions<AppSettings> appSettings, IFNENotasFactory nenotasFactory, INENotasReader reader, INENotasValidation validation, INENotasWriter writer, IInstanciaReader instanciaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : INENotasService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,10 +17,7 @@ public partial class NENotasService(IOptions<AppSettings> appSettings, IFNENotas
     private readonly INENotasReader reader = reader;
     private readonly INENotasValidation validation = validation;
     private readonly INENotasWriter writer = writer;
-    private readonly IApensoReader apensoReader = apensoReader;
-    private readonly IPrecatoriaReader precatoriaReader = precatoriaReader;
     private readonly IInstanciaReader instanciaReader = instanciaReader;
-    private readonly IProcessosReader processosReader = processosReader;
     public async Task<IEnumerable<NENotasResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -113,7 +110,7 @@ public partial class NENotasService(IOptions<AppSettings> appSettings, IFNENotas
 
         try
         {
-            var validade = await validation.ValidateReg(regNENotas, this, apensoReader, precatoriaReader, instanciaReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regNENotas, this, instanciaReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -154,7 +151,7 @@ public partial class NENotasService(IOptions<AppSettings> appSettings, IFNENotas
 
         try
         {
-            var validade = await validation.ValidateReg(regNENotas, this, apensoReader, precatoriaReader, instanciaReader, processosReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regNENotas, this, instanciaReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

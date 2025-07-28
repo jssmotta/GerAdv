@@ -32,9 +32,9 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
 
     private bool ValidSizes(Models.GUTAtividades reg)
     {
-        if (reg.Nome.Length > 255)
+        if (reg.Nome != null && reg.Nome.Length > 255)
             throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 50)
+        if (reg.GUID != null && reg.GUID.Length > 50)
             throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
         return true;
     }

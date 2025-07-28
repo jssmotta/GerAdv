@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IAgendaFinanceiroService agendafinanceiroService, IAgendaRepetirService agendarepetirService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContatoCRMService contatocrmService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, ILivroCaixaClientesService livrocaixaclientesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProcessosService processosService, IProDespesasService prodespesasService, IRecadosService recadosService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesService, IDisposable
+public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,13 +21,10 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IRegimeTributacaoReader regimetributacaoReader = regimetributacaoReader;
     private readonly IEnquadramentoEmpresaReader enquadramentoempresaReader = enquadramentoempresaReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaFinanceiroService agendafinanceiroService = agendafinanceiroService;
-    private readonly IAgendaRepetirService agendarepetirService = agendarepetirService;
     private readonly IAnexamentoRegistrosService anexamentoregistrosService = anexamentoregistrosService;
     private readonly IClientesSociosService clientessociosService = clientessociosService;
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IContaCorrenteService contacorrenteService = contacorrenteService;
-    private readonly IContatoCRMService contatocrmService = contatocrmService;
     private readonly IContratosService contratosService = contratosService;
     private readonly IDadosProcuracaoService dadosprocuracaoService = dadosprocuracaoService;
     private readonly IDiario2Service diario2Service = diario2Service;
@@ -36,12 +33,9 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IHonorariosDadosContratoService honorariosdadoscontratoService = honorariosdadoscontratoService;
     private readonly IHorasTrabService horastrabService = horastrabService;
     private readonly ILigacoesService ligacoesService = ligacoesService;
-    private readonly ILivroCaixaClientesService livrocaixaclientesService = livrocaixaclientesService;
     private readonly IOperadoresService operadoresService = operadoresService;
     private readonly IPreClientesService preclientesService = preclientesService;
-    private readonly IProcessosService processosService = processosService;
     private readonly IProDespesasService prodespesasService = prodespesasService;
-    private readonly IRecadosService recadosService = recadosService;
     private readonly IReuniaoService reuniaoService = reuniaoService;
     public async Task<IEnumerable<ClientesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -221,7 +215,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendafinanceiroService, agendarepetirService, anexamentoregistrosService, clientessociosService, colaboradoresService, contacorrenteService, contatocrmService, contratosService, dadosprocuracaoService, diario2Service, gruposempresasService, gruposempresascliService, honorariosdadoscontratoService, horastrabService, ligacoesService, livrocaixaclientesService, operadoresService, preclientesService, processosService, prodespesasService, recadosService, reuniaoService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, anexamentoregistrosService, clientessociosService, colaboradoresService, contacorrenteService, contratosService, dadosprocuracaoService, diario2Service, gruposempresasService, gruposempresascliService, honorariosdadoscontratoService, horastrabService, ligacoesService, operadoresService, preclientesService, prodespesasService, reuniaoService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

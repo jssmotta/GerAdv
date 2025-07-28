@@ -138,6 +138,9 @@ public partial record FilterLigacoes
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
 
+    [JsonPropertyName("processo_end")]
+    public int Processo_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("startscreen")]
     public int StartScreen { get; set; } = int.MinValue;
 

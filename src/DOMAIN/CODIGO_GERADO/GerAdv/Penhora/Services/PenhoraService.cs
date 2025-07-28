@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class PenhoraService(IOptions<AppSettings> appSettings, IFPenhoraFactory penhoraFactory, IPenhoraReader reader, IPenhoraValidation validation, IPenhoraWriter writer, IProcessosReader processosReader, IPenhoraStatusReader penhorastatusReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPenhoraService, IDisposable
+public partial class PenhoraService(IOptions<AppSettings> appSettings, IFPenhoraFactory penhoraFactory, IPenhoraReader reader, IPenhoraValidation validation, IPenhoraWriter writer, IPenhoraStatusReader penhorastatusReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPenhoraService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class PenhoraService(IOptions<AppSettings> appSettings, IFPenhora
     private readonly IPenhoraReader reader = reader;
     private readonly IPenhoraValidation validation = validation;
     private readonly IPenhoraWriter writer = writer;
-    private readonly IProcessosReader processosReader = processosReader;
     private readonly IPenhoraStatusReader penhorastatusReader = penhorastatusReader;
     public async Task<IEnumerable<PenhoraResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -111,7 +110,7 @@ public partial class PenhoraService(IOptions<AppSettings> appSettings, IFPenhora
 
         try
         {
-            var validade = await validation.ValidateReg(regPenhora, this, processosReader, penhorastatusReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regPenhora, this, penhorastatusReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
@@ -152,7 +151,7 @@ public partial class PenhoraService(IOptions<AppSettings> appSettings, IFPenhora
 
         try
         {
-            var validade = await validation.ValidateReg(regPenhora, this, processosReader, penhorastatusReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regPenhora, this, penhorastatusReader, uri, oCnn);
             if (!validade)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

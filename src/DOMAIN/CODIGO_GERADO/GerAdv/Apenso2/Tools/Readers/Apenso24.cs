@@ -115,14 +115,6 @@ public partial class Apenso2Reader(IFApenso2Factory apenso2Factory) : IApenso2Re
             Processo = dbRec.FProcesso,
             Apensado = dbRec.FApensado,
         };
-        try
-        {
-            apenso2.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return apenso2;
     }
 
@@ -139,14 +131,6 @@ public partial class Apenso2Reader(IFApenso2Factory apenso2Factory) : IApenso2Re
             Processo = dbRec.FProcesso,
             Apensado = dbRec.FApensado,
         };
-        try
-        {
-            apenso2.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return apenso2;
     }
 }

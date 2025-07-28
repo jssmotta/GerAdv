@@ -6,10 +6,10 @@ export interface EnderecoSistema
 {
     id: number;
 	tipoenderecosistema : number;
-	processo : number;
 	cidade : number;
 	cadastro : number;
 	cadastroexcod : number;
+	processo : number;
 	motivo : string;
 	contatonolocal : string;
 	endereco : string;
@@ -19,7 +19,6 @@ export interface EnderecoSistema
 	fax : string;
 	observacao : string;
 	nometipoenderecosistema?: string;
-	nropastaprocessos?: string;
 	nomecidade?: string;
 
 }
@@ -31,10 +30,10 @@ export function EnderecoSistemaEmpty(): IEnderecoSistema {
     return {
         id: 0,
 		tipoenderecosistema: 0,
-		processo: 0,
 		cidade: 0,
 		cadastro: 0,
 		cadastroexcod: 0,
+		processo: 0,
 		motivo: '',
 		contatonolocal: '',
 		endereco: '',
@@ -52,10 +51,10 @@ export function EnderecoSistemaTestEmpty(): IEnderecoSistema {
     return {
         id: 1,
 		tipoenderecosistema: 1,
-		processo: 1,
 		cidade: 1,
 		cadastro: 1,
 		cadastroexcod: 1,
+		processo: 1,
 		motivo: 'X',
 		contatonolocal: 'X',
 		endereco: 'X',

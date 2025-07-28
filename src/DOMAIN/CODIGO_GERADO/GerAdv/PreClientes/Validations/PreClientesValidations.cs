@@ -26,41 +26,41 @@ public class PreClientesValidation : IPreClientesValidation
 
     private bool ValidSizes(Models.PreClientes reg)
     {
-        if (reg.QuemIndicou.Length > 80)
+        if (reg.QuemIndicou != null && reg.QuemIndicou.Length > 80)
             throw new SGValidationException($"QuemIndicou deve ter no máximo 80 caracteres.");
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.NomeFantasia.Length > 80)
+        if (reg.NomeFantasia != null && reg.NomeFantasia.Length > 80)
             throw new SGValidationException($"NomeFantasia deve ter no máximo 80 caracteres.");
-        if (reg.Class.Length > 1)
+        if (reg.Class != null && reg.Class.Length > 1)
             throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.InscEst.Length > 15)
+        if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.Qualificacao.Length > 100)
+        if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG.Length > 30)
+        if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.Endereco.Length > 80)
+        if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro.Length > 50)
+        if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.HomePage.Length > 60)
+        if (reg.HomePage != null && reg.HomePage.Length > 60)
             throw new SGValidationException($"HomePage deve ter no máximo 60 caracteres.");
-        if (reg.Assistido.Length > 50)
+        if (reg.Assistido != null && reg.Assistido.Length > 50)
             throw new SGValidationException($"Assistido deve ter no máximo 50 caracteres.");
-        if (reg.AssRG.Length > 30)
+        if (reg.AssRG != null && reg.AssRG.Length > 30)
             throw new SGValidationException($"AssRG deve ter no máximo 30 caracteres.");
-        if (reg.AssCPF.Length > 12)
+        if (reg.AssCPF != null && reg.AssCPF.Length > 12)
             throw new SGValidationException($"AssCPF deve ter no máximo 12 caracteres.");
-        if (reg.AssEndereco.Length > 70)
+        if (reg.AssEndereco != null && reg.AssEndereco.Length > 70)
             throw new SGValidationException($"AssEndereco deve ter no máximo 70 caracteres.");
-        if (reg.CNH.Length > 100)
+        if (reg.CNH != null && reg.CNH.Length > 100)
             throw new SGValidationException($"CNH deve ter no máximo 100 caracteres.");
         return true;
     }

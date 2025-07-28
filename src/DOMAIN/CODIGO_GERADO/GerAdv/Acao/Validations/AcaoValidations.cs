@@ -29,9 +29,9 @@ public class AcaoValidation : IAcaoValidation
 
     private bool ValidSizes(Models.Acao reg)
     {
-        if (reg.Descricao.Length > 255)
+        if (reg.Descricao != null && reg.Descricao.Length > 255)
             throw new SGValidationException($"Descricao deve ter no máximo 255 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

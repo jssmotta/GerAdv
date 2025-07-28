@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProcessosObsReportValidation
 {
-    Task<bool> ValidateReg(Models.ProcessosObsReport reg, IProcessosObsReportService service, IProcessosReader processosReader, IHistoricoReader historicoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProcessosObsReport reg, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
     Task<bool> CanDelete(int id, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
@@ -26,12 +26,12 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
 
     private bool ValidSizes(Models.ProcessosObsReport reg)
     {
-        if (reg.Observacao.Length > 2048)
+        if (reg.Observacao != null && reg.Observacao.Length > 2048)
             throw new SGValidationException($"Observacao deve ter no máximo 2048 caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProcessosObsReport reg, IProcessosObsReportService service, IProcessosReader processosReader, IHistoricoReader historicoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProcessosObsReport reg, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -46,25 +46,6 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
             throw new SGValidationException("Data é obrigatório.");
         if (reg.Processo == 0)
             throw new SGValidationException("Processo é obrigatório.");
-        // Processos
-        {
-            var regProcessos = await processosReader.Read(reg.Processo, oCnn);
-            if (regProcessos == null || regProcessos.Id != reg.Processo)
-            {
-                throw new SGValidationException($"Processos não encontrado ({regProcessos?.Id}).");
-            }
-        }
-
-        // Historico
-        if (!reg.Historico.IsEmptyIDNumber())
-        {
-            var regHistorico = await historicoReader.Read(reg.Historico, oCnn);
-            if (regHistorico == null || regHistorico.Id != reg.Historico)
-            {
-                throw new SGValidationException($"Historico não encontrado ({regHistorico?.Id}).");
-            }
-        }
-
         return true;
     }
 

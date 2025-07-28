@@ -2,9 +2,9 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsProSucumbencia
-{	processo = `Processo`,
-	instancia = `Instancia`,
+{	instancia = `Instancia`,
 	tipoorigemsucumbencia = `TipoOrigemSucumbencia`,
+	processo = `Processo`,
 	data = `Data`,
 	nome = `Nome`,
 	valor = `Valor`,

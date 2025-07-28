@@ -9,7 +9,6 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterAgendaRelatorio } from '@/app/GerAdv_TS/AgendaRelatorio/Filters/AgendaRelatorio';
-import ProcessosComboBox from '@/app/GerAdv_TS/Processos/ComboBox/Processos';
 interface UseAgendaRelatorioFilterProps {
   handleFetchWithFilter: (filtro?: FilterAgendaRelatorio | undefined | null) => Promise<void>;
 }
@@ -58,38 +57,51 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   <>
   <InputDate
   type='text'
-  id='data'
+  id='vqadata'
   label='Data (igual ou início)'
   dataForm={null}
   className='inputSearch'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('data', value)}
+  name='vqadata'
+  value={handlers.windowFilter?.vqadata ?? ''}
+  onChange={(value: string) => handlers.handleDateChange('vqadata', value)}
   />
   <InputDate
   type='text'
-  id='data_end'
+  id='vqadata_end'
   label='Data (final)'
   dataForm={null}
   className='inputSearch'
-  name='data_end'
-  value={handlers.windowFilter?.data_end ?? ''}
-  disabled={handlers.windowFilter?.data ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('data_end', value)}
-  />
-  <ProcessosComboBox
-  name='processo'
-  dataForm={null}
-  value={handlers.windowFilter?.processo}
-  setValue={(e:any) => handlers.handleComboChange(e, 'processo')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Processos'
+  name='vqadata_end'
+  value={handlers.windowFilter?.vqadata_end ?? ''}
+  disabled={handlers.windowFilter?.vqadata ? false: true}
+  onChange={(value: string) => handlers.handleDateChange('vqadata_end', value)}
   />
   <InputInput
   type='text'
-  id='paranome'
-  name='paranome'
-  value={handlers.windowFilter?.paranome ?? ''}
+  id='vqaprocesso'
+  name='vqaprocesso'
+  value={handlers.windowFilter?.vqaprocesso ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo'
+  label='Processo (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='vqaprocesso_end'
+  name='vqaprocesso_end'
+  value={handlers.windowFilter?.vqaprocesso_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Processo final'
+  label='Processo final'
+  disabled={handlers.windowFilter?.vqaprocesso ? false: true}
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='xxxparanome'
+  name='xxxparanome'
+  value={handlers.windowFilter?.xxxparanome ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe ParaNome'
   label='ParaNome'
@@ -97,9 +109,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='parapessoas'
-  name='parapessoas'
-  value={handlers.windowFilter?.parapessoas ?? ''}
+  id='xxxparapessoas'
+  name='xxxparapessoas'
+  value={handlers.windowFilter?.xxxparapessoas ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe ParaPessoas'
   label='ParaPessoas'
@@ -107,9 +119,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='boxaudiencia'
-  name='boxaudiencia'
-  value={handlers.windowFilter?.boxaudiencia ?? ''}
+  id='xxxboxaudiencia'
+  name='xxxboxaudiencia'
+  value={handlers.windowFilter?.xxxboxaudiencia ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe BoxAudiencia'
   label='BoxAudiencia'
@@ -117,9 +129,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='boxaudienciamobile'
-  name='boxaudienciamobile'
-  value={handlers.windowFilter?.boxaudienciamobile ?? ''}
+  id='xxxboxaudienciamobile'
+  name='xxxboxaudienciamobile'
+  value={handlers.windowFilter?.xxxboxaudienciamobile ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe BoxAudienciaMobile'
   label='BoxAudienciaMobile'
@@ -127,9 +139,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='nomeadvogado'
-  name='nomeadvogado'
-  value={handlers.windowFilter?.nomeadvogado ?? ''}
+  id='xxxnomeadvogado'
+  name='xxxnomeadvogado'
+  value={handlers.windowFilter?.xxxnomeadvogado ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe NomeAdvogado'
   label='NomeAdvogado'
@@ -137,9 +149,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='nomeforo'
-  name='nomeforo'
-  value={handlers.windowFilter?.nomeforo ?? ''}
+  id='xxxnomeforo'
+  name='xxxnomeforo'
+  value={handlers.windowFilter?.xxxnomeforo ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe NomeForo'
   label='NomeForo'
@@ -147,9 +159,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='nomejustica'
-  name='nomejustica'
-  value={handlers.windowFilter?.nomejustica ?? ''}
+  id='xxxnomejustica'
+  name='xxxnomejustica'
+  value={handlers.windowFilter?.xxxnomejustica ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe NomeJustica'
   label='NomeJustica'
@@ -157,9 +169,9 @@ export const useAgendaRelatorioFilter = ({ handleFetchWithFilter }: UseAgendaRel
   />
   <InputInput
   type='text'
-  id='nomearea'
-  name='nomearea'
-  value={handlers.windowFilter?.nomearea ?? ''}
+  id='xxxnomearea'
+  name='xxxnomearea'
+  value={handlers.windowFilter?.xxxnomearea ?? ''}
   onChange={handlers.handleInputChange}
   placeholder='Informe NomeArea'
   label='NomeArea'

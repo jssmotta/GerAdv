@@ -46,6 +46,15 @@ public partial class ParceriaProcController(IParceriaProcService parceriaprocSer
         return Ok(result);
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterParceriaProc? filtro, [FromRoute, Required] string uri)
+    {
+        //_logger.Info($"ParceriaProc: GetListN called, max {max}, {filtro} uri");
+        var result = await _parceriaprocService.GetListN(max, filtro, uri);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

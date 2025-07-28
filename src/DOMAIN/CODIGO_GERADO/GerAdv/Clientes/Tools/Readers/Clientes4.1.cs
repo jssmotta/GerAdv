@@ -23,11 +23,14 @@ public partial class ClientesReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}],[{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.Nome}],[{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.Nome}]
+                   {campos}, 
+[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.Nome}],
+[{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.Nome}],
+[{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.Nome}]
                    FROM {DBClientes.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidade.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Cidade}]
-LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacao.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
-LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresa.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
+                   LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Cidade}]
+LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
+LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
  
                    {cWhere}
                    {orderQuery}

@@ -5,14 +5,13 @@
 export interface ProSucumbencia
 {
     id: number;
-	processo : number;
 	instancia : number;
 	tipoorigemsucumbencia : number;
+	processo : number;
 	data : string;
 	nome : string;
 	valor : number;
 	percentual : string;
-	nropastaprocessos?: string;
 	nroprocessoinstancia?: string;
 	nometipoorigemsucumbencia?: string;
 
@@ -24,9 +23,9 @@ export function ProSucumbenciaEmpty(): IProSucumbencia {
     
     return {
         id: 0,
-		processo: 0,
 		instancia: 0,
 		tipoorigemsucumbencia: 0,
+		processo: 0,
 		data: '',
 		nome: '',
 		valor: 0,
@@ -39,9 +38,9 @@ export function ProSucumbenciaTestEmpty(): IProSucumbencia {
     
     return {
         id: 1,
-		processo: 1,
 		instancia: 1,
 		tipoorigemsucumbencia: 1,
+		processo: 1,
 		data: 'X',
 		nome: 'X',
 		valor: 1,

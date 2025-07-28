@@ -7,7 +7,6 @@ export interface IInstancia {
 // 202501251
     id: number;
  
-	processo: number,
 	acao: number,
 	foro: number,
 	tiporecurso: number,
@@ -18,6 +17,7 @@ export interface IInstancia {
 	interpusemosrecurso: boolean,
 	liminarconcedida: boolean,
 	liminarnegada: boolean,
+	processo: number,
 	data: string,
 	liminarparcial: boolean,
 	liminarresultado: string,

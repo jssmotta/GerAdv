@@ -15,7 +15,7 @@ public partial class ProcessOutputRequestReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBProcessOutputRequestDicInfo.CampoCodigo}";
+        var orderQuery = $"{TSql.OrderBy} {DBProcessOutputRequestDicInfo.CampoNome}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;
@@ -23,11 +23,12 @@ public partial class ProcessOutputRequestReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, [{DBProcessOutputEngineDicInfo.PTabelaNome}].[{DBProcessOutputEngineDicInfo.Nome}],[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}],[{DBProcessosDicInfo.PTabelaNome}].[{DBProcessosDicInfo.NroPasta}]
+                   {campos}, 
+[{DBProcessOutputEngineDicInfo.PTabelaNome}].[{DBProcessOutputEngineDicInfo.Nome}],
+[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Nome}]
                    FROM {DBProcessOutputRequest.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBProcessOutputEngineDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessOutputEngineDicInfo.PTabelaNome}].[{DBProcessOutputEngine.CampoCodigo}]=[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.ProcessOutputEngine}]
-LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperador.CampoCodigo}]=[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.Operador}]
-LEFT JOIN {DBProcessosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessosDicInfo.PTabelaNome}].[{DBProcessos.CampoCodigo}]=[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.Processo}]
+                   LEFT JOIN {DBProcessOutputEngineDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBProcessOutputEngineDicInfo.PTabelaNome}].[{DBProcessOutputEngineDicInfo.CampoCodigo}]=[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.ProcessOutputEngine}]
+LEFT JOIN {DBOperadorDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.CampoCodigo}]=[{DBProcessOutputRequestDicInfo.PTabelaNome}].[{DBProcessOutputRequestDicInfo.Operador}]
  
                    {cWhere}
                    {orderQuery}

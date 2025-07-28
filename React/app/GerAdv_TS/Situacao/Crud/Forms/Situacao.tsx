@@ -112,19 +112,18 @@ return (
         )}
         <div className='grid-container'>
 
-
-          <InputInput
+          <InputName
           type='text'
-          maxLength={30}
           id='parte_int'
           label='Parte_Int'
           dataForm={situacaoData}
           className='inputIncNome'
           name='parte_int'
           value={situacaoData.parte_int}
+          placeholder={`Informe Parte_Int`}
           onChange={onChange}
+          required
           />
-
 
           <InputInput
           type='text'

@@ -1,7 +1,8 @@
-﻿using MenphisSI.GerEntityTools.Entity;
-using DBAdvogados = MenphisSI.GerAdv.DBAdvogados;
-using DBFuncionarios = MenphisSI.GerAdv.DBFuncionarios;
-using DBOperador = MenphisSI.GerAdv.DBOperador;
+﻿using MenphisSI.GerAdv.Readers;
+using MenphisSI.GerEntityTools.Entity;
+using DBAdvogados = MenphisSI.SG.GerAdv.DBAdvogados;
+using DBFuncionarios = MenphisSI.SG.GerAdv.DBFuncionarios;
+using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 public class EnvioNotificacoesAniversariantes
@@ -177,18 +178,18 @@ ORDER BY ageData;
     }
 
 
-    public int EnviarEmailsParaAdvogados(string uri, MsiSqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaAdvogados(string uri, MsiSqlConnection oCnn)
     {
         TestaViews(uri);
 
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And +
-            DBOperadorDicInfo.ExcluidoSqlNao + TSql.And +
+        string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true) + TSql.And +
+            DBOperadorDicInfo.Excluido.Sql(false) + TSql.And +
             "operCadID=1 AND operCadCod IN (select distinct advCodigo from NotificarAniversariantes)";
 
-        var reader = new MenphisSI.GerAdv.Readers.Operador();
-        var readerAdv = new MenphisSI.GerAdv.Readers.Advogados();
-        var readerFunc = new MenphisSI.GerAdv.Readers.Funcionarios();
-        var operadores = reader.Listar(100, uri, filtroOperadores,[], "operNome");
+        var reader = new OperadorReader(new FOperadorFactory());
+        var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
+        var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
+        var operadores = await reader.Listar(100, uri, filtroOperadores,[], "operNome",new CancellationToken());
         var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
@@ -201,8 +202,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-                readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? ""
-              : readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? "";
+               (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+              : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -380,14 +381,14 @@ ORDER BY ageData;
    </style> ";
     }
 
-    public int EnviarEmailsParaFuncionarios(string uri, MsiSqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaFuncionarios(string uri, MsiSqlConnection oCnn)
     {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And + DBOperadorDicInfo.MasterSqlSim + TSql.And + DBOperadorDicInfo.CadID + "=" + 2;
+        string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true) + TSql.And + DBOperadorDicInfo.Master.Sql(true) + TSql.And + DBOperadorDicInfo.CadID + "=" + 2;
         
-        var reader = new MenphisSI.GerAdv.Readers.Operador();
-        var readerAdv = new MenphisSI.GerAdv.Readers.Advogados();
-        var readerFunc = new MenphisSI.GerAdv.Readers.Funcionarios();
-        var operadores = reader.Listar(100, uri, filtroOperadores, [], "operNome");
+        var reader = new OperadorReader( new FOperadorFactory());
+        var readerAdv = new AdvogadosReader( new FAdvogadosFactory());
+        var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
+        var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
 
         var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
@@ -401,8 +402,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-                      readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome).ToList()?.FirstOrDefault()?.Nome() ?? "";
+                     (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 

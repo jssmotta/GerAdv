@@ -115,14 +115,6 @@ public partial class ProPartesReader(IFProPartesFactory propartesFactory) : IPro
             Parte = dbRec.FParte,
             Processo = dbRec.FProcesso,
         };
-        try
-        {
-            propartes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return propartes;
     }
 
@@ -139,14 +131,6 @@ public partial class ProPartesReader(IFProPartesFactory propartesFactory) : IPro
             Parte = dbRec.FParte,
             Processo = dbRec.FProcesso,
         };
-        try
-        {
-            propartes.NroPastaProcessos = dr[DBProcessosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return propartes;
     }
 }

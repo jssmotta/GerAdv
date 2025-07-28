@@ -10,4 +10,5 @@ public partial interface IDivisaoTribunalService
     Task<DivisaoTribunalResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<DivisaoTribunalResponse?> Validation(Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri = "");
     Task<IEnumerable<DivisaoTribunalResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

@@ -168,7 +168,10 @@ export function useValidationsDadosProcuracao() {
     
       try {
    
-        if (data.estadocivil.length > 100) { 
+        if (data.guid.length <= 0) { 
+                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
+                                         } 
+if (data.estadocivil.length > 100) { 
                                              return { isValid: false, message: 'O campo EstadoCivil não pode ter mais de 100 caracteres.' };
                                          } 
 if (data.nacionalidade.length > 100) { 

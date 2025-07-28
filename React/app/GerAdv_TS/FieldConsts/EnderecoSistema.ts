@@ -3,10 +3,10 @@
                      // This file is part of the Source Genesys project                     
                     export enum FieldsEnderecoSistema
 {	tipoenderecosistema = `TipoEnderecoSistema`,
-	processo = `Processo`,
 	cidade = `Cidade`,
 	cadastro = `Cadastro`,
 	cadastroexcod = `CadastroExCod`,
+	processo = `Processo`,
 	motivo = `Motivo`,
 	contatonolocal = `ContatoNoLocal`,
 	endereco = `Endereco`,

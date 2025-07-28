@@ -26,21 +26,21 @@ public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
 
     private bool ValidSizes(Models.OperadorEMailPopup reg)
     {
-        if (reg.Nome.Length > 80)
+        if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.Senha.Length > 50)
+        if (reg.Senha != null && reg.Senha.Length > 50)
             throw new SGValidationException($"Senha deve ter no máximo 50 caracteres.");
-        if (reg.SMTP.Length > 255)
+        if (reg.SMTP != null && reg.SMTP.Length > 255)
             throw new SGValidationException($"SMTP deve ter no máximo 255 caracteres.");
-        if (reg.POP3.Length > 255)
+        if (reg.POP3 != null && reg.POP3.Length > 255)
             throw new SGValidationException($"POP3 deve ter no máximo 255 caracteres.");
-        if (reg.Descricao.Length > 100)
+        if (reg.Descricao != null && reg.Descricao.Length > 100)
             throw new SGValidationException($"Descricao deve ter no máximo 100 caracteres.");
-        if (reg.Usuario.Length > 50)
+        if (reg.Usuario != null && reg.Usuario.Length > 50)
             throw new SGValidationException($"Usuario deve ter no máximo 50 caracteres.");
-        if (reg.Senha256.Length > 4000)
+        if (reg.Senha256 != null && reg.Senha256.Length > 4000)
             throw new SGValidationException($"Senha256 deve ter no máximo 4000 caracteres.");
-        if (reg.GUID.Length > 100)
+        if (reg.GUID != null && reg.GUID.Length > 100)
             throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
         return true;
     }

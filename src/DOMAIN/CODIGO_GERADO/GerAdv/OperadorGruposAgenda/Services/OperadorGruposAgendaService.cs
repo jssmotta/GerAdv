@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettings, IFOperadorGruposAgendaFactory operadorgruposagendaFactory, IOperadorGruposAgendaReader reader, IOperadorGruposAgendaValidation validation, IOperadorGruposAgendaWriter writer, IOperadorReader operadorReader, IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOperadorGruposAgendaService, IDisposable
+public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettings, IFOperadorGruposAgendaFactory operadorgruposagendaFactory, IOperadorGruposAgendaReader reader, IOperadorGruposAgendaValidation validation, IOperadorGruposAgendaWriter writer, IOperadorReader operadorReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOperadorGruposAgendaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
     private readonly IOperadorGruposAgendaValidation validation = validation;
     private readonly IOperadorGruposAgendaWriter writer = writer;
     private readonly IOperadorReader operadorReader = operadorReader;
-    private readonly IOperadorGruposAgendaOperadoresService operadorgruposagendaoperadoresService = operadorgruposagendaoperadoresService;
     public async Task<IEnumerable<OperadorGruposAgendaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -197,7 +196,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, operadorgruposagendaoperadoresService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");
