@@ -26,6 +26,11 @@ public partial class OperadoresController(IOperadoresService operadoresService) 
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOperadores filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Operadores: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _operadoresService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class OperadoresController(IOperadoresService operadoresService) 
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadores? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Operadores: GetListN called, max {max}, {filtro} uri");
         var result = await _operadoresService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class OperadoresController(IOperadoresService operadoresService) 
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Operadores regOperadores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Operadores", "AddAndUpdate", regOperadores, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class OperadoresController(IOperadoresService operadoresService) 
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Operadores regOperadores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _operadoresService.Validation(regOperadores, uri);

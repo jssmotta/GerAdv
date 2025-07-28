@@ -26,6 +26,11 @@ public partial class CargosEscController(ICargosEscService cargosescService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterCargosEsc filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("CargosEsc: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _cargosescService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class CargosEscController(ICargosEscService cargosescService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterCargosEsc? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"CargosEsc: GetListN called, max {max}, {filtro} uri");
         var result = await _cargosescService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class CargosEscController(ICargosEscService cargosescService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.CargosEsc regCargosEsc, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("CargosEsc", "AddAndUpdate", regCargosEsc, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class CargosEscController(ICargosEscService cargosescService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.CargosEsc regCargosEsc, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _cargosescService.Validation(regCargosEsc, uri);

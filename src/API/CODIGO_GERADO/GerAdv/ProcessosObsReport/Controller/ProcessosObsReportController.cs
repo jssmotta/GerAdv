@@ -26,6 +26,11 @@ public partial class ProcessosObsReportController(IProcessosObsReportService pro
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessosObsReport filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProcessosObsReport: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _processosobsreportService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProcessosObsReportController(IProcessosObsReportService pro
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessosObsReport? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProcessosObsReport: GetListN called, max {max}, {filtro} uri");
         var result = await _processosobsreportService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProcessosObsReportController(IProcessosObsReportService pro
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProcessosObsReport regProcessosObsReport, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProcessosObsReport", "AddAndUpdate", regProcessosObsReport, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProcessosObsReportController(IProcessosObsReportService pro
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProcessosObsReport regProcessosObsReport, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _processosobsreportService.Validation(regProcessosObsReport, uri);

@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// StatusId - operStatusId  
-        /// </summary>
-        [JsonPropertyName("statusid")]
-        public int StatusId { get; set; }
-
-        /// <summary>
         /// EMail - operEMail - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("email")]
@@ -129,6 +123,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("sysop")]
         public bool SysOp { get; set; }
+
+        /// <summary>
+        /// StatusId - operStatusId  
+        /// </summary>
+        [JsonPropertyName("statusid")]
+        public int StatusId { get; set; }
 
         /// <summary>
         /// StatusMessage - operStatusMessage - tamanho máximo: 1024 
@@ -228,12 +228,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// StatusId - operStatusId  
-        /// </summary>
-        [JsonPropertyName("statusid")]
-        public int StatusId { get; set; }
-
-        /// <summary>
         /// EMail - operEMail - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("email")]
@@ -343,6 +337,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("sysop")]
         public bool SysOp { get; set; }
+
+        /// <summary>
+        /// StatusId - operStatusId  
+        /// </summary>
+        [JsonPropertyName("statusid")]
+        public int StatusId { get; set; }
 
         /// <summary>
         /// StatusMessage - operStatusMessage - tamanho máximo: 1024 

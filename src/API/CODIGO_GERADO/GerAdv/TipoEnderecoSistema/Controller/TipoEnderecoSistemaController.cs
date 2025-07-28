@@ -26,6 +26,11 @@ public partial class TipoEnderecoSistemaController(ITipoEnderecoSistemaService t
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoEnderecoSistema filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoEnderecoSistema: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipoenderecosistemaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class TipoEnderecoSistemaController(ITipoEnderecoSistemaService t
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoEnderecoSistema? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"TipoEnderecoSistema: GetListN called, max {max}, {filtro} uri");
         var result = await _tipoenderecosistemaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class TipoEnderecoSistemaController(ITipoEnderecoSistemaService t
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoEnderecoSistema regTipoEnderecoSistema, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("TipoEnderecoSistema", "AddAndUpdate", regTipoEnderecoSistema, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class TipoEnderecoSistemaController(ITipoEnderecoSistemaService t
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoEnderecoSistema regTipoEnderecoSistema, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipoenderecosistemaService.Validation(regTipoEnderecoSistema, uri);

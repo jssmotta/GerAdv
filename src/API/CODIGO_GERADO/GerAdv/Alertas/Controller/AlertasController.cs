@@ -26,6 +26,11 @@ public partial class AlertasController(IAlertasService alertasService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAlertas filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Alertas: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _alertasService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class AlertasController(IAlertasService alertasService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAlertas? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Alertas: GetListN called, max {max}, {filtro} uri");
         var result = await _alertasService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class AlertasController(IAlertasService alertasService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Alertas regAlertas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Alertas", "AddAndUpdate", regAlertas, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class AlertasController(IAlertasService alertasService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Alertas regAlertas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _alertasService.Validation(regAlertas, uri);

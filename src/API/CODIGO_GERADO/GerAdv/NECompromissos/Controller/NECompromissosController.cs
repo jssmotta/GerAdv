@@ -26,6 +26,11 @@ public partial class NECompromissosController(INECompromissosService necompromis
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterNECompromissos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("NECompromissos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _necompromissosService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class NECompromissosController(INECompromissosService necompromis
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.NECompromissos regNECompromissos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("NECompromissos", "AddAndUpdate", regNECompromissos, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class NECompromissosController(INECompromissosService necompromis
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.NECompromissos regNECompromissos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _necompromissosService.Validation(regNECompromissos, uri);

@@ -26,6 +26,11 @@ public partial class OperadorGruposAgendaController(IOperadorGruposAgendaService
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOperadorGruposAgenda filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("OperadorGruposAgenda: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _operadorgruposagendaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class OperadorGruposAgendaController(IOperadorGruposAgendaService
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadorGruposAgenda? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"OperadorGruposAgenda: GetListN called, max {max}, {filtro} uri");
         var result = await _operadorgruposagendaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class OperadorGruposAgendaController(IOperadorGruposAgendaService
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.OperadorGruposAgenda regOperadorGruposAgenda, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("OperadorGruposAgenda", "AddAndUpdate", regOperadorGruposAgenda, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class OperadorGruposAgendaController(IOperadorGruposAgendaService
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.OperadorGruposAgenda regOperadorGruposAgenda, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _operadorgruposagendaService.Validation(regOperadorGruposAgenda, uri);

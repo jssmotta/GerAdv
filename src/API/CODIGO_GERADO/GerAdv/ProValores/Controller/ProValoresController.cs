@@ -26,6 +26,11 @@ public partial class ProValoresController(IProValoresService provaloresService) 
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProValores filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProValores: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _provaloresService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProValoresController(IProValoresService provaloresService) 
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProValores? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProValores: GetListN called, max {max}, {filtro} uri");
         var result = await _provaloresService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProValoresController(IProValoresService provaloresService) 
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProValores regProValores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProValores", "AddAndUpdate", regProValores, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProValoresController(IProValoresService provaloresService) 
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProValores regProValores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _provaloresService.Validation(regProValores, uri);

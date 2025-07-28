@@ -9,21 +9,10 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAgendaRelatorioValidation
 {
     Task<bool> ValidateReg(Models.AgendaRelatorio reg, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AgendaRelatorioValidation : IAgendaRelatorioValidation
 {
-    public async Task<bool> CanDelete(int id, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
-    {
-        if (id <= 0)
-            throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
-        if (reg == null)
-            throw new SGValidationException($"Registro com id {id} não encontrado.");
-        return true;
-    }
-
     private bool ValidSizes(Models.AgendaRelatorio reg)
     {
         return true;

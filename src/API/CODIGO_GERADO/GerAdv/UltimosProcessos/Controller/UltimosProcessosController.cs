@@ -26,6 +26,11 @@ public partial class UltimosProcessosController(IUltimosProcessosService ultimos
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterUltimosProcessos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("UltimosProcessos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _ultimosprocessosService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class UltimosProcessosController(IUltimosProcessosService ultimos
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.UltimosProcessos regUltimosProcessos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("UltimosProcessos", "AddAndUpdate", regUltimosProcessos, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class UltimosProcessosController(IUltimosProcessosService ultimos
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.UltimosProcessos regUltimosProcessos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _ultimosprocessosService.Validation(regUltimosProcessos, uri);

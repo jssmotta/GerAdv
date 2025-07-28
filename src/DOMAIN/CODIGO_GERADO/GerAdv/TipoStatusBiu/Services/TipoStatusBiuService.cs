@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, IFTipoStatusBiuFactory tipostatusbiuFactory, ITipoStatusBiuReader reader, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, IStatusBiuService statusbiuService, HybridCache cache, IMemoryCache memory) : ITipoStatusBiuService, IDisposable
+public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, IFTipoStatusBiuFactory tipostatusbiuFactory, ITipoStatusBiuReader reader, ITipoStatusBiuValidation validation, ITipoStatusBiuWriter writer, HybridCache cache, IMemoryCache memory) : ITipoStatusBiuService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
@@ -16,7 +16,6 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, IFT
     private readonly ITipoStatusBiuReader reader = reader;
     private readonly ITipoStatusBiuValidation validation = validation;
     private readonly ITipoStatusBiuWriter writer = writer;
-    private readonly IStatusBiuService statusbiuService = statusbiuService;
     public async Task<IEnumerable<TipoStatusBiuResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -189,7 +188,7 @@ public partial class TipoStatusBiuService(IOptions<AppSettings> appSettings, IFT
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, statusbiuService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao vaidadar 0x0!");

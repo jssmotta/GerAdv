@@ -26,6 +26,11 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoModeloDocumento filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoModeloDocumento: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipomodelodocumentoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoModeloDocumento? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"TipoModeloDocumento: GetListN called, max {max}, {filtro} uri");
         var result = await _tipomodelodocumentoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoModeloDocumento regTipoModeloDocumento, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("TipoModeloDocumento", "AddAndUpdate", regTipoModeloDocumento, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoModeloDocumento regTipoModeloDocumento, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipomodelodocumentoService.Validation(regTipoModeloDocumento, uri);

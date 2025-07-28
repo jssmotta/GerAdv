@@ -26,6 +26,11 @@ public partial class ObjetosController(IObjetosService objetosService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterObjetos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Objetos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _objetosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ObjetosController(IObjetosService objetosService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterObjetos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Objetos: GetListN called, max {max}, {filtro} uri");
         var result = await _objetosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ObjetosController(IObjetosService objetosService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Objetos regObjetos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Objetos", "AddAndUpdate", regObjetos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ObjetosController(IObjetosService objetosService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Objetos regObjetos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _objetosService.Validation(regObjetos, uri);

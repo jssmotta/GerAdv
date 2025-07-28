@@ -26,6 +26,11 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterClientesSocios filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ClientesSocios: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _clientessociosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterClientesSocios? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ClientesSocios: GetListN called, max {max}, {filtro} uri");
         var result = await _clientessociosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ClientesSocios", "AddAndUpdate", regClientesSocios, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ClientesSocios regClientesSocios, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _clientessociosService.Validation(regClientesSocios, uri);

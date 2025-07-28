@@ -26,6 +26,11 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTPeriodicidadeStatus filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("GUTPeriodicidadeStatus: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _gutperiodicidadestatusService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidadeStatus? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"GUTPeriodicidadeStatus: GetListN called, max {max}, {filtro} uri");
         var result = await _gutperiodicidadestatusService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("GUTPeriodicidadeStatus", "AddAndUpdate", regGUTPeriodicidadeStatus, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class GUTPeriodicidadeStatusController(IGUTPeriodicidadeStatusSer
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _gutperiodicidadestatusService.Validation(regGUTPeriodicidadeStatus, uri);

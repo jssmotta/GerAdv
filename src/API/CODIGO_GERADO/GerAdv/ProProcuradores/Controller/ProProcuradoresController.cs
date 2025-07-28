@@ -26,6 +26,11 @@ public partial class ProProcuradoresController(IProProcuradoresService proprocur
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProProcuradores filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProProcuradores: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _proprocuradoresService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProProcuradoresController(IProProcuradoresService proprocur
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProProcuradores? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProProcuradores: GetListN called, max {max}, {filtro} uri");
         var result = await _proprocuradoresService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProProcuradoresController(IProProcuradoresService proprocur
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProProcuradores regProProcuradores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProProcuradores", "AddAndUpdate", regProProcuradores, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProProcuradoresController(IProProcuradoresService proprocur
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProProcuradores regProProcuradores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _proprocuradoresService.Validation(regProProcuradores, uri);

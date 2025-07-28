@@ -2,8 +2,7 @@
                      // copyright © 2000-2025 Menphis - Sistemas Inteligentes
                      // This file is part of the Source Genesys project                     
                     export enum FieldsOperador
-{	statusid = `StatusId`,
-	email = `EMail`,
+{	email = `EMail`,
 	pasta = `Pasta`,
 	telefonista = `Telefonista`,
 	master = `Master`,
@@ -21,6 +20,7 @@
 	onlineip = `OnlineIP`,
 	online = `OnLine`,
 	sysop = `SysOp`,
+	statusid = `StatusId`,
 	statusmessage = `StatusMessage`,
 	isfinanceiro = `IsFinanceiro`,
 	top = `Top`,

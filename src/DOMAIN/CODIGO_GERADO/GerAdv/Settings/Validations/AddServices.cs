@@ -120,7 +120,6 @@ public static class AddServices
         builder.Services.AddScoped<ISituacaoValidation, SituacaoValidation>();
         builder.Services.AddScoped<ISMSAliceValidation, SMSAliceValidation>();
         builder.Services.AddScoped<IStatusAndamentoValidation, StatusAndamentoValidation>();
-        builder.Services.AddScoped<IStatusBiuValidation, StatusBiuValidation>();
         builder.Services.AddScoped<IStatusHTrabValidation, StatusHTrabValidation>();
         builder.Services.AddScoped<IStatusInstanciaValidation, StatusInstanciaValidation>();
         builder.Services.AddScoped<IStatusTarefasValidation, StatusTarefasValidation>();

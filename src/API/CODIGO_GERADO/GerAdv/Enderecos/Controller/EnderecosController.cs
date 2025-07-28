@@ -26,6 +26,11 @@ public partial class EnderecosController(IEnderecosService enderecosService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterEnderecos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Enderecos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _enderecosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class EnderecosController(IEnderecosService enderecosService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Enderecos: GetListN called, max {max}, {filtro} uri");
         var result = await _enderecosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class EnderecosController(IEnderecosService enderecosService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Enderecos regEnderecos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Enderecos", "AddAndUpdate", regEnderecos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class EnderecosController(IEnderecosService enderecosService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Enderecos regEnderecos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _enderecosService.Validation(regEnderecos, uri);

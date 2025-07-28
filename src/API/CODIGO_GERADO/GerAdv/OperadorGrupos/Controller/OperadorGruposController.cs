@@ -26,6 +26,11 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOperadorGrupos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("OperadorGrupos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _operadorgruposService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadorGrupos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"OperadorGrupos: GetListN called, max {max}, {filtro} uri");
         var result = await _operadorgruposService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.OperadorGrupos regOperadorGrupos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("OperadorGrupos", "AddAndUpdate", regOperadorGrupos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.OperadorGrupos regOperadorGrupos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _operadorgruposService.Validation(regOperadorGrupos, uri);

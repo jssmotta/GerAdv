@@ -26,6 +26,11 @@ public partial class ParceriaProcController(IParceriaProcService parceriaprocSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterParceriaProc filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ParceriaProc: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _parceriaprocService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ParceriaProcController(IParceriaProcService parceriaprocSer
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterParceriaProc? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ParceriaProc: GetListN called, max {max}, {filtro} uri");
         var result = await _parceriaprocService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ParceriaProcController(IParceriaProcService parceriaprocSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ParceriaProc regParceriaProc, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ParceriaProc", "AddAndUpdate", regParceriaProc, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ParceriaProcController(IParceriaProcService parceriaprocSer
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ParceriaProc regParceriaProc, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _parceriaprocService.Validation(regParceriaProc, uri);

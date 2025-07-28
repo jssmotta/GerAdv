@@ -26,6 +26,11 @@ public partial class DadosProcuracaoController(IDadosProcuracaoService dadosproc
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterDadosProcuracao filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("DadosProcuracao: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _dadosprocuracaoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class DadosProcuracaoController(IDadosProcuracaoService dadosproc
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterDadosProcuracao? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"DadosProcuracao: GetListN called, max {max}, {filtro} uri");
         var result = await _dadosprocuracaoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class DadosProcuracaoController(IDadosProcuracaoService dadosproc
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.DadosProcuracao regDadosProcuracao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("DadosProcuracao", "AddAndUpdate", regDadosProcuracao, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class DadosProcuracaoController(IDadosProcuracaoService dadosproc
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.DadosProcuracao regDadosProcuracao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _dadosprocuracaoService.Validation(regDadosProcuracao, uri);

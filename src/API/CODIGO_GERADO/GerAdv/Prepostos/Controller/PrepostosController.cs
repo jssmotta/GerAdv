@@ -26,6 +26,11 @@ public partial class PrepostosController(IPrepostosService prepostosService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPrepostos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Prepostos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _prepostosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class PrepostosController(IPrepostosService prepostosService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPrepostos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Prepostos: GetListN called, max {max}, {filtro} uri");
         var result = await _prepostosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class PrepostosController(IPrepostosService prepostosService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Prepostos regPrepostos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Prepostos", "AddAndUpdate", regPrepostos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class PrepostosController(IPrepostosService prepostosService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Prepostos regPrepostos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _prepostosService.Validation(regPrepostos, uri);

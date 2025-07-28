@@ -5,7 +5,6 @@
 export interface Operador
 {
     id: number;
-	statusid : number;
 	email : string;
 	pasta : string;
 	telefonista : boolean;
@@ -25,6 +24,7 @@ export interface Operador
 	onlineip : string;
 	online : boolean;
 	sysop : boolean;
+	statusid : number;
 	statusmessage : string;
 	isfinanceiro : boolean;
 	top : boolean;
@@ -42,7 +42,6 @@ export interface Operador
 	suporteultimoacesso : string;
 	suporteultimoacesso_date? : Date;
 	suporteipultimoacesso : string;
-	nomestatusbiu?: string;
 
 }
 
@@ -52,7 +51,6 @@ export function OperadorEmpty(): IOperador {
     
     return {
         id: 0,
-		statusid: 0,
 		email: '',
 		pasta: '',
 		telefonista: false,
@@ -71,6 +69,7 @@ export function OperadorEmpty(): IOperador {
 		onlineip: '',
 		online: false,
 		sysop: false,
+		statusid: 0,
 		statusmessage: '',
 		isfinanceiro: false,
 		top: false,
@@ -93,7 +92,6 @@ export function OperadorTestEmpty(): IOperador {
     
     return {
         id: 1,
-		statusid: 1,
 		email: 'X',
 		pasta: 'X',
 		telefonista: true,
@@ -112,6 +110,7 @@ export function OperadorTestEmpty(): IOperador {
 		onlineip: 'X',
 		online: true,
 		sysop: true,
+		statusid: 1,
 		statusmessage: 'X',
 		isfinanceiro: true,
 		top: true,

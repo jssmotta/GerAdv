@@ -26,6 +26,11 @@ public partial class OperadorGrupoController(IOperadorGrupoService operadorgrupo
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOperadorGrupo filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("OperadorGrupo: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _operadorgrupoService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class OperadorGrupoController(IOperadorGrupoService operadorgrupo
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.OperadorGrupo regOperadorGrupo, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("OperadorGrupo", "AddAndUpdate", regOperadorGrupo, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class OperadorGrupoController(IOperadorGrupoService operadorgrupo
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.OperadorGrupo regOperadorGrupo, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _operadorgrupoService.Validation(regOperadorGrupo, uri);

@@ -71,11 +71,6 @@ public partial class OperadorService
             parameters.Add(new($"@{nameof(DBOperadorDicInfo.SysOp)}", filtro.SysOp));
         }
 
-        if (filtro.StatusId != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBOperadorDicInfo.StatusId)}", filtro.StatusId));
-        }
-
         if (filtro.IsFinanceiro != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBOperadorDicInfo.IsFinanceiro)}", filtro.IsFinanceiro));
@@ -156,7 +151,6 @@ public partial class OperadorService
         cWhere.Append(filtro.EMailNet.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.EMailNet}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorDicInfo.EMailNet)}");
         cWhere.Append(filtro.OnLine == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.OnLine}] = @{nameof(DBOperadorDicInfo.OnLine)}");
         cWhere.Append(filtro.SysOp == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.SysOp}] = @{nameof(DBOperadorDicInfo.SysOp)}");
-        cWhere.Append(filtro.StatusId <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.StatusId}] = @{nameof(DBOperadorDicInfo.StatusId)}");
         cWhere.Append(filtro.IsFinanceiro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.IsFinanceiro}] = @{nameof(DBOperadorDicInfo.IsFinanceiro)}");
         cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Top}] = @{nameof(DBOperadorDicInfo.Top)}");
         cWhere.Append(filtro.Sexo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorDicInfo.PTabelaNome}].[{DBOperadorDicInfo.Sexo}] = @{nameof(DBOperadorDicInfo.Sexo)}");

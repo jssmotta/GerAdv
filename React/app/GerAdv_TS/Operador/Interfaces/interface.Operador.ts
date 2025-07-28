@@ -7,7 +7,6 @@ export interface IOperador {
 // 202501251
     id: number;
  
-	statusid: number,
 	email: string,
 	pasta: string,
 	telefonista: boolean,
@@ -26,6 +25,7 @@ export interface IOperador {
 	onlineip: string,
 	online: boolean,
 	sysop: boolean,
+	statusid: number,
 	statusmessage: string,
 	isfinanceiro: boolean,
 	top: boolean,

@@ -26,6 +26,11 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoContatoCRM filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoContatoCRM: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipocontatocrmService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoContatoCRM? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"TipoContatoCRM: GetListN called, max {max}, {filtro} uri");
         var result = await _tipocontatocrmService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoContatoCRM regTipoContatoCRM, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("TipoContatoCRM", "AddAndUpdate", regTipoContatoCRM, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoContatoCRM regTipoContatoCRM, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipocontatocrmService.Validation(regTipoContatoCRM, uri);

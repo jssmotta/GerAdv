@@ -26,6 +26,11 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoCompromisso filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoCompromisso: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tipocompromissoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoCompromisso? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"TipoCompromisso: GetListN called, max {max}, {filtro} uri");
         var result = await _tipocompromissoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("TipoCompromisso", "AddAndUpdate", regTipoCompromisso, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class TipoCompromissoController(ITipoCompromissoService tipocompr
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoCompromisso regTipoCompromisso, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipocompromissoService.Validation(regTipoCompromisso, uri);

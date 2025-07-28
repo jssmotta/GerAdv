@@ -26,6 +26,11 @@ public partial class TribEnderecosController(ITribEnderecosService tribenderecos
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TribEnderecos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tribenderecosService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class TribEnderecosController(ITribEnderecosService tribenderecos
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TribEnderecos regTribEnderecos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("TribEnderecos", "AddAndUpdate", regTribEnderecos, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class TribEnderecosController(ITribEnderecosService tribenderecos
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TribEnderecos regTribEnderecos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tribenderecosService.Validation(regTribEnderecos, uri);

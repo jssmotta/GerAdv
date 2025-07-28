@@ -26,6 +26,11 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterDiario2 filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Diario2: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _diario2Service.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterDiario2? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Diario2: GetListN called, max {max}, {filtro} uri");
         var result = await _diario2Service.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Diario2 regDiario2, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Diario2", "AddAndUpdate", regDiario2, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Diario2 regDiario2, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _diario2Service.Validation(regDiario2, uri);

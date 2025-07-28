@@ -26,6 +26,11 @@ public partial class ProcessOutputEngineController(IProcessOutputEngineService p
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessOutputEngine filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProcessOutputEngine: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _processoutputengineService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProcessOutputEngineController(IProcessOutputEngineService p
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessOutputEngine? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProcessOutputEngine: GetListN called, max {max}, {filtro} uri");
         var result = await _processoutputengineService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProcessOutputEngineController(IProcessOutputEngineService p
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProcessOutputEngine regProcessOutputEngine, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProcessOutputEngine", "AddAndUpdate", regProcessOutputEngine, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProcessOutputEngineController(IProcessOutputEngineService p
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProcessOutputEngine regProcessOutputEngine, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _processoutputengineService.Validation(regProcessOutputEngine, uri);

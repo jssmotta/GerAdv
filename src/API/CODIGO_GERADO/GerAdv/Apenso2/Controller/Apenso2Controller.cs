@@ -26,6 +26,11 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterApenso2 filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Apenso2: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _apenso2Service.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Apenso2 regApenso2, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Apenso2", "AddAndUpdate", regApenso2, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Apenso2 regApenso2, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _apenso2Service.Validation(regApenso2, uri);

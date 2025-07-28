@@ -26,6 +26,11 @@ public partial class AgendaRepetirDiasController(IAgendaRepetirDiasService agend
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAgendaRepetirDias filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("AgendaRepetirDias: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _agendarepetirdiasService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class AgendaRepetirDiasController(IAgendaRepetirDiasService agend
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.AgendaRepetirDias regAgendaRepetirDias, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("AgendaRepetirDias", "AddAndUpdate", regAgendaRepetirDias, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class AgendaRepetirDiasController(IAgendaRepetirDiasService agend
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.AgendaRepetirDias regAgendaRepetirDias, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _agendarepetirdiasService.Validation(regAgendaRepetirDias, uri);

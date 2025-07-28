@@ -26,6 +26,11 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterClientes filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Clientes: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _clientesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterClientes? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Clientes: GetListN called, max {max}, {filtro} uri");
         var result = await _clientesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Clientes regClientes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Clientes", "AddAndUpdate", regClientes, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ClientesController(IClientesService clientesService) : Cont
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Clientes regClientes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _clientesService.Validation(regClientes, uri);

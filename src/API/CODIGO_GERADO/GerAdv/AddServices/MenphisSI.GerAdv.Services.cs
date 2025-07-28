@@ -228,8 +228,6 @@ public static class AddServices
         builder.Services.AddScoped<SMSAliceService>();
         builder.Services.AddScoped<IStatusAndamentoService, StatusAndamentoService>();
         builder.Services.AddScoped<StatusAndamentoService>();
-        builder.Services.AddScoped<IStatusBiuService, StatusBiuService>();
-        builder.Services.AddScoped<StatusBiuService>();
         builder.Services.AddScoped<IStatusHTrabService, StatusHTrabService>();
         builder.Services.AddScoped<StatusHTrabService>();
         builder.Services.AddScoped<IStatusInstanciaService, StatusInstanciaService>();

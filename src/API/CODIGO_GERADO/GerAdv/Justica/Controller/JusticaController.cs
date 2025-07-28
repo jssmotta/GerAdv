@@ -26,6 +26,11 @@ public partial class JusticaController(IJusticaService justicaService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterJustica filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Justica: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _justicaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class JusticaController(IJusticaService justicaService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterJustica? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Justica: GetListN called, max {max}, {filtro} uri");
         var result = await _justicaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class JusticaController(IJusticaService justicaService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Justica regJustica, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Justica", "AddAndUpdate", regJustica, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class JusticaController(IJusticaService justicaService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Justica regJustica, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _justicaService.Validation(regJustica, uri);

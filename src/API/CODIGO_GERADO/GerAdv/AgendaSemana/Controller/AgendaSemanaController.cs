@@ -17,23 +17,13 @@ public partial class AgendaSemanaController(IAgendaSemanaService agendasemanaSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAgendaSemana filtro, [FromRoute, Required] string uri)
     {
-        //_logger.Info("AgendaSemana: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _agendasemanaService.Filter(filtro, uri);
-        return Ok(result);
-    }
-
-    [HttpGet("{id}")]
-    [Authorize]
-    public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
-    {
-        //_logger.Info("AgendaSemana: GetById called with id = {0}, {1}", id, uri);
-        var result = await _agendasemanaService.GetById(id, uri, token);
-        if (result == null)
+        if (!ModelState.IsValid)
         {
-            _logger.Warn("GetById: No AgendaSemana found with id = {0}, {1}", id, uri);
-            return NotFound();
+            return BadRequest(ModelState);
         }
 
+        //_logger.Info("AgendaSemana: Filter called with filtro = {0}, {1}", filtro, uri);
+        var result = await _agendasemanaService.Filter(filtro, uri);
         return Ok(result);
     }
 }

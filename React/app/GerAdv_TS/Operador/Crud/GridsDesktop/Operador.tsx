@@ -229,18 +229,6 @@ const SearchFromCellSMSAlice = (props: any) => {
 </>
 );
 };
-const openSearchCellStatusBiu = (id: number) => {
-  router.push(`/pages/statusbiu/?operador=${id}`);
-};
-const SearchFromCellStatusBiu = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellStatusBiu(props.dataItem.id)}><span title='Pesquisar relacionados em Status Biu'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 
 const DeleteRow = (e: any) => {
   return (
@@ -364,15 +352,7 @@ const gridColumns = useMemo(() => [
   title='S M S Alice'
   cells={{ data: SearchFromCellSMSAlice }}
   />, 
-  <GridColumn
-  field='id_edit_StatusBiu'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Status Biu'
-  cells={{ data: SearchFromCellStatusBiu }}
-  />, 
-  <GridColumn field='omestatusbiu' title='Status Biu' sortable={false} filterable={false} />, /* Track G.01 */
+  <GridColumn field='omestatusbiu' title='StatusBiu' sortable={false} filterable={false} />, /* Track G.01 */
 
   <GridColumn
   field='id_edit_row'

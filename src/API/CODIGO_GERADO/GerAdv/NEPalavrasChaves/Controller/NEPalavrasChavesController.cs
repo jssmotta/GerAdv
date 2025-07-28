@@ -26,6 +26,11 @@ public partial class NEPalavrasChavesController(INEPalavrasChavesService nepalav
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterNEPalavrasChaves filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("NEPalavrasChaves: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _nepalavraschavesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class NEPalavrasChavesController(INEPalavrasChavesService nepalav
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterNEPalavrasChaves? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"NEPalavrasChaves: GetListN called, max {max}, {filtro} uri");
         var result = await _nepalavraschavesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class NEPalavrasChavesController(INEPalavrasChavesService nepalav
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.NEPalavrasChaves regNEPalavrasChaves, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("NEPalavrasChaves", "AddAndUpdate", regNEPalavrasChaves, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class NEPalavrasChavesController(INEPalavrasChavesService nepalav
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.NEPalavrasChaves regNEPalavrasChaves, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _nepalavraschavesService.Validation(regNEPalavrasChaves, uri);

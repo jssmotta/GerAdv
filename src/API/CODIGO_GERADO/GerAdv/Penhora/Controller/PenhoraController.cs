@@ -26,6 +26,11 @@ public partial class PenhoraController(IPenhoraService penhoraService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPenhora filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Penhora: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _penhoraService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class PenhoraController(IPenhoraService penhoraService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPenhora? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Penhora: GetListN called, max {max}, {filtro} uri");
         var result = await _penhoraService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class PenhoraController(IPenhoraService penhoraService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Penhora regPenhora, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Penhora", "AddAndUpdate", regPenhora, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class PenhoraController(IPenhoraService penhoraService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Penhora regPenhora, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _penhoraService.Validation(regPenhora, uri);

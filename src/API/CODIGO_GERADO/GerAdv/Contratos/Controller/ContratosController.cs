@@ -26,6 +26,11 @@ public partial class ContratosController(IContratosService contratosService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterContratos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Contratos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _contratosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ContratosController(IContratosService contratosService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterContratos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Contratos: GetListN called, max {max}, {filtro} uri");
         var result = await _contratosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ContratosController(IContratosService contratosService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Contratos regContratos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Contratos", "AddAndUpdate", regContratos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ContratosController(IContratosService contratosService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Contratos regContratos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _contratosService.Validation(regContratos, uri);

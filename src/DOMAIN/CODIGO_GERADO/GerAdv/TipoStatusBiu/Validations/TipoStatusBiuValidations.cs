@@ -9,21 +9,18 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoStatusBiuValidation
 {
     Task<bool> ValidateReg(Models.TipoStatusBiu reg, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoStatusBiuService service, IStatusBiuService statusbiuService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoStatusBiuValidation : ITipoStatusBiuValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoStatusBiuService service, IStatusBiuService statusbiuService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var statusbiuExists0 = await statusbiuService.Filter(new Filters.FilterStatusBiu { TipoStatusBiu = id }, uri);
-        if (statusbiuExists0 != null && statusbiuExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Status Biu associados a ele.");
         return true;
     }
 

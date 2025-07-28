@@ -26,6 +26,11 @@ public partial class FaseController(IFaseService faseService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterFase filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Fase: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _faseService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class FaseController(IFaseService faseService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterFase? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Fase: GetListN called, max {max}, {filtro} uri");
         var result = await _faseService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class FaseController(IFaseService faseService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Fase regFase, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Fase", "AddAndUpdate", regFase, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class FaseController(IFaseService faseService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Fase regFase, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _faseService.Validation(regFase, uri);

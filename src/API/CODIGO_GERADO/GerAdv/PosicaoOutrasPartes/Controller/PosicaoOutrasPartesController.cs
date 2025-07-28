@@ -26,6 +26,11 @@ public partial class PosicaoOutrasPartesController(IPosicaoOutrasPartesService p
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPosicaoOutrasPartes filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("PosicaoOutrasPartes: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _posicaooutraspartesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class PosicaoOutrasPartesController(IPosicaoOutrasPartesService p
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPosicaoOutrasPartes? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"PosicaoOutrasPartes: GetListN called, max {max}, {filtro} uri");
         var result = await _posicaooutraspartesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class PosicaoOutrasPartesController(IPosicaoOutrasPartesService p
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.PosicaoOutrasPartes regPosicaoOutrasPartes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("PosicaoOutrasPartes", "AddAndUpdate", regPosicaoOutrasPartes, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class PosicaoOutrasPartesController(IPosicaoOutrasPartesService p
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.PosicaoOutrasPartes regPosicaoOutrasPartes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _posicaooutraspartesService.Validation(regPosicaoOutrasPartes, uri);

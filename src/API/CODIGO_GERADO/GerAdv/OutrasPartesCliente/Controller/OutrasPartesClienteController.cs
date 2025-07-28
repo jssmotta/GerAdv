@@ -26,6 +26,11 @@ public partial class OutrasPartesClienteController(IOutrasPartesClienteService o
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOutrasPartesCliente filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("OutrasPartesCliente: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _outraspartesclienteService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class OutrasPartesClienteController(IOutrasPartesClienteService o
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOutrasPartesCliente? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"OutrasPartesCliente: GetListN called, max {max}, {filtro} uri");
         var result = await _outraspartesclienteService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class OutrasPartesClienteController(IOutrasPartesClienteService o
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.OutrasPartesCliente regOutrasPartesCliente, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("OutrasPartesCliente", "AddAndUpdate", regOutrasPartesCliente, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class OutrasPartesClienteController(IOutrasPartesClienteService o
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.OutrasPartesCliente regOutrasPartesCliente, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _outraspartesclienteService.Validation(regOutrasPartesCliente, uri);

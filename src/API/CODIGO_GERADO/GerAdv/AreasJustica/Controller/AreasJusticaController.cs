@@ -26,6 +26,11 @@ public partial class AreasJusticaController(IAreasJusticaService areasjusticaSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAreasJustica filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("AreasJustica: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _areasjusticaService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class AreasJusticaController(IAreasJusticaService areasjusticaSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.AreasJustica regAreasJustica, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("AreasJustica", "AddAndUpdate", regAreasJustica, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class AreasJusticaController(IAreasJusticaService areasjusticaSer
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.AreasJustica regAreasJustica, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _areasjusticaService.Validation(regAreasJustica, uri);

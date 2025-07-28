@@ -6,9 +6,9 @@ public partial interface IEnderecosService
 {
     Task<IEnumerable<EnderecosResponseAll>> Filter(Filters.FilterEnderecos filter, [FromRoute, Required] string uri = "");
     Task<EnderecosResponse?> AddAndUpdate(Models.Enderecos regEnderecos, [FromRoute, Required] string uri = "");
-    Task<EnderecosResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<EnderecosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<EnderecosResponse?> Validation(Models.Enderecos regEnderecos, [FromRoute, Required] string uri = "");
+    Task<EnderecosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<EnderecosResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<EnderecosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecos? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

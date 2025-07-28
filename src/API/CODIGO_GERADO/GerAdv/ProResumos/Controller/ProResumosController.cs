@@ -26,6 +26,11 @@ public partial class ProResumosController(IProResumosService proresumosService) 
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProResumos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProResumos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _proresumosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProResumosController(IProResumosService proresumosService) 
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProResumos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProResumos: GetListN called, max {max}, {filtro} uri");
         var result = await _proresumosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProResumosController(IProResumosService proresumosService) 
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProResumos regProResumos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProResumos", "AddAndUpdate", regProResumos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProResumosController(IProResumosService proresumosService) 
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProResumos regProResumos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _proresumosService.Validation(regProResumos, uri);

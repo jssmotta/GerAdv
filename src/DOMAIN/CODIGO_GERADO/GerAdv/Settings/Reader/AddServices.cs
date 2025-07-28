@@ -118,7 +118,6 @@ public static class AddServices
         builder.Services.AddScoped<ISituacaoReader, SituacaoReader>();
         builder.Services.AddScoped<ISMSAliceReader, SMSAliceReader>();
         builder.Services.AddScoped<IStatusAndamentoReader, StatusAndamentoReader>();
-        builder.Services.AddScoped<IStatusBiuReader, StatusBiuReader>();
         builder.Services.AddScoped<IStatusHTrabReader, StatusHTrabReader>();
         builder.Services.AddScoped<IStatusInstanciaReader, StatusInstanciaReader>();
         builder.Services.AddScoped<IStatusTarefasReader, StatusTarefasReader>();

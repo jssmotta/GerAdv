@@ -26,6 +26,11 @@ public partial class ProDepositosController(IProDepositosService prodepositosSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProDepositos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProDepositos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _prodepositosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProDepositosController(IProDepositosService prodepositosSer
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDepositos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProDepositos: GetListN called, max {max}, {filtro} uri");
         var result = await _prodepositosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProDepositosController(IProDepositosService prodepositosSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProDepositos regProDepositos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProDepositos", "AddAndUpdate", regProDepositos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProDepositosController(IProDepositosService prodepositosSer
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProDepositos regProDepositos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _prodepositosService.Validation(regProDepositos, uri);

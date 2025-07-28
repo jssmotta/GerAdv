@@ -26,6 +26,11 @@ public partial class FuncaoController(IFuncaoService funcaoService) : Controller
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterFuncao filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Funcao: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _funcaoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class FuncaoController(IFuncaoService funcaoService) : Controller
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterFuncao? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Funcao: GetListN called, max {max}, {filtro} uri");
         var result = await _funcaoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class FuncaoController(IFuncaoService funcaoService) : Controller
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Funcao regFuncao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Funcao", "AddAndUpdate", regFuncao, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class FuncaoController(IFuncaoService funcaoService) : Controller
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Funcao regFuncao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _funcaoService.Validation(regFuncao, uri);

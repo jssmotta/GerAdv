@@ -26,6 +26,11 @@ public partial class StatusHTrabController(IStatusHTrabService statushtrabServic
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterStatusHTrab filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("StatusHTrab: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _statushtrabService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class StatusHTrabController(IStatusHTrabService statushtrabServic
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterStatusHTrab? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"StatusHTrab: GetListN called, max {max}, {filtro} uri");
         var result = await _statushtrabService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class StatusHTrabController(IStatusHTrabService statushtrabServic
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.StatusHTrab regStatusHTrab, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("StatusHTrab", "AddAndUpdate", regStatusHTrab, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class StatusHTrabController(IStatusHTrabService statushtrabServic
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.StatusHTrab regStatusHTrab, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _statushtrabService.Validation(regStatusHTrab, uri);

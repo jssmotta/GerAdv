@@ -73,18 +73,6 @@ const handleRowClick = (e: any) => {
   onRowClick(e.dataItem);
 };
 
-const openSearchCellStatusBiu = (id: number) => {
-  router.push(`/pages/statusbiu/?tipostatusbiu=${id}`);
-};
-const SearchFromCellStatusBiu = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellStatusBiu(props.dataItem.id)}><span title='Pesquisar relacionados em Status Biu'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 
 const DeleteRow = (e: any) => {
   return (
@@ -104,14 +92,6 @@ const gridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
   <GridColumn field='nome' title='Nome' sortable={true} filterable={true} />, /* Track G.02 */
-  <GridColumn
-  field='id_edit_StatusBiu'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Status Biu'
-  cells={{ data: SearchFromCellStatusBiu }}
-  />, 
 
   <GridColumn
   field='id_edit_row'

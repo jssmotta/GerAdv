@@ -26,6 +26,11 @@ public partial class ProcessOutPutIDsController(IProcessOutPutIDsService process
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessOutPutIDs filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProcessOutPutIDs: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _processoutputidsService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProcessOutPutIDsController(IProcessOutPutIDsService process
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessOutPutIDs? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProcessOutPutIDs: GetListN called, max {max}, {filtro} uri");
         var result = await _processoutputidsService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProcessOutPutIDsController(IProcessOutPutIDsService process
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProcessOutPutIDs regProcessOutPutIDs, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProcessOutPutIDs", "AddAndUpdate", regProcessOutPutIDs, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProcessOutPutIDsController(IProcessOutPutIDsService process
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProcessOutPutIDs regProcessOutPutIDs, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _processoutputidsService.Validation(regProcessOutPutIDs, uri);

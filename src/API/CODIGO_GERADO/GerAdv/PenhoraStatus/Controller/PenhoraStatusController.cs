@@ -26,6 +26,11 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPenhoraStatus filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("PenhoraStatus: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _penhorastatusService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPenhoraStatus? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"PenhoraStatus: GetListN called, max {max}, {filtro} uri");
         var result = await _penhorastatusService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.PenhoraStatus regPenhoraStatus, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("PenhoraStatus", "AddAndUpdate", regPenhoraStatus, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.PenhoraStatus regPenhoraStatus, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _penhorastatusService.Validation(regPenhoraStatus, uri);

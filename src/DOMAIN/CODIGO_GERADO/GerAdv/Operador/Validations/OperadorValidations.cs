@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IOperadorValidation
 {
-    Task<bool> ValidateReg(Models.Operador reg, IOperadorService service, IStatusBiuReader statusbiuReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOperadorService service, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, IStatusBiuService statusbiuService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Operador reg, IOperadorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int id, IOperadorService service, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorValidation : IOperadorValidation
 {
-    public async Task<bool> CanDelete(int id, IOperadorService service, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, IStatusBiuService statusbiuService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int id, IOperadorService service, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");
@@ -60,9 +60,6 @@ public class OperadorValidation : IOperadorValidation
         var smsaliceExists12 = await smsaliceService.Filter(new Filters.FilterSMSAlice { Operador = id }, uri);
         if (smsaliceExists12 != null && smsaliceExists12.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
-        var statusbiuExists13 = await statusbiuService.Filter(new Filters.FilterStatusBiu { Operador = id }, uri);
-        if (statusbiuExists13 != null && statusbiuExists13.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Status Biu associados a ele.");
         return true;
     }
 
@@ -93,7 +90,7 @@ public class OperadorValidation : IOperadorValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Operador reg, IOperadorService service, IStatusBiuReader statusbiuReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Operador reg, IOperadorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -106,16 +103,7 @@ public class OperadorValidation : IOperadorValidation
             throw new SGValidationException($"EMail em formato inválido.");
         if (reg.EMailNet.Length > 0 && !reg.EMailNet.IsValidEmail())
             throw new SGValidationException($"EMailNet em formato inválido.");
-        // StatusBiu
-        if (!reg.StatusId.IsEmptyIDNumber())
-        {
-            var regStatusBiu = await statusbiuReader.Read(reg.StatusId, oCnn);
-            if (regStatusBiu == null || regStatusBiu.Id != reg.StatusId)
-            {
-                throw new SGValidationException($"Status Biu não encontrado ({regStatusBiu?.Id}).");
-            }
-        }
-
+        await Task.Delay(0);
         return true;
     }
 }

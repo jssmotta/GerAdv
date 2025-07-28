@@ -26,6 +26,11 @@ public partial class PaisesController(IPaisesService paisesService) : Controller
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPaises filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Paises: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _paisesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class PaisesController(IPaisesService paisesService) : Controller
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPaises? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Paises: GetListN called, max {max}, {filtro} uri");
         var result = await _paisesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class PaisesController(IPaisesService paisesService) : Controller
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Paises regPaises, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Paises", "AddAndUpdate", regPaises, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class PaisesController(IPaisesService paisesService) : Controller
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Paises regPaises, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _paisesService.Validation(regPaises, uri);

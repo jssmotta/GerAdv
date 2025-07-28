@@ -26,6 +26,11 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTribunal filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Tribunal: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tribunalService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTribunal? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Tribunal: GetListN called, max {max}, {filtro} uri");
         var result = await _tribunalService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Tribunal", "AddAndUpdate", regTribunal, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class TribunalController(ITribunalService tribunalService) : Cont
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tribunalService.Validation(regTribunal, uri);

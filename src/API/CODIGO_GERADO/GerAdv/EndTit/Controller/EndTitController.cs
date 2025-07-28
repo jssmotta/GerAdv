@@ -26,6 +26,11 @@ public partial class EndTitController(IEndTitService endtitService) : Controller
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterEndTit filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("EndTit: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _endtitService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class EndTitController(IEndTitService endtitService) : Controller
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.EndTit regEndTit, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("EndTit", "AddAndUpdate", regEndTit, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class EndTitController(IEndTitService endtitService) : Controller
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.EndTit regEndTit, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _endtitService.Validation(regEndTit, uri);

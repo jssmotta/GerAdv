@@ -26,6 +26,11 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterEscritorios filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Escritorios: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _escritoriosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterEscritorios? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Escritorios: GetListN called, max {max}, {filtro} uri");
         var result = await _escritoriosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Escritorios", "AddAndUpdate", regEscritorios, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class EscritoriosController(IEscritoriosService escritoriosServic
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _escritoriosService.Validation(regEscritorios, uri);

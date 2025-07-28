@@ -26,6 +26,11 @@ public partial class GraphController(IGraphService graphService) : ControllerBas
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGraph filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Graph: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _graphService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class GraphController(IGraphService graphService) : ControllerBas
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGraph? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Graph: GetListN called, max {max}, {filtro} uri");
         var result = await _graphService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class GraphController(IGraphService graphService) : ControllerBas
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Graph regGraph, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Graph", "AddAndUpdate", regGraph, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class GraphController(IGraphService graphService) : ControllerBas
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Graph regGraph, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _graphService.Validation(regGraph, uri);

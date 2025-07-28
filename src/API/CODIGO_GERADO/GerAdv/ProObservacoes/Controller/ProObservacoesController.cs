@@ -26,6 +26,11 @@ public partial class ProObservacoesController(IProObservacoesService proobservac
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProObservacoes filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProObservacoes: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _proobservacoesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProObservacoesController(IProObservacoesService proobservac
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProObservacoes? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProObservacoes: GetListN called, max {max}, {filtro} uri");
         var result = await _proobservacoesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProObservacoesController(IProObservacoesService proobservac
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProObservacoes regProObservacoes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProObservacoes", "AddAndUpdate", regProObservacoes, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProObservacoesController(IProObservacoesService proobservac
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProObservacoes regProObservacoes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _proobservacoesService.Validation(regProObservacoes, uri);

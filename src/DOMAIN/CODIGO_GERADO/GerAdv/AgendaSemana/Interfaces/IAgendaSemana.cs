@@ -8,6 +8,5 @@ namespace MenphisSI.GerAdv.Interface;
 
 public partial interface IAgendaSemanaService
 {
-    Task<AgendaSemanaResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<AgendaSemanaResponseAll>> Filter(Filters.FilterAgendaSemana filter, [FromRoute, Required] string uri = "");
 }

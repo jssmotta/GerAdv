@@ -118,7 +118,6 @@ public static class AddServices
         builder.Services.AddScoped<ISituacaoWriter, SituacaoWriter>();
         builder.Services.AddScoped<ISMSAliceWriter, SMSAliceWriter>();
         builder.Services.AddScoped<IStatusAndamentoWriter, StatusAndamentoWriter>();
-        builder.Services.AddScoped<IStatusBiuWriter, StatusBiuWriter>();
         builder.Services.AddScoped<IStatusHTrabWriter, StatusHTrabWriter>();
         builder.Services.AddScoped<IStatusInstanciaWriter, StatusInstanciaWriter>();
         builder.Services.AddScoped<IStatusTarefasWriter, StatusTarefasWriter>();

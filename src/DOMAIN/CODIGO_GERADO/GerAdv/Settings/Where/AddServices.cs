@@ -103,7 +103,6 @@ public static class AddServices
         builder.Services.AddScoped<ISituacaoWhere, SituacaoWhere>();
         builder.Services.AddScoped<ISMSAliceWhere, SMSAliceWhere>();
         builder.Services.AddScoped<IStatusAndamentoWhere, StatusAndamentoWhere>();
-        builder.Services.AddScoped<IStatusBiuWhere, StatusBiuWhere>();
         builder.Services.AddScoped<IStatusHTrabWhere, StatusHTrabWhere>();
         builder.Services.AddScoped<IStatusInstanciaWhere, StatusInstanciaWhere>();
         builder.Services.AddScoped<IStatusTarefasWhere, StatusTarefasWhere>();

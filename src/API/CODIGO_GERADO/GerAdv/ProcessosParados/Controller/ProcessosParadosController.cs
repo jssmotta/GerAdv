@@ -26,6 +26,11 @@ public partial class ProcessosParadosController(IProcessosParadosService process
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessosParados filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProcessosParados: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _processosparadosService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class ProcessosParadosController(IProcessosParadosService process
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProcessosParados regProcessosParados, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProcessosParados", "AddAndUpdate", regProcessosParados, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class ProcessosParadosController(IProcessosParadosService process
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProcessosParados regProcessosParados, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _processosparadosService.Validation(regProcessosParados, uri);

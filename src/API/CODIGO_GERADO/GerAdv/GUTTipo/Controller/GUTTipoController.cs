@@ -26,6 +26,11 @@ public partial class GUTTipoController(IGUTTipoService guttipoService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTTipo filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("GUTTipo: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _guttipoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class GUTTipoController(IGUTTipoService guttipoService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTTipo? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"GUTTipo: GetListN called, max {max}, {filtro} uri");
         var result = await _guttipoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class GUTTipoController(IGUTTipoService guttipoService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.GUTTipo regGUTTipo, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("GUTTipo", "AddAndUpdate", regGUTTipo, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class GUTTipoController(IGUTTipoService guttipoService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.GUTTipo regGUTTipo, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _guttipoService.Validation(regGUTTipo, uri);

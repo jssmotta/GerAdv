@@ -17,23 +17,13 @@ public partial class AgendaRelatorioController(IAgendaRelatorioService agendarel
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAgendaRelatorio filtro, [FromRoute, Required] string uri)
     {
-        //_logger.Info("AgendaRelatorio: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _agendarelatorioService.Filter(filtro, uri);
-        return Ok(result);
-    }
-
-    [HttpGet("{id}")]
-    [Authorize]
-    public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
-    {
-        //_logger.Info("AgendaRelatorio: GetById called with id = {0}, {1}", id, uri);
-        var result = await _agendarelatorioService.GetById(id, uri, token);
-        if (result == null)
+        if (!ModelState.IsValid)
         {
-            _logger.Warn("GetById: No AgendaRelatorio found with id = {0}, {1}", id, uri);
-            return NotFound();
+            return BadRequest(ModelState);
         }
 
+        //_logger.Info("AgendaRelatorio: Filter called with filtro = {0}, {1}", filtro, uri);
+        var result = await _agendarelatorioService.Filter(filtro, uri);
         return Ok(result);
     }
 }

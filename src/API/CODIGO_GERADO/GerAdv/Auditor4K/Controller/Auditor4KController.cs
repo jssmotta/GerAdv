@@ -26,6 +26,11 @@ public partial class Auditor4KController(IAuditor4KService auditor4kService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAuditor4K filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Auditor4K: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _auditor4kService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class Auditor4KController(IAuditor4KService auditor4kService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAuditor4K? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Auditor4K: GetListN called, max {max}, {filtro} uri");
         var result = await _auditor4kService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class Auditor4KController(IAuditor4KService auditor4kService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Auditor4K regAuditor4K, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Auditor4K", "AddAndUpdate", regAuditor4K, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class Auditor4KController(IAuditor4KService auditor4kService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Auditor4K regAuditor4K, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _auditor4kService.Validation(regAuditor4K, uri);

@@ -26,6 +26,11 @@ public partial class AlertasEnviadosController(IAlertasEnviadosService alertasen
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAlertasEnviados filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("AlertasEnviados: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _alertasenviadosService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class AlertasEnviadosController(IAlertasEnviadosService alertasen
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.AlertasEnviados regAlertasEnviados, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("AlertasEnviados", "AddAndUpdate", regAlertasEnviados, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class AlertasEnviadosController(IAlertasEnviadosService alertasen
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.AlertasEnviados regAlertasEnviados, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _alertasenviadosService.Validation(regAlertasEnviados, uri);

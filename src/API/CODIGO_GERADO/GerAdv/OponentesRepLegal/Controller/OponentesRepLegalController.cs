@@ -26,6 +26,11 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterOponentesRepLegal filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("OponentesRepLegal: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _oponentesreplegalService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOponentesRepLegal? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"OponentesRepLegal: GetListN called, max {max}, {filtro} uri");
         var result = await _oponentesreplegalService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.OponentesRepLegal regOponentesRepLegal, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("OponentesRepLegal", "AddAndUpdate", regOponentesRepLegal, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.OponentesRepLegal regOponentesRepLegal, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _oponentesreplegalService.Validation(regOponentesRepLegal, uri);

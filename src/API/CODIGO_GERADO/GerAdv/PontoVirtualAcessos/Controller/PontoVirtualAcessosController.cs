@@ -26,6 +26,11 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPontoVirtualAcessos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("PontoVirtualAcessos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _pontovirtualacessosService.Filter(filtro, uri);
         return Ok(result);
@@ -51,6 +56,11 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.PontoVirtualAcessos regPontoVirtualAcessos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("PontoVirtualAcessos", "AddAndUpdate", regPontoVirtualAcessos, uri);
         try
         {
@@ -98,6 +108,11 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.PontoVirtualAcessos regPontoVirtualAcessos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _pontovirtualacessosService.Validation(regPontoVirtualAcessos, uri);

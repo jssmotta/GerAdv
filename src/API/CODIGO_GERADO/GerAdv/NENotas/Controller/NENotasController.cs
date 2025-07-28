@@ -26,6 +26,11 @@ public partial class NENotasController(INENotasService nenotasService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterNENotas filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("NENotas: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _nenotasService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class NENotasController(INENotasService nenotasService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterNENotas? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"NENotas: GetListN called, max {max}, {filtro} uri");
         var result = await _nenotasService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class NENotasController(INENotasService nenotasService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.NENotas regNENotas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("NENotas", "AddAndUpdate", regNENotas, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class NENotasController(INENotasService nenotasService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.NENotas regNENotas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _nenotasService.Validation(regNENotas, uri);

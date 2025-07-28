@@ -26,6 +26,11 @@ public partial class UFController(IUFService ufService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterUF filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("UF: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _ufService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class UFController(IUFService ufService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterUF? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"UF: GetListN called, max {max}, {filtro} uri");
         var result = await _ufService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class UFController(IUFService ufService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.UF regUF, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("UF", "AddAndUpdate", regUF, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class UFController(IUFService ufService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.UF regUF, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _ufService.Validation(regUF, uri);

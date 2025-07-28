@@ -108,6 +108,9 @@ public partial record FilterOperador
     [JsonPropertyName("statusid")]
     public int StatusId { get; set; } = int.MinValue;
 
+    [JsonPropertyName("statusid_end")]
+    public int StatusId_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("statusmessage")]
     public string StatusMessage { get; set; } = string.Empty;
 

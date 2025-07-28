@@ -26,6 +26,11 @@ public partial class PreClientesController(IPreClientesService preclientesServic
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterPreClientes filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("PreClientes: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _preclientesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class PreClientesController(IPreClientesService preclientesServic
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterPreClientes? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"PreClientes: GetListN called, max {max}, {filtro} uri");
         var result = await _preclientesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class PreClientesController(IPreClientesService preclientesServic
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.PreClientes regPreClientes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("PreClientes", "AddAndUpdate", regPreClientes, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class PreClientesController(IPreClientesService preclientesServic
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.PreClientes regPreClientes, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _preclientesService.Validation(regPreClientes, uri);

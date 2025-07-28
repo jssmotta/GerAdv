@@ -26,6 +26,11 @@ public partial class ContaCorrenteController(IContaCorrenteService contacorrente
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterContaCorrente filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ContaCorrente: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _contacorrenteService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ContaCorrenteController(IContaCorrenteService contacorrente
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterContaCorrente? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ContaCorrente: GetListN called, max {max}, {filtro} uri");
         var result = await _contacorrenteService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ContaCorrenteController(IContaCorrenteService contacorrente
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ContaCorrente regContaCorrente, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ContaCorrente", "AddAndUpdate", regContaCorrente, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ContaCorrenteController(IContaCorrenteService contacorrente
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ContaCorrente regContaCorrente, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _contacorrenteService.Validation(regContaCorrente, uri);

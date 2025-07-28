@@ -9,7 +9,6 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterOperador } from '@/app/GerAdv_TS/Operador/Filters/Operador';
-import StatusBiuComboBox from '@/app/GerAdv_TS/StatusBiu/ComboBox/StatusBiu';
 interface UseOperadorFilterProps {
   handleFetchWithFilter: (filtro?: FilterOperador | undefined | null) => Promise<void>;
 }
@@ -169,14 +168,6 @@ export const useOperadorFilter = ({ handleFetchWithFilter }: UseOperadorFilterPr
   onChange={handlers.handleInputChange}
   label='SysOp'
   className='inputSearch inputSearchCheckbox'
-  />
-  <StatusBiuComboBox
-  name='statusid'
-  dataForm={null}
-  value={handlers.windowFilter?.statusid}
-  setValue={(e:any) => handlers.handleComboChange(e, 'statusid')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Status Biu'
   />
   <InputComboFilterYesNo
   type='text'

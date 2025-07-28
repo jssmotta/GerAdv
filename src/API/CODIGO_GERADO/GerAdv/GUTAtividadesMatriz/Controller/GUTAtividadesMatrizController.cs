@@ -26,6 +26,11 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTAtividadesMatriz filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("GUTAtividadesMatriz: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _gutatividadesmatrizService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTAtividadesMatriz? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"GUTAtividadesMatriz: GetListN called, max {max}, {filtro} uri");
         var result = await _gutatividadesmatrizService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.GUTAtividadesMatriz regGUTAtividadesMatriz, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("GUTAtividadesMatriz", "AddAndUpdate", regGUTAtividadesMatriz, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.GUTAtividadesMatriz regGUTAtividadesMatriz, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _gutatividadesmatrizService.Validation(regGUTAtividadesMatriz, uri);

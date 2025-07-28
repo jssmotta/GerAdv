@@ -6,9 +6,9 @@ public partial interface IAdvogadosService
 {
     Task<IEnumerable<AdvogadosResponseAll>> Filter(Filters.FilterAdvogados filter, [FromRoute, Required] string uri = "");
     Task<AdvogadosResponse?> AddAndUpdate(Models.Advogados regAdvogados, [FromRoute, Required] string uri = "");
-    Task<AdvogadosResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
-    Task<AdvogadosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
     Task<AdvogadosResponse?> Validation(Models.Advogados regAdvogados, [FromRoute, Required] string uri = "");
+    Task<AdvogadosResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<AdvogadosResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<AdvogadosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAdvogados? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

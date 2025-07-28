@@ -26,6 +26,11 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTPeriodicidade filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("GUTPeriodicidade: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _gutperiodicidadeService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidade? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"GUTPeriodicidade: GetListN called, max {max}, {filtro} uri");
         var result = await _gutperiodicidadeService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("GUTPeriodicidade", "AddAndUpdate", regGUTPeriodicidade, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _gutperiodicidadeService.Validation(regGUTPeriodicidade, uri);

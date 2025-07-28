@@ -26,6 +26,11 @@ public partial class ProCDAController(IProCDAService procdaService) : Controller
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProCDA filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProCDA: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _procdaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProCDAController(IProCDAService procdaService) : Controller
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProCDA? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProCDA: GetListN called, max {max}, {filtro} uri");
         var result = await _procdaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProCDAController(IProCDAService procdaService) : Controller
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProCDA regProCDA, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProCDA", "AddAndUpdate", regProCDA, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProCDAController(IProCDAService procdaService) : Controller
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProCDA regProCDA, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _procdaService.Validation(regProCDA, uri);

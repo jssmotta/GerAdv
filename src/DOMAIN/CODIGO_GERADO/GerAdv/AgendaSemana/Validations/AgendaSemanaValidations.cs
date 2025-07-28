@@ -9,21 +9,10 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAgendaSemanaValidation
 {
     Task<bool> ValidateReg(Models.AgendaSemana reg, IAgendaSemanaService service, IFuncionariosReader funcionariosReader, IAdvogadosReader advogadosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAgendaSemanaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AgendaSemanaValidation : IAgendaSemanaValidation
 {
-    public async Task<bool> CanDelete(int id, IAgendaSemanaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
-    {
-        if (id <= 0)
-            throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
-        if (reg == null)
-            throw new SGValidationException($"Registro com id {id} não encontrado.");
-        return true;
-    }
-
     private bool ValidSizes(Models.AgendaSemana reg)
     {
         return true;

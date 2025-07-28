@@ -172,10 +172,10 @@ public static partial class DBOperadorDicInfo
     {
         Prefixo = "oper"
     };
-    public static DBInfoSystem OperStatusId => new(0, PTabelaNome, CampoCodigo, StatusId, "StatusId", "StatusId", ETipoDadosSysteminfo.SysteminfoForeingkey, DBStatusBiuDicInfo.CampoCodigo, DBStatusBiuDicInfo.TabelaNome, new DBStatusBiuODicInfo(), false)
+    public static DBInfoSystem OperStatusId => new(0, PTabelaNome, CampoCodigo, StatusId, "StatusId", "StatusId", ETipoDadosSysteminfo.SysteminfoNumber)
     {
         Prefixo = "oper"
-    }; // DBI 11 
+    };
     public static DBInfoSystem OperStatusMessage => new(0, PTabelaNome, CampoCodigo, StatusMessage, 1024, "StatusMessage", "StatusMessage", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
     {
         Prefixo = "oper"

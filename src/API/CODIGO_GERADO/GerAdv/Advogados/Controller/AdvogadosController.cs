@@ -26,6 +26,11 @@ public partial class AdvogadosController(IAdvogadosService advogadosService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAdvogados filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Advogados: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _advogadosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class AdvogadosController(IAdvogadosService advogadosService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAdvogados? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Advogados: GetListN called, max {max}, {filtro} uri");
         var result = await _advogadosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class AdvogadosController(IAdvogadosService advogadosService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Advogados regAdvogados, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Advogados", "AddAndUpdate", regAdvogados, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class AdvogadosController(IAdvogadosService advogadosService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Advogados regAdvogados, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _advogadosService.Validation(regAdvogados, uri);

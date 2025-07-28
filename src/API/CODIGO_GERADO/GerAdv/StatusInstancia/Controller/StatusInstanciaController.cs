@@ -26,6 +26,11 @@ public partial class StatusInstanciaController(IStatusInstanciaService statusins
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterStatusInstancia filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("StatusInstancia: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _statusinstanciaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class StatusInstanciaController(IStatusInstanciaService statusins
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterStatusInstancia? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"StatusInstancia: GetListN called, max {max}, {filtro} uri");
         var result = await _statusinstanciaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class StatusInstanciaController(IStatusInstanciaService statusins
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.StatusInstancia regStatusInstancia, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("StatusInstancia", "AddAndUpdate", regStatusInstancia, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class StatusInstanciaController(IStatusInstanciaService statusins
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.StatusInstancia regStatusInstancia, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _statusinstanciaService.Validation(regStatusInstancia, uri);

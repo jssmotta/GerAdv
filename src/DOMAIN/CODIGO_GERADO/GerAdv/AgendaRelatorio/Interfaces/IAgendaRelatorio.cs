@@ -8,6 +8,5 @@ namespace MenphisSI.GerAdv.Interface;
 
 public partial interface IAgendaRelatorioService
 {
-    Task<AgendaRelatorioResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<AgendaRelatorioResponseAll>> Filter(Filters.FilterAgendaRelatorio filter, [FromRoute, Required] string uri = "");
 }

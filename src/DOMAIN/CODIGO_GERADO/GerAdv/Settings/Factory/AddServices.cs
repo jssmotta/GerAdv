@@ -118,7 +118,6 @@ public static class AddServices
         builder.Services.AddScoped<IFSituacaoFactory, FSituacaoFactory>();
         builder.Services.AddScoped<IFSMSAliceFactory, FSMSAliceFactory>();
         builder.Services.AddScoped<IFStatusAndamentoFactory, FStatusAndamentoFactory>();
-        builder.Services.AddScoped<IFStatusBiuFactory, FStatusBiuFactory>();
         builder.Services.AddScoped<IFStatusHTrabFactory, FStatusHTrabFactory>();
         builder.Services.AddScoped<IFStatusInstanciaFactory, FStatusInstanciaFactory>();
         builder.Services.AddScoped<IFStatusTarefasFactory, FStatusTarefasFactory>();

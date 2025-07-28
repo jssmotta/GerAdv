@@ -26,6 +26,11 @@ public partial class ProcessOutputSourcesController(IProcessOutputSourcesService
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessOutputSources filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProcessOutputSources: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _processoutputsourcesService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProcessOutputSourcesController(IProcessOutputSourcesService
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessOutputSources? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProcessOutputSources: GetListN called, max {max}, {filtro} uri");
         var result = await _processoutputsourcesService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProcessOutputSourcesController(IProcessOutputSourcesService
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProcessOutputSources", "AddAndUpdate", regProcessOutputSources, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProcessOutputSourcesController(IProcessOutputSourcesService
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _processoutputsourcesService.Validation(regProcessOutputSources, uri);

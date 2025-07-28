@@ -26,6 +26,11 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterViaRecebimento filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ViaRecebimento: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _viarecebimentoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterViaRecebimento? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ViaRecebimento: GetListN called, max {max}, {filtro} uri");
         var result = await _viarecebimentoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ViaRecebimento regViaRecebimento, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ViaRecebimento", "AddAndUpdate", regViaRecebimento, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ViaRecebimento regViaRecebimento, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _viarecebimentoService.Validation(regViaRecebimento, uri);

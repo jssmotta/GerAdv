@@ -26,6 +26,11 @@ public partial class AcaoController(IAcaoService acaoService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterAcao filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Acao: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _acaoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class AcaoController(IAcaoService acaoService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterAcao? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Acao: GetListN called, max {max}, {filtro} uri");
         var result = await _acaoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class AcaoController(IAcaoService acaoService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Acao regAcao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Acao", "AddAndUpdate", regAcao, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class AcaoController(IAcaoService acaoService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Acao regAcao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _acaoService.Validation(regAcao, uri);

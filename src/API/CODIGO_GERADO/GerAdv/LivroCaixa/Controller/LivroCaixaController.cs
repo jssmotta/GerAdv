@@ -26,6 +26,11 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterLivroCaixa filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("LivroCaixa: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _livrocaixaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterLivroCaixa? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"LivroCaixa: GetListN called, max {max}, {filtro} uri");
         var result = await _livrocaixaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.LivroCaixa regLivroCaixa, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("LivroCaixa", "AddAndUpdate", regLivroCaixa, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.LivroCaixa regLivroCaixa, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _livrocaixaService.Validation(regLivroCaixa, uri);

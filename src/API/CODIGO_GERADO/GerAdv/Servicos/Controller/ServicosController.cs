@@ -26,6 +26,11 @@ public partial class ServicosController(IServicosService servicosService) : Cont
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterServicos filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Servicos: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _servicosService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ServicosController(IServicosService servicosService) : Cont
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterServicos? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Servicos: GetListN called, max {max}, {filtro} uri");
         var result = await _servicosService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ServicosController(IServicosService servicosService) : Cont
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Servicos regServicos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Servicos", "AddAndUpdate", regServicos, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ServicosController(IServicosService servicosService) : Cont
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Servicos regServicos, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _servicosService.Validation(regServicos, uri);

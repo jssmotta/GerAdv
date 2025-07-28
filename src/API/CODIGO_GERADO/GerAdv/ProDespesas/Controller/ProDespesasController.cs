@@ -26,6 +26,11 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterProDespesas filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ProDespesas: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _prodespesasService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDespesas? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"ProDespesas: GetListN called, max {max}, {filtro} uri");
         var result = await _prodespesasService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("ProDespesas", "AddAndUpdate", regProDespesas, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ProDespesasController(IProDespesasService prodespesasServic
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _prodespesasService.Validation(regProDespesas, uri);

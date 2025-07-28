@@ -26,6 +26,11 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterDivisaoTribunal filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("DivisaoTribunal: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _divisaotribunalService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"DivisaoTribunal: GetListN called, max {max}, {filtro} uri");
         var result = await _divisaotribunalService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("DivisaoTribunal", "AddAndUpdate", regDivisaoTribunal, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _divisaotribunalService.Validation(regDivisaoTribunal, uri);

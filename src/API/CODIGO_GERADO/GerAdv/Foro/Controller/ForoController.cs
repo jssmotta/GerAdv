@@ -26,6 +26,11 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterForo filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Foro: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _foroService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterForo? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Foro: GetListN called, max {max}, {filtro} uri");
         var result = await _foroService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Foro", "AddAndUpdate", regForo, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _foroService.Validation(regForo, uri);

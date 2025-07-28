@@ -26,6 +26,11 @@ public partial class EnderecoSistemaController(IEnderecoSistemaService enderecos
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterEnderecoSistema filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("EnderecoSistema: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _enderecosistemaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class EnderecoSistemaController(IEnderecoSistemaService enderecos
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecoSistema? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"EnderecoSistema: GetListN called, max {max}, {filtro} uri");
         var result = await _enderecosistemaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class EnderecoSistemaController(IEnderecoSistemaService enderecos
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.EnderecoSistema regEnderecoSistema, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("EnderecoSistema", "AddAndUpdate", regEnderecoSistema, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class EnderecoSistemaController(IEnderecoSistemaService enderecos
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.EnderecoSistema regEnderecoSistema, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _enderecosistemaService.Validation(regEnderecoSistema, uri);

@@ -26,6 +26,11 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterReuniao filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Reuniao: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _reuniaoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterReuniao? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Reuniao: GetListN called, max {max}, {filtro} uri");
         var result = await _reuniaoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Reuniao regReuniao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Reuniao", "AddAndUpdate", regReuniao, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class ReuniaoController(IReuniaoService reuniaoService) : Control
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Reuniao regReuniao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _reuniaoService.Validation(regReuniao, uri);

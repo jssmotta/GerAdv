@@ -26,6 +26,11 @@ public partial class TiposAcaoController(ITiposAcaoService tiposacaoService) : C
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterTiposAcao filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TiposAcao: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _tiposacaoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class TiposAcaoController(ITiposAcaoService tiposacaoService) : C
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTiposAcao? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"TiposAcao: GetListN called, max {max}, {filtro} uri");
         var result = await _tiposacaoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class TiposAcaoController(ITiposAcaoService tiposacaoService) : C
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.TiposAcao regTiposAcao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("TiposAcao", "AddAndUpdate", regTiposAcao, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class TiposAcaoController(ITiposAcaoService tiposacaoService) : C
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TiposAcao regTiposAcao, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tiposacaoService.Validation(regTiposAcao, uri);

@@ -26,6 +26,11 @@ public partial class StatusAndamentoController(IStatusAndamentoService statusand
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterStatusAndamento filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("StatusAndamento: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _statusandamentoService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class StatusAndamentoController(IStatusAndamentoService statusand
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterStatusAndamento? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"StatusAndamento: GetListN called, max {max}, {filtro} uri");
         var result = await _statusandamentoService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class StatusAndamentoController(IStatusAndamentoService statusand
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.StatusAndamento regStatusAndamento, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("StatusAndamento", "AddAndUpdate", regStatusAndamento, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class StatusAndamentoController(IStatusAndamentoService statusand
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.StatusAndamento regStatusAndamento, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _statusandamentoService.Validation(regStatusAndamento, uri);

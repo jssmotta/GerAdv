@@ -26,6 +26,11 @@ public partial class StatusTarefasController(IStatusTarefasService statustarefas
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterStatusTarefas filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("StatusTarefas: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _statustarefasService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class StatusTarefasController(IStatusTarefasService statustarefas
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterStatusTarefas? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"StatusTarefas: GetListN called, max {max}, {filtro} uri");
         var result = await _statustarefasService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class StatusTarefasController(IStatusTarefasService statustarefas
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.StatusTarefas regStatusTarefas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("StatusTarefas", "AddAndUpdate", regStatusTarefas, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class StatusTarefasController(IStatusTarefasService statustarefas
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.StatusTarefas regStatusTarefas, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _statustarefasService.Validation(regStatusTarefas, uri);

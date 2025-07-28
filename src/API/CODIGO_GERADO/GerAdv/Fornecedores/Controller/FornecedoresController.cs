@@ -26,6 +26,11 @@ public partial class FornecedoresController(IFornecedoresService fornecedoresSer
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterFornecedores filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Fornecedores: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _fornecedoresService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class FornecedoresController(IFornecedoresService fornecedoresSer
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterFornecedores? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Fornecedores: GetListN called, max {max}, {filtro} uri");
         var result = await _fornecedoresService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class FornecedoresController(IFornecedoresService fornecedoresSer
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Fornecedores regFornecedores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Fornecedores", "AddAndUpdate", regFornecedores, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class FornecedoresController(IFornecedoresService fornecedoresSer
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Fornecedores regFornecedores, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _fornecedoresService.Validation(regFornecedores, uri);

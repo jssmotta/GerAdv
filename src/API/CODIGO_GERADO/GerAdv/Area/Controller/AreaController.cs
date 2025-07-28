@@ -26,6 +26,11 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Filter([FromBody] Filters.FilterArea filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("Area: Filter called with filtro = {0}, {1}", filtro, uri);
         var result = await _areaService.Filter(filtro, uri);
         return Ok(result);
@@ -50,6 +55,11 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterArea? filtro, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info($"Area: GetListN called, max {max}, {filtro} uri");
         var result = await _areaService.GetListN(max, filtro, uri);
         return Ok(result);
@@ -60,6 +70,11 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.LogInfo("Area", "AddAndUpdate", regArea, uri);
         try
         {
@@ -107,6 +122,11 @@ public partial class AreaController(IAreaService areaService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _areaService.Validation(regArea, uri);
