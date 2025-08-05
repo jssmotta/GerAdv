@@ -10,7 +10,7 @@ public partial interface IRitoReader
     RitoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     RitoResponse? Read(FRito dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     RitoResponseAll? ReadAll(FRito dbRec, IDataRecord dr);
     RitoResponseAll? ReadAll(SG.GerAdv.DBRito dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

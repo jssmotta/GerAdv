@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ModelosDocumentosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterModelosDocumentos filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterModelosDocumentos filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -106,42 +106,42 @@ public partial class ModelosDocumentosService
             parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Nome)}");
-        cWhere.Append(filtro.Remuneracao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Remuneracao}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Remuneracao)}");
-        cWhere.Append(filtro.Assinatura.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Assinatura)}");
-        cWhere.Append(filtro.Header.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Header}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Header)}");
-        cWhere.Append(filtro.Footer.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Footer}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Footer)}");
-        cWhere.Append(filtro.Extra1.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra1}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra1)}");
-        cWhere.Append(filtro.Extra2.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra2}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra2)}");
-        cWhere.Append(filtro.Extra3.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra3}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra3)}");
-        cWhere.Append(filtro.Outorgante.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgante}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Outorgante)}");
-        cWhere.Append(filtro.Outorgados.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgados}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Outorgados)}");
-        cWhere.Append(filtro.Poderes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Poderes}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Poderes)}");
-        cWhere.Append(filtro.Objeto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Objeto}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Objeto)}");
-        cWhere.Append(filtro.Titulo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Titulo}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Titulo)}");
-        cWhere.Append(filtro.Testemunhas.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Testemunhas}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Testemunhas)}");
-        cWhere.Append(filtro.TipoModeloDocumento <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.TipoModeloDocumento}] = @{nameof(DBModelosDocumentosDicInfo.TipoModeloDocumento)}");
-        cWhere.Append(filtro.CSS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CSS}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.CSS)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Nome)}");
+        cWhere.Append(filtro.Remuneracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Remuneracao}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Remuneracao)}");
+        cWhere.Append(filtro.Assinatura.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Assinatura)}");
+        cWhere.Append(filtro.Header.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Header}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Header)}");
+        cWhere.Append(filtro.Footer.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Footer}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Footer)}");
+        cWhere.Append(filtro.Extra1.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra1}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra1)}");
+        cWhere.Append(filtro.Extra2.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra2}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra2)}");
+        cWhere.Append(filtro.Extra3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra3}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra3)}");
+        cWhere.Append(filtro.Outorgante.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgante}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Outorgante)}");
+        cWhere.Append(filtro.Outorgados.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgados}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Outorgados)}");
+        cWhere.Append(filtro.Poderes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Poderes}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Poderes)}");
+        cWhere.Append(filtro.Objeto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Objeto}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Objeto)}");
+        cWhere.Append(filtro.Titulo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Titulo}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Titulo)}");
+        cWhere.Append(filtro.Testemunhas.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Testemunhas}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Testemunhas)}");
+        cWhere.Append(filtro.TipoModeloDocumento.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.TipoModeloDocumento}] = @{nameof(DBModelosDocumentosDicInfo.TipoModeloDocumento)}");
+        cWhere.Append(filtro.CSS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CSS}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.CSS)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CampoCodigo}] >= @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CampoCodigo}] = @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBModelosDocumentosDicInfo.CampoCodigo} BETWEEN @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)} AND @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBModelosDocumentosDicInfo.CampoCodigo} = @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBModelosDocumentosDicInfo.CampoCodigo} <= @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].{DBModelosDocumentosDicInfo.CampoCodigo} BETWEEN @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)} AND @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -150,6 +150,16 @@ public partial class ModelosDocumentosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterModelosDocumentos? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterModelosDocumentos? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -165,7 +175,7 @@ public partial class ModelosDocumentosService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-ModelosDocumentos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

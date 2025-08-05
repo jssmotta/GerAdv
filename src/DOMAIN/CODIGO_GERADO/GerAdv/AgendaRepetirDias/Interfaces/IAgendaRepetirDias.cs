@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAgendaRepetirDiasService
 {
-    Task<IEnumerable<AgendaRepetirDiasResponseAll>> Filter(Filters.FilterAgendaRepetirDias filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AgendaRepetirDiasResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaRepetirDias filter, [FromRoute, Required] string uri = "");
     Task<AgendaRepetirDiasResponse?> AddAndUpdate(Models.AgendaRepetirDias regAgendaRepetirDias, [FromRoute, Required] string uri = "");
     Task<AgendaRepetirDiasResponse?> Validation(Models.AgendaRepetirDias regAgendaRepetirDias, [FromRoute, Required] string uri = "");
     Task<AgendaRepetirDiasResponse?> Delete(int id, [FromRoute, Required] string uri = "");

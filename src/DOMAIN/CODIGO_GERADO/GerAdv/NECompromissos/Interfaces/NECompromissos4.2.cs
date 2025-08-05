@@ -10,7 +10,7 @@ public partial interface INECompromissosReader
     NECompromissosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     NECompromissosResponse? Read(FNECompromissos dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     NECompromissosResponseAll? ReadAll(FNECompromissos dbRec, IDataRecord dr);
     NECompromissosResponseAll? ReadAll(SG.GerAdv.DBNECompromissos dbRec, DataRow dr);
     Task<IEnumerable<NECompromissosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);

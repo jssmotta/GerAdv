@@ -10,7 +10,7 @@ public partial interface IJusticaReader
     JusticaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     JusticaResponse? Read(FJustica dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     JusticaResponseAll? ReadAll(FJustica dbRec, IDataRecord dr);
     JusticaResponseAll? ReadAll(SG.GerAdv.DBJustica dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

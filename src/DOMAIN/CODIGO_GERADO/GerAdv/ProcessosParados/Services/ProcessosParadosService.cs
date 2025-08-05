@@ -36,7 +36,7 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
         return result;
     }
 
-    public async Task<IEnumerable<ProcessosParadosResponseAll>> Filter(Filters.FilterProcessosParados filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<ProcessosParadosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessosParados filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
@@ -45,20 +45,26 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
             throw new DatabaseConnectionException();
         }
 
+        if (max <= 0)
+        {
+            max = BaseConsts.PMaxItens;
+        }
+
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter> parameters = filtroResult?.parametros ?? [];
-        var cacheKey = $"{uri}-ProcessosParados-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var filterHash = GetFilterHash(filtro);
+        var cacheKey = $"{uri}-{max}-ProcessosParados-Filter-{where.GetHashCode2()}{filterHash}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
+        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
         return result;
     }
 
-    public async Task<ProcessosParadosResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
+    public async Task<ProcessosParadosResponse?> GetById([FromQuery] long id, [FromRoute, Required] string uri, CancellationToken token)
     {
         ThrowIfDisposed();
         if (id < 1)
@@ -83,7 +89,7 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
         }
     }
 
-    private async Task<ProcessosParadosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<ProcessosParadosResponse?> GetDataByIdAsync(long id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
     public async Task<ProcessosParadosResponse?> AddAndUpdate([FromBody] Models.ProcessosParados regProcessosParados, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -168,7 +174,7 @@ public partial class ProcessosParadosService(IOptions<AppSettings> appSettings, 
         return await reader.Read(regProcessosParados.Id, oCnn);
     }
 
-    public async Task<ProcessosParadosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProcessosParadosResponse?> Delete([FromQuery] long id, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))

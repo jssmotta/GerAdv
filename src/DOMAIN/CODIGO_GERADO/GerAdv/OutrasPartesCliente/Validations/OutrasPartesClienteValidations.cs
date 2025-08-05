@@ -21,7 +21,7 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var parteclienteoutrasExists0 = await parteclienteoutrasService.Filter(new Filters.FilterParteClienteOutras { Cliente = id }, uri);
+        var parteclienteoutrasExists0 = await parteclienteoutrasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParteClienteOutras { Cliente = id }, uri);
         if (parteclienteoutrasExists0 != null && parteclienteoutrasExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Parte Cliente Outras associados a ele.");
         return true;
@@ -31,11 +31,11 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
     {
         if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
         if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
@@ -43,7 +43,7 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
             throw new SGValidationException($"NomeFantasia deve ter no máximo 255 caracteres.");
         if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
@@ -97,17 +97,17 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
 
     private async Task<bool> IsCnpjDuplicado(Models.OutrasPartesCliente reg, IOutrasPartesClienteService service, string uri)
     {
-        if (reg.CNPJ.Length == 0)
+        if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingOutrasPartesCliente = (await service.Filter(new Filters.FilterOutrasPartesCliente { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
+        var existingOutrasPartesCliente = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOutrasPartesCliente { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingOutrasPartesCliente != null && existingOutrasPartesCliente.Id > 0 && existingOutrasPartesCliente.Id != reg.Id;
     }
 
     private async Task<(bool, OutrasPartesClienteResponseAll? )> IsCpfDuplicado(Models.OutrasPartesCliente reg, IOutrasPartesClienteService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingOutrasPartesCliente = (await service.Filter(new Filters.FilterOutrasPartesCliente { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingOutrasPartesCliente = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOutrasPartesCliente { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingOutrasPartesCliente != null && existingOutrasPartesCliente.Id > 0 && existingOutrasPartesCliente.Id != reg.Id, existingOutrasPartesCliente);
     }
 }

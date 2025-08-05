@@ -24,15 +24,15 @@ public partial class FuncaoController(IFuncaoService funcaoService) : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterFuncao filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterFuncao filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Funcao: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _funcaoService.Filter(filtro, uri);
+        //_logger.Info("Funcao: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _funcaoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

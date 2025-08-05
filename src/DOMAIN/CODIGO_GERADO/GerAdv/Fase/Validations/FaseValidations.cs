@@ -21,7 +21,7 @@ public class FaseValidation : IFaseValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var prodepositosExists0 = await prodepositosService.Filter(new Filters.FilterProDepositos { Fase = id }, uri);
+        var prodepositosExists0 = await prodepositosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProDepositos { Fase = id }, uri);
         if (prodepositosExists0 != null && prodepositosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.");
         return true;

@@ -16,6 +16,8 @@ public partial class DBUltimosProcessosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBUltimosProcessosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBUltimosProcessosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

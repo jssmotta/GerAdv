@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class EndTitService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEndTit filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEndTit filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Endereco != int.MinValue)
@@ -41,43 +41,43 @@ public partial class EndTitService
             parameters.Add(new($"@{nameof(DBEndTitDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Endereco.IsEmpty() && filtro.Endereco_end.IsEmpty())
+        if (!(filtro.Endereco.IsEmptyX()) && filtro.Endereco_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Endereco <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].[{DBEndTitDicInfo.Endereco}] >= @{nameof(DBEndTitDicInfo.Endereco)}");
+            cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].[{DBEndTitDicInfo.Endereco}] = @{nameof(DBEndTitDicInfo.Endereco)}");
         }
-        else
+        else if (!(filtro.Endereco.IsEmptyX()) && !(filtro.Endereco_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Endereco <= 0 && filtro.Endereco_end <= 0) ? string.Empty : (!(filtro.Endereco <= 0) && !(filtro.Endereco_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.Endereco} BETWEEN @{nameof(DBEndTitDicInfo.Endereco)} AND @{nameof(DBEndTitDicInfo.Endereco)}_end" : !(filtro.Endereco <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.Endereco} = @{nameof(DBEndTitDicInfo.Endereco)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.Endereco} <= @{nameof(DBEndTitDicInfo.Endereco)}_end");
-        }
-
-        if (!filtro.Titulo.IsEmpty() && filtro.Titulo_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Titulo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].[{DBEndTitDicInfo.Titulo}] >= @{nameof(DBEndTitDicInfo.Titulo)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Titulo <= 0 && filtro.Titulo_end <= 0) ? string.Empty : (!(filtro.Titulo <= 0) && !(filtro.Titulo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.Titulo} BETWEEN @{nameof(DBEndTitDicInfo.Titulo)} AND @{nameof(DBEndTitDicInfo.Titulo)}_end" : !(filtro.Titulo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.Titulo} = @{nameof(DBEndTitDicInfo.Titulo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.Titulo} <= @{nameof(DBEndTitDicInfo.Titulo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].{DBEndTitDicInfo.Endereco} BETWEEN @{nameof(DBEndTitDicInfo.Endereco)} AND @{nameof(DBEndTitDicInfo.Endereco)}_end");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Titulo.IsEmptyX()) && filtro.Titulo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].[{DBEndTitDicInfo.CampoCodigo}] >= @{nameof(DBEndTitDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Titulo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].[{DBEndTitDicInfo.Titulo}] = @{nameof(DBEndTitDicInfo.Titulo)}");
         }
-        else
+        else if (!(filtro.Titulo.IsEmptyX()) && !(filtro.Titulo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.CampoCodigo} BETWEEN @{nameof(DBEndTitDicInfo.CampoCodigo)} AND @{nameof(DBEndTitDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.CampoCodigo} = @{nameof(DBEndTitDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEndTitDicInfo.CampoCodigo} <= @{nameof(DBEndTitDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].{DBEndTitDicInfo.Titulo} BETWEEN @{nameof(DBEndTitDicInfo.Titulo)} AND @{nameof(DBEndTitDicInfo.Titulo)}_end");
+        }
+
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].[{DBEndTitDicInfo.CampoCodigo}] = @{nameof(DBEndTitDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEndTitDicInfo.PTabelaNome}].{DBEndTitDicInfo.CampoCodigo} BETWEEN @{nameof(DBEndTitDicInfo.CampoCodigo)} AND @{nameof(DBEndTitDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -86,6 +86,16 @@ public partial class EndTitService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterEndTit? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<EndTitResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

@@ -135,13 +135,14 @@ public partial class DBTipoCompromisso
             updateTool.Fields(DBTipoCompromissoDicInfo.Icone, m_FIcone, ETiposCampos.FNumber);
         if (pFldFDescricao)
             updateTool.Fields(DBTipoCompromissoDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
-        if (pFldFFinanceiro)
+        if (pFldFFinanceiro || updateTool.Insert)
             updateTool.Fields(DBTipoCompromissoDicInfo.Financeiro, m_FFinanceiro, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBTipoCompromissoDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_TipoCompromisso)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -165,4 +166,5 @@ public partial class DBTipoCompromisso
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

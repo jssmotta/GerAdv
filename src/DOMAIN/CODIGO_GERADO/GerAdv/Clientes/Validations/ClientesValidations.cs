@@ -21,55 +21,55 @@ public class ClientesValidation : IClientesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Cliente = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Cliente = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var anexamentoregistrosExists1 = await anexamentoregistrosService.Filter(new Filters.FilterAnexamentoRegistros { Cliente = id }, uri);
+        var anexamentoregistrosExists1 = await anexamentoregistrosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAnexamentoRegistros { Cliente = id }, uri);
         if (anexamentoregistrosExists1 != null && anexamentoregistrosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Anexamento Registros associados a ele.");
-        var clientessociosExists2 = await clientessociosService.Filter(new Filters.FilterClientesSocios { Cliente = id }, uri);
+        var clientessociosExists2 = await clientessociosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientesSocios { Cliente = id }, uri);
         if (clientessociosExists2 != null && clientessociosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Clientes Socios associados a ele.");
-        var colaboradoresExists3 = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cliente = id }, uri);
+        var colaboradoresExists3 = await colaboradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { Cliente = id }, uri);
         if (colaboradoresExists3 != null && colaboradoresExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.");
-        var contacorrenteExists4 = await contacorrenteService.Filter(new Filters.FilterContaCorrente { Cliente = id }, uri);
+        var contacorrenteExists4 = await contacorrenteService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContaCorrente { Cliente = id }, uri);
         if (contacorrenteExists4 != null && contacorrenteExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Conta Corrente associados a ele.");
-        var contratosExists5 = await contratosService.Filter(new Filters.FilterContratos { Cliente = id }, uri);
+        var contratosExists5 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Cliente = id }, uri);
         if (contratosExists5 != null && contratosExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.");
-        var dadosprocuracaoExists6 = await dadosprocuracaoService.Filter(new Filters.FilterDadosProcuracao { Cliente = id }, uri);
+        var dadosprocuracaoExists6 = await dadosprocuracaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDadosProcuracao { Cliente = id }, uri);
         if (dadosprocuracaoExists6 != null && dadosprocuracaoExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Dados Procuracao associados a ele.");
-        var diario2Exists7 = await diario2Service.Filter(new Filters.FilterDiario2 { Cliente = id }, uri);
+        var diario2Exists7 = await diario2Service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDiario2 { Cliente = id }, uri);
         if (diario2Exists7 != null && diario2Exists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Diario2 associados a ele.");
-        var gruposempresasExists8 = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Cliente = id }, uri);
+        var gruposempresasExists8 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Cliente = id }, uri);
         if (gruposempresasExists8 != null && gruposempresasExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.");
-        var gruposempresascliExists9 = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Cliente = id }, uri);
+        var gruposempresascliExists9 = await gruposempresascliService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresasCli { Cliente = id }, uri);
         if (gruposempresascliExists9 != null && gruposempresascliExists9.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas Cli associados a ele.");
-        var honorariosdadoscontratoExists10 = await honorariosdadoscontratoService.Filter(new Filters.FilterHonorariosDadosContrato { Cliente = id }, uri);
+        var honorariosdadoscontratoExists10 = await honorariosdadoscontratoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHonorariosDadosContrato { Cliente = id }, uri);
         if (honorariosdadoscontratoExists10 != null && honorariosdadoscontratoExists10.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Honorarios Dados Contrato associados a ele.");
-        var horastrabExists11 = await horastrabService.Filter(new Filters.FilterHorasTrab { Cliente = id }, uri);
+        var horastrabExists11 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Cliente = id }, uri);
         if (horastrabExists11 != null && horastrabExists11.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
-        var ligacoesExists12 = await ligacoesService.Filter(new Filters.FilterLigacoes { Cliente = id }, uri);
+        var ligacoesExists12 = await ligacoesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterLigacoes { Cliente = id }, uri);
         if (ligacoesExists12 != null && ligacoesExists12.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.");
-        var operadoresExists13 = await operadoresService.Filter(new Filters.FilterOperadores { Cliente = id }, uri);
+        var operadoresExists13 = await operadoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadores { Cliente = id }, uri);
         if (operadoresExists13 != null && operadoresExists13.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operadores associados a ele.");
-        var preclientesExists14 = await preclientesService.Filter(new Filters.FilterPreClientes { IDRep = id }, uri);
+        var preclientesExists14 = await preclientesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPreClientes { IDRep = id }, uri);
         if (preclientesExists14 != null && preclientesExists14.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pre Clientes associados a ele.");
-        var prodespesasExists15 = await prodespesasService.Filter(new Filters.FilterProDespesas { Cliente = id }, uri);
+        var prodespesasExists15 = await prodespesasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProDespesas { Cliente = id }, uri);
         if (prodespesasExists15 != null && prodespesasExists15.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Despesas associados a ele.");
-        var reuniaoExists16 = await reuniaoService.Filter(new Filters.FilterReuniao { Cliente = id }, uri);
+        var reuniaoExists16 = await reuniaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterReuniao { Cliente = id }, uri);
         if (reuniaoExists16 != null && reuniaoExists16.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Reunião associados a ele.");
         return true;
@@ -93,9 +93,9 @@ public class ClientesValidation : IClientesValidation
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
         if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 50)
             throw new SGValidationException($"RG deve ter no máximo 50 caracteres.");
@@ -103,7 +103,7 @@ public class ClientesValidation : IClientesValidation
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.HomePage != null && reg.HomePage.Length > 60)
             throw new SGValidationException($"HomePage deve ter no máximo 60 caracteres.");
@@ -181,17 +181,17 @@ public class ClientesValidation : IClientesValidation
 
     private async Task<bool> IsCnpjDuplicado(Models.Clientes reg, IClientesService service, string uri)
     {
-        if (reg.CNPJ.Length == 0)
+        if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingClientes = (await service.Filter(new Filters.FilterClientes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
+        var existingClientes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingClientes != null && existingClientes.Id > 0 && existingClientes.Id != reg.Id;
     }
 
     private async Task<(bool, ClientesResponseAll? )> IsCpfDuplicado(Models.Clientes reg, IClientesService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingClientes = (await service.Filter(new Filters.FilterClientes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingClientes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingClientes != null && existingClientes.Id > 0 && existingClientes.Id != reg.Id, existingClientes);
     }
 }

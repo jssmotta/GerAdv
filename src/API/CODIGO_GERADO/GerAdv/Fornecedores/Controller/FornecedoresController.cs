@@ -24,15 +24,15 @@ public partial class FornecedoresController(IFornecedoresService fornecedoresSer
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterFornecedores filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterFornecedores filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Fornecedores: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _fornecedoresService.Filter(filtro, uri);
+        //_logger.Info("Fornecedores: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _fornecedoresService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IUFService
 {
-    Task<IEnumerable<UFResponseAll>> Filter(Filters.FilterUF filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<UFResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterUF filter, [FromRoute, Required] string uri = "");
     Task<UFResponse?> AddAndUpdate(Models.UF regUF, [FromRoute, Required] string uri = "");
     Task<UFResponse?> Validation(Models.UF regUF, [FromRoute, Required] string uri = "");
     Task<UFResponse?> Delete(int id, [FromRoute, Required] string uri = "");

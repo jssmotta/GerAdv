@@ -73,7 +73,7 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
 
     private async Task<bool> IsDuplicado(Models.ProcessOutputRequest reg, IProcessOutputRequestService service, string uri)
     {
-        var existingProcessOutputRequest = (await service.Filter(new Filters.FilterProcessOutputRequest { Operador = reg.Operador, Processo = reg.Processo, ProcessOutputEngine = reg.ProcessOutputEngine }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingProcessOutputRequest = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { Operador = reg.Operador, Processo = reg.Processo, ProcessOutputEngine = reg.ProcessOutputEngine }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingProcessOutputRequest != null && existingProcessOutputRequest.Id > 0 && existingProcessOutputRequest.Id != reg.Id;
     }
 }

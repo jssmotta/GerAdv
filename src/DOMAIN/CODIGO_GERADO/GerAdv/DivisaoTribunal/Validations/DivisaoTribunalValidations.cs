@@ -32,7 +32,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
             throw new SGValidationException($"CodigoDiv deve ter no máximo 5 caracteres.");
         if (reg.Endereco != null && reg.Endereco.Length > 40)
             throw new SGValidationException($"Endereco deve ter no máximo 40 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Andar != null && reg.Andar.Length > 12)
             throw new SGValidationException($"Andar deve ter no máximo 12 caracteres.");

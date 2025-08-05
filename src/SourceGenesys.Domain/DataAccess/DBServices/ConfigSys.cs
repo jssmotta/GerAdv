@@ -111,7 +111,7 @@ public static partial class ConfigSys
             catch (Exception ex)
             {
                 trans.Rollback();
-                GeneralSystemErrorTraper.GetError(ex, cmd.CommandText);
+                //GeneralSystemErrorTraper.GetError(ex, cmd.CommandText);
             }
         }
         return false;
@@ -165,11 +165,11 @@ public static partial class ConfigSys
             catch (SqlException ex)
             {
                 trans.Rollback();
-                GeneralSystemErrorTraper.GetError(ex, cmd.CommandText, oCnnP.ConnectionString);
+                //GeneralSystemErrorTraper.GetError(ex, cmd.CommandText, oCnnP.ConnectionString);
             }
             catch (Exception ex)
             {
-                GeneralSystemErrorTraper.GetError(ex, cmd.CommandText);
+               // GeneralSystemErrorTraper.GetError(ex, cmd.CommandText);
             }
         }
         return false;
@@ -238,16 +238,12 @@ public static partial class ConfigSys
                                            //trans.Commit();
             return ret != null && int.TryParse(ret.ToString(), out var nRet) ? nRet : -1;
         }
-        catch (SqlException ex)
+        catch 
         {
             ///trans.Rollback();
-            GeneralSystemErrorTraper.GetError(ex, ConnectionString: oCnn?.ConnectionString ?? "");
-
-#if (DEVOURER_NS)
-                    var err = ex.Message;
-                    DevourerWCfg.UpdateWCfgSP(oCnn);
-#endif
-            return -1;
+           throw new Exception("Erro ao ler a configuração do sistema para a chave");
+            
+ 
         }
     }
 

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITribEnderecosService
 {
-    Task<IEnumerable<TribEnderecosResponseAll>> Filter(Filters.FilterTribEnderecos filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<TribEnderecosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTribEnderecos filter, [FromRoute, Required] string uri = "");
     Task<TribEnderecosResponse?> AddAndUpdate(Models.TribEnderecos regTribEnderecos, [FromRoute, Required] string uri = "");
     Task<TribEnderecosResponse?> Validation(Models.TribEnderecos regTribEnderecos, [FromRoute, Required] string uri = "");
     Task<TribEnderecosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

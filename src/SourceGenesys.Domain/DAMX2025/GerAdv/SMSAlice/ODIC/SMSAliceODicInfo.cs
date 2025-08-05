@@ -16,6 +16,8 @@ public partial class DBSMSAliceODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBSMSAliceDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBSMSAliceDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

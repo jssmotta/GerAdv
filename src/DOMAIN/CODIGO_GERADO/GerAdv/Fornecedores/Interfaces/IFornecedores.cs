@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IFornecedoresService
 {
-    Task<IEnumerable<FornecedoresResponseAll>> Filter(Filters.FilterFornecedores filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<FornecedoresResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterFornecedores filter, [FromRoute, Required] string uri = "");
     Task<FornecedoresResponse?> AddAndUpdate(Models.Fornecedores regFornecedores, [FromRoute, Required] string uri = "");
     Task<FornecedoresResponse?> Validation(Models.Fornecedores regFornecedores, [FromRoute, Required] string uri = "");
     Task<FornecedoresResponse?> Delete(int id, [FromRoute, Required] string uri = "");

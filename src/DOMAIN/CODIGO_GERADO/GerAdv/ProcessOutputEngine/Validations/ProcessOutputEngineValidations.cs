@@ -21,7 +21,7 @@ public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var processoutputrequestExists0 = await processoutputrequestService.Filter(new Filters.FilterProcessOutputRequest { ProcessOutputEngine = id }, uri);
+        var processoutputrequestExists0 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { ProcessOutputEngine = id }, uri);
         if (processoutputrequestExists0 != null && processoutputrequestExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.");
         return true;

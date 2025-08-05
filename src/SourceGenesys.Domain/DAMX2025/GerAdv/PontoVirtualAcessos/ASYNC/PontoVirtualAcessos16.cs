@@ -135,13 +135,14 @@ public partial class DBPontoVirtualAcessos
             updateTool.Fields(DBPontoVirtualAcessosDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
         if (pFldFDataHora)
             updateTool.Fields(DBPontoVirtualAcessosDicInfo.DataHora, m_FDataHora, ETiposCampos.FDate);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBPontoVirtualAcessosDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFOrigem)
             updateTool.Fields(DBPontoVirtualAcessosDicInfo.Origem, m_FOrigem, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_PontoVirtualAcessos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -153,4 +154,5 @@ public partial class DBPontoVirtualAcessos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

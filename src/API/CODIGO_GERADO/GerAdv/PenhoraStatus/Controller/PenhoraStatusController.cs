@@ -24,15 +24,15 @@ public partial class PenhoraStatusController(IPenhoraStatusService penhorastatus
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterPenhoraStatus filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterPenhoraStatus filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("PenhoraStatus: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _penhorastatusService.Filter(filtro, uri);
+        //_logger.Info("PenhoraStatus: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _penhorastatusService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

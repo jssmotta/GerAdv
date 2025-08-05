@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AlertasEnviadosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAlertasEnviados filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAlertasEnviados filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Operador != int.MinValue)
@@ -21,13 +21,13 @@ public partial class AlertasEnviadosService
             parameters.Add(new($"@{nameof(DBAlertasEnviadosDicInfo.Alerta)}", filtro.Alerta));
         }
 
-        if (!filtro.DataAlertado.IsEmpty())
+        if (!filtro.DataAlertado.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataAlertado, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}", dataParam));
         }
 
-        if (!filtro.DataAlertado_end.IsEmpty())
+        if (!filtro.DataAlertado_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataAlertado_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}_end", dataParam));
@@ -48,37 +48,37 @@ public partial class AlertasEnviadosService
             parameters.Add(new($"@{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Operador}] = @{nameof(DBAlertasEnviadosDicInfo.Operador)}");
-        cWhere.Append(filtro.Alerta <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Alerta}] = @{nameof(DBAlertasEnviadosDicInfo.Alerta)}");
-        if (!filtro.DataAlertado.IsEmpty() && filtro.DataAlertado_end.IsEmpty())
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Operador}] = @{nameof(DBAlertasEnviadosDicInfo.Operador)}");
+        cWhere.Append(filtro.Alerta.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Alerta}] = @{nameof(DBAlertasEnviadosDicInfo.Alerta)}");
+        if (!(filtro.DataAlertado.IsEmptyDX()) && filtro.DataAlertado_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataAlertado.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.DataAlertado}], 103) >= CONVERT(DATE, @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}, 103)");
+            cWhere.Append(filtro.DataAlertado.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.DataAlertado}], 103) = CONVERT(DATE, @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}, 103)");
         }
-        else
+        else if (!(filtro.DataAlertado.IsEmptyDX()) && !(filtro.DataAlertado_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DataAlertado.IsEmpty() && filtro.DataAlertado_end.IsEmpty()) ? string.Empty : (!(filtro.DataAlertado.IsEmpty()) && !(filtro.DataAlertado_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasEnviadosDicInfo.DataAlertado} BETWEEN @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)} AND @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}_end" : !(filtro.DataAlertado.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasEnviadosDicInfo.DataAlertado} = @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasEnviadosDicInfo.DataAlertado} <= @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].{DBAlertasEnviadosDicInfo.DataAlertado} BETWEEN @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)} AND @{nameof(DBAlertasEnviadosDicInfo.DataAlertado)}_end");
         }
 
         cWhere.Append(filtro.Visualizado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.Visualizado}] = @{nameof(DBAlertasEnviadosDicInfo.Visualizado)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.CampoCodigo}] >= @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].[{DBAlertasEnviadosDicInfo.CampoCodigo}] = @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasEnviadosDicInfo.CampoCodigo} BETWEEN @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)} AND @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasEnviadosDicInfo.CampoCodigo} = @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasEnviadosDicInfo.CampoCodigo} <= @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasEnviadosDicInfo.PTabelaNome}].{DBAlertasEnviadosDicInfo.CampoCodigo} BETWEEN @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)} AND @{nameof(DBAlertasEnviadosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -87,6 +87,16 @@ public partial class AlertasEnviadosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAlertasEnviados? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<AlertasEnviadosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

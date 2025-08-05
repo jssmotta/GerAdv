@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GruposEmpresasCliService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGruposEmpresasCli filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGruposEmpresasCli filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Grupo != int.MinValue)
@@ -36,28 +36,28 @@ public partial class GruposEmpresasCliService
             parameters.Add(new($"@{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Grupo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Grupo}] = @{nameof(DBGruposEmpresasCliDicInfo.Grupo)}");
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Cliente}] = @{nameof(DBGruposEmpresasCliDicInfo.Cliente)}");
+        cWhere.Append(filtro.Grupo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Grupo}] = @{nameof(DBGruposEmpresasCliDicInfo.Grupo)}");
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Cliente}] = @{nameof(DBGruposEmpresasCliDicInfo.Cliente)}");
         cWhere.Append(filtro.Oculto == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.Oculto}] = @{nameof(DBGruposEmpresasCliDicInfo.Oculto)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.CampoCodigo}] >= @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].[{DBGruposEmpresasCliDicInfo.CampoCodigo}] = @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGruposEmpresasCliDicInfo.CampoCodigo} BETWEEN @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)} AND @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGruposEmpresasCliDicInfo.CampoCodigo} = @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGruposEmpresasCliDicInfo.CampoCodigo} <= @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGruposEmpresasCliDicInfo.PTabelaNome}].{DBGruposEmpresasCliDicInfo.CampoCodigo} BETWEEN @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)} AND @{nameof(DBGruposEmpresasCliDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -66,6 +66,16 @@ public partial class GruposEmpresasCliService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterGruposEmpresasCli? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<GruposEmpresasCliResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

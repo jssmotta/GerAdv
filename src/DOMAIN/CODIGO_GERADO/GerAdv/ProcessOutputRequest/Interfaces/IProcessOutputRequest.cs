@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProcessOutputRequestService
 {
-    Task<IEnumerable<ProcessOutputRequestResponseAll>> Filter(Filters.FilterProcessOutputRequest filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProcessOutputRequestResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessOutputRequest filter, [FromRoute, Required] string uri = "");
     Task<ProcessOutputRequestResponse?> AddAndUpdate(Models.ProcessOutputRequest regProcessOutputRequest, [FromRoute, Required] string uri = "");
     Task<ProcessOutputRequestResponse?> Validation(Models.ProcessOutputRequest regProcessOutputRequest, [FromRoute, Required] string uri = "");
     Task<ProcessOutputRequestResponse?> Delete(int id, [FromRoute, Required] string uri = "");

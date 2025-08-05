@@ -16,6 +16,8 @@ public partial class DBNECompromissosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBNECompromissosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBNECompromissosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

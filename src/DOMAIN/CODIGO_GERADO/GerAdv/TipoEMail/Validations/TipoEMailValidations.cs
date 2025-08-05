@@ -21,7 +21,7 @@ public class TipoEMailValidation : ITipoEMailValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var smsaliceExists0 = await smsaliceService.Filter(new Filters.FilterSMSAlice { TipoEMail = id }, uri);
+        var smsaliceExists0 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { TipoEMail = id }, uri);
         if (smsaliceExists0 != null && smsaliceExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
         return true;
@@ -50,7 +50,7 @@ public class TipoEMailValidation : ITipoEMailValidation
 
     private async Task<bool> IsDuplicado(Models.TipoEMail reg, ITipoEMailService service, string uri)
     {
-        var existingTipoEMail = (await service.Filter(new Filters.FilterTipoEMail { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingTipoEMail = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoEMail { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingTipoEMail != null && existingTipoEMail.Id > 0 && existingTipoEMail.Id != reg.Id;
     }
 }

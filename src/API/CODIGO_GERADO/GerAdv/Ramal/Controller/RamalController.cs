@@ -24,15 +24,15 @@ public partial class RamalController(IRamalService ramalService) : ControllerBas
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterRamal filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterRamal filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Ramal: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _ramalService.Filter(filtro, uri);
+        //_logger.Info("Ramal: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _ramalService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -10,7 +10,7 @@ public partial interface IPoderJudiciarioAssociadoReader
     PoderJudiciarioAssociadoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PoderJudiciarioAssociadoResponse? Read(FPoderJudiciarioAssociado dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     PoderJudiciarioAssociadoResponseAll? ReadAll(FPoderJudiciarioAssociado dbRec, IDataRecord dr);
     PoderJudiciarioAssociadoResponseAll? ReadAll(SG.GerAdv.DBPoderJudiciarioAssociado dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

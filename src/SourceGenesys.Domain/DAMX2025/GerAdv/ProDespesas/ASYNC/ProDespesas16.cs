@@ -135,7 +135,7 @@ public partial class DBProDespesas
             updateTool.Fields(DBProDespesasDicInfo.LigacaoID, m_FLigacaoID, ETiposCampos.FNumber);
         if (pFldFCliente)
             updateTool.Fields(DBProDespesasDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-        if (pFldFCorrigido)
+        if (pFldFCorrigido || updateTool.Insert)
             updateTool.Fields(DBProDespesasDicInfo.Corrigido, m_FCorrigido, ETiposCampos.FBoolean);
         if (pFldFData)
             updateTool.Fields(DBProDespesasDicInfo.Data, m_FData, ETiposCampos.FString);
@@ -149,17 +149,18 @@ public partial class DBProDespesas
             updateTool.Fields(DBProDespesasDicInfo.DataCorrecao, m_FDataCorrecao, ETiposCampos.FDate);
         if (pFldFValor)
             updateTool.Fields(DBProDespesasDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBProDespesasDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFHistorico)
             updateTool.Fields(DBProDespesasDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
-        if (pFldFLivroCaixa)
+        if (pFldFLivroCaixa || updateTool.Insert)
             updateTool.Fields(DBProDespesasDicInfo.LivroCaixa, m_FLivroCaixa, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBProDespesasDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_ProDespesas)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -183,4 +184,5 @@ public partial class DBProDespesas
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

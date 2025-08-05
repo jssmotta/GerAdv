@@ -9,7 +9,17 @@ public partial class DBGruposEmpresas
     {
         if (dbRec is null)
             return;
-        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        InitFromRecord(name =>
+        {
+            try
+            {
+                return dbRec[name];
+            }
+            catch
+            {
+                return DBNull.Value;
+            }
+        });
     }
 
     public DBGruposEmpresas(SqlDataReader? dbRec)
@@ -18,7 +28,17 @@ public partial class DBGruposEmpresas
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -160,7 +180,17 @@ public partial class DBGruposEmpresas
             return;
         try
         {
-            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -174,7 +204,17 @@ public partial class DBGruposEmpresas
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {

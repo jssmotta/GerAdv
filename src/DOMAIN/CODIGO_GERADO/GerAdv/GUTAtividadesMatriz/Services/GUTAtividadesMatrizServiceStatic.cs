@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GUTAtividadesMatrizService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTAtividadesMatriz filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTAtividadesMatriz filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.GUTMatriz != int.MinValue)
@@ -36,28 +36,28 @@ public partial class GUTAtividadesMatrizService
             parameters.Add(new($"@{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.GUTMatriz <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTMatriz}] = @{nameof(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}");
-        cWhere.Append(filtro.GUTAtividade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTAtividade}] = @{nameof(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTAtividadesMatrizDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUTMatriz.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTMatriz}] = @{nameof(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}");
+        cWhere.Append(filtro.GUTAtividade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTAtividade}] = @{nameof(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTAtividadesMatrizDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.CampoCodigo}] >= @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.CampoCodigo}] = @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTAtividadesMatrizDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)} AND @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTAtividadesMatrizDicInfo.CampoCodigo} = @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTAtividadesMatrizDicInfo.CampoCodigo} <= @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].{DBGUTAtividadesMatrizDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)} AND @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -66,6 +66,16 @@ public partial class GUTAtividadesMatrizService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterGUTAtividadesMatriz? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTAtividadesMatriz? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -81,7 +91,7 @@ public partial class GUTAtividadesMatrizService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-GUTAtividadesMatriz-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

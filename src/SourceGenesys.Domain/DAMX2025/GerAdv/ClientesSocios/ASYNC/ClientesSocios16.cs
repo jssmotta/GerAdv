@@ -131,15 +131,15 @@ public partial class DBClientesSocios
     private bool HasAnyFieldChanged() => pFldFSomenteRepresentante || pFldFIdade || pFldFIsRepresentanteLegal || pFldFQualificacao || pFldFSexo || pFldFDtNasc || pFldFNome || pFldFSite || pFldFRepresentanteLegal || pFldFCliente || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFCidade || pFldFRG || pFldFCPF || pFldFFone || pFldFParticipacao || pFldFCargo || pFldFEMail || pFldFObs || pFldFCNH || pFldFDataContrato || pFldFCNPJ || pFldFInscEst || pFldFSocioEmpresaAdminNome || pFldFEnderecoSocio || pFldFBairroSocio || pFldFCEPSocio || pFldFCidadeSocio || pFldFRGDataExp || pFldFSocioEmpresaAdminSomente || pFldFTipo || pFldFFax || pFldFClass || pFldFGUID;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFSomenteRepresentante)
+        if (pFldFSomenteRepresentante || updateTool.Insert)
             updateTool.Fields(DBClientesSociosDicInfo.SomenteRepresentante, m_FSomenteRepresentante, ETiposCampos.FBoolean);
         if (pFldFIdade)
             updateTool.Fields(DBClientesSociosDicInfo.Idade, m_FIdade, ETiposCampos.FNumber);
-        if (pFldFIsRepresentanteLegal)
+        if (pFldFIsRepresentanteLegal || updateTool.Insert)
             updateTool.Fields(DBClientesSociosDicInfo.IsRepresentanteLegal, m_FIsRepresentanteLegal, ETiposCampos.FBoolean);
         if (pFldFQualificacao)
             updateTool.Fields(DBClientesSociosDicInfo.Qualificacao, m_FQualificacao, ETiposCampos.FString);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBClientesSociosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFDtNasc)
             updateTool.Fields(DBClientesSociosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
@@ -193,9 +193,9 @@ public partial class DBClientesSocios
             updateTool.Fields(DBClientesSociosDicInfo.CidadeSocio, m_FCidadeSocio, ETiposCampos.FNumber);
         if (pFldFRGDataExp)
             updateTool.Fields(DBClientesSociosDicInfo.RGDataExp, m_FRGDataExp, ETiposCampos.FDate);
-        if (pFldFSocioEmpresaAdminSomente)
+        if (pFldFSocioEmpresaAdminSomente || updateTool.Insert)
             updateTool.Fields(DBClientesSociosDicInfo.SocioEmpresaAdminSomente, m_FSocioEmpresaAdminSomente, ETiposCampos.FBoolean);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBClientesSociosDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFFax)
             updateTool.Fields(DBClientesSociosDicInfo.Fax, m_FFax, ETiposCampos.FString);
@@ -206,6 +206,7 @@ public partial class DBClientesSocios
     }
 
 #endif
+#if (!NOTSTORED_ClientesSocios)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -229,4 +230,5 @@ public partial class DBClientesSocios
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

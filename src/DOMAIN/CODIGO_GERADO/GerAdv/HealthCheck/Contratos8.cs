@@ -21,7 +21,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
                     {
                         if (DBContratosDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(cttCodigo) FROM {"Contratos".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(cttCodigo) FROM {"Contratos".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttGUID FROM {"Contratos".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttGUID FROM {"Contratos".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Contratos successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Contratos successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

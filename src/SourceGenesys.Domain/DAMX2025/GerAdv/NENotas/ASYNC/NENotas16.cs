@@ -137,13 +137,13 @@ public partial class DBNENotas
             updateTool.Fields(DBNENotasDicInfo.Precatoria, m_FPrecatoria, ETiposCampos.FNumber);
         if (pFldFInstancia)
             updateTool.Fields(DBNENotasDicInfo.Instancia, m_FInstancia, ETiposCampos.FNumber);
-        if (pFldFMovPro)
+        if (pFldFMovPro || updateTool.Insert)
             updateTool.Fields(DBNENotasDicInfo.MovPro, m_FMovPro, ETiposCampos.FBoolean);
         if (pFldFNome)
             updateTool.Fields(DBNENotasDicInfo.Nome, m_FNome, ETiposCampos.FString);
-        if (pFldFNotaExpedida)
+        if (pFldFNotaExpedida || updateTool.Insert)
             updateTool.Fields(DBNENotasDicInfo.NotaExpedida, m_FNotaExpedida, ETiposCampos.FBoolean);
-        if (pFldFRevisada)
+        if (pFldFRevisada || updateTool.Insert)
             updateTool.Fields(DBNENotasDicInfo.Revisada, m_FRevisada, ETiposCampos.FBoolean);
         if (pFldFProcesso)
             updateTool.Fields(DBNENotasDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
@@ -156,6 +156,7 @@ public partial class DBNENotas
     }
 
 #endif
+#if (!NOTSTORED_NENotas)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -179,4 +180,5 @@ public partial class DBNENotas
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

@@ -136,6 +136,7 @@ public partial class DBCargos
     }
 
 #endif
+#if (!NOTSTORED_Cargos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -159,4 +160,5 @@ public partial class DBCargos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

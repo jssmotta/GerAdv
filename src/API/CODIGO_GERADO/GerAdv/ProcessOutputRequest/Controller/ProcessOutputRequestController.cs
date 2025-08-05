@@ -24,15 +24,15 @@ public partial class ProcessOutputRequestController(IProcessOutputRequestService
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessOutputRequest filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessOutputRequest filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ProcessOutputRequest: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _processoutputrequestService.Filter(filtro, uri);
+        //_logger.Info("ProcessOutputRequest: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _processoutputrequestService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -24,15 +24,15 @@ public partial class SMSAliceController(ISMSAliceService smsaliceService) : Cont
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterSMSAlice filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterSMSAlice filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("SMSAlice: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _smsaliceService.Filter(filtro, uri);
+        //_logger.Info("SMSAlice: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _smsaliceService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

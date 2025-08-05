@@ -135,11 +135,12 @@ public partial class DBParteClienteOutras
             updateTool.Fields(DBParteClienteOutrasDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
         if (pFldFProcesso)
             updateTool.Fields(DBParteClienteOutrasDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
-        if (pFldFPrimeiraReclamada)
+        if (pFldFPrimeiraReclamada || updateTool.Insert)
             updateTool.Fields(DBParteClienteOutrasDicInfo.PrimeiraReclamada, m_FPrimeiraReclamada, ETiposCampos.FBoolean);
     }
 
 #endif
+#if (!NOTSTORED_ParteClienteOutras)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -163,4 +164,5 @@ public partial class DBParteClienteOutras
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

@@ -48,12 +48,12 @@ OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         return dataFormatada;
     }
 
-    public async Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn)
+    public async Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
         string query = $@"{ConfiguracoesDBT.SQLNoCount}
-SELECT TOP (1) 
+SELECT TOP ({max}) 
     FORMAT(
         CASE 
             WHEN tpdDtAtu IS NULL THEN tpdDtCad 

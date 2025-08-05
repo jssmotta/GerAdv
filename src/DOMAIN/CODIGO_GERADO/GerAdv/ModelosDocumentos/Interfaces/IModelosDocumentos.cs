@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IModelosDocumentosService
 {
-    Task<IEnumerable<ModelosDocumentosResponseAll>> Filter(Filters.FilterModelosDocumentos filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ModelosDocumentosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterModelosDocumentos filter, [FromRoute, Required] string uri = "");
     Task<ModelosDocumentosResponse?> AddAndUpdate(Models.ModelosDocumentos regModelosDocumentos, [FromRoute, Required] string uri = "");
     Task<ModelosDocumentosResponse?> Validation(Models.ModelosDocumentos regModelosDocumentos, [FromRoute, Required] string uri = "");
     Task<ModelosDocumentosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -21,22 +21,22 @@ public class AdvogadosValidation : IAdvogadosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Advogado = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendaquemExists1 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Advogado = id }, uri);
+        var agendaquemExists1 = await agendaquemService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgendaQuem { Advogado = id }, uri);
         if (agendaquemExists1 != null && agendaquemExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.");
-        var contratosExists2 = await contratosService.Filter(new Filters.FilterContratos { Advogado = id }, uri);
+        var contratosExists2 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Advogado = id }, uri);
         if (contratosExists2 != null && contratosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.");
-        var horastrabExists3 = await horastrabService.Filter(new Filters.FilterHorasTrab { Advogado = id }, uri);
+        var horastrabExists3 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Advogado = id }, uri);
         if (horastrabExists3 != null && horastrabExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
-        var parceriaprocExists4 = await parceriaprocService.Filter(new Filters.FilterParceriaProc { Advogado = id }, uri);
+        var parceriaprocExists4 = await parceriaprocService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParceriaProc { Advogado = id }, uri);
         if (parceriaprocExists4 != null && parceriaprocExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Parceria Proc associados a ele.");
-        var proprocuradoresExists5 = await proprocuradoresService.Filter(new Filters.FilterProProcuradores { Advogado = id }, uri);
+        var proprocuradoresExists5 = await proprocuradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProProcuradores { Advogado = id }, uri);
         if (proprocuradoresExists5 != null && proprocuradoresExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Procuradores associados a ele.");
         return true;
@@ -46,7 +46,7 @@ public class AdvogadosValidation : IAdvogadosValidation
     {
         if (reg.EMailPro != null && reg.EMailPro.Length > 255)
             throw new SGValidationException($"EMailPro deve ter no máximo 255 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
@@ -60,7 +60,7 @@ public class AdvogadosValidation : IAdvogadosValidation
             throw new SGValidationException($"NomeCompleto deve ter no máximo 50 caracteres.");
         if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
@@ -140,9 +140,9 @@ public class AdvogadosValidation : IAdvogadosValidation
 
     private async Task<(bool, AdvogadosResponseAll? )> IsCpfDuplicado(Models.Advogados reg, IAdvogadosService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingAdvogados = (await service.Filter(new Filters.FilterAdvogados { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingAdvogados = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingAdvogados != null && existingAdvogados.Id > 0 && existingAdvogados.Id != reg.Id, existingAdvogados);
     }
 }

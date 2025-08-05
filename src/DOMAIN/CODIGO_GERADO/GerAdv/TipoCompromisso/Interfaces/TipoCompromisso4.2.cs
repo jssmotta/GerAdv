@@ -10,7 +10,7 @@ public partial interface ITipoCompromissoReader
     TipoCompromissoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TipoCompromissoResponse? Read(FTipoCompromisso dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     TipoCompromissoResponseAll? ReadAll(FTipoCompromisso dbRec, IDataRecord dr);
     TipoCompromissoResponseAll? ReadAll(SG.GerAdv.DBTipoCompromisso dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

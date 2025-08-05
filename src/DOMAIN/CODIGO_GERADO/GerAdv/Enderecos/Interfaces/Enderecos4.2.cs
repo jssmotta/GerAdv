@@ -10,7 +10,7 @@ public partial interface IEnderecosReader
     EnderecosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EnderecosResponse? Read(FEnderecos dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     EnderecosResponseAll? ReadAll(FEnderecos dbRec, IDataRecord dr);
     EnderecosResponseAll? ReadAll(SG.GerAdv.DBEnderecos dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

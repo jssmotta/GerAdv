@@ -140,6 +140,7 @@ public partial class DBGUTPeriodicidade
     }
 
 #endif
+#if (!NOTSTORED_GUTPeriodicidade)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -163,4 +164,5 @@ public partial class DBGUTPeriodicidade
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

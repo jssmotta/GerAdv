@@ -42,7 +42,7 @@ public partial class FProcessosParadosFactory : IFProcessosParadosFactory, IDisp
         return FProcessosParados.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, long id, MsiSqlConnection oCnn)
     {
         ThrowIfDisposed();
         return FProcessosParados.DeleteRecordAsync(operadorId, id, oCnn);
@@ -58,5 +58,10 @@ public partial class FProcessosParadosFactory : IFProcessosParadosFactory, IDisp
     {
         _disposed = true;
         GC.SuppressFinalize(this);
+    }
+
+    public Task<FProcessosParados> CreateFromIdAsync(long id, MsiSqlConnection oCnn)
+    {
+        throw new NotImplementedException();
     }
 }

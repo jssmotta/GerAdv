@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class HorasTrabService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterHorasTrab filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterHorasTrab filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.IDContatoCRM != int.MinValue)
@@ -146,92 +146,92 @@ public partial class HorasTrabService
             parameters.Add(new($"@{nameof(DBHorasTrabDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.IDContatoCRM.IsEmpty() && filtro.IDContatoCRM_end.IsEmpty())
+        if (!(filtro.IDContatoCRM.IsEmptyX()) && filtro.IDContatoCRM_end.IsEmptyX())
         {
-            cWhere.Append(filtro.IDContatoCRM <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.IDContatoCRM}] >= @{nameof(DBHorasTrabDicInfo.IDContatoCRM)}");
+            cWhere.Append(filtro.IDContatoCRM.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.IDContatoCRM}] = @{nameof(DBHorasTrabDicInfo.IDContatoCRM)}");
         }
-        else
+        else if (!(filtro.IDContatoCRM.IsEmptyX()) && !(filtro.IDContatoCRM_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.IDContatoCRM <= 0 && filtro.IDContatoCRM_end <= 0) ? string.Empty : (!(filtro.IDContatoCRM <= 0) && !(filtro.IDContatoCRM_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.IDContatoCRM} BETWEEN @{nameof(DBHorasTrabDicInfo.IDContatoCRM)} AND @{nameof(DBHorasTrabDicInfo.IDContatoCRM)}_end" : !(filtro.IDContatoCRM <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.IDContatoCRM} = @{nameof(DBHorasTrabDicInfo.IDContatoCRM)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.IDContatoCRM} <= @{nameof(DBHorasTrabDicInfo.IDContatoCRM)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.IDContatoCRM} BETWEEN @{nameof(DBHorasTrabDicInfo.IDContatoCRM)} AND @{nameof(DBHorasTrabDicInfo.IDContatoCRM)}_end");
         }
 
         cWhere.Append(filtro.Honorario == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Honorario}] = @{nameof(DBHorasTrabDicInfo.Honorario)}");
-        if (!filtro.IDAgenda.IsEmpty() && filtro.IDAgenda_end.IsEmpty())
+        if (!(filtro.IDAgenda.IsEmptyX()) && filtro.IDAgenda_end.IsEmptyX())
         {
-            cWhere.Append(filtro.IDAgenda <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.IDAgenda}] >= @{nameof(DBHorasTrabDicInfo.IDAgenda)}");
+            cWhere.Append(filtro.IDAgenda.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.IDAgenda}] = @{nameof(DBHorasTrabDicInfo.IDAgenda)}");
         }
-        else
+        else if (!(filtro.IDAgenda.IsEmptyX()) && !(filtro.IDAgenda_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.IDAgenda <= 0 && filtro.IDAgenda_end <= 0) ? string.Empty : (!(filtro.IDAgenda <= 0) && !(filtro.IDAgenda_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.IDAgenda} BETWEEN @{nameof(DBHorasTrabDicInfo.IDAgenda)} AND @{nameof(DBHorasTrabDicInfo.IDAgenda)}_end" : !(filtro.IDAgenda <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.IDAgenda} = @{nameof(DBHorasTrabDicInfo.IDAgenda)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.IDAgenda} <= @{nameof(DBHorasTrabDicInfo.IDAgenda)}_end");
-        }
-
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.Data)}");
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Cliente}] = @{nameof(DBHorasTrabDicInfo.Cliente)}");
-        if (!filtro.Status.IsEmpty() && filtro.Status_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Status <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Status}] >= @{nameof(DBHorasTrabDicInfo.Status)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Status <= 0 && filtro.Status_end <= 0) ? string.Empty : (!(filtro.Status <= 0) && !(filtro.Status_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Status} BETWEEN @{nameof(DBHorasTrabDicInfo.Status)} AND @{nameof(DBHorasTrabDicInfo.Status)}_end" : !(filtro.Status <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Status} = @{nameof(DBHorasTrabDicInfo.Status)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Status} <= @{nameof(DBHorasTrabDicInfo.Status)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.IDAgenda} BETWEEN @{nameof(DBHorasTrabDicInfo.IDAgenda)} AND @{nameof(DBHorasTrabDicInfo.IDAgenda)}_end");
         }
 
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.Data)}");
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Cliente}] = @{nameof(DBHorasTrabDicInfo.Cliente)}");
+        if (!(filtro.Status.IsEmptyX()) && filtro.Status_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Processo}] >= @{nameof(DBHorasTrabDicInfo.Processo)}");
+            cWhere.Append(filtro.Status.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Status}] = @{nameof(DBHorasTrabDicInfo.Status)}");
         }
-        else
+        else if (!(filtro.Status.IsEmptyX()) && !(filtro.Status_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Processo} BETWEEN @{nameof(DBHorasTrabDicInfo.Processo)} AND @{nameof(DBHorasTrabDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Processo} = @{nameof(DBHorasTrabDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Processo} <= @{nameof(DBHorasTrabDicInfo.Processo)}_end");
-        }
-
-        cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Advogado}] = @{nameof(DBHorasTrabDicInfo.Advogado)}");
-        cWhere.Append(filtro.Funcionario <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Funcionario}] = @{nameof(DBHorasTrabDicInfo.Funcionario)}");
-        cWhere.Append(filtro.HrIni.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.HrIni}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.HrIni)}");
-        cWhere.Append(filtro.HrFim.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.HrFim}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.HrFim)}");
-        if (!filtro.Tempo.IsEmpty() && filtro.Tempo_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Tempo == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Tempo}] >= @{nameof(DBHorasTrabDicInfo.Tempo)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Tempo == decimal.MinValue && filtro.Tempo_end == decimal.MinValue) ? string.Empty : (!(filtro.Tempo == decimal.MinValue) && !(filtro.Tempo_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Tempo} BETWEEN @{nameof(DBHorasTrabDicInfo.Tempo)} AND @{nameof(DBHorasTrabDicInfo.Tempo)}_end" : !(filtro.Tempo == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Tempo} = @{nameof(DBHorasTrabDicInfo.Tempo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Tempo} <= @{nameof(DBHorasTrabDicInfo.Tempo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.Status} BETWEEN @{nameof(DBHorasTrabDicInfo.Status)} AND @{nameof(DBHorasTrabDicInfo.Status)}_end");
         }
 
-        if (!filtro.Valor.IsEmpty() && filtro.Valor_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Valor}] >= @{nameof(DBHorasTrabDicInfo.Valor)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Processo}] = @{nameof(DBHorasTrabDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Valor == decimal.MinValue && filtro.Valor_end == decimal.MinValue) ? string.Empty : (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Valor} BETWEEN @{nameof(DBHorasTrabDicInfo.Valor)} AND @{nameof(DBHorasTrabDicInfo.Valor)}_end" : !(filtro.Valor == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Valor} = @{nameof(DBHorasTrabDicInfo.Valor)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.Valor} <= @{nameof(DBHorasTrabDicInfo.Valor)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.Processo} BETWEEN @{nameof(DBHorasTrabDicInfo.Processo)} AND @{nameof(DBHorasTrabDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.OBS}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.OBS)}");
-        cWhere.Append(filtro.Anexo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Anexo}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.Anexo)}");
-        cWhere.Append(filtro.AnexoComp.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.AnexoComp}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.AnexoComp)}");
-        cWhere.Append(filtro.AnexoUNC.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.AnexoUNC}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.AnexoUNC)}");
-        cWhere.Append(filtro.Servico <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Servico}] = @{nameof(DBHorasTrabDicInfo.Servico)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Advogado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Advogado}] = @{nameof(DBHorasTrabDicInfo.Advogado)}");
+        cWhere.Append(filtro.Funcionario.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Funcionario}] = @{nameof(DBHorasTrabDicInfo.Funcionario)}");
+        cWhere.Append(filtro.HrIni.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.HrIni}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.HrIni)}");
+        cWhere.Append(filtro.HrFim.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.HrFim}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.HrFim)}");
+        if (!(filtro.Tempo == decimal.MinValue) && filtro.Tempo_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.CampoCodigo}] >= @{nameof(DBHorasTrabDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Tempo == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Tempo}] = @{nameof(DBHorasTrabDicInfo.Tempo)}");
         }
-        else
+        else if (!(filtro.Tempo == decimal.MinValue) && !(filtro.Tempo_end == decimal.MinValue))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.CampoCodigo} BETWEEN @{nameof(DBHorasTrabDicInfo.CampoCodigo)} AND @{nameof(DBHorasTrabDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.CampoCodigo} = @{nameof(DBHorasTrabDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBHorasTrabDicInfo.CampoCodigo} <= @{nameof(DBHorasTrabDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.Tempo} BETWEEN @{nameof(DBHorasTrabDicInfo.Tempo)} AND @{nameof(DBHorasTrabDicInfo.Tempo)}_end");
+        }
+
+        if (!(filtro.Valor == decimal.MinValue) && filtro.Valor_end == decimal.MinValue)
+        {
+            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Valor}] = @{nameof(DBHorasTrabDicInfo.Valor)}");
+        }
+        else if (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.Valor} BETWEEN @{nameof(DBHorasTrabDicInfo.Valor)} AND @{nameof(DBHorasTrabDicInfo.Valor)}_end");
+        }
+
+        cWhere.Append(filtro.OBS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.OBS}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.OBS)}");
+        cWhere.Append(filtro.Anexo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Anexo}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.Anexo)}");
+        cWhere.Append(filtro.AnexoComp.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.AnexoComp}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.AnexoComp)}");
+        cWhere.Append(filtro.AnexoUNC.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.AnexoUNC}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.AnexoUNC)}");
+        cWhere.Append(filtro.Servico.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.Servico}] = @{nameof(DBHorasTrabDicInfo.Servico)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBHorasTrabDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].[{DBHorasTrabDicInfo.CampoCodigo}] = @{nameof(DBHorasTrabDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBHorasTrabDicInfo.PTabelaNome}].{DBHorasTrabDicInfo.CampoCodigo} BETWEEN @{nameof(DBHorasTrabDicInfo.CampoCodigo)} AND @{nameof(DBHorasTrabDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -240,6 +240,16 @@ public partial class HorasTrabService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterHorasTrab? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterHorasTrab? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -255,7 +265,7 @@ public partial class HorasTrabService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-HorasTrab-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

@@ -133,7 +133,7 @@ public partial class DBGruposEmpresas
     {
         if (pFldFEMail)
             updateTool.Fields(DBGruposEmpresasDicInfo.EMail, m_FEMail, ETiposCampos.FString);
-        if (pFldFInativo)
+        if (pFldFInativo || updateTool.Insert)
             updateTool.Fields(DBGruposEmpresasDicInfo.Inativo, m_FInativo, ETiposCampos.FBoolean);
         if (pFldFOponente)
             updateTool.Fields(DBGruposEmpresasDicInfo.Oponente, m_FOponente, ETiposCampos.FNumber);
@@ -145,13 +145,14 @@ public partial class DBGruposEmpresas
             updateTool.Fields(DBGruposEmpresasDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
         if (pFldFIcone)
             updateTool.Fields(DBGruposEmpresasDicInfo.Icone, m_FIcone, ETiposCampos.FString);
-        if (pFldFDespesaUnificada)
+        if (pFldFDespesaUnificada || updateTool.Insert)
             updateTool.Fields(DBGruposEmpresasDicInfo.DespesaUnificada, m_FDespesaUnificada, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBGruposEmpresasDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_GruposEmpresas)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -175,4 +176,5 @@ public partial class DBGruposEmpresas
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

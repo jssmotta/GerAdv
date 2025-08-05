@@ -41,6 +41,7 @@ public static partial class ExtensionMethodStrings
 
     public static bool IsNão(this bool value) => !value;
     public static bool IsEmptyIDNumber(this int valueID) => valueID <= 0;
+    public static bool IsEmptyIDNumber(this long valueID) => valueID <= 0;
 
     private static string[] StartColors { get; } =
         [

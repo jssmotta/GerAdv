@@ -10,7 +10,7 @@ public partial interface INEPalavrasChavesReader
     NEPalavrasChavesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     NEPalavrasChavesResponse? Read(FNEPalavrasChaves dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     NEPalavrasChavesResponseAll? ReadAll(FNEPalavrasChaves dbRec, IDataRecord dr);
     NEPalavrasChavesResponseAll? ReadAll(SG.GerAdv.DBNEPalavrasChaves dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

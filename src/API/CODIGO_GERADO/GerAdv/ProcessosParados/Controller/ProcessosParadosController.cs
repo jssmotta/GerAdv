@@ -24,21 +24,21 @@ public partial class ProcessosParadosController(IProcessosParadosService process
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterProcessosParados filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessosParados filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ProcessosParados: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _processosparadosService.Filter(filtro, uri);
+        //_logger.Info("ProcessosParados: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _processosparadosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IActionResult> GetById(long id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         //_logger.Info("ProcessosParados: GetById called with id = {0}, {1}", id, uri);
         var result = await _processosparadosService.GetById(id, uri, token);
@@ -83,7 +83,7 @@ public partial class ProcessosParadosController(IProcessosParadosService process
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Delete([FromQuery] long id, [FromRoute, Required] string uri)
     {
         //_logger.Info("ProcessosParados: Delete called with id = {0}, {2}", id, uri);
         try

@@ -16,6 +16,8 @@ public partial class DBAgendaRepetirDiasODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAgendaRepetirDiasDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAgendaRepetirDiasDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

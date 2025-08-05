@@ -24,15 +24,15 @@ public partial class NEPalavrasChavesController(INEPalavrasChavesService nepalav
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterNEPalavrasChaves filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterNEPalavrasChaves filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("NEPalavrasChaves: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _nepalavraschavesService.Filter(filtro, uri);
+        //_logger.Info("NEPalavrasChaves: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _nepalavraschavesService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

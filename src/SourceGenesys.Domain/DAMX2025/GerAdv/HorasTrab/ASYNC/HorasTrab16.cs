@@ -133,7 +133,7 @@ public partial class DBHorasTrab
     {
         if (pFldFIDContatoCRM)
             updateTool.Fields(DBHorasTrabDicInfo.IDContatoCRM, m_FIDContatoCRM, ETiposCampos.FNumber);
-        if (pFldFHonorario)
+        if (pFldFHonorario || updateTool.Insert)
             updateTool.Fields(DBHorasTrabDicInfo.Honorario, m_FHonorario, ETiposCampos.FBoolean);
         if (pFldFIDAgenda)
             updateTool.Fields(DBHorasTrabDicInfo.IDAgenda, m_FIDAgenda, ETiposCampos.FNumber);
@@ -172,6 +172,7 @@ public partial class DBHorasTrab
     }
 
 #endif
+#if (!NOTSTORED_HorasTrab)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -195,4 +196,5 @@ public partial class DBHorasTrab
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

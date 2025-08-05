@@ -16,6 +16,8 @@ public partial class DBAnexamentoRegistrosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAnexamentoRegistrosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAnexamentoRegistrosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

@@ -100,7 +100,7 @@ public class DBToolWTableGuid
             LastError = ex.Message;
             oTrans.Rollback();
             if (--MaxReportError > 0)
-                GeneralSystemErrorTraper.GetError(ex, $"RollBack--{Table}--Sql:{cSql}");
+                throw new Exception($"RollBack--{Table}--Sql");
             return "";
         }
         return "OK";
@@ -150,7 +150,7 @@ public class DBToolWTableGuid
                     if (LastError.ContemUpper("PRIMARY KEY"))
                     {
                         if (--MaxReportError > 0)
-                            GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave Primária {Table}");
+                            throw new Exception($"Violação de Chave Primária {Table}");
                     }
                     return "ERROR";
                 }
@@ -162,7 +162,7 @@ public class DBToolWTableGuid
             oTrans.Rollback();
             LastError = ex.Message;
             if (--MaxReportError > 0)
-                GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave {Table}");
+                throw new Exception($"Violação de Chave {Table}");
             return string.Empty;
         }
         return "OK";

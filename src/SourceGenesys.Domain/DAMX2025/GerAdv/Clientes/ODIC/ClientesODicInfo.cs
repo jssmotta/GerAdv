@@ -16,6 +16,8 @@ public partial class DBClientesODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBClientesDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBClientesDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

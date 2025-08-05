@@ -64,7 +64,7 @@ public class ModelosDocumentosValidation : IModelosDocumentosValidation
 
     private async Task<bool> IsDuplicado(Models.ModelosDocumentos reg, IModelosDocumentosService service, string uri)
     {
-        var existingModelosDocumentos = (await service.Filter(new Filters.FilterModelosDocumentos { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingModelosDocumentos = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterModelosDocumentos { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingModelosDocumentos != null && existingModelosDocumentos.Id > 0 && existingModelosDocumentos.Id != reg.Id;
     }
 }

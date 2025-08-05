@@ -10,7 +10,7 @@ public partial interface IGruposEmpresasReader
     GruposEmpresasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GruposEmpresasResponse? Read(FGruposEmpresas dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     GruposEmpresasResponseAll? ReadAll(FGruposEmpresas dbRec, IDataRecord dr);
     GruposEmpresasResponseAll? ReadAll(SG.GerAdv.DBGruposEmpresas dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

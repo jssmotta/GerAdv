@@ -133,13 +133,14 @@ public partial class DBArea
     {
         if (pFldFDescricao)
             updateTool.Fields(DBAreaDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBAreaDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBAreaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Area)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -163,4 +164,5 @@ public partial class DBArea
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

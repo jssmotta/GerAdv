@@ -16,6 +16,8 @@ public partial class DBTipoOrigemSucumbenciaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBTipoOrigemSucumbenciaDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBTipoOrigemSucumbenciaDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

@@ -16,6 +16,8 @@ public partial class DBParteOponenteODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBParteOponenteDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBParteOponenteDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

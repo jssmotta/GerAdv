@@ -24,15 +24,15 @@ public partial class ParceriaProcController(IParceriaProcService parceriaprocSer
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterParceriaProc filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterParceriaProc filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ParceriaProc: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _parceriaprocService.Filter(filtro, uri);
+        //_logger.Info("ParceriaProc: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _parceriaprocService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

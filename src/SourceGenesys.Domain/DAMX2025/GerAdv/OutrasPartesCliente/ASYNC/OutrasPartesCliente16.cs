@@ -133,13 +133,13 @@ public partial class DBOutrasPartesCliente
     {
         if (pFldFNome)
             updateTool.Fields(DBOutrasPartesClienteDicInfo.Nome, m_FNome, ETiposCampos.FString);
-        if (pFldFTerceirizado)
+        if (pFldFTerceirizado || updateTool.Insert)
             updateTool.Fields(DBOutrasPartesClienteDicInfo.Terceirizado, m_FTerceirizado, ETiposCampos.FBoolean);
         if (pFldFClientePrincipal)
             updateTool.Fields(DBOutrasPartesClienteDicInfo.ClientePrincipal, m_FClientePrincipal, ETiposCampos.FNumber);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBOutrasPartesClienteDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBOutrasPartesClienteDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFDtNasc)
             updateTool.Fields(DBOutrasPartesClienteDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
@@ -176,6 +176,7 @@ public partial class DBOutrasPartesCliente
     }
 
 #endif
+#if (!NOTSTORED_OutrasPartesCliente)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -199,4 +200,5 @@ public partial class DBOutrasPartesCliente
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

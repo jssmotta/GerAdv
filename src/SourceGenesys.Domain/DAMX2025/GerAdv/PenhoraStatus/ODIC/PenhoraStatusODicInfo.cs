@@ -16,6 +16,8 @@ public partial class DBPenhoraStatusODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBPenhoraStatusDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBPenhoraStatusDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

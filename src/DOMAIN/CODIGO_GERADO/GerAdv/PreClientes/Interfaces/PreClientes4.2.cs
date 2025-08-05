@@ -10,7 +10,7 @@ public partial interface IPreClientesReader
     PreClientesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PreClientesResponse? Read(FPreClientes dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     PreClientesResponseAll? ReadAll(FPreClientes dbRec, IDataRecord dr);
     PreClientesResponseAll? ReadAll(SG.GerAdv.DBPreClientes dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

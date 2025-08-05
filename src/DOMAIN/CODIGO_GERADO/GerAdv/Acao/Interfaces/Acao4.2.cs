@@ -10,7 +10,7 @@ public partial interface IAcaoReader
     AcaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AcaoResponse? Read(FAcao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     AcaoResponseAll? ReadAll(FAcao dbRec, IDataRecord dr);
     AcaoResponseAll? ReadAll(SG.GerAdv.DBAcao dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

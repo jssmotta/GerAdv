@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoCompromissoService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoCompromisso filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoCompromisso filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Icone != int.MinValue)
@@ -46,37 +46,37 @@ public partial class TipoCompromissoService
             parameters.Add(new($"@{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Icone.IsEmpty() && filtro.Icone_end.IsEmpty())
+        if (!(filtro.Icone.IsEmptyX()) && filtro.Icone_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Icone <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Icone}] >= @{nameof(DBTipoCompromissoDicInfo.Icone)}");
+            cWhere.Append(filtro.Icone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Icone}] = @{nameof(DBTipoCompromissoDicInfo.Icone)}");
         }
-        else
+        else if (!(filtro.Icone.IsEmptyX()) && !(filtro.Icone_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Icone <= 0 && filtro.Icone_end <= 0) ? string.Empty : (!(filtro.Icone <= 0) && !(filtro.Icone_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTipoCompromissoDicInfo.Icone} BETWEEN @{nameof(DBTipoCompromissoDicInfo.Icone)} AND @{nameof(DBTipoCompromissoDicInfo.Icone)}_end" : !(filtro.Icone <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTipoCompromissoDicInfo.Icone} = @{nameof(DBTipoCompromissoDicInfo.Icone)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTipoCompromissoDicInfo.Icone} <= @{nameof(DBTipoCompromissoDicInfo.Icone)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].{DBTipoCompromissoDicInfo.Icone} BETWEEN @{nameof(DBTipoCompromissoDicInfo.Icone)} AND @{nameof(DBTipoCompromissoDicInfo.Icone)}_end");
         }
 
-        cWhere.Append(filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoCompromissoDicInfo.Descricao)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoCompromissoDicInfo.Descricao)}");
         cWhere.Append(filtro.Financeiro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.Financeiro}] = @{nameof(DBTipoCompromissoDicInfo.Financeiro)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoCompromissoDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoCompromissoDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}] >= @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}] = @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTipoCompromissoDicInfo.CampoCodigo} BETWEEN @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)} AND @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTipoCompromissoDicInfo.CampoCodigo} = @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTipoCompromissoDicInfo.CampoCodigo} <= @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoCompromissoDicInfo.PTabelaNome}].{DBTipoCompromissoDicInfo.CampoCodigo} BETWEEN @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)} AND @{nameof(DBTipoCompromissoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -85,6 +85,16 @@ public partial class TipoCompromissoService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterTipoCompromisso? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoCompromisso? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -100,7 +110,7 @@ public partial class TipoCompromissoService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-TipoCompromisso-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

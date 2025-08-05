@@ -24,15 +24,15 @@ public partial class ClientesSociosController(IClientesSociosService clientessoc
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterClientesSocios filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterClientesSocios filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ClientesSocios: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _clientessociosService.Filter(filtro, uri);
+        //_logger.Info("ClientesSocios: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _clientessociosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

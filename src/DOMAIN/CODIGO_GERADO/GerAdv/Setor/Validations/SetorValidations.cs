@@ -21,7 +21,7 @@ public class SetorValidation : ISetorValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var prepostosExists0 = await prepostosService.Filter(new Filters.FilterPrepostos { Setor = id }, uri);
+        var prepostosExists0 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Setor = id }, uri);
         if (prepostosExists0 != null && prepostosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
         return true;

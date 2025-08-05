@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IServicosService
 {
-    Task<IEnumerable<ServicosResponseAll>> Filter(Filters.FilterServicos filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ServicosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterServicos filter, [FromRoute, Required] string uri = "");
     Task<ServicosResponse?> AddAndUpdate(Models.Servicos regServicos, [FromRoute, Required] string uri = "");
     Task<ServicosResponse?> Validation(Models.Servicos regServicos, [FromRoute, Required] string uri = "");
     Task<ServicosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

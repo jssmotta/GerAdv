@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProDepositosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProDepositos filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProDepositos filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
@@ -56,46 +56,46 @@ public partial class ProDepositosService
             parameters.Add(new($"@{nameof(DBProDepositosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Processo}] >= @{nameof(DBProDepositosDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Processo}] = @{nameof(DBProDepositosDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Processo} BETWEEN @{nameof(DBProDepositosDicInfo.Processo)} AND @{nameof(DBProDepositosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Processo} = @{nameof(DBProDepositosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Processo} <= @{nameof(DBProDepositosDicInfo.Processo)}_end");
-        }
-
-        cWhere.Append(filtro.Fase <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Fase}] = @{nameof(DBProDepositosDicInfo.Fase)}");
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDepositosDicInfo.Data)}");
-        if (!filtro.Valor.IsEmpty() && filtro.Valor_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Valor}] >= @{nameof(DBProDepositosDicInfo.Valor)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Valor == decimal.MinValue && filtro.Valor_end == decimal.MinValue) ? string.Empty : (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Valor} BETWEEN @{nameof(DBProDepositosDicInfo.Valor)} AND @{nameof(DBProDepositosDicInfo.Valor)}_end" : !(filtro.Valor == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Valor} = @{nameof(DBProDepositosDicInfo.Valor)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.Valor} <= @{nameof(DBProDepositosDicInfo.Valor)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].{DBProDepositosDicInfo.Processo} BETWEEN @{nameof(DBProDepositosDicInfo.Processo)} AND @{nameof(DBProDepositosDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.TipoProDesposito <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.TipoProDesposito}] = @{nameof(DBProDepositosDicInfo.TipoProDesposito)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Fase.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Fase}] = @{nameof(DBProDepositosDicInfo.Fase)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDepositosDicInfo.Data)}");
+        if (!(filtro.Valor == decimal.MinValue) && filtro.Valor_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.CampoCodigo}] >= @{nameof(DBProDepositosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.Valor}] = @{nameof(DBProDepositosDicInfo.Valor)}");
         }
-        else
+        else if (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.CampoCodigo} BETWEEN @{nameof(DBProDepositosDicInfo.CampoCodigo)} AND @{nameof(DBProDepositosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.CampoCodigo} = @{nameof(DBProDepositosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDepositosDicInfo.CampoCodigo} <= @{nameof(DBProDepositosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].{DBProDepositosDicInfo.Valor} BETWEEN @{nameof(DBProDepositosDicInfo.Valor)} AND @{nameof(DBProDepositosDicInfo.Valor)}_end");
+        }
+
+        cWhere.Append(filtro.TipoProDesposito.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.TipoProDesposito}] = @{nameof(DBProDepositosDicInfo.TipoProDesposito)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].[{DBProDepositosDicInfo.CampoCodigo}] = @{nameof(DBProDepositosDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDepositosDicInfo.PTabelaNome}].{DBProDepositosDicInfo.CampoCodigo} BETWEEN @{nameof(DBProDepositosDicInfo.CampoCodigo)} AND @{nameof(DBProDepositosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -104,6 +104,16 @@ public partial class ProDepositosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterProDepositos? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDepositos? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -119,7 +129,7 @@ public partial class ProDepositosService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-ProDepositos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

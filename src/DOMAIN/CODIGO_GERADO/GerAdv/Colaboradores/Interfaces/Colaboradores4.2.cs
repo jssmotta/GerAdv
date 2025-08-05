@@ -10,7 +10,7 @@ public partial interface IColaboradoresReader
     ColaboradoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ColaboradoresResponse? Read(FColaboradores dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ColaboradoresResponseAll? ReadAll(FColaboradores dbRec, IDataRecord dr);
     ColaboradoresResponseAll? ReadAll(SG.GerAdv.DBColaboradores dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

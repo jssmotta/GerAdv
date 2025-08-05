@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class StatusTarefasService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterStatusTarefas filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterStatusTarefas filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -31,27 +31,27 @@ public partial class StatusTarefasService
             parameters.Add(new($"@{nameof(DBStatusTarefasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBStatusTarefasDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBStatusTarefasDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBStatusTarefasDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBStatusTarefasDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.CampoCodigo}] >= @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.CampoCodigo}] = @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBStatusTarefasDicInfo.CampoCodigo} BETWEEN @{nameof(DBStatusTarefasDicInfo.CampoCodigo)} AND @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBStatusTarefasDicInfo.CampoCodigo} = @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBStatusTarefasDicInfo.CampoCodigo} <= @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].{DBStatusTarefasDicInfo.CampoCodigo} BETWEEN @{nameof(DBStatusTarefasDicInfo.CampoCodigo)} AND @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -60,6 +60,16 @@ public partial class StatusTarefasService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterStatusTarefas? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterStatusTarefas? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -75,7 +85,7 @@ public partial class StatusTarefasService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-StatusTarefas-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

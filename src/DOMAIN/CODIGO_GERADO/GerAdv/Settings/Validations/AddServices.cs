@@ -26,7 +26,6 @@ public static class AddServices
         builder.Services.AddScoped<IAreaValidation, AreaValidation>();
         builder.Services.AddScoped<IAreasJusticaValidation, AreasJusticaValidation>();
         builder.Services.AddScoped<IAtividadesValidation, AtividadesValidation>();
-        builder.Services.AddScoped<IAuditor4KValidation, Auditor4KValidation>();
         builder.Services.AddScoped<IBensClassificacaoValidation, BensClassificacaoValidation>();
         builder.Services.AddScoped<IBensMateriaisValidation, BensMateriaisValidation>();
         builder.Services.AddScoped<ICargosValidation, CargosValidation>();

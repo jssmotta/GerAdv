@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProcessosObsReportService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessosObsReport filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessosObsReport filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Data))
@@ -51,45 +51,45 @@ public partial class ProcessosObsReportService
             parameters.Add(new($"@{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessosObsReportDicInfo.Data)}");
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessosObsReportDicInfo.Data)}");
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Processo}] >= @{nameof(DBProcessosObsReportDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Processo}] = @{nameof(DBProcessosObsReportDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Processo} BETWEEN @{nameof(DBProcessosObsReportDicInfo.Processo)} AND @{nameof(DBProcessosObsReportDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Processo} = @{nameof(DBProcessosObsReportDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Processo} <= @{nameof(DBProcessosObsReportDicInfo.Processo)}_end");
-        }
-
-        cWhere.Append(filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessosObsReportDicInfo.Observacao)}");
-        if (!filtro.Historico.IsEmpty() && filtro.Historico_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Historico <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Historico}] >= @{nameof(DBProcessosObsReportDicInfo.Historico)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Historico <= 0 && filtro.Historico_end <= 0) ? string.Empty : (!(filtro.Historico <= 0) && !(filtro.Historico_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Historico} BETWEEN @{nameof(DBProcessosObsReportDicInfo.Historico)} AND @{nameof(DBProcessosObsReportDicInfo.Historico)}_end" : !(filtro.Historico <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Historico} = @{nameof(DBProcessosObsReportDicInfo.Historico)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.Historico} <= @{nameof(DBProcessosObsReportDicInfo.Historico)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].{DBProcessosObsReportDicInfo.Processo} BETWEEN @{nameof(DBProcessosObsReportDicInfo.Processo)} AND @{nameof(DBProcessosObsReportDicInfo.Processo)}_end");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Observacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessosObsReportDicInfo.Observacao)}");
+        if (!(filtro.Historico.IsEmptyX()) && filtro.Historico_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.CampoCodigo}] >= @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Historico.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.Historico}] = @{nameof(DBProcessosObsReportDicInfo.Historico)}");
         }
-        else
+        else if (!(filtro.Historico.IsEmptyX()) && !(filtro.Historico_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.CampoCodigo} BETWEEN @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)} AND @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.CampoCodigo} = @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosObsReportDicInfo.CampoCodigo} <= @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].{DBProcessosObsReportDicInfo.Historico} BETWEEN @{nameof(DBProcessosObsReportDicInfo.Historico)} AND @{nameof(DBProcessosObsReportDicInfo.Historico)}_end");
+        }
+
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].[{DBProcessosObsReportDicInfo.CampoCodigo}] = @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosObsReportDicInfo.PTabelaNome}].{DBProcessosObsReportDicInfo.CampoCodigo} BETWEEN @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)} AND @{nameof(DBProcessosObsReportDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -98,6 +98,16 @@ public partial class ProcessosObsReportService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterProcessosObsReport? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProcessosObsReport? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -113,7 +123,7 @@ public partial class ProcessosObsReportService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-ProcessosObsReport-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

@@ -16,6 +16,8 @@ public partial class DBProcessOutputRequestODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProcessOutputRequestDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProcessOutputRequestDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

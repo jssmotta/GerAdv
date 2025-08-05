@@ -21,10 +21,10 @@ public class PrepostosValidation : IPrepostosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Preposto = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Preposto = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendaquemExists1 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Preposto = id }, uri);
+        var agendaquemExists1 = await agendaquemService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgendaQuem { Preposto = id }, uri);
         if (agendaquemExists1 != null && agendaquemExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.");
         return true;
@@ -36,7 +36,7 @@ public class PrepostosValidation : IPrepostosValidation
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
         if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
@@ -52,7 +52,7 @@ public class PrepostosValidation : IPrepostosValidation
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Pai != null && reg.Pai.Length > 50)
             throw new SGValidationException($"Pai deve ter no máximo 50 caracteres.");
@@ -124,9 +124,9 @@ public class PrepostosValidation : IPrepostosValidation
 
     private async Task<(bool, PrepostosResponseAll? )> IsCpfDuplicado(Models.Prepostos reg, IPrepostosService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingPrepostos = (await service.Filter(new Filters.FilterPrepostos { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingPrepostos = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingPrepostos != null && existingPrepostos.Id > 0 && existingPrepostos.Id != reg.Id, existingPrepostos);
     }
 }

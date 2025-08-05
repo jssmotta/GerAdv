@@ -24,15 +24,15 @@ public partial class TipoRecursoController(ITipoRecursoService tiporecursoServic
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoRecurso filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoRecurso filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoRecurso: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _tiporecursoService.Filter(filtro, uri);
+        //_logger.Info("TipoRecurso: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _tiporecursoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

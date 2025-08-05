@@ -10,7 +10,7 @@ public partial interface IPenhoraStatusReader
     PenhoraStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PenhoraStatusResponse? Read(FPenhoraStatus dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     PenhoraStatusResponseAll? ReadAll(FPenhoraStatus dbRec, IDataRecord dr);
     PenhoraStatusResponseAll? ReadAll(SG.GerAdv.DBPenhoraStatus dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

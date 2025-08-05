@@ -32,7 +32,7 @@ public class EnderecosValidation : IEnderecosValidation
             throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 30)
             throw new SGValidationException($"Bairro deve ter no máximo 30 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.OAB != null && reg.OAB.Length > 20)
             throw new SGValidationException($"OAB deve ter no máximo 20 caracteres.");

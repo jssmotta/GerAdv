@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProcessosObsReportService
 {
-    Task<IEnumerable<ProcessosObsReportResponseAll>> Filter(Filters.FilterProcessosObsReport filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProcessosObsReportResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessosObsReport filter, [FromRoute, Required] string uri = "");
     Task<ProcessosObsReportResponse?> AddAndUpdate(Models.ProcessosObsReport regProcessosObsReport, [FromRoute, Required] string uri = "");
     Task<ProcessosObsReportResponse?> Validation(Models.ProcessosObsReport regProcessosObsReport, [FromRoute, Required] string uri = "");
     Task<ProcessosObsReportResponse?> Delete(int id, [FromRoute, Required] string uri = "");

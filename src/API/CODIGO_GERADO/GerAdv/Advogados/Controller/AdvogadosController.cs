@@ -24,15 +24,15 @@ public partial class AdvogadosController(IAdvogadosService advogadosService) : C
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAdvogados filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAdvogados filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Advogados: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _advogadosService.Filter(filtro, uri);
+        //_logger.Info("Advogados: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _advogadosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

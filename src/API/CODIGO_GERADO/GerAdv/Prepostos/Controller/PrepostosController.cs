@@ -24,15 +24,15 @@ public partial class PrepostosController(IPrepostosService prepostosService) : C
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterPrepostos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterPrepostos filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Prepostos: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _prepostosService.Filter(filtro, uri);
+        //_logger.Info("Prepostos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _prepostosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

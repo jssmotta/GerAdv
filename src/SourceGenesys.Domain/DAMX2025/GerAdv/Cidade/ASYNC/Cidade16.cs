@@ -133,11 +133,11 @@ public partial class DBCidade
     {
         if (pFldFDDD)
             updateTool.Fields(DBCidadeDicInfo.DDD, m_FDDD, ETiposCampos.FString);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBCidadeDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
-        if (pFldFComarca)
+        if (pFldFComarca || updateTool.Insert)
             updateTool.Fields(DBCidadeDicInfo.Comarca, m_FComarca, ETiposCampos.FBoolean);
-        if (pFldFCapital)
+        if (pFldFCapital || updateTool.Insert)
             updateTool.Fields(DBCidadeDicInfo.Capital, m_FCapital, ETiposCampos.FBoolean);
         if (pFldFNome)
             updateTool.Fields(DBCidadeDicInfo.Nome, m_FNome, ETiposCampos.FString);
@@ -150,6 +150,7 @@ public partial class DBCidade
     }
 
 #endif
+#if (!NOTSTORED_Cidade)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -173,4 +174,5 @@ public partial class DBCidade
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

@@ -10,7 +10,7 @@ public partial interface IStatusInstanciaReader
     StatusInstanciaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     StatusInstanciaResponse? Read(FStatusInstancia dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     StatusInstanciaResponseAll? ReadAll(FStatusInstancia dbRec, IDataRecord dr);
     StatusInstanciaResponseAll? ReadAll(SG.GerAdv.DBStatusInstancia dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

@@ -138,6 +138,7 @@ public partial class DBProPartes
     }
 
 #endif
+#if (!NOTSTORED_ProPartes)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -149,4 +150,5 @@ public partial class DBProPartes
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

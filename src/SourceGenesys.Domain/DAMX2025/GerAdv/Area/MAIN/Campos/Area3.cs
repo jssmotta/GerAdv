@@ -48,10 +48,16 @@ public partial class DBArea
     public string IDtAtuDataX_DataHora() => MDtAtuDataX_DataHora;
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     public string IMDtCadDataX_DataHora() => MDtAtuDataX_DataHora;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaName() => PTabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => PTabelaPrefixo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();

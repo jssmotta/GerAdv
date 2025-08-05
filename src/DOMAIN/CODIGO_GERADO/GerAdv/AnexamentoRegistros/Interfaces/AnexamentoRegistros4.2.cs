@@ -10,7 +10,7 @@ public partial interface IAnexamentoRegistrosReader
     AnexamentoRegistrosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AnexamentoRegistrosResponse? Read(FAnexamentoRegistros dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     AnexamentoRegistrosResponseAll? ReadAll(FAnexamentoRegistros dbRec, IDataRecord dr);
     AnexamentoRegistrosResponseAll? ReadAll(SG.GerAdv.DBAnexamentoRegistros dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

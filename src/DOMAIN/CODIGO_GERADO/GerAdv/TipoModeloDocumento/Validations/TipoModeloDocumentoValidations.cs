@@ -21,7 +21,7 @@ public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var modelosdocumentosExists0 = await modelosdocumentosService.Filter(new Filters.FilterModelosDocumentos { TipoModeloDocumento = id }, uri);
+        var modelosdocumentosExists0 = await modelosdocumentosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterModelosDocumentos { TipoModeloDocumento = id }, uri);
         if (modelosdocumentosExists0 != null && modelosdocumentosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Modelos Documentos associados a ele.");
         return true;
@@ -52,7 +52,7 @@ public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
 
     private async Task<bool> IsDuplicado(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, string uri)
     {
-        var existingTipoModeloDocumento = (await service.Filter(new Filters.FilterTipoModeloDocumento { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingTipoModeloDocumento = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoModeloDocumento { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingTipoModeloDocumento != null && existingTipoModeloDocumento.Id > 0 && existingTipoModeloDocumento.Id != reg.Id;
     }
 }

@@ -10,7 +10,7 @@ public partial interface IGUTAtividadesReader
     GUTAtividadesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GUTAtividadesResponse? Read(FGUTAtividades dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     GUTAtividadesResponseAll? ReadAll(FGUTAtividades dbRec, IDataRecord dr);
     GUTAtividadesResponseAll? ReadAll(SG.GerAdv.DBGUTAtividades dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

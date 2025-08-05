@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IOponentesService
 {
-    Task<IEnumerable<OponentesResponseAll>> Filter(Filters.FilterOponentes filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<OponentesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOponentes filter, [FromRoute, Required] string uri = "");
     Task<OponentesResponse?> AddAndUpdate(Models.Oponentes regOponentes, [FromRoute, Required] string uri = "");
     Task<OponentesResponse?> Validation(Models.Oponentes regOponentes, [FromRoute, Required] string uri = "");
     Task<OponentesResponse?> Delete(int id, [FromRoute, Required] string uri = "");

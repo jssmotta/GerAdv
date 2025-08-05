@@ -16,6 +16,8 @@ public partial class DBProcessosParadosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProcessosParadosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "long";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProcessosParadosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

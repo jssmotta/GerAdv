@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IDadosProcuracaoService
 {
-    Task<IEnumerable<DadosProcuracaoResponseAll>> Filter(Filters.FilterDadosProcuracao filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<DadosProcuracaoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterDadosProcuracao filter, [FromRoute, Required] string uri = "");
     Task<DadosProcuracaoResponse?> AddAndUpdate(Models.DadosProcuracao regDadosProcuracao, [FromRoute, Required] string uri = "");
     Task<DadosProcuracaoResponse?> Validation(Models.DadosProcuracao regDadosProcuracao, [FromRoute, Required] string uri = "");
     Task<DadosProcuracaoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

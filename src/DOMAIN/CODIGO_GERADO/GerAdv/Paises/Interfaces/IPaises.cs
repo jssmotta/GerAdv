@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IPaisesService
 {
-    Task<IEnumerable<PaisesResponseAll>> Filter(Filters.FilterPaises filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<PaisesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterPaises filter, [FromRoute, Required] string uri = "");
     Task<PaisesResponse?> AddAndUpdate(Models.Paises regPaises, [FromRoute, Required] string uri = "");
     Task<PaisesResponse?> Validation(Models.Paises regPaises, [FromRoute, Required] string uri = "");
     Task<PaisesResponse?> Delete(int id, [FromRoute, Required] string uri = "");

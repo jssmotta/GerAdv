@@ -10,7 +10,7 @@ public partial interface IDivisaoTribunalReader
     DivisaoTribunalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     DivisaoTribunalResponseAll? ReadAll(FDivisaoTribunal dbRec, IDataRecord dr);
     DivisaoTribunalResponseAll? ReadAll(SG.GerAdv.DBDivisaoTribunal dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

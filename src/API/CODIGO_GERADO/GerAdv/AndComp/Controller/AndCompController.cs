@@ -24,15 +24,15 @@ public partial class AndCompController(IAndCompService andcompService) : Control
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAndComp filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAndComp filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("AndComp: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _andcompService.Filter(filtro, uri);
+        //_logger.Info("AndComp: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _andcompService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

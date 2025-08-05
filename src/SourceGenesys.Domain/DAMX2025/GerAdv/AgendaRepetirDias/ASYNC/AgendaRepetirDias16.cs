@@ -142,6 +142,7 @@ public partial class DBAgendaRepetirDias
     }
 
 #endif
+#if (!NOTSTORED_AgendaRepetirDias)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -153,4 +154,5 @@ public partial class DBAgendaRepetirDias
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

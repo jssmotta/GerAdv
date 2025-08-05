@@ -24,15 +24,15 @@ public partial class BensClassificacaoController(IBensClassificacaoService bensc
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterBensClassificacao filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterBensClassificacao filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("BensClassificacao: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _bensclassificacaoService.Filter(filtro, uri);
+        //_logger.Info("BensClassificacao: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _bensclassificacaoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

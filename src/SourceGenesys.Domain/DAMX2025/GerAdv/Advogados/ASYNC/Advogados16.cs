@@ -141,13 +141,13 @@ public partial class DBAdvogados
             updateTool.Fields(DBAdvogadosDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFRG)
             updateTool.Fields(DBAdvogadosDicInfo.RG, m_FRG, ETiposCampos.FString);
-        if (pFldFCasa)
+        if (pFldFCasa || updateTool.Insert)
             updateTool.Fields(DBAdvogadosDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
         if (pFldFNomeMae)
             updateTool.Fields(DBAdvogadosDicInfo.NomeMae, m_FNomeMae, ETiposCampos.FString);
         if (pFldFEscritorio)
             updateTool.Fields(DBAdvogadosDicInfo.Escritorio, m_FEscritorio, ETiposCampos.FNumber);
-        if (pFldFEstagiario)
+        if (pFldFEstagiario || updateTool.Insert)
             updateTool.Fields(DBAdvogadosDicInfo.Estagiario, m_FEstagiario, ETiposCampos.FBoolean);
         if (pFldFOAB)
             updateTool.Fields(DBAdvogadosDicInfo.OAB, m_FOAB, ETiposCampos.FString);
@@ -159,7 +159,7 @@ public partial class DBAdvogados
             updateTool.Fields(DBAdvogadosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
         if (pFldFCEP)
             updateTool.Fields(DBAdvogadosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBAdvogadosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFBairro)
             updateTool.Fields(DBAdvogadosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
@@ -195,17 +195,18 @@ public partial class DBAdvogados
             updateTool.Fields(DBAdvogadosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
         if (pFldFContaBancaria)
             updateTool.Fields(DBAdvogadosDicInfo.ContaBancaria, m_FContaBancaria, ETiposCampos.FString);
-        if (pFldFParcTop)
+        if (pFldFParcTop || updateTool.Insert)
             updateTool.Fields(DBAdvogadosDicInfo.ParcTop, m_FParcTop, ETiposCampos.FBoolean);
         if (pFldFClass)
             updateTool.Fields(DBAdvogadosDicInfo.Class, m_FClass, ETiposCampos.FString);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBAdvogadosDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBAdvogadosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Advogados)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -229,4 +230,5 @@ public partial class DBAdvogados
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

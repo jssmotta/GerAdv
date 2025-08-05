@@ -138,6 +138,7 @@ public partial class DBSetor
     }
 
 #endif
+#if (!NOTSTORED_Setor)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -161,4 +162,5 @@ public partial class DBSetor
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

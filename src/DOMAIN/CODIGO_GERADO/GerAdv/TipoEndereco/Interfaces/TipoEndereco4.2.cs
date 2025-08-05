@@ -10,7 +10,7 @@ public partial interface ITipoEnderecoReader
     TipoEnderecoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TipoEnderecoResponse? Read(FTipoEndereco dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     TipoEnderecoResponseAll? ReadAll(FTipoEndereco dbRec, IDataRecord dr);
     TipoEnderecoResponseAll? ReadAll(SG.GerAdv.DBTipoEndereco dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

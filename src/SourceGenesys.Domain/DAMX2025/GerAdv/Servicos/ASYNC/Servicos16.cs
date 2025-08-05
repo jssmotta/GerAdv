@@ -131,17 +131,18 @@ public partial class DBServicos
     private bool HasAnyFieldChanged() => pFldFCobrar || pFldFDescricao || pFldFBasico || pFldFGUID;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFCobrar)
+        if (pFldFCobrar || updateTool.Insert)
             updateTool.Fields(DBServicosDicInfo.Cobrar, m_FCobrar, ETiposCampos.FBoolean);
         if (pFldFDescricao)
             updateTool.Fields(DBServicosDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
-        if (pFldFBasico)
+        if (pFldFBasico || updateTool.Insert)
             updateTool.Fields(DBServicosDicInfo.Basico, m_FBasico, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBServicosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Servicos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -165,4 +166,5 @@ public partial class DBServicos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

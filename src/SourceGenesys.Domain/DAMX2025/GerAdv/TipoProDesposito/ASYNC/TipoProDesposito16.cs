@@ -136,6 +136,7 @@ public partial class DBTipoProDesposito
     }
 
 #endif
+#if (!NOTSTORED_TipoProDesposito)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -147,4 +148,5 @@ public partial class DBTipoProDesposito
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

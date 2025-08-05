@@ -136,7 +136,6 @@ public partial class DBAgendaRelatorio
             throw new InvalidOperationException("Este registro não pode ser excluído, pois está vinculado a outros registros.");
         }
     }
-
 #if (!NOTSTORED_AgendaRelatorio)
 
     // Helper methods
@@ -169,15 +168,24 @@ if (pFldFxxxNomeArea) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeArea, m_
     }
 
 #endif
+#if (!NOTSTORED_AgendaRelatorio)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
+    
+         
     }
 
-    private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection oCnn, CancellationToken cancellationToken)
+    private async Task<int> GravaNewIdAsync(
+        DBToolWTable32Async updateTool,
+        int insertId,
+        MsiSqlConnection oCnn,
+        CancellationToken cancellationToken)
     {
         ID = insertId;
         updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
+
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

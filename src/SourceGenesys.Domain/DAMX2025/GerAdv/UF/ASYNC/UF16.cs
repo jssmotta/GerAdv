@@ -137,7 +137,7 @@ public partial class DBUF
             updateTool.Fields(DBUFDicInfo.ID, m_FID, ETiposCampos.FString);
         if (pFldFPais)
             updateTool.Fields(DBUFDicInfo.Pais, m_FPais, ETiposCampos.FNumber);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBUFDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
         if (pFldFDescricao)
             updateTool.Fields(DBUFDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
@@ -146,6 +146,7 @@ public partial class DBUF
     }
 
 #endif
+#if (!NOTSTORED_UF)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -169,4 +170,5 @@ public partial class DBUF
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

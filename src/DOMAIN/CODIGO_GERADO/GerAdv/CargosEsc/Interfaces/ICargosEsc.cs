@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ICargosEscService
 {
-    Task<IEnumerable<CargosEscResponseAll>> Filter(Filters.FilterCargosEsc filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<CargosEscResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterCargosEsc filter, [FromRoute, Required] string uri = "");
     Task<CargosEscResponse?> AddAndUpdate(Models.CargosEsc regCargosEsc, [FromRoute, Required] string uri = "");
     Task<CargosEscResponse?> Validation(Models.CargosEsc regCargosEsc, [FromRoute, Required] string uri = "");
     Task<CargosEscResponse?> Delete(int id, [FromRoute, Required] string uri = "");

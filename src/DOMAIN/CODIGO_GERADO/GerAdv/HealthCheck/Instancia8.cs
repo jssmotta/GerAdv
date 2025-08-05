@@ -21,7 +21,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
                     {
                         if (DBInstanciaDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(insCodigo) FROM {"Instancia".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(insCodigo) FROM {"Instancia".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA,insGUID FROM {"Instancia".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA,insGUID FROM {"Instancia".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Instancia successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Instancia successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

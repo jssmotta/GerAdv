@@ -136,7 +136,6 @@ public partial class DBAgendaSemana
             throw new InvalidOperationException("Este registro não pode ser excluído, pois está vinculado a outros registros.");
         }
     }
-
 #if (!NOTSTORED_AgendaSemana)
 
     // Helper methods
@@ -167,9 +166,9 @@ if (pFldFAdvogado) updateTool.Fields(DBAgendaSemanaDicInfo.Advogado, m_FAdvogado
 if (pFldFHora) updateTool.Fields(DBAgendaSemanaDicInfo.Hora, m_FHora, ETiposCampos.FDate);
 if (pFldFTipoCompromisso) updateTool.Fields(DBAgendaSemanaDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumber);
 if (pFldFCompromisso) updateTool.Fields(DBAgendaSemanaDicInfo.Compromisso, m_FCompromisso, ETiposCampos.FString);
-if (pFldFConcluido) updateTool.Fields(DBAgendaSemanaDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
-if (pFldFLiberado) updateTool.Fields(DBAgendaSemanaDicInfo.Liberado, m_FLiberado, ETiposCampos.FBoolean);
-if (pFldFImportante) updateTool.Fields(DBAgendaSemanaDicInfo.Importante, m_FImportante, ETiposCampos.FBoolean);
+if (pFldFConcluido || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
+if (pFldFLiberado || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Liberado, m_FLiberado, ETiposCampos.FBoolean);
+if (pFldFImportante || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Importante, m_FImportante, ETiposCampos.FBoolean);
 if (pFldFHoraFinal) updateTool.Fields(DBAgendaSemanaDicInfo.HoraFinal, m_FHoraFinal, ETiposCampos.FDate);
 if (pFldFNome) updateTool.Fields(DBAgendaSemanaDicInfo.Nome, m_FNome, ETiposCampos.FString);
 if (pFldFCliente) updateTool.Fields(DBAgendaSemanaDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
@@ -179,15 +178,24 @@ if (pFldFTipo) updateTool.Fields(DBAgendaSemanaDicInfo.Tipo, m_FTipo, ETiposCamp
     }
 
 #endif
+#if (!NOTSTORED_AgendaSemana)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
+    
+         
     }
 
-    private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection oCnn, CancellationToken cancellationToken)
+    private async Task<int> GravaNewIdAsync(
+        DBToolWTable32Async updateTool,
+        int insertId,
+        MsiSqlConnection oCnn,
+        CancellationToken cancellationToken)
     {
         ID = insertId;
         updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
+
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

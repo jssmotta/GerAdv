@@ -10,7 +10,7 @@ public partial interface IEnderecoSistemaReader
     EnderecoSistemaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EnderecoSistemaResponse? Read(FEnderecoSistema dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     EnderecoSistemaResponseAll? ReadAll(FEnderecoSistema dbRec, IDataRecord dr);
     EnderecoSistemaResponseAll? ReadAll(SG.GerAdv.DBEnderecoSistema dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

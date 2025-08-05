@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProDepositosService
 {
-    Task<IEnumerable<ProDepositosResponseAll>> Filter(Filters.FilterProDepositos filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProDepositosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProDepositos filter, [FromRoute, Required] string uri = "");
     Task<ProDepositosResponse?> AddAndUpdate(Models.ProDepositos regProDepositos, [FromRoute, Required] string uri = "");
     Task<ProDepositosResponse?> Validation(Models.ProDepositos regProDepositos, [FromRoute, Required] string uri = "");
     Task<ProDepositosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBProcessosParados
 {
-    public int ID { get; set; }
+    public long ID { get; set; }
     public int FProcesso { get; set; }
     public int FSemana { get; set; }
     public int FAno { get; set; }

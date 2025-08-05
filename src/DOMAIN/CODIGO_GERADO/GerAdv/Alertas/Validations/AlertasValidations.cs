@@ -21,7 +21,7 @@ public class AlertasValidation : IAlertasValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var alertasenviadosExists0 = await alertasenviadosService.Filter(new Filters.FilterAlertasEnviados { Alerta = id }, uri);
+        var alertasenviadosExists0 = await alertasenviadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAlertasEnviados { Alerta = id }, uri);
         if (alertasenviadosExists0 != null && alertasenviadosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Alertas Enviados associados a ele.");
         return true;

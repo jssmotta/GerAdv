@@ -16,6 +16,8 @@ public partial class DBEventoPrazoAgendaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBEventoPrazoAgendaDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBEventoPrazoAgendaDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

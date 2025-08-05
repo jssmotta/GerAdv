@@ -21,10 +21,10 @@ public class FuncaoValidation : IFuncaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var funcionariosExists0 = await funcionariosService.Filter(new Filters.FilterFuncionarios { Funcao = id }, uri);
+        var funcionariosExists0 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Funcao = id }, uri);
         if (funcionariosExists0 != null && funcionariosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
-        var prepostosExists1 = await prepostosService.Filter(new Filters.FilterPrepostos { Funcao = id }, uri);
+        var prepostosExists1 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Funcao = id }, uri);
         if (prepostosExists1 != null && prepostosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
         return true;

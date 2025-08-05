@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class BensClassificacaoService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterBensClassificacao filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterBensClassificacao filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -31,27 +31,27 @@ public partial class BensClassificacaoService
             parameters.Add(new($"@{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensClassificacaoDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensClassificacaoDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensClassificacaoDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensClassificacaoDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.CampoCodigo}] >= @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].[{DBBensClassificacaoDicInfo.CampoCodigo}] = @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensClassificacaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)} AND @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensClassificacaoDicInfo.CampoCodigo} = @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensClassificacaoDicInfo.CampoCodigo} <= @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensClassificacaoDicInfo.PTabelaNome}].{DBBensClassificacaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)} AND @{nameof(DBBensClassificacaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -60,6 +60,16 @@ public partial class BensClassificacaoService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterBensClassificacao? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterBensClassificacao? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -75,7 +85,7 @@ public partial class BensClassificacaoService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-BensClassificacao-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

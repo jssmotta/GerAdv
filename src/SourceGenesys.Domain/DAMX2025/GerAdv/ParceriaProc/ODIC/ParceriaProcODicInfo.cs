@@ -16,6 +16,8 @@ public partial class DBParceriaProcODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBParceriaProcDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBParceriaProcDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

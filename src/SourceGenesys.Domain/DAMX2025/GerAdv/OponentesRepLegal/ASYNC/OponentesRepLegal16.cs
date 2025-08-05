@@ -137,7 +137,7 @@ public partial class DBOponentesRepLegal
             updateTool.Fields(DBOponentesRepLegalDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFOponente)
             updateTool.Fields(DBOponentesRepLegalDicInfo.Oponente, m_FOponente, ETiposCampos.FNumber);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBOponentesRepLegalDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFCPF)
             updateTool.Fields(DBOponentesRepLegalDicInfo.CPF, m_FCPF, ETiposCampos.FString);
@@ -162,6 +162,7 @@ public partial class DBOponentesRepLegal
     }
 
 #endif
+#if (!NOTSTORED_OponentesRepLegal)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -185,4 +186,5 @@ public partial class DBOponentesRepLegal
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

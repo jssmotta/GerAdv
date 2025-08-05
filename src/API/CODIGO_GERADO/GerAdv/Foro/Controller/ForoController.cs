@@ -24,15 +24,15 @@ public partial class ForoController(IForoService foroService) : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterForo filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterForo filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Foro: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _foroService.Filter(filtro, uri);
+        //_logger.Info("Foro: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _foroService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

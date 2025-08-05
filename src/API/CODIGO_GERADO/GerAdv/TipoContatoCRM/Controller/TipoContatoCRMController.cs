@@ -24,15 +24,15 @@ public partial class TipoContatoCRMController(ITipoContatoCRMService tipocontato
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoContatoCRM filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoContatoCRM filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoContatoCRM: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _tipocontatocrmService.Filter(filtro, uri);
+        //_logger.Info("TipoContatoCRM: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _tipocontatocrmService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

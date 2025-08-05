@@ -21,7 +21,7 @@ public class FornecedoresValidation : IFornecedoresValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var bensmateriaisExists0 = await bensmateriaisService.Filter(new Filters.FilterBensMateriais { Fornecedor = id }, uri);
+        var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { Fornecedor = id }, uri);
         if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.");
         return true;
@@ -31,11 +31,11 @@ public class FornecedoresValidation : IFornecedoresValidation
     {
         if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
         if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
@@ -43,7 +43,7 @@ public class FornecedoresValidation : IFornecedoresValidation
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Site != null && reg.Site.Length > 150)
             throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
@@ -93,17 +93,17 @@ public class FornecedoresValidation : IFornecedoresValidation
 
     private async Task<bool> IsCnpjDuplicado(Models.Fornecedores reg, IFornecedoresService service, string uri)
     {
-        if (reg.CNPJ.Length == 0)
+        if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingFornecedores = (await service.Filter(new Filters.FilterFornecedores { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
+        var existingFornecedores = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFornecedores { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingFornecedores != null && existingFornecedores.Id > 0 && existingFornecedores.Id != reg.Id;
     }
 
     private async Task<(bool, FornecedoresResponseAll? )> IsCpfDuplicado(Models.Fornecedores reg, IFornecedoresService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingFornecedores = (await service.Filter(new Filters.FilterFornecedores { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingFornecedores = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFornecedores { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingFornecedores != null && existingFornecedores.Id > 0 && existingFornecedores.Id != reg.Id, existingFornecedores);
     }
 }

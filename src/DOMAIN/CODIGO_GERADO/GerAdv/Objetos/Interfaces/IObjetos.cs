@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IObjetosService
 {
-    Task<IEnumerable<ObjetosResponseAll>> Filter(Filters.FilterObjetos filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ObjetosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterObjetos filter, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> AddAndUpdate(Models.Objetos regObjetos, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> Validation(Models.Objetos regObjetos, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IGUTTipoService
 {
-    Task<IEnumerable<GUTTipoResponseAll>> Filter(Filters.FilterGUTTipo filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<GUTTipoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTTipo filter, [FromRoute, Required] string uri = "");
     Task<GUTTipoResponse?> AddAndUpdate(Models.GUTTipo regGUTTipo, [FromRoute, Required] string uri = "");
     Task<GUTTipoResponse?> Validation(Models.GUTTipo regGUTTipo, [FromRoute, Required] string uri = "");
     Task<GUTTipoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

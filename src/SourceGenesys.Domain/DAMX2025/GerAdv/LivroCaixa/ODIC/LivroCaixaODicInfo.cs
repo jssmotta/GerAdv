@@ -16,6 +16,8 @@ public partial class DBLivroCaixaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBLivroCaixaDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBLivroCaixaDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

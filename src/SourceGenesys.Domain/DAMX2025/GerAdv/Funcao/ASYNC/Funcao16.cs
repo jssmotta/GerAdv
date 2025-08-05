@@ -136,6 +136,7 @@ public partial class DBFuncao
     }
 
 #endif
+#if (!NOTSTORED_Funcao)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -159,4 +160,5 @@ public partial class DBFuncao
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

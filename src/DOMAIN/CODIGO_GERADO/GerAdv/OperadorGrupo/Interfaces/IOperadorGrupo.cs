@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IOperadorGrupoService
 {
-    Task<IEnumerable<OperadorGrupoResponseAll>> Filter(Filters.FilterOperadorGrupo filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<OperadorGrupoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOperadorGrupo filter, [FromRoute, Required] string uri = "");
     Task<OperadorGrupoResponse?> AddAndUpdate(Models.OperadorGrupo regOperadorGrupo, [FromRoute, Required] string uri = "");
     Task<OperadorGrupoResponse?> Validation(Models.OperadorGrupo regOperadorGrupo, [FromRoute, Required] string uri = "");
     Task<OperadorGrupoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

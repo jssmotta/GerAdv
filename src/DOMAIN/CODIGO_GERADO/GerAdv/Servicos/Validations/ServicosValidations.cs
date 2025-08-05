@@ -21,7 +21,7 @@ public class ServicosValidation : IServicosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var horastrabExists0 = await horastrabService.Filter(new Filters.FilterHorasTrab { Servico = id }, uri);
+        var horastrabExists0 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Servico = id }, uri);
         if (horastrabExists0 != null && horastrabExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
         return true;

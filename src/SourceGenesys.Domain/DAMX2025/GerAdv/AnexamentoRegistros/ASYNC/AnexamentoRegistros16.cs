@@ -146,6 +146,7 @@ public partial class DBAnexamentoRegistros
     }
 
 #endif
+#if (!NOTSTORED_AnexamentoRegistros)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -169,4 +170,5 @@ public partial class DBAnexamentoRegistros
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

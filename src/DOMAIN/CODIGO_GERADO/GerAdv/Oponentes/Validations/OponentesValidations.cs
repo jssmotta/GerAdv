@@ -21,10 +21,10 @@ public class OponentesValidation : IOponentesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gruposempresasExists0 = await gruposempresasService.Filter(new Filters.FilterGruposEmpresas { Oponente = id }, uri);
+        var gruposempresasExists0 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Oponente = id }, uri);
         if (gruposempresasExists0 != null && gruposempresasExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.");
-        var oponentesreplegalExists1 = await oponentesreplegalService.Filter(new Filters.FilterOponentesRepLegal { Oponente = id }, uri);
+        var oponentesreplegalExists1 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Oponente = id }, uri);
         if (oponentesreplegalExists1 != null && oponentesreplegalExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Oponentes Rep Legal associados a ele.");
         return true;
@@ -42,17 +42,17 @@ public class OponentesValidation : IOponentesValidation
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
         if (reg.PIS != null && reg.PIS.Length > 20)
             throw new SGValidationException($"PIS deve ter no máximo 20 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
         if (reg.RG != null && reg.RG.Length > 12)
             throw new SGValidationException($"RG deve ter no máximo 12 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.Endereco != null && reg.Endereco.Length > 80)
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.InscEst != null && reg.InscEst.Length > 15)
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
@@ -104,17 +104,17 @@ public class OponentesValidation : IOponentesValidation
 
     private async Task<bool> IsCnpjDuplicado(Models.Oponentes reg, IOponentesService service, string uri)
     {
-        if (reg.CNPJ.Length == 0)
+        if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingOponentes = (await service.Filter(new Filters.FilterOponentes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
+        var existingOponentes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingOponentes != null && existingOponentes.Id > 0 && existingOponentes.Id != reg.Id;
     }
 
     private async Task<(bool, OponentesResponseAll? )> IsCpfDuplicado(Models.Oponentes reg, IOponentesService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingOponentes = (await service.Filter(new Filters.FilterOponentes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingOponentes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingOponentes != null && existingOponentes.Id > 0 && existingOponentes.Id != reg.Id, existingOponentes);
     }
 }

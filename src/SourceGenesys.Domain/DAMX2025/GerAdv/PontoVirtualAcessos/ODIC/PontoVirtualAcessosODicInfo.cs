@@ -16,6 +16,8 @@ public partial class DBPontoVirtualAcessosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBPontoVirtualAcessosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBPontoVirtualAcessosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GraphService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGraph filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGraph filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Tabela))
@@ -41,36 +41,36 @@ public partial class GraphService
             parameters.Add(new($"@{nameof(DBGraphDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Tabela.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.Tabela}]  {DevourerConsts.MsiCollate} like @{nameof(DBGraphDicInfo.Tabela)}");
-        if (!filtro.TabelaId.IsEmpty() && filtro.TabelaId_end.IsEmpty())
+        cWhere.Append(filtro.Tabela.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.Tabela}]  {DevourerConsts.MsiCollate} like @{nameof(DBGraphDicInfo.Tabela)}");
+        if (!(filtro.TabelaId.IsEmptyX()) && filtro.TabelaId_end.IsEmptyX())
         {
-            cWhere.Append(filtro.TabelaId <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.TabelaId}] >= @{nameof(DBGraphDicInfo.TabelaId)}");
+            cWhere.Append(filtro.TabelaId.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.TabelaId}] = @{nameof(DBGraphDicInfo.TabelaId)}");
         }
-        else
+        else if (!(filtro.TabelaId.IsEmptyX()) && !(filtro.TabelaId_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.TabelaId <= 0 && filtro.TabelaId_end <= 0) ? string.Empty : (!(filtro.TabelaId <= 0) && !(filtro.TabelaId_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGraphDicInfo.TabelaId} BETWEEN @{nameof(DBGraphDicInfo.TabelaId)} AND @{nameof(DBGraphDicInfo.TabelaId)}_end" : !(filtro.TabelaId <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGraphDicInfo.TabelaId} = @{nameof(DBGraphDicInfo.TabelaId)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGraphDicInfo.TabelaId} <= @{nameof(DBGraphDicInfo.TabelaId)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].{DBGraphDicInfo.TabelaId} BETWEEN @{nameof(DBGraphDicInfo.TabelaId)} AND @{nameof(DBGraphDicInfo.TabelaId)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGraphDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGraphDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.CampoCodigo}] >= @{nameof(DBGraphDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].[{DBGraphDicInfo.CampoCodigo}] = @{nameof(DBGraphDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGraphDicInfo.CampoCodigo} BETWEEN @{nameof(DBGraphDicInfo.CampoCodigo)} AND @{nameof(DBGraphDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGraphDicInfo.CampoCodigo} = @{nameof(DBGraphDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGraphDicInfo.CampoCodigo} <= @{nameof(DBGraphDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGraphDicInfo.PTabelaNome}].{DBGraphDicInfo.CampoCodigo} BETWEEN @{nameof(DBGraphDicInfo.CampoCodigo)} AND @{nameof(DBGraphDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -79,6 +79,16 @@ public partial class GraphService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterGraph? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGraph? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -94,7 +104,7 @@ public partial class GraphService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Graph-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

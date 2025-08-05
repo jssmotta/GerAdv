@@ -10,7 +10,7 @@ public partial interface IOperadorEMailPopupReader
     OperadorEMailPopupResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadorEMailPopupResponse? Read(FOperadorEMailPopup dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     OperadorEMailPopupResponseAll? ReadAll(FOperadorEMailPopup dbRec, IDataRecord dr);
     OperadorEMailPopupResponseAll? ReadAll(SG.GerAdv.DBOperadorEMailPopup dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

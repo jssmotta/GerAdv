@@ -21,7 +21,7 @@ public class GUTMatrizValidation : IGUTMatrizValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(new Filters.FilterGUTAtividadesMatriz { GUTMatriz = id }, uri);
+        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTMatriz = id }, uri);
         if (gutatividadesmatrizExists0 != null && gutatividadesmatrizExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.");
         return true;

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoValorProcessoService
 {
-    Task<IEnumerable<TipoValorProcessoResponseAll>> Filter(Filters.FilterTipoValorProcesso filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<TipoValorProcessoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoValorProcesso filter, [FromRoute, Required] string uri = "");
     Task<TipoValorProcessoResponse?> AddAndUpdate(Models.TipoValorProcesso regTipoValorProcesso, [FromRoute, Required] string uri = "");
     Task<TipoValorProcessoResponse?> Validation(Models.TipoValorProcesso regTipoValorProcesso, [FromRoute, Required] string uri = "");
     Task<TipoValorProcessoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

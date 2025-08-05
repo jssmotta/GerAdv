@@ -15,15 +15,15 @@ public partial class AgendaRelatorioController(IAgendaRelatorioService agendarel
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAgendaRelatorio filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaRelatorio filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("AgendaRelatorio: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _agendarelatorioService.Filter(filtro, uri);
+        //_logger.Info("AgendaRelatorio: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _agendarelatorioService.Filter(max, filtro, uri);
         return Ok(result);
     }
 }

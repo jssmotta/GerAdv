@@ -21,7 +21,7 @@ public class EscritoriosValidation : IEscritoriosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var advogadosExists0 = await advogadosService.Filter(new Filters.FilterAdvogados { Escritorio = id }, uri);
+        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Escritorio = id }, uri);
         if (advogadosExists0 != null && advogadosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.");
         return true;
@@ -29,7 +29,7 @@ public class EscritoriosValidation : IEscritoriosValidation
 
     private bool ValidSizes(Models.Escritorios reg)
     {
-        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
         if (reg.Nome != null && reg.Nome.Length > 50)
             throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
@@ -39,7 +39,7 @@ public class EscritoriosValidation : IEscritoriosValidation
             throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 30)
             throw new SGValidationException($"Bairro deve ter no máximo 30 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Site != null && reg.Site.Length > 200)
             throw new SGValidationException($"Site deve ter no máximo 200 caracteres.");
@@ -82,9 +82,9 @@ public class EscritoriosValidation : IEscritoriosValidation
 
     private async Task<bool> IsCnpjDuplicado(Models.Escritorios reg, IEscritoriosService service, string uri)
     {
-        if (reg.CNPJ.Length == 0)
+        if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingEscritorios = (await service.Filter(new Filters.FilterEscritorios { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
+        var existingEscritorios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEscritorios { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingEscritorios != null && existingEscritorios.Id > 0 && existingEscritorios.Id != reg.Id;
     }
 }

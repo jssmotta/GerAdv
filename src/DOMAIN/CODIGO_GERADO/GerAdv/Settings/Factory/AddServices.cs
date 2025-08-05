@@ -24,7 +24,6 @@ public static class AddServices
         builder.Services.AddScoped<IFAreaFactory, FAreaFactory>();
         builder.Services.AddScoped<IFAreasJusticaFactory, FAreasJusticaFactory>();
         builder.Services.AddScoped<IFAtividadesFactory, FAtividadesFactory>();
-        builder.Services.AddScoped<IFAuditor4KFactory, FAuditor4KFactory>();
         builder.Services.AddScoped<IFBensClassificacaoFactory, FBensClassificacaoFactory>();
         builder.Services.AddScoped<IFBensMateriaisFactory, FBensMateriaisFactory>();
         builder.Services.AddScoped<IFCargosFactory, FCargosFactory>();

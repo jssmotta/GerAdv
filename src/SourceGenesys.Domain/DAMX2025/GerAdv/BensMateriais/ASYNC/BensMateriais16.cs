@@ -151,7 +151,7 @@ public partial class DBBensMateriais
             updateTool.Fields(DBBensMateriaisDicInfo.Comprador, m_FComprador, ETiposCampos.FString);
         if (pFldFCidade)
             updateTool.Fields(DBBensMateriaisDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
-        if (pFldFGarantiaLoja)
+        if (pFldFGarantiaLoja || updateTool.Insert)
             updateTool.Fields(DBBensMateriaisDicInfo.GarantiaLoja, m_FGarantiaLoja, ETiposCampos.FBoolean);
         if (pFldFDataTerminoDaGarantiaDaLoja)
             updateTool.Fields(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja, m_FDataTerminoDaGarantiaDaLoja, ETiposCampos.FDate);
@@ -164,6 +164,7 @@ public partial class DBBensMateriais
     }
 
 #endif
+#if (!NOTSTORED_BensMateriais)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -187,4 +188,5 @@ public partial class DBBensMateriais
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

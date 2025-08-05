@@ -24,15 +24,15 @@ public partial class ProObservacoesController(IProObservacoesService proobservac
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterProObservacoes filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterProObservacoes filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ProObservacoes: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _proobservacoesService.Filter(filtro, uri);
+        //_logger.Info("ProObservacoes: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _proobservacoesService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -148,6 +148,7 @@ public partial class DBDiario2
     }
 
 #endif
+#if (!NOTSTORED_Diario2)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -171,4 +172,5 @@ public partial class DBDiario2
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

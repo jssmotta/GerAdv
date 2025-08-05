@@ -21,7 +21,7 @@ public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var terceirosExists0 = await terceirosService.Filter(new Filters.FilterTerceiros { Situacao = id }, uri);
+        var terceirosExists0 = await terceirosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTerceiros { Situacao = id }, uri);
         if (terceirosExists0 != null && terceirosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Terceiros associados a ele.");
         return true;

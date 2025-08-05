@@ -24,15 +24,15 @@ public partial class AcaoController(IAcaoService acaoService) : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAcao filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAcao filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Acao: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _acaoService.Filter(filtro, uri);
+        //_logger.Info("Acao: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _acaoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

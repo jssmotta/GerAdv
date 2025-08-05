@@ -24,15 +24,15 @@ public partial class OperadorGruposController(IOperadorGruposService operadorgru
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterOperadorGrupos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterOperadorGrupos filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("OperadorGrupos: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _operadorgruposService.Filter(filtro, uri);
+        //_logger.Info("OperadorGrupos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _operadorgruposService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

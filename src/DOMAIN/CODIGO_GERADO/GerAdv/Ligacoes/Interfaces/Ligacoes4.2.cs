@@ -10,7 +10,7 @@ public partial interface ILigacoesReader
     LigacoesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     LigacoesResponse? Read(FLigacoes dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     LigacoesResponseAll? ReadAll(FLigacoes dbRec, IDataRecord dr);
     LigacoesResponseAll? ReadAll(SG.GerAdv.DBLigacoes dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

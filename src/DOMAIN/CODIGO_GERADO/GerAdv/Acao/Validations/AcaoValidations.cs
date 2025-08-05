@@ -21,7 +21,7 @@ public class AcaoValidation : IAcaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var instanciaExists0 = await instanciaService.Filter(new Filters.FilterInstancia { Acao = id }, uri);
+        var instanciaExists0 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { Acao = id }, uri);
         if (instanciaExists0 != null && instanciaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.");
         return true;

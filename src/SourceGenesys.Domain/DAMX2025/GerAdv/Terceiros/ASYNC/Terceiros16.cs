@@ -157,13 +157,14 @@ public partial class DBTerceiros
             updateTool.Fields(DBTerceirosDicInfo.Class, m_FClass, ETiposCampos.FString);
         if (pFldFVaraForoComarca)
             updateTool.Fields(DBTerceirosDicInfo.VaraForoComarca, m_FVaraForoComarca, ETiposCampos.FString);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBTerceirosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBTerceirosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Terceiros)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -187,4 +188,5 @@ public partial class DBTerceiros
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

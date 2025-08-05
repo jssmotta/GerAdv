@@ -135,7 +135,7 @@ public partial class DBForo
             updateTool.Fields(DBForoDicInfo.EMail, m_FEMail, ETiposCampos.FString);
         if (pFldFNome)
             updateTool.Fields(DBForoDicInfo.Nome, m_FNome, ETiposCampos.FString);
-        if (pFldFUnico)
+        if (pFldFUnico || updateTool.Insert)
             updateTool.Fields(DBForoDicInfo.Unico, m_FUnico, ETiposCampos.FBoolean);
         if (pFldFCidade)
             updateTool.Fields(DBForoDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
@@ -153,13 +153,14 @@ public partial class DBForo
             updateTool.Fields(DBForoDicInfo.CEP, m_FCEP, ETiposCampos.FString);
         if (pFldFOBS)
             updateTool.Fields(DBForoDicInfo.OBS, m_FOBS, ETiposCampos.FString);
-        if (pFldFUnicoConfirmado)
+        if (pFldFUnicoConfirmado || updateTool.Insert)
             updateTool.Fields(DBForoDicInfo.UnicoConfirmado, m_FUnicoConfirmado, ETiposCampos.FBoolean);
         if (pFldFWeb)
             updateTool.Fields(DBForoDicInfo.Web, m_FWeb, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Foro)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -183,4 +184,5 @@ public partial class DBForo
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

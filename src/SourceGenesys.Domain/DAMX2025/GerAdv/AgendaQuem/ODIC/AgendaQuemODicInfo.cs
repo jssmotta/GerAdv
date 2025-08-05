@@ -16,6 +16,8 @@ public partial class DBAgendaQuemODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAgendaQuemDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAgendaQuemDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

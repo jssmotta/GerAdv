@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GUTPeriodicidadeStatusService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTPeriodicidadeStatus filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTPeriodicidadeStatus filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.GUTAtividade != int.MinValue)
@@ -16,13 +16,13 @@ public partial class GUTPeriodicidadeStatusService
             parameters.Add(new($"@{nameof(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade)}", filtro.GUTAtividade));
         }
 
-        if (!filtro.DataRealizado.IsEmpty())
+        if (!filtro.DataRealizado.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataRealizado, out var dataParam))
                 parameters.Add(new($"@{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}", dataParam));
         }
 
-        if (!filtro.DataRealizado_end.IsEmpty())
+        if (!filtro.DataRealizado_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataRealizado_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}_end", dataParam));
@@ -43,36 +43,36 @@ public partial class GUTPeriodicidadeStatusService
             parameters.Add(new($"@{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.GUTAtividade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.GUTAtividade}] = @{nameof(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade)}");
-        if (!filtro.DataRealizado.IsEmpty() && filtro.DataRealizado_end.IsEmpty())
+        cWhere.Append(filtro.GUTAtividade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.GUTAtividade}] = @{nameof(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade)}");
+        if (!(filtro.DataRealizado.IsEmptyDX()) && filtro.DataRealizado_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataRealizado.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.DataRealizado}], 103) >= CONVERT(DATE, @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}, 103)");
+            cWhere.Append(filtro.DataRealizado.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.DataRealizado}], 103) = CONVERT(DATE, @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}, 103)");
         }
-        else
+        else if (!(filtro.DataRealizado.IsEmptyDX()) && !(filtro.DataRealizado_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DataRealizado.IsEmpty() && filtro.DataRealizado_end.IsEmpty()) ? string.Empty : (!(filtro.DataRealizado.IsEmpty()) && !(filtro.DataRealizado_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTPeriodicidadeStatusDicInfo.DataRealizado} BETWEEN @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)} AND @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}_end" : !(filtro.DataRealizado.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTPeriodicidadeStatusDicInfo.DataRealizado} = @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTPeriodicidadeStatusDicInfo.DataRealizado} <= @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].{DBGUTPeriodicidadeStatusDicInfo.DataRealizado} BETWEEN @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)} AND @{nameof(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTPeriodicidadeStatusDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTPeriodicidadeStatusDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.CampoCodigo}] >= @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].[{DBGUTPeriodicidadeStatusDicInfo.CampoCodigo}] = @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTPeriodicidadeStatusDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)} AND @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTPeriodicidadeStatusDicInfo.CampoCodigo} = @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTPeriodicidadeStatusDicInfo.CampoCodigo} <= @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTPeriodicidadeStatusDicInfo.PTabelaNome}].{DBGUTPeriodicidadeStatusDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)} AND @{nameof(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -81,6 +81,16 @@ public partial class GUTPeriodicidadeStatusService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterGUTPeriodicidadeStatus? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidadeStatus? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -96,7 +106,7 @@ public partial class GUTPeriodicidadeStatusService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-GUTPeriodicidadeStatus-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

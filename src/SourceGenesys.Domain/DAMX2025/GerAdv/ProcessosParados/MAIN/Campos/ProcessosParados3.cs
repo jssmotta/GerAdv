@@ -104,10 +104,16 @@ public partial class DBProcessosParados
     {
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaName() => PTabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => PTabelaPrefixo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "long";
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();
@@ -122,5 +128,5 @@ public partial class DBProcessosParados
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetID() => ID;
+    public long GetID() => ID;
 }

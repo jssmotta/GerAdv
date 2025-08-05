@@ -16,6 +16,8 @@ public partial class DBNENotasODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBNENotasDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBNENotasDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

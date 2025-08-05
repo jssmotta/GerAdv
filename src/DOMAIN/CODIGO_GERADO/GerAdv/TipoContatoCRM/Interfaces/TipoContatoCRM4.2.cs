@@ -10,7 +10,7 @@ public partial interface ITipoContatoCRMReader
     TipoContatoCRMResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TipoContatoCRMResponse? Read(FTipoContatoCRM dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     TipoContatoCRMResponseAll? ReadAll(FTipoContatoCRM dbRec, IDataRecord dr);
     TipoContatoCRMResponseAll? ReadAll(SG.GerAdv.DBTipoContatoCRM dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

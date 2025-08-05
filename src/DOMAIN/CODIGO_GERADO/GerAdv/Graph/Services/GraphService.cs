@@ -32,13 +32,13 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
             LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
         };
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
-        var cacheKey = $"{uri}-Graph-Filter-{keyCache}";
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
+        var cacheKey = $"{uri}-Graph-Filter-{max}-{keyCache}";
         var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
         return result;
     }
 
-    public async Task<IEnumerable<GraphResponseAll>> Filter(Filters.FilterGraph filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<GraphResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGraph filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
@@ -47,17 +47,23 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
             throw new DatabaseConnectionException();
         }
 
+        if (max <= 0)
+        {
+            max = BaseConsts.PMaxItens;
+        }
+
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter> parameters = filtroResult?.parametros ?? [];
-        var keyCache = await reader.ReadStringAuditor(uri, where, parameters, oCnn);
-        var cacheKey = $"{uri}-Graph-Filter-{where.GetHashCode()}{parameters.GetHashCode()}{keyCache}";
+        var filterHash = GetFilterHash(filtro);
+        var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
+        var cacheKey = $"{uri}-{max}Graph-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
+        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
         return result;
     }
 

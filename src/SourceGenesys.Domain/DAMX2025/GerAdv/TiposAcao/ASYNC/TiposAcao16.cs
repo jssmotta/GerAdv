@@ -133,13 +133,14 @@ public partial class DBTiposAcao
     {
         if (pFldFNome)
             updateTool.Fields(DBTiposAcaoDicInfo.Nome, m_FNome, ETiposCampos.FString);
-        if (pFldFInativo)
+        if (pFldFInativo || updateTool.Insert)
             updateTool.Fields(DBTiposAcaoDicInfo.Inativo, m_FInativo, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBTiposAcaoDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_TiposAcao)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -163,4 +164,5 @@ public partial class DBTiposAcao
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

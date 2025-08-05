@@ -25,7 +25,7 @@ namespace MenphisSI.GerAdv.Factory
         /// </summary>
         FProcessosParados CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FProcessosParados> CreateAsync();
-        Task<FProcessosParados> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
-        Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);
+        Task<FProcessosParados> CreateFromIdAsync(long id, MsiSqlConnection oCnn);
+        Task DeleteAsync(int operadorId, long id, MsiSqlConnection oCnn);
     }
 }

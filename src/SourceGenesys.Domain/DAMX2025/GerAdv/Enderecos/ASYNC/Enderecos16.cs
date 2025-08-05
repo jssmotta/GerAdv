@@ -131,7 +131,7 @@ public partial class DBEnderecos
     private bool HasAnyFieldChanged() => pFldFTopIndex || pFldFDescricao || pFldFContato || pFldFDtNasc || pFldFEndereco || pFldFBairro || pFldFPrivativo || pFldFAddContato || pFldFCEP || pFldFOAB || pFldFOBS || pFldFFone || pFldFFax || pFldFTratamento || pFldFCidade || pFldFSite || pFldFEMail || pFldFQuem || pFldFQuemIndicou || pFldFReportECBOnly || pFldFGUID;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFTopIndex)
+        if (pFldFTopIndex || updateTool.Insert)
             updateTool.Fields(DBEnderecosDicInfo.TopIndex, m_FTopIndex, ETiposCampos.FBoolean);
         if (pFldFDescricao)
             updateTool.Fields(DBEnderecosDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
@@ -143,9 +143,9 @@ public partial class DBEnderecos
             updateTool.Fields(DBEnderecosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
         if (pFldFBairro)
             updateTool.Fields(DBEnderecosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
-        if (pFldFPrivativo)
+        if (pFldFPrivativo || updateTool.Insert)
             updateTool.Fields(DBEnderecosDicInfo.Privativo, m_FPrivativo, ETiposCampos.FBoolean);
-        if (pFldFAddContato)
+        if (pFldFAddContato || updateTool.Insert)
             updateTool.Fields(DBEnderecosDicInfo.AddContato, m_FAddContato, ETiposCampos.FBoolean);
         if (pFldFCEP)
             updateTool.Fields(DBEnderecosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
@@ -169,13 +169,14 @@ public partial class DBEnderecos
             updateTool.Fields(DBEnderecosDicInfo.Quem, m_FQuem, ETiposCampos.FNumber);
         if (pFldFQuemIndicou)
             updateTool.Fields(DBEnderecosDicInfo.QuemIndicou, m_FQuemIndicou, ETiposCampos.FString);
-        if (pFldFReportECBOnly)
+        if (pFldFReportECBOnly || updateTool.Insert)
             updateTool.Fields(DBEnderecosDicInfo.ReportECBOnly, m_FReportECBOnly, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBEnderecosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Enderecos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -199,4 +200,5 @@ public partial class DBEnderecos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

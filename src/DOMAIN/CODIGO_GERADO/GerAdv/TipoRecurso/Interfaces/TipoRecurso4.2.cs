@@ -10,7 +10,7 @@ public partial interface ITipoRecursoReader
     TipoRecursoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TipoRecursoResponse? Read(FTipoRecurso dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     TipoRecursoResponseAll? ReadAll(FTipoRecurso dbRec, IDataRecord dr);
     TipoRecursoResponseAll? ReadAll(SG.GerAdv.DBTipoRecurso dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

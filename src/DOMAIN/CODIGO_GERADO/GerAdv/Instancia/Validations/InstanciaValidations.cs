@@ -21,13 +21,13 @@ public class InstanciaValidation : IInstanciaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var nenotasExists0 = await nenotasService.Filter(new Filters.FilterNENotas { Instancia = id }, uri);
+        var nenotasExists0 = await nenotasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNENotas { Instancia = id }, uri);
         if (nenotasExists0 != null && nenotasExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.");
-        var prosucumbenciaExists1 = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { Instancia = id }, uri);
+        var prosucumbenciaExists1 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { Instancia = id }, uri);
         if (prosucumbenciaExists1 != null && prosucumbenciaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.");
-        var tribunalExists2 = await tribunalService.Filter(new Filters.FilterTribunal { Instancia = id }, uri);
+        var tribunalExists2 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Instancia = id }, uri);
         if (tribunalExists2 != null && tribunalExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
         return true;

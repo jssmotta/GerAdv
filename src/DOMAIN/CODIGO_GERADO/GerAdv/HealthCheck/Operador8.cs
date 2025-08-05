@@ -21,7 +21,7 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
                     {
                         if (DBOperadorDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(operCodigo) FROM {"Operador".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(operCodigo) FROM {"Operador".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) operEMail,operPasta,operTelefonista,operMaster,operNome,operNick,operRamal,operCadID,operCadCod,operExcluido,operSituacao,operComputador,operMinhaDescricao,operUltimoLogoff,operEMailNet,operOnlineIP,operOnLine,operSysOp,operStatusId,operStatusMessage,operIsFinanceiro,operTop,operSexo,operBasico,operExterno,operSenha256,operEMailConfirmado,operDataLimiteReset,operSuporteSenha256,operSuporteMaxAge,operSuporteNomeSolicitante,operSuporteUltimoAcesso,operSuporteIpUltimoAcesso,operGUID FROM {"Operador".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) operEMail,operPasta,operTelefonista,operMaster,operNome,operNick,operRamal,operCadID,operCadCod,operExcluido,operSituacao,operComputador,operMinhaDescricao,operUltimoLogoff,operEMailNet,operOnlineIP,operOnLine,operSysOp,operStatusId,operStatusMessage,operIsFinanceiro,operTop,operSexo,operBasico,operExterno,operSenha256,operEMailConfirmado,operDataLimiteReset,operSuporteSenha256,operSuporteMaxAge,operSuporteNomeSolicitante,operSuporteUltimoAcesso,operSuporteIpUltimoAcesso,operGUID FROM {"Operador".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Operador successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Operador successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

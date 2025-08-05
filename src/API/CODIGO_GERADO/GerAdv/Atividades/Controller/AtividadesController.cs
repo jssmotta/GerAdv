@@ -24,15 +24,15 @@ public partial class AtividadesController(IAtividadesService atividadesService) 
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAtividades filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAtividades filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Atividades: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _atividadesService.Filter(filtro, uri);
+        //_logger.Info("Atividades: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _atividadesService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

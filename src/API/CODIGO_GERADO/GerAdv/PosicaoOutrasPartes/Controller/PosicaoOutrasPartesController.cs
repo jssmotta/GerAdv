@@ -24,15 +24,15 @@ public partial class PosicaoOutrasPartesController(IPosicaoOutrasPartesService p
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterPosicaoOutrasPartes filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterPosicaoOutrasPartes filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("PosicaoOutrasPartes: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _posicaooutraspartesService.Filter(filtro, uri);
+        //_logger.Info("PosicaoOutrasPartes: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _posicaooutraspartesService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

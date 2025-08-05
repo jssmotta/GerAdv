@@ -10,7 +10,7 @@ public partial interface INENotasReader
     NENotasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     NENotasResponse? Read(FNENotas dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     NENotasResponseAll? ReadAll(FNENotas dbRec, IDataRecord dr);
     NENotasResponseAll? ReadAll(SG.GerAdv.DBNENotas dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

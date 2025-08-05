@@ -16,6 +16,8 @@ public partial class DBViaRecebimentoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBViaRecebimentoDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBViaRecebimentoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

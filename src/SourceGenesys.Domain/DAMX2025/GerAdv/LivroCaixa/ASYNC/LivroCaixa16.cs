@@ -135,13 +135,13 @@ public partial class DBLivroCaixa
             updateTool.Fields(DBLivroCaixaDicInfo.IDDes, m_FIDDes, ETiposCampos.FNumber);
         if (pFldFPessoal)
             updateTool.Fields(DBLivroCaixaDicInfo.Pessoal, m_FPessoal, ETiposCampos.FNumber);
-        if (pFldFAjuste)
+        if (pFldFAjuste || updateTool.Insert)
             updateTool.Fields(DBLivroCaixaDicInfo.Ajuste, m_FAjuste, ETiposCampos.FBoolean);
         if (pFldFIDHon)
             updateTool.Fields(DBLivroCaixaDicInfo.IDHon, m_FIDHon, ETiposCampos.FNumber);
         if (pFldFIDHonParc)
             updateTool.Fields(DBLivroCaixaDicInfo.IDHonParc, m_FIDHonParc, ETiposCampos.FNumber);
-        if (pFldFIDHonSuc)
+        if (pFldFIDHonSuc || updateTool.Insert)
             updateTool.Fields(DBLivroCaixaDicInfo.IDHonSuc, m_FIDHonSuc, ETiposCampos.FBoolean);
         if (pFldFData)
             updateTool.Fields(DBLivroCaixaDicInfo.Data, m_FData, ETiposCampos.FString);
@@ -149,17 +149,18 @@ public partial class DBLivroCaixa
             updateTool.Fields(DBLivroCaixaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFValor)
             updateTool.Fields(DBLivroCaixaDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBLivroCaixaDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFHistorico)
             updateTool.Fields(DBLivroCaixaDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
-        if (pFldFPrevisto)
+        if (pFldFPrevisto || updateTool.Insert)
             updateTool.Fields(DBLivroCaixaDicInfo.Previsto, m_FPrevisto, ETiposCampos.FBoolean);
         if (pFldFGrupo)
             updateTool.Fields(DBLivroCaixaDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumber);
     }
 
 #endif
+#if (!NOTSTORED_LivroCaixa)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -183,4 +184,5 @@ public partial class DBLivroCaixa
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

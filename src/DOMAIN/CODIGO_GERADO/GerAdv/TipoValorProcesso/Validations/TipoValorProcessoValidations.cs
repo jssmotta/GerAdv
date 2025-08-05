@@ -21,7 +21,7 @@ public class TipoValorProcessoValidation : ITipoValorProcessoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var provaloresExists0 = await provaloresService.Filter(new Filters.FilterProValores { TipoValorProcesso = id }, uri);
+        var provaloresExists0 = await provaloresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProValores { TipoValorProcesso = id }, uri);
         if (provaloresExists0 != null && provaloresExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Valores associados a ele.");
         return true;
@@ -56,7 +56,7 @@ public class TipoValorProcessoValidation : ITipoValorProcessoValidation
 
     private async Task<bool> IsDuplicado(Models.TipoValorProcesso reg, ITipoValorProcessoService service, string uri)
     {
-        var existingTipoValorProcesso = (await service.Filter(new Filters.FilterTipoValorProcesso { Descricao = reg.Descricao }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingTipoValorProcesso = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoValorProcesso { Descricao = reg.Descricao }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingTipoValorProcesso != null && existingTipoValorProcesso.Id > 0 && existingTipoValorProcesso.Id != reg.Id;
     }
 }

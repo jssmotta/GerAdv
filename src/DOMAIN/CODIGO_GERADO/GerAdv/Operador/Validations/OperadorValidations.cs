@@ -21,43 +21,43 @@ public class OperadorValidation : IOperadorValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Usuario = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Usuario = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var alertasExists1 = await alertasService.Filter(new Filters.FilterAlertas { Operador = id }, uri);
+        var alertasExists1 = await alertasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAlertas { Operador = id }, uri);
         if (alertasExists1 != null && alertasExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Alertas associados a ele.");
-        var alertasenviadosExists2 = await alertasenviadosService.Filter(new Filters.FilterAlertasEnviados { Operador = id }, uri);
+        var alertasenviadosExists2 = await alertasenviadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAlertasEnviados { Operador = id }, uri);
         if (alertasenviadosExists2 != null && alertasenviadosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Alertas Enviados associados a ele.");
-        var diario2Exists3 = await diario2Service.Filter(new Filters.FilterDiario2 { Operador = id }, uri);
+        var diario2Exists3 = await diario2Service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDiario2 { Operador = id }, uri);
         if (diario2Exists3 != null && diario2Exists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Diario2 associados a ele.");
-        var gutatividadesExists4 = await gutatividadesService.Filter(new Filters.FilterGUTAtividades { Operador = id }, uri);
+        var gutatividadesExists4 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { Operador = id }, uri);
         if (gutatividadesExists4 != null && gutatividadesExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades associados a ele.");
-        var operadoremailpopupExists5 = await operadoremailpopupService.Filter(new Filters.FilterOperadorEMailPopup { Operador = id }, uri);
+        var operadoremailpopupExists5 = await operadoremailpopupService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorEMailPopup { Operador = id }, uri);
         if (operadoremailpopupExists5 != null && operadoremailpopupExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador E Mail Popup associados a ele.");
-        var operadorgrupoExists6 = await operadorgrupoService.Filter(new Filters.FilterOperadorGrupo { Operador = id }, uri);
+        var operadorgrupoExists6 = await operadorgrupoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGrupo { Operador = id }, uri);
         if (operadorgrupoExists6 != null && operadorgrupoExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupo associados a ele.");
-        var operadorgruposagendaExists7 = await operadorgruposagendaService.Filter(new Filters.FilterOperadorGruposAgenda { Operador = id }, uri);
+        var operadorgruposagendaExists7 = await operadorgruposagendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGruposAgenda { Operador = id }, uri);
         if (operadorgruposagendaExists7 != null && operadorgruposagendaExists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda associados a ele.");
-        var pontovirtualExists8 = await pontovirtualService.Filter(new Filters.FilterPontoVirtual { Operador = id }, uri);
+        var pontovirtualExists8 = await pontovirtualService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtual { Operador = id }, uri);
         if (pontovirtualExists8 != null && pontovirtualExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual associados a ele.");
-        var pontovirtualacessosExists9 = await pontovirtualacessosService.Filter(new Filters.FilterPontoVirtualAcessos { Operador = id }, uri);
+        var pontovirtualacessosExists9 = await pontovirtualacessosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtualAcessos { Operador = id }, uri);
         if (pontovirtualacessosExists9 != null && pontovirtualacessosExists9.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual Acessos associados a ele.");
-        var processosparadosExists10 = await processosparadosService.Filter(new Filters.FilterProcessosParados { Operador = id }, uri);
+        var processosparadosExists10 = await processosparadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessosParados { Operador = id }, uri);
         if (processosparadosExists10 != null && processosparadosExists10.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos Parados associados a ele.");
-        var processoutputrequestExists11 = await processoutputrequestService.Filter(new Filters.FilterProcessOutputRequest { Operador = id }, uri);
+        var processoutputrequestExists11 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { Operador = id }, uri);
         if (processoutputrequestExists11 != null && processoutputrequestExists11.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.");
-        var smsaliceExists12 = await smsaliceService.Filter(new Filters.FilterSMSAlice { Operador = id }, uri);
+        var smsaliceExists12 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Operador = id }, uri);
         if (smsaliceExists12 != null && smsaliceExists12.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
         return true;

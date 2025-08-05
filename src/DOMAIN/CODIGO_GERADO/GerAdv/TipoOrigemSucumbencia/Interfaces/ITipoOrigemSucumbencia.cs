@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoOrigemSucumbenciaService
 {
-    Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Filter(Filters.FilterTipoOrigemSucumbencia filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoOrigemSucumbencia filter, [FromRoute, Required] string uri = "");
     Task<TipoOrigemSucumbenciaResponse?> AddAndUpdate(Models.TipoOrigemSucumbencia regTipoOrigemSucumbencia, [FromRoute, Required] string uri = "");
     Task<TipoOrigemSucumbenciaResponse?> Validation(Models.TipoOrigemSucumbencia regTipoOrigemSucumbencia, [FromRoute, Required] string uri = "");
     Task<TipoOrigemSucumbenciaResponse?> Delete(int id, [FromRoute, Required] string uri = "");

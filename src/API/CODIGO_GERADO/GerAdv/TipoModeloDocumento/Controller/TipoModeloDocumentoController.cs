@@ -24,15 +24,15 @@ public partial class TipoModeloDocumentoController(ITipoModeloDocumentoService t
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoModeloDocumento filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoModeloDocumento filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoModeloDocumento: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _tipomodelodocumentoService.Filter(filtro, uri);
+        //_logger.Info("TipoModeloDocumento: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _tipomodelodocumentoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

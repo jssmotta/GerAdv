@@ -24,15 +24,15 @@ public partial class GraphController(IGraphService graphService) : ControllerBas
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterGraph filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterGraph filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Graph: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _graphService.Filter(filtro, uri);
+        //_logger.Info("Graph: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _graphService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

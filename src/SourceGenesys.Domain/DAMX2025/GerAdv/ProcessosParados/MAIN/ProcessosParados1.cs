@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming
-public partial class DBProcessosParados : XCodeIdBase, ICadastros
+public partial class DBProcessosParados : XCodeIdBase64, ICadastros64
 {
 #region TableDefinition_ProcessosParados
     [XmlIgnore]
@@ -60,7 +60,7 @@ public partial class DBProcessosParados : XCodeIdBase, ICadastros
 #if (DEBUG)
 			         }
 #endif
-        var clsW = new DBToolWTable32(PTabelaNome, CampoCodigo, ID == 0)
+        var clsW = new DBToolWTable(PTabelaNome, CampoCodigo, ID == 0)
         {
             IsMachineCode = true
         };

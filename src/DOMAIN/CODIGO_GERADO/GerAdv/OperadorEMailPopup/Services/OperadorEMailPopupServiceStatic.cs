@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class OperadorEMailPopupService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorEMailPopup filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorEMailPopup filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Operador != int.MinValue)
@@ -96,54 +96,54 @@ public partial class OperadorEMailPopupService
             parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Operador}] = @{nameof(DBOperadorEMailPopupDicInfo.Operador)}");
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Nome)}");
-        cWhere.Append(filtro.Senha.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Senha)}");
-        cWhere.Append(filtro.SMTP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.SMTP}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.SMTP)}");
-        cWhere.Append(filtro.POP3.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.POP3}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.POP3)}");
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Operador}] = @{nameof(DBOperadorEMailPopupDicInfo.Operador)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Nome)}");
+        cWhere.Append(filtro.Senha.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Senha)}");
+        cWhere.Append(filtro.SMTP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.SMTP}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.SMTP)}");
+        cWhere.Append(filtro.POP3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.POP3}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.POP3)}");
         cWhere.Append(filtro.Autenticacao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Autenticacao}] = @{nameof(DBOperadorEMailPopupDicInfo.Autenticacao)}");
-        cWhere.Append(filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Descricao)}");
-        cWhere.Append(filtro.Usuario.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Usuario}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Usuario)}");
-        if (!filtro.PortaSmtp.IsEmpty() && filtro.PortaSmtp_end.IsEmpty())
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Descricao)}");
+        cWhere.Append(filtro.Usuario.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Usuario}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Usuario)}");
+        if (!(filtro.PortaSmtp.IsEmptyX()) && filtro.PortaSmtp_end.IsEmptyX())
         {
-            cWhere.Append(filtro.PortaSmtp <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaSmtp}] >= @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}");
+            cWhere.Append(filtro.PortaSmtp.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaSmtp}] = @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}");
         }
-        else
+        else if (!(filtro.PortaSmtp.IsEmptyX()) && !(filtro.PortaSmtp_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.PortaSmtp <= 0 && filtro.PortaSmtp_end <= 0) ? string.Empty : (!(filtro.PortaSmtp <= 0) && !(filtro.PortaSmtp_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.PortaSmtp} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)} AND @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end" : !(filtro.PortaSmtp <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.PortaSmtp} = @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.PortaSmtp} <= @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end");
-        }
-
-        if (!filtro.PortaPop3.IsEmpty() && filtro.PortaPop3_end.IsEmpty())
-        {
-            cWhere.Append(filtro.PortaPop3 <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaPop3}] >= @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.PortaPop3 <= 0 && filtro.PortaPop3_end <= 0) ? string.Empty : (!(filtro.PortaPop3 <= 0) && !(filtro.PortaPop3_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.PortaPop3} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)} AND @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}_end" : !(filtro.PortaPop3 <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.PortaPop3} = @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.PortaPop3} <= @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.PortaSmtp} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)} AND @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end");
         }
 
-        cWhere.Append(filtro.Assinatura.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Assinatura)}");
-        cWhere.Append(filtro.Senha256.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha256}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Senha256)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.PortaPop3.IsEmptyX()) && filtro.PortaPop3_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.CampoCodigo}] >= @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.PortaPop3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaPop3}] = @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}");
         }
-        else
+        else if (!(filtro.PortaPop3.IsEmptyX()) && !(filtro.PortaPop3_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.CampoCodigo} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)} AND @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.CampoCodigo} = @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorEMailPopupDicInfo.CampoCodigo} <= @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.PortaPop3} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)} AND @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}_end");
+        }
+
+        cWhere.Append(filtro.Assinatura.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Assinatura)}");
+        cWhere.Append(filtro.Senha256.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha256}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Senha256)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.CampoCodigo}] = @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.CampoCodigo} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)} AND @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -152,6 +152,16 @@ public partial class OperadorEMailPopupService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterOperadorEMailPopup? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadorEMailPopup? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -167,7 +177,7 @@ public partial class OperadorEMailPopupService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-OperadorEMailPopup-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

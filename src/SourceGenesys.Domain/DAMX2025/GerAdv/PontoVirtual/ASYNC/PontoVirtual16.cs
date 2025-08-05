@@ -142,6 +142,7 @@ public partial class DBPontoVirtual
     }
 
 #endif
+#if (!NOTSTORED_PontoVirtual)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -153,4 +154,5 @@ public partial class DBPontoVirtual
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

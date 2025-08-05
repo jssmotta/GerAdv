@@ -24,15 +24,15 @@ public partial class StatusHTrabController(IStatusHTrabService statushtrabServic
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterStatusHTrab filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterStatusHTrab filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("StatusHTrab: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _statushtrabService.Filter(filtro, uri);
+        //_logger.Info("StatusHTrab: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _statushtrabService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

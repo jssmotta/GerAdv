@@ -155,11 +155,11 @@ public partial class DBOponentes
             updateTool.Fields(DBOponentesDicInfo.CNPJ, m_FCNPJ, ETiposCampos.FString);
         if (pFldFRG)
             updateTool.Fields(DBOponentesDicInfo.RG, m_FRG, ETiposCampos.FString);
-        if (pFldFJuridica)
+        if (pFldFJuridica || updateTool.Insert)
             updateTool.Fields(DBOponentesDicInfo.Juridica, m_FJuridica, ETiposCampos.FBoolean);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBOponentesDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBOponentesDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFCPF)
             updateTool.Fields(DBOponentesDicInfo.CPF, m_FCPF, ETiposCampos.FString);
@@ -183,13 +183,14 @@ public partial class DBOponentes
             updateTool.Fields(DBOponentesDicInfo.EMail, m_FEMail, ETiposCampos.FString);
         if (pFldFClass)
             updateTool.Fields(DBOponentesDicInfo.Class, m_FClass, ETiposCampos.FString);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBOponentesDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBOponentesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Oponentes)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -213,4 +214,5 @@ public partial class DBOponentes
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

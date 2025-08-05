@@ -10,7 +10,7 @@ public partial interface IRamalReader
     RamalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     RamalResponse? Read(FRamal dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     RamalResponseAll? ReadAll(FRamal dbRec, IDataRecord dr);
     RamalResponseAll? ReadAll(SG.GerAdv.DBRamal dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

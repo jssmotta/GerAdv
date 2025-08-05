@@ -9,7 +9,17 @@ public partial class DBEnderecoSistema
     {
         if (dbRec is null)
             return;
-        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        InitFromRecord(name =>
+        {
+            try
+            {
+                return dbRec[name];
+            }
+            catch
+            {
+                return DBNull.Value;
+            }
+        });
     }
 
     public DBEnderecoSistema(SqlDataReader? dbRec)
@@ -18,7 +28,17 @@ public partial class DBEnderecoSistema
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -201,7 +221,17 @@ public partial class DBEnderecoSistema
             return;
         try
         {
-            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -215,7 +245,17 @@ public partial class DBEnderecoSistema
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {

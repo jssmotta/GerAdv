@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IRegimeTributacaoService
 {
-    Task<IEnumerable<RegimeTributacaoResponseAll>> Filter(Filters.FilterRegimeTributacao filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<RegimeTributacaoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterRegimeTributacao filter, [FromRoute, Required] string uri = "");
     Task<RegimeTributacaoResponse?> AddAndUpdate(Models.RegimeTributacao regRegimeTributacao, [FromRoute, Required] string uri = "");
     Task<RegimeTributacaoResponse?> Validation(Models.RegimeTributacao regRegimeTributacao, [FromRoute, Required] string uri = "");
     Task<RegimeTributacaoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -11,7 +11,7 @@ namespace MenphisSI.GerAdv.Models.Response
     public record ProcessosParadosResponse
     {
         [JsonPropertyName("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Operador - pprOperador  
@@ -72,7 +72,7 @@ namespace MenphisSI.GerAdv.Models.Response.All
     public record ProcessosParadosResponseAll
     {
         [JsonPropertyName("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Operador - pprOperador  

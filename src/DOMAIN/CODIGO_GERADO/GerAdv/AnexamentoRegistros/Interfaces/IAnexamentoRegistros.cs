@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAnexamentoRegistrosService
 {
-    Task<IEnumerable<AnexamentoRegistrosResponseAll>> Filter(Filters.FilterAnexamentoRegistros filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AnexamentoRegistrosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAnexamentoRegistros filter, [FromRoute, Required] string uri = "");
     Task<AnexamentoRegistrosResponse?> AddAndUpdate(Models.AnexamentoRegistros regAnexamentoRegistros, [FromRoute, Required] string uri = "");
     Task<AnexamentoRegistrosResponse?> Validation(Models.AnexamentoRegistros regAnexamentoRegistros, [FromRoute, Required] string uri = "");
     Task<AnexamentoRegistrosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

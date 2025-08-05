@@ -24,15 +24,15 @@ public partial class CargosController(ICargosService cargosService) : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterCargos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterCargos filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Cargos: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _cargosService.Filter(filtro, uri);
+        //_logger.Info("Cargos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _cargosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

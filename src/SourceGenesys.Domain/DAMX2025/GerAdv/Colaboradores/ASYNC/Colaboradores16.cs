@@ -135,7 +135,7 @@ public partial class DBColaboradores
             updateTool.Fields(DBColaboradoresDicInfo.Cargo, m_FCargo, ETiposCampos.FNumber);
         if (pFldFCliente)
             updateTool.Fields(DBColaboradoresDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBColaboradoresDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFNome)
             updateTool.Fields(DBColaboradoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
@@ -168,6 +168,7 @@ public partial class DBColaboradores
     }
 
 #endif
+#if (!NOTSTORED_Colaboradores)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -191,4 +192,5 @@ public partial class DBColaboradores
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

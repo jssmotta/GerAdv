@@ -18,7 +18,6 @@ public static class AddServices
         builder.Services.AddScoped<IAnexamentoRegistrosWhere, AnexamentoRegistrosWhere>();
         builder.Services.AddScoped<IAreaWhere, AreaWhere>();
         builder.Services.AddScoped<IAtividadesWhere, AtividadesWhere>();
-        builder.Services.AddScoped<IAuditor4KWhere, Auditor4KWhere>();
         builder.Services.AddScoped<IBensClassificacaoWhere, BensClassificacaoWhere>();
         builder.Services.AddScoped<IBensMateriaisWhere, BensMateriaisWhere>();
         builder.Services.AddScoped<ICargosWhere, CargosWhere>();

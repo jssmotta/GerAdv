@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IEscritoriosService
 {
-    Task<IEnumerable<EscritoriosResponseAll>> Filter(Filters.FilterEscritorios filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<EscritoriosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterEscritorios filter, [FromRoute, Required] string uri = "");
     Task<EscritoriosResponse?> AddAndUpdate(Models.Escritorios regEscritorios, [FromRoute, Required] string uri = "");
     Task<EscritoriosResponse?> Validation(Models.Escritorios regEscritorios, [FromRoute, Required] string uri = "");
     Task<EscritoriosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

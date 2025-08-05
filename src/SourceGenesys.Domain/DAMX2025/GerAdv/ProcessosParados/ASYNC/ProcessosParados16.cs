@@ -108,7 +108,7 @@ public partial class DBProcessosParados
     /// <param name = "cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref = "InvalidOperationException"></exception>
-    public static async Task<bool> DeleteRecordAsync(int operadorId, int id, MsiSqlConnection? oCnn, CancellationToken cancellationToken = default)
+    public static async Task<bool> DeleteRecordAsync(int operadorId, long id, MsiSqlConnection? oCnn, CancellationToken cancellationToken = default)
     {
         if (oCnn is null || id <= 0)
             return false;
@@ -148,6 +148,7 @@ public partial class DBProcessosParados
     }
 
 #endif
+#if (!NOTSTORED_ProcessosParados)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -159,4 +160,5 @@ public partial class DBProcessosParados
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

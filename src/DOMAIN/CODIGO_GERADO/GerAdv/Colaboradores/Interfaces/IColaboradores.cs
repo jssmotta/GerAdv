@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IColaboradoresService
 {
-    Task<IEnumerable<ColaboradoresResponseAll>> Filter(Filters.FilterColaboradores filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ColaboradoresResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterColaboradores filter, [FromRoute, Required] string uri = "");
     Task<ColaboradoresResponse?> AddAndUpdate(Models.Colaboradores regColaboradores, [FromRoute, Required] string uri = "");
     Task<ColaboradoresResponse?> Validation(Models.Colaboradores regColaboradores, [FromRoute, Required] string uri = "");
     Task<ColaboradoresResponse?> Delete(int id, [FromRoute, Required] string uri = "");

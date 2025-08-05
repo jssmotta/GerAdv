@@ -131,7 +131,7 @@ public partial class DBPreClientes
     private bool HasAnyFieldChanged() => pFldFInativo || pFldFQuemIndicou || pFldFNome || pFldFAdv || pFldFIDRep || pFldFJuridica || pFldFNomeFantasia || pFldFClass || pFldFTipo || pFldFDtNasc || pFldFInscEst || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCNPJ || pFldFCPF || pFldFRG || pFldFTipoCaptacao || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFax || pFldFFone || pFldFData || pFldFHomePage || pFldFEMail || pFldFAssistido || pFldFAssRG || pFldFAssCPF || pFldFAssEndereco || pFldFCNH;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFInativo)
+        if (pFldFInativo || updateTool.Insert)
             updateTool.Fields(DBPreClientesDicInfo.Inativo, m_FInativo, ETiposCampos.FBoolean);
         if (pFldFQuemIndicou)
             updateTool.Fields(DBPreClientesDicInfo.QuemIndicou, m_FQuemIndicou, ETiposCampos.FString);
@@ -141,13 +141,13 @@ public partial class DBPreClientes
             updateTool.Fields(DBPreClientesDicInfo.Adv, m_FAdv, ETiposCampos.FNumber);
         if (pFldFIDRep)
             updateTool.Fields(DBPreClientesDicInfo.IDRep, m_FIDRep, ETiposCampos.FNumber);
-        if (pFldFJuridica)
+        if (pFldFJuridica || updateTool.Insert)
             updateTool.Fields(DBPreClientesDicInfo.Juridica, m_FJuridica, ETiposCampos.FBoolean);
         if (pFldFNomeFantasia)
             updateTool.Fields(DBPreClientesDicInfo.NomeFantasia, m_FNomeFantasia, ETiposCampos.FString);
         if (pFldFClass)
             updateTool.Fields(DBPreClientesDicInfo.Class, m_FClass, ETiposCampos.FString);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBPreClientesDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFDtNasc)
             updateTool.Fields(DBPreClientesDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
@@ -155,7 +155,7 @@ public partial class DBPreClientes
             updateTool.Fields(DBPreClientesDicInfo.InscEst, m_FInscEst, ETiposCampos.FString);
         if (pFldFQualificacao)
             updateTool.Fields(DBPreClientesDicInfo.Qualificacao, m_FQualificacao, ETiposCampos.FString);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBPreClientesDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFIdade)
             updateTool.Fields(DBPreClientesDicInfo.Idade, m_FIdade, ETiposCampos.FNumber);
@@ -165,7 +165,7 @@ public partial class DBPreClientes
             updateTool.Fields(DBPreClientesDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             updateTool.Fields(DBPreClientesDicInfo.RG, m_FRG, ETiposCampos.FString);
-        if (pFldFTipoCaptacao)
+        if (pFldFTipoCaptacao || updateTool.Insert)
             updateTool.Fields(DBPreClientesDicInfo.TipoCaptacao, m_FTipoCaptacao, ETiposCampos.FBoolean);
         if (pFldFObservacao)
             updateTool.Fields(DBPreClientesDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
@@ -200,6 +200,7 @@ public partial class DBPreClientes
     }
 
 #endif
+#if (!NOTSTORED_PreClientes)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -223,4 +224,5 @@ public partial class DBPreClientes
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

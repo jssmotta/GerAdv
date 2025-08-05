@@ -41,13 +41,13 @@ public partial class ProcessosParadosReader(IFProcessosParadosFactory processosp
         return result;
     }
 
-    public async Task<ProcessosParadosResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ProcessosParadosResponse?> Read(long id, MsiSqlConnection oCnn)
     {
         using var dbRec = await _processosparadosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProcessosParados?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ProcessosParados?> ReadM(long id, MsiSqlConnection oCnn)
     {
         using var dbRec = await _processosparadosFactory.CreateFromIdAsync(id, oCnn);
         var processosparados = new Models.ProcessosParados

@@ -21,7 +21,7 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var enderecosistemaExists0 = await enderecosistemaService.Filter(new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id }, uri);
+        var enderecosistemaExists0 = await enderecosistemaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id }, uri);
         if (enderecosistemaExists0 != null && enderecosistemaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.");
         return true;

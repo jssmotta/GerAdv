@@ -10,7 +10,7 @@ public partial interface IReuniaoReader
     ReuniaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ReuniaoResponse? Read(FReuniao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ReuniaoResponseAll? ReadAll(FReuniao dbRec, IDataRecord dr);
     ReuniaoResponseAll? ReadAll(SG.GerAdv.DBReuniao dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

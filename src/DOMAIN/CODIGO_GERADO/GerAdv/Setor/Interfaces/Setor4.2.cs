@@ -10,7 +10,7 @@ public partial interface ISetorReader
     SetorResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     SetorResponse? Read(FSetor dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     SetorResponseAll? ReadAll(FSetor dbRec, IDataRecord dr);
     SetorResponseAll? ReadAll(SG.GerAdv.DBSetor dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

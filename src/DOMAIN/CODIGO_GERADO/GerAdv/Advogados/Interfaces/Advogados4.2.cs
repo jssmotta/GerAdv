@@ -10,7 +10,7 @@ public partial interface IAdvogadosReader
     AdvogadosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AdvogadosResponse? Read(FAdvogados dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     AdvogadosResponseAll? ReadAll(FAdvogados dbRec, IDataRecord dr);
     AdvogadosResponseAll? ReadAll(SG.GerAdv.DBAdvogados dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

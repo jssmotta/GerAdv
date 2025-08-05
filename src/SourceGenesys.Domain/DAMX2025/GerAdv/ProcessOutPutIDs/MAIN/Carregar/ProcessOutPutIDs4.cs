@@ -9,7 +9,17 @@ public partial class DBProcessOutPutIDs
     {
         if (dbRec is null)
             return;
-        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        InitFromRecord(name =>
+        {
+            try
+            {
+                return dbRec[name];
+            }
+            catch
+            {
+                return DBNull.Value;
+            }
+        });
     }
 
     public DBProcessOutPutIDs(SqlDataReader? dbRec)
@@ -18,7 +28,17 @@ public partial class DBProcessOutPutIDs
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -55,7 +75,17 @@ public partial class DBProcessOutPutIDs
             return;
         try
         {
-            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -69,7 +99,17 @@ public partial class DBProcessOutPutIDs
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {

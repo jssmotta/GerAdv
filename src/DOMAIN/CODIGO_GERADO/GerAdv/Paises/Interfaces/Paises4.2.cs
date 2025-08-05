@@ -10,7 +10,7 @@ public partial interface IPaisesReader
     PaisesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     PaisesResponse? Read(FPaises dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     PaisesResponseAll? ReadAll(FPaises dbRec, IDataRecord dr);
     PaisesResponseAll? ReadAll(SG.GerAdv.DBPaises dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

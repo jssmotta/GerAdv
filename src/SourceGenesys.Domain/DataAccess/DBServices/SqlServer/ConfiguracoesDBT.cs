@@ -32,7 +32,7 @@ public partial class ConfiguracoesDBT
         }
         catch (Exception ex)
         {
-            GeneralSystemErrorTraper.GetError(ex, stackTrace: true);
+            //GeneralSystemErrorTraper.GetError(ex, stackTrace: true);
         }
 
         return resultTable;

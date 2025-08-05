@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IForoService
 {
-    Task<IEnumerable<ForoResponseAll>> Filter(Filters.FilterForo filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ForoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterForo filter, [FromRoute, Required] string uri = "");
     Task<ForoResponse?> AddAndUpdate(Models.Foro regForo, [FromRoute, Required] string uri = "");
     Task<ForoResponse?> Validation(Models.Foro regForo, [FromRoute, Required] string uri = "");
     Task<ForoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

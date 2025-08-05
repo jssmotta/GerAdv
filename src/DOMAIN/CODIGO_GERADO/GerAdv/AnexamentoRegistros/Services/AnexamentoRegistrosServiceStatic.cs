@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AnexamentoRegistrosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAnexamentoRegistros filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAnexamentoRegistros filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Cliente != int.MinValue)
@@ -61,47 +61,47 @@ public partial class AnexamentoRegistrosService
             parameters.Add(new($"@{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.Cliente}] = @{nameof(DBAnexamentoRegistrosDicInfo.Cliente)}");
-        cWhere.Append(filtro.GUIDReg.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.GUIDReg}]  {DevourerConsts.MsiCollate} like @{nameof(DBAnexamentoRegistrosDicInfo.GUIDReg)}");
-        if (!filtro.CodigoReg.IsEmpty() && filtro.CodigoReg_end.IsEmpty())
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.Cliente}] = @{nameof(DBAnexamentoRegistrosDicInfo.Cliente)}");
+        cWhere.Append(filtro.GUIDReg.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.GUIDReg}]  {DevourerConsts.MsiCollate} like @{nameof(DBAnexamentoRegistrosDicInfo.GUIDReg)}");
+        if (!(filtro.CodigoReg.IsEmptyX()) && filtro.CodigoReg_end.IsEmptyX())
         {
-            cWhere.Append(filtro.CodigoReg <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.CodigoReg}] >= @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)}");
+            cWhere.Append(filtro.CodigoReg.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.CodigoReg}] = @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)}");
         }
-        else
+        else if (!(filtro.CodigoReg.IsEmptyX()) && !(filtro.CodigoReg_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.CodigoReg <= 0 && filtro.CodigoReg_end <= 0) ? string.Empty : (!(filtro.CodigoReg <= 0) && !(filtro.CodigoReg_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.CodigoReg} BETWEEN @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)} AND @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)}_end" : !(filtro.CodigoReg <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.CodigoReg} = @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.CodigoReg} <= @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)}_end");
-        }
-
-        if (!filtro.IDReg.IsEmpty() && filtro.IDReg_end.IsEmpty())
-        {
-            cWhere.Append(filtro.IDReg <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.IDReg}] >= @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.IDReg <= 0 && filtro.IDReg_end <= 0) ? string.Empty : (!(filtro.IDReg <= 0) && !(filtro.IDReg_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.IDReg} BETWEEN @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)} AND @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)}_end" : !(filtro.IDReg <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.IDReg} = @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.IDReg} <= @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].{DBAnexamentoRegistrosDicInfo.CodigoReg} BETWEEN @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)} AND @{nameof(DBAnexamentoRegistrosDicInfo.CodigoReg)}_end");
         }
 
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAnexamentoRegistrosDicInfo.Data)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAnexamentoRegistrosDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.IDReg.IsEmptyX()) && filtro.IDReg_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.CampoCodigo}] >= @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.IDReg.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.IDReg}] = @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)}");
         }
-        else
+        else if (!(filtro.IDReg.IsEmptyX()) && !(filtro.IDReg_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.CampoCodigo} BETWEEN @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)} AND @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.CampoCodigo} = @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAnexamentoRegistrosDicInfo.CampoCodigo} <= @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].{DBAnexamentoRegistrosDicInfo.IDReg} BETWEEN @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)} AND @{nameof(DBAnexamentoRegistrosDicInfo.IDReg)}_end");
+        }
+
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAnexamentoRegistrosDicInfo.Data)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAnexamentoRegistrosDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].[{DBAnexamentoRegistrosDicInfo.CampoCodigo}] = @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAnexamentoRegistrosDicInfo.PTabelaNome}].{DBAnexamentoRegistrosDicInfo.CampoCodigo} BETWEEN @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)} AND @{nameof(DBAnexamentoRegistrosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -110,6 +110,16 @@ public partial class AnexamentoRegistrosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAnexamentoRegistros? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAnexamentoRegistros? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -125,7 +135,7 @@ public partial class AnexamentoRegistrosService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-AnexamentoRegistros-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

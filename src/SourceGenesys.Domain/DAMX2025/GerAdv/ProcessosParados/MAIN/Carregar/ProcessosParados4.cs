@@ -9,7 +9,17 @@ public partial class DBProcessosParados
     {
         if (dbRec is null)
             return;
-        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        InitFromRecord(name =>
+        {
+            try
+            {
+                return dbRec[name];
+            }
+            catch
+            {
+                return DBNull.Value;
+            }
+        });
     }
 
     public DBProcessosParados(SqlDataReader? dbRec)
@@ -18,7 +28,17 @@ public partial class DBProcessosParados
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -30,7 +50,7 @@ public partial class DBProcessosParados
     {
         if (DBNull.Value.Equals(getValue(CampoCodigo)))
             return;
-        ID = Convert.ToInt32(getValue(CampoCodigo));
+        ID = Convert.ToInt64(getValue(CampoCodigo));
         // Checkpoint Carregar 
         try
         {
@@ -102,7 +122,17 @@ public partial class DBProcessosParados
             return;
         try
         {
-            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -116,7 +146,17 @@ public partial class DBProcessosParados
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {

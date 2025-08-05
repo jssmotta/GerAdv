@@ -10,7 +10,7 @@ public partial interface ITipoModeloDocumentoReader
     TipoModeloDocumentoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TipoModeloDocumentoResponse? Read(FTipoModeloDocumento dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     TipoModeloDocumentoResponseAll? ReadAll(FTipoModeloDocumento dbRec, IDataRecord dr);
     TipoModeloDocumentoResponseAll? ReadAll(SG.GerAdv.DBTipoModeloDocumento dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

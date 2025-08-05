@@ -24,15 +24,15 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterTipoEMail filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoEMail filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoEMail: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _tipoemailService.Filter(filtro, uri);
+        //_logger.Info("TipoEMail: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _tipoemailService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

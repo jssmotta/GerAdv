@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class NEPalavrasChavesService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNEPalavrasChaves filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNEPalavrasChaves filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -26,26 +26,26 @@ public partial class NEPalavrasChavesService
             parameters.Add(new($"@{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNEPalavrasChavesDicInfo.PTabelaNome}].[{DBNEPalavrasChavesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBNEPalavrasChavesDicInfo.Nome)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNEPalavrasChavesDicInfo.PTabelaNome}].[{DBNEPalavrasChavesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBNEPalavrasChavesDicInfo.Nome)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNEPalavrasChavesDicInfo.PTabelaNome}].[{DBNEPalavrasChavesDicInfo.CampoCodigo}] >= @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNEPalavrasChavesDicInfo.PTabelaNome}].[{DBNEPalavrasChavesDicInfo.CampoCodigo}] = @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNEPalavrasChavesDicInfo.CampoCodigo} BETWEEN @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)} AND @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNEPalavrasChavesDicInfo.CampoCodigo} = @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNEPalavrasChavesDicInfo.CampoCodigo} <= @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNEPalavrasChavesDicInfo.PTabelaNome}].{DBNEPalavrasChavesDicInfo.CampoCodigo} BETWEEN @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)} AND @{nameof(DBNEPalavrasChavesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -54,6 +54,16 @@ public partial class NEPalavrasChavesService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterNEPalavrasChaves? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterNEPalavrasChaves? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -69,7 +79,7 @@ public partial class NEPalavrasChavesService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-NEPalavrasChaves-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

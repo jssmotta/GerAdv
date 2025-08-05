@@ -139,11 +139,11 @@ public partial class DBClientes
             updateTool.Fields(DBClientesDicInfo.NomeMae, m_FNomeMae, ETiposCampos.FString);
         if (pFldFRGDataExp)
             updateTool.Fields(DBClientesDicInfo.RGDataExp, m_FRGDataExp, ETiposCampos.FDate);
-        if (pFldFInativo)
+        if (pFldFInativo || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.Inativo, m_FInativo, ETiposCampos.FBoolean);
         if (pFldFQuemIndicou)
             updateTool.Fields(DBClientesDicInfo.QuemIndicou, m_FQuemIndicou, ETiposCampos.FString);
-        if (pFldFSendEMail)
+        if (pFldFSendEMail || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.SendEMail, m_FSendEMail, ETiposCampos.FBoolean);
         if (pFldFNome)
             updateTool.Fields(DBClientesDicInfo.Nome, m_FNome, ETiposCampos.FString);
@@ -151,13 +151,13 @@ public partial class DBClientes
             updateTool.Fields(DBClientesDicInfo.Adv, m_FAdv, ETiposCampos.FNumber);
         if (pFldFIDRep)
             updateTool.Fields(DBClientesDicInfo.IDRep, m_FIDRep, ETiposCampos.FNumber);
-        if (pFldFJuridica)
+        if (pFldFJuridica || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.Juridica, m_FJuridica, ETiposCampos.FBoolean);
         if (pFldFNomeFantasia)
             updateTool.Fields(DBClientesDicInfo.NomeFantasia, m_FNomeFantasia, ETiposCampos.FString);
         if (pFldFClass)
             updateTool.Fields(DBClientesDicInfo.Class, m_FClass, ETiposCampos.FString);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFDtNasc)
             updateTool.Fields(DBClientesDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
@@ -165,7 +165,7 @@ public partial class DBClientes
             updateTool.Fields(DBClientesDicInfo.InscEst, m_FInscEst, ETiposCampos.FString);
         if (pFldFQualificacao)
             updateTool.Fields(DBClientesDicInfo.Qualificacao, m_FQualificacao, ETiposCampos.FString);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFIdade)
             updateTool.Fields(DBClientesDicInfo.Idade, m_FIdade, ETiposCampos.FNumber);
@@ -175,7 +175,7 @@ public partial class DBClientes
             updateTool.Fields(DBClientesDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             updateTool.Fields(DBClientesDicInfo.RG, m_FRG, ETiposCampos.FString);
-        if (pFldFTipoCaptacao)
+        if (pFldFTipoCaptacao || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.TipoCaptacao, m_FTipoCaptacao, ETiposCampos.FBoolean);
         if (pFldFObservacao)
             updateTool.Fields(DBClientesDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
@@ -197,7 +197,7 @@ public partial class DBClientes
             updateTool.Fields(DBClientesDicInfo.HomePage, m_FHomePage, ETiposCampos.FString);
         if (pFldFEMail)
             updateTool.Fields(DBClientesDicInfo.EMail, m_FEMail, ETiposCampos.FString);
-        if (pFldFObito)
+        if (pFldFObito || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.Obito, m_FObito, ETiposCampos.FBoolean);
         if (pFldFNomePai)
             updateTool.Fields(DBClientesDicInfo.NomePai, m_FNomePai, ETiposCampos.FString);
@@ -207,9 +207,9 @@ public partial class DBClientes
             updateTool.Fields(DBClientesDicInfo.RegimeTributacao, m_FRegimeTributacao, ETiposCampos.FNumber);
         if (pFldFEnquadramentoEmpresa)
             updateTool.Fields(DBClientesDicInfo.EnquadramentoEmpresa, m_FEnquadramentoEmpresa, ETiposCampos.FNumber);
-        if (pFldFReportECBOnly)
+        if (pFldFReportECBOnly || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.ReportECBOnly, m_FReportECBOnly, ETiposCampos.FBoolean);
-        if (pFldFProBono)
+        if (pFldFProBono || updateTool.Insert)
             updateTool.Fields(DBClientesDicInfo.ProBono, m_FProBono, ETiposCampos.FBoolean);
         if (pFldFCNH)
             updateTool.Fields(DBClientesDicInfo.CNH, m_FCNH, ETiposCampos.FString);
@@ -220,6 +220,7 @@ public partial class DBClientes
     }
 
 #endif
+#if (!NOTSTORED_Clientes)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -243,4 +244,5 @@ public partial class DBClientes
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

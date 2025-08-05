@@ -10,7 +10,7 @@ public partial interface IGUTTipoReader
     GUTTipoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     GUTTipoResponse? Read(FGUTTipo dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     GUTTipoResponseAll? ReadAll(FGUTTipo dbRec, IDataRecord dr);
     GUTTipoResponseAll? ReadAll(SG.GerAdv.DBGUTTipo dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

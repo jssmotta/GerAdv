@@ -24,15 +24,15 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTPeriodicidade filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidade filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("GUTPeriodicidade: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _gutperiodicidadeService.Filter(filtro, uri);
+        //_logger.Info("GUTPeriodicidade: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _gutperiodicidadeService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

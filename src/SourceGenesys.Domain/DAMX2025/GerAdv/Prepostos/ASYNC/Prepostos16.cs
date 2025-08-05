@@ -141,7 +141,7 @@ public partial class DBPrepostos
             updateTool.Fields(DBPrepostosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
         if (pFldFQualificacao)
             updateTool.Fields(DBPrepostosDicInfo.Qualificacao, m_FQualificacao, ETiposCampos.FString);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBPrepostosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFIdade)
             updateTool.Fields(DBPrepostosDicInfo.Idade, m_FIdade, ETiposCampos.FNumber);
@@ -165,7 +165,7 @@ public partial class DBPrepostos
             updateTool.Fields(DBPrepostosDicInfo.PIS, m_FPIS, ETiposCampos.FString);
         if (pFldFSalario)
             updateTool.Fields(DBPrepostosDicInfo.Salario, m_FSalario, ETiposCampos.FDecimal);
-        if (pFldFLiberaAgenda)
+        if (pFldFLiberaAgenda || updateTool.Insert)
             updateTool.Fields(DBPrepostosDicInfo.LiberaAgenda, m_FLiberaAgenda, ETiposCampos.FBoolean);
         if (pFldFObservacao)
             updateTool.Fields(DBPrepostosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
@@ -194,6 +194,7 @@ public partial class DBPrepostos
     }
 
 #endif
+#if (!NOTSTORED_Prepostos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -217,4 +218,5 @@ public partial class DBPrepostos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

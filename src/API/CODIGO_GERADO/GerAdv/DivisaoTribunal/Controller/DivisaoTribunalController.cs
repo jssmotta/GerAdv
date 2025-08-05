@@ -24,15 +24,15 @@ public partial class DivisaoTribunalController(IDivisaoTribunalService divisaotr
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterDivisaoTribunal filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("DivisaoTribunal: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _divisaotribunalService.Filter(filtro, uri);
+        //_logger.Info("DivisaoTribunal: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _divisaotribunalService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

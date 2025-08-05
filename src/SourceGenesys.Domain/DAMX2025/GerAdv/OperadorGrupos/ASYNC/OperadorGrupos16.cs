@@ -136,6 +136,7 @@ public partial class DBOperadorGrupos
     }
 
 #endif
+#if (!NOTSTORED_OperadorGrupos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -159,4 +160,5 @@ public partial class DBOperadorGrupos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

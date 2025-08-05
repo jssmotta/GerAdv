@@ -16,6 +16,8 @@ public partial class DBProBarCODEODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBProBarCODEDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBProBarCODEDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IFuncaoService
 {
-    Task<IEnumerable<FuncaoResponseAll>> Filter(Filters.FilterFuncao filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<FuncaoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterFuncao filter, [FromRoute, Required] string uri = "");
     Task<FuncaoResponse?> AddAndUpdate(Models.Funcao regFuncao, [FromRoute, Required] string uri = "");
     Task<FuncaoResponse?> Validation(Models.Funcao regFuncao, [FromRoute, Required] string uri = "");
     Task<FuncaoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

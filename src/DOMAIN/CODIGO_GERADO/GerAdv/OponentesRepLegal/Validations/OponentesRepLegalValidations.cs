@@ -28,7 +28,7 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
     {
         if (reg.Nome != null && reg.Nome.Length > 80)
             throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
@@ -36,7 +36,7 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.Site != null && reg.Site.Length > 150)
             throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
@@ -92,9 +92,9 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
 
     private async Task<(bool, OponentesRepLegalResponseAll? )> IsCpfDuplicado(Models.OponentesRepLegal reg, IOponentesRepLegalService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingOponentesRepLegal = (await service.Filter(new Filters.FilterOponentesRepLegal { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingOponentesRepLegal = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingOponentesRepLegal != null && existingOponentesRepLegal.Id > 0 && existingOponentesRepLegal.Id != reg.Id, existingOponentesRepLegal);
     }
 }

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class EnderecoSistemaService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEnderecoSistema filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEnderecoSistema filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Cadastro != int.MinValue)
@@ -106,63 +106,63 @@ public partial class EnderecoSistemaService
             parameters.Add(new($"@{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Cadastro.IsEmpty() && filtro.Cadastro_end.IsEmpty())
+        if (!(filtro.Cadastro.IsEmptyX()) && filtro.Cadastro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Cadastro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cadastro}] >= @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}");
+            cWhere.Append(filtro.Cadastro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cadastro}] = @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}");
         }
-        else
+        else if (!(filtro.Cadastro.IsEmptyX()) && !(filtro.Cadastro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Cadastro <= 0 && filtro.Cadastro_end <= 0) ? string.Empty : (!(filtro.Cadastro <= 0) && !(filtro.Cadastro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Cadastro} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.Cadastro)} AND @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}_end" : !(filtro.Cadastro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Cadastro} = @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Cadastro} <= @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}_end");
-        }
-
-        if (!filtro.CadastroExCod.IsEmpty() && filtro.CadastroExCod_end.IsEmpty())
-        {
-            cWhere.Append(filtro.CadastroExCod <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.CadastroExCod}] >= @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.CadastroExCod <= 0 && filtro.CadastroExCod_end <= 0) ? string.Empty : (!(filtro.CadastroExCod <= 0) && !(filtro.CadastroExCod_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.CadastroExCod} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)} AND @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}_end" : !(filtro.CadastroExCod <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.CadastroExCod} = @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.CadastroExCod} <= @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].{DBEnderecoSistemaDicInfo.Cadastro} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.Cadastro)} AND @{nameof(DBEnderecoSistemaDicInfo.Cadastro)}_end");
         }
 
-        cWhere.Append(filtro.TipoEnderecoSistema <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.TipoEnderecoSistema}] = @{nameof(DBEnderecoSistemaDicInfo.TipoEnderecoSistema)}");
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        if (!(filtro.CadastroExCod.IsEmptyX()) && filtro.CadastroExCod_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Processo}] >= @{nameof(DBEnderecoSistemaDicInfo.Processo)}");
+            cWhere.Append(filtro.CadastroExCod.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.CadastroExCod}] = @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}");
         }
-        else
+        else if (!(filtro.CadastroExCod.IsEmptyX()) && !(filtro.CadastroExCod_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Processo} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.Processo)} AND @{nameof(DBEnderecoSistemaDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Processo} = @{nameof(DBEnderecoSistemaDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.Processo} <= @{nameof(DBEnderecoSistemaDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].{DBEnderecoSistemaDicInfo.CadastroExCod} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)} AND @{nameof(DBEnderecoSistemaDicInfo.CadastroExCod)}_end");
         }
 
-        cWhere.Append(filtro.Motivo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Motivo}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Motivo)}");
-        cWhere.Append(filtro.ContatoNoLocal.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.ContatoNoLocal}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.ContatoNoLocal)}");
-        cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cidade}] = @{nameof(DBEnderecoSistemaDicInfo.Cidade)}");
-        cWhere.Append(filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Endereco)}");
-        cWhere.Append(filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Bairro)}");
-        cWhere.Append(filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.CEP)}");
-        cWhere.Append(filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Fone)}");
-        cWhere.Append(filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Fax)}");
-        cWhere.Append(filtro.Observacao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Observacao)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.TipoEnderecoSistema.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.TipoEnderecoSistema}] = @{nameof(DBEnderecoSistemaDicInfo.TipoEnderecoSistema)}");
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.CampoCodigo}] >= @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Processo}] = @{nameof(DBEnderecoSistemaDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.CampoCodigo} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)} AND @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.CampoCodigo} = @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEnderecoSistemaDicInfo.CampoCodigo} <= @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].{DBEnderecoSistemaDicInfo.Processo} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.Processo)} AND @{nameof(DBEnderecoSistemaDicInfo.Processo)}_end");
+        }
+
+        cWhere.Append(filtro.Motivo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Motivo}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Motivo)}");
+        cWhere.Append(filtro.ContatoNoLocal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.ContatoNoLocal}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.ContatoNoLocal)}");
+        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Cidade}] = @{nameof(DBEnderecoSistemaDicInfo.Cidade)}");
+        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Endereco)}");
+        cWhere.Append(filtro.Bairro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Bairro)}");
+        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.CEP)}");
+        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Fone)}");
+        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Fax)}");
+        cWhere.Append(filtro.Observacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.Observacao)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBEnderecoSistemaDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].[{DBEnderecoSistemaDicInfo.CampoCodigo}] = @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEnderecoSistemaDicInfo.PTabelaNome}].{DBEnderecoSistemaDicInfo.CampoCodigo} BETWEEN @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)} AND @{nameof(DBEnderecoSistemaDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -171,6 +171,16 @@ public partial class EnderecoSistemaService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterEnderecoSistema? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnderecoSistema? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -186,7 +196,7 @@ public partial class EnderecoSistemaService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-EnderecoSistema-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

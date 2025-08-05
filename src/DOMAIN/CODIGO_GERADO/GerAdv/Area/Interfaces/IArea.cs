@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAreaService
 {
-    Task<IEnumerable<AreaResponseAll>> Filter(Filters.FilterArea filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AreaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterArea filter, [FromRoute, Required] string uri = "");
     Task<AreaResponse?> AddAndUpdate(Models.Area regArea, [FromRoute, Required] string uri = "");
     Task<AreaResponse?> Validation(Models.Area regArea, [FromRoute, Required] string uri = "");
     Task<AreaResponse?> Delete(int id, [FromRoute, Required] string uri = "");

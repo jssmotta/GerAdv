@@ -21,7 +21,7 @@ public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutatividadesExists0 = await gutatividadesService.Filter(new Filters.FilterGUTAtividades { GUTPeriodicidade = id }, uri);
+        var gutatividadesExists0 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { GUTPeriodicidade = id }, uri);
         if (gutatividadesExists0 != null && gutatividadesExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades associados a ele.");
         return true;

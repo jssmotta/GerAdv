@@ -24,7 +24,6 @@ public static class AddServices
         builder.Services.AddScoped<IAreaWriter, AreaWriter>();
         builder.Services.AddScoped<IAreasJusticaWriter, AreasJusticaWriter>();
         builder.Services.AddScoped<IAtividadesWriter, AtividadesWriter>();
-        builder.Services.AddScoped<IAuditor4KWriter, Auditor4KWriter>();
         builder.Services.AddScoped<IBensClassificacaoWriter, BensClassificacaoWriter>();
         builder.Services.AddScoped<IBensMateriaisWriter, BensMateriaisWriter>();
         builder.Services.AddScoped<ICargosWriter, CargosWriter>();

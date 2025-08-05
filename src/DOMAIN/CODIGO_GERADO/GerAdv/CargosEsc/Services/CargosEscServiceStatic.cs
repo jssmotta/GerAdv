@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class CargosEscService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterCargosEsc filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterCargosEsc filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Percentual != decimal.MinValue)
@@ -51,45 +51,45 @@ public partial class CargosEscService
             parameters.Add(new($"@{nameof(DBCargosEscDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Percentual.IsEmpty() && filtro.Percentual_end.IsEmpty())
+        if (!(filtro.Percentual == decimal.MinValue) && filtro.Percentual_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.Percentual == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.Percentual}] >= @{nameof(DBCargosEscDicInfo.Percentual)}");
+            cWhere.Append(filtro.Percentual == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.Percentual}] = @{nameof(DBCargosEscDicInfo.Percentual)}");
         }
-        else
+        else if (!(filtro.Percentual == decimal.MinValue) && !(filtro.Percentual_end == decimal.MinValue))
         {
-            cWhere.Append((filtro.Percentual == decimal.MinValue && filtro.Percentual_end == decimal.MinValue) ? string.Empty : (!(filtro.Percentual == decimal.MinValue) && !(filtro.Percentual_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.Percentual} BETWEEN @{nameof(DBCargosEscDicInfo.Percentual)} AND @{nameof(DBCargosEscDicInfo.Percentual)}_end" : !(filtro.Percentual == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.Percentual} = @{nameof(DBCargosEscDicInfo.Percentual)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.Percentual} <= @{nameof(DBCargosEscDicInfo.Percentual)}_end");
-        }
-
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBCargosEscDicInfo.Nome)}");
-        if (!filtro.Classificacao.IsEmpty() && filtro.Classificacao_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Classificacao <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.Classificacao}] >= @{nameof(DBCargosEscDicInfo.Classificacao)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Classificacao <= 0 && filtro.Classificacao_end <= 0) ? string.Empty : (!(filtro.Classificacao <= 0) && !(filtro.Classificacao_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.Classificacao} BETWEEN @{nameof(DBCargosEscDicInfo.Classificacao)} AND @{nameof(DBCargosEscDicInfo.Classificacao)}_end" : !(filtro.Classificacao <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.Classificacao} = @{nameof(DBCargosEscDicInfo.Classificacao)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.Classificacao} <= @{nameof(DBCargosEscDicInfo.Classificacao)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].{DBCargosEscDicInfo.Percentual} BETWEEN @{nameof(DBCargosEscDicInfo.Percentual)} AND @{nameof(DBCargosEscDicInfo.Percentual)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBCargosEscDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBCargosEscDicInfo.Nome)}");
+        if (!(filtro.Classificacao.IsEmptyX()) && filtro.Classificacao_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.CampoCodigo}] >= @{nameof(DBCargosEscDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Classificacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.Classificacao}] = @{nameof(DBCargosEscDicInfo.Classificacao)}");
         }
-        else
+        else if (!(filtro.Classificacao.IsEmptyX()) && !(filtro.Classificacao_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.CampoCodigo} BETWEEN @{nameof(DBCargosEscDicInfo.CampoCodigo)} AND @{nameof(DBCargosEscDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.CampoCodigo} = @{nameof(DBCargosEscDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBCargosEscDicInfo.CampoCodigo} <= @{nameof(DBCargosEscDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].{DBCargosEscDicInfo.Classificacao} BETWEEN @{nameof(DBCargosEscDicInfo.Classificacao)} AND @{nameof(DBCargosEscDicInfo.Classificacao)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBCargosEscDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].[{DBCargosEscDicInfo.CampoCodigo}] = @{nameof(DBCargosEscDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBCargosEscDicInfo.PTabelaNome}].{DBCargosEscDicInfo.CampoCodigo} BETWEEN @{nameof(DBCargosEscDicInfo.CampoCodigo)} AND @{nameof(DBCargosEscDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -98,6 +98,16 @@ public partial class CargosEscService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterCargosEsc? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterCargosEsc? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -113,7 +123,7 @@ public partial class CargosEscService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-CargosEsc-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

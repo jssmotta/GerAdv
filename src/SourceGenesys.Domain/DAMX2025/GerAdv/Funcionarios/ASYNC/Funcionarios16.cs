@@ -139,7 +139,7 @@ public partial class DBFuncionarios
             updateTool.Fields(DBFuncionariosDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFFuncao)
             updateTool.Fields(DBFuncionariosDicInfo.Funcao, m_FFuncao, ETiposCampos.FNumber);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBFuncionariosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFRegistro)
             updateTool.Fields(DBFuncionariosDicInfo.Registro, m_FRegistro, ETiposCampos.FString);
@@ -147,7 +147,7 @@ public partial class DBFuncionarios
             updateTool.Fields(DBFuncionariosDicInfo.CPF, m_FCPF, ETiposCampos.FString);
         if (pFldFRG)
             updateTool.Fields(DBFuncionariosDicInfo.RG, m_FRG, ETiposCampos.FString);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBFuncionariosDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
         if (pFldFObservacao)
             updateTool.Fields(DBFuncionariosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
@@ -185,7 +185,7 @@ public partial class DBFuncionarios
             updateTool.Fields(DBFuncionariosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
         if (pFldFData)
             updateTool.Fields(DBFuncionariosDicInfo.Data, m_FData, ETiposCampos.FString);
-        if (pFldFLiberaAgenda)
+        if (pFldFLiberaAgenda || updateTool.Insert)
             updateTool.Fields(DBFuncionariosDicInfo.LiberaAgenda, m_FLiberaAgenda, ETiposCampos.FBoolean);
         if (pFldFPasta)
             updateTool.Fields(DBFuncionariosDicInfo.Pasta, m_FPasta, ETiposCampos.FString);
@@ -196,6 +196,7 @@ public partial class DBFuncionarios
     }
 
 #endif
+#if (!NOTSTORED_Funcionarios)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -219,4 +220,5 @@ public partial class DBFuncionarios
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

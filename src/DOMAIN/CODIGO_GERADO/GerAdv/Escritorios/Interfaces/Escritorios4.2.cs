@@ -10,7 +10,7 @@ public partial interface IEscritoriosReader
     EscritoriosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EscritoriosResponse? Read(FEscritorios dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     EscritoriosResponseAll? ReadAll(FEscritorios dbRec, IDataRecord dr);
     EscritoriosResponseAll? ReadAll(SG.GerAdv.DBEscritorios dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class Apenso2Service
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterApenso2 filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterApenso2 filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
@@ -41,43 +41,43 @@ public partial class Apenso2Service
             parameters.Add(new($"@{nameof(DBApenso2DicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Processo}] >= @{nameof(DBApenso2DicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Processo}] = @{nameof(DBApenso2DicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Processo} BETWEEN @{nameof(DBApenso2DicInfo.Processo)} AND @{nameof(DBApenso2DicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Processo} = @{nameof(DBApenso2DicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Processo} <= @{nameof(DBApenso2DicInfo.Processo)}_end");
-        }
-
-        if (!filtro.Apensado.IsEmpty() && filtro.Apensado_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Apensado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Apensado}] >= @{nameof(DBApenso2DicInfo.Apensado)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Apensado <= 0 && filtro.Apensado_end <= 0) ? string.Empty : (!(filtro.Apensado <= 0) && !(filtro.Apensado_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Apensado} BETWEEN @{nameof(DBApenso2DicInfo.Apensado)} AND @{nameof(DBApenso2DicInfo.Apensado)}_end" : !(filtro.Apensado <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Apensado} = @{nameof(DBApenso2DicInfo.Apensado)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.Apensado} <= @{nameof(DBApenso2DicInfo.Apensado)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].{DBApenso2DicInfo.Processo} BETWEEN @{nameof(DBApenso2DicInfo.Processo)} AND @{nameof(DBApenso2DicInfo.Processo)}_end");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Apensado.IsEmptyX()) && filtro.Apensado_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.CampoCodigo}] >= @{nameof(DBApenso2DicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Apensado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.Apensado}] = @{nameof(DBApenso2DicInfo.Apensado)}");
         }
-        else
+        else if (!(filtro.Apensado.IsEmptyX()) && !(filtro.Apensado_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.CampoCodigo} BETWEEN @{nameof(DBApenso2DicInfo.CampoCodigo)} AND @{nameof(DBApenso2DicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.CampoCodigo} = @{nameof(DBApenso2DicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBApenso2DicInfo.CampoCodigo} <= @{nameof(DBApenso2DicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].{DBApenso2DicInfo.Apensado} BETWEEN @{nameof(DBApenso2DicInfo.Apensado)} AND @{nameof(DBApenso2DicInfo.Apensado)}_end");
+        }
+
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].[{DBApenso2DicInfo.CampoCodigo}] = @{nameof(DBApenso2DicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBApenso2DicInfo.PTabelaNome}].{DBApenso2DicInfo.CampoCodigo} BETWEEN @{nameof(DBApenso2DicInfo.CampoCodigo)} AND @{nameof(DBApenso2DicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -86,6 +86,16 @@ public partial class Apenso2Service
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterApenso2? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<Apenso2ResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

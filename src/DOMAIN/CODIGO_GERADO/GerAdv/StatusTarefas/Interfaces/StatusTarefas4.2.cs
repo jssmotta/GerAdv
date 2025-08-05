@@ -10,7 +10,7 @@ public partial interface IStatusTarefasReader
     StatusTarefasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     StatusTarefasResponse? Read(FStatusTarefas dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     StatusTarefasResponseAll? ReadAll(FStatusTarefas dbRec, IDataRecord dr);
     StatusTarefasResponseAll? ReadAll(SG.GerAdv.DBStatusTarefas dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

@@ -133,9 +133,9 @@ public partial class DBEscritorios
     {
         if (pFldFCNPJ)
             updateTool.Fields(DBEscritoriosDicInfo.CNPJ, m_FCNPJ, ETiposCampos.FString);
-        if (pFldFCasa)
+        if (pFldFCasa || updateTool.Insert)
             updateTool.Fields(DBEscritoriosDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
-        if (pFldFParceria)
+        if (pFldFParceria || updateTool.Insert)
             updateTool.Fields(DBEscritoriosDicInfo.Parceria, m_FParceria, ETiposCampos.FBoolean);
         if (pFldFNome)
             updateTool.Fields(DBEscritoriosDicInfo.Nome, m_FNome, ETiposCampos.FString);
@@ -165,15 +165,16 @@ public partial class DBEscritorios
             updateTool.Fields(DBEscritoriosDicInfo.Secretaria, m_FSecretaria, ETiposCampos.FString);
         if (pFldFInscEst)
             updateTool.Fields(DBEscritoriosDicInfo.InscEst, m_FInscEst, ETiposCampos.FString);
-        if (pFldFCorrespondente)
+        if (pFldFCorrespondente || updateTool.Insert)
             updateTool.Fields(DBEscritoriosDicInfo.Correspondente, m_FCorrespondente, ETiposCampos.FBoolean);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBEscritoriosDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBEscritoriosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Escritorios)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -197,4 +198,5 @@ public partial class DBEscritorios
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

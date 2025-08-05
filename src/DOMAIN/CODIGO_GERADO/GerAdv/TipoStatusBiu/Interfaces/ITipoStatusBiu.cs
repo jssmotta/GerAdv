@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoStatusBiuService
 {
-    Task<IEnumerable<TipoStatusBiuResponseAll>> Filter(Filters.FilterTipoStatusBiu filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<TipoStatusBiuResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoStatusBiu filter, [FromRoute, Required] string uri = "");
     Task<TipoStatusBiuResponse?> AddAndUpdate(Models.TipoStatusBiu regTipoStatusBiu, [FromRoute, Required] string uri = "");
     Task<TipoStatusBiuResponse?> Validation(Models.TipoStatusBiu regTipoStatusBiu, [FromRoute, Required] string uri = "");
     Task<TipoStatusBiuResponse?> Delete(int id, [FromRoute, Required] string uri = "");

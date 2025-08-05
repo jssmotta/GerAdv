@@ -24,15 +24,15 @@ public partial class AndamentosMDController(IAndamentosMDService andamentosmdSer
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAndamentosMD filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAndamentosMD filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("AndamentosMD: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _andamentosmdService.Filter(filtro, uri);
+        //_logger.Info("AndamentosMD: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _andamentosmdService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -16,6 +16,8 @@ public partial class DBHonorariosDadosContratoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBHonorariosDadosContratoDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBHonorariosDadosContratoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

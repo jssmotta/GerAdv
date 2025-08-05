@@ -21,7 +21,7 @@ public class OponentesHealthCheck(IOptions<AppSettings> appSettings, OponentesSe
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class OponentesHealthCheck(IOptions<AppSettings> appSettings, OponentesSe
                     {
                         if (DBOponentesDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(opoCodigo) FROM {"Oponentes".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(opoCodigo) FROM {"Oponentes".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) opoEMPFuncao,opoCTPSNumero,opoSite,opoCTPSSerie,opoNome,opoAdv,opoEMPCliente,opoIDRep,opoPIS,opoContato,opoCNPJ,opoRG,opoJuridica,opoTipo,opoSexo,opoCPF,opoEndereco,opoFone,opoFax,opoCidade,opoBairro,opoCEP,opoInscEst,opoObservacao,opoEMail,opoClass,opoTop,opoGUID FROM {"Oponentes".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) opoEMPFuncao,opoCTPSNumero,opoSite,opoCTPSSerie,opoNome,opoAdv,opoEMPCliente,opoIDRep,opoPIS,opoContato,opoCNPJ,opoRG,opoJuridica,opoTipo,opoSexo,opoCPF,opoEndereco,opoFone,opoFax,opoCidade,opoBairro,opoCEP,opoInscEst,opoObservacao,opoEMail,opoClass,opoTop,opoGUID FROM {"Oponentes".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Oponentes successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Oponentes successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

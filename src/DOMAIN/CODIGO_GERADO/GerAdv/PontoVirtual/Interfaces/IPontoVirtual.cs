@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IPontoVirtualService
 {
-    Task<IEnumerable<PontoVirtualResponseAll>> Filter(Filters.FilterPontoVirtual filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<PontoVirtualResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterPontoVirtual filter, [FromRoute, Required] string uri = "");
     Task<PontoVirtualResponse?> AddAndUpdate(Models.PontoVirtual regPontoVirtual, [FromRoute, Required] string uri = "");
     Task<PontoVirtualResponse?> Validation(Models.PontoVirtual regPontoVirtual, [FromRoute, Required] string uri = "");
     Task<PontoVirtualResponse?> Delete(int id, [FromRoute, Required] string uri = "");

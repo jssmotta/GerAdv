@@ -40,8 +40,6 @@ public static class AddServices
         builder.Services.AddScoped<AreasJusticaService>();
         builder.Services.AddScoped<IAtividadesService, AtividadesService>();
         builder.Services.AddScoped<AtividadesService>();
-        builder.Services.AddScoped<IAuditor4KService, Auditor4KService>();
-        builder.Services.AddScoped<Auditor4KService>();
         builder.Services.AddScoped<IBensClassificacaoService, BensClassificacaoService>();
         builder.Services.AddScoped<BensClassificacaoService>();
         builder.Services.AddScoped<IBensMateriaisService, BensMateriaisService>();

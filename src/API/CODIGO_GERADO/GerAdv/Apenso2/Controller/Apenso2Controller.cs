@@ -24,15 +24,15 @@ public partial class Apenso2Controller(IApenso2Service apenso2Service) : Control
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterApenso2 filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterApenso2 filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Apenso2: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _apenso2Service.Filter(filtro, uri);
+        //_logger.Info("Apenso2: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _apenso2Service.Filter(max, filtro, uri);
         return Ok(result);
     }
 

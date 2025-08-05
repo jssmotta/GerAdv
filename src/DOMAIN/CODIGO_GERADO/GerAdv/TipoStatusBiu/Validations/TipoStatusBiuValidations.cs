@@ -47,7 +47,7 @@ public class TipoStatusBiuValidation : ITipoStatusBiuValidation
 
     private async Task<bool> IsDuplicado(Models.TipoStatusBiu reg, ITipoStatusBiuService service, string uri)
     {
-        var existingTipoStatusBiu = (await service.Filter(new Filters.FilterTipoStatusBiu { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingTipoStatusBiu = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoStatusBiu { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingTipoStatusBiu != null && existingTipoStatusBiu.Id > 0 && existingTipoStatusBiu.Id != reg.Id;
     }
 }

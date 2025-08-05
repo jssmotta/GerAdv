@@ -10,7 +10,7 @@ public partial interface IProDepositosReader
     ProDepositosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProDepositosResponse? Read(FProDepositos dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ProDepositosResponseAll? ReadAll(FProDepositos dbRec, IDataRecord dr);
     ProDepositosResponseAll? ReadAll(SG.GerAdv.DBProDepositos dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

@@ -142,6 +142,7 @@ public partial class DBTipoRecurso
     }
 
 #endif
+#if (!NOTSTORED_TipoRecurso)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -165,4 +166,5 @@ public partial class DBTipoRecurso
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

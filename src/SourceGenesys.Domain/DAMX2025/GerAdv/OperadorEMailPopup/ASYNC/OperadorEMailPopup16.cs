@@ -141,7 +141,7 @@ public partial class DBOperadorEMailPopup
             updateTool.Fields(DBOperadorEMailPopupDicInfo.SMTP, m_FSMTP, ETiposCampos.FString);
         if (pFldFPOP3)
             updateTool.Fields(DBOperadorEMailPopupDicInfo.POP3, m_FPOP3, ETiposCampos.FString);
-        if (pFldFAutenticacao)
+        if (pFldFAutenticacao || updateTool.Insert)
             updateTool.Fields(DBOperadorEMailPopupDicInfo.Autenticacao, m_FAutenticacao, ETiposCampos.FBoolean);
         if (pFldFDescricao)
             updateTool.Fields(DBOperadorEMailPopupDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
@@ -160,6 +160,7 @@ public partial class DBOperadorEMailPopup
     }
 
 #endif
+#if (!NOTSTORED_OperadorEMailPopup)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -183,4 +184,5 @@ public partial class DBOperadorEMailPopup
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

@@ -21,13 +21,13 @@ public class FuncionariosValidation : IFuncionariosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { Funcionario = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendaquemExists1 = await agendaquemService.Filter(new Filters.FilterAgendaQuem { Funcionario = id }, uri);
+        var agendaquemExists1 = await agendaquemService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgendaQuem { Funcionario = id }, uri);
         if (agendaquemExists1 != null && agendaquemExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.");
-        var horastrabExists2 = await horastrabService.Filter(new Filters.FilterHorasTrab { Funcionario = id }, uri);
+        var horastrabExists2 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Funcionario = id }, uri);
         if (horastrabExists2 != null && horastrabExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
         return true;
@@ -41,7 +41,7 @@ public class FuncionariosValidation : IFuncionariosValidation
             throw new SGValidationException($"Nome deve ter no máximo 60 caracteres.");
         if (reg.Registro != null && reg.Registro.Length > 20)
             throw new SGValidationException($"Registro deve ter no máximo 20 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
@@ -49,7 +49,7 @@ public class FuncionariosValidation : IFuncionariosValidation
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.CTPSNumero != null && reg.CTPSNumero.Length > 15)
             throw new SGValidationException($"CTPSNumero deve ter no máximo 15 caracteres.");
@@ -125,9 +125,9 @@ public class FuncionariosValidation : IFuncionariosValidation
 
     private async Task<(bool, FuncionariosResponseAll? )> IsCpfDuplicado(Models.Funcionarios reg, IFuncionariosService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingFuncionarios = (await service.Filter(new Filters.FilterFuncionarios { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingFuncionarios = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingFuncionarios != null && existingFuncionarios.Id > 0 && existingFuncionarios.Id != reg.Id, existingFuncionarios);
     }
 }

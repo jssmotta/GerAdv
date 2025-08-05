@@ -38,9 +38,9 @@ public class PreClientesValidation : IPreClientesValidation
             throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
         if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
             throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.Length > 14)
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
             throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.CPF != null && reg.CPF.Length > 11)
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
             throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
         if (reg.RG != null && reg.RG.Length > 30)
             throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
@@ -48,7 +48,7 @@ public class PreClientesValidation : IPreClientesValidation
             throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
         if (reg.Bairro != null && reg.Bairro.Length > 50)
             throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.Length > 10)
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
             throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
         if (reg.HomePage != null && reg.HomePage.Length > 60)
             throw new SGValidationException($"HomePage deve ter no máximo 60 caracteres.");
@@ -116,17 +116,17 @@ public class PreClientesValidation : IPreClientesValidation
 
     private async Task<bool> IsCnpjDuplicado(Models.PreClientes reg, IPreClientesService service, string uri)
     {
-        if (reg.CNPJ.Length == 0)
+        if (reg.CNPJ.ClearInputCnpj().Length == 0)
             return false;
-        var existingPreClientes = (await service.Filter(new Filters.FilterPreClientes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
+        var existingPreClientes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPreClientes { CNPJ = reg.CNPJ.ClearInputCnpj() }, uri)).FirstOrDefault();
         return existingPreClientes != null && existingPreClientes.Id > 0 && existingPreClientes.Id != reg.Id;
     }
 
     private async Task<(bool, PreClientesResponseAll? )> IsCpfDuplicado(Models.PreClientes reg, IPreClientesService service, string uri)
     {
-        if (reg.CPF.Length == 0)
+        if (reg.CPF.ClearInputCpf().Length == 0)
             return (false, null);
-        var existingPreClientes = (await service.Filter(new Filters.FilterPreClientes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
+        var existingPreClientes = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPreClientes { CPF = reg.CPF.ClearInputCpf() }, uri)).FirstOrDefault();
         return (existingPreClientes != null && existingPreClientes.Id > 0 && existingPreClientes.Id != reg.Id, existingPreClientes);
     }
 }

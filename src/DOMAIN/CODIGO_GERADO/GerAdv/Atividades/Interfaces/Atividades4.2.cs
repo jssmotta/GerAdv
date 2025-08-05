@@ -10,7 +10,7 @@ public partial interface IAtividadesReader
     AtividadesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     AtividadesResponse? Read(FAtividades dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     AtividadesResponseAll? ReadAll(FAtividades dbRec, IDataRecord dr);
     AtividadesResponseAll? ReadAll(SG.GerAdv.DBAtividades dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

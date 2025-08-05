@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AreasJusticaService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAreasJustica filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAreasJustica filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Area != int.MinValue)
@@ -31,27 +31,27 @@ public partial class AreasJusticaService
             parameters.Add(new($"@{nameof(DBAreasJusticaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Area <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].[{DBAreasJusticaDicInfo.Area}] = @{nameof(DBAreasJusticaDicInfo.Area)}");
-        cWhere.Append(filtro.Justica <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].[{DBAreasJusticaDicInfo.Justica}] = @{nameof(DBAreasJusticaDicInfo.Justica)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].[{DBAreasJusticaDicInfo.Area}] = @{nameof(DBAreasJusticaDicInfo.Area)}");
+        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].[{DBAreasJusticaDicInfo.Justica}] = @{nameof(DBAreasJusticaDicInfo.Justica)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].[{DBAreasJusticaDicInfo.CampoCodigo}] >= @{nameof(DBAreasJusticaDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].[{DBAreasJusticaDicInfo.CampoCodigo}] = @{nameof(DBAreasJusticaDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAreasJusticaDicInfo.CampoCodigo} BETWEEN @{nameof(DBAreasJusticaDicInfo.CampoCodigo)} AND @{nameof(DBAreasJusticaDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAreasJusticaDicInfo.CampoCodigo} = @{nameof(DBAreasJusticaDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAreasJusticaDicInfo.CampoCodigo} <= @{nameof(DBAreasJusticaDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAreasJusticaDicInfo.PTabelaNome}].{DBAreasJusticaDicInfo.CampoCodigo} BETWEEN @{nameof(DBAreasJusticaDicInfo.CampoCodigo)} AND @{nameof(DBAreasJusticaDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -60,6 +60,16 @@ public partial class AreasJusticaService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAreasJustica? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<AreasJusticaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

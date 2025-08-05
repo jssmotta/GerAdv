@@ -16,6 +16,8 @@ public partial class DBAlertasEnviadosODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAlertasEnviadosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAlertasEnviadosDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

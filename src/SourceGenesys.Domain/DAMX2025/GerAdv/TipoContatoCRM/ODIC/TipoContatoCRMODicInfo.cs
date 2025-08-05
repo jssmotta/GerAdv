@@ -16,6 +16,8 @@ public partial class DBTipoContatoCRMODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBTipoContatoCRMDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBTipoContatoCRMDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

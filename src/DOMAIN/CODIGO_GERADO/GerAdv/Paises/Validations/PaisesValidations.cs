@@ -21,7 +21,7 @@ public class PaisesValidation : IPaisesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var ufExists0 = await ufService.Filter(new Filters.FilterUF { Pais = id }, uri);
+        var ufExists0 = await ufService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterUF { Pais = id }, uri);
         if (ufExists0 != null && ufExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela UF associados a ele.");
         return true;

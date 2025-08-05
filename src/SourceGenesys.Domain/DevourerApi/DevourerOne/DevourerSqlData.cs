@@ -47,7 +47,9 @@ public static partial class DevourerSqlData
         {
             ExecuteSql($"UPDATE {tabela} SET {campo}=0 WHERE {campo} IS NULL;", oCnn);
         }
-        catch (Exception ex) { GeneralSystemErrorTraper.GetError(ex); }
+        catch (Exception ex) { 
+        // Ignore
+        }
         ConfigSys.WriteCfgSys($"{nameof(UpdateBoolFields)}-{tabela}-{campo}", 2, oCnn);
     }
 

@@ -21,7 +21,7 @@ public class RegimeTributacaoValidation : IRegimeTributacaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var clientesExists0 = await clientesService.Filter(new Filters.FilterClientes { RegimeTributacao = id }, uri);
+        var clientesExists0 = await clientesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientes { RegimeTributacao = id }, uri);
         if (clientesExists0 != null && clientesExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Clientes associados a ele.");
         return true;

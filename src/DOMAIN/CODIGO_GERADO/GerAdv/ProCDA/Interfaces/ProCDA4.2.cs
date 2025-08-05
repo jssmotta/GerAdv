@@ -10,7 +10,7 @@ public partial interface IProCDAReader
     ProCDAResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProCDAResponse? Read(FProCDA dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ProCDAResponseAll? ReadAll(FProCDA dbRec, IDataRecord dr);
     ProCDAResponseAll? ReadAll(SG.GerAdv.DBProCDA dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

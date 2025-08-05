@@ -16,6 +16,8 @@ public partial class DBTipoEnderecoODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBTipoEnderecoDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBTipoEnderecoDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

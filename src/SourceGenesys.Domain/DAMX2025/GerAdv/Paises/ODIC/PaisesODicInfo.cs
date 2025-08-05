@@ -16,6 +16,8 @@ public partial class DBPaisesODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBPaisesDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBPaisesDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

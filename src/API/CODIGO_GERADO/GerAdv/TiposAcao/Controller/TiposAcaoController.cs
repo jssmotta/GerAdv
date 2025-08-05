@@ -24,15 +24,15 @@ public partial class TiposAcaoController(ITiposAcaoService tiposacaoService) : C
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterTiposAcao filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTiposAcao filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TiposAcao: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _tiposacaoService.Filter(filtro, uri);
+        //_logger.Info("TiposAcao: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _tiposacaoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AlertasService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAlertas filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAlertas filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -26,13 +26,13 @@ public partial class AlertasService
             parameters.Add(new($"@{nameof(DBAlertasDicInfo.Operador)}", filtro.Operador));
         }
 
-        if (!filtro.DataAte.IsEmpty())
+        if (!filtro.DataAte.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataAte, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAlertasDicInfo.DataAte)}", dataParam));
         }
 
-        if (!filtro.DataAte_end.IsEmpty())
+        if (!filtro.DataAte_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataAte_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAlertasDicInfo.DataAte)}_end", dataParam));
@@ -48,37 +48,37 @@ public partial class AlertasService
             parameters.Add(new($"@{nameof(DBAlertasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAlertasDicInfo.Nome)}");
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAlertasDicInfo.Data)}");
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Operador}] = @{nameof(DBAlertasDicInfo.Operador)}");
-        if (!filtro.DataAte.IsEmpty() && filtro.DataAte_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAlertasDicInfo.Nome)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAlertasDicInfo.Data)}");
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.Operador}] = @{nameof(DBAlertasDicInfo.Operador)}");
+        if (!(filtro.DataAte.IsEmptyDX()) && filtro.DataAte_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataAte.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.DataAte}], 103) >= CONVERT(DATE, @{nameof(DBAlertasDicInfo.DataAte)}, 103)");
+            cWhere.Append(filtro.DataAte.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.DataAte}], 103) = CONVERT(DATE, @{nameof(DBAlertasDicInfo.DataAte)}, 103)");
         }
-        else
+        else if (!(filtro.DataAte.IsEmptyDX()) && !(filtro.DataAte_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DataAte.IsEmpty() && filtro.DataAte_end.IsEmpty()) ? string.Empty : (!(filtro.DataAte.IsEmpty()) && !(filtro.DataAte_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.DataAte} BETWEEN @{nameof(DBAlertasDicInfo.DataAte)} AND @{nameof(DBAlertasDicInfo.DataAte)}_end" : !(filtro.DataAte.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.DataAte} = @{nameof(DBAlertasDicInfo.DataAte)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.DataAte} <= @{nameof(DBAlertasDicInfo.DataAte)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].{DBAlertasDicInfo.DataAte} BETWEEN @{nameof(DBAlertasDicInfo.DataAte)} AND @{nameof(DBAlertasDicInfo.DataAte)}_end");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.CampoCodigo}] >= @{nameof(DBAlertasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].[{DBAlertasDicInfo.CampoCodigo}] = @{nameof(DBAlertasDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.CampoCodigo} BETWEEN @{nameof(DBAlertasDicInfo.CampoCodigo)} AND @{nameof(DBAlertasDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.CampoCodigo} = @{nameof(DBAlertasDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAlertasDicInfo.CampoCodigo} <= @{nameof(DBAlertasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAlertasDicInfo.PTabelaNome}].{DBAlertasDicInfo.CampoCodigo} BETWEEN @{nameof(DBAlertasDicInfo.CampoCodigo)} AND @{nameof(DBAlertasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -87,6 +87,16 @@ public partial class AlertasService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAlertas? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAlertas? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -102,7 +112,7 @@ public partial class AlertasService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Alertas-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IGUTAtividadesService
 {
-    Task<IEnumerable<GUTAtividadesResponseAll>> Filter(Filters.FilterGUTAtividades filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<GUTAtividadesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTAtividades filter, [FromRoute, Required] string uri = "");
     Task<GUTAtividadesResponse?> AddAndUpdate(Models.GUTAtividades regGUTAtividades, [FromRoute, Required] string uri = "");
     Task<GUTAtividadesResponse?> Validation(Models.GUTAtividades regGUTAtividades, [FromRoute, Required] string uri = "");
     Task<GUTAtividadesResponse?> Delete(int id, [FromRoute, Required] string uri = "");

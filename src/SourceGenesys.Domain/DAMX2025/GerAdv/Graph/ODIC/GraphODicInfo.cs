@@ -16,6 +16,8 @@ public partial class DBGraphODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBGraphDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBGraphDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

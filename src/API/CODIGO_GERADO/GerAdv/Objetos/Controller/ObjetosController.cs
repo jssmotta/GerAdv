@@ -24,15 +24,15 @@ public partial class ObjetosController(IObjetosService objetosService) : Control
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterObjetos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterObjetos filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Objetos: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _objetosService.Filter(filtro, uri);
+        //_logger.Info("Objetos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _objetosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProObservacoesService
 {
-    Task<IEnumerable<ProObservacoesResponseAll>> Filter(Filters.FilterProObservacoes filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProObservacoesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProObservacoes filter, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> AddAndUpdate(Models.ProObservacoes regProObservacoes, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> Validation(Models.ProObservacoes regProObservacoes, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> Delete(int id, [FromRoute, Required] string uri = "");

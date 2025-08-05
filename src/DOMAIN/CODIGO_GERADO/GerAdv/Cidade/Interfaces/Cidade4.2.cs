@@ -10,7 +10,7 @@ public partial interface ICidadeReader
     CidadeResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     CidadeResponse? Read(FCidade dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     CidadeResponseAll? ReadAll(FCidade dbRec, IDataRecord dr);
     CidadeResponseAll? ReadAll(SG.GerAdv.DBCidade dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

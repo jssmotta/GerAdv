@@ -1,7 +1,8 @@
 ﻿namespace MenphisSI.BaseCommon;
 public static class BaseConsts
 {
-    public const int PMaxItens = 1000;
+    public const int DefaultCheckValidation = 1;
+    public const int PMaxItens = 200;
     public const int PMinItem = 1;
     public const int PMaxMinutesCache = 60;
     public const int PMaxGetListSecondsCacheId = 120;

@@ -144,6 +144,7 @@ public partial class DBProObservacoes
     }
 
 #endif
+#if (!NOTSTORED_ProObservacoes)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -167,4 +168,5 @@ public partial class DBProObservacoes
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

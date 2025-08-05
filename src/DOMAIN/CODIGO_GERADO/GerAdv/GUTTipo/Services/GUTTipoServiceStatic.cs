@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GUTTipoService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTTipo filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTTipo filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -41,36 +41,36 @@ public partial class GUTTipoService
             parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTTipoDicInfo.Nome)}");
-        if (!filtro.Ordem.IsEmpty() && filtro.Ordem_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTTipoDicInfo.Nome)}");
+        if (!(filtro.Ordem.IsEmptyX()) && filtro.Ordem_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Ordem <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Ordem}] >= @{nameof(DBGUTTipoDicInfo.Ordem)}");
+            cWhere.Append(filtro.Ordem.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Ordem}] = @{nameof(DBGUTTipoDicInfo.Ordem)}");
         }
-        else
+        else if (!(filtro.Ordem.IsEmptyX()) && !(filtro.Ordem_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Ordem <= 0 && filtro.Ordem_end <= 0) ? string.Empty : (!(filtro.Ordem <= 0) && !(filtro.Ordem_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTTipoDicInfo.Ordem} BETWEEN @{nameof(DBGUTTipoDicInfo.Ordem)} AND @{nameof(DBGUTTipoDicInfo.Ordem)}_end" : !(filtro.Ordem <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTTipoDicInfo.Ordem} = @{nameof(DBGUTTipoDicInfo.Ordem)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTTipoDicInfo.Ordem} <= @{nameof(DBGUTTipoDicInfo.Ordem)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].{DBGUTTipoDicInfo.Ordem} BETWEEN @{nameof(DBGUTTipoDicInfo.Ordem)} AND @{nameof(DBGUTTipoDicInfo.Ordem)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTTipoDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTTipoDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.CampoCodigo}] >= @{nameof(DBGUTTipoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.CampoCodigo}] = @{nameof(DBGUTTipoDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTTipoDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTTipoDicInfo.CampoCodigo)} AND @{nameof(DBGUTTipoDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTTipoDicInfo.CampoCodigo} = @{nameof(DBGUTTipoDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBGUTTipoDicInfo.CampoCodigo} <= @{nameof(DBGUTTipoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].{DBGUTTipoDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTTipoDicInfo.CampoCodigo)} AND @{nameof(DBGUTTipoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -79,6 +79,16 @@ public partial class GUTTipoService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterGUTTipo? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTTipo? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -94,7 +104,7 @@ public partial class GUTTipoService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-GUTTipo-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

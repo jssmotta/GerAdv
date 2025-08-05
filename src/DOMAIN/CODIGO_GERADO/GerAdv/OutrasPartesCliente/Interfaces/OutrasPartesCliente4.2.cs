@@ -10,7 +10,7 @@ public partial interface IOutrasPartesClienteReader
     OutrasPartesClienteResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OutrasPartesClienteResponse? Read(FOutrasPartesCliente dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     OutrasPartesClienteResponseAll? ReadAll(FOutrasPartesCliente dbRec, IDataRecord dr);
     OutrasPartesClienteResponseAll? ReadAll(SG.GerAdv.DBOutrasPartesCliente dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

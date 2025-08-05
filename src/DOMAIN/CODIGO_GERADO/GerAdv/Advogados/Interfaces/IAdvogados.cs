@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAdvogadosService
 {
-    Task<IEnumerable<AdvogadosResponseAll>> Filter(Filters.FilterAdvogados filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AdvogadosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAdvogados filter, [FromRoute, Required] string uri = "");
     Task<AdvogadosResponse?> AddAndUpdate(Models.Advogados regAdvogados, [FromRoute, Required] string uri = "");
     Task<AdvogadosResponse?> Validation(Models.Advogados regAdvogados, [FromRoute, Required] string uri = "");
     Task<AdvogadosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -142,6 +142,7 @@ public partial class DBSMSAlice
     }
 
 #endif
+#if (!NOTSTORED_SMSAlice)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -165,4 +166,5 @@ public partial class DBSMSAlice
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

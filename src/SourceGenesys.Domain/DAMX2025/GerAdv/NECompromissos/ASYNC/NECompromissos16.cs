@@ -133,7 +133,7 @@ public partial class DBNECompromissos
     {
         if (pFldFPalavraChave)
             updateTool.Fields(DBNECompromissosDicInfo.PalavraChave, m_FPalavraChave, ETiposCampos.FNumber);
-        if (pFldFProvisionar)
+        if (pFldFProvisionar || updateTool.Insert)
             updateTool.Fields(DBNECompromissosDicInfo.Provisionar, m_FProvisionar, ETiposCampos.FBoolean);
         if (pFldFTipoCompromisso)
             updateTool.Fields(DBNECompromissosDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumber);
@@ -142,6 +142,7 @@ public partial class DBNECompromissos
     }
 
 #endif
+#if (!NOTSTORED_NECompromissos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -165,4 +166,5 @@ public partial class DBNECompromissos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAndCompService
 {
-    Task<IEnumerable<AndCompResponseAll>> Filter(Filters.FilterAndComp filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AndCompResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAndComp filter, [FromRoute, Required] string uri = "");
     Task<AndCompResponse?> AddAndUpdate(Models.AndComp regAndComp, [FromRoute, Required] string uri = "");
     Task<AndCompResponse?> Validation(Models.AndComp regAndComp, [FromRoute, Required] string uri = "");
     Task<AndCompResponse?> Delete(int id, [FromRoute, Required] string uri = "");

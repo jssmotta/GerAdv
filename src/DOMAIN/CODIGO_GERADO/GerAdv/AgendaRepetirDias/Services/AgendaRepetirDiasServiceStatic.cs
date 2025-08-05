@@ -8,9 +8,21 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AgendaRepetirDiasService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgendaRepetirDias filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgendaRepetirDias filtro)
     {
         var parameters = new List<SqlParameter>();
+        if (!filtro.HoraFinal.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.HoraFinal, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.HoraFinal)}", dataParam));
+        }
+
+        if (!filtro.HoraFinal_end.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.HoraFinal_end, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.HoraFinal)}_end", dataParam));
+        }
+
         if (filtro.Master != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.Master)}", filtro.Master));
@@ -31,6 +43,18 @@ public partial class AgendaRepetirDiasService
             parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.Dia)}_end", filtro.Dia_end));
         }
 
+        if (!filtro.Hora.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.Hora, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.Hora)}", dataParam));
+        }
+
+        if (!filtro.Hora_end.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.Hora_end, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.Hora)}_end", dataParam));
+        }
+
         if (filtro.Codigo_filtro != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
@@ -41,43 +65,61 @@ public partial class AgendaRepetirDiasService
             parameters.Add(new($"@{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Master.IsEmpty() && filtro.Master_end.IsEmpty())
+        if (!(filtro.HoraFinal.IsEmptyDX()) && filtro.HoraFinal_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.Master <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.Master}] >= @{nameof(DBAgendaRepetirDiasDicInfo.Master)}");
+            cWhere.Append(filtro.HoraFinal.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.HoraFinal}], 'HH:mm') = FORMAT(@{nameof(DBAgendaRepetirDiasDicInfo.HoraFinal)}, 'HH:mm')");
         }
-        else
+        else if (!(filtro.HoraFinal.IsEmptyDX()) && !(filtro.HoraFinal_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.Master <= 0 && filtro.Master_end <= 0) ? string.Empty : (!(filtro.Master <= 0) && !(filtro.Master_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.Master} BETWEEN @{nameof(DBAgendaRepetirDiasDicInfo.Master)} AND @{nameof(DBAgendaRepetirDiasDicInfo.Master)}_end" : !(filtro.Master <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.Master} = @{nameof(DBAgendaRepetirDiasDicInfo.Master)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.Master} <= @{nameof(DBAgendaRepetirDiasDicInfo.Master)}_end");
-        }
-
-        if (!filtro.Dia.IsEmpty() && filtro.Dia_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Dia <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.Dia}] >= @{nameof(DBAgendaRepetirDiasDicInfo.Dia)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Dia <= 0 && filtro.Dia_end <= 0) ? string.Empty : (!(filtro.Dia <= 0) && !(filtro.Dia_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.Dia} BETWEEN @{nameof(DBAgendaRepetirDiasDicInfo.Dia)} AND @{nameof(DBAgendaRepetirDiasDicInfo.Dia)}_end" : !(filtro.Dia <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.Dia} = @{nameof(DBAgendaRepetirDiasDicInfo.Dia)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.Dia} <= @{nameof(DBAgendaRepetirDiasDicInfo.Dia)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.HoraFinal}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBAgendaRepetirDiasDicInfo.HoraFinal)}, 'HH:mm') AND FORMAT(@{nameof(DBAgendaRepetirDiasDicInfo.HoraFinal)}_end, 'HH:mm')");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Master.IsEmptyX()) && filtro.Master_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.CampoCodigo}] >= @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Master.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.Master}] = @{nameof(DBAgendaRepetirDiasDicInfo.Master)}");
         }
-        else
+        else if (!(filtro.Master.IsEmptyX()) && !(filtro.Master_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.CampoCodigo} BETWEEN @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)} AND @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.CampoCodigo} = @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaRepetirDiasDicInfo.CampoCodigo} <= @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].{DBAgendaRepetirDiasDicInfo.Master} BETWEEN @{nameof(DBAgendaRepetirDiasDicInfo.Master)} AND @{nameof(DBAgendaRepetirDiasDicInfo.Master)}_end");
+        }
+
+        if (!(filtro.Dia.IsEmptyX()) && filtro.Dia_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Dia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.Dia}] = @{nameof(DBAgendaRepetirDiasDicInfo.Dia)}");
+        }
+        else if (!(filtro.Dia.IsEmptyX()) && !(filtro.Dia_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].{DBAgendaRepetirDiasDicInfo.Dia} BETWEEN @{nameof(DBAgendaRepetirDiasDicInfo.Dia)} AND @{nameof(DBAgendaRepetirDiasDicInfo.Dia)}_end");
+        }
+
+        if (!(filtro.Hora.IsEmptyDX()) && filtro.Hora_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.Hora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.Hora}], 'HH:mm') = FORMAT(@{nameof(DBAgendaRepetirDiasDicInfo.Hora)}, 'HH:mm')");
+        }
+        else if (!(filtro.Hora.IsEmptyDX()) && !(filtro.Hora_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.Hora}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBAgendaRepetirDiasDicInfo.Hora)}, 'HH:mm') AND FORMAT(@{nameof(DBAgendaRepetirDiasDicInfo.Hora)}_end, 'HH:mm')");
+        }
+
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].[{DBAgendaRepetirDiasDicInfo.CampoCodigo}] = @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaRepetirDiasDicInfo.PTabelaNome}].{DBAgendaRepetirDiasDicInfo.CampoCodigo} BETWEEN @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)} AND @{nameof(DBAgendaRepetirDiasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -86,6 +128,16 @@ public partial class AgendaRepetirDiasService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAgendaRepetirDias? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<AgendaRepetirDiasResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

@@ -16,6 +16,8 @@ public partial class DBSetorODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBSetorDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBSetorDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

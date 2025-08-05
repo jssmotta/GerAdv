@@ -21,13 +21,13 @@ public class CargosValidation : ICargosValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var advogadosExists0 = await advogadosService.Filter(new Filters.FilterAdvogados { Cargo = id }, uri);
+        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Cargo = id }, uri);
         if (advogadosExists0 != null && advogadosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.");
-        var colaboradoresExists1 = await colaboradoresService.Filter(new Filters.FilterColaboradores { Cargo = id }, uri);
+        var colaboradoresExists1 = await colaboradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { Cargo = id }, uri);
         if (colaboradoresExists1 != null && colaboradoresExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.");
-        var funcionariosExists2 = await funcionariosService.Filter(new Filters.FilterFuncionarios { Cargo = id }, uri);
+        var funcionariosExists2 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Cargo = id }, uri);
         if (funcionariosExists2 != null && funcionariosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
         return true;

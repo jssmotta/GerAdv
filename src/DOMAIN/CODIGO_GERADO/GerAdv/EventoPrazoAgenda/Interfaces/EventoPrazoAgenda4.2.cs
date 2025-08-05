@@ -10,7 +10,7 @@ public partial interface IEventoPrazoAgendaReader
     EventoPrazoAgendaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     EventoPrazoAgendaResponse? Read(FEventoPrazoAgenda dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     EventoPrazoAgendaResponseAll? ReadAll(FEventoPrazoAgenda dbRec, IDataRecord dr);
     EventoPrazoAgendaResponseAll? ReadAll(SG.GerAdv.DBEventoPrazoAgenda dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

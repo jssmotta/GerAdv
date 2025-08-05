@@ -8,28 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class PontoVirtualService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPontoVirtual filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPontoVirtual filtro)
     {
         var parameters = new List<SqlParameter>();
-        if (!filtro.HoraEntrada.IsEmpty())
+        if (!filtro.HoraEntrada.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraEntrada, out var dataParam))
                 parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.HoraEntrada)}", dataParam));
         }
 
-        if (!filtro.HoraEntrada_end.IsEmpty())
+        if (!filtro.HoraEntrada_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraEntrada_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.HoraEntrada)}_end", dataParam));
         }
 
-        if (!filtro.HoraSaida.IsEmpty())
+        if (!filtro.HoraSaida.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraSaida, out var dataParam))
                 parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.HoraSaida)}", dataParam));
         }
 
-        if (!filtro.HoraSaida_end.IsEmpty())
+        if (!filtro.HoraSaida_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraSaida_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.HoraSaida)}_end", dataParam));
@@ -55,45 +55,45 @@ public partial class PontoVirtualService
             parameters.Add(new($"@{nameof(DBPontoVirtualDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.HoraEntrada.IsEmpty() && filtro.HoraEntrada_end.IsEmpty())
+        if (!(filtro.HoraEntrada.IsEmptyDX()) && filtro.HoraEntrada_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.HoraEntrada.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.HoraEntrada}], 103) >= CONVERT(DATE, @{nameof(DBPontoVirtualDicInfo.HoraEntrada)}, 103)");
+            cWhere.Append(filtro.HoraEntrada.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.HoraEntrada}], 103) = CONVERT(DATE, @{nameof(DBPontoVirtualDicInfo.HoraEntrada)}, 103)");
         }
-        else
+        else if (!(filtro.HoraEntrada.IsEmptyDX()) && !(filtro.HoraEntrada_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.HoraEntrada.IsEmpty() && filtro.HoraEntrada_end.IsEmpty()) ? string.Empty : (!(filtro.HoraEntrada.IsEmpty()) && !(filtro.HoraEntrada_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.HoraEntrada} BETWEEN @{nameof(DBPontoVirtualDicInfo.HoraEntrada)} AND @{nameof(DBPontoVirtualDicInfo.HoraEntrada)}_end" : !(filtro.HoraEntrada.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.HoraEntrada} = @{nameof(DBPontoVirtualDicInfo.HoraEntrada)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.HoraEntrada} <= @{nameof(DBPontoVirtualDicInfo.HoraEntrada)}_end");
-        }
-
-        if (!filtro.HoraSaida.IsEmpty() && filtro.HoraSaida_end.IsEmpty())
-        {
-            cWhere.Append(filtro.HoraSaida.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.HoraSaida}], 103) >= CONVERT(DATE, @{nameof(DBPontoVirtualDicInfo.HoraSaida)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.HoraSaida.IsEmpty() && filtro.HoraSaida_end.IsEmpty()) ? string.Empty : (!(filtro.HoraSaida.IsEmpty()) && !(filtro.HoraSaida_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.HoraSaida} BETWEEN @{nameof(DBPontoVirtualDicInfo.HoraSaida)} AND @{nameof(DBPontoVirtualDicInfo.HoraSaida)}_end" : !(filtro.HoraSaida.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.HoraSaida} = @{nameof(DBPontoVirtualDicInfo.HoraSaida)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.HoraSaida} <= @{nameof(DBPontoVirtualDicInfo.HoraSaida)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].{DBPontoVirtualDicInfo.HoraEntrada} BETWEEN @{nameof(DBPontoVirtualDicInfo.HoraEntrada)} AND @{nameof(DBPontoVirtualDicInfo.HoraEntrada)}_end");
         }
 
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.Operador}] = @{nameof(DBPontoVirtualDicInfo.Operador)}");
-        cWhere.Append(filtro.Key.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.Key}]  {DevourerConsts.MsiCollate} like @{nameof(DBPontoVirtualDicInfo.Key)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.HoraSaida.IsEmptyDX()) && filtro.HoraSaida_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.CampoCodigo}] >= @{nameof(DBPontoVirtualDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.HoraSaida.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.HoraSaida}], 103) = CONVERT(DATE, @{nameof(DBPontoVirtualDicInfo.HoraSaida)}, 103)");
         }
-        else
+        else if (!(filtro.HoraSaida.IsEmptyDX()) && !(filtro.HoraSaida_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.CampoCodigo} BETWEEN @{nameof(DBPontoVirtualDicInfo.CampoCodigo)} AND @{nameof(DBPontoVirtualDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.CampoCodigo} = @{nameof(DBPontoVirtualDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualDicInfo.CampoCodigo} <= @{nameof(DBPontoVirtualDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].{DBPontoVirtualDicInfo.HoraSaida} BETWEEN @{nameof(DBPontoVirtualDicInfo.HoraSaida)} AND @{nameof(DBPontoVirtualDicInfo.HoraSaida)}_end");
+        }
+
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.Operador}] = @{nameof(DBPontoVirtualDicInfo.Operador)}");
+        cWhere.Append(filtro.Key.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.Key}]  {DevourerConsts.MsiCollate} like @{nameof(DBPontoVirtualDicInfo.Key)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].[{DBPontoVirtualDicInfo.CampoCodigo}] = @{nameof(DBPontoVirtualDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualDicInfo.PTabelaNome}].{DBPontoVirtualDicInfo.CampoCodigo} BETWEEN @{nameof(DBPontoVirtualDicInfo.CampoCodigo)} AND @{nameof(DBPontoVirtualDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -102,6 +102,16 @@ public partial class PontoVirtualService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterPontoVirtual? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<PontoVirtualResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

@@ -21,7 +21,7 @@ public class LigacoesHealthCheck(IOptions<AppSettings> appSettings, LigacoesServ
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class LigacoesHealthCheck(IOptions<AppSettings> appSettings, LigacoesServ
                     {
                         if (DBLigacoesDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ligCodigo) FROM {"Ligacoes".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(ligCodigo) FROM {"Ligacoes".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) ligAssunto,ligAgeClienteAvisado,ligCelular,ligCliente,ligContato,ligDataRealizada,ligQuemID,ligTelefonista,ligUltimoAviso,ligHoraFinal,ligNome,ligQuemCodigo,ligSolicitante,ligPara,ligFone,ligRamal,ligParticular,ligRealizada,ligStatus,ligData,ligHora,ligUrgente,ligLigarPara,ligProcesso,ligStartScreen,ligEmotion,ligGUID FROM {"Ligacoes".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) ligAssunto,ligAgeClienteAvisado,ligCelular,ligCliente,ligContato,ligDataRealizada,ligQuemID,ligTelefonista,ligUltimoAviso,ligHoraFinal,ligNome,ligQuemCodigo,ligSolicitante,ligPara,ligFone,ligRamal,ligParticular,ligRealizada,ligStatus,ligData,ligHora,ligUrgente,ligLigarPara,ligProcesso,ligStartScreen,ligEmotion,ligGUID FROM {"Ligacoes".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Ligacoes successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Ligacoes successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

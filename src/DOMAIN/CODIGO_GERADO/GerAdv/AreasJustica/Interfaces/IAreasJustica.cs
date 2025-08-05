@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAreasJusticaService
 {
-    Task<IEnumerable<AreasJusticaResponseAll>> Filter(Filters.FilterAreasJustica filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AreasJusticaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAreasJustica filter, [FromRoute, Required] string uri = "");
     Task<AreasJusticaResponse?> AddAndUpdate(Models.AreasJustica regAreasJustica, [FromRoute, Required] string uri = "");
     Task<AreasJusticaResponse?> Validation(Models.AreasJustica regAreasJustica, [FromRoute, Required] string uri = "");
     Task<AreasJusticaResponse?> Delete(int id, [FromRoute, Required] string uri = "");

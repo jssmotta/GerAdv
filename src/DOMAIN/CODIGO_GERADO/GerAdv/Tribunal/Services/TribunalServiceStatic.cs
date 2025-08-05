@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TribunalService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTribunal filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTribunal filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -61,33 +61,33 @@ public partial class TribunalService
             parameters.Add(new($"@{nameof(DBTribunalDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Nome)}");
-        cWhere.Append(filtro.Area <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Area}] = @{nameof(DBTribunalDicInfo.Area)}");
-        cWhere.Append(filtro.Justica <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Justica}] = @{nameof(DBTribunalDicInfo.Justica)}");
-        cWhere.Append(filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Descricao)}");
-        cWhere.Append(filtro.Instancia <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Instancia}] = @{nameof(DBTribunalDicInfo.Instancia)}");
-        cWhere.Append(filtro.Sigla.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Sigla}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Sigla)}");
-        cWhere.Append(filtro.Web.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Web}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Web)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Nome)}");
+        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Area}] = @{nameof(DBTribunalDicInfo.Area)}");
+        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Justica}] = @{nameof(DBTribunalDicInfo.Justica)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Descricao)}");
+        cWhere.Append(filtro.Instancia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Instancia}] = @{nameof(DBTribunalDicInfo.Instancia)}");
+        cWhere.Append(filtro.Sigla.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Sigla}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Sigla)}");
+        cWhere.Append(filtro.Web.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.Web}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.Web)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribunalDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.CampoCodigo}] >= @{nameof(DBTribunalDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].[{DBTribunalDicInfo.CampoCodigo}] = @{nameof(DBTribunalDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTribunalDicInfo.CampoCodigo} BETWEEN @{nameof(DBTribunalDicInfo.CampoCodigo)} AND @{nameof(DBTribunalDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTribunalDicInfo.CampoCodigo} = @{nameof(DBTribunalDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTribunalDicInfo.CampoCodigo} <= @{nameof(DBTribunalDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribunalDicInfo.PTabelaNome}].{DBTribunalDicInfo.CampoCodigo} BETWEEN @{nameof(DBTribunalDicInfo.CampoCodigo)} AND @{nameof(DBTribunalDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -96,6 +96,16 @@ public partial class TribunalService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterTribunal? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTribunal? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -111,7 +121,7 @@ public partial class TribunalService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Tribunal-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

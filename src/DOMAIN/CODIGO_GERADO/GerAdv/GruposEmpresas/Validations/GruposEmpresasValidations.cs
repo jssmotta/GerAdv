@@ -21,7 +21,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gruposempresascliExists0 = await gruposempresascliService.Filter(new Filters.FilterGruposEmpresasCli { Grupo = id }, uri);
+        var gruposempresascliExists0 = await gruposempresascliService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresasCli { Grupo = id }, uri);
         if (gruposempresascliExists0 != null && gruposempresascliExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas Cli associados a ele.");
         return true;

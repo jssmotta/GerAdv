@@ -135,13 +135,14 @@ public partial class DBSituacao
             updateTool.Fields(DBSituacaoDicInfo.Parte_Int, m_FParte_Int, ETiposCampos.FString);
         if (pFldFParte_Opo)
             updateTool.Fields(DBSituacaoDicInfo.Parte_Opo, m_FParte_Opo, ETiposCampos.FString);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBSituacaoDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBSituacaoDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Situacao)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -165,4 +166,5 @@ public partial class DBSituacao
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

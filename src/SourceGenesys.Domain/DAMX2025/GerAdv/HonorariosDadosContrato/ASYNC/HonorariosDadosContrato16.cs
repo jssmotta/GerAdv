@@ -133,9 +133,9 @@ public partial class DBHonorariosDadosContrato
     {
         if (pFldFCliente)
             updateTool.Fields(DBHonorariosDadosContratoDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-        if (pFldFFixo)
+        if (pFldFFixo || updateTool.Insert)
             updateTool.Fields(DBHonorariosDadosContratoDicInfo.Fixo, m_FFixo, ETiposCampos.FBoolean);
-        if (pFldFVariavel)
+        if (pFldFVariavel || updateTool.Insert)
             updateTool.Fields(DBHonorariosDadosContratoDicInfo.Variavel, m_FVariavel, ETiposCampos.FBoolean);
         if (pFldFPercSucesso)
             updateTool.Fields(DBHonorariosDadosContratoDicInfo.PercSucesso, m_FPercSucesso, ETiposCampos.FDecimal);
@@ -156,6 +156,7 @@ public partial class DBHonorariosDadosContrato
     }
 
 #endif
+#if (!NOTSTORED_HonorariosDadosContrato)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -179,4 +180,5 @@ public partial class DBHonorariosDadosContrato
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

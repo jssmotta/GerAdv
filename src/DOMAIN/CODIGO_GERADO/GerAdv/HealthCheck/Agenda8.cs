@@ -21,7 +21,7 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
                     {
                         if (DBAgendaDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(ageCodigo) FROM {"Agenda".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(ageCodigo) FROM {"Agenda".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) ageIDCOB,ageClienteAvisado,ageRevisarP2,ageIDNE,ageCidade,ageOculto,ageCartaPrecatoria,ageRevisar,ageHrFinal,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageDecisao,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente,ageGUID FROM {"Agenda".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) ageIDCOB,ageClienteAvisado,ageRevisarP2,ageIDNE,ageCidade,ageOculto,ageCartaPrecatoria,ageRevisar,ageHrFinal,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageDecisao,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente,ageGUID FROM {"Agenda".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Agenda successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Agenda successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

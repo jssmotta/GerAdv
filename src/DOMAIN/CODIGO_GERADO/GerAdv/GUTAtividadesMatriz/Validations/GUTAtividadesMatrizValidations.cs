@@ -71,7 +71,7 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
 
     private async Task<bool> IsDuplicado(Models.GUTAtividadesMatriz reg, IGUTAtividadesMatrizService service, string uri)
     {
-        var existingGUTAtividadesMatriz = (await service.Filter(new Filters.FilterGUTAtividadesMatriz { GUTAtividade = reg.GUTAtividade, GUTMatriz = reg.GUTMatriz }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingGUTAtividadesMatriz = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTAtividade = reg.GUTAtividade, GUTMatriz = reg.GUTMatriz }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingGUTAtividadesMatriz != null && existingGUTAtividadesMatriz.Id > 0 && existingGUTAtividadesMatriz.Id != reg.Id;
     }
 }

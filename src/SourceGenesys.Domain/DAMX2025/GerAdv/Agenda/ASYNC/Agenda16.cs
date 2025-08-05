@@ -133,9 +133,9 @@ public partial class DBAgenda
     {
         if (pFldFIDCOB)
             updateTool.Fields(DBAgendaDicInfo.IDCOB, m_FIDCOB, ETiposCampos.FNumber);
-        if (pFldFClienteAvisado)
+        if (pFldFClienteAvisado || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.ClienteAvisado, m_FClienteAvisado, ETiposCampos.FBoolean);
-        if (pFldFRevisarP2)
+        if (pFldFRevisarP2 || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.RevisarP2, m_FRevisarP2, ETiposCampos.FBoolean);
         if (pFldFIDNE)
             updateTool.Fields(DBAgendaDicInfo.IDNE, m_FIDNE, ETiposCampos.FNumber);
@@ -145,7 +145,7 @@ public partial class DBAgenda
             updateTool.Fields(DBAgendaDicInfo.Oculto, m_FOculto, ETiposCampos.FNumber);
         if (pFldFCartaPrecatoria)
             updateTool.Fields(DBAgendaDicInfo.CartaPrecatoria, m_FCartaPrecatoria, ETiposCampos.FNumber);
-        if (pFldFRevisar)
+        if (pFldFRevisar || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.Revisar, m_FRevisar, ETiposCampos.FBoolean);
         if (pFldFHrFinal)
             updateTool.Fields(DBAgendaDicInfo.HrFinal, m_FHrFinal, ETiposCampos.FDate);
@@ -169,11 +169,11 @@ public partial class DBAgenda
             updateTool.Fields(DBAgendaDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumber);
         if (pFldFCliente)
             updateTool.Fields(DBAgendaDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-        if (pFldFLiberado)
+        if (pFldFLiberado || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.Liberado, m_FLiberado, ETiposCampos.FBoolean);
-        if (pFldFImportante)
+        if (pFldFImportante || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.Importante, m_FImportante, ETiposCampos.FBoolean);
-        if (pFldFConcluido)
+        if (pFldFConcluido || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
         if (pFldFArea)
             updateTool.Fields(DBAgendaDicInfo.Area, m_FArea, ETiposCampos.FNumber);
@@ -207,13 +207,14 @@ public partial class DBAgenda
             updateTool.Fields(DBAgendaDicInfo.ProtocoloIntegrado, m_FProtocoloIntegrado, ETiposCampos.FNumber);
         if (pFldFDataInicioPrazo)
             updateTool.Fields(DBAgendaDicInfo.DataInicioPrazo, m_FDataInicioPrazo, ETiposCampos.FDate);
-        if (pFldFUsuarioCiente)
+        if (pFldFUsuarioCiente || updateTool.Insert)
             updateTool.Fields(DBAgendaDicInfo.UsuarioCiente, m_FUsuarioCiente, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBAgendaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_Agenda)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -237,4 +238,5 @@ public partial class DBAgenda
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

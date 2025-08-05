@@ -36,7 +36,7 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IFPo
         return result;
     }
 
-    public async Task<IEnumerable<PontoVirtualResponseAll>> Filter(Filters.FilterPontoVirtual filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<PontoVirtualResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterPontoVirtual filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
@@ -45,16 +45,22 @@ public partial class PontoVirtualService(IOptions<AppSettings> appSettings, IFPo
             throw new DatabaseConnectionException();
         }
 
+        if (max <= 0)
+        {
+            max = BaseConsts.PMaxItens;
+        }
+
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter> parameters = filtroResult?.parametros ?? [];
-        var cacheKey = $"{uri}-PontoVirtual-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var filterHash = GetFilterHash(filtro);
+        var cacheKey = $"{uri}-{max}-PontoVirtual-Filter-{where.GetHashCode2()}{filterHash}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
+        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
         return result;
     }
 

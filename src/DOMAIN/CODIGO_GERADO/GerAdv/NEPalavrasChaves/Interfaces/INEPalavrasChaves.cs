@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface INEPalavrasChavesService
 {
-    Task<IEnumerable<NEPalavrasChavesResponseAll>> Filter(Filters.FilterNEPalavrasChaves filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<NEPalavrasChavesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterNEPalavrasChaves filter, [FromRoute, Required] string uri = "");
     Task<NEPalavrasChavesResponse?> AddAndUpdate(Models.NEPalavrasChaves regNEPalavrasChaves, [FromRoute, Required] string uri = "");
     Task<NEPalavrasChavesResponse?> Validation(Models.NEPalavrasChaves regNEPalavrasChaves, [FromRoute, Required] string uri = "");
     Task<NEPalavrasChavesResponse?> Delete(int id, [FromRoute, Required] string uri = "");

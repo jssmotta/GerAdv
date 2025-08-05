@@ -16,6 +16,8 @@ public partial class DBAgendaSemanaODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAgendaSemanaDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAgendaSemanaDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

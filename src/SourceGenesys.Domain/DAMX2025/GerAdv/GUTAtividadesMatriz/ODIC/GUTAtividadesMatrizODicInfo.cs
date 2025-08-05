@@ -16,6 +16,8 @@ public partial class DBGUTAtividadesMatrizODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBGUTAtividadesMatrizDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBGUTAtividadesMatrizDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

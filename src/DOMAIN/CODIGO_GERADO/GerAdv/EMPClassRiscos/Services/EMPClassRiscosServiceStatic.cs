@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class EMPClassRiscosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEMPClassRiscos filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEMPClassRiscos filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -31,27 +31,27 @@ public partial class EMPClassRiscosService
             parameters.Add(new($"@{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].[{DBEMPClassRiscosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBEMPClassRiscosDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].[{DBEMPClassRiscosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBEMPClassRiscosDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].[{DBEMPClassRiscosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBEMPClassRiscosDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].[{DBEMPClassRiscosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBEMPClassRiscosDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].[{DBEMPClassRiscosDicInfo.CampoCodigo}] >= @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].[{DBEMPClassRiscosDicInfo.CampoCodigo}] = @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEMPClassRiscosDicInfo.CampoCodigo} BETWEEN @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)} AND @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEMPClassRiscosDicInfo.CampoCodigo} = @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBEMPClassRiscosDicInfo.CampoCodigo} <= @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEMPClassRiscosDicInfo.PTabelaNome}].{DBEMPClassRiscosDicInfo.CampoCodigo} BETWEEN @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)} AND @{nameof(DBEMPClassRiscosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -60,6 +60,16 @@ public partial class EMPClassRiscosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterEMPClassRiscos? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEMPClassRiscos? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -75,7 +85,7 @@ public partial class EMPClassRiscosService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-EMPClassRiscos-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

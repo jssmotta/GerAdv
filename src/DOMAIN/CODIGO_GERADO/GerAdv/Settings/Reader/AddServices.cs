@@ -24,7 +24,6 @@ public static class AddServices
         builder.Services.AddScoped<IAreaReader, AreaReader>();
         builder.Services.AddScoped<IAreasJusticaReader, AreasJusticaReader>();
         builder.Services.AddScoped<IAtividadesReader, AtividadesReader>();
-        builder.Services.AddScoped<IAuditor4KReader, Auditor4KReader>();
         builder.Services.AddScoped<IBensClassificacaoReader, BensClassificacaoReader>();
         builder.Services.AddScoped<IBensMateriaisReader, BensMateriaisReader>();
         builder.Services.AddScoped<ICargosReader, CargosReader>();

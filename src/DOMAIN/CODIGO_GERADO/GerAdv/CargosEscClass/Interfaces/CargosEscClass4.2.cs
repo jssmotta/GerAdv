@@ -10,7 +10,7 @@ public partial interface ICargosEscClassReader
     CargosEscClassResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     CargosEscClassResponse? Read(FCargosEscClass dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     CargosEscClassResponseAll? ReadAll(FCargosEscClass dbRec, IDataRecord dr);
     CargosEscClassResponseAll? ReadAll(SG.GerAdv.DBCargosEscClass dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

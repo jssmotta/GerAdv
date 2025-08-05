@@ -21,10 +21,10 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(new Filters.FilterAgenda { TipoCompromisso = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { TipoCompromisso = id }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var necompromissosExists1 = await necompromissosService.Filter(new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
+        var necompromissosExists1 = await necompromissosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
         if (necompromissosExists1 != null && necompromissosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Compromissos associados a ele.");
         return true;

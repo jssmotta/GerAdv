@@ -24,15 +24,15 @@ public partial class CargosEscController(ICargosEscService cargosescService) : C
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterCargosEsc filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterCargosEsc filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("CargosEsc: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _cargosescService.Filter(filtro, uri);
+        //_logger.Info("CargosEsc: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _cargosescService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

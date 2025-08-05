@@ -10,7 +10,7 @@ public partial interface IFuncaoReader
     FuncaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     FuncaoResponse? Read(FFuncao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     FuncaoResponseAll? ReadAll(FFuncao dbRec, IDataRecord dr);
     FuncaoResponseAll? ReadAll(SG.GerAdv.DBFuncao dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

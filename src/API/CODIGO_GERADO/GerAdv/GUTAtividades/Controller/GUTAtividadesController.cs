@@ -24,15 +24,15 @@ public partial class GUTAtividadesController(IGUTAtividadesService gutatividades
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTAtividades filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTAtividades filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("GUTAtividades: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _gutatividadesService.Filter(filtro, uri);
+        //_logger.Info("GUTAtividades: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _gutatividadesService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

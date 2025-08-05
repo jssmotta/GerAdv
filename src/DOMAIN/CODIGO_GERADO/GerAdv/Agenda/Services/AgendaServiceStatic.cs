@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AgendaService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgenda filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAgenda filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.IDCOB != int.MinValue)
@@ -71,6 +71,18 @@ public partial class AgendaService
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.Revisar)}", filtro.Revisar));
         }
 
+        if (!filtro.HrFinal.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.HrFinal, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaDicInfo.HrFinal)}", dataParam));
+        }
+
+        if (!filtro.HrFinal_end.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.HrFinal_end, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaDicInfo.HrFinal)}_end", dataParam));
+        }
+
         if (filtro.Advogado != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.Advogado)}", filtro.Advogado));
@@ -86,13 +98,13 @@ public partial class AgendaService
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.EventoGerador)}_end", filtro.EventoGerador_end));
         }
 
-        if (!filtro.EventoData.IsEmpty())
+        if (!filtro.EventoData.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.EventoData, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAgendaDicInfo.EventoData)}", dataParam));
         }
 
-        if (!filtro.EventoData_end.IsEmpty())
+        if (!filtro.EventoData_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.EventoData_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAgendaDicInfo.EventoData)}_end", dataParam));
@@ -116,6 +128,18 @@ public partial class AgendaService
         if (filtro.EventoPrazo_end != int.MinValue)
         {
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.EventoPrazo)}_end", filtro.EventoPrazo_end));
+        }
+
+        if (!filtro.Hora.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.Hora, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaDicInfo.Hora)}", dataParam));
+        }
+
+        if (!filtro.Hora_end.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.Hora_end, out var dataParam))
+                parameters.Add(new($"@{nameof(DBAgendaDicInfo.Hora)}_end", dataParam));
         }
 
         if (!string.IsNullOrEmpty(filtro.Compromisso))
@@ -268,13 +292,13 @@ public partial class AgendaService
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}_end", filtro.ProtocoloIntegrado_end));
         }
 
-        if (!filtro.DataInicioPrazo.IsEmpty())
+        if (!filtro.DataInicioPrazo.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataInicioPrazo, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAgendaDicInfo.DataInicioPrazo)}", dataParam));
         }
 
-        if (!filtro.DataInicioPrazo_end.IsEmpty())
+        if (!filtro.DataInicioPrazo_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataInicioPrazo_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBAgendaDicInfo.DataInicioPrazo)}_end", dataParam));
@@ -300,199 +324,217 @@ public partial class AgendaService
             parameters.Add(new($"@{nameof(DBAgendaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.IDCOB.IsEmpty() && filtro.IDCOB_end.IsEmpty())
+        if (!(filtro.IDCOB.IsEmptyX()) && filtro.IDCOB_end.IsEmptyX())
         {
-            cWhere.Append(filtro.IDCOB <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDCOB}] >= @{nameof(DBAgendaDicInfo.IDCOB)}");
+            cWhere.Append(filtro.IDCOB.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDCOB}] = @{nameof(DBAgendaDicInfo.IDCOB)}");
         }
-        else
+        else if (!(filtro.IDCOB.IsEmptyX()) && !(filtro.IDCOB_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.IDCOB <= 0 && filtro.IDCOB_end <= 0) ? string.Empty : (!(filtro.IDCOB <= 0) && !(filtro.IDCOB_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDCOB} BETWEEN @{nameof(DBAgendaDicInfo.IDCOB)} AND @{nameof(DBAgendaDicInfo.IDCOB)}_end" : !(filtro.IDCOB <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDCOB} = @{nameof(DBAgendaDicInfo.IDCOB)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDCOB} <= @{nameof(DBAgendaDicInfo.IDCOB)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.IDCOB} BETWEEN @{nameof(DBAgendaDicInfo.IDCOB)} AND @{nameof(DBAgendaDicInfo.IDCOB)}_end");
         }
 
         cWhere.Append(filtro.ClienteAvisado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.ClienteAvisado}] = @{nameof(DBAgendaDicInfo.ClienteAvisado)}");
         cWhere.Append(filtro.RevisarP2 == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.RevisarP2}] = @{nameof(DBAgendaDicInfo.RevisarP2)}");
-        if (!filtro.IDNE.IsEmpty() && filtro.IDNE_end.IsEmpty())
+        if (!(filtro.IDNE.IsEmptyX()) && filtro.IDNE_end.IsEmptyX())
         {
-            cWhere.Append(filtro.IDNE <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDNE}] >= @{nameof(DBAgendaDicInfo.IDNE)}");
+            cWhere.Append(filtro.IDNE.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDNE}] = @{nameof(DBAgendaDicInfo.IDNE)}");
         }
-        else
+        else if (!(filtro.IDNE.IsEmptyX()) && !(filtro.IDNE_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.IDNE <= 0 && filtro.IDNE_end <= 0) ? string.Empty : (!(filtro.IDNE <= 0) && !(filtro.IDNE_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDNE} BETWEEN @{nameof(DBAgendaDicInfo.IDNE)} AND @{nameof(DBAgendaDicInfo.IDNE)}_end" : !(filtro.IDNE <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDNE} = @{nameof(DBAgendaDicInfo.IDNE)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDNE} <= @{nameof(DBAgendaDicInfo.IDNE)}_end");
-        }
-
-        cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cidade}] = @{nameof(DBAgendaDicInfo.Cidade)}");
-        if (!filtro.Oculto.IsEmpty() && filtro.Oculto_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Oculto <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Oculto}] >= @{nameof(DBAgendaDicInfo.Oculto)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Oculto <= 0 && filtro.Oculto_end <= 0) ? string.Empty : (!(filtro.Oculto <= 0) && !(filtro.Oculto_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Oculto} BETWEEN @{nameof(DBAgendaDicInfo.Oculto)} AND @{nameof(DBAgendaDicInfo.Oculto)}_end" : !(filtro.Oculto <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Oculto} = @{nameof(DBAgendaDicInfo.Oculto)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Oculto} <= @{nameof(DBAgendaDicInfo.Oculto)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.IDNE} BETWEEN @{nameof(DBAgendaDicInfo.IDNE)} AND @{nameof(DBAgendaDicInfo.IDNE)}_end");
         }
 
-        if (!filtro.CartaPrecatoria.IsEmpty() && filtro.CartaPrecatoria_end.IsEmpty())
+        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cidade}] = @{nameof(DBAgendaDicInfo.Cidade)}");
+        if (!(filtro.Oculto.IsEmptyX()) && filtro.Oculto_end.IsEmptyX())
         {
-            cWhere.Append(filtro.CartaPrecatoria <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.CartaPrecatoria}] >= @{nameof(DBAgendaDicInfo.CartaPrecatoria)}");
+            cWhere.Append(filtro.Oculto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Oculto}] = @{nameof(DBAgendaDicInfo.Oculto)}");
         }
-        else
+        else if (!(filtro.Oculto.IsEmptyX()) && !(filtro.Oculto_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.CartaPrecatoria <= 0 && filtro.CartaPrecatoria_end <= 0) ? string.Empty : (!(filtro.CartaPrecatoria <= 0) && !(filtro.CartaPrecatoria_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.CartaPrecatoria} BETWEEN @{nameof(DBAgendaDicInfo.CartaPrecatoria)} AND @{nameof(DBAgendaDicInfo.CartaPrecatoria)}_end" : !(filtro.CartaPrecatoria <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.CartaPrecatoria} = @{nameof(DBAgendaDicInfo.CartaPrecatoria)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.CartaPrecatoria} <= @{nameof(DBAgendaDicInfo.CartaPrecatoria)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.Oculto} BETWEEN @{nameof(DBAgendaDicInfo.Oculto)} AND @{nameof(DBAgendaDicInfo.Oculto)}_end");
+        }
+
+        if (!(filtro.CartaPrecatoria.IsEmptyX()) && filtro.CartaPrecatoria_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.CartaPrecatoria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.CartaPrecatoria}] = @{nameof(DBAgendaDicInfo.CartaPrecatoria)}");
+        }
+        else if (!(filtro.CartaPrecatoria.IsEmptyX()) && !(filtro.CartaPrecatoria_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.CartaPrecatoria} BETWEEN @{nameof(DBAgendaDicInfo.CartaPrecatoria)} AND @{nameof(DBAgendaDicInfo.CartaPrecatoria)}_end");
         }
 
         cWhere.Append(filtro.Revisar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Revisar}] = @{nameof(DBAgendaDicInfo.Revisar)}");
-        cWhere.Append(filtro.Advogado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Advogado}] = @{nameof(DBAgendaDicInfo.Advogado)}");
-        if (!filtro.EventoGerador.IsEmpty() && filtro.EventoGerador_end.IsEmpty())
+        if (!(filtro.HrFinal.IsEmptyDX()) && filtro.HrFinal_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.EventoGerador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.EventoGerador}] >= @{nameof(DBAgendaDicInfo.EventoGerador)}");
+            cWhere.Append(filtro.HrFinal.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.HrFinal}], 'HH:mm') = FORMAT(@{nameof(DBAgendaDicInfo.HrFinal)}, 'HH:mm')");
         }
-        else
+        else if (!(filtro.HrFinal.IsEmptyDX()) && !(filtro.HrFinal_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.EventoGerador <= 0 && filtro.EventoGerador_end <= 0) ? string.Empty : (!(filtro.EventoGerador <= 0) && !(filtro.EventoGerador_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoGerador} BETWEEN @{nameof(DBAgendaDicInfo.EventoGerador)} AND @{nameof(DBAgendaDicInfo.EventoGerador)}_end" : !(filtro.EventoGerador <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoGerador} = @{nameof(DBAgendaDicInfo.EventoGerador)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoGerador} <= @{nameof(DBAgendaDicInfo.EventoGerador)}_end");
-        }
-
-        if (!filtro.EventoData.IsEmpty() && filtro.EventoData_end.IsEmpty())
-        {
-            cWhere.Append(filtro.EventoData.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.EventoData}], 103) >= CONVERT(DATE, @{nameof(DBAgendaDicInfo.EventoData)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.EventoData.IsEmpty() && filtro.EventoData_end.IsEmpty()) ? string.Empty : (!(filtro.EventoData.IsEmpty()) && !(filtro.EventoData_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoData} BETWEEN @{nameof(DBAgendaDicInfo.EventoData)} AND @{nameof(DBAgendaDicInfo.EventoData)}_end" : !(filtro.EventoData.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoData} = @{nameof(DBAgendaDicInfo.EventoData)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoData} <= @{nameof(DBAgendaDicInfo.EventoData)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.HrFinal}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBAgendaDicInfo.HrFinal)}, 'HH:mm') AND FORMAT(@{nameof(DBAgendaDicInfo.HrFinal)}_end, 'HH:mm')");
         }
 
-        cWhere.Append(filtro.Funcionario <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Funcionario}] = @{nameof(DBAgendaDicInfo.Funcionario)}");
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Data)}");
-        if (!filtro.EventoPrazo.IsEmpty() && filtro.EventoPrazo_end.IsEmpty())
+        cWhere.Append(filtro.Advogado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Advogado}] = @{nameof(DBAgendaDicInfo.Advogado)}");
+        if (!(filtro.EventoGerador.IsEmptyX()) && filtro.EventoGerador_end.IsEmptyX())
         {
-            cWhere.Append(filtro.EventoPrazo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.EventoPrazo}] >= @{nameof(DBAgendaDicInfo.EventoPrazo)}");
+            cWhere.Append(filtro.EventoGerador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.EventoGerador}] = @{nameof(DBAgendaDicInfo.EventoGerador)}");
         }
-        else
+        else if (!(filtro.EventoGerador.IsEmptyX()) && !(filtro.EventoGerador_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.EventoPrazo <= 0 && filtro.EventoPrazo_end <= 0) ? string.Empty : (!(filtro.EventoPrazo <= 0) && !(filtro.EventoPrazo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoPrazo} BETWEEN @{nameof(DBAgendaDicInfo.EventoPrazo)} AND @{nameof(DBAgendaDicInfo.EventoPrazo)}_end" : !(filtro.EventoPrazo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoPrazo} = @{nameof(DBAgendaDicInfo.EventoPrazo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.EventoPrazo} <= @{nameof(DBAgendaDicInfo.EventoPrazo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.EventoGerador} BETWEEN @{nameof(DBAgendaDicInfo.EventoGerador)} AND @{nameof(DBAgendaDicInfo.EventoGerador)}_end");
         }
 
-        cWhere.Append(filtro.Compromisso.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Compromisso}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Compromisso)}");
-        cWhere.Append(filtro.TipoCompromisso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.TipoCompromisso}] = @{nameof(DBAgendaDicInfo.TipoCompromisso)}");
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cliente}] = @{nameof(DBAgendaDicInfo.Cliente)}");
+        if (!(filtro.EventoData.IsEmptyDX()) && filtro.EventoData_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.EventoData.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.EventoData}], 103) = CONVERT(DATE, @{nameof(DBAgendaDicInfo.EventoData)}, 103)");
+        }
+        else if (!(filtro.EventoData.IsEmptyDX()) && !(filtro.EventoData_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.EventoData} BETWEEN @{nameof(DBAgendaDicInfo.EventoData)} AND @{nameof(DBAgendaDicInfo.EventoData)}_end");
+        }
+
+        cWhere.Append(filtro.Funcionario.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Funcionario}] = @{nameof(DBAgendaDicInfo.Funcionario)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Data)}");
+        if (!(filtro.EventoPrazo.IsEmptyX()) && filtro.EventoPrazo_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.EventoPrazo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.EventoPrazo}] = @{nameof(DBAgendaDicInfo.EventoPrazo)}");
+        }
+        else if (!(filtro.EventoPrazo.IsEmptyX()) && !(filtro.EventoPrazo_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.EventoPrazo} BETWEEN @{nameof(DBAgendaDicInfo.EventoPrazo)} AND @{nameof(DBAgendaDicInfo.EventoPrazo)}_end");
+        }
+
+        if (!(filtro.Hora.IsEmptyDX()) && filtro.Hora_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.Hora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Hora}], 'HH:mm') = FORMAT(@{nameof(DBAgendaDicInfo.Hora)}, 'HH:mm')");
+        }
+        else if (!(filtro.Hora.IsEmptyDX()) && !(filtro.Hora_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Hora}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBAgendaDicInfo.Hora)}, 'HH:mm') AND FORMAT(@{nameof(DBAgendaDicInfo.Hora)}_end, 'HH:mm')");
+        }
+
+        cWhere.Append(filtro.Compromisso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Compromisso}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Compromisso)}");
+        cWhere.Append(filtro.TipoCompromisso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.TipoCompromisso}] = @{nameof(DBAgendaDicInfo.TipoCompromisso)}");
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Cliente}] = @{nameof(DBAgendaDicInfo.Cliente)}");
         cWhere.Append(filtro.Liberado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Liberado}] = @{nameof(DBAgendaDicInfo.Liberado)}");
         cWhere.Append(filtro.Importante == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Importante}] = @{nameof(DBAgendaDicInfo.Importante)}");
         cWhere.Append(filtro.Concluido == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Concluido}] = @{nameof(DBAgendaDicInfo.Concluido)}");
-        cWhere.Append(filtro.Area <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Area}] = @{nameof(DBAgendaDicInfo.Area)}");
-        cWhere.Append(filtro.Justica <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Justica}] = @{nameof(DBAgendaDicInfo.Justica)}");
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Area}] = @{nameof(DBAgendaDicInfo.Area)}");
+        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Justica}] = @{nameof(DBAgendaDicInfo.Justica)}");
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Processo}] >= @{nameof(DBAgendaDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Processo}] = @{nameof(DBAgendaDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Processo} BETWEEN @{nameof(DBAgendaDicInfo.Processo)} AND @{nameof(DBAgendaDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Processo} = @{nameof(DBAgendaDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Processo} <= @{nameof(DBAgendaDicInfo.Processo)}_end");
-        }
-
-        if (!filtro.IDHistorico.IsEmpty() && filtro.IDHistorico_end.IsEmpty())
-        {
-            cWhere.Append(filtro.IDHistorico <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDHistorico}] >= @{nameof(DBAgendaDicInfo.IDHistorico)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.IDHistorico <= 0 && filtro.IDHistorico_end <= 0) ? string.Empty : (!(filtro.IDHistorico <= 0) && !(filtro.IDHistorico_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDHistorico} BETWEEN @{nameof(DBAgendaDicInfo.IDHistorico)} AND @{nameof(DBAgendaDicInfo.IDHistorico)}_end" : !(filtro.IDHistorico <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDHistorico} = @{nameof(DBAgendaDicInfo.IDHistorico)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDHistorico} <= @{nameof(DBAgendaDicInfo.IDHistorico)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.Processo} BETWEEN @{nameof(DBAgendaDicInfo.Processo)} AND @{nameof(DBAgendaDicInfo.Processo)}_end");
         }
 
-        if (!filtro.IDInsProcesso.IsEmpty() && filtro.IDInsProcesso_end.IsEmpty())
+        if (!(filtro.IDHistorico.IsEmptyX()) && filtro.IDHistorico_end.IsEmptyX())
         {
-            cWhere.Append(filtro.IDInsProcesso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDInsProcesso}] >= @{nameof(DBAgendaDicInfo.IDInsProcesso)}");
+            cWhere.Append(filtro.IDHistorico.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDHistorico}] = @{nameof(DBAgendaDicInfo.IDHistorico)}");
         }
-        else
+        else if (!(filtro.IDHistorico.IsEmptyX()) && !(filtro.IDHistorico_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.IDInsProcesso <= 0 && filtro.IDInsProcesso_end <= 0) ? string.Empty : (!(filtro.IDInsProcesso <= 0) && !(filtro.IDInsProcesso_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDInsProcesso} BETWEEN @{nameof(DBAgendaDicInfo.IDInsProcesso)} AND @{nameof(DBAgendaDicInfo.IDInsProcesso)}_end" : !(filtro.IDInsProcesso <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDInsProcesso} = @{nameof(DBAgendaDicInfo.IDInsProcesso)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.IDInsProcesso} <= @{nameof(DBAgendaDicInfo.IDInsProcesso)}_end");
-        }
-
-        cWhere.Append(filtro.Usuario <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Usuario}] = @{nameof(DBAgendaDicInfo.Usuario)}");
-        cWhere.Append(filtro.Preposto <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Preposto}] = @{nameof(DBAgendaDicInfo.Preposto)}");
-        if (!filtro.QuemID.IsEmpty() && filtro.QuemID_end.IsEmpty())
-        {
-            cWhere.Append(filtro.QuemID <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.QuemID}] >= @{nameof(DBAgendaDicInfo.QuemID)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.QuemID <= 0 && filtro.QuemID_end <= 0) ? string.Empty : (!(filtro.QuemID <= 0) && !(filtro.QuemID_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.QuemID} BETWEEN @{nameof(DBAgendaDicInfo.QuemID)} AND @{nameof(DBAgendaDicInfo.QuemID)}_end" : !(filtro.QuemID <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.QuemID} = @{nameof(DBAgendaDicInfo.QuemID)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.QuemID} <= @{nameof(DBAgendaDicInfo.QuemID)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.IDHistorico} BETWEEN @{nameof(DBAgendaDicInfo.IDHistorico)} AND @{nameof(DBAgendaDicInfo.IDHistorico)}_end");
         }
 
-        if (!filtro.QuemCodigo.IsEmpty() && filtro.QuemCodigo_end.IsEmpty())
+        if (!(filtro.IDInsProcesso.IsEmptyX()) && filtro.IDInsProcesso_end.IsEmptyX())
         {
-            cWhere.Append(filtro.QuemCodigo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.QuemCodigo}] >= @{nameof(DBAgendaDicInfo.QuemCodigo)}");
+            cWhere.Append(filtro.IDInsProcesso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.IDInsProcesso}] = @{nameof(DBAgendaDicInfo.IDInsProcesso)}");
         }
-        else
+        else if (!(filtro.IDInsProcesso.IsEmptyX()) && !(filtro.IDInsProcesso_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.QuemCodigo <= 0 && filtro.QuemCodigo_end <= 0) ? string.Empty : (!(filtro.QuemCodigo <= 0) && !(filtro.QuemCodigo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.QuemCodigo} BETWEEN @{nameof(DBAgendaDicInfo.QuemCodigo)} AND @{nameof(DBAgendaDicInfo.QuemCodigo)}_end" : !(filtro.QuemCodigo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.QuemCodigo} = @{nameof(DBAgendaDicInfo.QuemCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.QuemCodigo} <= @{nameof(DBAgendaDicInfo.QuemCodigo)}_end");
-        }
-
-        cWhere.Append(filtro.Status.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Status}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Status)}");
-        if (!filtro.Valor.IsEmpty() && filtro.Valor_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Valor}] >= @{nameof(DBAgendaDicInfo.Valor)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Valor == decimal.MinValue && filtro.Valor_end == decimal.MinValue) ? string.Empty : (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Valor} BETWEEN @{nameof(DBAgendaDicInfo.Valor)} AND @{nameof(DBAgendaDicInfo.Valor)}_end" : !(filtro.Valor == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Valor} = @{nameof(DBAgendaDicInfo.Valor)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Valor} <= @{nameof(DBAgendaDicInfo.Valor)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.IDInsProcesso} BETWEEN @{nameof(DBAgendaDicInfo.IDInsProcesso)} AND @{nameof(DBAgendaDicInfo.IDInsProcesso)}_end");
         }
 
-        cWhere.Append(filtro.Decisao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Decisao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Decisao)}");
-        if (!filtro.Sempre.IsEmpty() && filtro.Sempre_end.IsEmpty())
+        cWhere.Append(filtro.Usuario.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Usuario}] = @{nameof(DBAgendaDicInfo.Usuario)}");
+        cWhere.Append(filtro.Preposto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Preposto}] = @{nameof(DBAgendaDicInfo.Preposto)}");
+        if (!(filtro.QuemID.IsEmptyX()) && filtro.QuemID_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Sempre <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Sempre}] >= @{nameof(DBAgendaDicInfo.Sempre)}");
+            cWhere.Append(filtro.QuemID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.QuemID}] = @{nameof(DBAgendaDicInfo.QuemID)}");
         }
-        else
+        else if (!(filtro.QuemID.IsEmptyX()) && !(filtro.QuemID_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Sempre <= 0 && filtro.Sempre_end <= 0) ? string.Empty : (!(filtro.Sempre <= 0) && !(filtro.Sempre_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Sempre} BETWEEN @{nameof(DBAgendaDicInfo.Sempre)} AND @{nameof(DBAgendaDicInfo.Sempre)}_end" : !(filtro.Sempre <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Sempre} = @{nameof(DBAgendaDicInfo.Sempre)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.Sempre} <= @{nameof(DBAgendaDicInfo.Sempre)}_end");
-        }
-
-        if (!filtro.PrazoDias.IsEmpty() && filtro.PrazoDias_end.IsEmpty())
-        {
-            cWhere.Append(filtro.PrazoDias <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.PrazoDias}] >= @{nameof(DBAgendaDicInfo.PrazoDias)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.PrazoDias <= 0 && filtro.PrazoDias_end <= 0) ? string.Empty : (!(filtro.PrazoDias <= 0) && !(filtro.PrazoDias_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.PrazoDias} BETWEEN @{nameof(DBAgendaDicInfo.PrazoDias)} AND @{nameof(DBAgendaDicInfo.PrazoDias)}_end" : !(filtro.PrazoDias <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.PrazoDias} = @{nameof(DBAgendaDicInfo.PrazoDias)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.PrazoDias} <= @{nameof(DBAgendaDicInfo.PrazoDias)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.QuemID} BETWEEN @{nameof(DBAgendaDicInfo.QuemID)} AND @{nameof(DBAgendaDicInfo.QuemID)}_end");
         }
 
-        if (!filtro.ProtocoloIntegrado.IsEmpty() && filtro.ProtocoloIntegrado_end.IsEmpty())
+        if (!(filtro.QuemCodigo.IsEmptyX()) && filtro.QuemCodigo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.ProtocoloIntegrado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.ProtocoloIntegrado}] >= @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}");
+            cWhere.Append(filtro.QuemCodigo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.QuemCodigo}] = @{nameof(DBAgendaDicInfo.QuemCodigo)}");
         }
-        else
+        else if (!(filtro.QuemCodigo.IsEmptyX()) && !(filtro.QuemCodigo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.ProtocoloIntegrado <= 0 && filtro.ProtocoloIntegrado_end <= 0) ? string.Empty : (!(filtro.ProtocoloIntegrado <= 0) && !(filtro.ProtocoloIntegrado_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.ProtocoloIntegrado} BETWEEN @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)} AND @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}_end" : !(filtro.ProtocoloIntegrado <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.ProtocoloIntegrado} = @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.ProtocoloIntegrado} <= @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.QuemCodigo} BETWEEN @{nameof(DBAgendaDicInfo.QuemCodigo)} AND @{nameof(DBAgendaDicInfo.QuemCodigo)}_end");
         }
 
-        if (!filtro.DataInicioPrazo.IsEmpty() && filtro.DataInicioPrazo_end.IsEmpty())
+        cWhere.Append(filtro.Status.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Status}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Status)}");
+        if (!(filtro.Valor == decimal.MinValue) && filtro.Valor_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.DataInicioPrazo.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.DataInicioPrazo}], 103) >= CONVERT(DATE, @{nameof(DBAgendaDicInfo.DataInicioPrazo)}, 103)");
+            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Valor}] = @{nameof(DBAgendaDicInfo.Valor)}");
         }
-        else
+        else if (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue))
         {
-            cWhere.Append((filtro.DataInicioPrazo.IsEmpty() && filtro.DataInicioPrazo_end.IsEmpty()) ? string.Empty : (!(filtro.DataInicioPrazo.IsEmpty()) && !(filtro.DataInicioPrazo_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.DataInicioPrazo} BETWEEN @{nameof(DBAgendaDicInfo.DataInicioPrazo)} AND @{nameof(DBAgendaDicInfo.DataInicioPrazo)}_end" : !(filtro.DataInicioPrazo.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.DataInicioPrazo} = @{nameof(DBAgendaDicInfo.DataInicioPrazo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.DataInicioPrazo} <= @{nameof(DBAgendaDicInfo.DataInicioPrazo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.Valor} BETWEEN @{nameof(DBAgendaDicInfo.Valor)} AND @{nameof(DBAgendaDicInfo.Valor)}_end");
+        }
+
+        cWhere.Append(filtro.Decisao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Decisao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.Decisao)}");
+        if (!(filtro.Sempre.IsEmptyX()) && filtro.Sempre_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Sempre.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.Sempre}] = @{nameof(DBAgendaDicInfo.Sempre)}");
+        }
+        else if (!(filtro.Sempre.IsEmptyX()) && !(filtro.Sempre_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.Sempre} BETWEEN @{nameof(DBAgendaDicInfo.Sempre)} AND @{nameof(DBAgendaDicInfo.Sempre)}_end");
+        }
+
+        if (!(filtro.PrazoDias.IsEmptyX()) && filtro.PrazoDias_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.PrazoDias.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.PrazoDias}] = @{nameof(DBAgendaDicInfo.PrazoDias)}");
+        }
+        else if (!(filtro.PrazoDias.IsEmptyX()) && !(filtro.PrazoDias_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.PrazoDias} BETWEEN @{nameof(DBAgendaDicInfo.PrazoDias)} AND @{nameof(DBAgendaDicInfo.PrazoDias)}_end");
+        }
+
+        if (!(filtro.ProtocoloIntegrado.IsEmptyX()) && filtro.ProtocoloIntegrado_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.ProtocoloIntegrado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.ProtocoloIntegrado}] = @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}");
+        }
+        else if (!(filtro.ProtocoloIntegrado.IsEmptyX()) && !(filtro.ProtocoloIntegrado_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.ProtocoloIntegrado} BETWEEN @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)} AND @{nameof(DBAgendaDicInfo.ProtocoloIntegrado)}_end");
+        }
+
+        if (!(filtro.DataInicioPrazo.IsEmptyDX()) && filtro.DataInicioPrazo_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.DataInicioPrazo.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.DataInicioPrazo}], 103) = CONVERT(DATE, @{nameof(DBAgendaDicInfo.DataInicioPrazo)}, 103)");
+        }
+        else if (!(filtro.DataInicioPrazo.IsEmptyDX()) && !(filtro.DataInicioPrazo_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.DataInicioPrazo} BETWEEN @{nameof(DBAgendaDicInfo.DataInicioPrazo)} AND @{nameof(DBAgendaDicInfo.DataInicioPrazo)}_end");
         }
 
         cWhere.Append(filtro.UsuarioCiente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.UsuarioCiente}] = @{nameof(DBAgendaDicInfo.UsuarioCiente)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAgendaDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.CampoCodigo}] >= @{nameof(DBAgendaDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].[{DBAgendaDicInfo.CampoCodigo}] = @{nameof(DBAgendaDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.CampoCodigo} BETWEEN @{nameof(DBAgendaDicInfo.CampoCodigo)} AND @{nameof(DBAgendaDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.CampoCodigo} = @{nameof(DBAgendaDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAgendaDicInfo.CampoCodigo} <= @{nameof(DBAgendaDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAgendaDicInfo.PTabelaNome}].{DBAgendaDicInfo.CampoCodigo} BETWEEN @{nameof(DBAgendaDicInfo.CampoCodigo)} AND @{nameof(DBAgendaDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -501,6 +543,16 @@ public partial class AgendaService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAgenda? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAgenda? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -516,7 +568,7 @@ public partial class AgendaService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Agenda-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

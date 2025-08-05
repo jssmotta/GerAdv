@@ -10,7 +10,7 @@ public partial interface IProcessOutputRequestReader
     ProcessOutputRequestResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProcessOutputRequestResponse? Read(FProcessOutputRequest dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ProcessOutputRequestResponseAll? ReadAll(FProcessOutputRequest dbRec, IDataRecord dr);
     ProcessOutputRequestResponseAll? ReadAll(SG.GerAdv.DBProcessOutputRequest dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ReuniaoService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterReuniao filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterReuniao filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Cliente != int.MinValue)
@@ -41,16 +41,28 @@ public partial class ReuniaoService
             parameters.Add(new($"@{nameof(DBReuniaoDicInfo.ATA)}", ApplyWildCard(filtro.WildcardChar, filtro.ATA)));
         }
 
-        if (!filtro.HoraInicial.IsEmpty())
+        if (!filtro.HoraInicial.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraInicial, out var dataParam))
                 parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraInicial)}", dataParam));
         }
 
-        if (!filtro.HoraInicial_end.IsEmpty())
+        if (!filtro.HoraInicial_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraInicial_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraInicial)}_end", dataParam));
+        }
+
+        if (!filtro.HoraFinal.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.HoraFinal, out var dataParam))
+                parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraFinal)}", dataParam));
+        }
+
+        if (!filtro.HoraFinal_end.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.HoraFinal_end, out var dataParam))
+                parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraFinal)}_end", dataParam));
         }
 
         if (filtro.Externa != int.MinValue)
@@ -58,25 +70,25 @@ public partial class ReuniaoService
             parameters.Add(new($"@{nameof(DBReuniaoDicInfo.Externa)}", filtro.Externa));
         }
 
-        if (!filtro.HoraSaida.IsEmpty())
+        if (!filtro.HoraSaida.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraSaida, out var dataParam))
                 parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraSaida)}", dataParam));
         }
 
-        if (!filtro.HoraSaida_end.IsEmpty())
+        if (!filtro.HoraSaida_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraSaida_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraSaida)}_end", dataParam));
         }
 
-        if (!filtro.HoraRetorno.IsEmpty())
+        if (!filtro.HoraRetorno.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraRetorno, out var dataParam))
                 parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraRetorno)}", dataParam));
         }
 
-        if (!filtro.HoraRetorno_end.IsEmpty())
+        if (!filtro.HoraRetorno_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.HoraRetorno_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBReuniaoDicInfo.HoraRetorno)}_end", dataParam));
@@ -102,68 +114,77 @@ public partial class ReuniaoService
             parameters.Add(new($"@{nameof(DBReuniaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Cliente}] = @{nameof(DBReuniaoDicInfo.Cliente)}");
-        if (!filtro.IDAgenda.IsEmpty() && filtro.IDAgenda_end.IsEmpty())
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Cliente}] = @{nameof(DBReuniaoDicInfo.Cliente)}");
+        if (!(filtro.IDAgenda.IsEmptyX()) && filtro.IDAgenda_end.IsEmptyX())
         {
-            cWhere.Append(filtro.IDAgenda <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.IDAgenda}] >= @{nameof(DBReuniaoDicInfo.IDAgenda)}");
+            cWhere.Append(filtro.IDAgenda.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.IDAgenda}] = @{nameof(DBReuniaoDicInfo.IDAgenda)}");
         }
-        else
+        else if (!(filtro.IDAgenda.IsEmptyX()) && !(filtro.IDAgenda_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.IDAgenda <= 0 && filtro.IDAgenda_end <= 0) ? string.Empty : (!(filtro.IDAgenda <= 0) && !(filtro.IDAgenda_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.IDAgenda} BETWEEN @{nameof(DBReuniaoDicInfo.IDAgenda)} AND @{nameof(DBReuniaoDicInfo.IDAgenda)}_end" : !(filtro.IDAgenda <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.IDAgenda} = @{nameof(DBReuniaoDicInfo.IDAgenda)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.IDAgenda} <= @{nameof(DBReuniaoDicInfo.IDAgenda)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.IDAgenda} BETWEEN @{nameof(DBReuniaoDicInfo.IDAgenda)} AND @{nameof(DBReuniaoDicInfo.IDAgenda)}_end");
         }
 
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.Data)}");
-        cWhere.Append(filtro.Pauta.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Pauta}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.Pauta)}");
-        cWhere.Append(filtro.ATA.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.ATA}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.ATA)}");
-        if (!filtro.HoraInicial.IsEmpty() && filtro.HoraInicial_end.IsEmpty())
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.Data)}");
+        cWhere.Append(filtro.Pauta.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Pauta}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.Pauta)}");
+        cWhere.Append(filtro.ATA.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.ATA}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.ATA)}");
+        if (!(filtro.HoraInicial.IsEmptyDX()) && filtro.HoraInicial_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.HoraInicial.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraInicial}], 103) >= CONVERT(DATE, @{nameof(DBReuniaoDicInfo.HoraInicial)}, 103)");
+            cWhere.Append(filtro.HoraInicial.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraInicial}], 103) = CONVERT(DATE, @{nameof(DBReuniaoDicInfo.HoraInicial)}, 103)");
         }
-        else
+        else if (!(filtro.HoraInicial.IsEmptyDX()) && !(filtro.HoraInicial_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.HoraInicial.IsEmpty() && filtro.HoraInicial_end.IsEmpty()) ? string.Empty : (!(filtro.HoraInicial.IsEmpty()) && !(filtro.HoraInicial_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraInicial} BETWEEN @{nameof(DBReuniaoDicInfo.HoraInicial)} AND @{nameof(DBReuniaoDicInfo.HoraInicial)}_end" : !(filtro.HoraInicial.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraInicial} = @{nameof(DBReuniaoDicInfo.HoraInicial)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraInicial} <= @{nameof(DBReuniaoDicInfo.HoraInicial)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.HoraInicial} BETWEEN @{nameof(DBReuniaoDicInfo.HoraInicial)} AND @{nameof(DBReuniaoDicInfo.HoraInicial)}_end");
+        }
+
+        if (!(filtro.HoraFinal.IsEmptyDX()) && filtro.HoraFinal_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.HoraFinal.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraFinal}], 'HH:mm') = FORMAT(@{nameof(DBReuniaoDicInfo.HoraFinal)}, 'HH:mm')");
+        }
+        else if (!(filtro.HoraFinal.IsEmptyDX()) && !(filtro.HoraFinal_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraFinal}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBReuniaoDicInfo.HoraFinal)}, 'HH:mm') AND FORMAT(@{nameof(DBReuniaoDicInfo.HoraFinal)}_end, 'HH:mm')");
         }
 
         cWhere.Append(filtro.Externa == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Externa}] = @{nameof(DBReuniaoDicInfo.Externa)}");
-        if (!filtro.HoraSaida.IsEmpty() && filtro.HoraSaida_end.IsEmpty())
+        if (!(filtro.HoraSaida.IsEmptyDX()) && filtro.HoraSaida_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.HoraSaida.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraSaida}], 103) >= CONVERT(DATE, @{nameof(DBReuniaoDicInfo.HoraSaida)}, 103)");
+            cWhere.Append(filtro.HoraSaida.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraSaida}], 103) = CONVERT(DATE, @{nameof(DBReuniaoDicInfo.HoraSaida)}, 103)");
         }
-        else
+        else if (!(filtro.HoraSaida.IsEmptyDX()) && !(filtro.HoraSaida_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.HoraSaida.IsEmpty() && filtro.HoraSaida_end.IsEmpty()) ? string.Empty : (!(filtro.HoraSaida.IsEmpty()) && !(filtro.HoraSaida_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraSaida} BETWEEN @{nameof(DBReuniaoDicInfo.HoraSaida)} AND @{nameof(DBReuniaoDicInfo.HoraSaida)}_end" : !(filtro.HoraSaida.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraSaida} = @{nameof(DBReuniaoDicInfo.HoraSaida)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraSaida} <= @{nameof(DBReuniaoDicInfo.HoraSaida)}_end");
-        }
-
-        if (!filtro.HoraRetorno.IsEmpty() && filtro.HoraRetorno_end.IsEmpty())
-        {
-            cWhere.Append(filtro.HoraRetorno.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraRetorno}], 103) >= CONVERT(DATE, @{nameof(DBReuniaoDicInfo.HoraRetorno)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.HoraRetorno.IsEmpty() && filtro.HoraRetorno_end.IsEmpty()) ? string.Empty : (!(filtro.HoraRetorno.IsEmpty()) && !(filtro.HoraRetorno_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraRetorno} BETWEEN @{nameof(DBReuniaoDicInfo.HoraRetorno)} AND @{nameof(DBReuniaoDicInfo.HoraRetorno)}_end" : !(filtro.HoraRetorno.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraRetorno} = @{nameof(DBReuniaoDicInfo.HoraRetorno)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.HoraRetorno} <= @{nameof(DBReuniaoDicInfo.HoraRetorno)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.HoraSaida} BETWEEN @{nameof(DBReuniaoDicInfo.HoraSaida)} AND @{nameof(DBReuniaoDicInfo.HoraSaida)}_end");
         }
 
-        cWhere.Append(filtro.PrincipaisDecisoes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.PrincipaisDecisoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.PrincipaisDecisoes)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.HoraRetorno.IsEmptyDX()) && filtro.HoraRetorno_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.CampoCodigo}] >= @{nameof(DBReuniaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.HoraRetorno.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraRetorno}], 103) = CONVERT(DATE, @{nameof(DBReuniaoDicInfo.HoraRetorno)}, 103)");
         }
-        else
+        else if (!(filtro.HoraRetorno.IsEmptyDX()) && !(filtro.HoraRetorno_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBReuniaoDicInfo.CampoCodigo)} AND @{nameof(DBReuniaoDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.CampoCodigo} = @{nameof(DBReuniaoDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBReuniaoDicInfo.CampoCodigo} <= @{nameof(DBReuniaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.HoraRetorno} BETWEEN @{nameof(DBReuniaoDicInfo.HoraRetorno)} AND @{nameof(DBReuniaoDicInfo.HoraRetorno)}_end");
+        }
+
+        cWhere.Append(filtro.PrincipaisDecisoes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.PrincipaisDecisoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.PrincipaisDecisoes)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBReuniaoDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.CampoCodigo}] = @{nameof(DBReuniaoDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBReuniaoDicInfo.CampoCodigo)} AND @{nameof(DBReuniaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -172,6 +193,16 @@ public partial class ReuniaoService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterReuniao? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterReuniao? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -187,7 +218,7 @@ public partial class ReuniaoService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Reuniao-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

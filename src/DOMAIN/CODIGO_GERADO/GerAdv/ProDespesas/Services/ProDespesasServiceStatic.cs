@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProDespesasService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProDespesas filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProDespesas filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.LigacaoID != int.MinValue)
@@ -66,13 +66,13 @@ public partial class ProDespesasService
             parameters.Add(new($"@{nameof(DBProDespesasDicInfo.Quitado)}_end", filtro.Quitado_end));
         }
 
-        if (!filtro.DataCorrecao.IsEmpty())
+        if (!filtro.DataCorrecao.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataCorrecao, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProDespesasDicInfo.DataCorrecao)}", dataParam));
         }
 
-        if (!filtro.DataCorrecao_end.IsEmpty())
+        if (!filtro.DataCorrecao_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataCorrecao_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProDespesasDicInfo.DataCorrecao)}_end", dataParam));
@@ -118,86 +118,86 @@ public partial class ProDespesasService
             parameters.Add(new($"@{nameof(DBProDespesasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.LigacaoID.IsEmpty() && filtro.LigacaoID_end.IsEmpty())
+        if (!(filtro.LigacaoID.IsEmptyX()) && filtro.LigacaoID_end.IsEmptyX())
         {
-            cWhere.Append(filtro.LigacaoID <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.LigacaoID}] >= @{nameof(DBProDespesasDicInfo.LigacaoID)}");
+            cWhere.Append(filtro.LigacaoID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.LigacaoID}] = @{nameof(DBProDespesasDicInfo.LigacaoID)}");
         }
-        else
+        else if (!(filtro.LigacaoID.IsEmptyX()) && !(filtro.LigacaoID_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.LigacaoID <= 0 && filtro.LigacaoID_end <= 0) ? string.Empty : (!(filtro.LigacaoID <= 0) && !(filtro.LigacaoID_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.LigacaoID} BETWEEN @{nameof(DBProDespesasDicInfo.LigacaoID)} AND @{nameof(DBProDespesasDicInfo.LigacaoID)}_end" : !(filtro.LigacaoID <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.LigacaoID} = @{nameof(DBProDespesasDicInfo.LigacaoID)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.LigacaoID} <= @{nameof(DBProDespesasDicInfo.LigacaoID)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.LigacaoID} BETWEEN @{nameof(DBProDespesasDicInfo.LigacaoID)} AND @{nameof(DBProDespesasDicInfo.LigacaoID)}_end");
         }
 
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Cliente}] = @{nameof(DBProDespesasDicInfo.Cliente)}");
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Cliente}] = @{nameof(DBProDespesasDicInfo.Cliente)}");
         cWhere.Append(filtro.Corrigido == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Corrigido}] = @{nameof(DBProDespesasDicInfo.Corrigido)}");
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDespesasDicInfo.Data)}");
-        if (!filtro.ValorOriginal.IsEmpty() && filtro.ValorOriginal_end.IsEmpty())
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDespesasDicInfo.Data)}");
+        if (!(filtro.ValorOriginal == decimal.MinValue) && filtro.ValorOriginal_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorOriginal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.ValorOriginal}] >= @{nameof(DBProDespesasDicInfo.ValorOriginal)}");
+            cWhere.Append(filtro.ValorOriginal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.ValorOriginal}] = @{nameof(DBProDespesasDicInfo.ValorOriginal)}");
         }
-        else
+        else if (!(filtro.ValorOriginal == decimal.MinValue) && !(filtro.ValorOriginal_end == decimal.MinValue))
         {
-            cWhere.Append((filtro.ValorOriginal == decimal.MinValue && filtro.ValorOriginal_end == decimal.MinValue) ? string.Empty : (!(filtro.ValorOriginal == decimal.MinValue) && !(filtro.ValorOriginal_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.ValorOriginal} BETWEEN @{nameof(DBProDespesasDicInfo.ValorOriginal)} AND @{nameof(DBProDespesasDicInfo.ValorOriginal)}_end" : !(filtro.ValorOriginal == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.ValorOriginal} = @{nameof(DBProDespesasDicInfo.ValorOriginal)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.ValorOriginal} <= @{nameof(DBProDespesasDicInfo.ValorOriginal)}_end");
-        }
-
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Processo}] >= @{nameof(DBProDespesasDicInfo.Processo)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Processo} BETWEEN @{nameof(DBProDespesasDicInfo.Processo)} AND @{nameof(DBProDespesasDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Processo} = @{nameof(DBProDespesasDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Processo} <= @{nameof(DBProDespesasDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.ValorOriginal} BETWEEN @{nameof(DBProDespesasDicInfo.ValorOriginal)} AND @{nameof(DBProDespesasDicInfo.ValorOriginal)}_end");
         }
 
-        if (!filtro.Quitado.IsEmpty() && filtro.Quitado_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Quitado <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Quitado}] >= @{nameof(DBProDespesasDicInfo.Quitado)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Processo}] = @{nameof(DBProDespesasDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Quitado <= 0 && filtro.Quitado_end <= 0) ? string.Empty : (!(filtro.Quitado <= 0) && !(filtro.Quitado_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Quitado} BETWEEN @{nameof(DBProDespesasDicInfo.Quitado)} AND @{nameof(DBProDespesasDicInfo.Quitado)}_end" : !(filtro.Quitado <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Quitado} = @{nameof(DBProDespesasDicInfo.Quitado)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Quitado} <= @{nameof(DBProDespesasDicInfo.Quitado)}_end");
-        }
-
-        if (!filtro.DataCorrecao.IsEmpty() && filtro.DataCorrecao_end.IsEmpty())
-        {
-            cWhere.Append(filtro.DataCorrecao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.DataCorrecao}], 103) >= CONVERT(DATE, @{nameof(DBProDespesasDicInfo.DataCorrecao)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.DataCorrecao.IsEmpty() && filtro.DataCorrecao_end.IsEmpty()) ? string.Empty : (!(filtro.DataCorrecao.IsEmpty()) && !(filtro.DataCorrecao_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.DataCorrecao} BETWEEN @{nameof(DBProDespesasDicInfo.DataCorrecao)} AND @{nameof(DBProDespesasDicInfo.DataCorrecao)}_end" : !(filtro.DataCorrecao.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.DataCorrecao} = @{nameof(DBProDespesasDicInfo.DataCorrecao)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.DataCorrecao} <= @{nameof(DBProDespesasDicInfo.DataCorrecao)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.Processo} BETWEEN @{nameof(DBProDespesasDicInfo.Processo)} AND @{nameof(DBProDespesasDicInfo.Processo)}_end");
         }
 
-        if (!filtro.Valor.IsEmpty() && filtro.Valor_end.IsEmpty())
+        if (!(filtro.Quitado.IsEmptyX()) && filtro.Quitado_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Valor}] >= @{nameof(DBProDespesasDicInfo.Valor)}");
+            cWhere.Append(filtro.Quitado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Quitado}] = @{nameof(DBProDespesasDicInfo.Quitado)}");
         }
-        else
+        else if (!(filtro.Quitado.IsEmptyX()) && !(filtro.Quitado_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Valor == decimal.MinValue && filtro.Valor_end == decimal.MinValue) ? string.Empty : (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Valor} BETWEEN @{nameof(DBProDespesasDicInfo.Valor)} AND @{nameof(DBProDespesasDicInfo.Valor)}_end" : !(filtro.Valor == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Valor} = @{nameof(DBProDespesasDicInfo.Valor)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.Valor} <= @{nameof(DBProDespesasDicInfo.Valor)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.Quitado} BETWEEN @{nameof(DBProDespesasDicInfo.Quitado)} AND @{nameof(DBProDespesasDicInfo.Quitado)}_end");
+        }
+
+        if (!(filtro.DataCorrecao.IsEmptyDX()) && filtro.DataCorrecao_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.DataCorrecao.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.DataCorrecao}], 103) = CONVERT(DATE, @{nameof(DBProDespesasDicInfo.DataCorrecao)}, 103)");
+        }
+        else if (!(filtro.DataCorrecao.IsEmptyDX()) && !(filtro.DataCorrecao_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.DataCorrecao} BETWEEN @{nameof(DBProDespesasDicInfo.DataCorrecao)} AND @{nameof(DBProDespesasDicInfo.DataCorrecao)}_end");
+        }
+
+        if (!(filtro.Valor == decimal.MinValue) && filtro.Valor_end == decimal.MinValue)
+        {
+            cWhere.Append(filtro.Valor == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Valor}] = @{nameof(DBProDespesasDicInfo.Valor)}");
+        }
+        else if (!(filtro.Valor == decimal.MinValue) && !(filtro.Valor_end == decimal.MinValue))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.Valor} BETWEEN @{nameof(DBProDespesasDicInfo.Valor)} AND @{nameof(DBProDespesasDicInfo.Valor)}_end");
         }
 
         cWhere.Append(filtro.Tipo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Tipo}] = @{nameof(DBProDespesasDicInfo.Tipo)}");
-        cWhere.Append(filtro.Historico.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Historico}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDespesasDicInfo.Historico)}");
+        cWhere.Append(filtro.Historico.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.Historico}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDespesasDicInfo.Historico)}");
         cWhere.Append(filtro.LivroCaixa == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.LivroCaixa}] = @{nameof(DBProDespesasDicInfo.LivroCaixa)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDespesasDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProDespesasDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.CampoCodigo}] >= @{nameof(DBProDespesasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].[{DBProDespesasDicInfo.CampoCodigo}] = @{nameof(DBProDespesasDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.CampoCodigo} BETWEEN @{nameof(DBProDespesasDicInfo.CampoCodigo)} AND @{nameof(DBProDespesasDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.CampoCodigo} = @{nameof(DBProDespesasDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProDespesasDicInfo.CampoCodigo} <= @{nameof(DBProDespesasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProDespesasDicInfo.PTabelaNome}].{DBProDespesasDicInfo.CampoCodigo} BETWEEN @{nameof(DBProDespesasDicInfo.CampoCodigo)} AND @{nameof(DBProDespesasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -206,6 +206,16 @@ public partial class ProDespesasService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterProDespesas? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProDespesas? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -221,7 +231,7 @@ public partial class ProDespesasService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-ProDespesas-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

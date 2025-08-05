@@ -4,8 +4,8 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IProcessosParadosReader
 {
-    Task<ProcessosParadosResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.ProcessosParados?> ReadM(int id, MsiSqlConnection oCnn);
+    Task<ProcessosParadosResponse?> Read(long id, MsiSqlConnection oCnn);
+    Task<Models.ProcessosParados?> ReadM(long id, MsiSqlConnection oCnn);
     ProcessosParadosResponse? Read(FProcessosParados dbRec, MsiSqlConnection oCnn);
     ProcessosParadosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProcessosParadosResponse? Read(FProcessosParados dbRec);

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IGUTPeriodicidadeService
 {
-    Task<IEnumerable<GUTPeriodicidadeResponseAll>> Filter(Filters.FilterGUTPeriodicidade filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<GUTPeriodicidadeResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidade filter, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeResponse?> AddAndUpdate(Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeResponse?> Validation(Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeResponse?> Delete(int id, [FromRoute, Required] string uri = "");

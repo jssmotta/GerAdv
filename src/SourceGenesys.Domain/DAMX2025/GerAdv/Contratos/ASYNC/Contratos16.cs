@@ -145,7 +145,7 @@ public partial class DBContratos
             updateTool.Fields(DBContratosDicInfo.DataInicio, m_FDataInicio, ETiposCampos.FDate);
         if (pFldFDataTermino)
             updateTool.Fields(DBContratosDicInfo.DataTermino, m_FDataTermino, ETiposCampos.FDate);
-        if (pFldFOcultarRelatorio)
+        if (pFldFOcultarRelatorio || updateTool.Insert)
             updateTool.Fields(DBContratosDicInfo.OcultarRelatorio, m_FOcultarRelatorio, ETiposCampos.FBoolean);
         if (pFldFPercEscritorio)
             updateTool.Fields(DBContratosDicInfo.PercEscritorio, m_FPercEscritorio, ETiposCampos.FDecimal);
@@ -181,9 +181,9 @@ public partial class DBContratos
             updateTool.Fields(DBContratosDicInfo.IdExtrangeiro, m_FIdExtrangeiro, ETiposCampos.FNumber);
         if (pFldFChaveContrato)
             updateTool.Fields(DBContratosDicInfo.ChaveContrato, m_FChaveContrato, ETiposCampos.FString);
-        if (pFldFAvulso)
+        if (pFldFAvulso || updateTool.Insert)
             updateTool.Fields(DBContratosDicInfo.Avulso, m_FAvulso, ETiposCampos.FBoolean);
-        if (pFldFSuspenso)
+        if (pFldFSuspenso || updateTool.Insert)
             updateTool.Fields(DBContratosDicInfo.Suspenso, m_FSuspenso, ETiposCampos.FBoolean);
         if (pFldFMulta)
             updateTool.Fields(DBContratosDicInfo.Multa, m_FMulta, ETiposCampos.FString);
@@ -192,6 +192,7 @@ public partial class DBContratos
     }
 
 #endif
+#if (!NOTSTORED_Contratos)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -215,4 +216,5 @@ public partial class DBContratos
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

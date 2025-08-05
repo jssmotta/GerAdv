@@ -24,15 +24,15 @@ public partial class PreClientesController(IPreClientesService preclientesServic
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterPreClientes filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterPreClientes filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("PreClientes: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _preclientesService.Filter(filtro, uri);
+        //_logger.Info("PreClientes: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _preclientesService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

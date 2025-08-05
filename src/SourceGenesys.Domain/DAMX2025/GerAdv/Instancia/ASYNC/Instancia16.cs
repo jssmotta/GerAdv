@@ -137,19 +137,19 @@ public partial class DBInstancia
             updateTool.Fields(DBInstanciaDicInfo.Objeto, m_FObjeto, ETiposCampos.FString);
         if (pFldFStatusResultado)
             updateTool.Fields(DBInstanciaDicInfo.StatusResultado, m_FStatusResultado, ETiposCampos.FNumber);
-        if (pFldFLiminarPendente)
+        if (pFldFLiminarPendente || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.LiminarPendente, m_FLiminarPendente, ETiposCampos.FBoolean);
-        if (pFldFInterpusemosRecurso)
+        if (pFldFInterpusemosRecurso || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.InterpusemosRecurso, m_FInterpusemosRecurso, ETiposCampos.FBoolean);
-        if (pFldFLiminarConcedida)
+        if (pFldFLiminarConcedida || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.LiminarConcedida, m_FLiminarConcedida, ETiposCampos.FBoolean);
-        if (pFldFLiminarNegada)
+        if (pFldFLiminarNegada || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.LiminarNegada, m_FLiminarNegada, ETiposCampos.FBoolean);
         if (pFldFProcesso)
             updateTool.Fields(DBInstanciaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFData)
             updateTool.Fields(DBInstanciaDicInfo.Data, m_FData, ETiposCampos.FString);
-        if (pFldFLiminarParcial)
+        if (pFldFLiminarParcial || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.LiminarParcial, m_FLiminarParcial, ETiposCampos.FBoolean);
         if (pFldFLiminarResultado)
             updateTool.Fields(DBInstanciaDicInfo.LiminarResultado, m_FLiminarResultado, ETiposCampos.FString);
@@ -157,13 +157,13 @@ public partial class DBInstancia
             updateTool.Fields(DBInstanciaDicInfo.NroProcesso, m_FNroProcesso, ETiposCampos.FString);
         if (pFldFDivisao)
             updateTool.Fields(DBInstanciaDicInfo.Divisao, m_FDivisao, ETiposCampos.FNumber);
-        if (pFldFLiminarCliente)
+        if (pFldFLiminarCliente || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.LiminarCliente, m_FLiminarCliente, ETiposCampos.FBoolean);
         if (pFldFComarca)
             updateTool.Fields(DBInstanciaDicInfo.Comarca, m_FComarca, ETiposCampos.FNumber);
         if (pFldFSubDivisao)
             updateTool.Fields(DBInstanciaDicInfo.SubDivisao, m_FSubDivisao, ETiposCampos.FNumber);
-        if (pFldFPrincipal)
+        if (pFldFPrincipal || updateTool.Insert)
             updateTool.Fields(DBInstanciaDicInfo.Principal, m_FPrincipal, ETiposCampos.FBoolean);
         if (pFldFAcao)
             updateTool.Fields(DBInstanciaDicInfo.Acao, m_FAcao, ETiposCampos.FNumber);
@@ -190,6 +190,7 @@ public partial class DBInstancia
     }
 
 #endif
+#if (!NOTSTORED_Instancia)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -213,4 +214,5 @@ public partial class DBInstancia
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

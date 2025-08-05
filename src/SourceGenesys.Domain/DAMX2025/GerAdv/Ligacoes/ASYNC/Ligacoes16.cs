@@ -135,7 +135,7 @@ public partial class DBLigacoes
             updateTool.Fields(DBLigacoesDicInfo.Assunto, m_FAssunto, ETiposCampos.FString);
         if (pFldFAgeClienteAvisado)
             updateTool.Fields(DBLigacoesDicInfo.AgeClienteAvisado, m_FAgeClienteAvisado, ETiposCampos.FNumber);
-        if (pFldFCelular)
+        if (pFldFCelular || updateTool.Insert)
             updateTool.Fields(DBLigacoesDicInfo.Celular, m_FCelular, ETiposCampos.FBoolean);
         if (pFldFCliente)
             updateTool.Fields(DBLigacoesDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
@@ -163,9 +163,9 @@ public partial class DBLigacoes
             updateTool.Fields(DBLigacoesDicInfo.Fone, m_FFone, ETiposCampos.FString);
         if (pFldFRamal)
             updateTool.Fields(DBLigacoesDicInfo.Ramal, m_FRamal, ETiposCampos.FNumber);
-        if (pFldFParticular)
+        if (pFldFParticular || updateTool.Insert)
             updateTool.Fields(DBLigacoesDicInfo.Particular, m_FParticular, ETiposCampos.FBoolean);
-        if (pFldFRealizada)
+        if (pFldFRealizada || updateTool.Insert)
             updateTool.Fields(DBLigacoesDicInfo.Realizada, m_FRealizada, ETiposCampos.FBoolean);
         if (pFldFStatus)
             updateTool.Fields(DBLigacoesDicInfo.Status, m_FStatus, ETiposCampos.FString);
@@ -173,13 +173,13 @@ public partial class DBLigacoes
             updateTool.Fields(DBLigacoesDicInfo.Data, m_FData, ETiposCampos.FString);
         if (pFldFHora)
             updateTool.Fields(DBLigacoesDicInfo.Hora, m_FHora, ETiposCampos.FDate);
-        if (pFldFUrgente)
+        if (pFldFUrgente || updateTool.Insert)
             updateTool.Fields(DBLigacoesDicInfo.Urgente, m_FUrgente, ETiposCampos.FBoolean);
         if (pFldFLigarPara)
             updateTool.Fields(DBLigacoesDicInfo.LigarPara, m_FLigarPara, ETiposCampos.FString);
         if (pFldFProcesso)
             updateTool.Fields(DBLigacoesDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
-        if (pFldFStartScreen)
+        if (pFldFStartScreen || updateTool.Insert)
             updateTool.Fields(DBLigacoesDicInfo.StartScreen, m_FStartScreen, ETiposCampos.FBoolean);
         if (pFldFEmotion)
             updateTool.Fields(DBLigacoesDicInfo.Emotion, m_FEmotion, ETiposCampos.FNumber);
@@ -188,6 +188,7 @@ public partial class DBLigacoes
     }
 
 #endif
+#if (!NOTSTORED_Ligacoes)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -211,4 +212,5 @@ public partial class DBLigacoes
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

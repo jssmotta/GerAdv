@@ -24,15 +24,15 @@ public partial class TribEnderecosController(ITribEnderecosService tribenderecos
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TribEnderecos: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _tribenderecosService.Filter(filtro, uri);
+        //_logger.Info("TribEnderecos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _tribenderecosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class NENotasService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNENotas filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNENotas filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Apenso != int.MinValue)
@@ -96,68 +96,68 @@ public partial class NENotasService
             parameters.Add(new($"@{nameof(DBNENotasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Apenso.IsEmpty() && filtro.Apenso_end.IsEmpty())
+        if (!(filtro.Apenso.IsEmptyX()) && filtro.Apenso_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Apenso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Apenso}] >= @{nameof(DBNENotasDicInfo.Apenso)}");
+            cWhere.Append(filtro.Apenso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Apenso}] = @{nameof(DBNENotasDicInfo.Apenso)}");
         }
-        else
+        else if (!(filtro.Apenso.IsEmptyX()) && !(filtro.Apenso_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Apenso <= 0 && filtro.Apenso_end <= 0) ? string.Empty : (!(filtro.Apenso <= 0) && !(filtro.Apenso_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Apenso} BETWEEN @{nameof(DBNENotasDicInfo.Apenso)} AND @{nameof(DBNENotasDicInfo.Apenso)}_end" : !(filtro.Apenso <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Apenso} = @{nameof(DBNENotasDicInfo.Apenso)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Apenso} <= @{nameof(DBNENotasDicInfo.Apenso)}_end");
-        }
-
-        if (!filtro.Precatoria.IsEmpty() && filtro.Precatoria_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Precatoria <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Precatoria}] >= @{nameof(DBNENotasDicInfo.Precatoria)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Precatoria <= 0 && filtro.Precatoria_end <= 0) ? string.Empty : (!(filtro.Precatoria <= 0) && !(filtro.Precatoria_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Precatoria} BETWEEN @{nameof(DBNENotasDicInfo.Precatoria)} AND @{nameof(DBNENotasDicInfo.Precatoria)}_end" : !(filtro.Precatoria <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Precatoria} = @{nameof(DBNENotasDicInfo.Precatoria)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Precatoria} <= @{nameof(DBNENotasDicInfo.Precatoria)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Apenso} BETWEEN @{nameof(DBNENotasDicInfo.Apenso)} AND @{nameof(DBNENotasDicInfo.Apenso)}_end");
         }
 
-        cWhere.Append(filtro.Instancia <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Instancia}] = @{nameof(DBNENotasDicInfo.Instancia)}");
+        if (!(filtro.Precatoria.IsEmptyX()) && filtro.Precatoria_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Precatoria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Precatoria}] = @{nameof(DBNENotasDicInfo.Precatoria)}");
+        }
+        else if (!(filtro.Precatoria.IsEmptyX()) && !(filtro.Precatoria_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Precatoria} BETWEEN @{nameof(DBNENotasDicInfo.Precatoria)} AND @{nameof(DBNENotasDicInfo.Precatoria)}_end");
+        }
+
+        cWhere.Append(filtro.Instancia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Instancia}] = @{nameof(DBNENotasDicInfo.Instancia)}");
         cWhere.Append(filtro.MovPro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.MovPro}] = @{nameof(DBNENotasDicInfo.MovPro)}");
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.Nome)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.Nome)}");
         cWhere.Append(filtro.NotaExpedida == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaExpedida}] = @{nameof(DBNENotasDicInfo.NotaExpedida)}");
         cWhere.Append(filtro.Revisada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Revisada}] = @{nameof(DBNENotasDicInfo.Revisada)}");
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Processo}] >= @{nameof(DBNENotasDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Processo}] = @{nameof(DBNENotasDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Processo} BETWEEN @{nameof(DBNENotasDicInfo.Processo)} AND @{nameof(DBNENotasDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Processo} = @{nameof(DBNENotasDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.Processo} <= @{nameof(DBNENotasDicInfo.Processo)}_end");
-        }
-
-        if (!filtro.PalavraChave.IsEmpty() && filtro.PalavraChave_end.IsEmpty())
-        {
-            cWhere.Append(filtro.PalavraChave <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.PalavraChave}] >= @{nameof(DBNENotasDicInfo.PalavraChave)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.PalavraChave <= 0 && filtro.PalavraChave_end <= 0) ? string.Empty : (!(filtro.PalavraChave <= 0) && !(filtro.PalavraChave_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.PalavraChave} BETWEEN @{nameof(DBNENotasDicInfo.PalavraChave)} AND @{nameof(DBNENotasDicInfo.PalavraChave)}_end" : !(filtro.PalavraChave <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.PalavraChave} = @{nameof(DBNENotasDicInfo.PalavraChave)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.PalavraChave} <= @{nameof(DBNENotasDicInfo.PalavraChave)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Processo} BETWEEN @{nameof(DBNENotasDicInfo.Processo)} AND @{nameof(DBNENotasDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.Data)}");
-        cWhere.Append(filtro.NotaPublicada.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaPublicada}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.NotaPublicada)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.PalavraChave.IsEmptyX()) && filtro.PalavraChave_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.CampoCodigo}] >= @{nameof(DBNENotasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.PalavraChave.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.PalavraChave}] = @{nameof(DBNENotasDicInfo.PalavraChave)}");
         }
-        else
+        else if (!(filtro.PalavraChave.IsEmptyX()) && !(filtro.PalavraChave_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.CampoCodigo} BETWEEN @{nameof(DBNENotasDicInfo.CampoCodigo)} AND @{nameof(DBNENotasDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.CampoCodigo} = @{nameof(DBNENotasDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNENotasDicInfo.CampoCodigo} <= @{nameof(DBNENotasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.PalavraChave} BETWEEN @{nameof(DBNENotasDicInfo.PalavraChave)} AND @{nameof(DBNENotasDicInfo.PalavraChave)}_end");
+        }
+
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.Data)}");
+        cWhere.Append(filtro.NotaPublicada.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaPublicada}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.NotaPublicada)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.CampoCodigo}] = @{nameof(DBNENotasDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.CampoCodigo} BETWEEN @{nameof(DBNENotasDicInfo.CampoCodigo)} AND @{nameof(DBNENotasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -166,6 +166,16 @@ public partial class NENotasService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterNENotas? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterNENotas? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -181,7 +191,7 @@ public partial class NENotasService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-NENotas-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

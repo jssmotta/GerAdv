@@ -141,7 +141,7 @@ public partial class DBGUTAtividades
             updateTool.Fields(DBGUTAtividadesDicInfo.GUTPeriodicidade, m_FGUTPeriodicidade, ETiposCampos.FNumber);
         if (pFldFOperador)
             updateTool.Fields(DBGUTAtividadesDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
-        if (pFldFConcluido)
+        if (pFldFConcluido || updateTool.Insert)
             updateTool.Fields(DBGUTAtividadesDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
         if (pFldFDataConcluido)
             updateTool.Fields(DBGUTAtividadesDicInfo.DataConcluido, m_FDataConcluido, ETiposCampos.FDate);
@@ -154,6 +154,7 @@ public partial class DBGUTAtividades
     }
 
 #endif
+#if (!NOTSTORED_GUTAtividades)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -177,4 +178,5 @@ public partial class DBGUTAtividades
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

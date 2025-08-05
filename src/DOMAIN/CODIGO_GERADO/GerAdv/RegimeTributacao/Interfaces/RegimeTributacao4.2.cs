@@ -10,7 +10,7 @@ public partial interface IRegimeTributacaoReader
     RegimeTributacaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     RegimeTributacaoResponse? Read(FRegimeTributacao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     RegimeTributacaoResponseAll? ReadAll(FRegimeTributacao dbRec, IDataRecord dr);
     RegimeTributacaoResponseAll? ReadAll(SG.GerAdv.DBRegimeTributacao dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

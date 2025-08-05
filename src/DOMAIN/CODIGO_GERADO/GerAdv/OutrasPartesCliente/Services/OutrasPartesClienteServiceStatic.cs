@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class OutrasPartesClienteService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOutrasPartesCliente filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOutrasPartesCliente filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -41,13 +41,13 @@ public partial class OutrasPartesClienteService
             parameters.Add(new($"@{nameof(DBOutrasPartesClienteDicInfo.Sexo)}", filtro.Sexo));
         }
 
-        if (!filtro.DtNasc.IsEmpty())
+        if (!filtro.DtNasc.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DtNasc, out var dataParam))
                 parameters.Add(new($"@{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}", dataParam));
         }
 
-        if (!filtro.DtNasc_end.IsEmpty())
+        if (!filtro.DtNasc_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DtNasc_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}_end", dataParam));
@@ -138,62 +138,62 @@ public partial class OutrasPartesClienteService
             parameters.Add(new($"@{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Nome)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Nome)}");
         cWhere.Append(filtro.Terceirizado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Terceirizado}] = @{nameof(DBOutrasPartesClienteDicInfo.Terceirizado)}");
-        if (!filtro.ClientePrincipal.IsEmpty() && filtro.ClientePrincipal_end.IsEmpty())
+        if (!(filtro.ClientePrincipal.IsEmptyX()) && filtro.ClientePrincipal_end.IsEmptyX())
         {
-            cWhere.Append(filtro.ClientePrincipal <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.ClientePrincipal}] >= @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)}");
+            cWhere.Append(filtro.ClientePrincipal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.ClientePrincipal}] = @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)}");
         }
-        else
+        else if (!(filtro.ClientePrincipal.IsEmptyX()) && !(filtro.ClientePrincipal_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.ClientePrincipal <= 0 && filtro.ClientePrincipal_end <= 0) ? string.Empty : (!(filtro.ClientePrincipal <= 0) && !(filtro.ClientePrincipal_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.ClientePrincipal} BETWEEN @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)} AND @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)}_end" : !(filtro.ClientePrincipal <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.ClientePrincipal} = @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.ClientePrincipal} <= @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].{DBOutrasPartesClienteDicInfo.ClientePrincipal} BETWEEN @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)} AND @{nameof(DBOutrasPartesClienteDicInfo.ClientePrincipal)}_end");
         }
 
         cWhere.Append(filtro.Tipo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Tipo}] = @{nameof(DBOutrasPartesClienteDicInfo.Tipo)}");
         cWhere.Append(filtro.Sexo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Sexo}] = @{nameof(DBOutrasPartesClienteDicInfo.Sexo)}");
-        if (!filtro.DtNasc.IsEmpty() && filtro.DtNasc_end.IsEmpty())
+        if (!(filtro.DtNasc.IsEmptyDX()) && filtro.DtNasc_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DtNasc.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.DtNasc}], 103) >= CONVERT(DATE, @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}, 103)");
+            cWhere.Append(filtro.DtNasc.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.DtNasc}], 103) = CONVERT(DATE, @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}, 103)");
         }
-        else
+        else if (!(filtro.DtNasc.IsEmptyDX()) && !(filtro.DtNasc_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DtNasc.IsEmpty() && filtro.DtNasc_end.IsEmpty()) ? string.Empty : (!(filtro.DtNasc.IsEmpty()) && !(filtro.DtNasc_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.DtNasc} BETWEEN @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)} AND @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}_end" : !(filtro.DtNasc.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.DtNasc} = @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.DtNasc} <= @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].{DBOutrasPartesClienteDicInfo.DtNasc} BETWEEN @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)} AND @{nameof(DBOutrasPartesClienteDicInfo.DtNasc)}_end");
         }
 
-        cWhere.Append(filtro.CPF.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CPF}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.CPF)}");
-        cWhere.Append(filtro.RG.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.RG}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.RG)}");
-        cWhere.Append(filtro.CNPJ.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CNPJ}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.CNPJ)}");
-        cWhere.Append(filtro.InscEst.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.InscEst}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.InscEst)}");
-        cWhere.Append(filtro.NomeFantasia.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.NomeFantasia}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.NomeFantasia)}");
-        cWhere.Append(filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Endereco)}");
-        cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Cidade}] = @{nameof(DBOutrasPartesClienteDicInfo.Cidade)}");
-        cWhere.Append(filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.CEP)}");
-        cWhere.Append(filtro.Bairro.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Bairro)}");
-        cWhere.Append(filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Fone)}");
-        cWhere.Append(filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Fax)}");
-        cWhere.Append(filtro.EMail.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.EMail)}");
-        cWhere.Append(filtro.Site.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Site}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Site)}");
-        cWhere.Append(filtro.Class.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Class}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Class)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.CPF.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CPF}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.CPF)}");
+        cWhere.Append(filtro.RG.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.RG}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.RG)}");
+        cWhere.Append(filtro.CNPJ.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CNPJ}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.CNPJ)}");
+        cWhere.Append(filtro.InscEst.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.InscEst}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.InscEst)}");
+        cWhere.Append(filtro.NomeFantasia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.NomeFantasia}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.NomeFantasia)}");
+        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Endereco)}");
+        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Cidade}] = @{nameof(DBOutrasPartesClienteDicInfo.Cidade)}");
+        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.CEP)}");
+        cWhere.Append(filtro.Bairro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Bairro)}");
+        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Fone)}");
+        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Fax)}");
+        cWhere.Append(filtro.EMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.EMail)}");
+        cWhere.Append(filtro.Site.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Site}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Site)}");
+        cWhere.Append(filtro.Class.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.Class}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.Class)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBOutrasPartesClienteDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CampoCodigo}] >= @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].[{DBOutrasPartesClienteDicInfo.CampoCodigo}] = @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.CampoCodigo} BETWEEN @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)} AND @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.CampoCodigo} = @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOutrasPartesClienteDicInfo.CampoCodigo} <= @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOutrasPartesClienteDicInfo.PTabelaNome}].{DBOutrasPartesClienteDicInfo.CampoCodigo} BETWEEN @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)} AND @{nameof(DBOutrasPartesClienteDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -202,6 +202,16 @@ public partial class OutrasPartesClienteService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterOutrasPartesCliente? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOutrasPartesCliente? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -217,7 +227,7 @@ public partial class OutrasPartesClienteService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-OutrasPartesCliente-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

@@ -24,15 +24,15 @@ public partial class ProResumosController(IProResumosService proresumosService) 
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterProResumos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterProResumos filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ProResumos: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _proresumosService.Filter(filtro, uri);
+        //_logger.Info("ProResumos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _proresumosService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

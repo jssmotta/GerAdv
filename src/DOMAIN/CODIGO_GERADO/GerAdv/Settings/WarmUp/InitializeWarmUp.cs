@@ -30,7 +30,6 @@ public class InitializeWarmUp
         await new Apenso2WarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AreaWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AtividadesWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new Auditor4KWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new BensClassificacaoWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new BensMateriaisWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new CargosWarmUp().WarmReadStringAuditor(uri, oCnn);

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoEnderecoService
 {
-    Task<IEnumerable<TipoEnderecoResponseAll>> Filter(Filters.FilterTipoEndereco filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<TipoEnderecoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoEndereco filter, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoResponse?> AddAndUpdate(Models.TipoEndereco regTipoEndereco, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoResponse?> Validation(Models.TipoEndereco regTipoEndereco, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoResponse?> Delete(int id, [FromRoute, Required] string uri = "");

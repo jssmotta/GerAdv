@@ -24,15 +24,15 @@ public partial class LivroCaixaController(ILivroCaixaService livrocaixaService) 
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterLivroCaixa filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterLivroCaixa filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("LivroCaixa: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _livrocaixaService.Filter(filtro, uri);
+        //_logger.Info("LivroCaixa: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _livrocaixaService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

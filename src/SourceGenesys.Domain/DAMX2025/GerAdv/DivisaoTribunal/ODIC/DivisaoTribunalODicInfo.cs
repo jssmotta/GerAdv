@@ -16,6 +16,8 @@ public partial class DBDivisaoTribunalODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBDivisaoTribunalDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBDivisaoTribunalDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

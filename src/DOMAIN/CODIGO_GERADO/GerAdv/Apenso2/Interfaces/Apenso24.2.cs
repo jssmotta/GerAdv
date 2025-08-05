@@ -10,7 +10,7 @@ public partial interface IApenso2Reader
     Apenso2Response? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     Apenso2Response? Read(FApenso2 dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     Apenso2ResponseAll? ReadAll(FApenso2 dbRec, IDataRecord dr);
     Apenso2ResponseAll? ReadAll(SG.GerAdv.DBApenso2 dbRec, DataRow dr);
     Task<IEnumerable<Apenso2ResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);

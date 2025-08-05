@@ -10,7 +10,7 @@ public partial interface IContaCorrenteReader
     ContaCorrenteResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ContaCorrenteResponse? Read(FContaCorrente dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ContaCorrenteResponseAll? ReadAll(FContaCorrente dbRec, IDataRecord dr);
     ContaCorrenteResponseAll? ReadAll(SG.GerAdv.DBContaCorrente dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

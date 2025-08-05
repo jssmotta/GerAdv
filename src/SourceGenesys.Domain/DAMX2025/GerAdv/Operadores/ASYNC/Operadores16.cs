@@ -131,15 +131,15 @@ public partial class DBOperadores
     private bool HasAnyFieldChanged() => pFldFEnviado || pFldFCasa || pFldFCasaID || pFldFCasaCodigo || pFldFIsNovo || pFldFCliente || pFldFGrupo || pFldFNome || pFldFEMail || pFldFSenha || pFldFAtivado || pFldFAtualizarSenha || pFldFSenha256 || pFldFSuporteSenha256 || pFldFSuporteMaxAge;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFEnviado)
+        if (pFldFEnviado || updateTool.Insert)
             updateTool.Fields(DBOperadoresDicInfo.Enviado, m_FEnviado, ETiposCampos.FBoolean);
-        if (pFldFCasa)
+        if (pFldFCasa || updateTool.Insert)
             updateTool.Fields(DBOperadoresDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
         if (pFldFCasaID)
             updateTool.Fields(DBOperadoresDicInfo.CasaID, m_FCasaID, ETiposCampos.FNumber);
         if (pFldFCasaCodigo)
             updateTool.Fields(DBOperadoresDicInfo.CasaCodigo, m_FCasaCodigo, ETiposCampos.FNumber);
-        if (pFldFIsNovo)
+        if (pFldFIsNovo || updateTool.Insert)
             updateTool.Fields(DBOperadoresDicInfo.IsNovo, m_FIsNovo, ETiposCampos.FBoolean);
         if (pFldFCliente)
             updateTool.Fields(DBOperadoresDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
@@ -151,9 +151,9 @@ public partial class DBOperadores
             updateTool.Fields(DBOperadoresDicInfo.EMail, m_FEMail, ETiposCampos.FString);
         if (pFldFSenha)
             updateTool.Fields(DBOperadoresDicInfo.Senha, m_FSenha, ETiposCampos.FString);
-        if (pFldFAtivado)
+        if (pFldFAtivado || updateTool.Insert)
             updateTool.Fields(DBOperadoresDicInfo.Ativado, m_FAtivado, ETiposCampos.FBoolean);
-        if (pFldFAtualizarSenha)
+        if (pFldFAtualizarSenha || updateTool.Insert)
             updateTool.Fields(DBOperadoresDicInfo.AtualizarSenha, m_FAtualizarSenha, ETiposCampos.FBoolean);
         if (pFldFSenha256)
             updateTool.Fields(DBOperadoresDicInfo.Senha256, m_FSenha256, ETiposCampos.FString);
@@ -164,6 +164,7 @@ public partial class DBOperadores
     }
 
 #endif
+#if (!NOTSTORED_Operadores)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -187,4 +188,5 @@ public partial class DBOperadores
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

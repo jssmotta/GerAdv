@@ -16,6 +16,8 @@ public partial class DBGUTMatrizODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBGUTMatrizDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBGUTMatrizDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

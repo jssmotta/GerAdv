@@ -135,11 +135,12 @@ public partial class DBOperadorGrupo
             updateTool.Fields(DBOperadorGrupoDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
         if (pFldFGrupo)
             updateTool.Fields(DBOperadorGrupoDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumber);
-        if (pFldFInativo)
+        if (pFldFInativo || updateTool.Insert)
             updateTool.Fields(DBOperadorGrupoDicInfo.Inativo, m_FInativo, ETiposCampos.FBoolean);
     }
 
 #endif
+#if (!NOTSTORED_OperadorGrupo)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -163,4 +164,5 @@ public partial class DBOperadorGrupo
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

@@ -24,15 +24,15 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterBensMateriais filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterBensMateriais filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("BensMateriais: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _bensmateriaisService.Filter(filtro, uri);
+        //_logger.Info("BensMateriais: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _bensmateriaisService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

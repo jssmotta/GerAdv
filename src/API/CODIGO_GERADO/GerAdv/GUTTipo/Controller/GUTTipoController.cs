@@ -24,15 +24,15 @@ public partial class GUTTipoController(IGUTTipoService guttipoService) : Control
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterGUTTipo filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTTipo filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("GUTTipo: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _guttipoService.Filter(filtro, uri);
+        //_logger.Info("GUTTipo: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _guttipoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

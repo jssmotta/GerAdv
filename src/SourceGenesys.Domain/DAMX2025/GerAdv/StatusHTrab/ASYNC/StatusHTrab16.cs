@@ -138,6 +138,7 @@ public partial class DBStatusHTrab
     }
 
 #endif
+#if (!NOTSTORED_StatusHTrab)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -149,4 +150,5 @@ public partial class DBStatusHTrab
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

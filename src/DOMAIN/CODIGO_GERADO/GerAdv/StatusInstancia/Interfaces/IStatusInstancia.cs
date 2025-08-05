@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IStatusInstanciaService
 {
-    Task<IEnumerable<StatusInstanciaResponseAll>> Filter(Filters.FilterStatusInstancia filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<StatusInstanciaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterStatusInstancia filter, [FromRoute, Required] string uri = "");
     Task<StatusInstanciaResponse?> AddAndUpdate(Models.StatusInstancia regStatusInstancia, [FromRoute, Required] string uri = "");
     Task<StatusInstanciaResponse?> Validation(Models.StatusInstancia regStatusInstancia, [FromRoute, Required] string uri = "");
     Task<StatusInstanciaResponse?> Delete(int id, [FromRoute, Required] string uri = "");

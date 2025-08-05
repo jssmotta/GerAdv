@@ -8,12 +8,24 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class Diario2Service
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterDiario2 filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterDiario2 filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Data))
         {
             parameters.Add(new($"@{nameof(DBDiario2DicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
+        }
+
+        if (!filtro.Hora.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.Hora, out var dataParam))
+                parameters.Add(new($"@{nameof(DBDiario2DicInfo.Hora)}", dataParam));
+        }
+
+        if (!filtro.Hora_end.IsEmptyDX())
+        {
+            if (DateTime.TryParse(filtro.Hora_end, out var dataParam))
+                parameters.Add(new($"@{nameof(DBDiario2DicInfo.Hora)}_end", dataParam));
         }
 
         if (filtro.Operador != int.MinValue)
@@ -51,31 +63,40 @@ public partial class Diario2Service
             parameters.Add(new($"@{nameof(DBDiario2DicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Data)}");
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Operador}] = @{nameof(DBDiario2DicInfo.Operador)}");
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Nome)}");
-        cWhere.Append(filtro.Ocorrencia.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Ocorrencia}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Ocorrencia)}");
-        cWhere.Append(filtro.Cliente <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Cliente}] = @{nameof(DBDiario2DicInfo.Cliente)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Data)}");
+        if (!(filtro.Hora.IsEmptyDX()) && filtro.Hora_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.CampoCodigo}] >= @{nameof(DBDiario2DicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Hora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Hora}], 'HH:mm') = FORMAT(@{nameof(DBDiario2DicInfo.Hora)}, 'HH:mm')");
         }
-        else
+        else if (!(filtro.Hora.IsEmptyDX()) && !(filtro.Hora_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDiario2DicInfo.CampoCodigo} BETWEEN @{nameof(DBDiario2DicInfo.CampoCodigo)} AND @{nameof(DBDiario2DicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDiario2DicInfo.CampoCodigo} = @{nameof(DBDiario2DicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBDiario2DicInfo.CampoCodigo} <= @{nameof(DBDiario2DicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Hora}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBDiario2DicInfo.Hora)}, 'HH:mm') AND FORMAT(@{nameof(DBDiario2DicInfo.Hora)}_end, 'HH:mm')");
+        }
+
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Operador}] = @{nameof(DBDiario2DicInfo.Operador)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Nome)}");
+        cWhere.Append(filtro.Ocorrencia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Ocorrencia}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.Ocorrencia)}");
+        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.Cliente}] = @{nameof(DBDiario2DicInfo.Cliente)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBDiario2DicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].[{DBDiario2DicInfo.CampoCodigo}] = @{nameof(DBDiario2DicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDiario2DicInfo.PTabelaNome}].{DBDiario2DicInfo.CampoCodigo} BETWEEN @{nameof(DBDiario2DicInfo.CampoCodigo)} AND @{nameof(DBDiario2DicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -84,6 +105,16 @@ public partial class Diario2Service
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterDiario2? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterDiario2? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -99,7 +130,7 @@ public partial class Diario2Service
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Diario2-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

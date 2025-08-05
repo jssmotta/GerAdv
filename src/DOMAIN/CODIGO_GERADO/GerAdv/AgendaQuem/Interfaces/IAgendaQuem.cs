@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAgendaQuemService
 {
-    Task<IEnumerable<AgendaQuemResponseAll>> Filter(Filters.FilterAgendaQuem filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AgendaQuemResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaQuem filter, [FromRoute, Required] string uri = "");
     Task<AgendaQuemResponse?> AddAndUpdate(Models.AgendaQuem regAgendaQuem, [FromRoute, Required] string uri = "");
     Task<AgendaQuemResponse?> Validation(Models.AgendaQuem regAgendaQuem, [FromRoute, Required] string uri = "");
     Task<AgendaQuemResponse?> Delete(int id, [FromRoute, Required] string uri = "");

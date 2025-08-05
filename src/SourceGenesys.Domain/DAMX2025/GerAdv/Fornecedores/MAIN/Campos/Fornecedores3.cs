@@ -119,9 +119,14 @@ public partial class DBFornecedores
             pFldFCPF = pFldFCPF || !(m_FCPF ?? string.Empty).Equals(value);
             if (pFldFCPF)
             {
-                var trimmed = value?.Trim() ?? string.Empty;
+                var trimmed = (value?.Trim() ?? string.Empty).ClearInputCpf();
                 var valueCpf = trimmed.Length > 11 ? trimmed.AsSpan(0, 11).ToString() : trimmed;
-                if (valueCpf.IsValidCpf())
+                if (valueCpf.Length < 11)
+                {
+                    valueCpf = string.Empty;
+                }
+
+                if (valueCpf.Length == 0 || valueCpf.IsValidCpf())
                     m_FCPF = valueCpf;
                 else
                     throw new ArgumentException("CPF inválido ou não informado corretamente.", nameof(value));
@@ -333,10 +338,16 @@ public partial class DBFornecedores
     public string IDtAtuDataX_DataHora() => MDtAtuDataX_DataHora;
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     public string IMDtCadDataX_DataHora() => MDtAtuDataX_DataHora;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaName() => PTabelaNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => CampoCodigo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => CampoNome;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => PTabelaPrefixo;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProCDAService
 {
-    Task<IEnumerable<ProCDAResponseAll>> Filter(Filters.FilterProCDA filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProCDAResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProCDA filter, [FromRoute, Required] string uri = "");
     Task<ProCDAResponse?> AddAndUpdate(Models.ProCDA regProCDA, [FromRoute, Required] string uri = "");
     Task<ProCDAResponse?> Validation(Models.ProCDA regProCDA, [FromRoute, Required] string uri = "");
     Task<ProCDAResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class NECompromissosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNECompromissos filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNECompromissos filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.PalavraChave != int.MinValue)
@@ -46,37 +46,37 @@ public partial class NECompromissosService
             parameters.Add(new($"@{nameof(DBNECompromissosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.PalavraChave.IsEmpty() && filtro.PalavraChave_end.IsEmpty())
+        if (!(filtro.PalavraChave.IsEmptyX()) && filtro.PalavraChave_end.IsEmptyX())
         {
-            cWhere.Append(filtro.PalavraChave <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.PalavraChave}] >= @{nameof(DBNECompromissosDicInfo.PalavraChave)}");
+            cWhere.Append(filtro.PalavraChave.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.PalavraChave}] = @{nameof(DBNECompromissosDicInfo.PalavraChave)}");
         }
-        else
+        else if (!(filtro.PalavraChave.IsEmptyX()) && !(filtro.PalavraChave_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.PalavraChave <= 0 && filtro.PalavraChave_end <= 0) ? string.Empty : (!(filtro.PalavraChave <= 0) && !(filtro.PalavraChave_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNECompromissosDicInfo.PalavraChave} BETWEEN @{nameof(DBNECompromissosDicInfo.PalavraChave)} AND @{nameof(DBNECompromissosDicInfo.PalavraChave)}_end" : !(filtro.PalavraChave <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNECompromissosDicInfo.PalavraChave} = @{nameof(DBNECompromissosDicInfo.PalavraChave)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNECompromissosDicInfo.PalavraChave} <= @{nameof(DBNECompromissosDicInfo.PalavraChave)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].{DBNECompromissosDicInfo.PalavraChave} BETWEEN @{nameof(DBNECompromissosDicInfo.PalavraChave)} AND @{nameof(DBNECompromissosDicInfo.PalavraChave)}_end");
         }
 
         cWhere.Append(filtro.Provisionar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.Provisionar}] = @{nameof(DBNECompromissosDicInfo.Provisionar)}");
-        cWhere.Append(filtro.TipoCompromisso <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.TipoCompromisso}] = @{nameof(DBNECompromissosDicInfo.TipoCompromisso)}");
-        cWhere.Append(filtro.TextoCompromisso.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.TextoCompromisso}]  {DevourerConsts.MsiCollate} like @{nameof(DBNECompromissosDicInfo.TextoCompromisso)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.TipoCompromisso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.TipoCompromisso}] = @{nameof(DBNECompromissosDicInfo.TipoCompromisso)}");
+        cWhere.Append(filtro.TextoCompromisso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.TextoCompromisso}]  {DevourerConsts.MsiCollate} like @{nameof(DBNECompromissosDicInfo.TextoCompromisso)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.CampoCodigo}] >= @{nameof(DBNECompromissosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].[{DBNECompromissosDicInfo.CampoCodigo}] = @{nameof(DBNECompromissosDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNECompromissosDicInfo.CampoCodigo} BETWEEN @{nameof(DBNECompromissosDicInfo.CampoCodigo)} AND @{nameof(DBNECompromissosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNECompromissosDicInfo.CampoCodigo} = @{nameof(DBNECompromissosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBNECompromissosDicInfo.CampoCodigo} <= @{nameof(DBNECompromissosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNECompromissosDicInfo.PTabelaNome}].{DBNECompromissosDicInfo.CampoCodigo} BETWEEN @{nameof(DBNECompromissosDicInfo.CampoCodigo)} AND @{nameof(DBNECompromissosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -85,6 +85,16 @@ public partial class NECompromissosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterNECompromissos? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<NECompromissosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

@@ -10,7 +10,7 @@ public partial interface IOperadoresReader
     OperadoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OperadoresResponse? Read(FOperadores dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     OperadoresResponseAll? ReadAll(FOperadores dbRec, IDataRecord dr);
     OperadoresResponseAll? ReadAll(SG.GerAdv.DBOperadores dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

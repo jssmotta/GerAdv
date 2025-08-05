@@ -8,5 +8,5 @@ namespace MenphisSI.GerAdv.Interface;
 
 public partial interface IAgendaSemanaService
 {
-    Task<IEnumerable<AgendaSemanaResponseAll>> Filter(Filters.FilterAgendaSemana filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AgendaSemanaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaSemana filter, [FromRoute, Required] string uri = "");
 }

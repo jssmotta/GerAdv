@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AcaoService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAcao filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAcao filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Justica != int.MinValue)
@@ -41,29 +41,29 @@ public partial class AcaoService
             parameters.Add(new($"@{nameof(DBAcaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Justica <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Justica}] = @{nameof(DBAcaoDicInfo.Justica)}");
-        cWhere.Append(filtro.Area <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Area}] = @{nameof(DBAcaoDicInfo.Area)}");
-        cWhere.Append(filtro.Descricao.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAcaoDicInfo.Descricao)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAcaoDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Justica}] = @{nameof(DBAcaoDicInfo.Justica)}");
+        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Area}] = @{nameof(DBAcaoDicInfo.Area)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAcaoDicInfo.Descricao)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAcaoDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.CampoCodigo}] >= @{nameof(DBAcaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.CampoCodigo}] = @{nameof(DBAcaoDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAcaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBAcaoDicInfo.CampoCodigo)} AND @{nameof(DBAcaoDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAcaoDicInfo.CampoCodigo} = @{nameof(DBAcaoDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBAcaoDicInfo.CampoCodigo} <= @{nameof(DBAcaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].{DBAcaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBAcaoDicInfo.CampoCodigo)} AND @{nameof(DBAcaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -72,6 +72,16 @@ public partial class AcaoService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterAcao? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterAcao? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -87,7 +97,7 @@ public partial class AcaoService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-Acao-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

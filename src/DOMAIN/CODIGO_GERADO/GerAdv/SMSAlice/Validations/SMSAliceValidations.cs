@@ -73,7 +73,7 @@ public class SMSAliceValidation : ISMSAliceValidation
 
     private async Task<bool> IsDuplicado(Models.SMSAlice reg, ISMSAliceService service, string uri)
     {
-        var existingSMSAlice = (await service.Filter(new Filters.FilterSMSAlice { Nome = reg.Nome, Operador = reg.Operador }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingSMSAlice = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Nome = reg.Nome, Operador = reg.Operador }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingSMSAlice != null && existingSMSAlice.Id > 0 && existingSMSAlice.Id != reg.Id;
     }
 }

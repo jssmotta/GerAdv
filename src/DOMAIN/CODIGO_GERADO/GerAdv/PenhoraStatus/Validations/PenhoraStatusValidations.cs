@@ -21,7 +21,7 @@ public class PenhoraStatusValidation : IPenhoraStatusValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var penhoraExists0 = await penhoraService.Filter(new Filters.FilterPenhora { PenhoraStatus = id }, uri);
+        var penhoraExists0 = await penhoraService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPenhora { PenhoraStatus = id }, uri);
         if (penhoraExists0 != null && penhoraExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Penhora associados a ele.");
         return true;

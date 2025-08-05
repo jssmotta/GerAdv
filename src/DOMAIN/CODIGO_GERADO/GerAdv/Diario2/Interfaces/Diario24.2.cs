@@ -10,7 +10,7 @@ public partial interface IDiario2Reader
     Diario2Response? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     Diario2Response? Read(FDiario2 dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     Diario2ResponseAll? ReadAll(FDiario2 dbRec, IDataRecord dr);
     Diario2ResponseAll? ReadAll(SG.GerAdv.DBDiario2 dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

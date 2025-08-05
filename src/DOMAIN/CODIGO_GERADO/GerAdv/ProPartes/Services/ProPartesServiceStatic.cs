@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProPartesService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProPartes filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProPartes filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Parte != int.MinValue)
@@ -41,43 +41,43 @@ public partial class ProPartesService
             parameters.Add(new($"@{nameof(DBProPartesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Parte.IsEmpty() && filtro.Parte_end.IsEmpty())
+        if (!(filtro.Parte.IsEmptyX()) && filtro.Parte_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Parte <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].[{DBProPartesDicInfo.Parte}] >= @{nameof(DBProPartesDicInfo.Parte)}");
+            cWhere.Append(filtro.Parte.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].[{DBProPartesDicInfo.Parte}] = @{nameof(DBProPartesDicInfo.Parte)}");
         }
-        else
+        else if (!(filtro.Parte.IsEmptyX()) && !(filtro.Parte_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Parte <= 0 && filtro.Parte_end <= 0) ? string.Empty : (!(filtro.Parte <= 0) && !(filtro.Parte_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.Parte} BETWEEN @{nameof(DBProPartesDicInfo.Parte)} AND @{nameof(DBProPartesDicInfo.Parte)}_end" : !(filtro.Parte <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.Parte} = @{nameof(DBProPartesDicInfo.Parte)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.Parte} <= @{nameof(DBProPartesDicInfo.Parte)}_end");
-        }
-
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].[{DBProPartesDicInfo.Processo}] >= @{nameof(DBProPartesDicInfo.Processo)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.Processo} BETWEEN @{nameof(DBProPartesDicInfo.Processo)} AND @{nameof(DBProPartesDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.Processo} = @{nameof(DBProPartesDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.Processo} <= @{nameof(DBProPartesDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].{DBProPartesDicInfo.Parte} BETWEEN @{nameof(DBProPartesDicInfo.Parte)} AND @{nameof(DBProPartesDicInfo.Parte)}_end");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].[{DBProPartesDicInfo.CampoCodigo}] >= @{nameof(DBProPartesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].[{DBProPartesDicInfo.Processo}] = @{nameof(DBProPartesDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.CampoCodigo} BETWEEN @{nameof(DBProPartesDicInfo.CampoCodigo)} AND @{nameof(DBProPartesDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.CampoCodigo} = @{nameof(DBProPartesDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProPartesDicInfo.CampoCodigo} <= @{nameof(DBProPartesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].{DBProPartesDicInfo.Processo} BETWEEN @{nameof(DBProPartesDicInfo.Processo)} AND @{nameof(DBProPartesDicInfo.Processo)}_end");
+        }
+
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].[{DBProPartesDicInfo.CampoCodigo}] = @{nameof(DBProPartesDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProPartesDicInfo.PTabelaNome}].{DBProPartesDicInfo.CampoCodigo} BETWEEN @{nameof(DBProPartesDicInfo.CampoCodigo)} AND @{nameof(DBProPartesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -86,6 +86,16 @@ public partial class ProPartesService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterProPartes? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<ProPartesResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

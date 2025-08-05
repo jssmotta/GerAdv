@@ -135,9 +135,9 @@ public partial class DBOperador
             updateTool.Fields(DBOperadorDicInfo.EMail, m_FEMail, ETiposCampos.FString);
         if (pFldFPasta)
             updateTool.Fields(DBOperadorDicInfo.Pasta, m_FPasta, ETiposCampos.FString);
-        if (pFldFTelefonista)
+        if (pFldFTelefonista || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Telefonista, m_FTelefonista, ETiposCampos.FBoolean);
-        if (pFldFMaster)
+        if (pFldFMaster || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Master, m_FMaster, ETiposCampos.FBoolean);
         if (pFldFNome)
             updateTool.Fields(DBOperadorDicInfo.Nome, m_FNome, ETiposCampos.FString);
@@ -149,9 +149,9 @@ public partial class DBOperador
             updateTool.Fields(DBOperadorDicInfo.CadID, m_FCadID, ETiposCampos.FNumber);
         if (pFldFCadCod)
             updateTool.Fields(DBOperadorDicInfo.CadCod, m_FCadCod, ETiposCampos.FNumber);
-        if (pFldFExcluido)
+        if (pFldFExcluido || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Excluido, m_FExcluido, ETiposCampos.FBoolean);
-        if (pFldFSituacao)
+        if (pFldFSituacao || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Situacao, m_FSituacao, ETiposCampos.FBoolean);
         if (pFldFComputador)
             updateTool.Fields(DBOperadorDicInfo.Computador, m_FComputador, ETiposCampos.FNumber);
@@ -163,27 +163,27 @@ public partial class DBOperador
             updateTool.Fields(DBOperadorDicInfo.EMailNet, m_FEMailNet, ETiposCampos.FString);
         if (pFldFOnlineIP)
             updateTool.Fields(DBOperadorDicInfo.OnlineIP, m_FOnlineIP, ETiposCampos.FString);
-        if (pFldFOnLine)
+        if (pFldFOnLine || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.OnLine, m_FOnLine, ETiposCampos.FBoolean);
-        if (pFldFSysOp)
+        if (pFldFSysOp || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.SysOp, m_FSysOp, ETiposCampos.FBoolean);
         if (pFldFStatusId)
             updateTool.Fields(DBOperadorDicInfo.StatusId, m_FStatusId, ETiposCampos.FNumber);
         if (pFldFStatusMessage)
             updateTool.Fields(DBOperadorDicInfo.StatusMessage, m_FStatusMessage, ETiposCampos.FString);
-        if (pFldFIsFinanceiro)
+        if (pFldFIsFinanceiro || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.IsFinanceiro, m_FIsFinanceiro, ETiposCampos.FBoolean);
-        if (pFldFTop)
+        if (pFldFTop || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
-        if (pFldFBasico)
+        if (pFldFBasico || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Basico, m_FBasico, ETiposCampos.FBoolean);
-        if (pFldFExterno)
+        if (pFldFExterno || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.Externo, m_FExterno, ETiposCampos.FBoolean);
         if (pFldFSenha256)
             updateTool.Fields(DBOperadorDicInfo.Senha256, m_FSenha256, ETiposCampos.FString);
-        if (pFldFEMailConfirmado)
+        if (pFldFEMailConfirmado || updateTool.Insert)
             updateTool.Fields(DBOperadorDicInfo.EMailConfirmado, m_FEMailConfirmado, ETiposCampos.FBoolean);
         if (pFldFDataLimiteReset)
             updateTool.Fields(DBOperadorDicInfo.DataLimiteReset, m_FDataLimiteReset, ETiposCampos.FDate);
@@ -202,6 +202,7 @@ public partial class DBOperador
     }
 
 #endif
+#if (!NOTSTORED_Operador)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -225,4 +226,5 @@ public partial class DBOperador
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

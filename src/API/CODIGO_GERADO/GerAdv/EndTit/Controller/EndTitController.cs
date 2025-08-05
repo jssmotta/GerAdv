@@ -24,15 +24,15 @@ public partial class EndTitController(IEndTitService endtitService) : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterEndTit filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterEndTit filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("EndTit: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _endtitService.Filter(filtro, uri);
+        //_logger.Info("EndTit: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _endtitService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

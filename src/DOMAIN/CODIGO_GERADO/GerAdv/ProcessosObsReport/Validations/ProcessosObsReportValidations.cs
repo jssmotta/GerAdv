@@ -51,7 +51,7 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
 
     private async Task<bool> IsDuplicado(Models.ProcessosObsReport reg, IProcessosObsReportService service, string uri)
     {
-        var existingProcessosObsReport = (await service.Filter(new Filters.FilterProcessosObsReport { Processo = reg.Processo }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingProcessosObsReport = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessosObsReport { Processo = reg.Processo }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingProcessosObsReport != null && existingProcessosObsReport.Id > 0 && existingProcessosObsReport.Id != reg.Id;
     }
 }

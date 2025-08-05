@@ -10,7 +10,7 @@ public partial interface IProcessosObsReportReader
     ProcessosObsReportResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     ProcessosObsReportResponse? Read(FProcessosObsReport dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ProcessosObsReportResponseAll? ReadAll(FProcessosObsReport dbRec, IDataRecord dr);
     ProcessosObsReportResponseAll? ReadAll(SG.GerAdv.DBProcessosObsReport dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

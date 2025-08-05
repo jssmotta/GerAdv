@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProObservacoesService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProObservacoes filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProObservacoes filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
@@ -51,38 +51,38 @@ public partial class ProObservacoesService
             parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Processo}] >= @{nameof(DBProObservacoesDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Processo}] = @{nameof(DBProObservacoesDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.Processo} BETWEEN @{nameof(DBProObservacoesDicInfo.Processo)} AND @{nameof(DBProObservacoesDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.Processo} = @{nameof(DBProObservacoesDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.Processo} <= @{nameof(DBProObservacoesDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].{DBProObservacoesDicInfo.Processo} BETWEEN @{nameof(DBProObservacoesDicInfo.Processo)} AND @{nameof(DBProObservacoesDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Nome)}");
-        cWhere.Append(filtro.Observacoes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Observacoes)}");
-        cWhere.Append(filtro.Data.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Data)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Nome)}");
+        cWhere.Append(filtro.Observacoes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Observacoes)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Data)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.CampoCodigo}] >= @{nameof(DBProObservacoesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.CampoCodigo}] = @{nameof(DBProObservacoesDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.CampoCodigo} BETWEEN @{nameof(DBProObservacoesDicInfo.CampoCodigo)} AND @{nameof(DBProObservacoesDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.CampoCodigo} = @{nameof(DBProObservacoesDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProObservacoesDicInfo.CampoCodigo} <= @{nameof(DBProObservacoesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].{DBProObservacoesDicInfo.CampoCodigo} BETWEEN @{nameof(DBProObservacoesDicInfo.CampoCodigo)} AND @{nameof(DBProObservacoesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -91,6 +91,16 @@ public partial class ProObservacoesService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterProObservacoes? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProObservacoes? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -106,7 +116,7 @@ public partial class ProObservacoesService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-ProObservacoes-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

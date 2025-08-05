@@ -145,7 +145,7 @@ public partial class DBReuniao
             updateTool.Fields(DBReuniaoDicInfo.HoraInicial, m_FHoraInicial, ETiposCampos.FDate);
         if (pFldFHoraFinal)
             updateTool.Fields(DBReuniaoDicInfo.HoraFinal, m_FHoraFinal, ETiposCampos.FDate);
-        if (pFldFExterna)
+        if (pFldFExterna || updateTool.Insert)
             updateTool.Fields(DBReuniaoDicInfo.Externa, m_FExterna, ETiposCampos.FBoolean);
         if (pFldFHoraSaida)
             updateTool.Fields(DBReuniaoDicInfo.HoraSaida, m_FHoraSaida, ETiposCampos.FDate);
@@ -158,6 +158,7 @@ public partial class DBReuniao
     }
 
 #endif
+#if (!NOTSTORED_Reuniao)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -181,4 +182,5 @@ public partial class DBReuniao
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

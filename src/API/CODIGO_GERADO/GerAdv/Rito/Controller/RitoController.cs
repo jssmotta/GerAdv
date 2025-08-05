@@ -24,15 +24,15 @@ public partial class RitoController(IRitoService ritoService) : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterRito filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterRito filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Rito: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _ritoService.Filter(filtro, uri);
+        //_logger.Info("Rito: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _ritoService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

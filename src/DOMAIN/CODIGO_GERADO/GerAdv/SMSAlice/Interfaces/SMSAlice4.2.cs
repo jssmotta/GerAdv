@@ -10,7 +10,7 @@ public partial interface ISMSAliceReader
     SMSAliceResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     SMSAliceResponse? Read(FSMSAlice dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     SMSAliceResponseAll? ReadAll(FSMSAlice dbRec, IDataRecord dr);
     SMSAliceResponseAll? ReadAll(SG.GerAdv.DBSMSAlice dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

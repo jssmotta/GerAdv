@@ -32,8 +32,7 @@ public partial class ConfiguracoesDBT
             throw; // Re-throw cancellation
         }
         catch (Exception ex)
-        {
-            GeneralSystemErrorTraper.GetError(ex, stackTrace: true);
+        {            
             throw;
         }
     }

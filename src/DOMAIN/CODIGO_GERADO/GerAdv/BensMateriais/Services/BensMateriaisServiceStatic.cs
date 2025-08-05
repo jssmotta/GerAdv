@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class BensMateriaisService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterBensMateriais filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterBensMateriais filtro)
     {
         var parameters = new List<SqlParameter>();
         if (!string.IsNullOrEmpty(filtro.Nome))
@@ -21,25 +21,25 @@ public partial class BensMateriaisService
             parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.BensClassificacao)}", filtro.BensClassificacao));
         }
 
-        if (!filtro.DataCompra.IsEmpty())
+        if (!filtro.DataCompra.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataCompra, out var dataParam))
                 parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.DataCompra)}", dataParam));
         }
 
-        if (!filtro.DataCompra_end.IsEmpty())
+        if (!filtro.DataCompra_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataCompra_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.DataCompra)}_end", dataParam));
         }
 
-        if (!filtro.DataFimDaGarantia.IsEmpty())
+        if (!filtro.DataFimDaGarantia.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataFimDaGarantia, out var dataParam))
                 parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}", dataParam));
         }
 
-        if (!filtro.DataFimDaGarantia_end.IsEmpty())
+        if (!filtro.DataFimDaGarantia_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataFimDaGarantia_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}_end", dataParam));
@@ -85,13 +85,13 @@ public partial class BensMateriaisService
             parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.GarantiaLoja)}", filtro.GarantiaLoja));
         }
 
-        if (!filtro.DataTerminoDaGarantiaDaLoja.IsEmpty())
+        if (!filtro.DataTerminoDaGarantiaDaLoja.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataTerminoDaGarantiaDaLoja, out var dataParam))
                 parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}", dataParam));
         }
 
-        if (!filtro.DataTerminoDaGarantiaDaLoja_end.IsEmpty())
+        if (!filtro.DataTerminoDaGarantiaDaLoja_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataTerminoDaGarantiaDaLoja_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}_end", dataParam));
@@ -122,72 +122,72 @@ public partial class BensMateriaisService
             parameters.Add(new($"@{nameof(DBBensMateriaisDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.Nome)}");
-        cWhere.Append(filtro.BensClassificacao <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.BensClassificacao}] = @{nameof(DBBensMateriaisDicInfo.BensClassificacao)}");
-        if (!filtro.DataCompra.IsEmpty() && filtro.DataCompra_end.IsEmpty())
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.Nome)}");
+        cWhere.Append(filtro.BensClassificacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.BensClassificacao}] = @{nameof(DBBensMateriaisDicInfo.BensClassificacao)}");
+        if (!(filtro.DataCompra.IsEmptyDX()) && filtro.DataCompra_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataCompra.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.DataCompra}], 103) >= CONVERT(DATE, @{nameof(DBBensMateriaisDicInfo.DataCompra)}, 103)");
+            cWhere.Append(filtro.DataCompra.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.DataCompra}], 103) = CONVERT(DATE, @{nameof(DBBensMateriaisDicInfo.DataCompra)}, 103)");
         }
-        else
+        else if (!(filtro.DataCompra.IsEmptyDX()) && !(filtro.DataCompra_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DataCompra.IsEmpty() && filtro.DataCompra_end.IsEmpty()) ? string.Empty : (!(filtro.DataCompra.IsEmpty()) && !(filtro.DataCompra_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataCompra} BETWEEN @{nameof(DBBensMateriaisDicInfo.DataCompra)} AND @{nameof(DBBensMateriaisDicInfo.DataCompra)}_end" : !(filtro.DataCompra.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataCompra} = @{nameof(DBBensMateriaisDicInfo.DataCompra)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataCompra} <= @{nameof(DBBensMateriaisDicInfo.DataCompra)}_end");
-        }
-
-        if (!filtro.DataFimDaGarantia.IsEmpty() && filtro.DataFimDaGarantia_end.IsEmpty())
-        {
-            cWhere.Append(filtro.DataFimDaGarantia.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.DataFimDaGarantia}], 103) >= CONVERT(DATE, @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.DataFimDaGarantia.IsEmpty() && filtro.DataFimDaGarantia_end.IsEmpty()) ? string.Empty : (!(filtro.DataFimDaGarantia.IsEmpty()) && !(filtro.DataFimDaGarantia_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataFimDaGarantia} BETWEEN @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)} AND @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}_end" : !(filtro.DataFimDaGarantia.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataFimDaGarantia} = @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataFimDaGarantia} <= @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].{DBBensMateriaisDicInfo.DataCompra} BETWEEN @{nameof(DBBensMateriaisDicInfo.DataCompra)} AND @{nameof(DBBensMateriaisDicInfo.DataCompra)}_end");
         }
 
-        cWhere.Append(filtro.NFNRO.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.NFNRO}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.NFNRO)}");
-        cWhere.Append(filtro.Fornecedor <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Fornecedor}] = @{nameof(DBBensMateriaisDicInfo.Fornecedor)}");
-        if (!filtro.ValorBem.IsEmpty() && filtro.ValorBem_end.IsEmpty())
+        if (!(filtro.DataFimDaGarantia.IsEmptyDX()) && filtro.DataFimDaGarantia_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.ValorBem == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.ValorBem}] >= @{nameof(DBBensMateriaisDicInfo.ValorBem)}");
+            cWhere.Append(filtro.DataFimDaGarantia.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.DataFimDaGarantia}], 103) = CONVERT(DATE, @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}, 103)");
         }
-        else
+        else if (!(filtro.DataFimDaGarantia.IsEmptyDX()) && !(filtro.DataFimDaGarantia_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.ValorBem == decimal.MinValue && filtro.ValorBem_end == decimal.MinValue) ? string.Empty : (!(filtro.ValorBem == decimal.MinValue) && !(filtro.ValorBem_end == decimal.MinValue)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.ValorBem} BETWEEN @{nameof(DBBensMateriaisDicInfo.ValorBem)} AND @{nameof(DBBensMateriaisDicInfo.ValorBem)}_end" : !(filtro.ValorBem == decimal.MinValue) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.ValorBem} = @{nameof(DBBensMateriaisDicInfo.ValorBem)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.ValorBem} <= @{nameof(DBBensMateriaisDicInfo.ValorBem)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].{DBBensMateriaisDicInfo.DataFimDaGarantia} BETWEEN @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)} AND @{nameof(DBBensMateriaisDicInfo.DataFimDaGarantia)}_end");
         }
 
-        cWhere.Append(filtro.NroSerieProduto.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.NroSerieProduto}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.NroSerieProduto)}");
-        cWhere.Append(filtro.Comprador.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Comprador}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.Comprador)}");
-        cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Cidade}] = @{nameof(DBBensMateriaisDicInfo.Cidade)}");
+        cWhere.Append(filtro.NFNRO.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.NFNRO}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.NFNRO)}");
+        cWhere.Append(filtro.Fornecedor.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Fornecedor}] = @{nameof(DBBensMateriaisDicInfo.Fornecedor)}");
+        if (!(filtro.ValorBem == decimal.MinValue) && filtro.ValorBem_end == decimal.MinValue)
+        {
+            cWhere.Append(filtro.ValorBem == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.ValorBem}] = @{nameof(DBBensMateriaisDicInfo.ValorBem)}");
+        }
+        else if (!(filtro.ValorBem == decimal.MinValue) && !(filtro.ValorBem_end == decimal.MinValue))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].{DBBensMateriaisDicInfo.ValorBem} BETWEEN @{nameof(DBBensMateriaisDicInfo.ValorBem)} AND @{nameof(DBBensMateriaisDicInfo.ValorBem)}_end");
+        }
+
+        cWhere.Append(filtro.NroSerieProduto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.NroSerieProduto}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.NroSerieProduto)}");
+        cWhere.Append(filtro.Comprador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Comprador}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.Comprador)}");
+        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Cidade}] = @{nameof(DBBensMateriaisDicInfo.Cidade)}");
         cWhere.Append(filtro.GarantiaLoja == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.GarantiaLoja}] = @{nameof(DBBensMateriaisDicInfo.GarantiaLoja)}");
-        if (!filtro.DataTerminoDaGarantiaDaLoja.IsEmpty() && filtro.DataTerminoDaGarantiaDaLoja_end.IsEmpty())
+        if (!(filtro.DataTerminoDaGarantiaDaLoja.IsEmptyDX()) && filtro.DataTerminoDaGarantiaDaLoja_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataTerminoDaGarantiaDaLoja.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja}], 103) >= CONVERT(DATE, @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}, 103)");
+            cWhere.Append(filtro.DataTerminoDaGarantiaDaLoja.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja}], 103) = CONVERT(DATE, @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}, 103)");
         }
-        else
+        else if (!(filtro.DataTerminoDaGarantiaDaLoja.IsEmptyDX()) && !(filtro.DataTerminoDaGarantiaDaLoja_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DataTerminoDaGarantiaDaLoja.IsEmpty() && filtro.DataTerminoDaGarantiaDaLoja_end.IsEmpty()) ? string.Empty : (!(filtro.DataTerminoDaGarantiaDaLoja.IsEmpty()) && !(filtro.DataTerminoDaGarantiaDaLoja_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja} BETWEEN @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)} AND @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}_end" : !(filtro.DataTerminoDaGarantiaDaLoja.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja} = @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja} <= @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].{DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja} BETWEEN @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)} AND @{nameof(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)}_end");
         }
 
-        cWhere.Append(filtro.Observacoes.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.Observacoes)}");
-        cWhere.Append(filtro.NomeVendedor.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.NomeVendedor}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.NomeVendedor)}");
-        cWhere.Append(filtro.GUID.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.GUID)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Observacoes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.Observacoes)}");
+        cWhere.Append(filtro.NomeVendedor.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.NomeVendedor}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.NomeVendedor)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBBensMateriaisDicInfo.GUID)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.CampoCodigo}] >= @{nameof(DBBensMateriaisDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].[{DBBensMateriaisDicInfo.CampoCodigo}] = @{nameof(DBBensMateriaisDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.CampoCodigo} BETWEEN @{nameof(DBBensMateriaisDicInfo.CampoCodigo)} AND @{nameof(DBBensMateriaisDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.CampoCodigo} = @{nameof(DBBensMateriaisDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBBensMateriaisDicInfo.CampoCodigo} <= @{nameof(DBBensMateriaisDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBBensMateriaisDicInfo.PTabelaNome}].{DBBensMateriaisDicInfo.CampoCodigo} BETWEEN @{nameof(DBBensMateriaisDicInfo.CampoCodigo)} AND @{nameof(DBBensMateriaisDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -196,6 +196,16 @@ public partial class BensMateriaisService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterBensMateriais? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterBensMateriais? filtro, [FromRoute, Required] string uri, CancellationToken token)
@@ -211,7 +221,7 @@ public partial class BensMateriaisService
             throw new Exception($"Coneão nula.");
         }
 
-        var keyCache = await reader.ReadStringAuditor(uri, "", [], oCnn);
+        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
         var cacheKey = $"{uri}-BensMateriais-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
         var entryOptions = new HybridCacheEntryOptions
         {

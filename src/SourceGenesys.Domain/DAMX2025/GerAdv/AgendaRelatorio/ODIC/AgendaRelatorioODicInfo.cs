@@ -16,6 +16,8 @@ public partial class DBAgendaRelatorioODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBAgendaRelatorioDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAgendaRelatorioDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

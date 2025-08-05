@@ -16,6 +16,8 @@ public partial class DBCargosEscODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBCargosEscDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBCargosEscDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

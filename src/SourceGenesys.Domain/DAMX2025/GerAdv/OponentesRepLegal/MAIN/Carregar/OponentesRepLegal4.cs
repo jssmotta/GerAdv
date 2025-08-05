@@ -9,7 +9,17 @@ public partial class DBOponentesRepLegal
     {
         if (dbRec is null)
             return;
-        InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+        InitFromRecord(name =>
+        {
+            try
+            {
+                return dbRec[name];
+            }
+            catch
+            {
+                return DBNull.Value;
+            }
+        });
     }
 
     public DBOponentesRepLegal(SqlDataReader? dbRec)
@@ -18,7 +28,17 @@ public partial class DBOponentesRepLegal
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -208,7 +228,17 @@ public partial class DBOponentesRepLegal
             return;
         try
         {
-            InitFromRecord(name => dbRec.Table.Columns.Contains(name) ? dbRec[name] : null);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -222,7 +252,17 @@ public partial class DBOponentesRepLegal
             return;
         try
         {
-            InitFromRecord(name => dbRec[name]);
+            InitFromRecord(name =>
+            {
+                try
+                {
+                    return dbRec[name];
+                }
+                catch
+                {
+                    return DBNull.Value;
+                }
+            });
         }
         catch (Exception ex)
         {

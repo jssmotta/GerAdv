@@ -24,15 +24,15 @@ public partial class AgendaController(IAgendaService agendaService) : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Agenda: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _agendaService.Filter(filtro, uri);
+        //_logger.Info("Agenda: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _agendaService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

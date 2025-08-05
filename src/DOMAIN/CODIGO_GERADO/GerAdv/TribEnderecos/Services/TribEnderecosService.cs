@@ -37,7 +37,7 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, IFT
         return result;
     }
 
-    public async Task<IEnumerable<TribEnderecosResponseAll>> Filter(Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
+    public async Task<IEnumerable<TribEnderecosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTribEnderecos filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
@@ -46,16 +46,22 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, IFT
             throw new DatabaseConnectionException();
         }
 
+        if (max <= 0)
+        {
+            max = BaseConsts.PMaxItens;
+        }
+
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter> parameters = filtroResult?.parametros ?? [];
-        var cacheKey = $"{uri}-TribEnderecos-Filter-{where.GetHashCode()}{parameters.GetHashCode()}";
+        var filterHash = GetFilterHash(filtro);
+        var cacheKey = $"{uri}-{max}-TribEnderecos-Filter-{where.GetHashCode2()}{filterHash}";
         var entryOptions = new HybridCacheEntryOptions
         {
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
         };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(BaseConsts.PMaxItens, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
+        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
         return result;
     }
 

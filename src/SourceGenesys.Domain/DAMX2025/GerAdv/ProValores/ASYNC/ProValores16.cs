@@ -137,7 +137,7 @@ public partial class DBProValores
             updateTool.Fields(DBProValoresDicInfo.TipoValorProcesso, m_FTipoValorProcesso, ETiposCampos.FNumber);
         if (pFldFIndice)
             updateTool.Fields(DBProValoresDicInfo.Indice, m_FIndice, ETiposCampos.FString);
-        if (pFldFIgnorar)
+        if (pFldFIgnorar || updateTool.Insert)
             updateTool.Fields(DBProValoresDicInfo.Ignorar, m_FIgnorar, ETiposCampos.FBoolean);
         if (pFldFData)
             updateTool.Fields(DBProValoresDicInfo.Data, m_FData, ETiposCampos.FString);
@@ -164,6 +164,7 @@ public partial class DBProValores
     }
 
 #endif
+#if (!NOTSTORED_ProValores)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -187,4 +188,5 @@ public partial class DBProValores
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

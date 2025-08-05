@@ -1,6 +1,26 @@
-﻿namespace MenphisSI;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace MenphisSI;
 public static class ExtensionMethodStringsW3
 {
+
+    public static bool IsEmptyX(this int value)    
+        => value == int.MinValue;
+
+    public static bool IsEmptyX(this decimal value)
+    => value == decimal.MinValue;
+
+    public static bool IsEmptyX(this string value)    
+        => string.IsNullOrWhiteSpace(value);
+
+    public static bool IsEmptyDX(this string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return true;
+        if (DateTime.TryParse(value, out DateTime dateValue))
+            return dateValue == DateTime.MinValue;
+        return true;
+    }
+
     public static bool IsValidEmail(this string email)
     {
         if (string.IsNullOrWhiteSpace(email))
@@ -17,9 +37,10 @@ public static class ExtensionMethodStringsW3
     }
     public static bool IsValidCpf(this string? cpf) => DevourerOne.CPFValido(cpf ?? string.Empty);
     public static bool IsValidCnpj(this string? cnpj) => DevourerOne.CNPJValido(cnpj ?? string.Empty);
-    public static string ClearInputCep(this string? cep) => cep?.Trim().Replace("-", "").Replace(".", "").Replace(" ", "") ?? string.Empty;
-    public static string ClearInputCnpj(this string? cnpj) => cnpj?.Trim().Replace(".", "").Replace("/", "").Replace("-", "") ?? string.Empty;
-    public static string ClearInputCpf(this string? cpf) => cpf?.Trim().Replace(".", "").Replace("-", "") ?? string.Empty;
+    public static string ClearInputCep(this string? cep) => cep?.Trim().Replace("-", "").Replace(".", "").Replace(" ", "").Replace("_", "") ?? string.Empty;
+    public static string ClearInputCnpj(this string? cnpj) => cnpj?.Trim().Replace(".", "").Replace("/", "").Replace("-", "").Replace("_", "") ?? string.Empty;
+    public static string ClearInputCepCpfCnpj(this string ? cepCpfCnpj) => cepCpfCnpj?.Trim().Replace("-", "").Replace(".", "").Replace("/", "").Replace(" ", "").Replace("_", "") ?? string.Empty;
+    public static string ClearInputCpf(this string? cpf) => cpf?.Trim().Replace(".", "").Replace("-", "").Replace("_", "") ?? string.Empty;
     public static string SqlDataMaiorQue(this string campo, DateTime dia) => DevourerOne.AppendDataSqlMaiorOuIgual(dia, campo);
     public static string SqlOrderDesc(this string campo) => $" [{campo}] DESC";
     public static string dbo(this string TabelaNome, MsiSqlConnection? oCnn) => TabelaNome.Contains("_sp_") ?

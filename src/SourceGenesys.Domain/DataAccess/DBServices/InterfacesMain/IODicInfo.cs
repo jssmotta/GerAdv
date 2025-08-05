@@ -10,6 +10,7 @@ public interface IODicInfo
     bool HasAuditor();    
     bool HasNameId();
     string ICampoCodigo();
+    string ITypeFieldCode();
     string ICampoNome();
     string IPrefixo();
     bool IIsStoredProcedureOrView();

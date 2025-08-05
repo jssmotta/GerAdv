@@ -21,10 +21,10 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(new Filters.FilterGUTAtividadesMatriz { GUTAtividade = id }, uri);
+        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTAtividade = id }, uri);
         if (gutatividadesmatrizExists0 != null && gutatividadesmatrizExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.");
-        var gutperiodicidadestatusExists1 = await gutperiodicidadestatusService.Filter(new Filters.FilterGUTPeriodicidadeStatus { GUTAtividade = id }, uri);
+        var gutperiodicidadestatusExists1 = await gutperiodicidadestatusService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTPeriodicidadeStatus { GUTAtividade = id }, uri);
         if (gutperiodicidadestatusExists1 != null && gutperiodicidadestatusExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Periodicidade Status associados a ele.");
         return true;

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IAlertasEnviadosService
 {
-    Task<IEnumerable<AlertasEnviadosResponseAll>> Filter(Filters.FilterAlertasEnviados filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AlertasEnviadosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAlertasEnviados filter, [FromRoute, Required] string uri = "");
     Task<AlertasEnviadosResponse?> AddAndUpdate(Models.AlertasEnviados regAlertasEnviados, [FromRoute, Required] string uri = "");
     Task<AlertasEnviadosResponse?> Validation(Models.AlertasEnviados regAlertasEnviados, [FromRoute, Required] string uri = "");
     Task<AlertasEnviadosResponse?> Delete(int id, [FromRoute, Required] string uri = "");

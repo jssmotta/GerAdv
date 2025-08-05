@@ -16,6 +16,8 @@ public partial class DBGUTPeriodicidadeODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBGUTPeriodicidadeDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBGUTPeriodicidadeDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

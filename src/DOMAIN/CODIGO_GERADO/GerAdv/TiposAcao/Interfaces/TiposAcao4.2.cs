@@ -10,7 +10,7 @@ public partial interface ITiposAcaoReader
     TiposAcaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     TiposAcaoResponse? Read(FTiposAcao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     TiposAcaoResponseAll? ReadAll(FTiposAcao dbRec, IDataRecord dr);
     TiposAcaoResponseAll? ReadAll(SG.GerAdv.DBTiposAcao dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

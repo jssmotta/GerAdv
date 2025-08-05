@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IGUTAtividadesMatrizService
 {
-    Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Filter(Filters.FilterGUTAtividadesMatriz filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTAtividadesMatriz filter, [FromRoute, Required] string uri = "");
     Task<GUTAtividadesMatrizResponse?> AddAndUpdate(Models.GUTAtividadesMatriz regGUTAtividadesMatriz, [FromRoute, Required] string uri = "");
     Task<GUTAtividadesMatrizResponse?> Validation(Models.GUTAtividadesMatriz regGUTAtividadesMatriz, [FromRoute, Required] string uri = "");
     Task<GUTAtividadesMatrizResponse?> Delete(int id, [FromRoute, Required] string uri = "");

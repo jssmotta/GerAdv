@@ -16,6 +16,8 @@ public partial class DBBensMateriaisODicInfo : IODicInfo
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoCodigo() => DBBensMateriaisDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBBensMateriaisDicInfo.TablePrefix;
 #pragma warning disable CA1822 // Mark members as static
 

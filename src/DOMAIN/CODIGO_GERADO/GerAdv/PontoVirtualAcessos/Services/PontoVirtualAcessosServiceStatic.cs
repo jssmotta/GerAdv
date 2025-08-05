@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class PontoVirtualAcessosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPontoVirtualAcessos filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPontoVirtualAcessos filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Operador != int.MinValue)
@@ -16,13 +16,13 @@ public partial class PontoVirtualAcessosService
             parameters.Add(new($"@{nameof(DBPontoVirtualAcessosDicInfo.Operador)}", filtro.Operador));
         }
 
-        if (!filtro.DataHora.IsEmpty())
+        if (!filtro.DataHora.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataHora, out var dataParam))
                 parameters.Add(new($"@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}", dataParam));
         }
 
-        if (!filtro.DataHora_end.IsEmpty())
+        if (!filtro.DataHora_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataHora_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}_end", dataParam));
@@ -48,37 +48,37 @@ public partial class PontoVirtualAcessosService
             parameters.Add(new($"@{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Operador}] = @{nameof(DBPontoVirtualAcessosDicInfo.Operador)}");
-        if (!filtro.DataHora.IsEmpty() && filtro.DataHora_end.IsEmpty())
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Operador}] = @{nameof(DBPontoVirtualAcessosDicInfo.Operador)}");
+        if (!(filtro.DataHora.IsEmptyDX()) && filtro.DataHora_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataHora.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 'HH:mm') >= FORMAT(@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}, 'HH:mm')");
+            cWhere.Append(filtro.DataHora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 103) = CONVERT(DATE, @{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}, 103)");
         }
-        else
+        else if (!(filtro.DataHora.IsEmptyDX()) && !(filtro.DataHora_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.DataHora.IsEmpty() && filtro.DataHora_end.IsEmpty()) ? string.Empty : (!(filtro.DataHora.IsEmpty()) && !(filtro.DataHora_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT({DBPontoVirtualAcessosDicInfo.DataHora}, 'HH:mm') BETWEEN FORMAT(@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}, 'HH:mm') AND FORMAT(@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}_end, 'HH:mm')" : !(filtro.DataHora.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT({DBPontoVirtualAcessosDicInfo.DataHora}, 'HH:mm') = FORMAT(@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}, 'HH:mm')" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT({DBPontoVirtualAcessosDicInfo.DataHora}, 'HH:mm') <= FORMAT(@{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}_end, 'HH:mm')");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].{DBPontoVirtualAcessosDicInfo.DataHora} BETWEEN @{nameof(DBPontoVirtualAcessosDicInfo.DataHora)} AND @{nameof(DBPontoVirtualAcessosDicInfo.DataHora)}_end");
         }
 
         cWhere.Append(filtro.Tipo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Tipo}] = @{nameof(DBPontoVirtualAcessosDicInfo.Tipo)}");
-        cWhere.Append(filtro.Origem.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Origem}]  {DevourerConsts.MsiCollate} like @{nameof(DBPontoVirtualAcessosDicInfo.Origem)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Origem.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Origem}]  {DevourerConsts.MsiCollate} like @{nameof(DBPontoVirtualAcessosDicInfo.Origem)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.CampoCodigo}] >= @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.CampoCodigo}] = @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualAcessosDicInfo.CampoCodigo} BETWEEN @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)} AND @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualAcessosDicInfo.CampoCodigo} = @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBPontoVirtualAcessosDicInfo.CampoCodigo} <= @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].{DBPontoVirtualAcessosDicInfo.CampoCodigo} BETWEEN @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)} AND @{nameof(DBPontoVirtualAcessosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -87,6 +87,16 @@ public partial class PontoVirtualAcessosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterPontoVirtualAcessos? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<PontoVirtualAcessosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

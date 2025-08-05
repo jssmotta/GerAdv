@@ -10,7 +10,7 @@ public partial interface IOponentesRepLegalReader
     OponentesRepLegalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     OponentesRepLegalResponse? Read(FOponentesRepLegal dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     OponentesRepLegalResponseAll? ReadAll(FOponentesRepLegal dbRec, IDataRecord dr);
     OponentesRepLegalResponseAll? ReadAll(SG.GerAdv.DBOponentesRepLegal dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

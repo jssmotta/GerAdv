@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProTipoBaixaService
 {
-    Task<IEnumerable<ProTipoBaixaResponseAll>> Filter(Filters.FilterProTipoBaixa filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<ProTipoBaixaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProTipoBaixa filter, [FromRoute, Required] string uri = "");
     Task<ProTipoBaixaResponse?> AddAndUpdate(Models.ProTipoBaixa regProTipoBaixa, [FromRoute, Required] string uri = "");
     Task<ProTipoBaixaResponse?> Validation(Models.ProTipoBaixa regProTipoBaixa, [FromRoute, Required] string uri = "");
     Task<ProTipoBaixaResponse?> Delete(int id, [FromRoute, Required] string uri = "");

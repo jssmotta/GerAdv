@@ -8,5 +8,5 @@ namespace MenphisSI.GerAdv.Interface;
 
 public partial interface IAgendaRelatorioService
 {
-    Task<IEnumerable<AgendaRelatorioResponseAll>> Filter(Filters.FilterAgendaRelatorio filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<AgendaRelatorioResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaRelatorio filter, [FromRoute, Required] string uri = "");
 }

@@ -21,7 +21,7 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var prosucumbenciaExists0 = await prosucumbenciaService.Filter(new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id }, uri);
+        var prosucumbenciaExists0 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id }, uri);
         if (prosucumbenciaExists0 != null && prosucumbenciaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.");
         return true;
@@ -50,7 +50,7 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
 
     private async Task<bool> IsDuplicado(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, string uri)
     {
-        var existingTipoOrigemSucumbencia = (await service.Filter(new Filters.FilterTipoOrigemSucumbencia { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingTipoOrigemSucumbencia = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoOrigemSucumbencia { Nome = reg.Nome }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingTipoOrigemSucumbencia != null && existingTipoOrigemSucumbencia.Id > 0 && existingTipoOrigemSucumbencia.Id != reg.Id;
     }
 }

@@ -21,7 +21,7 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var bensmateriaisExists0 = await bensmateriaisService.Filter(new Filters.FilterBensMateriais { BensClassificacao = id }, uri);
+        var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { BensClassificacao = id }, uri);
         if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.");
         return true;

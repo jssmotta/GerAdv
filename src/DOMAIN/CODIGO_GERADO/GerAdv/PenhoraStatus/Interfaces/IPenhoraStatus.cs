@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IPenhoraStatusService
 {
-    Task<IEnumerable<PenhoraStatusResponseAll>> Filter(Filters.FilterPenhoraStatus filter, [FromRoute, Required] string uri = "");
+    Task<IEnumerable<PenhoraStatusResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterPenhoraStatus filter, [FromRoute, Required] string uri = "");
     Task<PenhoraStatusResponse?> AddAndUpdate(Models.PenhoraStatus regPenhoraStatus, [FromRoute, Required] string uri = "");
     Task<PenhoraStatusResponse?> Validation(Models.PenhoraStatus regPenhoraStatus, [FromRoute, Required] string uri = "");
     Task<PenhoraStatusResponse?> Delete(int id, [FromRoute, Required] string uri = "");

@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProcessosParadosValidation
 {
     Task<bool> ValidateReg(Models.ProcessosParados reg, IProcessosParadosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProcessosParadosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(long id, IProcessosParadosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessosParadosValidation : IProcessosParadosValidation
 {
-    public async Task<bool> CanDelete(int id, IProcessosParadosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(long id, IProcessosParadosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id <= 0)
             throw new SGValidationException("Id inválido");

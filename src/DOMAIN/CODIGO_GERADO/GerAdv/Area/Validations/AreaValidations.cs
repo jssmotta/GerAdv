@@ -21,31 +21,31 @@ public class AreaValidation : IAreaValidation
         var reg = await service.GetById(id, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var acaoExists0 = await acaoService.Filter(new Filters.FilterAcao { Area = id }, uri);
+        var acaoExists0 = await acaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAcao { Area = id }, uri);
         if (acaoExists0 != null && acaoExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Acao associados a ele.");
-        var agendaExists1 = await agendaService.Filter(new Filters.FilterAgenda { Area = id }, uri);
+        var agendaExists1 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Area = id }, uri);
         if (agendaExists1 != null && agendaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var areasjusticaExists2 = await areasjusticaService.Filter(new Filters.FilterAreasJustica { Area = id }, uri);
+        var areasjusticaExists2 = await areasjusticaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAreasJustica { Area = id }, uri);
         if (areasjusticaExists2 != null && areasjusticaExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Areas Justica associados a ele.");
-        var divisaotribunalExists3 = await divisaotribunalService.Filter(new Filters.FilterDivisaoTribunal { Area = id }, uri);
+        var divisaotribunalExists3 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Area = id }, uri);
         if (divisaotribunalExists3 != null && divisaotribunalExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
-        var faseExists4 = await faseService.Filter(new Filters.FilterFase { Area = id }, uri);
+        var faseExists4 = await faseService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFase { Area = id }, uri);
         if (faseExists4 != null && faseExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Fase associados a ele.");
-        var objetosExists5 = await objetosService.Filter(new Filters.FilterObjetos { Area = id }, uri);
+        var objetosExists5 = await objetosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterObjetos { Area = id }, uri);
         if (objetosExists5 != null && objetosExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Objetos associados a ele.");
-        var poderjudiciarioassociadoExists6 = await poderjudiciarioassociadoService.Filter(new Filters.FilterPoderJudiciarioAssociado { Area = id }, uri);
+        var poderjudiciarioassociadoExists6 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Area = id }, uri);
         if (poderjudiciarioassociadoExists6 != null && poderjudiciarioassociadoExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var tiporecursoExists7 = await tiporecursoService.Filter(new Filters.FilterTipoRecurso { Area = id }, uri);
+        var tiporecursoExists7 = await tiporecursoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoRecurso { Area = id }, uri);
         if (tiporecursoExists7 != null && tiporecursoExists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tipo Recurso associados a ele.");
-        var tribunalExists8 = await tribunalService.Filter(new Filters.FilterTribunal { Area = id }, uri);
+        var tribunalExists8 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Area = id }, uri);
         if (tribunalExists8 != null && tribunalExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
         return true;

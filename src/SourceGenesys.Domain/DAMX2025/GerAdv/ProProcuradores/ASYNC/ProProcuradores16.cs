@@ -139,15 +139,16 @@ public partial class DBProProcuradores
             updateTool.Fields(DBProProcuradoresDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
         if (pFldFData)
             updateTool.Fields(DBProProcuradoresDicInfo.Data, m_FData, ETiposCampos.FString);
-        if (pFldFSubstabelecimento)
+        if (pFldFSubstabelecimento || updateTool.Insert)
             updateTool.Fields(DBProProcuradoresDicInfo.Substabelecimento, m_FSubstabelecimento, ETiposCampos.FBoolean);
-        if (pFldFProcuracao)
+        if (pFldFProcuracao || updateTool.Insert)
             updateTool.Fields(DBProProcuradoresDicInfo.Procuracao, m_FProcuracao, ETiposCampos.FBoolean);
         if (pFldFGUID)
             updateTool.Fields(DBProProcuradoresDicInfo.GUID, m_FGUID, ETiposCampos.FString);
     }
 
 #endif
+#if (!NOTSTORED_ProProcuradores)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -171,4 +172,5 @@ public partial class DBProProcuradores
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

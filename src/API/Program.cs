@@ -70,6 +70,8 @@ try
     MenphisSI.GerAdv.Writers.AddServices.Add(builder);
     MenphisSI.GerAdv.Entity.AddServices.Add(builder);
 
+    MenphisSI.GerAdv.Serialization.AddServices.Add(builder);
+
     // AppSettingsMediator.AddMediatorConfig(builder);
 
     var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();

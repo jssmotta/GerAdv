@@ -21,7 +21,7 @@ public class ClientesHealthCheck(IOptions<AppSettings> appSettings, ClientesServ
             var healthData = new Dictionary<string, object>();
             var isHealthy = true;
             var exceptions = new List<Exception>();
-            var maxId = 0;
+            int maxId = default;
             foreach (var uri in uris)
             {
                 if (uri.IsEmpty())
@@ -59,29 +59,31 @@ public class ClientesHealthCheck(IOptions<AppSettings> appSettings, ClientesServ
                     {
                         if (DBClientesDicInfo.CampoCodigo.NotIsEmpty())
                         {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) MAX(cliCodigo) FROM {"Clientes".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                            if (retId != null && retId != DBNull.Value)
                             {
-                                maxId = Convert.ToInt32(retId);
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) MAX(cliCodigo) FROM {"Clientes".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                var retId = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                                if (retId != null && retId != DBNull.Value)
+                                {
+                                    maxId = Convert.ToInt32(retId);
+                                }
                             }
-                        }
 
-                        {
-                            await using var tableCheck = connection.CreateCommand();
-                            tableCheck.CommandText = $"SELECT TOP (1) cliEmpresa,cliIcone,cliNomeMae,cliRGDataExp,cliInativo,cliQuemIndicou,cliSendEMail,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliObito,cliNomePai,cliRGOExpeditor,cliRegimeTributacao,cliEnquadramentoEmpresa,cliReportECBOnly,cliProBono,cliCNH,cliPessoaContato,cliGUID FROM {"Clientes".dbo(connection)};";
-                            tableCheck.CommandTimeout = 5;
-                            _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
-                        }
+                            {
+                                await using var tableCheck = connection.CreateCommand();
+                                tableCheck.CommandText = $"SELECT TOP (1) cliEmpresa,cliIcone,cliNomeMae,cliRGDataExp,cliInativo,cliQuemIndicou,cliSendEMail,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliObito,cliNomePai,cliRGOExpeditor,cliRegimeTributacao,cliEnquadramentoEmpresa,cliReportECBOnly,cliProBono,cliCNH,cliPessoaContato,cliGUID FROM {"Clientes".dbo(connection)};";
+                                tableCheck.CommandTimeout = 5;
+                                _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
+                            }
 
-                        healthData[$"domain_{uri}"] = new
-                        {
-                            status = "Healthy",
-                            message = "SELECT Clientes successful",
-                            timestamp = DateTime.UtcNow
-                        };
+                            healthData[$"domain_{uri}"] = new
+                            {
+                                status = "Healthy",
+                                message = "SELECT Clientes successful",
+                                timestamp = DateTime.UtcNow
+                            };
+                        }
                     }
                     catch (Exception ex)
                     {

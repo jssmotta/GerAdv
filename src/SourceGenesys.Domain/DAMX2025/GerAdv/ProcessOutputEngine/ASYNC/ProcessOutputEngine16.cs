@@ -143,15 +143,15 @@ public partial class DBProcessOutputEngine
             updateTool.Fields(DBProcessOutputEngineDicInfo.Valor, m_FValor, ETiposCampos.FString);
         if (pFldFOutput)
             updateTool.Fields(DBProcessOutputEngineDicInfo.Output, m_FOutput, ETiposCampos.FString);
-        if (pFldFAdministrador)
+        if (pFldFAdministrador || updateTool.Insert)
             updateTool.Fields(DBProcessOutputEngineDicInfo.Administrador, m_FAdministrador, ETiposCampos.FBoolean);
         if (pFldFOutputSource)
             updateTool.Fields(DBProcessOutputEngineDicInfo.OutputSource, m_FOutputSource, ETiposCampos.FNumber);
-        if (pFldFDisabledItem)
+        if (pFldFDisabledItem || updateTool.Insert)
             updateTool.Fields(DBProcessOutputEngineDicInfo.DisabledItem, m_FDisabledItem, ETiposCampos.FBoolean);
         if (pFldFIDModulo)
             updateTool.Fields(DBProcessOutputEngineDicInfo.IDModulo, m_FIDModulo, ETiposCampos.FNumber);
-        if (pFldFIsOnlyProcesso)
+        if (pFldFIsOnlyProcesso || updateTool.Insert)
             updateTool.Fields(DBProcessOutputEngineDicInfo.IsOnlyProcesso, m_FIsOnlyProcesso, ETiposCampos.FBoolean);
         if (pFldFMyID)
             updateTool.Fields(DBProcessOutputEngineDicInfo.MyID, m_FMyID, ETiposCampos.FNumber);
@@ -160,6 +160,7 @@ public partial class DBProcessOutputEngine
     }
 
 #endif
+#if (!NOTSTORED_ProcessOutputEngine)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -171,4 +172,5 @@ public partial class DBProcessOutputEngine
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

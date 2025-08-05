@@ -266,7 +266,7 @@ public partial class DBToolWTable32
         oTrans.Rollback();
 
         if (--MaxReportError > 0)
-            GeneralSystemErrorTraper.GetError(ex, $"RollBack--{Table}--Sql:{sql}");
+            throw new Exception($"RollBack--{Table}--Sql");
 
         return "";
     }
@@ -584,7 +584,7 @@ public partial class DBToolWTable32
                 if (_parent.LastError.ContemUpper("PRIMARY KEY"))
                 {
                     if (--MaxReportError > 0)
-                        GeneralSystemErrorTraper.GetError(new Exception(_parent.LastError), $"Violação de Chave Primária {_parent.Table}");
+                        throw new Exception($"Violação de Chave Primária {_parent.Table}");
                 }
                 return "ERROR";
             }
@@ -604,7 +604,7 @@ public partial class DBToolWTable32
             _parent.LastError = ex.Message;
 
             if (--MaxReportError > 0)
-                GeneralSystemErrorTraper.GetError(ex, $"Violação de Chave {_parent.Table}");
+                throw new Exception($"Violação de Chave {_parent.Table}");
 
             return string.Empty;
         }

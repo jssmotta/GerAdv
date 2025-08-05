@@ -57,7 +57,7 @@ public class GraphValidation : IGraphValidation
 
     private async Task<bool> IsDuplicado(Models.Graph reg, IGraphService service, string uri)
     {
-        var existingGraph = (await service.Filter(new Filters.FilterGraph { Tabela = reg.Tabela, TabelaId = reg.TabelaId }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingGraph = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGraph { Tabela = reg.Tabela, TabelaId = reg.TabelaId }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingGraph != null && existingGraph.Id > 0 && existingGraph.Id != reg.Id;
     }
 }

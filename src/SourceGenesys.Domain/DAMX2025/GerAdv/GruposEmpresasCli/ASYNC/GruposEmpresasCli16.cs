@@ -135,11 +135,12 @@ public partial class DBGruposEmpresasCli
             updateTool.Fields(DBGruposEmpresasCliDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumber);
         if (pFldFCliente)
             updateTool.Fields(DBGruposEmpresasCliDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-        if (pFldFOculto)
+        if (pFldFOculto || updateTool.Insert)
             updateTool.Fields(DBGruposEmpresasCliDicInfo.Oculto, m_FOculto, ETiposCampos.FBoolean);
     }
 
 #endif
+#if (!NOTSTORED_GruposEmpresasCli)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -163,4 +164,5 @@ public partial class DBGruposEmpresasCli
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

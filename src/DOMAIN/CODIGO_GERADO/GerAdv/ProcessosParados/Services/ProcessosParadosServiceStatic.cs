@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProcessosParadosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessosParados filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessosParados filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
@@ -41,13 +41,13 @@ public partial class ProcessosParadosService
             parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.Ano)}_end", filtro.Ano_end));
         }
 
-        if (!filtro.DataHora.IsEmpty())
+        if (!filtro.DataHora.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataHora, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.DataHora)}", dataParam));
         }
 
-        if (!filtro.DataHora_end.IsEmpty())
+        if (!filtro.DataHora_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataHora_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.DataHora)}_end", dataParam));
@@ -58,25 +58,25 @@ public partial class ProcessosParadosService
             parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.Operador)}", filtro.Operador));
         }
 
-        if (!filtro.DataHistorico.IsEmpty())
+        if (!filtro.DataHistorico.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataHistorico, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.DataHistorico)}", dataParam));
         }
 
-        if (!filtro.DataHistorico_end.IsEmpty())
+        if (!filtro.DataHistorico_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataHistorico_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.DataHistorico)}_end", dataParam));
         }
 
-        if (!filtro.DataNENotas.IsEmpty())
+        if (!filtro.DataNENotas.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataNENotas, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.DataNENotas)}", dataParam));
         }
 
-        if (!filtro.DataNENotas_end.IsEmpty())
+        if (!filtro.DataNENotas_end.IsEmptyDX())
         {
             if (DateTime.TryParse(filtro.DataNENotas_end, out var dataParam))
                 parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.DataNENotas)}_end", dataParam));
@@ -92,80 +92,80 @@ public partial class ProcessosParadosService
             parameters.Add(new($"@{nameof(DBProcessosParadosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        if (!filtro.Processo.IsEmpty() && filtro.Processo_end.IsEmpty())
+        if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Processo}] >= @{nameof(DBProcessosParadosDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Processo}] = @{nameof(DBProcessosParadosDicInfo.Processo)}");
         }
-        else
+        else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Processo <= 0 && filtro.Processo_end <= 0) ? string.Empty : (!(filtro.Processo <= 0) && !(filtro.Processo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Processo} BETWEEN @{nameof(DBProcessosParadosDicInfo.Processo)} AND @{nameof(DBProcessosParadosDicInfo.Processo)}_end" : !(filtro.Processo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Processo} = @{nameof(DBProcessosParadosDicInfo.Processo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Processo} <= @{nameof(DBProcessosParadosDicInfo.Processo)}_end");
-        }
-
-        if (!filtro.Semana.IsEmpty() && filtro.Semana_end.IsEmpty())
-        {
-            cWhere.Append(filtro.Semana <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Semana}] >= @{nameof(DBProcessosParadosDicInfo.Semana)}");
-        }
-        else
-        {
-            cWhere.Append((filtro.Semana <= 0 && filtro.Semana_end <= 0) ? string.Empty : (!(filtro.Semana <= 0) && !(filtro.Semana_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Semana} BETWEEN @{nameof(DBProcessosParadosDicInfo.Semana)} AND @{nameof(DBProcessosParadosDicInfo.Semana)}_end" : !(filtro.Semana <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Semana} = @{nameof(DBProcessosParadosDicInfo.Semana)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Semana} <= @{nameof(DBProcessosParadosDicInfo.Semana)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.Processo} BETWEEN @{nameof(DBProcessosParadosDicInfo.Processo)} AND @{nameof(DBProcessosParadosDicInfo.Processo)}_end");
         }
 
-        if (!filtro.Ano.IsEmpty() && filtro.Ano_end.IsEmpty())
+        if (!(filtro.Semana.IsEmptyX()) && filtro.Semana_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Ano <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Ano}] >= @{nameof(DBProcessosParadosDicInfo.Ano)}");
+            cWhere.Append(filtro.Semana.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Semana}] = @{nameof(DBProcessosParadosDicInfo.Semana)}");
         }
-        else
+        else if (!(filtro.Semana.IsEmptyX()) && !(filtro.Semana_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Ano <= 0 && filtro.Ano_end <= 0) ? string.Empty : (!(filtro.Ano <= 0) && !(filtro.Ano_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Ano} BETWEEN @{nameof(DBProcessosParadosDicInfo.Ano)} AND @{nameof(DBProcessosParadosDicInfo.Ano)}_end" : !(filtro.Ano <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Ano} = @{nameof(DBProcessosParadosDicInfo.Ano)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.Ano} <= @{nameof(DBProcessosParadosDicInfo.Ano)}_end");
-        }
-
-        if (!filtro.DataHora.IsEmpty() && filtro.DataHora_end.IsEmpty())
-        {
-            cWhere.Append(filtro.DataHora.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.DataHora}], 'HH:mm') >= FORMAT(@{nameof(DBProcessosParadosDicInfo.DataHora)}, 'HH:mm')");
-        }
-        else
-        {
-            cWhere.Append((filtro.DataHora.IsEmpty() && filtro.DataHora_end.IsEmpty()) ? string.Empty : (!(filtro.DataHora.IsEmpty()) && !(filtro.DataHora_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT({DBProcessosParadosDicInfo.DataHora}, 'HH:mm') BETWEEN FORMAT(@{nameof(DBProcessosParadosDicInfo.DataHora)}, 'HH:mm') AND FORMAT(@{nameof(DBProcessosParadosDicInfo.DataHora)}_end, 'HH:mm')" : !(filtro.DataHora.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT({DBProcessosParadosDicInfo.DataHora}, 'HH:mm') = FORMAT(@{nameof(DBProcessosParadosDicInfo.DataHora)}, 'HH:mm')" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT({DBProcessosParadosDicInfo.DataHora}, 'HH:mm') <= FORMAT(@{nameof(DBProcessosParadosDicInfo.DataHora)}_end, 'HH:mm')");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.Semana} BETWEEN @{nameof(DBProcessosParadosDicInfo.Semana)} AND @{nameof(DBProcessosParadosDicInfo.Semana)}_end");
         }
 
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Operador}] = @{nameof(DBProcessosParadosDicInfo.Operador)}");
-        if (!filtro.DataHistorico.IsEmpty() && filtro.DataHistorico_end.IsEmpty())
+        if (!(filtro.Ano.IsEmptyX()) && filtro.Ano_end.IsEmptyX())
         {
-            cWhere.Append(filtro.DataHistorico.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.DataHistorico}], 103) >= CONVERT(DATE, @{nameof(DBProcessosParadosDicInfo.DataHistorico)}, 103)");
+            cWhere.Append(filtro.Ano.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Ano}] = @{nameof(DBProcessosParadosDicInfo.Ano)}");
         }
-        else
+        else if (!(filtro.Ano.IsEmptyX()) && !(filtro.Ano_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.DataHistorico.IsEmpty() && filtro.DataHistorico_end.IsEmpty()) ? string.Empty : (!(filtro.DataHistorico.IsEmpty()) && !(filtro.DataHistorico_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.DataHistorico} BETWEEN @{nameof(DBProcessosParadosDicInfo.DataHistorico)} AND @{nameof(DBProcessosParadosDicInfo.DataHistorico)}_end" : !(filtro.DataHistorico.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.DataHistorico} = @{nameof(DBProcessosParadosDicInfo.DataHistorico)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.DataHistorico} <= @{nameof(DBProcessosParadosDicInfo.DataHistorico)}_end");
-        }
-
-        if (!filtro.DataNENotas.IsEmpty() && filtro.DataNENotas_end.IsEmpty())
-        {
-            cWhere.Append(filtro.DataNENotas.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.DataNENotas}], 103) >= CONVERT(DATE, @{nameof(DBProcessosParadosDicInfo.DataNENotas)}, 103)");
-        }
-        else
-        {
-            cWhere.Append((filtro.DataNENotas.IsEmpty() && filtro.DataNENotas_end.IsEmpty()) ? string.Empty : (!(filtro.DataNENotas.IsEmpty()) && !(filtro.DataNENotas_end.IsEmpty())) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.DataNENotas} BETWEEN @{nameof(DBProcessosParadosDicInfo.DataNENotas)} AND @{nameof(DBProcessosParadosDicInfo.DataNENotas)}_end" : !(filtro.DataNENotas.IsEmpty()) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.DataNENotas} = @{nameof(DBProcessosParadosDicInfo.DataNENotas)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.DataNENotas} <= @{nameof(DBProcessosParadosDicInfo.DataNENotas)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.Ano} BETWEEN @{nameof(DBProcessosParadosDicInfo.Ano)} AND @{nameof(DBProcessosParadosDicInfo.Ano)}_end");
         }
 
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.DataHora.IsEmptyDX()) && filtro.DataHora_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.CampoCodigo}] >= @{nameof(DBProcessosParadosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.DataHora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.DataHora}], 103) = CONVERT(DATE, @{nameof(DBProcessosParadosDicInfo.DataHora)}, 103)");
         }
-        else
+        else if (!(filtro.DataHora.IsEmptyDX()) && !(filtro.DataHora_end.IsEmptyDX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.CampoCodigo} BETWEEN @{nameof(DBProcessosParadosDicInfo.CampoCodigo)} AND @{nameof(DBProcessosParadosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.CampoCodigo} = @{nameof(DBProcessosParadosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBProcessosParadosDicInfo.CampoCodigo} <= @{nameof(DBProcessosParadosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.DataHora} BETWEEN @{nameof(DBProcessosParadosDicInfo.DataHora)} AND @{nameof(DBProcessosParadosDicInfo.DataHora)}_end");
+        }
+
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.Operador}] = @{nameof(DBProcessosParadosDicInfo.Operador)}");
+        if (!(filtro.DataHistorico.IsEmptyDX()) && filtro.DataHistorico_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.DataHistorico.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.DataHistorico}], 103) = CONVERT(DATE, @{nameof(DBProcessosParadosDicInfo.DataHistorico)}, 103)");
+        }
+        else if (!(filtro.DataHistorico.IsEmptyDX()) && !(filtro.DataHistorico_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.DataHistorico} BETWEEN @{nameof(DBProcessosParadosDicInfo.DataHistorico)} AND @{nameof(DBProcessosParadosDicInfo.DataHistorico)}_end");
+        }
+
+        if (!(filtro.DataNENotas.IsEmptyDX()) && filtro.DataNENotas_end.IsEmptyDX())
+        {
+            cWhere.Append(filtro.DataNENotas.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.DataNENotas}], 103) = CONVERT(DATE, @{nameof(DBProcessosParadosDicInfo.DataNENotas)}, 103)");
+        }
+        else if (!(filtro.DataNENotas.IsEmptyDX()) && !(filtro.DataNENotas_end.IsEmptyDX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.DataNENotas} BETWEEN @{nameof(DBProcessosParadosDicInfo.DataNENotas)} AND @{nameof(DBProcessosParadosDicInfo.DataNENotas)}_end");
+        }
+
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].[{DBProcessosParadosDicInfo.CampoCodigo}] = @{nameof(DBProcessosParadosDicInfo.CampoCodigo)}");
+        }
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessosParadosDicInfo.PTabelaNome}].{DBProcessosParadosDicInfo.CampoCodigo} BETWEEN @{nameof(DBProcessosParadosDicInfo.CampoCodigo)} AND @{nameof(DBProcessosParadosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -174,6 +174,16 @@ public partial class ProcessosParadosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterProcessosParados? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<ProcessosParadosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

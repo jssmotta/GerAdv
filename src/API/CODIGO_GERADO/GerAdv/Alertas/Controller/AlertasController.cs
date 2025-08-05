@@ -24,15 +24,15 @@ public partial class AlertasController(IAlertasService alertasService) : Control
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Filter([FromBody] Filters.FilterAlertas filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAlertas filtro, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("Alertas: Filter called with filtro = {0}, {1}", filtro, uri);
-        var result = await _alertasService.Filter(filtro, uri);
+        //_logger.Info("Alertas: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
+        var result = await _alertasService.Filter(max, filtro, uri);
         return Ok(result);
     }
 

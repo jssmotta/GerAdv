@@ -73,8 +73,7 @@ public class DBToolWTable32Async : DBToolWTable32
         {
             oTrans.Rollback();
             LastError = ex.Message;
-            GeneralSystemErrorTraper.GetError(ex, $"RollBack--{Table}--Sql:{cSql}");
-            return "";
+            throw new Exception($"RollBack--{Table}--Sql");            
         }
     }
 

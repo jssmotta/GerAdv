@@ -10,7 +10,7 @@ public partial interface IBensMateriaisReader
     BensMateriaisResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
     BensMateriaisResponse? Read(FBensMateriais dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     BensMateriaisResponseAll? ReadAll(FBensMateriais dbRec, IDataRecord dr);
     BensMateriaisResponseAll? ReadAll(SG.GerAdv.DBBensMateriais dbRec, DataRow dr);
     Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);

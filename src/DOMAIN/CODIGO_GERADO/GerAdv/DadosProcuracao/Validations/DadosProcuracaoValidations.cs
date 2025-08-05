@@ -70,7 +70,7 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
 
     private async Task<bool> IsDuplicado(Models.DadosProcuracao reg, IDadosProcuracaoService service, string uri)
     {
-        var existingDadosProcuracao = (await service.Filter(new Filters.FilterDadosProcuracao { Cliente = reg.Cliente }, uri)).FirstOrDefault(); // TRACK 10042025
+        var existingDadosProcuracao = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDadosProcuracao { Cliente = reg.Cliente }, uri)).FirstOrDefault(); // TRACK 10042025
         return existingDadosProcuracao != null && existingDadosProcuracao.Id > 0 && existingDadosProcuracao.Id != reg.Id;
     }
 }

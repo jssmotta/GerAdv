@@ -137,11 +137,12 @@ public partial class DBAlertasEnviados
             updateTool.Fields(DBAlertasEnviadosDicInfo.Alerta, m_FAlerta, ETiposCampos.FNumber);
         if (pFldFDataAlertado)
             updateTool.Fields(DBAlertasEnviadosDicInfo.DataAlertado, m_FDataAlertado, ETiposCampos.FDate);
-        if (pFldFVisualizado)
+        if (pFldFVisualizado || updateTool.Insert)
             updateTool.Fields(DBAlertasEnviadosDicInfo.Visualizado, m_FVisualizado, ETiposCampos.FBoolean);
     }
 
 #endif
+#if (!NOTSTORED_AlertasEnviados)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
     }
@@ -153,4 +154,5 @@ public partial class DBAlertasEnviados
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

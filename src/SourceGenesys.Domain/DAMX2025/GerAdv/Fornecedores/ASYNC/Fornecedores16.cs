@@ -137,9 +137,9 @@ public partial class DBFornecedores
             updateTool.Fields(DBFornecedoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
         if (pFldFSubGrupo)
             updateTool.Fields(DBFornecedoresDicInfo.SubGrupo, m_FSubGrupo, ETiposCampos.FNumber);
-        if (pFldFTipo)
+        if (pFldFTipo || updateTool.Insert)
             updateTool.Fields(DBFornecedoresDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
-        if (pFldFSexo)
+        if (pFldFSexo || updateTool.Insert)
             updateTool.Fields(DBFornecedoresDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
         if (pFldFCNPJ)
             updateTool.Fields(DBFornecedoresDicInfo.CNPJ, m_FCNPJ, ETiposCampos.FString);
@@ -176,6 +176,7 @@ public partial class DBFornecedores
     }
 
 #endif
+#if (!NOTSTORED_Fornecedores)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
         var isInsert = ID.IsEmptyIDNumber();
@@ -199,4 +200,5 @@ public partial class DBFornecedores
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }
+#endif
 }

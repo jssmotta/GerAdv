@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TribEnderecosService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTribEnderecos filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTribEnderecos filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Tribunal != int.MinValue)
@@ -56,32 +56,32 @@ public partial class TribEnderecosService
             parameters.Add(new($"@{nameof(DBTribEnderecosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Tribunal <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Tribunal}] = @{nameof(DBTribEnderecosDicInfo.Tribunal)}");
-        cWhere.Append(filtro.Cidade <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Cidade}] = @{nameof(DBTribEnderecosDicInfo.Cidade)}");
-        cWhere.Append(filtro.Endereco.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.Endereco)}");
-        cWhere.Append(filtro.CEP.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.CEP)}");
-        cWhere.Append(filtro.Fone.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.Fone)}");
-        cWhere.Append(filtro.Fax.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.Fax)}");
-        cWhere.Append(filtro.OBS.IsEmpty() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.OBS}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.OBS)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        cWhere.Append(filtro.Tribunal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Tribunal}] = @{nameof(DBTribEnderecosDicInfo.Tribunal)}");
+        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Cidade}] = @{nameof(DBTribEnderecosDicInfo.Cidade)}");
+        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.Endereco)}");
+        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.CEP)}");
+        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.Fone)}");
+        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.Fax)}");
+        cWhere.Append(filtro.OBS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.OBS}]  {DevourerConsts.MsiCollate} like @{nameof(DBTribEnderecosDicInfo.OBS)}");
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.CampoCodigo}] >= @{nameof(DBTribEnderecosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].[{DBTribEnderecosDicInfo.CampoCodigo}] = @{nameof(DBTribEnderecosDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTribEnderecosDicInfo.CampoCodigo} BETWEEN @{nameof(DBTribEnderecosDicInfo.CampoCodigo)} AND @{nameof(DBTribEnderecosDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTribEnderecosDicInfo.CampoCodigo} = @{nameof(DBTribEnderecosDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBTribEnderecosDicInfo.CampoCodigo} <= @{nameof(DBTribEnderecosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTribEnderecosDicInfo.PTabelaNome}].{DBTribEnderecosDicInfo.CampoCodigo} BETWEEN @{nameof(DBTribEnderecosDicInfo.CampoCodigo)} AND @{nameof(DBTribEnderecosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -90,6 +90,16 @@ public partial class TribEnderecosService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterTribEnderecos? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<TribEnderecosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

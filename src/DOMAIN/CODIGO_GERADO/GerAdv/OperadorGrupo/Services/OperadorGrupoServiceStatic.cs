@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class OperadorGrupoService
 {
-    private static (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorGrupo filtro)
+    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorGrupo filtro)
     {
         var parameters = new List<SqlParameter>();
         if (filtro.Operador != int.MinValue)
@@ -41,36 +41,36 @@ public partial class OperadorGrupoService
             parameters.Add(new($"@{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
         }
 
-        if (filtro.LogicalOperator.IsEmpty() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
+        if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
         {
             filtro.LogicalOperator = TSql.And;
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Operador <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.Operador}] = @{nameof(DBOperadorGrupoDicInfo.Operador)}");
-        if (!filtro.Grupo.IsEmpty() && filtro.Grupo_end.IsEmpty())
+        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.Operador}] = @{nameof(DBOperadorGrupoDicInfo.Operador)}");
+        if (!(filtro.Grupo.IsEmptyX()) && filtro.Grupo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Grupo <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.Grupo}] >= @{nameof(DBOperadorGrupoDicInfo.Grupo)}");
+            cWhere.Append(filtro.Grupo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.Grupo}] = @{nameof(DBOperadorGrupoDicInfo.Grupo)}");
         }
-        else
+        else if (!(filtro.Grupo.IsEmptyX()) && !(filtro.Grupo_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Grupo <= 0 && filtro.Grupo_end <= 0) ? string.Empty : (!(filtro.Grupo <= 0) && !(filtro.Grupo_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorGrupoDicInfo.Grupo} BETWEEN @{nameof(DBOperadorGrupoDicInfo.Grupo)} AND @{nameof(DBOperadorGrupoDicInfo.Grupo)}_end" : !(filtro.Grupo <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorGrupoDicInfo.Grupo} = @{nameof(DBOperadorGrupoDicInfo.Grupo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorGrupoDicInfo.Grupo} <= @{nameof(DBOperadorGrupoDicInfo.Grupo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].{DBOperadorGrupoDicInfo.Grupo} BETWEEN @{nameof(DBOperadorGrupoDicInfo.Grupo)} AND @{nameof(DBOperadorGrupoDicInfo.Grupo)}_end");
         }
 
         cWhere.Append(filtro.Inativo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.Inativo}] = @{nameof(DBOperadorGrupoDicInfo.Inativo)}");
-        if (!filtro.Codigo_filtro.IsEmpty() && filtro.Codigo_filtro_end.IsEmpty())
+        if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro <= 0 ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.CampoCodigo}] >= @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].[{DBOperadorGrupoDicInfo.CampoCodigo}] = @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}");
         }
-        else
+        else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((filtro.Codigo_filtro <= 0 && filtro.Codigo_filtro_end <= 0) ? string.Empty : (!(filtro.Codigo_filtro <= 0) && !(filtro.Codigo_filtro_end <= 0)) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorGrupoDicInfo.CampoCodigo} BETWEEN @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)} AND @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}_end" : !(filtro.Codigo_filtro <= 0) ? (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorGrupoDicInfo.CampoCodigo} = @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}" : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"{DBOperadorGrupoDicInfo.CampoCodigo} <= @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGrupoDicInfo.PTabelaNome}].{DBOperadorGrupoDicInfo.CampoCodigo} BETWEEN @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)} AND @{nameof(DBOperadorGrupoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
     }
 
-    private static string ApplyWildCard(char wildcardChar, string value)
+    private string ApplyWildCard(char wildcardChar, string value)
     {
         if (wildcardChar == '\0' || wildcardChar == ' ')
         {
@@ -79,6 +79,16 @@ public partial class OperadorGrupoService
 
         var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
         return result;
+    }
+
+    private string GetFilterHash(Filters.FilterOperadorGrupo? filtro)
+    {
+        if (filtro == null)
+            return string.Empty;
+        var json = JsonSerializer.Serialize(filtro);
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
     private async Task<IEnumerable<OperadorGrupoResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
