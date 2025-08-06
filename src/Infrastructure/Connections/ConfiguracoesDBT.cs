@@ -10,7 +10,7 @@ public class ConfiguracoesDBT
     public static string CmdSql(in string cSql) => $"{SQLNoCount}{cSql}";
 
    
-    public static DataTable? GetDataTable(SqlCommand command, CommandBehavior cmdBehavior, SqlConnection? oCnn)
+    public static DataTable? GetDataTable(SqlCommand command, CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
         {
@@ -41,12 +41,12 @@ public class ConfiguracoesDBT
    
    
  
-    public static DataTable? GetDataTable(in string? cSql, in CommandBehavior cmdBehavior, SqlConnection? oCnn)
+    public static DataTable? GetDataTable(in string? cSql, in CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
         
 
         if (oCnn is null) throw new Exception("Conexão nula GetDataTable");
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
         var resultTable = new DataTable(command.CommandText);
 
         try
@@ -66,9 +66,9 @@ public class ConfiguracoesDBT
 
    
    
-    public static DataTable? GetDataTable2(string cSql, SqlConnection? oCnn)
+    public static DataTable? GetDataTable2(string cSql, MsiSqlConnection? oCnn)
     {
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
         using var resultTable = new DataTable(command.CommandText);
 
         try
@@ -89,9 +89,9 @@ public class ConfiguracoesDBT
         return resultTable;
     }
 
-    public static async Task<DataTable?> GetDataTable2Async(string cSql, SqlConnection? oCnn)
+    public static async Task<DataTable?> GetDataTable2Async(string cSql, MsiSqlConnection? oCnn)
     {
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn, null);
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
         var resultTable = new DataTable(command.CommandText);
 
         try
@@ -108,10 +108,10 @@ public class ConfiguracoesDBT
 
         return resultTable;
     } 
-    public static SqlConnection? GetConnection(string? cStrConn)
+    public static MsiSqlConnection? GetConnection(string? cStrConn)
     {
 
-        var oCnnSql = new SqlConnection { ConnectionString = $"{cStrConn};ApplicationIntent=ReadOnly;MultipleActiveResultSets=true;" };
+        var oCnnSql = new MsiSqlConnection { ConnectionString = $"{cStrConn};ApplicationIntent=ReadOnly;MultipleActiveResultSets=true;" };
 
         try
         {
@@ -134,10 +134,10 @@ public class ConfiguracoesDBT
         TipoNone = 0
     }
 
-    public static SqlDataAdapter GetDataAdapter(in string sqlSelect, SqlConnection conn, SqlTransaction? trans,
+    public static SqlDataAdapter GetDataAdapter(in string sqlSelect, MsiSqlConnection conn, SqlTransaction? trans,
         E_TipoSQLCommandTransaction tipoTransSelect)
     {
-        var sqlAd = new SqlDataAdapter($"{SQLNoCount}{sqlSelect}", conn);
+        var sqlAd = new SqlDataAdapter($"{SQLNoCount}{sqlSelect}", conn?.InnerConnection);
         if (trans == null) return sqlAd;
         switch (tipoTransSelect)
         {
@@ -155,7 +155,7 @@ public class ConfiguracoesDBT
         return sqlAd;
     }
    
-    public static bool ExecuteSql(string? cSql, SqlConnection? conn, SqlTransaction? trans = null)
+    public static bool ExecuteSql(string? cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
     {
         if (conn is null || cSql is null) return false;
 
@@ -178,7 +178,7 @@ public class ConfiguracoesDBT
     }
 
      
-    public static bool ExecuteSqlCreate(string cSql, SqlConnection? conn, SqlTransaction? trans = null)
+    public static bool ExecuteSqlCreate(string cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
     {
         if (conn is null) return false;
 

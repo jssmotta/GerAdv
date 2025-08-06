@@ -17,7 +17,7 @@ public static class EntityApi
 #endif
     private static string APIUrl = $"https://{BaseUrlApi}/api/v1/";
 
-    const string bearer = "T2JyaWdhZG9KZXN1c1BvclR1ZG9RdWVWb2NlTWVEZXVBbWVtU2VuaG9ySmVzdXM=";
+    const string bearer = "VGhlVWx0aW1hdGVNRFMyMDI1VGhlVWx0aW1hdGVNRFMyMDI1";
 
     public static string? uri;
     public static string? usuario;

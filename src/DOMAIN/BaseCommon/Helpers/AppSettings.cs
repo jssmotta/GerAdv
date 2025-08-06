@@ -8,4 +8,8 @@ public class AppSettings
     public string ValidUris { get; set; } = string.Empty;
     public string UrisAniversariantes { get; set; } = string.Empty;
     public string UrisNotificadorAgenda { get; set; } = string.Empty;
+    public string UrisCheck {  get; set; } = string.Empty;
+    public string DevURI { get; set; } = string.Empty;
+    public string ProdutoNET_ID { get; set; } = string.Empty;
+    public string? UriBaseTemplateDbo { get; internal set; }
 }

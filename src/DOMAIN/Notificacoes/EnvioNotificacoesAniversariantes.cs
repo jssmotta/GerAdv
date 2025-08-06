@@ -1,12 +1,13 @@
-﻿using MenphisSI.GerEntityTools.Entity;
-using DBAdvogados = MenphisSI.GerAdv.DBAdvogados;
-using DBFuncionarios = MenphisSI.GerAdv.DBFuncionarios;
-using DBOperador = MenphisSI.GerAdv.DBOperador;
+﻿using MenphisSI.GerAdv.Readers;
+using MenphisSI.GerEntityTools.Entity;
+using DBAdvogados = MenphisSI.SG.GerAdv.DBAdvogados;
+using DBFuncionarios = MenphisSI.SG.GerAdv.DBFuncionarios;
+using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
 
 namespace Domain.BaseCommon.Helpers;
 public class EnvioNotificacoesAniversariantes
 {
-    private string ConteudoHtml(string operador, int advogado, string uri, SqlConnection oCnn)
+    private string ConteudoHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
         var ds = ObterAniversariantes(oCnn, uri, advogado);
         if (ds.Rows.Count == 0)
@@ -19,7 +20,7 @@ public class EnvioNotificacoesAniversariantes
         return sbRet.ToString();
     }
 
-    private string ConteudoAgendaHtml(string operador, int advogado, string uri, SqlConnection oCnn)
+    private string ConteudoAgendaHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
         var dsComAgenda = ObterAniversariantesComCompromissos(oCnn, uri, advogado);
         if (dsComAgenda.Rows.Count == 0)
@@ -29,7 +30,7 @@ public class EnvioNotificacoesAniversariantes
         return CriarTabelaDaAgendaHtml(dsComAgenda, operador, dsComAgenda.Rows.Count, " a data ao lado do nome do cliente é a data do próximo compromisso que esse cliente possui agendado.", " com compromissos na agenda");
     }
 
-    private string ConteudoHtmlFuncionarios(string operador, int advogado, string uri, SqlConnection oCnn)
+    private string ConteudoHtmlFuncionarios(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
         var ds = ObterAniversariantesFuncionarios(oCnn, uri, operador, advogado);
         if (ds.Rows.Count == 0)
@@ -80,7 +81,7 @@ END;
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
     private DataTable ObterAniversariantesComCompromissos(
-        SqlConnection conexao,
+        MsiSqlConnection conexao,
         string uri,
         int advogado,
         int nTry = 0)
@@ -118,7 +119,7 @@ ORDER BY ageData;
     }
 
     private DataTable ObterAniversariantes(
-        SqlConnection conexao,
+        MsiSqlConnection conexao,
         string uri,
         int advogado,
         int nTry = 0)
@@ -177,31 +178,36 @@ ORDER BY ageData;
     }
 
 
-    public int EnviarEmailsParaAdvogados(string uri, SqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaAdvogados(string uri, MsiSqlConnection oCnn)
     {
         TestaViews(uri);
 
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And +
-            DBOperadorDicInfo.ExcluidoSqlNao + TSql.And +
+        string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true) + TSql.And +
+            DBOperadorDicInfo.Excluido.Sql(false) + TSql.And +
             "operCadID=1 AND operCadCod IN (select distinct advCodigo from NotificarAniversariantes)";
 
-        var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
+        var reader = new OperadorReader(new FOperadorFactory());
+        var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
+        var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
+        var operadores = await reader.Listar(100, uri, filtroOperadores,[], "operNome",new CancellationToken());
         var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
         foreach (var operador in operadores)
         {
-            if (string.IsNullOrEmpty(operador.FEMailNet) || string.IsNullOrEmpty(operador.FNome))
+            if (string.IsNullOrEmpty(operador.EMailNet) || string.IsNullOrEmpty(operador.Nome))
             {
                 continue;
             }
 
-            var cNome = operador.FCadID == 1 ? DBAdvogados.ListarN(operador.FCadCod, oCnn).FNome
-                                             : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
+            var cNome = operador.CadID == 1 ?
+               (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+              : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtml(cNome, operador.FCadCod, uri, oCnn);
+            var conteudoHtml = ConteudoHtml(cNome, operador.CadCod, uri, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -212,7 +218,7 @@ ORDER BY ageData;
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.FEMailNet,
+                ParaEmail = operador.EMailNet,
                 ParaNome = cNome,
                 Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
@@ -375,26 +381,33 @@ ORDER BY ageData;
    </style> ";
     }
 
-    public int EnviarEmailsParaFuncionarios(string uri, SqlConnection oCnn)
+    public async Task<int> EnviarEmailsParaFuncionarios(string uri, MsiSqlConnection oCnn)
     {
-        string filtroOperadores = DBOperadorDicInfo.SituacaoSqlSim + TSql.And + DBOperadorDicInfo.MasterSqlSim + TSql.And + DBOperadorDicInfo.CadIDSql(2);
-        var operadores = DBOperador.Listar("", filtroOperadores, "operNome", Configuracoes.ConnectionString(uri));
+        string filtroOperadores = DBOperadorDicInfo.Situacao.Sql(true) + TSql.And + DBOperadorDicInfo.Master.Sql(true) + TSql.And + DBOperadorDicInfo.CadID + "=" + 2;
+        
+        var reader = new OperadorReader( new FOperadorFactory());
+        var readerAdv = new AdvogadosReader( new FAdvogadosFactory());
+        var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
+        var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+
         var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
         foreach (var operador in operadores)
         {
-            if (string.IsNullOrEmpty(operador.FEMailNet) || string.IsNullOrEmpty(operador.FNome))
+            if (string.IsNullOrEmpty(operador.EMailNet) || string.IsNullOrEmpty(operador.Nome))
             {
                 continue;
             }
 
-            var cNome = operador.FCadID == 1 ? DBAdvogados.ListarN(operador.FCadCod, oCnn).FNome
-                                             : DBFuncionarios.ListarN(operador.FCadCod, oCnn).FNome;
+            var cNome = operador.CadID == 1 ?
+                     (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+
             if (cNome == null || cNome.Equals("")) continue;
 
-            var conteudoHtml = ConteudoHtmlFuncionarios(cNome, operador.FCadID, uri, oCnn);
+            var conteudoHtml = ConteudoHtmlFuncionarios(cNome, operador.CadID, uri, oCnn);
 
             if (string.IsNullOrEmpty(conteudoHtml))
             {
@@ -405,7 +418,7 @@ ORDER BY ageData;
 
             var email = new MenphisSI.Api.Models.SendEmail
             {
-                ParaEmail = operador.FEMailNet,
+                ParaEmail = operador.EMailNet,
                 ParaNome = cNome,
                 Assunto = assunto + " - " + cNome,
                 Mensagem = conteudoHtml,
@@ -423,7 +436,7 @@ ORDER BY ageData;
     }
 
     private DataTable ObterAniversariantesFuncionarios(
-    SqlConnection conexao,
+    MsiSqlConnection conexao,
     string uri,
     string operador,
     int advogado,

@@ -30,6 +30,16 @@ public partial class AppSettingsHealthCheck
 
         }
 
+        {
+            var n = 0;
+            foreach (var uri in settings.UrisCheck.Split(";"))
+            {
+                builder.Services.AddHealthChecks()
+                    .AddCheck($"DB Status - {++n}", new HealthCheckCheckService(uri), failureStatus: HealthStatus.Degraded, tags: ["Notificador"]);
+            }
+
+        }
+
     }
     public static void Add(WebApplicationBuilder builder)
     {

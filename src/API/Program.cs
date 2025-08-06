@@ -1,6 +1,4 @@
 using MenphisSI.GerAdv.HealthCheck;
-using MenphisSI.GerAdv.Services;
-using MenphisSI.GerAdv.Setup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -40,11 +38,12 @@ try
 
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
-    var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
-    if (uris.IsEmpty())
-    {
-        throw new Exception("AppSettings:ValidUris não configurado");
-    }
+
+    //var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
+    //if (uris.IsEmpty())
+    //{
+    //    throw new Exception("AppSettings:ValidUris não configurado");
+    //}
 
     builder.Host.UseNLog();
 
@@ -53,7 +52,8 @@ try
     builder.Services.AddOpenApi();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddScoped<IUserService, UserService>();
-    builder.Services.AddSingleton<IWCfgService, WCfgService>();
+
+
 
     //builder.Services.AddSingleton<MenphisSI.DB.ITokenService, TokenService>();
 
@@ -64,15 +64,22 @@ try
         options.Providers.Add<GzipCompressionProvider>();
     });
 
+    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+    MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
+    MenphisSI.GerEntityTools.Helper.Token.InitializeConfiguration(builder.Configuration);
+
     MenphisSI.GerAdv.Services.AddServices.Add(builder);
 
     MenphisSI.GerAdv.Validations.AddServices.Add(builder);
     MenphisSI.GerAdv.Readers.AddServices.Add(builder);
     MenphisSI.GerAdv.Writers.AddServices.Add(builder);
+    MenphisSI.GerAdv.Entity.AddServices.Add(builder);
+
+    MenphisSI.GerAdv.Serialization.AddServices.Add(builder);
 
     // AppSettingsMediator.AddMediatorConfig(builder);
-
-    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+     
     AppSettingsHealthCheck.Add(builder); // Add HealthCheck
     AppSettingsHealthCheck.Add(builder, logger, settings); // Add HealthCheck
     //AppSettingsHealthCheck.AddHealthCheck(builder);
@@ -86,7 +93,10 @@ try
         options.DefaultApiVersion = new ApiVersion(1, 0);
     });
 
+    builder.Services.AddAuthorization();
+    builder.Services.AddMemoryCache();
     builder.Services.AddHybridCache();
+
 
     builder.WebHost.ConfigureKestrel(options =>
     {
@@ -116,14 +126,29 @@ try
     //        });
     //});
 
+    string[] corsSites = builder.Configuration.GetSection("AppSettings:CORS:AllowedOrigins").Get<string[]>() ?? [];
+
+#if (DEBUG)
+    var listCors = new List<string>() { "http://localhost:3000" };   
+#else
+    var listCors = new List<string>();
+#endif
+
+    listCors.AddRange(corsSites);
+
+    if (System.Diagnostics.Debugger.IsAttached)
+    {
+        listCors.Add("http://localhost:3000");
+    }
+
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowAllOrigins",
+        options.AddPolicy("AllowSpecificOrigins",
             builder =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
+                builder.WithOrigins([.. listCors])
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
             });
     });
 
@@ -186,20 +211,20 @@ try
 
     var app = builder.Build();
 
-    EndpointRegistration.AddApiServices(app);
+    //EndpointRegistration.AddApiServices(app);
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.MapOpenApi();
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
-            c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-            c.DefaultModelsExpandDepth(-1);
-        });
-    }
+    //if (app.Environment.IsDevelopment())
+    //{
+    //    app.MapOpenApi();
+    //    app.UseSwagger();
+    //    app.UseSwaggerUI(c =>
+    //    {
+    //        c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
+    //        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    //        c.DefaultModelsExpandDepth(-1);
+    //    });
+    //}
     //else
     //{
     //    app.UseSwagger();

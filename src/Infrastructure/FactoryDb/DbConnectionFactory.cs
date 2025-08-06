@@ -31,7 +31,7 @@ public static class DbConnectionFactory
         _cleanupTimer.Start();
     }
 
-    public static async Task<SqlConnection> GetConnectionAsync(string connectionString)
+    public static async Task<MsiSqlConnection> GetConnectionAsync(string connectionString)
     {
        
         if (!_connectionPools.TryGetValue(connectionString, out var pool))
@@ -44,7 +44,7 @@ public static class DbConnectionFactory
                     _connectionPools.TryAdd(connectionString, pool);
                 }
             }
-            catch (Exception ex) { throw new Exception($"Erro conexão: " + ex.Message); }
+            catch (Exception ex) { var err = ex.Message; }
             await InitializePoolAsync(connectionString, pool);
         }
 
@@ -71,12 +71,12 @@ public static class DbConnectionFactory
         return await CreateNewConnectionAsync(connectionString);
     }
 
-    public static SqlConnection GetConnection(string connectionString)
+    public static MsiSqlConnection GetConnection(string connectionString)
     {
         return GetConnectionAsync(connectionString).GetAwaiter().GetResult();
     }
 
-    public static void ReturnConnection(SqlConnection connection)
+    public static void ReturnConnection(MsiSqlConnection connection)
     {
         if (connection == null) return;
 
@@ -107,7 +107,7 @@ public static class DbConnectionFactory
         }
     }
 
-    private static async Task<SqlConnection> CreateNewConnectionAsync(string connectionString)
+    private static async Task<MsiSqlConnection> CreateNewConnectionAsync(string connectionString)
     {
         var builder = new SqlConnectionStringBuilder(connectionString)
         {
@@ -117,7 +117,7 @@ public static class DbConnectionFactory
             MaxPoolSize = MaxPoolSize
         };
 
-        var connection = new SqlConnection(builder.ConnectionString);
+        var connection = new MsiSqlConnection(builder.ConnectionString);
         await connection.OpenAsync();
         return connection;
     }
@@ -144,9 +144,9 @@ public static class DbConnectionFactory
 
 public class ConnectionScope : IDisposable
 {
-    public SqlConnection Connection { get; }
+    public MsiSqlConnection Connection { get; }
 
-    internal ConnectionScope(SqlConnection connection)
+    internal ConnectionScope(MsiSqlConnection connection)
     {
         Connection = connection;
     }
@@ -159,12 +159,12 @@ public class ConnectionScope : IDisposable
 
 public static class DbConnectionFactoryExtensions
 {
-    public static SqlConnection GetConnection(this ConfiguracoesDBT dbConfig, string connectionString)
+    public static MsiSqlConnection GetConnection(this ConfiguracoesDBT dbConfig, string connectionString)
     {
         return DbConnectionFactory.GetConnection(connectionString);
     }
 
-    public static async Task<T> UseConnectionAsync<T>(this ConfiguracoesDBT dbConfig, string connectionString, Func<SqlConnection, Task<T>> action)
+    public static async Task<T> UseConnectionAsync<T>(this ConfiguracoesDBT dbConfig, string connectionString, Func<MsiSqlConnection, Task<T>> action)
     {
         using var scope = DbConnectionFactory.CreateScope(connectionString);
         return await action(scope.Connection);
@@ -181,10 +181,10 @@ public class PoolStats
 // Wrapper class to track LastUsed timestamp
 public class ConnectionWrapper
 {
-    public SqlConnection Connection { get; }
+    public MsiSqlConnection Connection { get; }
     public DateTime LastUsed { get; set; }
 
-    public ConnectionWrapper(SqlConnection connection)
+    public ConnectionWrapper(MsiSqlConnection connection)
     {
         Connection = connection;
         LastUsed = DateTime.Now;

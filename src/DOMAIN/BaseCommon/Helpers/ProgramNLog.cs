@@ -51,12 +51,10 @@ public static class ProgramNLog
                       "${when:when='${date:format=HH}'=='23':inner=logs/logFileHealthCheck${date:format=yyyy-MM-dd}_21}.log",
             Layout = "${longdate} ${uppercase:${level}} ${message} ${exception:format=ToString}",
             ArchiveFileName = "logs/archive/logFileHealthCheck_{#}.log",
-            ArchiveEvery = FileArchivePeriod.Day,
-            ArchiveNumbering = ArchiveNumberingMode.Date,
+            ArchiveEvery = FileArchivePeriod.Day,            
             MaxArchiveFiles = 7, // Mantém logs por 7 dias
             ArchiveOldFileOnStartup = true,
-            CreateDirs = true,
-            ConcurrentWrites = true,
+            CreateDirs = true,            
             KeepFileOpen = false
         };
 
