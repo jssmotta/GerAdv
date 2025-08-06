@@ -63,6 +63,10 @@ try
         options.Providers.Add<GzipCompressionProvider>();
     });
 
+    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+    MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
+
     MenphisSI.GerAdv.Services.AddServices.Add(builder);
 
     MenphisSI.GerAdv.Validations.AddServices.Add(builder);
@@ -73,8 +77,7 @@ try
     MenphisSI.GerAdv.Serialization.AddServices.Add(builder);
 
     // AppSettingsMediator.AddMediatorConfig(builder);
-
-    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+     
     AppSettingsHealthCheck.Add(builder); // Add HealthCheck
     AppSettingsHealthCheck.Add(builder, logger, settings); // Add HealthCheck
     //AppSettingsHealthCheck.AddHealthCheck(builder);
