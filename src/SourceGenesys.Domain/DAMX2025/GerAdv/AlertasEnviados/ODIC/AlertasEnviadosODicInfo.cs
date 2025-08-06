@@ -19,16 +19,14 @@ public partial class DBAlertasEnviadosODicInfo : IODicInfo
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAlertasEnviadosDicInfo.TablePrefix;
-#pragma warning disable CA1822 // Mark members as static
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
-#pragma warning restore CA1822 // Mark members as static
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBAlertasEnviadosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -31,7 +31,7 @@ public static partial class Configuracoes
             var connectionString = GetCachedConnectionString(uri, true);
             return await DbConnectionFactory.GetConnectionAsync(connectionString);
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }

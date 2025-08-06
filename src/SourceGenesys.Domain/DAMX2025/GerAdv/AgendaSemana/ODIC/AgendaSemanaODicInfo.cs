@@ -19,16 +19,14 @@ public partial class DBAgendaSemanaODicInfo : IODicInfo
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBAgendaSemanaDicInfo.TablePrefix;
-#pragma warning disable CA1822 // Mark members as static
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => true;
-#pragma warning restore CA1822 // Mark members as static
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBAgendaSemanaDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

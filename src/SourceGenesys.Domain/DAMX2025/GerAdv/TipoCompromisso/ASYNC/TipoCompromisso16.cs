@@ -52,6 +52,7 @@ public partial class DBTipoCompromisso
             var updateTool = new DBToolWTable32Async(PTabelaNome, CampoCodigo, ID == 0)
             {
                 IsMachineCode = true,
+                Identity = this.IdIsIdentity()
             };
             updateTool.Where = isInsert ? string.Empty : $"{CampoCodigo}={ID}";
             ConfigureUpdateFields(updateTool);

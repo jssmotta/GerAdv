@@ -38,6 +38,7 @@ try
 
     builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
+
     //var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
     //if (uris.IsEmpty())
     //{
@@ -66,6 +67,7 @@ try
     var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
 
     MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
+    MenphisSI.GerEntityTools.Helper.Token.InitializeConfiguration(builder.Configuration);
 
     MenphisSI.GerAdv.Services.AddServices.Add(builder);
 

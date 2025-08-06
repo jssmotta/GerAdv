@@ -19,16 +19,14 @@ public partial class DBServicosODicInfo : IODicInfo
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string IPrefixo() => DBServicosDicInfo.TablePrefix;
-#pragma warning disable CA1822 // Mark members as static
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IIsStoredProcedureOrView() => false;
-#pragma warning restore CA1822 // Mark members as static
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ICampoNome() => DBServicosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

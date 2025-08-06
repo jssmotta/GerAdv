@@ -52,6 +52,8 @@ public partial class DBProPartes
     public string IPrefixo() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IdIsIdentity() => false;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();

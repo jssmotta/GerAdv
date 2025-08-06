@@ -212,6 +212,8 @@ public partial class DBProcessOutputEngine
     public string IPrefixo() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IdIsIdentity() => true;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkFields() => throw new NotImplementedException();
     public ImmutableArray<DBInfoSystem> IPkIndicesFields() => throw new NotImplementedException();

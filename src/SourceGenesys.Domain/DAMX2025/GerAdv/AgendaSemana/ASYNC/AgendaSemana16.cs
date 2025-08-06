@@ -58,7 +58,8 @@ public partial class DBAgendaSemana
         {
             var updateTool = new DBToolWTable32Async(PTabelaNome, CampoCodigo, ID == 0)
             {
-                IsMachineCode = true,            
+                IsMachineCode = true,        
+                Identity = this.IdIsIdentity()
             };
 
             updateTool.Where = isInsert ? string.Empty : $"{CampoCodigo}={ID}";
