@@ -169,9 +169,9 @@ public partial class UserService(IOptions<AppSettings> appSettings, HybridCache 
 
                             // CÓDIGO TEMPORÁRIO VÁLIDO - PREPARAR PARA TROCA OBRIGATÓRIA
                             dbU.WriteCfgC(RESET_KEY2, "", oCnn);
-                            dbU.WriteCfgC(RESET_KEY_ACTION, "1", oCnn);                            
+                            dbU.WriteCfgC(RESET_KEY_ACTION, GetClientIpAddress().Encrypt(), oCnn);                            
                             
-                            dbU.FSenha256 = GetClientIpAddress().Encrypt(); // ← ESTA É A CHAVE!
+                         
                             
                             var dbRegistro = await _operReader.ReadM(dbU.ID, oCnn);
 
@@ -181,9 +181,9 @@ public partial class UserService(IOptions<AppSettings> appSettings, HybridCache 
                                 return null;
                             }
 
-                            dbRegistro.Senha256 = dbU.FSenha256;                            
+                           // dbRegistro.Senha256 = dbU.FSenha256;                            
 
-                            await _operService.AddAndUpdate(dbRegistro, uri);
+                            //await _operService.AddAndUpdate(dbRegistro, uri);
 
                             result = _reader.Read(cWhereReset, parametersReset, oCnn);
                             return result == null || result.Id == 0 ? null : result;
@@ -274,7 +274,7 @@ public partial class UserService(IOptions<AppSettings> appSettings, HybridCache 
             if (dbU.ID > 0)
             {
                 // Verificar se há ação de reset pendente
-                if (dbU.ReadCfgC(RESET_KEY_ACTION, oCnn) == "1")
+                if (dbU.ReadCfgC(RESET_KEY_ACTION, oCnn) == GetClientIpAddress().Encrypt())
                 {
                     dbU.WriteCfgC(RESET_KEY_ACTION, "", oCnn);
                     return RESET_KEY2; // ← Retorna que precisa trocar senha
@@ -455,7 +455,7 @@ public partial class UserService(IOptions<AppSettings> appSettings, HybridCache 
 
                     if (dbU.Senha256 != null && senhaAntigaValida)
                     {
-                        dbU.Senha256 = model.Password.DecodeBase64().GetHashCode2();
+                        dbU.Senha256 = model.Password.DecodeBase64();
 
                         _ = await _operService.AddAndUpdate(dbU, uri);
 

@@ -14,7 +14,7 @@ public partial class UserService
         var claims = new[]
         {
             new Claim("id", user.Id.ToString()),
-            new Claim("tipo", user.CadID == 1 ? "Advogado" :  "Funcionario"),
+            new Claim("tipo", "Funcionario"),
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -59,7 +59,7 @@ public partial class UserService
             try
             {
 
-                var tipo = "Funcionario";
+                var tipo = GetTipo(user);
 
                 var token = await GenerateJwtToken(user).ConfigureAwait(false);
                 var token64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
@@ -73,6 +73,7 @@ public partial class UserService
             }
         });
     }
-
+    // Add this method to the UserService class to resolve CS0103
+  
 
 }
